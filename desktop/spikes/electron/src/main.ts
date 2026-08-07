@@ -6,6 +6,7 @@ import {existsSync, readFileSync} from "node:fs";
 import {mkdir as mkdirAsync, readFile as readFileAsync, writeFile as writeFileAsync} from "node:fs/promises";
 import {homedir} from "node:os";
 import {join, resolve} from "node:path";
+import {pathToFileURL} from "node:url";
 import {
     spawnOwnedProcess,
     type OwnedProcessCompletion,
@@ -52,6 +53,8 @@ type RunningProduct = {
     shutdown: () => Promise<"graceful" | "forced">;
 };
 
+type StartupAction = "retry" | "repair" | "open-logs" | "quit";
+
 type WindowState = {
     x: number;
     y: number;
@@ -69,10 +72,10 @@ const diagnostics = new ElectronDiagnostics();
 let windowStateWrite: Promise<void> = Promise.resolve();
 
 let window: BrowserWindow | null = null;
-let splash: BrowserWindow | null = null;
 let tray: Tray | null = null;
 let running: RunningProduct | null = null;
 let remoteStatus: DesktopStatus | null = null;
+let startupActionResolver: ((action: StartupAction) => void) | null = null;
 
 function desktopPlatform(): DesktopStatus["platform"] {
     if (process.platform === "win32") return "windows";
@@ -99,8 +102,9 @@ function applyTitleBarAppearance(appearance: DesktopAppearance): void {
 let closing: Promise<void> | null = null;
 let allowWindowClose = false;
 let desktopSettings: DesktopSettings = DEFAULT_DESKTOP_SETTINGS;
-let splashStage = "正在启动 NeuroBook...";
-let reportedSplashStage = "";
+let startupStage = "正在启动 NeuroBook...";
+let reportedStartupStage = "";
+let startupError = "";
 
 /** 从显式环境或 Portable 根读取 Manager/Product 配置。 */
 function readConfig(): DesktopConfig {
@@ -259,25 +263,32 @@ async function selectPort(requested: number): Promise<number> {
     });
 }
 
-/** 更新启动页阶段；启动页关闭后忽略更新，避免恢复路径掩盖原始错误。 */
-function setSplashStage(stage: string): void {
-    splashStage = stage;
-    if (stage !== reportedSplashStage) {
-        reportedSplashStage = stage;
+/** 更新启动页阶段；正式 Product 页面加载后不再向渲染器发送启动事件。 */
+function setStartupStage(stage: string): void {
+    startupStage = stage;
+    startupError = "";
+    if (stage !== reportedStartupStage) {
+        reportedStartupStage = stage;
         diagnostics.info({
             kind: "electron-startup-stage",
             stage,
             elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
         });
     }
-    if (!splash || splash.isDestroyed()) return;
-    const escaped = JSON.stringify(stage);
-    void splash.webContents.executeJavaScript(`document.querySelector("[data-stage]").textContent = ${escaped};`, true).catch(() => undefined);
+    if (!window || window.isDestroyed() || !isStartupPage(window.webContents.getURL())) return;
+    window.webContents.send("neurobook:startup-stage", stage);
 }
 
-/** 启动 Manager Supervisor；先等 ready，完整回执复核在窗口打开后后台执行。 */
+/** 向本地启动页投影错误，不把错误信息写入 Product 或 Desktop Bridge。 */
+function setStartupError(message: string): void {
+    startupError = message;
+    if (!window || window.isDestroyed() || !isStartupPage(window.webContents.getURL())) return;
+    window.webContents.send("neurobook:startup-error", message);
+}
+
+/** 启动 Manager Supervisor；窗口启动页可见后等待 Manager 完成验证、迁移和 Product ready。 */
 async function launchProduct(config: DesktopConfig): Promise<RunningProduct> {
-    setSplashStage("检查 Product Runtime...");
+    setStartupStage("检查 Product Runtime...");
     const resolvedConfig = {...config, port: await selectPort(config.port)};
     const audit = await auditProductContract(resolvedConfig.imageRoot);
     if (audit.unsafeEntries.length > 0) throw new Error(`Electron spike 拒绝不安全 Product Contract：${audit.unsafeEntries.join(",")}`);
@@ -295,6 +306,10 @@ async function launchProduct(config: DesktopConfig): Promise<RunningProduct> {
         graceMs: 1_000,
         hardKillWaitMs: 5_000,
     });
+    diagnostics.info({
+        kind: "electron-manager-spawned",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+    });
     lease.stderr?.on("data", (chunk: Buffer) => diagnostics.error({
         kind: "electron-manager-stderr",
         message: chunk.toString().slice(0, 16 * 1024),
@@ -305,9 +320,9 @@ async function launchProduct(config: DesktopConfig): Promise<RunningProduct> {
         throw new Error("Electron Supervisor 缺少 NDJSON stdin/stdout pipe。 ");
     }
     const reader = createInterface({input: output, crlfDelay: Infinity});
-    setSplashStage("启动本地服务...");
+    setStartupStage("启动本地服务...");
     const ready = waitForSupervisor(reader, lease.completion, requestId, startupNonce, (error) => {
-        setSplashStage("Product 后台验证失败，正在关闭...");
+        setStartupStage("Product 后台验证失败，正在关闭...");
         void lease.terminate("startup-failure").catch(() => undefined);
         diagnostics.error({
             kind: "electron-background-verification-failure",
@@ -387,14 +402,29 @@ async function waitForSupervisor(
                         "stopping-product": "正在关闭本地服务...",
                         repairing: "正在修复 Product 回执...",
                     } as const;
-                    setSplashStage(stageLabels[event.stage] ?? "正在处理桌面启动阶段...");
+                    setStartupStage(stageLabels[event.stage] ?? "正在处理桌面启动阶段...");
+                    if (event.stage === "migration") {
+                        diagnostics.info({
+                            kind: "electron-migration-stage",
+                            elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+                        });
+                    } else if (event.stage === "starting-product") {
+                        diagnostics.info({
+                            kind: "electron-product-spawned",
+                            elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+                        });
+                    }
                 } else if (event.type === "ready") {
-                    setSplashStage("本地服务已就绪，正在打开 NeuroBook...");
+                    setStartupStage("本地服务已就绪，正在打开 NeuroBook...");
+                    diagnostics.info({
+                        kind: "electron-product-ready",
+                        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+                    });
                     if (event.startupNonce !== startupNonce) throw new Error("Supervisor ready nonce 与本次启动不一致。");
                     readyPort = Number(new URL(event.url).port);
                     readyVersion = event.version;
                 } else if (event.type === "verified" && event.verification === "full") {
-                    setSplashStage("Product 后台验证完成。");
+                    setStartupStage("Product 后台验证完成。");
                 } else if (event.type === "failure") {
                     const error = new Error(`Manager Supervisor 失败：${event.code} ${event.message}`);
                     if (settled) {
@@ -417,16 +447,22 @@ async function waitForSupervisor(
     });
 }
 
-function createSplash(): BrowserWindow {
-    const value = new BrowserWindow({width: 440, height: 260, frame: false, resizable: false, show: true, alwaysOnTop: true, webPreferences: {sandbox: true}});
-    const html = `<!doctype html><meta charset="utf-8"><body style="margin:0;background:#15171a;color:#eef2f4;font:16px sans-serif;display:grid;place-items:center"><main style="width:280px"><strong style="font-size:22px">NeuroBook</strong><p data-stage style="margin:18px 0 0;color:#b8c0c8">${splashStage}</p><div style="height:3px;background:#30363d;overflow:hidden"><i style="display:block;width:42%;height:100%;background:#6ea8fe;animation:load 1.2s ease-in-out infinite"></i></div></main><style>@keyframes load{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}</style></body>`;
-    void value.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
-    return value;
+/** 当前 Electron Envelope 自己携带的启动页；它不是 Product 页面，也不消费 Desktop Bridge。 */
+function startupPagePath(): string {
+    return resolve(import.meta.dirname, "startup.html");
+}
+
+function startupPageUrl(): string {
+    return pathToFileURL(startupPagePath()).href;
+}
+
+function isStartupPage(url: string): boolean {
+    return url === startupPageUrl();
 }
 
 /** 在启动失败时提供可重复的恢复入口，不把 Manager 修复逻辑复制到 Electron。 */
 async function repairProduct(config: DesktopConfig): Promise<void> {
-    setSplashStage("正在修复 Product 回执...");
+    setStartupStage("正在修复 Product 回执...");
     const requestId = randomBytes(16).toString("hex");
     const lease = spawnOwnedProcess({
         command: config.bun,
@@ -476,28 +512,38 @@ async function repairProduct(config: DesktopConfig): Promise<void> {
 
 /** 启动失败后让用户选择恢复动作；修复仍通过 Manager Supervisor 合同执行。 */
 async function recoverStartup(config: DesktopConfig, error: unknown): Promise<boolean> {
-    const message = error instanceof Error ? error.message : String(error);
-    const result = await dialog.showMessageBox({
-        type: "error",
-        title: "NeuroBook 启动失败",
-        message,
-        detail: "可以重试启动，或先让 NeuroBook Manager 修复当前 Product 回执。",
-        buttons: ["重试", "修复后重试", "打开日志", "退出"],
-        defaultId: 0,
-        cancelId: 3,
-    });
-    if (result.response === 2) {
-        await shell.openPath(join(config.stateRoot, "logs")).catch(() => undefined);
-        return recoverStartup(config, error);
-    }
-    if (result.response === 1) {
-        try {
-            await repairProduct(config);
-        } catch (repairError) {
-            return recoverStartup(config, repairError);
+    let failure = error;
+    while (true) {
+        const message = failure instanceof Error ? failure.message : String(failure);
+        setStartupError(message);
+        const action = await waitForStartupAction();
+        if (action === "quit") return false;
+        if (action === "open-logs") {
+            await shell.openPath(join(config.stateRoot, "logs")).catch(() => undefined);
+            continue;
         }
+        if (action === "repair") {
+            try {
+                await repairProduct(config);
+            } catch (repairError) {
+                failure = repairError;
+                continue;
+            }
+        }
+        startupError = "";
+        setStartupStage("重新启动本地服务...");
+        return true;
     }
-    return result.response === 0 || result.response === 1;
+}
+
+/** 只接受启动页自身发出的固定动作，不让 Product 页面获得恢复能力。 */
+function waitForStartupAction(): Promise<StartupAction> {
+    if (!window || window.isDestroyed() || !isStartupPage(window.webContents.getURL())) {
+        return Promise.resolve("quit");
+    }
+    return new Promise<StartupAction>((resolvePromise) => {
+        startupActionResolver = resolvePromise;
+    });
 }
 
 /** 将原生菜单和自绘标题栏统一投影到 Desktop Menu Contract。 */
@@ -604,6 +650,7 @@ function installTray(): void {
 function installNavigationGuards(): void {
     window?.webContents.setWindowOpenHandler(() => ({action: "deny"}));
     window?.webContents.on("will-navigate", (event, targetUrl) => {
+        if (isStartupPage(targetUrl)) return;
         const expected = running ? `http://127.0.0.1:${String(running.config.port)}` : remoteStatus?.origin;
         if (!expected || new URL(targetUrl).origin !== expected) event.preventDefault();
     });
@@ -692,6 +739,77 @@ async function flushWindowState(): Promise<void> {
     await windowStateWrite;
 }
 
+async function createInteractiveWindow(config: DesktopConfig): Promise<void> {
+    const savedWindowState = await loadWindowState(config.desktopRoot);
+    window = new BrowserWindow({
+        x: savedWindowState.x,
+        y: savedWindowState.y,
+        width: savedWindowState.width,
+        height: savedWindowState.height,
+        show: false,
+        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
+        ...(process.platform === "win32" ? {titleBarOverlay: {color: "#f4ecd8", symbolColor: "#5b4e3d", height: 36}} : {}),
+        webPreferences: {preload: resolve(import.meta.dirname, "preload.cjs"), nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true},
+    });
+    installNavigationGuards();
+    window.webContents.on("preload-error", (_event, preloadPath, error) => {
+        diagnostics.error({kind: "electron-preload-error", preloadPath, message: error.message});
+    });
+    window.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+        if (isMainFrame) diagnostics.error({kind: "electron-load-error", errorCode, errorDescription, validatedURL});
+    });
+    window.webContents.on("render-process-gone", (_event, details) => {
+        diagnostics.error({kind: "electron-render-process-gone", reason: details.reason, exitCode: details.exitCode});
+    });
+    window.webContents.on("unresponsive", () => {
+        diagnostics.error({kind: "electron-render-unresponsive"});
+    });
+    window.on("close", (event) => {
+        queueWindowStateSave(config.desktopRoot);
+        if (allowWindowClose) return;
+        if (desktopSettings.closeBehavior === "quit") {
+            event.preventDefault();
+            void closeApplication();
+            return;
+        }
+        if (desktopSettings.closeBehavior === "tray") {
+            event.preventDefault();
+            if (desktopSettings.trayEnabled) window?.hide();
+            else void closeApplication();
+            return;
+        }
+        if (desktopSettings.closeBehavior === "ask" && desktopSettings.trayEnabled) {
+            event.preventDefault();
+            void confirmCloseToTray();
+            return;
+        }
+        event.preventDefault();
+        void closeApplication();
+    });
+    const saveWindowState = () => queueWindowStateSave(config.desktopRoot);
+    window.on("move", saveWindowState);
+    window.on("resize", saveWindowState);
+    window.on("maximize", saveWindowState);
+    window.on("unmaximize", saveWindowState);
+    window.on("enter-full-screen", saveWindowState);
+    window.on("leave-full-screen", saveWindowState);
+    window.on("closed", () => { queueWindowStateSave(config.desktopRoot); window = null; void closeApplication(); });
+    if (savedWindowState.maximized) window.maximize();
+    if (savedWindowState.fullscreen) window.setFullScreen(true);
+
+    await window.loadFile(startupPagePath());
+    applyDesktopSettings();
+    window.show();
+    window.focus();
+    window.moveTop();
+    diagnostics.info({
+        kind: "electron-startup-page-visible",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+    });
+    window.webContents.send("neurobook:startup-stage", startupStage);
+    if (startupError) window.webContents.send("neurobook:startup-error", startupError);
+}
+
 async function main(): Promise<void> {
     const config = readConfig();
     diagnostics.setLogRoot(join(config.stateRoot, "logs"));
@@ -710,8 +828,16 @@ async function main(): Promise<void> {
         window?.webContents.send("neurobook:second-instance", {args, cwd: workingDirectory.slice(0, 4096)});
     });
     await app.whenReady();
-    if (!headless) splash = createSplash();
+    diagnostics.info({
+        kind: "electron-app-ready",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+    });
     await loadDesktopSettings(config.desktopRoot);
+    diagnostics.info({
+        kind: "electron-settings-loaded",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+    });
+    if (!headless) await createInteractiveWindow(config);
     ipcMain.handle("t140:status", (event) => {
         assertTrustedFrame(event);
         return running ? {
@@ -756,19 +882,30 @@ async function main(): Promise<void> {
         if (!DESKTOP_MENU_COMMAND_IDS.includes(command as DesktopMenuCommandId)) throw new Error("Desktop Menu command 不受支持。");
         runElectronMenuCommand(command as DesktopMenuCommandId);
     });
-    installMenu();
-    if (config.remoteUrl) {
-        setSplashStage("检查远端 Desktop capability...");
-        remoteStatus = await probeRemote(config.remoteUrl);
-    } else {
-        while (!running) {
-            try {
-                running = await launchProduct(config);
-            } catch (error) {
-                if (headless || !await recoverStartup(config, error)) throw error;
-            }
+    ipcMain.on("t140:startup-action", (event, action: string) => {
+        assertStartupFrame(event);
+        if (action !== "retry" && action !== "repair" && action !== "open-logs" && action !== "quit") {
+            throw new Error("启动恢复动作不受支持。");
         }
-    }
+        startupActionResolver?.(action);
+        startupActionResolver = null;
+    });
+    installMenu();
+    const localLaunch = config.remoteUrl
+        ? null
+        : (async (): Promise<void> => {
+            while (!running) {
+                try {
+                    running = await launchProduct(config);
+                } catch (error) {
+                    if (headless || !await recoverStartup(config, error)) throw error;
+                }
+            }
+        })();
+    if (config.remoteUrl) {
+        setStartupStage("检查远端 Desktop capability...");
+        remoteStatus = await probeRemote(config.remoteUrl);
+    } else if (localLaunch) await localLaunch;
     if (headless) {
         const forceShutdown = process.argv.includes("--t140-force");
         diagnostics.info(config.remoteUrl
@@ -793,75 +930,25 @@ async function main(): Promise<void> {
         }));
         return;
     }
-    const savedWindowState = await loadWindowState(config.desktopRoot);
-    window = new BrowserWindow({
-        x: savedWindowState.x,
-        y: savedWindowState.y,
-        width: savedWindowState.width,
-        height: savedWindowState.height,
-        show: false,
-        titleBarStyle: process.platform === "darwin" ? "hiddenInset" : "hidden",
-        ...(process.platform === "win32" ? {titleBarOverlay: {color: "#f4ecd8", symbolColor: "#5b4e3d", height: 36}} : {}),
-        webPreferences: {preload: resolve(import.meta.dirname, "preload.cjs"), nodeIntegration: false, contextIsolation: true, sandbox: true, webSecurity: true},
-    });
-    installNavigationGuards();
-    window.webContents.on("preload-error", (_event, preloadPath, error) => {
-        diagnostics.error({kind: "electron-preload-error", preloadPath, message: error.message});
-    });
-    window.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
-        if (isMainFrame) diagnostics.error({kind: "electron-load-error", errorCode, errorDescription, validatedURL});
-    });
-    window.webContents.on("render-process-gone", (_event, details) => {
-        diagnostics.error({kind: "electron-render-process-gone", reason: details.reason, exitCode: details.exitCode});
-    });
-    window.webContents.on("unresponsive", () => {
-        diagnostics.error({kind: "electron-render-unresponsive"});
+    if (!window) throw new Error("Electron 主窗口未创建。");
+    diagnostics.info({
+        kind: "electron-renderer-load-start",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
     });
     await loadWindowUrl(config.remoteUrl ?? `http://127.0.0.1:${String(running?.config.port)}/`);
     const bridgeReady = await window.webContents.executeJavaScript("Boolean(window.neuroBookDesktop)", true);
     if (!bridgeReady) throw new Error("Electron Desktop Bridge 未注入，无法安全启动桌面页面。");
-    splash?.close();
-    splash = null;
+    diagnostics.info({
+        kind: "electron-bridge-ready",
+        elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
+    });
     applyDesktopSettings();
-    window.show();
     window.focus();
     window.moveTop();
     diagnostics.info({
         kind: "electron-window-ready",
         elapsedMs: Math.round((performance.now() - startupStartedAt) * 100) / 100,
     });
-    window.on("close", (event) => {
-        queueWindowStateSave(config.desktopRoot);
-        if (allowWindowClose) return;
-        if (desktopSettings.closeBehavior === "quit") {
-            event.preventDefault();
-            void closeApplication();
-            return;
-        }
-        if (desktopSettings.closeBehavior === "tray") {
-            event.preventDefault();
-            if (desktopSettings.trayEnabled) window?.hide();
-            else void closeApplication();
-            return;
-        }
-        if (desktopSettings.closeBehavior === "ask" && desktopSettings.trayEnabled) {
-            event.preventDefault();
-            void confirmCloseToTray();
-            return;
-        }
-        event.preventDefault();
-        void closeApplication();
-    });
-    const saveWindowState = () => queueWindowStateSave(config.desktopRoot);
-    window.on("move", saveWindowState);
-    window.on("resize", saveWindowState);
-    window.on("maximize", saveWindowState);
-    window.on("unmaximize", saveWindowState);
-    window.on("enter-full-screen", saveWindowState);
-    window.on("leave-full-screen", saveWindowState);
-    window.on("closed", () => { queueWindowStateSave(config.desktopRoot); window = null; void closeApplication(); });
-    if (savedWindowState.maximized) window.maximize();
-    if (savedWindowState.fullscreen) window.setFullScreen(true);
 }
 
 /** 首次关闭询问用户；选择可保存到 Desktop Local Root。 */
@@ -889,6 +976,12 @@ function assertTrustedFrame(event: Electron.IpcMainEvent | Electron.IpcMainInvok
     const frameUrl = event.senderFrame?.url;
     const expected = running ? `http://127.0.0.1:${String(running.config.port)}` : remoteStatus?.origin ?? null;
     if (!expected || !frameUrl || new URL(frameUrl).origin !== expected) throw new Error("Desktop Bridge 拒绝非当前 Product origin 的请求。");
+}
+
+function assertStartupFrame(event: Electron.IpcMainEvent): void {
+    if (!event.senderFrame || !isStartupPage(event.senderFrame.url)) {
+        throw new Error("启动恢复动作只允许由本地启动页发起。");
+    }
 }
 
 async function loadDesktopSettings(root: string): Promise<void> {
@@ -925,7 +1018,7 @@ void main().catch(async (error: unknown) => {
         message: error instanceof Error ? error.message : String(error),
         ...(error instanceof Error && error.stack ? {stack: error.stack} : {}),
     });
-    splash?.close();
+    startupActionResolver = null;
     process.exitCode = 1;
     await diagnostics.flush();
     app.quit();
