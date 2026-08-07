@@ -2,39 +2,55 @@
 
 ## 目标
 
-在不改变 Product、Manager、State Root、Cache Root 和 shutdown 所有权的前提下，改善 Electron 的启动感知速度和桌面工作区信息层级。
+在不改变 Product、Manager、State Root、Cache Root 和 shutdown 所有权的前提下，改善 Electron 的启动感知速度和桌面工作区信息层级。本轮只收口 Electron；Tauri 保留既有合同和 headless 门禁，不再做可见 UI。
 
-## 当前实现
+## 实现结果
 
-- 主窗口启动后先加载 Envelope 自带的本地启动页，不再等待 Product ready 才创建窗口。
-- 启动页显示固定阶段和恢复动作：重试、修复后重试、打开日志、退出。
-- 正式页面仍必须通过 Manager Supervisor、动态端口、startup nonce 和 Desktop Bridge v2 验证。
-- Dialog/ DialogWindow 使用紧凑 Full/XL 尺寸、暗色遮罩、无 blur 和统一 surface 标记。
-- Agent 面板保持右侧可调整布局，小窗口改为覆盖式面板。
-- Markdown Studio 欢迎页压缩为主操作、快速操作和最近文件三层，不再显示 Agent 模式入口或重复项目入口。
+- 主窗口先加载 Envelope 自带的本地启动页，Product 继续由 Manager Supervisor 在后台验证、迁移和启动。
+- 顶部保留一个 36px Desktop Workbench 标题栏；书架、Project 切换、搜索占位和 Agent 面板入口都在同一条标题栏内。
+- Activity Bar、右侧 Agent 面板、Dialog/ DialogWindow 和 Markdown Studio 欢迎页完成本轮布局收口。
+- Dialog Full/XL 使用暗色遮罩、无 blur、统一 surface 和阴影；欢迎页在 1280×720 常见尺寸下无需滚动。
 
-## 验证
+## Source / Product / Portable
 
-- Electron bundle：通过。
+- Source revision：`ab5b09a082e18e996af92079b21e9a1810f9d6dc`，`dirty=false`。
+- Product Build A/B：3,242 files、134,535,097 bytes，imageId `sha256:05bf9a72e1033ba2f5a5cda7b530ebf1b53a6fbc40c3519e5d10de3f3a734a56`。
+- A/B 的 tree digest、shape digest 和 3,242 个 payload 文件逐字节一致；仅 `createdAt` 与 ready marker 摘要属于允许的控制字段差异。
+- Electron Portable E1/E2：ZIP 389,602,174 bytes，SHA-256 `sha256:1317c44fd971dca1245d37bec8c801d5e03c2404ea162d93173b20c7cb31c269`；固定输出逐字节一致。
+- Portable payload：9,622 files、986,457,862 bytes；Bun 1.3.14、Electron 43.2.0、Tool Pack 6,293 files / 387,904,585 bytes。
+
+详细摘要见：
+
+- [Electron startup profile](evidence/electron-startup-profile.json)
+- [Electron Portable acceptance](evidence/electron-portable-acceptance.json)
+
+## 启动统计
+
+定义：
+
+- cold：Electron 和 Product 完全退出后重新启动，运行间隔 1 秒。
+- warm：上一轮 graceful shutdown 完成后立即启动。
+
+| 指标 | cold 平均 | warm 平均 |
+| --- | ---: | ---: |
+| 启动页可见 | 212.84 ms | 237.66 ms |
+| Product ready | 4,618.96 ms | 5,173.15 ms |
+| Desktop Bridge ready | 4,793.71 ms | 5,369.37 ms |
+| 正式窗口 ready | 4,794.97 ms | 5,370.92 ms |
+
+10 次可见运行全部退出码为 0，shutdown 结果均为 `graceful`。本样本中 warm 没有稳定收益，说明主要耗时仍在 Product 启动和端口 ready；没有在 Electron 壳中复制 migration 或绕过 Manager，也没有立即新开 Product Runtime 优化任务。
+
+## 自动化与仓库外验收
+
 - Desktop Contract：8 files / 31 tests passed。
-- 根 typecheck：通过。
 - 相关前端测试：3 files / 10 tests passed。
-- 仓库外 Electron Headless：通过，Product migration、动态端口、graceful shutdown 均未回归。
-- 真实 Electron CDP（既有 verified Product fixture）：
-  - 启动页可见：599.60 ms；
-  - Product ready：7,491.39 ms；
-  - Desktop Bridge ready：7,700.73 ms；
-  - 标题栏：y=0、height=35.9976 px；
-  - 内容起点：y=35.9976 px；
-  - File → Quit：进程与 CDP 端口收口。
-- Source Dev Workbench browser smoke 已进入书架页并保存截图；在复用既有 Portable State Root 的 Project 页面等待 `Files` 解锁时超时，未把该次运行记为完整通过。原因和当前 Product/State fixture 不匹配有关，尚未用本轮 UI 修改后的 clean Product 重跑。
+- 根 typecheck、Electron bundle、Headless smoke：通过。
+- Product Runtime Image self-verifier：通过，imageId 与 A/B 一致。
+- 仓库外真实 Electron CDP：标题栏 y=0、高度 36px；页面从 y=36 开始；Activity Bar 48px；欢迎页无需滚动；Agent 面板打开并可调整宽度；Dialog 1120×640、遮罩 `rgba(0, 0, 0, 0.5)`、`backdrop-filter: none`、阴影存在；Project 切换通过；File → Quit graceful。
+- 可见运行结束后 Electron/Product 进程、CDP 端口和 Product 端口均收口。
 
-上述 CDP 运行使用既有 Product image `sha256:abeaf860cc54ef39a46861414ba31a4124ae902016842f3ba74ff64a6f3add2c`，不能替代本轮 UI 修改后的 clean Product Build A/B 或正式 Portable 基线。
+## 未验证与后续
 
-## 未完成
-
-- 本轮 UI 修改后的 clean Product Build A/B 和新 Electron Portable 组包。
-- 使用隔离、当前合同匹配的 State Root 重跑完整 Workbench browser smoke。
-- 五次冷启动与五次 warm start 的稳定统计。
-- Agent Jobs/Session、WebSocket、Monaco、TipTap、剪贴板、下载和文件对话框的真实包验收。
-- 签名安装器、updater、WebView2 分发和 Tauri 可见 UI。
+- Windows 原生拖动、最大化、Snap Layout 和系统托盘本轮没有标记为通过：Computer Use 需要 app approval，而当前执行上下文没有可用的 elicitation；直接 Win32 探针也无法把后台窗口置前。
+- Monaco、TipTap、SSE/WebSocket、剪贴板、下载和文件对话框未在本轮重新跑；相关既有证据仍以 Task 143 为准。
+- 签名安装器、updater、WebView2 Runtime Pack、macOS 包、Docker/B/S 全矩阵和最终 Electron/Tauri 选型不属于本轮。

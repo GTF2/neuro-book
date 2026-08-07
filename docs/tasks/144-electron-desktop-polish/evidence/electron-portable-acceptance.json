@@ -1,0 +1,72 @@
+{
+    "schema": "nbook.task144.electron-portable-acceptance/v1",
+    "capturedAt": "2026-08-07T16:08:04.0085579Z",
+    "source": {
+        "revision": "ab5b09a082e18e996af92079b21e9a1810f9d6dc",
+        "dirty": false
+    },
+    "product": {
+        "imageId": "sha256:05bf9a72e1033ba2f5a5cda7b530ebf1b53a6fbc40c3519e5d10de3f3a734a56",
+        "contract": "nbook.product-runtime-contract/v5",
+        "payload": {
+            "files": 3242,
+            "bytes": 134535097,
+            "treeDigest": "sha256:51e5108f83839a2c4ed83da2733b4d9b29960d7a957c5003073d972d3340ca6b",
+            "shapeDigest": "sha256:c7ed1113f39171f112823a4100e0ff19c9cbcd6807328d91b0b82ead71cfa755"
+        },
+        "selfVerifier": "passed"
+    },
+    "portable": {
+        "archive": {
+            "path": "neuro-book-electron-portable-win-x64.zip",
+            "bytes": 389602174,
+            "sha256": "sha256:1317c44fd971dca1245d37bec8c801d5e03c2404ea162d93173b20c7cb31c269"
+        },
+        "rebuild": {
+            "batches": ["E1", "E2"],
+            "fixedOutputsByteIdentical": true
+        },
+        "payload": {
+            "files": 9622,
+            "bytes": 986457862,
+            "digest": "sha256:fa9c4de8c0ac3fa3ce272b9c837532147f02e332a4f8ef4039412c34a61848dc"
+        },
+        "runtime": {
+            "bun": "1.3.14",
+            "electron": "43.2.0",
+            "toolPackFiles": 6293,
+            "toolPackBytes": 387904585
+        }
+    },
+    "cdp": {
+        "titleBar": {"x": 0, "y": 0, "width": 1280, "height": 36},
+        "pageShell": {"x": 0, "y": 36, "width": 1280, "height": 804},
+        "activityBar": {"x": 0, "y": 36, "width": 48, "height": 804},
+        "welcome": {"clientHeight": 767, "scrollHeight": 767, "scrollingRequired": false},
+        "projectSwitcher": "passed",
+        "agentPanel": {
+            "opened": true,
+            "initialWidth": 468,
+            "resizedWidth": 536
+        },
+        "dialog": {
+            "surface": {"x": 80, "y": 100, "width": 1120, "height": 640},
+            "overlayBackground": "rgba(0, 0, 0, 0.5)",
+            "backdropFilter": "none",
+            "shadow": "present"
+        },
+        "fileQuit": "graceful"
+    },
+    "cleanup": {
+        "electronProcesses": 0,
+        "productProcesses": 0,
+        "cdpListeners": 0,
+        "productListeners": 0,
+        "stateRootHandles": "no retained handles observed",
+        "stateRootMove": "not rerun in Task 144; prior Task 143 evidence remains separate"
+    },
+    "limitations": [
+        "Native drag, maximize, Snap Layout, and tray were not marked as passed because Computer Use app approval was unavailable in this execution context.",
+        "This acceptance used an extracted Windows Portable outside the repository with no ancestor node_modules for the runtime process; macOS and signed installation were not part of this task."
+    ]
+}
