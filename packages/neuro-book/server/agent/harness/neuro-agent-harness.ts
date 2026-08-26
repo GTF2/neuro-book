@@ -3842,7 +3842,7 @@ export class NeuroAgentHarness {
         return null;
     }
 
-    /** waiting abort 的 partial lifecycle repair 必须继续经过唯一 SessionWriteExecutor 队列。 */
+    /** abort 的 partial lifecycle repair 必须继续经过唯一 SessionWriteExecutor 队列。 */
     private async ensureAutoLeaf(
         sessionId: number,
         targetEntryId: SessionEntryId,
@@ -6807,20 +6807,25 @@ export class NeuroAgentHarness {
             const isAbortedTerminal = input.nextState === "finished"
                 && input.lifecycleStatus === "aborted"
                 && input.pauseReason === "aborted";
-            // lifecycle append 可能先于后续 queue side effect 成功；每次重试都读取 durable history，不能依赖内存提交标记。
-            let abortedLifecycleExists = false;
+            // lifecycle 或其 auto-leaf append 可能先于后续 queue side effect 部分成功；每次重试都读取 durable history，不能依赖内存提交标记。
+            let abortedLifecycle: Extract<SessionEntry, {type: "invocation_lifecycle"}> | undefined;
+            let abortedSnapshot: SessionSnapshot | undefined;
             if (isAbortedTerminal) {
                 const snapshot = await this.repo.readSession(input.sessionId);
-                abortedLifecycleExists = snapshot.entries.some((entry) => entry.type === "invocation_lifecycle"
+                abortedSnapshot = snapshot;
+                abortedLifecycle = snapshot.entries.find((entry): entry is Extract<SessionEntry, {type: "invocation_lifecycle"}> => entry.type === "invocation_lifecycle"
                     && entry.invocationId === input.invocationId
                     && entry.status === "aborted");
             }
-            if (!abortedLifecycleExists) {
+            if (!abortedLifecycle) {
                 if (isAbortedTerminal) {
                     await this.runAbortDurabilityWrite(() => this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo));
                 } else {
                     await this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo);
                 }
+            }
+            if (isAbortedTerminal && abortedLifecycle && abortedSnapshot?.leafId !== abortedLifecycle.id) {
+                await this.runAbortDurabilityWrite(() => this.ensureAutoLeaf(input.sessionId, abortedLifecycle.id, input.invocationId));
             }
             if (input.nextState === "waiting") {
                 active.status = "waiting";

@@ -107,7 +107,7 @@ SSE 与 live state：
 | Idle | abort | Idle | 仅非归档且无匹配 active 时 HTTP 200 idle；无 durable lifecycle、resolution、queue 或终态事件副作用；归档状态始终先返回 409。 |
 | Waiting User | 合作 abort | Idle | 写一次 aborted resolution 与 aborted lifecycle；按 `invocation_aborted -> session_entry -> session_state_changed -> agent_end(aborted)` 发布；按 `clearQueue` 处理 follow-up。 |
 | Running | abort admission | Aborting | 在 mutation 边界内 claim invocation、进入 aborting、触发 AbortSignal；运行锁外等待最多 `150ms` grace。 |
-| Aborting | 合作 terminal | Idle | 在 mutation 临界区对精确 invocation 读取 durable snapshot；不存在 `aborted` lifecycle 时追加唯一一条，随后按 `clearQueue` 完成队列 side effect（`false` 为 follow-up pause）。若 lifecycle 已写入而后续 pause 失败，重试跳过 lifecycle append 并继续 pause/finish；成功后释放 ownership，按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口。 |
+| Aborting | 合作 terminal | Idle | 在 mutation 临界区对精确 invocation 读取 durable snapshot；不存在 `aborted` lifecycle 时追加唯一一条；若 lifecycle 已部分落盘但其 auto-leaf append 失败，重试先经同一 `SessionWriteExecutor` 幂等补齐 active leaf，再按 `clearQueue` 完成队列 side effect（`false` 为 follow-up pause）；已存在 lifecycle 时跳过重复 append；成功后释放 ownership，按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口。 |
 | Aborting | grace 到期且仍拥有 invocation | Idle | forced lifecycle 已被同一 write queue 接受后释放 ownership并发布 `agent_end(aborted)`；物理 write/after-write 完成后发布 state，迟到运行结果被 fence 丢弃。 |
 | Aborting 且 forced plan 可重试 | 重复 abort | Aborting/Idle | 重试同一 plan；同步接受返回 aborted，不重复 grace、resolution、tombstone、lifecycle 或 terminal event；同步失败保持 aborting 并返回 503。 |
 | Aborting 且无可重试 forced plan | 重复 abort | Idle | 幂等返回 idle，不重复写 lifecycle 或事件。 |
@@ -120,10 +120,10 @@ SSE 与 live state：
 
 ## 副作用与数据
 
-- Invocation lifecycle 在历史中最多追加一个匹配 `invocationId` 的 `status: "aborted"` entry；Running cooperative terminal 的 `clearQueue=false` 在 mutation 临界区按 durable snapshot 幂等提交：首次追加 lifecycle，后续 pause 失败重试跳过 lifecycle 并继续 queue pause/finish。没有显式 `reason` 时不写默认英文错误正文。
+- Invocation lifecycle 在历史中最多追加一个匹配 `invocationId` 的 `status: "aborted"` entry；Running cooperative terminal 的 `clearQueue=false` 在 mutation 临界区按 durable snapshot 幂等提交：首次追加 lifecycle，后续 pause 失败重试跳过 lifecycle append 并继续 queue pause/finish；若 lifecycle 已落盘但 auto-leaf 未落盘，重试先补齐唯一 active auto leaf，再继续终态提交。没有显式 `reason` 时不写默认英文错误正文。
 - Waiting abort 必要时追加一个标记取消的 tool/user resolution；Running forced-abort 不生成 Provider 错误消息或伪造模型结果。
 - abort admission 移除 steerable 标记；terminal 清空残留 steer。`clearQueue: true` 清空 follow-up；`false` 保留 follow-up 并以 `pausedBy={invocationId, reason: "aborted"}` 标记。steer 不随 `clearQueue` 分支保留，不写 history，也不发 `steered`。
-- 唯一 forced lifecycle 以及 waiting partial lifecycle 的 `ensureAutoLeaf` 修复必须经同一个 SessionWriteExecutor 的 per-session write queue；不能直接调用 repository、建立第二把锁或写 projection 旁路。
+- 唯一 forced lifecycle，以及 cooperative/waiting partial lifecycle 的 `ensureAutoLeaf` 修复必须经同一个 SessionWriteExecutor 的 per-session write queue；不能直接调用 repository、建立第二把锁或写 projection 旁路。
 - `ensureAutoLeaf` 是幂等修复：目标已是 active leaf 时不追加 entry 或公开事件；目标缺少 active leaf 时只追加唯一 auto leaf。
 - abort 只 append 唯一 `aborted` lifecycle；`interrupted` 仅是重启时对未闭合 start 的 recovery 投影或 partial message/run failure 元数据，不是在线 abort terminal。
 - forced plan 只能包含单 Session、固定 cause `lifecycle.aborted.force`、单个非 projection `invocation_lifecycle(status: "aborted")`，且 entry invocationId 必须匹配授权 invocation。
@@ -141,7 +141,7 @@ SSE 与 live state：
 abort-owned durable write 未完成时：
 
 - Waiting 的 queue projection、resolution、lifecycle 或 auto-leaf write，以及 Running/Aborting 的 queue side effect 未被接受时，统一返回 503 `session_abort_durability_unavailable`、`retryable: true`；只包装实际 abort-owned write，不误标 projection/read/profile/authorization 错误。
-- 可能已有 queue projection、resolution 或 lifecycle 的部分持久化；重试必须读取 durable history，精确匹配的 `aborted` lifecycle 已存在时跳过重复 append，继续补齐 queue side effect 和 finish；ownership 不释放，已成功写入的内容不逆向删除。
+- 可能已有 queue projection、resolution 或 lifecycle 的部分持久化；重试必须读取 durable history，精确匹配的 `aborted` lifecycle 已存在时跳过重复 append；若其 auto-leaf 未落盘，先经同一 write queue 补齐 active leaf，再继续补齐 queue side effect 和 finish；ownership 不释放，已成功写入的内容不逆向删除。
 
 forced 已入队但 physical append、live-state publish 或 after-write 阶段失败时：
 
@@ -168,7 +168,7 @@ forced 已入队但 physical append、live-state publish 或 after-write 阶段�
 3. Given Running cooperative invocation，When POST abort，Then 150ms 内合作收口，事件顺序为 `invocation_aborted -> agent_end(aborted) -> session_state_changed`，只有一个 aborted terminal，队列按 clearQueue 分支呈现。
 4. Given provider/tool/settleRun 忽略 signal，When POST abort，Then 300ms 内 HTTP 和原 invocation 有界返回，activeInvocation 为 null，迟到结果不可见，后续 start 排在旧 aborted append 后。
 5. Given forced enqueue 同步失败，When HTTP POST abort，Then HTTP 503 retryable、active ownership 与 aborting 状态保留，没有 agent_end 或 durable aborted 伪造；当 external signal 或 Project-close 触发同一失败时，原 invoke gate 返回 retryable error result 且不设置 `aborted`，显式重试可继续收口。
-6. Given abort-owned queue/terminal write 失败，When retry，Then HTTP 503 使用稳定领域错误，Waiting rollback 或部分持久化语义保持，重试完成唯一 resolution/lifecycle/leaf。
+6. Given abort-owned queue/terminal write 失败（包括 lifecycle 的第二个 auto-leaf append），When retry，Then HTTP 503 使用稳定领域错误，Waiting rollback 或部分持久化语义保持，重试完成唯一 resolution/lifecycle/leaf。
 7. Given forced lifecycle 物理写失败，When recovery 或下一次 Session write 运行，Then 同一个 write queue 幂等重放，已有 aborted entry 不重复追加但仍完成 leaf/observer/live-state repair，恢复失败阻止后续 start。
 8. Given duplicate/concurrent abort，When repeated POST arrives，Then 至少一路返回 aborted；其它结果只可能是 aborted 或 idle，且只有一个 terminal lifecycle、resolution、invocation_aborted 和终态事件生效。
 9. Given archived Session，When POST abort with or without active invocation，Then HTTP 409 `session_abort_not_allowed`，不写 lifecycle。
@@ -181,7 +181,7 @@ forced 已入队但 physical append、live-state publish 或 after-write 阶段�
 - `bun run docs:check` 与 `bun run governance:check`
 
 ## 实现合同
-已实现。当前实现由 `NeuroAgentHarness.abortInvocationMatching()` 负责 mutation admission、waiting 合作收口和 running/forced ownership fence；`SessionWriteExecutor` 负责唯一 forced lifecycle 与 waiting partial `ensureAutoLeaf` repair 的 per-session write queue、严格 plan/authorization 校验、窄化事件抑制与 pending recovery；HTTP route/helper 负责 400/404/409/503 稳定边界。测试覆盖 waiting resolution/lifecycle/leaf 故障重试、forced enqueue/physical/after-write/live-state 故障、重复/迟到结果、队列语义、SSE 顺序与后续 start ordering。
+已实现。当前实现由 `NeuroAgentHarness.abortInvocationMatching()` 负责 mutation admission、waiting 合作收口和 running/forced ownership fence；`SessionWriteExecutor` 负责唯一 forced lifecycle 与 cooperative/waiting partial `ensureAutoLeaf` repair 的 per-session write queue、严格 plan/authorization 校验、窄化事件抑制与 pending recovery；HTTP route/helper 负责 400/404/409/503 稳定边界。测试覆盖 waiting resolution/lifecycle/leaf 故障重试、cooperative lifecycle/auto-leaf 部分写入、forced enqueue/physical/after-write/live-state 故障、重复/迟到结果、队列语义、SSE 顺序与后续 start ordering。
 
 - [Task 00159：Agent abort mutation contract](../../../.agents/tasks/00159-agent-abort-mutation-contract/README.md)
 - [Task 18 Harness 黑盒合同](../../../packages/neuro-book/.agents/tasks/18-agent-runtime-pipeline-hooks/HARNESS-BLACK-BOX-CONTRACT.md)

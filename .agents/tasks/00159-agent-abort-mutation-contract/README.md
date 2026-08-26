@@ -6,7 +6,7 @@ worktreeId: .worktree/t159-agent-abort-contract
 branchId: feat/t159-agent-abort-contract
 status: completed
 createdAt: 2026-08-25T09:56:19Z
-updatedAt: 2026-08-26T19:29:54Z
+updatedAt: 2026-08-26T20:12:50Z
 agentWorkflow:
   profile: nbook.agent-skills/v1
   kind: bug
@@ -34,7 +34,7 @@ agentWorkflow:
 
 ## 状态
 
-**Completed（PR #216 review remediation）。** 首轮交付已闭合 Agent Session abort 公开合同、方案 B forced fence、waiting retry/recovery、HTTP boundary、SSE ordering 与黑盒证据，并以 commit `88390ba4` 创建 PR #216。本轮先修复 internal-signal durability failure 与合同措辞二义，再复现并修复 running cooperative `clearQueue=false` 终态 queue pause 第二步失败导致重复 `aborted` lifecycle 的窗口，最后补上 durable snapshot 幂等 retry：若 lifecycle 已部分落盘，重试跳过重复 append 但继续 pause/finish；四份公开合同、Task 18 迁移登记、实现和行为测试均已同步。最终证据见 [walkthrough 007](walkthroughs/007-tasker-2026-08-26_19-29-durable-retry-idempotency.md)，前一轮终态失败记录见 [walkthrough 006](walkthroughs/006-tasker-2026-08-26_17-47-cooperative-terminal-failure.md)，更早 remediation 见 [walkthrough 005](walkthroughs/005-tasker-2026-08-26_14-44-pr216-review-remediation.md)。
+**Completed（PR #216 review remediation）。** 首轮交付已闭合 Agent Session abort 公开合同、方案 B forced fence、waiting retry/recovery、HTTP boundary、SSE ordering 与黑盒证据，并以 commit `88390ba4` 创建 PR #216。本轮先修复 internal-signal durability failure 与合同措辞二义，再复现并修复 running cooperative `clearQueue=false` 终态 queue pause 第二步失败导致重复 `aborted` lifecycle 的窗口，最后补上 durable snapshot 幂等 retry 及其 auto-leaf repair：若 lifecycle 已落盘但后续 auto-leaf append 失败，重试读取 durable snapshot，经同一 `SessionWriteExecutor` 补齐缺失 active leaf，跳过重复 lifecycle 并继续 pause/finish；四份公开合同、Task 18 迁移登记、实现和行为测试均已同步。最终证据见 [walkthrough 008](walkthroughs/008-tasker-2026-08-26_20-12-cooperative-auto-leaf-repair.md)，前一轮 durable snapshot 记录见 [walkthrough 007](walkthroughs/007-tasker-2026-08-26_19-29-durable-retry-idempotency.md)，终态失败记录见 [walkthrough 006](walkthroughs/006-tasker-2026-08-26_17-47-cooperative-terminal-failure.md)，更早 remediation 见 [walkthrough 005](walkthroughs/005-tasker-2026-08-26_14-44-pr216-review-remediation.md)。
 
 ## 背景与目标
 
@@ -82,23 +82,23 @@ Task 147 的 bounded forced-cancellation 实现已经合入当前主线，但取
 - [x] 当前 Reference、Spec、Task 18 黑盒合同、代码和测试对 abort 边界一致；forced control-plane 例外与 write queue recovery 已有 ADR 解释。
 - [x] 黑盒合同覆盖 abort endpoint：合作取消与 forced-abort 均有输入、返回、生命周期顺序、终态事件、`activeInvocation: null`、重复取消、迟到结果和 durable recovery 断言。
 - [x] 后续 invocation 的 `start` 不先于旧 invocation 唯一 `aborted` durable lifecycle；forced-abort 授权缺失或 plan 非法时 fail closed。
-- [x] running cooperative `clearQueue=false` 终态在 mutation 临界区按 durable snapshot 幂等提交 lifecycle；注入第二次 pause 失败时 snapshot 已有且仅有一条匹配 `aborted`，重试跳过 lifecycle 并完成 paused queue，active invocation 为 null。
-- [x] `focused-test`、`regression-test`、`typecheck`、`docs-check`、`governance-check` 和 `diff-check` 全部通过；最新 durable snapshot 幂等证据记录在 [walkthrough 007](walkthroughs/007-tasker-2026-08-26_19-29-durable-retry-idempotency.md)。
+- [x] running cooperative `clearQueue=false` 终态在 mutation 临界区按 durable snapshot 幂等提交 lifecycle；注入第二次 pause 失败时 snapshot 已有且仅有一条匹配 `aborted`，重试跳过 lifecycle 并完成 paused queue；另注入 lifecycle 的第二个物理 append（auto-leaf）失败，snapshot 观察到 lifecycle 已存在且对应 leaf 缺失，重试经同一 write queue 补齐唯一 active leaf，最终 activeInvocation 为 `null`。
+- [x] `focused-test`、`regression-test`、`typecheck`、`docs-check`、`governance-check` 和 `diff-check` 全部通过；最新 cooperative auto-leaf repair 证据记录在 [walkthrough 008](walkthroughs/008-tasker-2026-08-26_20-12-cooperative-auto-leaf-repair.md)。
 
 ## 当前基线与证据
 
 - 实现 worktree：`.worktree/t159-agent-abort-contract`；分支：`feat/t159-agent-abort-contract`。
 - 本轮基于首轮交付 commit `88390ba44f6f78eb60789164027f2515eaaa1e8d`，未合并或 rebase 远端 `master`。
-- 本轮唯一 scope 已闭合：internal-signal abort gate 有界失败、abort-owned durable error 归一化、合作终态 durable snapshot 幂等提交，以及四份合同的 admission、Aborting retry、SSE、steer/follow-up、`interrupted` 和 recovery 语义同步。
-- Task 18 `HARNESS-BLACK-BOX-CONTRACT.md` canonical/destination SHA-256：`sha256:b1a5db1131d27e70bf95f3b8f61bf0c6e89c6e847f2e6b5b08f0ea65d3677d12`。
-- Task 18 `sourceSha256` 保持：`sha256:2e0f87da418450938512f9f6196b671065886482f3c9a1809763f4698c7a4201`；`legacy-index.json` 与 `.migration-complete` 的 manifest SHA-256：`sha256:e08571c84a6f82e3c08f160fd0367067059128fbc81a65b6f5cbd0e9e23f66cd`。
+- 本轮唯一 scope 已闭合：internal-signal abort gate 有界失败、abort-owned durable error 归一化、合作终态 durable snapshot 幂等提交，以及 lifecycle 部分落盘后的 active auto-leaf repair；四份合同的 admission、Aborting retry、SSE、steer/follow-up、`interrupted` 和 recovery 语义同步。
+- Task 18 `HARNESS-BLACK-BOX-CONTRACT.md` canonical/destination SHA-256：`sha256:fcdac89d9aab62f8f11a7c862902a7f8b7742aeba6d7cd047dc1159eb283e30b`。
+- Task 18 `sourceSha256` 保持：`sha256:2e0f87da418450938512f9f6196b671065886482f3c9a1809763f4698c7a4201`；`legacy-index.json` 与 `.migration-complete` 的 manifest SHA-256：`sha256:2eb3307366b9ea880d4d69e44c8f84cda2f5b6514cf772238c54aa6fd301d67f`。
 - `agent.session-abort` Spec 已为 `implemented`，四份公开合同与实现/测试已同步；`write-plan.ts`、`write-plan.test.ts` 未修改。
-- `bun run --cwd packages/neuro-book test -- server/agent/harness/neuro-agent-harness.black-box.test.ts server/agent/harness/neuro-agent-harness.test.ts server/agent/session/write-plan.test.ts "server/api/agent/sessions/[sessionId]/abort.post.test.ts" server/agent/http.test.ts shared/dto/agent-session.dto.test.ts --reporter=dot --silent`：`6 files / 309 passed`。
-- `bun run --cwd packages/neuro-book test:agent -- --reporter=dot --silent`：`156 files / 1468 passed`。
+- `bun run --cwd packages/neuro-book test -- server/agent/harness/neuro-agent-harness.black-box.test.ts server/agent/harness/neuro-agent-harness.test.ts server/agent/session/write-plan.test.ts "server/api/agent/sessions/[sessionId]/abort.post.test.ts" server/agent/http.test.ts shared/dto/agent-session.dto.test.ts --reporter=dot --silent`：`6 files / 310 passed`。
+- `bun run --cwd packages/neuro-book test:agent -- --reporter=dot --silent`：`156 files / 1469 passed`。
 - `bun run --cwd packages/neuro-book typecheck`：exit code 0。
-- `bun run docs:check`：`failures: []`、`checkedFiles: 5289`。
+- `bun run docs:check`：`failures: []`、`checkedFiles: 5290`。
 - `bun run governance:check`：`failures: []`、`warnings: []`。
-- `git diff --check`：通过；仅有 Git LF/CRLF 转换警告，无 whitespace error。
+- `git diff --check`：通过；仅有 LF/CRLF 转换警告，无 whitespace error。
 
 
 ## 未运行

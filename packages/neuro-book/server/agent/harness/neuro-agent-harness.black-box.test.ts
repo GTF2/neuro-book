@@ -1684,6 +1684,92 @@ describe("NeuroAgentHarness black-box contract", () => {
             await running.catch(() => undefined);
         }
     }, 30_000);
+    it("running cooperative abort 的部分 lifecycle append 重试补齐 active leaf", async () => {
+        const profileKey = registerPlainProfile(harness, {
+            key: "test.blackbox.cooperative-partial-lifecycle",
+        });
+        const providerStarted = Promise.withResolvers<void>();
+        faux.setResponses([async () => {
+            providerStarted.resolve();
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            return fauxAssistantMessage("cooperative partial lifecycle", {stopReason: "aborted", errorMessage: "ignored"});
+        }]);
+        const created = await harness.createAgent({profileKey, initial: {}});
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "cooperative partial lifecycle"},
+        });
+        await providerStarted.promise;
+        const invocationId = (await harness.getSessionRecovery(created.sessionId)).activeInvocation!.invocationId;
+        const repositoryInternals = harness.repo as unknown as {
+            appendLine(path: string, record: unknown): Promise<void>;
+        };
+        const realAppendLine = repositoryInternals.appendLine.bind(harness.repo);
+        let abortedLifecycleId: string | undefined;
+        let injectedAutoLeafFailure = false;
+        let abortedLifecyclesAtAutoLeafFailure = 0;
+        let autoLeavesAtAutoLeafFailure = 0;
+        let activeLeafAtAutoLeafFailure: string | null = null;
+        const appendLineSpy = vi.spyOn(repositoryInternals, "appendLine").mockImplementation(async (...args) => {
+            const record = args[1] as {
+                kind?: string;
+                entry?: {
+                    type?: string;
+                    status?: string;
+                    id?: string;
+                    leafId?: string | null;
+                };
+            };
+            if (record.kind === "entry"
+                && record.entry?.type === "invocation_lifecycle"
+                && record.entry.status === "aborted"
+                && record.entry.id) {
+                abortedLifecycleId = record.entry.id;
+            }
+            if (!injectedAutoLeafFailure
+                && abortedLifecycleId
+                && record.kind === "entry"
+                && record.entry?.type === "leaf"
+                && record.entry.leafId === abortedLifecycleId) {
+                const snapshotAtFailure = await harness.repo.readSession(created.sessionId);
+                abortedLifecyclesAtAutoLeafFailure = snapshotAtFailure.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                    && entry.invocationId === invocationId
+                    && entry.status === "aborted").length;
+                autoLeavesAtAutoLeafFailure = snapshotAtFailure.entries.filter((entry) => entry.type === "leaf" && entry.leafId === abortedLifecycleId).length;
+                activeLeafAtAutoLeafFailure = snapshotAtFailure.leafId;
+                injectedAutoLeafFailure = true;
+                throw new Error("cooperative auto leaf unavailable");
+            }
+            return realAppendLine(...args);
+        });
+        try {
+            await expect(raceTimeout(
+                harness.abortInvocation(created.sessionId),
+                300,
+                "cooperative partial lifecycle abort did not settle",
+            )).resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+            const result = await raceTimeout(running, 300, "cooperative partial lifecycle invocation did not settle");
+            const snapshot = await harness.repo.readSession(created.sessionId);
+            const abortedLifecycles = snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                && entry.invocationId === invocationId
+                && entry.status === "aborted");
+            const abortedLifecycle = abortedLifecycles[0];
+            expect(result).toMatchObject({status: "error", aborted: true, invocationId});
+            expect(injectedAutoLeafFailure).toBe(true);
+            expect(abortedLifecyclesAtAutoLeafFailure).toBe(1);
+            expect(autoLeavesAtAutoLeafFailure).toBe(0);
+            expect(activeLeafAtAutoLeafFailure).not.toBe(abortedLifecycle?.id);
+            expect(abortedLifecycles).toHaveLength(1);
+            expect(lifecycleStatuses(snapshot)).toEqual(["start", "aborted"]);
+            expect(snapshot.leafId).toBe(abortedLifecycle?.id);
+            expect(snapshot.entries.filter((entry) => entry.type === "leaf" && entry.leafId === abortedLifecycle?.id)).toHaveLength(1);
+            await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({activeInvocation: null});
+        } finally {
+            appendLineSpy.mockRestore();
+            await running.catch(() => undefined);
+        }
+    }, 30_000);
 
 
     it("Running forced enqueue 同步失败时保留 aborting ownership 并可重试", async () => {
