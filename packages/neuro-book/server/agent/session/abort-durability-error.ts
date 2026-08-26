@@ -1,4 +1,4 @@
-/** Forced-abort lifecycle 尚未被 durable write queue 接受时的可重试领域错误。 */
+/** abort terminal 或 queue side effect 尚未完成 durable write 时的可重试领域错误。 */
 export class AgentAbortDurabilityError extends Error {
     readonly statusCode = 503;
     readonly code = "session_abort_durability_unavailable" as const;

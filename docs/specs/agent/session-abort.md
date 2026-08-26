@@ -62,7 +62,7 @@ type AgentAbortRequestDto = {
 - `reason` 可选。只有调用方显式提供时，才进入 lifecycle 或公开控制事件；取消不得把 Provider 的英文 abort 错误正文作为默认用户错误。
 - `clearQueue` 可选，缺失时按 `true` 处理。`true` 清空 steer/follow-up admission；`false` 不清空 follow-up，而把它们保留为 `paused`。
 - 非法字段、非法类型或不符合 schema 的 body 返回 HTTP 400，不能部分执行取消。
-
+- `expectedInvocationId` 仅是 Harness 内部 input-signal / Project-close 的精确取消参数，不属于 HTTP body、公开 DTO 或客户端合同。
 - 取消 admission 必须先解析当前 Session runtime projection；若 `context.archived` 或 `summary.status === "archived"`，无论是否存在 active invocation 都立即返回稳定 HTTP 409 `session_abort_not_allowed`。
 - 对非归档 Session，再读取/claim active invocation；没有 active invocation，或与 `expectedInvocationId` 不匹配时，保持 HTTP 200 幂等 no-op。Idle 的 `interaction.canAbort === false` 不参与此分支判断。
 - 只有存在匹配 active invocation 的 Running、Waiting User 或 Aborting 才校验 interaction policy；policy 明确拒绝停止运行时返回稳定 HTTP 409。当前策略允许 active Running/Waiting 在 Profile 不可用时 abort。Profile 不可运行本身不改变非归档 Idle no-op，也不改变策略允许的 active abort。
@@ -77,7 +77,8 @@ type AgentAbortResult = {
 };
 ```
 
-- 没有 active invocation、重复取消已完成的 invocation 或 invocation 已在其它 terminal 路径收口时返回 `{status: "idle", sessionId}`，不新增 lifecycle、resolution、queue item 或终态事件。
+- 没有匹配 active invocation 的非归档 Session（包括重复取消已收口 invocation）返回 `{status: "idle", sessionId}`，不新增 lifecycle、resolution、queue item 或终态事件；归档分支始终优先返回 409。
+- 已匹配 `Aborting` 且仍在 `forcedAbortRetryableInvocations` 中时，重复 POST 重试同一个 forced plan；同步接受后返回 `{status: "aborted", sessionId}`，不重复 grace、resolution、tombstone、lifecycle 或 terminal event。已是 `Aborting` 但没有可重试 forced plan 时返回 `idle`。
 - Waiting User 的合作收口返回 `{status: "aborted", sessionId}`，并在返回前完成唯一 durable `aborted` lifecycle 和必要 resolution。
 - Running invocation 的 abort admission 成功，或 forced-abort 已同步占据 Session write queue 后，返回 `{status: "aborted", sessionId}`。该响应表示取消已被接受，不表示物理 append、live-state publish 或 after-write observer 已完成。
 
@@ -88,12 +89,13 @@ type AgentAbortResult = {
 | 非法路径或 body | 400 | 现有 Agent validation code | 否 |
 | 主 Session 不存在 | 404 | `SESSION_NOT_FOUND` | 否 |
 | Session 当前不允许 abort | 409 | `session_abort_not_allowed` | 否 |
-| forced lifecycle 无法同步入队 | 503 | `session_abort_durability_unavailable` | 是 |
+| abort-owned queue/terminal durable write 未完成 | 503 | `session_abort_durability_unavailable` | 是 |
 
 SSE 与 live state：
 
-- 接受 Running abort 后发送 `invocation_aborted`，前端进入 aborting/stopped 过渡态。
-- Waiting User durable writes 先抑制 executor 自动公开事件；释放 ownership 后按 `invocation_aborted -> session_entry（仅本次新写入） -> session_state_changed -> agent_end` 发布，避免 resolution/lifecycle 事件先于 abort 通知。
+- 接受 Running abort 后必须至少发布一次 `invocation_aborted`；仅未订阅或已断连的客户端可能收不到该事件。前端随后进入 aborting/stopped 过渡态。
+- Waiting User durable writes 先抑制 executor 自动公开事件；释放 ownership 后按 `invocation_aborted -> session_entry（仅本次新写入） -> session_state_changed -> agent_end(aborted)` 发布，避免 resolution/lifecycle 事件先于 abort 通知。
+- Running cooperative/forced 均按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口：cooperative 由 runLoop 先发布 terminal 再完成 durable commit；forced 由 ownership 释放时发布 terminal，物理 write/after-write 完成后异步发布 state。
 - 终态 state 或 snapshot 最终必须显示 `activeInvocation: null`。
 - 终态事件使用 `agent_end {status: "aborted"}`；abort 不是 Run Error，不应默认显示错误卡。
 - 迟到 Provider/tool/settleRun 结果、`message_update`、`agent_end` 或其它 invocation 事件不能在 ownership 释放后污染当前 Session 或下一 invocation。
@@ -102,13 +104,13 @@ SSE 与 live state：
 
 | 当前状态 | 事件 | 下一状态 | 可观察结果 |
 | --- | --- | --- | --- |
-| Idle | abort | Idle | HTTP 200 idle；无 durable lifecycle、resolution、queue 或终态事件副作用。 |
-| Waiting User | 合作 abort | Idle | 写一次 aborted resolution 与 aborted lifecycle；发布 abort/state/终态事件；按 `clearQueue` 处理队列。 |
+| Idle | abort | Idle | 仅非归档且无匹配 active 时 HTTP 200 idle；无 durable lifecycle、resolution、queue 或终态事件副作用；归档状态始终先返回 409。 |
+| Waiting User | 合作 abort | Idle | 写一次 aborted resolution 与 aborted lifecycle；按 `invocation_aborted -> session_entry -> session_state_changed -> agent_end(aborted)` 发布；按 `clearQueue` 处理 follow-up。 |
 | Running | abort admission | Aborting | 在 mutation 边界内 claim invocation、进入 aborting、触发 AbortSignal；运行锁外等待最多 `150ms` grace。 |
-| Aborting | 合作 terminal | Idle | 合作路径只能提交该 invocation 的唯一 aborted terminal；释放 ownership，后续 start 排在 durable terminal 后。 |
-| Aborting | grace 到期且仍拥有 invocation | Idle | forced lifecycle 已入 write queue 后释放 ownership、补发终态事件；迟到运行结果被 fence 丢弃。 |
-| Aborting | forced enqueue 同步失败 | Aborting | 不释放 ownership、不发 `agent_end`、不 resolve 原 invocation gate；HTTP 503，重复 abort 可重试。 |
-| 任意已完成状态 | 重复 abort | Idle | 幂等返回，不重复写 lifecycle 或事件。 |
+| Aborting | 合作 terminal | Idle | 合作路径只能提交该 invocation 的唯一 aborted terminal；释放 ownership，按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口。 |
+| Aborting | grace 到期且仍拥有 invocation | Idle | forced lifecycle 已被同一 write queue 接受后释放 ownership并发布 `agent_end(aborted)`；物理 write/after-write 完成后发布 state，迟到运行结果被 fence 丢弃。 |
+| Aborting 且 forced plan 可重试 | 重复 abort | Aborting/Idle | 重试同一 plan；同步接受返回 aborted，不重复 grace、resolution、tombstone、lifecycle 或 terminal event；同步失败保持 aborting 并返回 503。 |
+| Aborting 且无可重试 forced plan | 重复 abort | Idle | 幂等返回 idle，不重复写 lifecycle 或事件。 |
 
 并发语义：
 
@@ -120,9 +122,10 @@ SSE 与 live state：
 
 - Invocation lifecycle 在历史中最多追加一个匹配 `invocationId` 的 `status: "aborted"` entry。没有显式 `reason` 时不写默认英文错误正文。
 - Waiting abort 必要时追加一个标记取消的 tool/user resolution；Running forced-abort 不生成 Provider 错误消息或伪造模型结果。
-- `clearQueue: true` 清空 steer 与 follow-up；`false` 保留 follow-up 并以 `pausedBy.reason: "aborted"` 标记，后续由既有 resume/queue owner 处理。
+- abort admission 移除 steerable 标记；terminal 清空残留 steer。`clearQueue: true` 清空 follow-up；`false` 保留 follow-up 并以 `pausedBy={invocationId, reason: "aborted"}` 标记。steer 不随 `clearQueue` 分支保留，不写 history，也不发 `steered`。
 - 唯一 forced lifecycle 以及 waiting partial lifecycle 的 `ensureAutoLeaf` 修复必须经同一个 SessionWriteExecutor 的 per-session write queue；不能直接调用 repository、建立第二把锁或写 projection 旁路。
 - `ensureAutoLeaf` 是幂等修复：目标已是 active leaf 时不追加 entry 或公开事件；目标缺少 active leaf 时只追加唯一 auto leaf。
+- abort 只 append 唯一 `aborted` lifecycle；`interrupted` 仅是重启时对未闭合 start 的 recovery 投影或 partial message/run failure 元数据，不是在线 abort terminal。
 - forced plan 只能包含单 Session、固定 cause `lifecycle.aborted.force`、单个非 projection `invocation_lifecycle(status: "aborted")`，且 entry invocationId 必须匹配授权 invocation。
 
 ## 失败与恢复
@@ -131,15 +134,20 @@ SSE 与 live state：
 
 1. 终态没有占据 write queue，不能返回 200 aborted。
 2. 当前 invocation 保持 `aborting` ownership，禁止迟到运行路径写入新 terminal。
-3. 不发布 `agent_end`，不 resolve 原 invocation abort gate，不伪造 durable lifecycle。
-4. HTTP 返回 503 `session_abort_durability_unavailable`、`retryable: true`；调用方重复同一 abort 请求即可重试。
-5. 若底层在重试前合作收口，普通 aborting terminal seam 负责唯一 aborted lifecycle；否则下一次 abort admission 再次尝试 forced plan。
+3. 显式 HTTP abort 不发布 `agent_end`、不释放 ownership，并以 503 `session_abort_durability_unavailable`、`retryable: true` 拒绝；原 invocation 的 internal signal gate 则返回既有 `AgentInvocationResult` 的 `status: "error"`，不设置 `aborted: true`，不伪造 durable success。
+4. `AgentAbortDurabilityError` 的 internal signal result 携带稳定 message、`phase: "unknown"`、`code` 与 `retryable`；未知 internal signal 错误只返回通用公开 message `invocation abort failed`，不带内部 code/retryable，原异常仅进入结构化日志。
+5. 若底层在重试前合作收口，普通 aborting terminal seam 负责唯一 aborted lifecycle；否则下一次 abort admission 再次尝试同一个 forced plan。internal signal 失败结算不调用 `finishInvocationState()`，不 resolve `InvocationCompletion`，不发布 `agent_end`。
+
+abort-owned durable write 未完成时：
+
+- Waiting 的 queue projection、resolution、lifecycle 或 auto-leaf write，以及 Running/Aborting 的 queue side effect 未被接受时，统一返回 503 `session_abort_durability_unavailable`、`retryable: true`；只包装实际 abort-owned write，不误标 projection/read/profile/authorization 错误。
+- 可能已有 queue projection、resolution 或 lifecycle 的部分持久化；ownership 不释放，原请求按既有分支重试幂等修复，已成功写入的内容不逆向删除。
 
 forced 已入队但 physical append、live-state publish 或 after-write 阶段失败时：
 
 - HTTP 可能已经返回 200，因为 admission 已被 write queue 接受；该响应不声称 durable append 已完成。
 - SessionWriteExecutor 必须保留精确 Session/invocation plan 和 forced authorization 作为 pending recovery，并在同一 per-session write queue 中恢复。
-- Recovery 先读取 Session；如果精确 invocation 已有 `aborted` lifecycle，则幂等视为成功，禁止重复追加；否则重放同一个 forced plan。
+- Recovery 先读取 Session；如果精确 invocation 已有 `aborted` lifecycle，则不重复 lifecycle，但仍必须在同一 write queue 完成缺失的 auto leaf、strict after-write observer 和 live-state publish；全部成功后才能清除 pending recovery。否则重放同一个 forced plan。
 - 后续任何普通 write 或新 invocation start 必须先 drain recovery。Recovery 失败时该次新写入以 retryable error 失败，旧 recovery 保留，不能让新 start 越过旧终态。
 - 物理写失败不得通过直接 repository 写、第二套锁、tombstone 旁路或静默放宽 timeout 来掩盖。
 - 进程重启后不能根据缺失的 aborted entry 猜测取消成功；只有既有 session recovery 规则可以把未闭合 start 投影为 `interrupted`，而不是 `aborted`。
@@ -157,16 +165,18 @@ forced 已入队但 physical append、live-state publish 或 after-write 阶段�
 
 1. Given non-archived Idle Session with loaded or unavailable Profile, When POST abort, Then HTTP 200 idle，历史、队列和事件没有新增取消副作用。
 2. Given Waiting User invocation，When POST abort with reason，Then HTTP 200 aborted，只有一个 aborted lifecycle/resolution，activeInvocation 为 null，`agent_end` 不被当作 Run Error。
-3. Given Running cooperative invocation，When POST abort，Then 150ms 内合作收口，只有一个 aborted terminal，队列按 clearQueue 分支呈现。
+3. Given Running cooperative invocation，When POST abort，Then 150ms 内合作收口，事件顺序为 `invocation_aborted -> agent_end(aborted) -> session_state_changed`，只有一个 aborted terminal，队列按 clearQueue 分支呈现。
 4. Given provider/tool/settleRun 忽略 signal，When POST abort，Then 300ms 内 HTTP 和原 invocation 有界返回，activeInvocation 为 null，迟到结果不可见，后续 start 排在旧 aborted append 后。
-5. Given forced enqueue 同步失败，When POST abort，Then HTTP 503 retryable，active ownership 与 aborting 状态保留，没有 agent_end、abort gate 或 durable aborted 伪造；重试可继续收口。
-6. Given forced lifecycle 物理写失败，When recovery 或下一次 Session write 运行，Then 同一个 write queue 幂等重放，已有 aborted entry 不重复追加，恢复失败阻止后续 start。
-7. Given duplicate/concurrent abort，When repeated POST arrives，Then only one terminal lifecycle、resolution、invocation_aborted 和终态事件生效，其余返回 idle 或同一 accepted result。
-8. Given archived Session，When POST abort with or without active invocation，Then HTTP 409 `session_abort_not_allowed`，不写 lifecycle。
+5. Given forced enqueue 同步失败，When HTTP POST abort，Then HTTP 503 retryable、active ownership 与 aborting 状态保留，没有 agent_end 或 durable aborted 伪造；当 external signal 或 Project-close 触发同一失败时，原 invoke gate 返回 retryable error result 且不设置 `aborted`，显式重试可继续收口。
+6. Given abort-owned queue/terminal write 失败，When retry，Then HTTP 503 使用稳定领域错误，Waiting rollback 或部分持久化语义保持，重试完成唯一 resolution/lifecycle/leaf。
+7. Given forced lifecycle 物理写失败，When recovery 或下一次 Session write 运行，Then 同一个 write queue 幂等重放，已有 aborted entry 不重复追加但仍完成 leaf/observer/live-state repair，恢复失败阻止后续 start。
+8. Given duplicate/concurrent abort，When repeated POST arrives，Then 至少一路返回 aborted；其它结果只可能是 aborted 或 idle，且只有一个 terminal lifecycle、resolution、invocation_aborted 和终态事件生效。
+9. Given archived Session，When POST abort with or without active invocation，Then HTTP 409 `session_abort_not_allowed`，不写 lifecycle。
+10. Given retryable Aborting invocation，When repeated POST first fails and later succeeds，Then each retry targets the same forced plan，不被 idle admission 吞掉，也不重复 lifecycle 或 event。
 
 聚焦验证入口：
 
-- `bun run --cwd packages/neuro-book test -- server/api/agent/sessions/[sessionId]/abort.post.test.ts server/agent/http.test.ts server/agent/harness/neuro-agent-harness.black-box.test.ts server/agent/harness/neuro-agent-harness.test.ts server/agent/session/write-plan.test.ts`
+- `bun run --cwd packages/neuro-book test -- server/agent/harness/neuro-agent-harness.black-box.test.ts server/agent/harness/neuro-agent-harness.test.ts server/agent/session/write-plan.test.ts 'server/api/agent/sessions/[sessionId]/abort.post.test.ts' server/agent/http.test.ts shared/dto/agent-session.dto.test.ts`
 - `bun run --cwd packages/neuro-book typecheck`
 - `bun run docs:check` 与 `bun run governance:check`
 

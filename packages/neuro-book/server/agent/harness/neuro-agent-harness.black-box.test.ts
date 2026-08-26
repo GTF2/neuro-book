@@ -1242,6 +1242,7 @@ describe("NeuroAgentHarness black-box contract", () => {
             expect(stateAt).toBeGreaterThan(abortedAt);
             expect(terminalAt).toBeGreaterThan(stateAt);
             expect(entryAfterAbort).toBeGreaterThan(abortedAt);
+            expect(entryAfterAbort).toBeLessThan(stateAt);
 
         } finally {
             await observer.stop();
@@ -1277,6 +1278,47 @@ describe("NeuroAgentHarness black-box contract", () => {
         });
         const snapshot = await harness.repo.readSession(created.sessionId);
         expect(snapshot.entries.some((entry) => entry.type === "invocation_lifecycle")).toBe(false);
+    });
+    it("Archived 且仍有 active invocation 时先返回409且无取消副作用", async () => {
+        const profileKey = registerPlainProfile(harness, {
+            key: "test.blackbox.archived-active-abort",
+        });
+        const providerStarted = Promise.withResolvers<void>();
+        const providerGate = Promise.withResolvers<void>();
+        faux.setResponses([async () => {
+            providerStarted.resolve();
+            await providerGate.promise;
+            return fauxAssistantMessage("late archived active result");
+        }]);
+        const created = await harness.createAgent({profileKey, initial: {}});
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "run before archive"},
+        });
+        await providerStarted.promise;
+        const before = await harness.getSessionRecovery(created.sessionId);
+        const invocationId = before.activeInvocation!.invocationId;
+        const eventCursor = harness.eventHub.lastSeq(created.sessionId);
+        await harness.repo.appendEntry(created.sessionId, {
+            type: "session_archived",
+            reason: "archive with active invocation",
+        });
+        try {
+            await expect(harness.abortInvocation(created.sessionId, {reason: "must reject archived"})).rejects.toMatchObject({
+                statusCode: 409,
+                code: "session_abort_not_allowed",
+            });
+            await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
+                activeInvocation: {invocationId, status: "running"},
+                followUpQueue: before.followUpQueue,
+            });
+            expect(harness.eventHub.lastSeq(created.sessionId)).toBe(eventCursor);
+            expect(lifecycleStatuses(await harness.repo.readSession(created.sessionId))).toEqual(["start"]);
+        } finally {
+            providerGate.resolve();
+            await running.catch(() => undefined);
+        }
     });
 
     it("Running + abort 清理 steer，并按 aborted 暂停 followup queue", async () => {
@@ -1326,6 +1368,7 @@ describe("NeuroAgentHarness black-box contract", () => {
                 sessionId: created.sessionId,
             });
             expect(result.status).toBe("error");
+            expect(result.aborted).toBe(true);
             expect(recovery.activeInvocation).toBeNull();
             expect(recovery.steerQueue).toEqual({items: [], omittedItems: 0});
             expect(recovery.followUpQueue).toEqual({
@@ -1343,14 +1386,25 @@ describe("NeuroAgentHarness black-box contract", () => {
             expect(visibleText(context.messages)).not.toContain("will be cleared");
             expect(visibleText(context.messages)).not.toContain("will be paused");
             expect(lifecycleStatuses(snapshot)).toEqual(["start", "aborted"]);
-            expect(eventTypes(observer.events)).toEqual(expect.arrayContaining([
-                "steer_queued",
-                "follow_up_queued",
-                "invocation_aborted",
-                "session_state_changed",
-                "agent_end",
-            ]));
+            expect(snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                && entry.invocationId === result.invocationId
+                && entry.status === "aborted")).toHaveLength(1);
+            const abortEventAt = eventTypes(observer.events).lastIndexOf("invocation_aborted");
+            const terminalEventAt = observer.events.findIndex((event) => event.event.type === "agent_end" && event.event.status === "aborted");
+            const stateEventAt = eventTypes(observer.events).lastIndexOf("session_state_changed");
+            expect(abortEventAt).toBeGreaterThanOrEqual(0);
+            expect(terminalEventAt).toBeGreaterThan(abortEventAt);
+            expect(stateEventAt).toBeGreaterThan(terminalEventAt);
             expect(faux.getPendingResponseCount()).toBe(1);
+
+            const next = await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "start after aborted"},
+            });
+            expect(next).toMatchObject({status: "completed", finalMessage: "must not run"});
+            expect((await harness.getSessionRecovery(created.sessionId)).activeInvocation).toBeNull();
+            expect(lifecycleStatuses(await harness.repo.readSession(created.sessionId))).toEqual(["start", "aborted", "start", "end"]);
         } finally {
             await observer.stop();
         }
@@ -1518,7 +1572,11 @@ describe("NeuroAgentHarness black-box contract", () => {
 
         try {
             await expect(harness.abortInvocation(created.sessionId, {reason: "retry queue", clearQueue: false}))
-                .rejects.toThrow("followup queue persistence unavailable");
+                .rejects.toMatchObject({
+                    statusCode: 503,
+                    code: "session_abort_durability_unavailable",
+                    retryable: true,
+                });
             await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
                 activeInvocation: {status: "running"},
                 followUpQueue: {
@@ -1569,14 +1627,22 @@ describe("NeuroAgentHarness black-box contract", () => {
         const enqueue = vi.spyOn(writeExecutor, "enqueueForcedAbort")
             .mockImplementationOnce(() => {
                 throw new Error("queue unavailable");
+            })
+            .mockImplementationOnce(() => {
+                throw new Error("queue still unavailable");
             });
 
         try {
             await expect(raceTimeout(harness.abortInvocation(created.sessionId, {reason: "retry me"}), 300, "abort did not settle"))
-                .rejects.toMatchObject({statusCode: 503, code: "session_abort_durability_unavailable"});
+                .rejects.toMatchObject({statusCode: 503, code: "session_abort_durability_unavailable", retryable: true});
             expect(observer.events.filter((event) => event.event.type === "agent_end")).toHaveLength(0);
             await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
-                activeInvocation: {invocationId: oldInvocationId},
+                activeInvocation: {invocationId: oldInvocationId, status: "aborting"},
+            });
+            await expect(raceTimeout(harness.abortInvocation(created.sessionId, {reason: "retry still unavailable"}), 300, "second abort did not settle"))
+                .rejects.toMatchObject({statusCode: 503, code: "session_abort_durability_unavailable", retryable: true});
+            await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
+                activeInvocation: {invocationId: oldInvocationId, status: "aborting"},
             });
             await expect(raceTimeout(harness.abortInvocation(created.sessionId, {reason: "retry succeeds"}), 300, "abort retry did not settle"))
                 .resolves.toEqual({status: "aborted", sessionId: created.sessionId});
@@ -1661,6 +1727,7 @@ describe("NeuroAgentHarness black-box contract", () => {
                 raceTimeout(harness.abortInvocation(created.sessionId, {reason: "duplicate"}), 300, "duplicate abort did not settle"),
             ]);
             expect(results.every((result) => result.status === "aborted" || result.status === "idle")).toBe(true);
+            expect(results.some((result) => result.status === "aborted")).toBe(true);
             providerGate.resolve();
             await running;
             await harness.drainBackgroundTasks();
@@ -1735,6 +1802,82 @@ describe("NeuroAgentHarness black-box contract", () => {
         }
     }, 30_000);
 
+    it("外部 signal 在 forced enqueue 同步失败时原 invoke 有界返回 retryable error，保留 aborting ownership 并可显式重试", async () => {
+        const profileKey = registerPlainProfile(harness, {
+            key: "test.blackbox.exact-signal-enqueue-failure",
+        });
+        const providerStarted = Promise.withResolvers<void>();
+        const providerGate = Promise.withResolvers<void>();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await providerGate.promise;
+                return fauxAssistantMessage("late signal-enqueue-failure result", {stopReason: "aborted", errorMessage: "ignored"});
+            },
+            fauxAssistantMessage("new invocation survived"),
+        ]);
+        const created = await harness.createAgent({profileKey, initial: {}});
+        const observer = await observeSession(harness, created.sessionId);
+        const controller = new AbortController();
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start signal-owned invocation"},
+            signal: controller.signal,
+        });
+        await providerStarted.promise;
+        const oldInvocationId = (await harness.getSessionRecovery(created.sessionId)).activeInvocation!.invocationId;
+        const harnessInternals = harness as unknown as HarnessWriteExecutorAccess;
+        const writeExecutor = harnessInternals.writeExecutor;
+        const enqueue = vi.spyOn(writeExecutor, "enqueueForcedAbort")
+            .mockImplementationOnce(() => {
+                throw new Error("queue unavailable");
+            });
+
+        try {
+            controller.abort(new Error("parent invocation cancelled"));
+            const cancelled = await raceTimeout(running, 1_000, "signal-owned invocation did not settle after enqueue failure");
+            expect(cancelled).toMatchObject({
+                status: "error",
+                invocationId: oldInvocationId,
+                errorInfo: {
+                    code: "session_abort_durability_unavailable",
+                    retryable: true,
+                },
+            });
+            expect(cancelled.aborted).toBeUndefined();
+            // 失败结算不得伪造 durable success：无 agent_end、无 aborted lifecycle，ownership 仍保留。
+            expect(observer.events.filter((event) => event.event.type === "agent_end")).toHaveLength(0);
+            await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
+                activeInvocation: {invocationId: oldInvocationId},
+            });
+            // 恢复 enqueue 后同一显式 abort 重试收口。
+            await expect(raceTimeout(harness.abortInvocation(created.sessionId, {reason: "retry succeeds"}), 300, "abort retry did not settle"))
+                .resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+            await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
+                activeInvocation: null,
+            });
+            // 原 provider 迟到结果不进入 history；后续 invocation 只能在唯一 aborted lifecycle 后启动。
+            providerGate.resolve();
+            await running.catch(() => undefined);
+            await harness.drainBackgroundTasks();
+            const snapshot = await harness.repo.readSession(created.sessionId);
+            expect(visibleText(harness.repo.reduce(snapshot).messages)).not.toContain("late signal-enqueue-failure result");
+            expect(lifecycleStatuses(snapshot)).toEqual(["start", "aborted"]);
+            const next = await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "start new invocation"},
+            });
+            expect(next).toMatchObject({status: "completed", finalMessage: "new invocation survived"});
+        } finally {
+            enqueue.mockRestore();
+            providerGate.resolve();
+            await running.catch(() => undefined);
+            await observer.stop();
+        }
+    }, 30_000);
+
     it("Running tool 忽略 AbortSignal 时 cancel 仍有界释放调用方，并隔离迟到结果", async () => {
         let releaseTool: (() => void) | undefined;
         const toolGate = new Promise<void>((resolve) => {
@@ -1783,8 +1926,7 @@ describe("NeuroAgentHarness black-box contract", () => {
                 "tool cancel API did not settle",
             );
             const result = await raceTimeout(running, 300, "tool invocation did not settle after cancel");
-            expect(aborted).toEqual({status: "aborted", sessionId: created.sessionId});
-            expect(result).toMatchObject({status: "error", invocationId: expect.any(String)});
+            expect(result).toMatchObject({status: "error", invocationId: expect.any(String), aborted: true});
             await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({activeInvocation: null});
 
             const next = await harness.invokeAgent({
@@ -1874,8 +2016,7 @@ describe("NeuroAgentHarness black-box contract", () => {
             "settle cancel API did not settle",
         );
         const result = await raceTimeout(running, 300, "settle invocation did not stop after cancel");
-        expect(aborted).toEqual({status: "aborted", sessionId: created.sessionId});
-        expect(result).toMatchObject({status: "error"});
+        expect(result).toMatchObject({status: "error", aborted: true});
         await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({activeInvocation: null});
 
         releaseSettle!();

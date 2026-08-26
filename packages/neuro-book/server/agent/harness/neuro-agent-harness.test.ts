@@ -18,6 +18,7 @@ import {Value} from "typebox/value";
 import type {AgentMessage, Usage} from "nbook/server/agent/messages/types";
 import type {Message as RuntimeMessage} from "nbook/server/agent/messages/types";
 import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
+import type {AgentInvocationResult} from "nbook/server/agent/harness/types";
 import type {ResolvedPiModel} from "nbook/server/agent/harness/pi-model-metadata";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {defineAgentProfile as defineRuntimeAgentProfile, normalizeAgentProfile} from "nbook/server/agent/profiles/define-agent-profile";
@@ -8673,7 +8674,235 @@ describe("NeuroAgentHarness", () => {
             status: "aborted",
         }));
     });
+    it("matched active invocation 的 canAbort=false seam fail closed且不产生取消副作用", async () => {
+        const providerStarted = createDeferred();
+        const providerGate = createDeferred();
+        faux.setResponses([async () => {
+            providerStarted.resolve();
+            await providerGate.promise;
+            return fauxAssistantMessage("must complete without abort");
+        }]);
+        const created = await harness.createAgent({profileKey: "leader.default", initial: {}});
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "keep running"},
+        });
+        await providerStarted.promise;
+        const beforeSnapshot = await harness.repo.readSession(created.sessionId);
+        const beforeRecovery = await harness.getSessionRecovery(created.sessionId);
+        const beforeCursor = harness.eventHub.lastSeq(created.sessionId);
+        const invocationId = beforeRecovery.activeInvocation?.invocationId;
+        if (!invocationId) {
+            throw new Error("测试未观察到 active invocation");
+        }
+        const resolveProjection = harness["resolveSessionRuntimeProjection"].bind(harness);
+        harness["resolveSessionRuntimeProjection"] = async (...args) => {
+            const projection = await resolveProjection(...args);
+            if (!projection.summary.interaction) {
+                throw new Error("测试未观察到 interaction projection");
+            }
+            return {
+                ...projection,
+                summary: {
+                    ...projection.summary,
+                    interaction: {
+                        ...projection.summary.interaction,
+                        canAbort: false,
+                    },
+                },
+            };
+        };
+        try {
+            await expect(harness.abortInvocation(created.sessionId, {reason: "defensive deny"})).rejects.toMatchObject({
+                statusCode: 409,
+                code: "session_abort_not_allowed",
+            });
+            const afterSnapshot = await harness.repo.readSession(created.sessionId);
+            const afterRecovery = await harness.getSessionRecovery(created.sessionId);
+            expect(afterSnapshot.entries).toHaveLength(beforeSnapshot.entries.length);
+            expect(harness.eventHub.lastSeq(created.sessionId)).toBe(beforeCursor);
+            expect(afterRecovery.activeInvocation).toMatchObject({invocationId, status: "running"});
+            expect(afterRecovery.steerQueue).toEqual(beforeRecovery.steerQueue);
+            expect(afterRecovery.followUpQueue).toEqual(beforeRecovery.followUpQueue);
+        } finally {
+            harness["resolveSessionRuntimeProjection"] = resolveProjection;
+            providerGate.resolve();
+            await running.catch(() => undefined);
+        }
+    });
+    it("waiting abort 的 queue projection 失败会回滚 followup、steer 与 waiting ownership", async () => {
+        harness.profiles.register(defineAgentProfile({
+            manifest: {
+                key: "test.abort-waiting-queue-failure",
+                name: "Abort Waiting Queue Failure",
+            },
+            initialSchema: Type.Object({}),
+            allowedToolKeys: ["request_user_input"],
+            prepare() {
+                return {};
+            },
+        }), false);
+        faux.setResponses([fauxAssistantMessage([
+            fauxToolCall("request_user_input", {
+                questions: [{question: "Queue failure?"}],
+            }, {id: "abort-waiting-queue-failure"}),
+        ], {stopReason: "toolUse"})]);
+        const created = await harness.createAgent({profileKey: "test.abort-waiting-queue-failure", initial: {}});
+        const waiting = await harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "wait"},
+        });
+        await harness.enqueueDurableSystemFollowUp({
+            sessionId: created.sessionId,
+            text: "existing followup",
+            deliveryId: "abort-waiting-queue-followup",
+            clientMessageId: randomUUID(),
+        });
+        const steerQueues = harness as unknown as {
+            steerQueues: Map<number, Array<{
+                id: string;
+                clientMessageId: string;
+                kind: "steer";
+                message: {content: [{type: "text"; text: string}]};
+                createdAt: number;
+            }>>;
+        };
+        steerQueues.steerQueues.set(created.sessionId, [{
+            id: "abort-waiting-queue-steer",
+            clientMessageId: randomUUID(),
+            kind: "steer",
+            message: {content: [{type: "text", text: "existing steer"}]},
+            createdAt: Date.now(),
+        }]);
+        const beforeRecovery = await harness.getSessionRecovery(created.sessionId);
+        const beforeSnapshot = await harness.repo.readSession(created.sessionId);
+        const beforeCursor = harness.eventHub.lastSeq(created.sessionId);
+        const realAppendProjectionEntry = harness.repo.appendProjectionEntry.bind(harness.repo);
+        const appendProjectionSpy = vi.spyOn(harness.repo, "appendProjectionEntry").mockImplementationOnce(async (...args: Parameters<JsonlSessionRepository["appendProjectionEntry"]>) => {
+            const entry = args[1];
+            if (entry.type === "custom" && entry.key === AGENT_FOLLOW_UP_QUEUE_STATE_KEY) {
+                throw new Error("waiting queue projection unavailable");
+            }
+            return realAppendProjectionEntry(...args);
+        });
+        try {
+            await expect(harness.abortInvocation(created.sessionId, {reason: "queue failure"})).rejects.toMatchObject({
+                statusCode: 503,
+                code: "session_abort_durability_unavailable",
+                retryable: true,
+            });
+            const afterFailure = await harness.getSessionRecovery(created.sessionId);
+            const afterSnapshot = await harness.repo.readSession(created.sessionId);
+            expect(afterFailure.activeInvocation).toMatchObject({invocationId: waiting.invocationId, status: "waiting"});
+            expect(afterFailure.steerQueue).toEqual(beforeRecovery.steerQueue);
+            expect(afterFailure.followUpQueue).toEqual(beforeRecovery.followUpQueue);
+            expect(afterSnapshot.entries).toHaveLength(beforeSnapshot.entries.length);
+            expect(harness.eventHub.lastSeq(created.sessionId)).toBe(beforeCursor);
+        } finally {
+            appendProjectionSpy.mockRestore();
+        }
 
+        await expect(harness.abortInvocation(created.sessionId, {reason: "queue retry succeeds"}))
+            .resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+        expect((await harness.getSessionRecovery(created.sessionId)).activeInvocation).toBeNull();
+        expect((await harness.repo.readSession(created.sessionId)).entries.filter((entry) => entry.type === "invocation_lifecycle"
+            && entry.invocationId === waiting.invocationId
+            && entry.status === "aborted")).toHaveLength(1);
+    });
+
+    it("waiting abort 的 resolution append 失败会保留已持久化 queue projection并可重试", async () => {
+        harness.profiles.register(defineAgentProfile({
+            manifest: {
+                key: "test.abort-waiting-resolution-failure",
+                name: "Abort Waiting Resolution Failure",
+            },
+            initialSchema: Type.Object({}),
+            allowedToolKeys: ["request_user_input"],
+            prepare() {
+                return {};
+            },
+        }), false);
+        faux.setResponses([fauxAssistantMessage([
+            fauxToolCall("request_user_input", {
+                questions: [{question: "Resolution failure?"}],
+            }, {id: "abort-waiting-resolution-failure"}),
+        ], {stopReason: "toolUse"})]);
+        const created = await harness.createAgent({profileKey: "test.abort-waiting-resolution-failure", initial: {}});
+        const waiting = await harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "wait"},
+        });
+        await harness.enqueueDurableSystemFollowUp({
+            sessionId: created.sessionId,
+            text: "pause on abort",
+            deliveryId: "abort-waiting-resolution-followup",
+            clientMessageId: randomUUID(),
+        });
+        const steerQueues = harness as unknown as {
+            steerQueues: Map<number, Array<{
+                id: string;
+                clientMessageId: string;
+                kind: "steer";
+                message: {content: [{type: "text"; text: string}]};
+                createdAt: number;
+            }>>;
+        };
+        steerQueues.steerQueues.set(created.sessionId, [{
+            id: "abort-waiting-resolution-steer",
+            clientMessageId: randomUUID(),
+            kind: "steer",
+            message: {content: [{type: "text", text: "restore this steer"}]},
+            createdAt: Date.now(),
+        }]);
+        const beforeSnapshot = await harness.repo.readSession(created.sessionId);
+        const appendEntriesSpy = vi.spyOn(harness.repo, "appendEntries").mockImplementationOnce(async (..._args: Parameters<JsonlSessionRepository["appendEntries"]>) => {
+            throw new Error("waiting resolution unavailable");
+        });
+        try {
+            await expect(harness.abortInvocation(created.sessionId, {reason: "resolution failure", clearQueue: false})).rejects.toMatchObject({
+                statusCode: 503,
+                code: "session_abort_durability_unavailable",
+                retryable: true,
+            });
+            const afterFailure = await harness.getSessionRecovery(created.sessionId);
+            const afterSnapshot = await harness.repo.readSession(created.sessionId);
+            expect(afterFailure.activeInvocation).toMatchObject({invocationId: waiting.invocationId, status: "waiting"});
+            expect(afterFailure.steerQueue).toEqual({
+                items: [expect.objectContaining({text: expect.objectContaining({preview: "restore this steer"})})],
+                omittedItems: 0,
+            });
+            expect(afterFailure.followUpQueue).toMatchObject({
+                status: "paused",
+                pausedBy: {invocationId: waiting.invocationId, reason: "aborted"},
+                items: [expect.objectContaining({text: expect.objectContaining({preview: "pause on abort"})})],
+            });
+            expect(afterSnapshot.entries.length).toBeGreaterThan(beforeSnapshot.entries.length);
+            expect(afterSnapshot.entries.some((entry) => entry.type === "message"
+                && entry.message.role === "toolResult"
+                && entry.message.toolCallId === "abort-waiting-resolution-failure")).toBe(false);
+        } finally {
+            appendEntriesSpy.mockRestore();
+        }
+
+        await expect(harness.abortInvocation(created.sessionId, {reason: "resolution retry", clearQueue: false}))
+            .resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+        const snapshot = await harness.repo.readSession(created.sessionId);
+        expect((await harness.getSessionRecovery(created.sessionId)).activeInvocation).toBeNull();
+        expect(snapshot.entries.filter((entry) => entry.type === "message"
+            && entry.message.role === "toolResult"
+            && entry.message.toolCallId === "abort-waiting-resolution-failure")).toHaveLength(1);
+        expect(snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
+            && entry.invocationId === waiting.invocationId
+            && entry.status === "aborted")).toHaveLength(1);
+        const aborted = snapshot.entries.find((entry) => entry.type === "invocation_lifecycle"
+            && entry.invocationId === waiting.invocationId
+            && entry.status === "aborted");
+        expect(aborted).toBeDefined();
+        expect(snapshot.entries.filter((entry) => entry.type === "leaf" && entry.leafId === aborted?.id)).toHaveLength(1);
+    });
     it("waiting abort 的 lifecycle 持久化失败会恢复 waiting 并允许重试", async () => {
         harness.profiles.register(defineAgentProfile({
             manifest: {
@@ -8706,7 +8935,18 @@ describe("NeuroAgentHarness", () => {
             return realAppendEntry(...args);
         });
         try {
-            await expect(harness.abortInvocation(created.sessionId, {reason: "retry waiting"})).rejects.toThrow("waiting lifecycle unavailable");
+            await expect(harness.abortInvocation(created.sessionId, {reason: "retry waiting"})).rejects.toMatchObject({
+                statusCode: 503,
+                code: "session_abort_durability_unavailable",
+                retryable: true,
+            });
+            const afterFailure = await harness.repo.readSession(created.sessionId);
+            expect(afterFailure.entries.filter((entry) => entry.type === "message"
+                && entry.message.role === "toolResult"
+                && entry.message.toolCallId === "abort-waiting-retry")).toHaveLength(1);
+            expect(afterFailure.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                && entry.invocationId === waiting.invocationId
+                && entry.status === "aborted")).toHaveLength(0);
             await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
                 activeInvocation: {invocationId: waiting.invocationId, status: "waiting"},
             });
@@ -8715,9 +8955,21 @@ describe("NeuroAgentHarness", () => {
         }
         await expect(harness.abortInvocation(created.sessionId, {reason: "retry waiting succeeds"}))
             .resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+        const snapshot = await harness.repo.readSession(created.sessionId);
         expect((await harness.getSessionRecovery(created.sessionId)).activeInvocation).toBeNull();
-    });
+        expect(snapshot.entries.filter((entry) => entry.type === "message"
+            && entry.message.role === "toolResult"
+            && entry.message.toolCallId === "abort-waiting-retry")).toHaveLength(1);
+        expect(snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
+            && entry.invocationId === waiting.invocationId
+            && entry.status === "aborted")).toHaveLength(1);
+        const aborted = snapshot.entries.find((entry) => entry.type === "invocation_lifecycle"
+            && entry.invocationId === waiting.invocationId
+            && entry.status === "aborted");
+        expect(aborted).toBeDefined();
+        expect(snapshot.entries.filter((entry) => entry.type === "leaf" && entry.leafId === aborted?.id)).toHaveLength(1);
 
+    });
     it("waiting abort 的 partial lifecycle append 由写队列补齐 active leaf 且不重复 lifecycle", async () => {
         harness.profiles.register(defineAgentProfile({
             manifest: {
@@ -8778,7 +9030,11 @@ describe("NeuroAgentHarness", () => {
             return realAppendLine(...args);
         });
         try {
-            await expect(harness.abortInvocation(created.sessionId, {reason: "partial waiting"})).rejects.toThrow("waiting auto leaf unavailable");
+            await expect(harness.abortInvocation(created.sessionId, {reason: "partial waiting"})).rejects.toMatchObject({
+                statusCode: 503,
+                code: "session_abort_durability_unavailable",
+                retryable: true,
+            });
             await expect(harness.getSessionRecovery(created.sessionId)).resolves.toMatchObject({
                 activeInvocation: {invocationId: waiting.invocationId, status: "waiting"},
             });
@@ -9759,6 +10015,10 @@ describe("NeuroAgentHarness", () => {
 
         const snapshot = await restored.getSessionRecovery(created.sessionId);
         const page = await restored.listSessionPage({limit: 10});
+        const beforeSteerQueue = snapshot.steerQueue;
+        const beforeFollowUpQueue = snapshot.followUpQueue;
+        const beforeCursor = restored.eventHub.lastSeq(created.sessionId);
+        const beforeEntryCount = (await restored.repo.readSession(created.sessionId)).entries.length;
         const result = await restored.invokeAgent({
             sessionId: created.sessionId,
             mode: "prompt",
@@ -9774,13 +10034,14 @@ describe("NeuroAgentHarness", () => {
             profileAvailability: "unloadable",
             profileIssueMessage: "源码错误",
         }));
-        expect(result).toEqual(expect.objectContaining({
-            status: "error",
-            error: expect.stringContaining("已不存在或不可运行"),
-        }));
         const aborted = await restored.abortInvocation(created.sessionId, {reason: "idle unavailable profile"});
         const afterAbort = await restored.repo.readSession(created.sessionId);
+        const afterRecovery = await restored.getSessionRecovery(created.sessionId);
         expect(aborted).toEqual({status: "idle", sessionId: created.sessionId});
+        expect(afterAbort.entries).toHaveLength(beforeEntryCount);
+        expect(afterRecovery.steerQueue).toEqual(beforeSteerQueue);
+        expect(afterRecovery.followUpQueue).toEqual(beforeFollowUpQueue);
+        expect(restored.eventHub.lastSeq(created.sessionId)).toBe(beforeCursor);
         expect(afterAbort.entries.some((entry) => entry.type === "invocation_lifecycle")).toBe(false);
     });
 
@@ -10314,6 +10575,132 @@ describe("NeuroAgentHarness", () => {
         } finally {
             releaseHook();
             await closeProjectForTest(projectRootName).catch(() => undefined);
+            await closeAllProjects();
+            resetProjectSessionsForTest();
+        }
+    }, 20_000);
+
+    it("Project close 触发 forced enqueue 同步失败时公开 invoke 有界返回 retryable error，Project completion 等待显式 abort 重试", async () => {
+        await closeAllProjects();
+        resetProjectSessionsForTest();
+        const projectRootName = `close-enqueue-failure-${randomUUID()}`;
+        const projectRoot = join(root, projectRootName);
+        await mkdir(join(projectRoot, ".nbook"), {recursive: true});
+        await writeFile(join(projectRoot, "project.yaml"), "kind: novel\ntitle: Close Enqueue Failure\nsummary: ''\n", "utf8");
+        await writeFile(join(projectRoot, ".nbook", "config.json"), "{}\n", "utf8");
+
+        type HarnessWriteExecutorAccess = {
+            writeExecutor: {
+                enqueueForcedAbort(plan: unknown, invocationId: string): {completion: Promise<unknown>};
+            };
+        };
+        let captured: ReadyProjectSessionRef | null = null;
+        let markHookStarted: () => void = () => undefined;
+        const hookStarted = new Promise<void>((resolve) => {
+            markHookStarted = resolve;
+        });
+        let releaseHook: () => void = () => undefined;
+        const hookPause = new Promise<void>((resolve) => {
+            releaseHook = resolve;
+        });
+        harness.profiles.register(defineAgentProfile({
+            manifest: {key: "test.close-enqueue-failure", name: "Close Enqueue Failure"},
+            initialSchema: Type.Object({}),
+            allowedToolKeys: [],
+            runtime: defineAgentRuntime<object>({
+                hooks: [{
+                    name: "pause-after-project-capture",
+                    stage: "prepareRun",
+                    async run(ctx) {
+                        captured = harness.projectForInvocation(ctx.invocationId);
+                        if (!captured) {
+                            throw new Error("测试 invocation 未捕获 Project");
+                        }
+                        markHookStarted();
+                        await hookPause;
+                        return {};
+                    },
+                }],
+            }),
+            prepare() {
+                return {};
+            },
+        }), false);
+        let created: Awaited<ReturnType<NeuroAgentHarness["createAgent"]>> | undefined;
+        let invoking: Promise<AgentInvocationResult> | undefined;
+        let closing: Promise<void> | undefined;
+        let enqueue: ReturnType<typeof vi.spyOn> | undefined;
+
+        try {
+            await openProject(projectWorkspaceRef(projectRootName), {kind: "job", source: "close-enqueue-failure-test"}, harness.workspaceRoot);
+            created = await harness.createAgent({
+                profileKey: "test.close-enqueue-failure",
+                initial: {},
+                currentProjectRoot: projectRootName,
+            });
+            invoking = harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "run"},
+            });
+            await hookStarted;
+            const capturedReady = captured as ReadyProjectSessionRef | null;
+            if (!capturedReady) {
+                throw new Error("测试未观察到 Project capture");
+            }
+            const harnessInternals = harness as unknown as HarnessWriteExecutorAccess;
+            enqueue = vi.spyOn(harnessInternals.writeExecutor, "enqueueForcedAbort")
+                .mockImplementationOnce(() => {
+                    throw new Error("queue unavailable");
+                });
+            let closeSettled = false;
+            closing = closeProjectForTest(projectRootName);
+            void closing.then(
+                () => {
+                    closeSettled = true;
+                },
+                () => {
+                    closeSettled = true;
+                },
+            );
+
+            await Promise.resolve();
+            expect(closeSettled).toBe(false);
+            expect(projectOccupancy(projectWorkspaceRef(projectRootName))).toBeNull();
+
+            // 公开 invoke gate 有界返回 retryable durability error，不伪造 durable success。
+            const result = await Promise.race([
+                invoking,
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error("project-close invoke did not settle after enqueue failure")), 1_000)),
+            ]);
+            expect(result).toMatchObject({
+                status: "error",
+                errorInfo: {
+                    code: "session_abort_durability_unavailable",
+                    retryable: true,
+                },
+            });
+            expect(result.aborted).toBeUndefined();
+            // Project operation completion 与 ownership 继续等待显式 abort retry，不能假装 close 已完成。
+            expect(closeSettled).toBe(false);
+            await expect(Promise.race([
+                harness.abortInvocation(created.sessionId, {reason: "retry close abort"}),
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error("close abort retry did not settle")), 300)),
+            ])).resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+            await closing;
+            expect(closeSettled).toBe(true);
+        } finally {
+            releaseHook();
+            enqueue?.mockRestore();
+            // 有界收口：失败断言后仍要释放 Project completion，避免 afterEach 挂死。
+            await Promise.race([
+                invoking?.then(() => undefined, () => undefined) ?? Promise.resolve(),
+                new Promise((resolve) => setTimeout(resolve, 1_500)),
+            ]);
+            await Promise.race([
+                closing?.then(() => undefined, () => undefined) ?? Promise.resolve(),
+                new Promise((resolve) => setTimeout(resolve, 1_500)),
+            ]);
             await closeAllProjects();
             resetProjectSessionsForTest();
         }

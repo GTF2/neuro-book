@@ -9,12 +9,29 @@ import {
     ClientVariablePatchAckDtoSchema,
 } from "nbook/shared/dto/agent-session.dto";
 describe("AgentAbortRequestDtoSchema", () => {
-    it("拒绝未知字段而不是静默剥离", () => {
-        expect(AgentAbortRequestDtoSchema.safeParse({unexpected: true}).success).toBe(false);
+    it("接受空body与合法完整body", () => {
+        expect(AgentAbortRequestDtoSchema.parse({})).toEqual({});
         expect(AgentAbortRequestDtoSchema.parse({reason: "停止", clearQueue: false})).toEqual({
             reason: "停止",
             clearQueue: false,
         });
+    });
+
+    it("拒绝未知字段与所有字段类型错误", () => {
+        const invalidInputs: unknown[] = [
+            {unexpected: true},
+            {reason: 42},
+            {reason: null},
+            {clearQueue: "false"},
+            {clearQueue: null},
+            null,
+            [],
+            "abort",
+            42,
+        ];
+        for (const input of invalidInputs) {
+            expect(AgentAbortRequestDtoSchema.safeParse(input).success).toBe(false);
+        }
     });
 });
 

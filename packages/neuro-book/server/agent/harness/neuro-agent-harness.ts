@@ -59,7 +59,7 @@ import {AGENT_FOLLOW_UP_QUEUE_STATE_KEY, AGENT_MODE_STATE_KEY, AGENT_MODE_UI_STA
 import type {InvocationErrorInfo, InvocationErrorPhase, ModelChangeEntry, NeuroSessionContext, SessionEntry, SessionEntryDraft, SessionEntryId, SessionMetadata, SessionSnapshot} from "nbook/server/agent/session/types";
 import {SessionCurrentProjectError} from "nbook/server/agent/session/current-project-error";
 import {AgentAbortNotAllowedError} from "nbook/server/agent/session/abort-not-allowed-error";
-import {AgentAbortDurabilityError} from "nbook/server/agent/session/abort-durability-error";
+import {AgentAbortDurabilityError, isAgentAbortDurabilityError} from "nbook/server/agent/session/abort-durability-error";
 import {canonicalSessionModel, projectSessionModelRef, sessionModelsEqual} from "nbook/server/agent/session/session-model";
 import type {DurableSessionModelRef} from "nbook/server/agent/session/session-model-redaction";
 import type {AgentRuntimeHook, AgentRuntimeHookResult, RuntimeSessionFacade} from "nbook/server/agent/profiles/define-agent-runtime";
@@ -1031,6 +1031,7 @@ export class NeuroAgentHarness {
                     {reason},
                     controller,
                 ).catch((error) => {
+                    this.resolveInvocationAbortFailure(sessionId, invocationId, error);
                     void appLogger.warn("agent.invoke.projectCloseAbortFailed", {
                         sessionId,
                         invocationId,
@@ -1266,6 +1267,7 @@ export class NeuroAgentHarness {
                         ? input.signal.reason.message
                         : input.signal?.reason === undefined ? undefined : String(input.signal.reason),
                 }, abortController).catch((error) => {
+                    this.resolveInvocationAbortFailure(input.sessionId, invocationId, error);
                     void appLogger.warn("agent.invoke.signalAbortFailed", {
                         sessionId: input.sessionId,
                         invocationId,
@@ -3545,6 +3547,22 @@ export class NeuroAgentHarness {
     }
 
     /**
+     * 只包真正 abort-owned 的 durable write：已有 AgentAbortDurabilityError 原样透传，
+     * 其余 write error 收敛为可重试 503 领域错误。projection/read/profile/authorization
+     * 错误不属于本 helper 包装范围，由调用方保持原分类。
+     */
+    private async runAbortDurabilityWrite<T>(write: () => Promise<T>): Promise<T> {
+        try {
+            return await write();
+        } catch (error) {
+            if (isAgentAbortDurabilityError(error)) {
+                throw error;
+            }
+            throw new AgentAbortDurabilityError(error);
+        }
+    }
+
+    /**
      * 在一个 Session mutation 临界区内读取并 claim abort。
      * expectedInvocationId 非空时只取消精确 invocation，供父 invocation / Workflow signal 使用。
      */
@@ -3579,10 +3597,10 @@ export class NeuroAgentHarness {
             }
             if (retryingForcedAbort) {
                 if (clearQueue) {
-                    await this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState());
+                    await this.runAbortDurabilityWrite(() => this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState()));
                     this.steerQueues.delete(sessionId);
                 } else {
-                    await this.pauseFollowUps(sessionId, active.invocationId, "aborted");
+                    await this.runAbortDurabilityWrite(() => this.pauseFollowUps(sessionId, active.invocationId, "aborted"));
                 }
                 this.steerableSessions.delete(sessionId);
                 return {
@@ -3598,9 +3616,9 @@ export class NeuroAgentHarness {
                 try {
                     const abortWriteOptions = {suppressEvents: true} satisfies SessionWriteExecutionOptions;
                     if (clearQueue) {
-                        await this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState(), abortWriteOptions);
+                        await this.runAbortDurabilityWrite(() => this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState(), abortWriteOptions));
                     } else {
-                        await this.pauseFollowUps(sessionId, active.invocationId, "aborted", abortWriteOptions);
+                        await this.runAbortDurabilityWrite(() => this.pauseFollowUps(sessionId, active.invocationId, "aborted", abortWriteOptions));
                     }
                     active.status = "aborting";
                     this.steerQueues.delete(sessionId);
@@ -3617,14 +3635,14 @@ export class NeuroAgentHarness {
                     let leafEntries: SessionEntry[] = [];
                     if (existingAborted) {
                         if (snapshot.leafId !== existingAborted.id) {
-                            leafEntries = await this.ensureAutoLeaf(sessionId, existingAborted.id, active.invocationId, abortWriteOptions);
+                            leafEntries = await this.runAbortDurabilityWrite(() => this.ensureAutoLeaf(sessionId, existingAborted.id, active.invocationId, abortWriteOptions));
                         }
                         lifecycleEntries = [existingAborted];
                     } else {
-                        lifecycleEntries = await this.writeLifecycle(sessionId, active.invocationId, "aborted", body.reason, body.reason ? {
+                        lifecycleEntries = await this.runAbortDurabilityWrite(() => this.writeLifecycle(sessionId, active.invocationId, "aborted", body.reason, body.reason ? {
                             message: body.reason,
                             phase: "unknown",
-                        } : undefined, abortWriteOptions);
+                        } : undefined, abortWriteOptions));
                     }
                     finalizationStarted = true;
                     this.finishInvocationState(sessionId, active.invocationId);
@@ -3693,10 +3711,10 @@ export class NeuroAgentHarness {
                 }
             }
             if (clearQueue) {
-                await this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState());
+                await this.runAbortDurabilityWrite(() => this.setFollowUpQueueState(sessionId, this.emptyFollowUpQueueState()));
                 this.steerQueues.delete(sessionId);
             } else {
-                await this.pauseFollowUps(sessionId, active.invocationId, "aborted");
+                await this.runAbortDurabilityWrite(() => this.pauseFollowUps(sessionId, active.invocationId, "aborted"));
             }
             active.status = "aborting";
             this.steerableSessions.delete(sessionId);
@@ -3774,7 +3792,7 @@ export class NeuroAgentHarness {
         if (!pending) {
             return [];
         }
-        return this.executeWritePlanResult({
+        return this.runAbortDurabilityWrite(() => this.executeWritePlanResult({
             target: {sessionId},
             cause: "resolution.abort",
             durability: "savePoint",
@@ -3791,7 +3809,7 @@ export class NeuroAgentHarness {
                     origin: "harness",
                 },
             }],
-        }, invocationId, undefined, options).then((result) => result.entries);
+        }, invocationId, undefined, options)).then((result) => result.entries);
     }
 
     /** 找出此前已落盘但因后续 lifecycle 失败尚未公开的 abort resolution。 */
@@ -6718,6 +6736,38 @@ export class NeuroAgentHarness {
             },
             items: queue.items,
         });
+    }
+
+    /**
+     * internal signal（input AbortSignal / Project close）触发 forced abort 入队同步失败时，
+     * 有界结算公开 invocation 调用方：resolve abort gate 为 retryable error result。
+     * 不伪造 durable success（不设 aborted:true）、不释放 ownership、不 resolve InvocationCompletion、
+     * 不发布 agent_end；ownership 保留给显式 abort 重试或合作 terminal。
+     */
+    private resolveInvocationAbortFailure(sessionId: number, invocationId: string, error: unknown): void {
+        const active = this.activeInvocations.get(sessionId);
+        const ownsActive = active?.invocationId === invocationId;
+        const errorInfo = this.toInvocationErrorInfo(
+            isAgentAbortDurabilityError(error) ? error.message : "invocation abort failed",
+            "unknown",
+        );
+        if (isAgentAbortDurabilityError(error)) {
+            errorInfo.retryable = error.retryable;
+            errorInfo.code = error.code;
+        }
+        const result: AgentInvocationResult = {
+            sessionId,
+            invocationId,
+            status: "error",
+            acceptance: this.invocationAcceptances.get(invocationId)?.value ?? {state: "none"},
+            error: errorInfo.message,
+            errorPhase: errorInfo.phase,
+            errorInfo,
+            elapsedMs: ownsActive && typeof active?.startedAt === "number"
+                ? Math.max(0, Date.now() - active.startedAt)
+                : 0,
+        };
+        this.invocationAbortGates.get(invocationId)?.resolve(result);
     }
 
     /** 强制取消对公开 invocation 调用方的稳定结果。 */
