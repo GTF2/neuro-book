@@ -1622,6 +1622,7 @@ describe("NeuroAgentHarness black-box contract", () => {
             message: {text: "cooperative abort"},
         });
         await providerStarted.promise;
+        const invocationId = (await harness.getSessionRecovery(created.sessionId)).activeInvocation!.invocationId;
         await harness.invokeAgent({
             sessionId: created.sessionId,
             mode: "followup",
@@ -1630,12 +1631,17 @@ describe("NeuroAgentHarness black-box contract", () => {
         const realAppendProjectionEntry = harness.repo.appendProjectionEntry.bind(harness.repo);
         let queueProjectionWrites = 0;
         let terminalQueueFailure = false;
+        let abortedLifecyclesAtTerminalQueueFailure = 0;
         const appendProjectionSpy = vi.spyOn(harness.repo, "appendProjectionEntry").mockImplementation(async (...args: Parameters<JsonlSessionRepository["appendProjectionEntry"]>) => {
             const entry = args[1];
             if (entry.type === "custom" && entry.key === AGENT_FOLLOW_UP_QUEUE_STATE_KEY) {
                 queueProjectionWrites += 1;
                 if (queueProjectionWrites === 2) {
                     terminalQueueFailure = true;
+                    const snapshotAtFailure = await harness.repo.readSession(created.sessionId);
+                    abortedLifecyclesAtTerminalQueueFailure = snapshotAtFailure.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                        && entry.invocationId === invocationId
+                        && entry.status === "aborted").length;
                     throw new Error("cooperative terminal queue persistence unavailable");
                 }
             }
@@ -1652,6 +1658,8 @@ describe("NeuroAgentHarness black-box contract", () => {
             const snapshot = await harness.repo.readSession(created.sessionId);
             expect(result).toMatchObject({status: "error", aborted: true});
             expect(terminalQueueFailure).toBe(true);
+            expect(queueProjectionWrites).toBe(3);
+            expect(abortedLifecyclesAtTerminalQueueFailure).toBe(1);
             expect(lifecycleStatuses(snapshot)).toEqual(["start", "aborted"]);
             expect(snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
                 && entry.invocationId === result.invocationId

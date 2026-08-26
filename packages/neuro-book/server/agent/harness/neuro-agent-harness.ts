@@ -6786,7 +6786,7 @@ export class NeuroAgentHarness {
         };
     }
 
-    /** 在 Session mutation 临界区原子提交 lifecycle，并进入 waiting 或释放 invocation。 */
+    /** 在 Session mutation 临界区提交 lifecycle，并进入 waiting 或释放 invocation。 */
     private async commitInvocationState(input: {
         sessionId: number;
         invocationId: string;
@@ -6807,19 +6807,33 @@ export class NeuroAgentHarness {
             const isAbortedTerminal = input.nextState === "finished"
                 && input.lifecycleStatus === "aborted"
                 && input.pauseReason === "aborted";
-            // aborted lifecycle 必须在对应 queue side effect 成功后落盘；否则 pause 失败进入 failInvocation 重试时会重复 append。
+            // lifecycle append 可能先于后续 queue side effect 成功；每次重试都读取 durable history，不能依赖内存提交标记。
+            let abortedLifecycleExists = false;
             if (isAbortedTerminal) {
-                await this.runAbortDurabilityWrite(() => this.pauseFollowUps(input.sessionId, input.invocationId, "aborted"));
+                const snapshot = await this.repo.readSession(input.sessionId);
+                abortedLifecycleExists = snapshot.entries.some((entry) => entry.type === "invocation_lifecycle"
+                    && entry.invocationId === input.invocationId
+                    && entry.status === "aborted");
             }
-            await this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo);
+            if (!abortedLifecycleExists) {
+                if (isAbortedTerminal) {
+                    await this.runAbortDurabilityWrite(() => this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo));
+                } else {
+                    await this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo);
+                }
+            }
             if (input.nextState === "waiting") {
                 active.status = "waiting";
                 this.settleInvocationRunState(input.sessionId, input.invocationId);
                 await this.publishSessionState(input.sessionId, input.invocationId, true);
                 return true;
             }
-            if (input.pauseReason && !isAbortedTerminal) {
-                await this.pauseFollowUps(input.sessionId, input.invocationId, input.pauseReason);
+            if (input.pauseReason) {
+                if (isAbortedTerminal) {
+                    await this.runAbortDurabilityWrite(() => this.pauseFollowUps(input.sessionId, input.invocationId, "aborted"));
+                } else {
+                    await this.pauseFollowUps(input.sessionId, input.invocationId, input.pauseReason);
+                }
             }
             await this.finishInvocation(input.sessionId, input.invocationId);
             return true;
