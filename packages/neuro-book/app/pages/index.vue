@@ -1310,9 +1310,6 @@ const openProjectFromPicker = async (projectRoot: string): Promise<void> => {
  * 因此其它窗口仍能继续持有同一个 Project。取消时保持 URL 原样，不留下多余的历史记录。
  */
 const openProjectPicker = async (): Promise<void> => {
-    if (isUserAssetsWorkspace.value) {
-        await releaseProjectSurface();
-    }
     await router.push("/");
 };
 
@@ -1929,7 +1926,7 @@ const workspaceRouteSynced = (): boolean => {
             && projectSession.state.value.ready.projectRoot === target.projectRoot;
     }
     // 裸 `/` 只在「未选择 Project」时才算同步；否则（例如从项目页浏览器后退）要走完整切换流程。
-    return !route.query.project && !currentProjectRoot.value;
+    return !route.query.project && !currentProjectRoot.value && !isUserAssetsWorkspace.value;
 };
 
 /**
@@ -2566,7 +2563,6 @@ onBeforeUnmount(() => {
                     :workspace-items="displayNovelItems"
                     @close="activeLeftTab = null"
                     @open-world-engine="openWorldEngineWorkbench"
-                    @open-home="void openProjectPicker()"
                     @switch-workspace="void handleSwitchNovel($event)"
                 />
             </div>
