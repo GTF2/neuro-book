@@ -107,7 +107,7 @@ SSE 与 live state：
 | Idle | abort | Idle | 仅非归档且无匹配 active 时 HTTP 200 idle；无 durable lifecycle、resolution、queue 或终态事件副作用；归档状态始终先返回 409。 |
 | Waiting User | 合作 abort | Idle | 写一次 aborted resolution 与 aborted lifecycle；按 `invocation_aborted -> session_entry -> session_state_changed -> agent_end(aborted)` 发布；按 `clearQueue` 处理 follow-up。 |
 | Running | abort admission | Aborting | 在 mutation 边界内 claim invocation、进入 aborting、触发 AbortSignal；运行锁外等待最多 `150ms` grace。 |
-| Aborting | 合作 terminal | Idle | 合作路径只能提交该 invocation 的唯一 aborted terminal；释放 ownership，按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口。 |
+| Aborting | 合作 terminal | Idle | `clearQueue=false` 时先在同一 SessionWriteExecutor queue 完成 follow-up pause，再写该 invocation 的唯一 aborted lifecycle；终态 pause projection 失败时 lifecycle 尚未写入，重试不得追加第二条；成功后释放 ownership，按 `invocation_aborted -> agent_end(aborted) -> session_state_changed` 收口。 |
 | Aborting | grace 到期且仍拥有 invocation | Idle | forced lifecycle 已被同一 write queue 接受后释放 ownership并发布 `agent_end(aborted)`；物理 write/after-write 完成后发布 state，迟到运行结果被 fence 丢弃。 |
 | Aborting 且 forced plan 可重试 | 重复 abort | Aborting/Idle | 重试同一 plan；同步接受返回 aborted，不重复 grace、resolution、tombstone、lifecycle 或 terminal event；同步失败保持 aborting 并返回 503。 |
 | Aborting 且无可重试 forced plan | 重复 abort | Idle | 幂等返回 idle，不重复写 lifecycle 或事件。 |
@@ -120,7 +120,7 @@ SSE 与 live state：
 
 ## 副作用与数据
 
-- Invocation lifecycle 在历史中最多追加一个匹配 `invocationId` 的 `status: "aborted"` entry。没有显式 `reason` 时不写默认英文错误正文。
+- Invocation lifecycle 在历史中最多追加一个匹配 `invocationId` 的 `status: "aborted"` entry；Running cooperative terminal 的 `clearQueue=false` 必须先持久化 follow-up pause，pause 失败时不得让外层错误路径追加第二条 aborted lifecycle。没有显式 `reason` 时不写默认英文错误正文。
 - Waiting abort 必要时追加一个标记取消的 tool/user resolution；Running forced-abort 不生成 Provider 错误消息或伪造模型结果。
 - abort admission 移除 steerable 标记；terminal 清空残留 steer。`clearQueue: true` 清空 follow-up；`false` 保留 follow-up 并以 `pausedBy={invocationId, reason: "aborted"}` 标记。steer 不随 `clearQueue` 分支保留，不写 history，也不发 `steered`。
 - 唯一 forced lifecycle 以及 waiting partial lifecycle 的 `ensureAutoLeaf` 修复必须经同一个 SessionWriteExecutor 的 per-session write queue；不能直接调用 repository、建立第二把锁或写 projection 旁路。

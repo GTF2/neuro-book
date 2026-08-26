@@ -6804,6 +6804,13 @@ export class NeuroAgentHarness {
             if (!active || active.invocationId !== input.invocationId || (active.status === "aborting" && !completesCancellation)) {
                 return false;
             }
+            const isAbortedTerminal = input.nextState === "finished"
+                && input.lifecycleStatus === "aborted"
+                && input.pauseReason === "aborted";
+            // aborted lifecycle 必须在对应 queue side effect 成功后落盘；否则 pause 失败进入 failInvocation 重试时会重复 append。
+            if (isAbortedTerminal) {
+                await this.runAbortDurabilityWrite(() => this.pauseFollowUps(input.sessionId, input.invocationId, "aborted"));
+            }
             await this.writeLifecycle(input.sessionId, input.invocationId, input.lifecycleStatus, input.error, input.errorInfo);
             if (input.nextState === "waiting") {
                 active.status = "waiting";
@@ -6811,7 +6818,7 @@ export class NeuroAgentHarness {
                 await this.publishSessionState(input.sessionId, input.invocationId, true);
                 return true;
             }
-            if (input.pauseReason) {
+            if (input.pauseReason && !isAbortedTerminal) {
                 await this.pauseFollowUps(input.sessionId, input.invocationId, input.pauseReason);
             }
             await this.finishInvocation(input.sessionId, input.invocationId);

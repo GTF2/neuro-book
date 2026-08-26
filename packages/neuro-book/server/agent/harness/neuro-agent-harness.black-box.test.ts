@@ -1605,6 +1605,78 @@ describe("NeuroAgentHarness black-box contract", () => {
             await running.catch(() => undefined);
         }
     }, 30_000);
+    it("running cooperative abort 的终态 queue pause 失败不重复 aborted lifecycle", async () => {
+        const profileKey = registerPlainProfile(harness, {
+            key: "test.blackbox.cooperative-terminal-queue-failure",
+        });
+        const providerStarted = Promise.withResolvers<void>();
+        faux.setResponses([async () => {
+            providerStarted.resolve();
+            await new Promise((resolve) => setTimeout(resolve, 30));
+            return fauxAssistantMessage("cooperative stopped", {stopReason: "aborted", errorMessage: "ignored"});
+        }]);
+        const created = await harness.createAgent({profileKey, initial: {}});
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "cooperative abort"},
+        });
+        await providerStarted.promise;
+        await harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "followup",
+            message: {text: "preserve after abort"},
+        });
+        const realAppendProjectionEntry = harness.repo.appendProjectionEntry.bind(harness.repo);
+        let queueProjectionWrites = 0;
+        let terminalQueueFailure = false;
+        const appendProjectionSpy = vi.spyOn(harness.repo, "appendProjectionEntry").mockImplementation(async (...args: Parameters<JsonlSessionRepository["appendProjectionEntry"]>) => {
+            const entry = args[1];
+            if (entry.type === "custom" && entry.key === AGENT_FOLLOW_UP_QUEUE_STATE_KEY) {
+                queueProjectionWrites += 1;
+                if (queueProjectionWrites === 2) {
+                    terminalQueueFailure = true;
+                    throw new Error("cooperative terminal queue persistence unavailable");
+                }
+            }
+            return realAppendProjectionEntry(...args);
+        });
+
+        try {
+            await expect(raceTimeout(
+                harness.abortInvocation(created.sessionId, {reason: "cooperative stop", clearQueue: false}),
+                300,
+                "cooperative abort did not settle",
+            )).resolves.toEqual({status: "aborted", sessionId: created.sessionId});
+            const result = await raceTimeout(running, 300, "cooperative invocation did not settle");
+            const snapshot = await harness.repo.readSession(created.sessionId);
+            expect(result).toMatchObject({status: "error", aborted: true});
+            expect(terminalQueueFailure).toBe(true);
+            expect(lifecycleStatuses(snapshot)).toEqual(["start", "aborted"]);
+            expect(snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
+                && entry.invocationId === result.invocationId
+                && entry.status === "aborted")).toHaveLength(1);
+            const recovery = await harness.getSessionRecovery(created.sessionId);
+            expect(recovery).toMatchObject({
+                activeInvocation: null,
+                followUpQueue: {
+                    status: "paused",
+                    pausedBy: {
+                        invocationId: result.invocationId,
+                        reason: "aborted",
+                    },
+                    items: [expect.objectContaining({
+                        kind: "followup",
+                        text: expect.objectContaining({preview: "preserve after abort", omitted: false}),
+                    })],
+                },
+            });
+        } finally {
+            appendProjectionSpy.mockRestore();
+            await running.catch(() => undefined);
+        }
+    }, 30_000);
+
 
     it("Running forced enqueue 同步失败时保留 aborting ownership 并可重试", async () => {
         const profileKey = registerPlainProfile(harness, {
