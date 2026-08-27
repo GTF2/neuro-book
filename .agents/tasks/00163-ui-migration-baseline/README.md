@@ -5,9 +5,9 @@ issueRequired: true
 actionIssueId: 191
 worktreeId: .worktree/t163-ui-migration-baseline
 branchId: test/t163-ui-migration-baseline
-status: verifying
+status: completed
 createdAt: 2026-08-27T01:37:30Z
-updatedAt: 2026-08-27T02:48:05Z
+updatedAt: 2026-08-27T04:17:52Z
 agentWorkflow:
   profile: nbook.agent-skills/v1
   kind: docs
