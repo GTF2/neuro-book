@@ -5,9 +5,9 @@ issueRequired: true
 actionIssueId: 191
 worktreeId: .worktree/t162-ui-foundation-proposal
 branchId: docs/t162-ui-foundation-proposal
-status: planned
+status: completed
 createdAt: 2026-08-27T01:37:30Z
-updatedAt: 2026-08-27T01:56:46Z
+updatedAt: 2026-08-27T04:28:19Z
 agentWorkflow:
   profile: nbook.agent-skills/v1
   kind: design
@@ -46,6 +46,8 @@ agentWorkflow:
 - 不创建或修改Spec、Issue/Project、产品源码、测试源码、配置、依赖、lockfile或生成物。
 - 不重新决定已批准取舍，不实现Issue #191。
 - 不执行push、PR、合并、发布、部署、浏览器人工验收或真实Provider/Model。
+
+行为合同未变：本Task只记录已批准的Proposal，不修改现有产品行为、数据、接口、状态、失败或安全边界；后续实现必须先由planned Spec建立行为合同。
 
 ## 验收
 
