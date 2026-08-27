@@ -45,3 +45,9 @@ createdAt: 2026-08-27T02:20:00Z
 - Proposal 已为 `accepted`；Task README/context 未修改，Spec、源码、测试、配置、依赖、lockfile、生成物未修改。
 - commit 前实际 `git status --short --untracked-files=all` 仅列出上述 Proposal 与本 walkthrough；`git diff --cached --stat` 为 2 files changed、370 insertions；`git diff --cached --check` 无输出。没有为当前事实差异添加任何实现性补丁。
 - 当前 `status: accepted` 仅表示 p-006 的长期方案完成结构检查和逐项语义核对；不表示 Issue #191 的实现、两个 planned Spec、`theme.system` 改版、许可证切换、nbook 数值对齐、Lab、preview 清退或 Product 验收完成。
+
+## 本轮 Leader finding 与修正
+
+- Leader 逐项对照批准计划发现两处 required 语义漂移：`world-engine.preview.vue` 的 owner 不应写成 M；批准边界是 M 仅解耦 N 所需的 mock/data 并提供 M-owned deterministic fixture，workbench-preview SFC 与两页 destination 保持 N-owned pending，由 N 最终完成两页 scenario 证据。另有迁移顺序把 A 写成“先登记两份 planned UI Spec”，实际治理顺序应由 Leader 在 p-006 accepted 后先创建/登记两份 planned Spec 并运行 `docs:check`，再创建 A Task；A 只消费既有 Spec，不创建行为合同。
+- 按要求先将 p-006 从 `accepted` 退回 `reviewing`，只修正上述 Preview 表 owner/去向与迁移顺序；完成针对性语义核对后恢复 `accepted`。未扩写其它方案，未修改 Task README/context、Spec、源码或任何非允许文件。
+- 本轮未运行 `docs:check`、`governance:check`、formatter、lint、typecheck、build 或项目测试；Leader 将统一运行 required 门禁。未执行任何远端写入、push、PR、合并、发布或部署。

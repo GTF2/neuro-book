@@ -194,7 +194,7 @@ A 冻结以下 14 个源路径、每页现有 scenario ID 和 `demo-only | produ
 | --- | --- | --- |
 | `workflow.preview.vue` | O：Agent Composer 的 Workflow Dialog；demo 场景进入 Lab | product-behavior 必须有正式 Dialog/evidence，demo-only 必须有 Lab scene |
 | `world-engine.workbench-preview.vue` | N：World Engine Workbench Host 正式入口；完成正式 rename 后清退旧 preview | product-behavior 必须有 Workbench evidence |
-| `world-engine.preview.vue` | M：World Engine editor/inspector 的 Lab fixture 与既有 API surface | 逐场景登记 Lab 或 formalSurface/evidence |
+| `world-engine.preview.vue` | N：World Engine workbench-preview 两页的 destination 保持 N-owned pending；M 仅解耦所需的 mock/data 并提供 M-owned deterministic fixture | 逐场景登记 N 的 Lab 或 formalSurface/evidence；N 最终完成两页 scenario 证据，M 的 mock/data 不代表正式流完成 |
 | `tsx-profile-editor.preview.vue` | H：Profile Template Editor 的 Lab fixture与正式 editor surface | demo-only 进入 Lab，product-behavior 登记正式 surface |
 | `subject-state-viewer.preview.vue` | M：Subject State viewer 的 deterministic Lab fixture 与既有 API surface | 不把 Lab 通过当作正式 API 行为证据 |
 | `structured-text-editor.preview.vue` | F：StructuredTextEditor Lab fixture与现有消费者 | 正式消费者证据与适用 Lab 场景均需闭合 |
@@ -260,7 +260,7 @@ Lab query 只描述当前 Lab view，不写 Global Config；Lab stage 的颜色�
 
 ### 迁移顺序
 
-1. A 先登记两份 planned UI Spec、冻结 catalog aggregate/types、frontend standard 的组件合同和 14 页逐 scenario baseline；未冻结前不修改 preview 实现。
+1. p-006 accepted 后，Leader 先创建并登记两份 `planned` UI Spec，运行 `docs:check`；两份 Spec 门禁闭合后才创建 A Task。A 只消费已登记的 Spec，冻结 catalog aggregate/types、frontend standard 的组件合同和 14 页逐 scenario baseline；未冻结前不修改 preview 实现。
 2. B 完成许可证目标、nbook 33 变量目标、纯数据 colorways export、依赖/CSS 合同和 JsonViewer 首个消费者；当前实现仍不得跳过 CSS 会合与组件公共合同。
 3. C 将 Global Config、首帧脚本、runtime manager、store、设置、Agent snapshot/patch、Monaco/Diff 和主题宿主一次切到 colorway，原地更新 `theme.system`；删除旧主题编辑器/解析器/快照 authority。
 4. D 建立 Source Dev-only Lab 与 Product exclusion verifier；E–O 按表逐批解耦、补 fixture、写 catalog/registry slice、验证真实 surface 并删除旧引用。
