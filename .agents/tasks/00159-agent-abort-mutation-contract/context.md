@@ -1,6 +1,6 @@
 # 任务上下文（PR #216 review remediation 最终快照）
 
-快照时间：2026-08-26T20:12:50Z
+快照时间：2026-08-27T02:35:56Z
 
 ## 基线与授权
 
@@ -31,6 +31,10 @@
 - `git diff --check`：通过；仅 LF/CRLF 转换警告，无 whitespace error。
 - Task 18 canonical/destination hash：`sha256:fcdac89d9aab62f8f11a7c862902a7f8b7742aeba6d7cd047dc1159eb283e30b`；`sourceSha256` 未变；manifest hash：`sha256:2eb3307366b9ea880d4d69e44c8f84cda2f5b6514cf772238c54aa6fd301d67f`。
 - 最新 durable snapshot 幂等回归见 walkthrough 007：第二次 pause projection 失败点观察到一条精确匹配 `aborted` lifecycle，重试完成第三次 queue projection，最终无重复 lifecycle；新增 cooperative auto-leaf 回归见 walkthrough 008：第二个 `appendLine` 失败点观察到 lifecycle 已落盘且对应 leaf 缺失，重试补齐 active leaf。
+
+## 终态审查补充（2026-08-27）
+
+复核发现 cooperative partial auto-leaf repair 若使用默认 options，会由 `SessionWriteExecutor` 提前发布 `session_state_changed`。实现现改为 `ensureAutoLeaf(..., {suppressEvents: true})`，由 `finishInvocation()` 保持唯一终态 state 发布 owner。黑盒回归按精确 `invocationId` 断言 `invocation_aborted -> agent_end(aborted) -> session_state_changed`，terminal 前无 state 且 terminal 后恰好一个 state；临时移除抑制参数时断言收到 5 个 state 而失败，恢复后通过。完整记录见 walkthrough 009。
 
 ## 预算（保持不变）
 

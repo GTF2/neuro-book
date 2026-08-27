@@ -6,7 +6,7 @@ worktreeId: .worktree/t159-agent-abort-contract
 branchId: feat/t159-agent-abort-contract
 status: completed
 createdAt: 2026-08-25T09:56:19Z
-updatedAt: 2026-08-26T20:12:50Z
+updatedAt: 2026-08-27T02:35:56Z
 agentWorkflow:
   profile: nbook.agent-skills/v1
   kind: bug
@@ -34,7 +34,7 @@ agentWorkflow:
 
 ## 状态
 
-**Completed（PR #216 review remediation）。** 首轮交付已闭合 Agent Session abort 公开合同、方案 B forced fence、waiting retry/recovery、HTTP boundary、SSE ordering 与黑盒证据，并以 commit `88390ba4` 创建 PR #216。本轮先修复 internal-signal durability failure 与合同措辞二义，再复现并修复 running cooperative `clearQueue=false` 终态 queue pause 第二步失败导致重复 `aborted` lifecycle 的窗口，最后补上 durable snapshot 幂等 retry 及其 auto-leaf repair：若 lifecycle 已落盘但后续 auto-leaf append 失败，重试读取 durable snapshot，经同一 `SessionWriteExecutor` 补齐缺失 active leaf，跳过重复 lifecycle 并继续 pause/finish；四份公开合同、Task 18 迁移登记、实现和行为测试均已同步。最终证据见 [walkthrough 008](walkthroughs/008-tasker-2026-08-26_20-12-cooperative-auto-leaf-repair.md)，前一轮 durable snapshot 记录见 [walkthrough 007](walkthroughs/007-tasker-2026-08-26_19-29-durable-retry-idempotency.md)，终态失败记录见 [walkthrough 006](walkthroughs/006-tasker-2026-08-26_17-47-cooperative-terminal-failure.md)，更早 remediation 见 [walkthrough 005](walkthroughs/005-tasker-2026-08-26_14-44-pr216-review-remediation.md)。
+**Completed（PR #216 review remediation）。** 首轮交付已闭合 Agent Session abort 公开合同、方案 B forced fence、waiting retry/recovery、HTTP boundary、SSE ordering 与黑盒证据，并以 commit `88390ba4` 创建 PR #216。本轮先修复 internal-signal durability failure 与合同措辞二义，再复现并修复 running cooperative `clearQueue=false` 终态 queue pause 第二步失败导致重复 `aborted` lifecycle 的窗口，最后补上 durable snapshot 幂等 retry 及其 auto-leaf repair：若 lifecycle 已落盘但后续 auto-leaf append 失败，重试读取 durable snapshot，经同一 `SessionWriteExecutor` 补齐缺失 active leaf，跳过重复 lifecycle 并继续 pause/finish；本轮又修复 cooperative repair 的 SSE 发布顺序，确保 `invocation_aborted -> agent_end(aborted) -> session_state_changed`；四份公开合同、Task 18 迁移登记、实现和行为测试均已同步。最终证据见 [walkthrough 009](walkthroughs/009-reviewer-2026-08-27-sse-order-and-gates.md)，auto-leaf repair 记录见 [walkthrough 008](walkthroughs/008-tasker-2026-08-26_20-12-cooperative-auto-leaf-repair.md)，前一轮 durable snapshot 记录见 [walkthrough 007](walkthroughs/007-tasker-2026-08-26_19-29-durable-retry-idempotency.md)，终态失败记录见 [walkthrough 006](walkthroughs/006-tasker-2026-08-26_17-47-cooperative-terminal-failure.md)，更早 remediation 见 [walkthrough 005](walkthroughs/005-tasker-2026-08-26_14-44-pr216-review-remediation.md)。
 
 ## 背景与目标
 
@@ -83,7 +83,7 @@ Task 147 的 bounded forced-cancellation 实现已经合入当前主线，但取
 - [x] 黑盒合同覆盖 abort endpoint：合作取消与 forced-abort 均有输入、返回、生命周期顺序、终态事件、`activeInvocation: null`、重复取消、迟到结果和 durable recovery 断言。
 - [x] 后续 invocation 的 `start` 不先于旧 invocation 唯一 `aborted` durable lifecycle；forced-abort 授权缺失或 plan 非法时 fail closed。
 - [x] running cooperative `clearQueue=false` 终态在 mutation 临界区按 durable snapshot 幂等提交 lifecycle；注入第二次 pause 失败时 snapshot 已有且仅有一条匹配 `aborted`，重试跳过 lifecycle 并完成 paused queue；另注入 lifecycle 的第二个物理 append（auto-leaf）失败，snapshot 观察到 lifecycle 已存在且对应 leaf 缺失，重试经同一 write queue 补齐唯一 active leaf，最终 activeInvocation 为 `null`。
-- [x] `focused-test`、`regression-test`、`typecheck`、`docs-check`、`governance-check` 和 `diff-check` 全部通过；最新 cooperative auto-leaf repair 证据记录在 [walkthrough 008](walkthroughs/008-tasker-2026-08-26_20-12-cooperative-auto-leaf-repair.md)。
+- [x] `focused-test`、`regression-test`、`typecheck`、`docs-check`、`governance-check` 和 `diff-check` 全部通过；最新 cooperative repair 与顺序审查证据记录在 [walkthrough 009](walkthroughs/009-reviewer-2026-08-27-sse-order-and-gates.md)。
 
 ## 当前基线与证据
 

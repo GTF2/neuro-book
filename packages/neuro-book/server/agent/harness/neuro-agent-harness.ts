@@ -6825,7 +6825,8 @@ export class NeuroAgentHarness {
                 }
             }
             if (isAbortedTerminal && abortedLifecycle && abortedSnapshot?.leafId !== abortedLifecycle.id) {
-                await this.runAbortDurabilityWrite(() => this.ensureAutoLeaf(input.sessionId, abortedLifecycle.id, input.invocationId));
+                // repair 只补 durable leaf；Running terminal 的 session_state_changed 必须由 finishInvocation 在 agent_end(aborted) 后发布。
+                await this.runAbortDurabilityWrite(() => this.ensureAutoLeaf(input.sessionId, abortedLifecycle.id, input.invocationId, {suppressEvents: true}));
             }
             if (input.nextState === "waiting") {
                 active.status = "waiting";

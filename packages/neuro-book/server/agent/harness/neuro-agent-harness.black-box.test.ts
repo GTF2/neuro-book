@@ -1695,6 +1695,7 @@ describe("NeuroAgentHarness black-box contract", () => {
             return fauxAssistantMessage("cooperative partial lifecycle", {stopReason: "aborted", errorMessage: "ignored"});
         }]);
         const created = await harness.createAgent({profileKey, initial: {}});
+        const observer = await observeSession(harness, created.sessionId);
         const running = harness.invokeAgent({
             sessionId: created.sessionId,
             mode: "prompt",
@@ -1750,6 +1751,21 @@ describe("NeuroAgentHarness black-box contract", () => {
                 "cooperative partial lifecycle abort did not settle",
             )).resolves.toEqual({status: "aborted", sessionId: created.sessionId});
             const result = await raceTimeout(running, 300, "cooperative partial lifecycle invocation did not settle");
+            await nextEventLoopTurn();
+            const invocationEvents = observer.events.filter((event) => event.invocationId === invocationId);
+            const abortEventAt = firstIndex(invocationEvents, "invocation_aborted");
+            const terminalEventAt = invocationEvents.findIndex((event, index) => index > abortEventAt
+                && event.event.type === "agent_end"
+                && event.event.status === "aborted");
+            const stateEventAt = invocationEvents.findIndex((event, index) => index > terminalEventAt
+                && event.event.type === "session_state_changed");
+            expect(abortEventAt).toBeGreaterThanOrEqual(0);
+            expect(terminalEventAt).toBeGreaterThan(abortEventAt);
+            expect(stateEventAt).toBeGreaterThan(terminalEventAt);
+            const terminalStateEvents = invocationEvents.filter((event, index) => index > terminalEventAt
+                && event.event.type === "session_state_changed");
+            expect(terminalStateEvents).toHaveLength(1);
+            expect(invocationEvents.slice(abortEventAt + 1, terminalEventAt).some((event) => event.event.type === "session_state_changed")).toBe(false);
             const snapshot = await harness.repo.readSession(created.sessionId);
             const abortedLifecycles = snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
                 && entry.invocationId === invocationId
@@ -1768,6 +1784,7 @@ describe("NeuroAgentHarness black-box contract", () => {
         } finally {
             appendLineSpy.mockRestore();
             await running.catch(() => undefined);
+            await observer.stop();
         }
     }, 30_000);
 
