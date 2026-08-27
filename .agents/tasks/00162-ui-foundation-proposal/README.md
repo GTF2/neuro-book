@@ -5,9 +5,9 @@ issueRequired: true
 actionIssueId: 191
 worktreeId: .worktree/t162-ui-foundation-proposal
 branchId: docs/t162-ui-foundation-proposal
-status: draft
+status: planned
 createdAt: 2026-08-27T01:37:30Z
-updatedAt: 2026-08-27T01:37:30Z
+updatedAt: 2026-08-27T01:56:46Z
 agentWorkflow:
   profile: nbook.agent-skills/v1
   kind: design
