@@ -66,3 +66,9 @@ createdAt: 2026-08-27T02:20:00Z
 - 005：line 312 原先遗漏主题变量 clean cutover 的派生边界。已补明 `--editor-*`、`--source-*`、`--toolbar-bg`、`--chat-ai-bg` 和 `--we-*` 全部从 nb-ui nbook theme + nbook colorway token 派生，删除 sepia 事实源，保留领域派生与无脚本 fallback。
 
 本轮开始前先将 p-006 从 `accepted` 退回 `reviewing`；五项修正均已完成并做了针对性读取、关键词核对与 `git diff --check`。当前 p-006 保持 `reviewing`，Task 00162 保持 `verifying`，等待 Leader 统一实际运行 required 门禁和逐项语义核对；本 Tasker 不自行改回 `accepted`。本轮未修改 Task README/context、Spec、源码、测试、配置、依赖、lockfile 或生成物，未运行 formatter、lint、docs:check、governance:check 或项目测试，未执行 push、PR、远端写入、合并、发布或部署。
+
+## Leader 五项复核与接受
+
+- Leader 在 p-006 保持 `reviewing` 时逐项核对五项 Reviewer material finding 与批准计划原文一致：固定 `build.transpile`；Product module 保留 client Vite/Nitro Rollup 取证及 scratch/operation/sidecar fail-closed 顺序；scene 的 `targetSelector` 为唯一定位合同；P 的 Product build、Desktop smoke、Source Dev browser、Product browser 分项授权及 Product browser 的双授权；主题派生变量和 sepia 事实源边界。未发现新的语义漂移。
+- Leader 实际运行 `bun run docs:check`，结果 `failures: []`、`checkedFiles: 5288`；实际运行 `bun run governance:check`，结果 `failures: []`、`warnings: []`；baseline-to-HEAD、worktree、cached diff checks 均通过。上述结果由 Leader 提供，本 Tasker 未重复运行这些命令。
+- 作为同一 Proposal owner，Leader 门禁 GREEN 后将 p-006 从 `reviewing` 改为 `accepted`。本次只切换 Proposal 状态并记录接受动作，不改变其它正文，不表示 Issue #191 实现、Spec、许可证切换、nbook 数值对齐、Lab、preview 清退或 Product 验收完成；未改 Task README/context，未执行 push 或其它远端动作。

@@ -1,6 +1,6 @@
 # NeuroBook UI Foundation
 
-状态：reviewing
+状态：accepted
 
 关联 Issue：[#191](https://github.com/notnotype/neuro-book/issues/191)
 
