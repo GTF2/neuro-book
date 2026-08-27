@@ -16,4 +16,8 @@ SFC owner候选：C=旧theme删除项，D=ReferenceChip，E=common顶层/dnd-tes
 
 ## 授权边界
 
-当前只授权Leader创建和维护draft文件合同。Tasker尚未获执行授权；push、PR、Issue/Project远端写入、浏览器、合并、发布、部署、真实Provider/Model和数据删除均未授权。
+已授权Tasker在本Task范围内执行只读调查、写入Task直属evidence/walkthrough、运行治理与diff检查并本地commit。未授权产品源码/Proposal/Spec修改、push、PR、Issue/Project远端写入、浏览器、合并、发布、部署、真实Provider/Model和数据删除。
+
+## 接受记录
+
+开发者于`2026-08-27T01:56:46Z`在当前对话逐项选择“接受并派发”，明确接受本Task的目标、范围、依赖、验收和停止条件；Leader据此将`draft`原地改为`planned`。该接受不授权push、PR、远端Issue/Project写入、浏览器、合并、发布或部署。
