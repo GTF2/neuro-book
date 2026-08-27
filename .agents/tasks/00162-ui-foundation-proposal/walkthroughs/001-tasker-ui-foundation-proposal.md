@@ -51,3 +51,8 @@ createdAt: 2026-08-27T02:20:00Z
 - Leader 逐项对照批准计划发现两处 required 语义漂移：`world-engine.preview.vue` 的 owner 不应写成 M；批准边界是 M 仅解耦 N 所需的 mock/data 并提供 M-owned deterministic fixture，workbench-preview SFC 与两页 destination 保持 N-owned pending，由 N 最终完成两页 scenario 证据。另有迁移顺序把 A 写成“先登记两份 planned UI Spec”，实际治理顺序应由 Leader 在 p-006 accepted 后先创建/登记两份 planned Spec 并运行 `docs:check`，再创建 A Task；A 只消费既有 Spec，不创建行为合同。
 - 按要求先将 p-006 从 `accepted` 退回 `reviewing`，只修正上述 Preview 表 owner/去向与迁移顺序；针对性语义修正已完成。当前 p-006 停在 `reviewing`，等待 Leader 实际运行 `docs:check` 并完成逐项语义核对；本 Tasker 不再自行将 Proposal 改回 `accepted`。
 - 本轮未运行 `docs:check`、`governance:check`、formatter、lint、typecheck、build 或项目测试；Leader 将统一运行 required 门禁。未执行任何远端写入、push、PR、合并、发布或部署。
+
+## Leader 门禁与接受
+
+- Leader 在 p-006 保持 `reviewing` 时实际运行 `bun run docs:check`，结果 `failures: []`、`checkedFiles: 5288`；实际运行 `bun run governance:check`，结果 `failures: []`、`warnings: []`；baseline-to-HEAD 与 worktree diff checks 均通过。上述结果由 Leader 提供并作为本轮接受依据，本 Tasker 未重复运行这些命令。
+- Leader 逐项语义核对确认前述两处 finding 已按批准计划修正，未发现新的语义漂移；据此由同一 Proposal owner 将状态从 `reviewing` 改为 `accepted`。此次状态切换不改变其它内容，不表示 Issue #191 实现、Spec、许可证切换、nbook 数值对齐、Lab、preview 清退或 Product 验收完成。
