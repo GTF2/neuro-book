@@ -43,5 +43,5 @@ createdAt: 2026-08-27T02:20:00Z
 ## Commit 前状态
 
 - Proposal 已为 `accepted`；Task README/context 未修改，Spec、源码、测试、配置、依赖、lockfile、生成物未修改。
-- commit 前预期只包含上述 Proposal 与本 walkthrough；没有为当前事实差异添加任何实现性补丁。
+- commit 前实际 `git status --short --untracked-files=all` 仅列出上述 Proposal 与本 walkthrough；`git diff --cached --stat` 为 2 files changed、370 insertions；`git diff --cached --check` 无输出。没有为当前事实差异添加任何实现性补丁。
 - 当前 `status: accepted` 仅表示 p-006 的长期方案完成结构检查和逐项语义核对；不表示 Issue #191 的实现、两个 planned Spec、`theme.system` 改版、许可证切换、nbook 数值对齐、Lab、preview 清退或 Product 验收完成。
