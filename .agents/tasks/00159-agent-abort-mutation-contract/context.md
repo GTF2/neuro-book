@@ -1,6 +1,6 @@
 # 任务上下文（PR #216 review remediation 最终快照）
 
-快照时间：2026-08-27T05:00:00Z
+快照时间：2026-08-27T05:27:40Z
 
 ## 基线与授权
 
@@ -26,7 +26,7 @@
 - focused-test：6 files / 310 passed。
 - regression-test：156 files / 1469 passed。
 - package typecheck：exit code 0。
-- `bun run docs:check`：`failures: []`、`checkedFiles: 5293`。
+- `bun run docs:check`：`failures: []`、`checkedFiles: 5294`。
 - `bun run governance:check`：`failures: []`、`warnings: []`。
 - `git diff --check`：通过；仅 LF/CRLF 转换警告，无 whitespace error。
 - Task 18 canonical/destination hash：`sha256:fcdac89d9aab62f8f11a7c862902a7f8b7742aeba6d7cd047dc1159eb283e30b`；`sourceSha256` 未变；manifest hash：`sha256:2eb3307366b9ea880d4d69e44c8f84cda2f5b6514cf772238c54aa6fd301d67f`。
@@ -34,7 +34,7 @@
 
 ## 终态审查补充（2026-08-27）
 
-复核确认 sequence 009 与 010 已完成且保持原文。此前旧实现目标回归确实失败，但没有保留可审计的具体 received 数 trace，因此不再陈述具体 state 数量；当前测试恢复 `abortEventAt >= 0` 与 `terminalEventAt > abortEventAt`，保留 terminal 前区间无 state，并只统计 terminal 后 `terminalStateEvents` 恰好一次。实现继续使用 `ensureAutoLeaf(..., {suppressEvents: true})`。最终校正与验证记录见 walkthrough 011。
+复核确认 sequence 009 与 010 已完成且保持原文。sequence 009 的“repair state 可能先于 `agent_end(aborted)`”仅保留为历史风险判断，不作为本轮实测事实；sequence 010 的本轮实际回归是 terminal 后 `terminalStateEvents=2`，且 `invocation_aborted -> agent_end(aborted)` 区间内的无 state 断言通过。此前旧实现目标回归的其它具体 received 数量没有可审计 trace，因此不继续陈述；当前测试恢复 `abortEventAt >= 0` 与 `terminalEventAt > abortEventAt`，并只统计 terminal 后 `terminalStateEvents` 恰好一次。实现继续使用 `ensureAutoLeaf(..., {suppressEvents: true})`。最新语义校正与验证记录见 [walkthrough 012](walkthroughs/012-reviewer-2026-08-27_05-25-sse-evidence-boundary.md)，数量记录校正见 [walkthrough 011](walkthroughs/011-reviewer-2026-08-27-red-evidence-correction.md)。
 
 ## 预算（保持不变）
 
