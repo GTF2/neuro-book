@@ -1,6 +1,6 @@
 # NeuroBook UI Foundation
 
-状态：accepted
+状态：reviewing
 
 关联 Issue：[#191](https://github.com/notnotype/neuro-book/issues/191)
 
@@ -68,7 +68,7 @@ Issue #191 因此需要一次有明确 owner、可逆批次和证据门禁的底
 
 #### 1. nb-ui 包与主应用接入
 
-B 批次将 `packages/nb-ui/package.json` 的许可证目标改为 `AGPL-3.0-only`，用仓库 AGPL-3.0-only 正文替换包内许可证文件，版本继续为 `0.2.0-alpha.0`，不发布。主应用增加精确 workspace 依赖，获得依赖安装授权后才更新 lockfile；Nuxt CSS 顺序为 reset → `@notnotype/nb-ui/styles.css` → 领域样式，必要时为 linked package 加入 transpile。
+B 批次将 `packages/nb-ui/package.json` 的许可证目标改为 `AGPL-3.0-only`，用仓库 AGPL-3.0-only 正文替换包内许可证文件，版本继续为 `0.2.0-alpha.0`，不发布。主应用增加精确 workspace 依赖，获得依赖安装授权后才更新 lockfile；Nuxt CSS 顺序为 reset → `@notnotype/nb-ui/styles.css` → 领域样式；Nuxt `build.transpile` 固定加入 `@notnotype/nb-ui`，不以“必要时”作为可选接入。
 
 主应用只从 nb-ui 的公开 `components`、`composables`、`colorway`、`theme`、`themes/nbook` 和纯数据 `themes/nbook/colorways` 入口显式导入；不创建 re-export、alias 或 adapter。主应用不启用 `@notnotype/nb-ui/nuxt`，因此不会把库的自动组件/组合式注册隐式带入 Product。首个消费者固定为 `JsonViewer.vue` 的六个图标按钮：逐项使用公开 `IconButton`，保持 title、disabled、click、iconClass、aria-label、外部 props/emits 和 JSON 编辑行为；若公开合同不能覆盖其中一项，B 停止迁移并先修 nb-ui 公共合同，不在应用内补例外。
 
@@ -98,7 +98,7 @@ Global Config 是唯一持久化 authority：不建立 cookie/localStorage 镜�
 
 #### 3. 仅 Source Dev 的 NeuroBook Component Lab
 
-D 批次新建并由 `nuxt.config.ts` 显式导入 `modules/neuro-book-lab.ts`。module 在 dev 环境只注册 `/lab` → `dev/lab/pages/lab.vue`；Product 分支不注册 `/lab`，且 Product 构建的 client/Nitro graph、module IDs、imports 和文本都不得包含 Lab 路径、sentinel、fixture 名称或 dev/lab 资产。Product builder 用受控 scratch root、operation identity、source digest 和 sidecar 逐项验证，不以“压缩后字符串搜不到”代替模块图验证。
+D 批次新建并由 `nuxt.config.ts` 显式导入 `modules/neuro-book-lab.ts`。module setup 不得在 Product 环境整体 `return`：仅当 `nuxt.options.dev === true` 时通过 `extendPages` 添加 `/lab` → `dev/lab/pages/lab.vue`；Product 构建仍注册 client Vite 与 Nitro Rollup 取证 plugins，分别把 chunk/moduleIds/imports 写入 `context.scratchRoot`。Builder 必须保证 scratch 位于 fresh operation `imageRoot` 内并拒绝已有 operation；D 的 sidecar 用 `wx` 创建并携带当前 `operationId`/`sourceDigest`，verifier 对两张图逐项匹配，任一图缺失、identity 不匹配或含 Lab 路径/sentinel/fixture 即 fail closed 并删除整个候选。成功后 Builder 删除 scratch，再复查 manifest/ready；禁止自动扫描、runtime env 或 middleware 隐藏路由。
 
 A 批次独占 catalog aggregate/types，D 批次独占 `registry.ts`、destination aggregate、module、client/Nitro 证据和 verifier；E–O 只能修改自己的 slice。catalog 的公开类型固定为：
 
@@ -155,7 +155,6 @@ export type NeuroBookLabScene = {
 ```
 
 非法 query 值 replace 为 catalog 首项、scene 默认值、responsive 和当前有效 nbook 配色；刷新恢复，Back 不返回非法 URL。Lab stage 独立 `applyColorway`，Lab chrome 继承 app 配色；Lab 不调用 `setColorway`、Config API、Pinia 或 storage，query 也不修改 Global Config。fixture 通过 `lab-event` 报告交互，并在挂载/场景切换后触发 `rendered` 以刷新 inspector。
-每个可展示 fixture 的核心交互节点还必须绑定 `id="nb-lab-target"`，供 inspector 定位和高亮；组件目录与 registry slice 的职责边界保持唯一，不能由 D 或后续批次另建第二份 catalog 真相源。
 
 #### 4. 组件解耦与真实 surface
 
@@ -207,7 +206,7 @@ A 冻结以下 14 个源路径、每页现有 scenario ID 和 `demo-only | produ
 | `dnd.preview.vue` | E：`dnd-test/**` experimental catalog slice 与 fixtures | demo-only 必须有 Lab scene/test |
 | `diff-workbench.preview.vue` | F：DiffWorkbench 正式消费者与 Lab fixture | formalSurface/evidence 与适用 Lab scene 闭合 |
 
-`demo-only` 场景必须有 Lab component/scene/test；`product-behavior` 场景必须有 formalSurface/evidence test，Lab 可选。P 只有在 14 项逐 scenario 解析、所有 destination/evidence 合法、catalog `pending=0`、正式入口行为不低于迁移前并完成 Product 构建及真实 surface 证据后，才删除源页面、旧 preview 链接、样式和 mock。普通业务词中出现的 `preview` 不计入这 14 项归零门禁。
+`demo-only` 场景必须有 Lab component/scene/test；`product-behavior` 场景必须有 formalSurface/evidence test，Lab 可选。P 只有在 14 项逐 scenario 解析、所有 destination/evidence 合法、catalog `pending=0`、正式入口行为不低于迁移前并完成 Product 构建及真实 surface 证据后，才删除源页面、旧 preview 链接、样式和 mock。P 的 Product build、Desktop smoke、Source Dev browser、Product browser 是分开的授权；Product browser 还必须同时具备 Product build 授权与 browser 授权。缺任一 required 授权或证据，P 必须保持 `blocked`，不得写入 `notRun`。普通业务词中出现的 `preview` 不计入这 14 项归零门禁。
 
 ### 方案二：继续使用应用内本地组件，只复制 nb-ui 的视觉 token
 
@@ -309,7 +308,7 @@ Proposal accepted 后，由 Leader 建立两个唯一的 `planned` Spec，并在
 - **状态与转换**：未认证或 system 为 system；认证 bootstrap 从 Global Config 恢复 preference；并发 bootstrap 幂等共享 promise；保存成功更新 authority 和投影；保存失败恢复上一 preference 并通知；媒体变化只更新 system 投影；不允许循环或第二次无依据重绘。
 - **副作用与数据**：Global Config 是唯一持久化 authority；pre-hydration 只应用首帧变量；运行时 manager 负责唯一媒体订阅和应用；不写 cookie/localStorage 镜像，不维持旧 theme/customThemes snapshot。
 - **失败与恢复**：浏览器不可用时明确 fallback `nbook-dark`；config 读取失败保持 system；保存失败回滚上一值并通知；非法 Agent patch 或旧输入被拒绝/忽略，不能写入无效 colorway；nbook 变量或 CSS 会合未通过时 C 停止，不能用 macosTheme 或本地颜色补洞。
-- **边界与兼容**：Product 只安装 nbookTheme，不安装 macosTheme；`.novel-ide-theme` 只保留为 overlay/teleport 结构 class；`--we-*` 继续是唯一 World Engine 别名层映射，分类色板和编辑器内部语法色不进入公共 colorway。
+- **边界与兼容**：Product 只安装 nbookTheme，不安装 macosTheme；`.novel-ide-theme` 只保留为 overlay/teleport 结构 class；`--we-*` 继续是唯一 World Engine 别名层映射，分类色板和编辑器内部语法色不进入公共 colorway。`--editor-*`、`--source-*`、`--toolbar-bg`、`--chat-ai-bg` 和 `--we-*` 全部从 nb-ui nbook theme + nbook colorway token 派生；删除 sepia 事实源，保留领域派生与无脚本 fallback。
 - **验收与 Smoke**：33 个 nbook/macOS colorway vars 逐项相等、纯数据入口无 CSS 副作用、旧 theme/customThemes 消费归零、config/bootstrap/openAPI/Agent patch 合同一致、未认证 system 首帧无 FOUC、认证显式值恰好一次纠正、媒体实时跟随、保存失败回滚、Monaco/Diff/settings/Notification 真实 surface 行为与全 required focused tests/typecheck 证据闭合。
 
 ### Preview baseline 与后续 Task 的接口

@@ -56,3 +56,13 @@ createdAt: 2026-08-27T02:20:00Z
 
 - Leader 在 p-006 保持 `reviewing` 时实际运行 `bun run docs:check`，结果 `failures: []`、`checkedFiles: 5288`；实际运行 `bun run governance:check`，结果 `failures: []`、`warnings: []`；baseline-to-HEAD 与 worktree diff checks 均通过。上述结果由 Leader 提供并作为本轮接受依据，本 Tasker 未重复运行这些命令。
 - Leader 逐项语义核对确认前述两处 finding 已按批准计划修正，未发现新的语义漂移；据此由同一 Proposal owner 将状态从 `reviewing` 改为 `accepted`。此次状态切换不改变其它内容，不表示 Issue #191 实现、Spec、许可证切换、nbook 数值对齐、Lab、preview 清退或 Product 验收完成。
+
+## verifying 阶段 Reviewer finding 与修正
+
+- 独立 Reviewer 正式结论为 `incorrect`，指出以下 5 项 material finding；001：line 71 原先把 `build.transpile` 写成“必要时”，未满足固定接入合同。已改为 Nuxt `build.transpile` 固定加入 `@notnotype/nb-ui`。
+- 002：line 101 原先没有完整表达 Product 保留 client Vite/Nitro Rollup 取证 plugins、scratch/operation/imageRoot containment、已有 operation 拒绝、`wx` sidecar identity、双图缺失或含 Lab 时 fail closed、候选整体删除以及成功后清理 scratch 并复查 manifest/ready。已补齐该完整顺序与失败边界。
+- 003：line 158 原先新增了未获批准的固定 `id="nb-lab-target"` 要求。已删除；scene 已有的 `targetSelector` 是唯一定位合同，不再添加第二个固定选择器要求。
+- 004：line 210/P 原先未把 Product build、Desktop smoke、Source Dev browser、Product browser 的授权拆开，也未明确 Product browser 同时需要 Product build 与 browser 授权。已补齐分项授权、缺任一 required 授权或证据即保持 `blocked`，且不得写入 `notRun`。
+- 005：line 312 原先遗漏主题变量 clean cutover 的派生边界。已补明 `--editor-*`、`--source-*`、`--toolbar-bg`、`--chat-ai-bg` 和 `--we-*` 全部从 nb-ui nbook theme + nbook colorway token 派生，删除 sepia 事实源，保留领域派生与无脚本 fallback。
+
+本轮开始前先将 p-006 从 `accepted` 退回 `reviewing`；五项修正均已完成并做了针对性读取、关键词核对与 `git diff --check`。当前 p-006 保持 `reviewing`，Task 00162 保持 `verifying`，等待 Leader 统一实际运行 required 门禁和逐项语义核对；本 Tasker 不自行改回 `accepted`。本轮未修改 Task README/context、Spec、源码、测试、配置、依赖、lockfile 或生成物，未运行 formatter、lint、docs:check、governance:check 或项目测试，未执行 push、PR、远端写入、合并、发布或部署。
