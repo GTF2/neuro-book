@@ -1,7 +1,7 @@
 {
   "schema": "nbook.ui-preview-scenario-baseline/v1",
   "taskId": "00163-ui-migration-baseline",
-  "scanRevision": "4849416b9455679b19246cc25be198d7413ffff8",
+  "scanRevision": "fcfe0a0f445f8cf269b7ed052a38b1adb86e623b",
   "sourceGlob": "packages/neuro-book/app/pages/*.preview.vue",
   "expectedSourcePaths": [
     "packages/neuro-book/app/pages/diff-workbench.preview.vue",
@@ -43,270 +43,681 @@
     "exactMatch": true
   },
   "scenarioCoverage": {
-    "scenarioCount": 14,
-    "uniqueScenarioIdCount": 14,
+    "scenarioCount": 31,
+    "uniqueScenarioIdCount": 31,
     "duplicateScenarioIds": [],
     "pagesWithoutScenario": [],
     "allPagesHaveScenario": true,
     "byKind": {
-      "demo-only": 10,
-      "product-behavior": 4
+      "product-behavior": 5,
+      "demo-only": 26
+    },
+    "byPage": {
+      "workflow.preview.vue": 6,
+      "world-engine.workbench-preview.vue": 1,
+      "world-engine.preview.vue": 1,
+      "tsx-profile-editor.preview.vue": 1,
+      "subject-state-viewer.preview.vue": 1,
+      "structured-text-editor.preview.vue": 1,
+      "plot.preview.vue": 4,
+      "plot-workbench.preview.vue": 1,
+      "plot-tree.preview.vue": 1,
+      "plot-timeline.preview.vue": 3,
+      "model-settings.preview.vue": 1,
+      "plot-thread.preview.vue": 1,
+      "dnd.preview.vue": 2,
+      "diff-workbench.preview.vue": 7
+    },
+    "byOwnerTask": {
+      "O": 6,
+      "N": 2,
+      "H": 1,
+      "M": 1,
+      "F": 8,
+      "K": 9,
+      "L": 1,
+      "J": 1,
+      "E": 2
     }
   },
-  "destinationContract": "product-behavior 必须迁入 formalSurface 并补 evidence；demo-only 必须迁入确定性 Lab fixture；本 evidence 只冻结候选 destination，不宣称迁移完成。",
+  "granularityContract": "稳定页面 key、组件 view key、document id 或可独立触发且有独立行为/迁移证据的入口逐条冻结；theme、viewport、readonly、side-by-side、size 和参数变体不拆。",
+  "ownerContract": "最终迁移 destination owner 由路径/已接受 Task 边界决定；World Engine 两页分别保留场景，最终 destination/evidence 均归 N，M 仅提供 mock/data/deterministic fixture，不产生 M/N 双 owner。",
+  "destinationContract": "product-behavior 必须迁入 formalSurface 并补真实 evidence；demo-only 必须迁入确定性 Lab fixture；本 evidence 只冻结候选 destination，不宣称迁移完成。",
   "scenarios": [
     {
-      "id": "preview.workflow.formal-catalog-run",
+      "id": "preview.workflow.formal-catalog",
       "page": "workflow.preview.vue",
       "kind": "product-behavior",
-      "trigger": "选择已有 Project Workspace 与可选模型，点击“运行正式 Workflow”；也可从经典场景卡点击“运行”",
-      "input": "Project 列表、Workflow Catalog、argsHint、模型选择；经典场景使用服务端 scenarioKey 与 speedFactor",
-      "fixture": "正式路径依赖已有 Project/模型/API；经典路径由 workflow-demo API 提供确定性场景（页面同时标记真模型场景可能产生费用）",
-      "observable": "Catalog 卡片、Project ready 状态、运行记录与 WorkflowRunPanel 展示；错误消息显示在页面；经典运行显示实时运行视图",
-      "formalSurface": "Agent Composer 的 Workflow Dialog / 正式 Workflow 入口（由 Task O 迁移）",
+      "trigger": "选择已有 Project Workspace 与可选模型，待 Project ready 后从正式 Catalog 卡片点击“运行正式 Workflow”",
+      "input": "Project 列表、Workflow Catalog、argsHint、模型选择和各 workflow 参数",
+      "fixture": "真实 Project Workspace、Workflow Catalog 与 /api/agent/workflow/runs；无本地 mock fixture",
+      "observable": "Catalog 卡片、Project ready 状态、正式 run 历史、后台 Job 状态和 WorkflowRunPanel 的实时状态/ask/错误",
+      "formalSurface": "Agent Composer 的正式 Workflow 运行 surface（Task O）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/workflow.preview.vue#L245",
-        "packages/neuro-book/app/pages/workflow.preview.vue#L286",
-        "packages/neuro-book/app/pages/workflow.preview.vue#L429"
+        "packages/neuro-book/app/pages/workflow.preview.vue#L137-L185",
+        "packages/neuro-book/app/pages/workflow.preview.vue#L245-L284",
+        "packages/neuro-book/app/pages/workflow.preview.vue#L429-L499",
+        "packages/neuro-book/server/api/agent/workflow/runs.post.ts#L32-L76"
       ],
       "unverified": [
-        "未浏览器运行；正式 API、Project/session 与真实模型的端到端状态未在本 Task 验证"
-      ]
+        "未调用正式 Workflow API、真实 Project/session 或真实模型；端到端状态、费用和持久化未在本 Task 验证"
+      ],
+      "ownerTask": "O"
+    },
+    {
+      "id": "preview.workflow.demo.split-book",
+      "page": "workflow.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在经典场景卡选择稳定 key `split-book`，可编辑参数（无额外参数）并点击“运行”",
+      "input": "scenarioKey=split-book、演示 speedFactor 与服务端 Workflow ask/投影状态",
+      "fixture": "DEMO_BOOK、splitBook 定义、MockAgentPort responders 和内存 workspace；不访问真实 Project/模型",
+      "observable": "逐章并发摘要、剧情分析 if 分支、人工圈选 ask、第二次文风扇出、phase/trace/session 观测和缓存命中",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/workflow.preview.vue#L91-L105",
+        "packages/neuro-book/app/pages/workflow.preview.vue#L286-L301",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L116-L193",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-service.ts#L349-L387"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 workflow-demo API；ask resume、并发完成顺序和缓存投影未在本 Task 验证"
+      ],
+      "ownerTask": "O",
+      "labFixture": "Workflow split-book deterministic Lab fixture（Task O）"
+    },
+    {
+      "id": "preview.workflow.demo.write-pipeline",
+      "page": "workflow.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在经典场景卡选择稳定 key `write-pipeline`，填写 brief 后点击“运行”",
+      "input": "scenarioKey=write-pipeline、brief、演示 speedFactor",
+      "fixture": "writePipeline 定义、writer/critic/worldUpdater MockAgentPort responders；不访问真实模型",
+      "observable": "writer 初稿、critic 最多四轮循环、轮次耗尽人工 approve ask、World Engine 收尾一次和失败/完成状态",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/workflow.preview.vue#L517-L540",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L195-L244"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 workflow-demo API；critic 轮次、approve 恢复和收尾状态未在本 Task 验证"
+      ],
+      "ownerTask": "O",
+      "labFixture": "Workflow write-pipeline deterministic Lab fixture（Task O）"
+    },
+    {
+      "id": "preview.workflow.demo.rp-turn",
+      "page": "workflow.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在经典场景卡选择稳定 key `rp-turn`，填写本回合输入后点击“运行”",
+      "input": "scenarioKey=rp-turn、userInput、演示 speedFactor；跨 run 的 acquire tag 是场景语义",
+      "fixture": "rpTurn 定义、leader/actor MockAgentPort responders 和确定性 dispatch；不访问真实模型",
+      "observable": "leader acquire、actor 并发扇出、角色反应、leader 汇总结算、session 复用日志和关系图",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/workflow.preview.vue#L517-L540",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L246-L288"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 workflow-demo API；跨 run session 复用、并发角色顺序和汇总未在本 Task 验证"
+      ],
+      "ownerTask": "O",
+      "labFixture": "Workflow rp-turn deterministic Lab fixture（Task O）"
+    },
+    {
+      "id": "preview.workflow.demo.sidecar-context",
+      "page": "workflow.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在经典场景卡选择稳定 key `sidecar-context`，填写 packet 后点击“运行”",
+      "input": "scenarioKey=sidecar-context、packet、服务端为场景准备的 caller session",
+      "fixture": "sidecarContext 定义、caller excursion 树分支、retrieval MockAgentPort responder；不访问真实模型",
+      "observable": "同一 caller session 的主线/旁支图、探针检索、结论 append 回主线和可追溯日志",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/workflow.preview.vue#L517-L540",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L290-L323"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 workflow-demo API；caller 创建、excursion 分支与 append 恢复未在本 Task 验证"
+      ],
+      "ownerTask": "O",
+      "labFixture": "Workflow sidecar-context deterministic Lab fixture（Task O）"
+    },
+    {
+      "id": "preview.workflow.real-fanout",
+      "page": "workflow.preview.vue",
+      "kind": "product-behavior",
+      "trigger": "在经典场景卡选择稳定 key `real-fanout`，填写真实 profile/topic 后点击“运行”",
+      "input": "scenarioKey=real-fanout、profileKey、topic、默认或输入 angles；真实模型与 harness",
+      "fixture": "真实 profile、Provider/Model 与真实 NeuroBook session；无确定性 mock responder",
+      "observable": "每个角度一个真实 session 并发问答、reduce 真实 agent 汇总、session IDs/usage/trace 观测和模型错误",
+      "formalSurface": "Agent Composer 的正式 Workflow 运行 surface（Task O）",
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/workflow.preview.vue#L406-L412",
+        "packages/neuro-book/app/pages/workflow.preview.vue#L517-L550",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L325-L368",
+        "packages/neuro-book/server/agent/workflow/workflow-demo-scenarios.ts#L411-L420"
+      ],
+      "unverified": [
+        "未运行真实 profile、Provider/Model、workflow-demo API 或浏览器；费用、延迟、并发和真实 session 持久化未在本 Task 验证"
+      ],
+      "ownerTask": "O"
     },
     {
       "id": "preview.world-engine-workbench.review-drafts",
       "page": "world-engine.workbench-preview.vue",
       "kind": "demo-only",
-      "trigger": "选择 slice/subject、过滤 status/kind/search、点击 drafts、Inspector、mutation editor 与 issue triage 控件",
-      "input": "确定性 mock schema、subjects、slices、snapshots；浏览器 localStorage 中 version 4 mock 草稿可恢复",
-      "fixture": "mockWorkbenchSchema、mockWorkbenchSubjects、cloneMockWorkbenchSlices/cloneMockWorkbenchSnapshots；无真实 API",
-      "observable": "侧栏过滤与 subject stats、slice review queue、Inspector/Mutation Editor 展示与更新、草稿计数和 triage 状态提示；mock reset 可恢复",
-      "formalSurface": "World Engine Workbench Host 正式入口（Task N）；当前 source 属 demo-only",
+      "trigger": "选择稳定 mock slice/subject，使用 subject/kind/health/search/review 过滤并打开 Inspector、Mutation Editor、issue triage 控件",
+      "input": "mock schema、subjects、slices、snapshots、稳定 slice/subject IDs、localStorage v4 草稿状态",
+      "fixture": "cloneMockWorkbenchSlices、cloneMockWorkbenchSnapshots、mockWorkbenchSchema、mockWorkbenchSubjects；不连接真实 API",
+      "observable": "侧栏 subject stats、slice review queue、Inspector/Mutation Editor、metadata/value 草稿、issue triage、mock reset 和刷新恢复",
+      "formalSurface": "World Engine Workbench Host 正式 surface（Task N）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L318",
-        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L413",
-        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L571",
-        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L788"
+        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L73-L105",
+        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L317-L336",
+        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L395-L410",
+        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L571-L648",
+        "packages/neuro-book/app/pages/world-engine.workbench-preview.vue#L788-L903"
       ],
       "unverified": [
-        "未浏览器运行；localStorage 恢复与响应式布局仅静态推断"
-      ]
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 localStorage 恢复、mock 状态重算和面板拖拽；M/N 迁移交接未在本 Task 验证"
+      ],
+      "ownerTask": "N",
+      "labFixture": "World Engine Workbench deterministic mock Lab fixture（fixture/data Task M；最终迁移 Task N）",
+      "fixtureOwnerTask": "M"
     },
     {
       "id": "preview.world-engine.project-mutation-query",
       "page": "world-engine.preview.vue",
       "kind": "product-behavior",
-      "trigger": "刷新/选择或创建 Project；创建 subject；写入/编辑/删除 slice；填写 subject/type/attrs 后查询状态",
-      "input": "Project API、World Engine schema/subjects/slices/state query 请求；表单 time/title/summary/kind/patches",
+      "trigger": "选择或创建 Project，待 Project ready 后创建 subject、写入/编辑/删除 slice，并按 subject/type/attrs 查询状态",
+      "input": "Project Workspace、World Engine schema/subjects/slices/state API；subject、slice、mutation builder 和 query 表单",
       "fixture": "真实 Project Workspace 与 World Engine API；无静态 mock fixture",
-      "observable": "Project ready、schema/subjects/slices/state、issues、成功/失败提示和恢复状态在三列面板呈现",
-      "formalSurface": "World Engine 正式 Workbench/editor host（Task M/N）",
+      "observable": "Project ready、schema/subjects/slices/state、create/write/edit/delete 结果、issues、冲突恢复和状态查询结果",
+      "formalSurface": "World Engine 正式 Workbench/editor host（Task N）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L324",
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L406",
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L512",
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L579",
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L668",
-        "packages/neuro-book/app/pages/world-engine.preview.vue#L1190"
+        "packages/neuro-book/app/pages/world-engine.preview.vue#L287-L322",
+        "packages/neuro-book/app/pages/world-engine.preview.vue#L324-L348",
+        "packages/neuro-book/app/pages/world-engine.preview.vue#L451-L503",
+        "packages/neuro-book/app/pages/world-engine.preview.vue#L512-L706",
+        "packages/neuro-book/app/pages/world-engine.preview.vue#L1152-L1264"
       ],
       "unverified": [
-        "未调用真实 API 或浏览器；接口成功/冲突恢复与数据持久化未在本 Task 验证"
-      ]
+        "未调用真实 Project/World Engine API 或浏览器；接口成功/冲突恢复、数据持久化和状态查询未在本 Task 验证"
+      ],
+      "ownerTask": "N"
     },
     {
       "id": "preview.profile-template.visual-edit",
       "page": "tsx-profile-editor.preview.vue",
       "kind": "product-behavior",
-      "trigger": "挂载可视化编辑器，使用模板/节点/Inspector/Preview 对话框等编辑控件",
-      "input": "mode=user-profile、preferred-template=builtin/leader.assets.profile.tsx、thread-profile-key=leader.assets；Profile API/编辑器状态",
-      "fixture": "页面未声明本地 mock；编辑器依赖 profile catalog/runtime",
-      "observable": "ProfileTemplateVisualEditor 的模板画布、组件库、Inspector、source/preview 与状态反馈",
+      "trigger": "挂载固定 user-profile 编辑器，选择模板/节点，使用组件库、Inspector、source、Preview、校验/编译/保存控件",
+      "input": "mode=user-profile、preferred-template=builtin/leader.assets.profile.tsx、thread-profile-key=leader.assets；Profile API 与编辑器状态",
+      "fixture": "页面未声明本地 mock；依赖 profile catalog、source-draft、compile/preview API 与可选 session",
+      "observable": "模板画布、组件库、节点/属性编辑、source/preview 消息、变量、校验/编译/保存状态和错误反馈",
       "formalSurface": "Profile Template Editor 正式 surface（Task H）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/tsx-profile-editor.preview.vue#L18"
+        "packages/neuro-book/app/pages/tsx-profile-editor.preview.vue#L15-L19",
+        "packages/neuro-book/app/components/profile-template-editor/ProfileTemplateVisualEditor.vue#L455-L490",
+        "packages/neuro-book/app/components/profile-template-editor/ProfileTemplateVisualEditor.vue#L534-L648",
+        "packages/neuro-book/app/components/profile-template-editor/ProfileTemplateVisualEditor.vue#L1083-L1249",
+        "packages/neuro-book/app/components/profile-template-editor/ProfileTemplateVisualEditor.vue#L2192-L2274"
       ],
       "unverified": [
-        "未浏览器运行；模板 API、拖拽与保存行为未在本 Task 验证"
-      ]
+        "未调用 Profile API、真实 session 或浏览器；模板加载、拖拽、编译、保存和 preview 未在本 Task 验证"
+      ],
+      "ownerTask": "H"
     },
     {
       "id": "preview.subject-state.viewer",
       "page": "subject-state-viewer.preview.vue",
       "kind": "demo-only",
-      "trigger": "挂载页面并展开/查看 subject 属性层级、引用、集合与空值信息",
-      "input": "固定 subject_elena_001、character schema、属性值和 subject name map",
-      "fixture": "页面内 mockSchemaType、mockState、mockSubjectNameMap；无 API/storage",
-      "observable": "Subject State Viewer 展示 scalar/object/collection/list、引用名称及默认/未定义属性提示",
+      "trigger": "挂载固定 subject fixture，查看并展开 Subject State Viewer 的属性层级、引用、集合和空值行",
+      "input": "subject_elena_001、character schema、固定 attrs、subjectNameMap；WorldEngineSubjectStateViewer 的 rootEntries/child rows",
+      "fixture": "页面内 mockSchemaType、mockState、mockSubjectNameMap；不访问 API/storage",
+      "observable": "scalar/object/list/collection 展示、对象展开/收起、引用名称解析、默认值和 undefined 提示",
       "formalSurface": null,
-      "labFixture": "World Engine Subject State Viewer deterministic Lab fixture（Task M）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/subject-state-viewer.preview.vue#L7",
-        "packages/neuro-book/app/pages/subject-state-viewer.preview.vue#L84"
+        "packages/neuro-book/app/pages/subject-state-viewer.preview.vue#L7-L72",
+        "packages/neuro-book/app/pages/subject-state-viewer.preview.vue#L75-L90",
+        "packages/neuro-book/app/components/novel-ide/world-engine/WorldEngineSubjectStateViewer.vue#L15-L21",
+        "packages/neuro-book/app/components/novel-ide/world-engine/WorldEngineSubjectStateViewerRow.vue#L1-L45"
       ],
       "unverified": [
-        "未浏览器运行；键盘/ARIA 与视觉密度未验证"
-      ]
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证"
+      ],
+      "ownerTask": "M",
+      "labFixture": "World Engine Subject State Viewer deterministic Lab fixture（Task M）"
     },
     {
       "id": "preview.structured-text.modes-and-triggers",
       "page": "structured-text-editor.preview.vue",
       "kind": "demo-only",
-      "trigger": "切换富文本/源码、小/中尺寸、格式工具与主题；编辑 Markdown；触发 @/$/ 命令菜单",
-      "input": "固定 Markdown（含引用、scene scheme、inline comment、粗斜体与 code）、本地 resolveReference/resolveMenu",
-      "fixture": "页面内 markdown 与 resolveReference/resolveMenu 确定性 fixture；不访问 workspace/API",
-      "observable": "StructuredTextEditor 在 rich/source 模式同步内容，格式工具与菜单可见，右侧 Markdown 预览随内容更新",
-      "formalSurface": "StructuredTextEditor 现有消费者；迁移后的 Lab fixture（Task F）",
+      "trigger": "在同一 StructuredTextEditor fixture 切换 rich/source、编辑 Markdown，并触发 @/$/ 菜单；尺寸、格式工具和主题作为参数",
+      "input": "固定 Markdown、editorMode、resolveReference、resolveMenu、quick triggers、editorSize/showFormatToolbar",
+      "fixture": "页面内 markdown、resolveReference/resolveMenu 确定性 fixture；不访问 workspace/API",
+      "observable": "rich/source 双向内容、格式工具、引用/skill/command 菜单、inline comment 和右侧源码预览",
+      "formalSurface": null,
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L11",
-        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L44",
-        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L209"
+        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L9-L22",
+        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L41-L147",
+        "packages/neuro-book/app/pages/structured-text-editor.preview.vue#L154-L226"
       ],
       "unverified": [
-        "未浏览器运行；TipTap/Monaco 实际同步与菜单键盘行为未验证"
-      ]
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 TipTap/Monaco 实例；rich/source 同步、快捷键和菜单选择未在本 Task 验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "StructuredTextEditor deterministic Lab fixture（Task F）"
     },
     {
-      "id": "preview.plot.workspace-views",
+      "id": "preview.plot.workspace.locator",
       "page": "plot.preview.vue",
       "kind": "demo-only",
-      "trigger": "切换 Plot 视图、选中对象、重置预览状态与主题",
-      "input": "PlotWorkspacePreview 内存 mock 数据与 workspaceRevision 重建",
-      "fixture": "PlotWorkspacePreview 自有 mock 数据；页面不发 API",
-      "observable": "Plot 正式视图骨架、共享选中态、视图切换和重置后的默认态",
-      "formalSurface": "Plot 正式 panel（Task K/L）",
-      "labFixture": "Plot workspace view Lab scene（Task K/L）",
+      "trigger": "在 PlotWorkspacePreview 的稳定 view key `locator` 选择线索视图、搜索并选择 Phase/Thread",
+      "input": "plotPreviewDataset、activeView=locator、locatorQuery、共享 phase/thread/scene/chapter selection",
+      "fixture": "PlotWorkspacePreview 内存 mock dataset；页面不发 API",
+      "observable": "PlotLocatorView 的 Story/Phase/Thread 导航、搜索过滤、选中态同步和 Inspector 聚焦 Thread",
+      "formalSurface": "PlotLocatorView 正式 Plot surface（Task K）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/plot.preview.vue#L23",
-        "packages/neuro-book/app/pages/plot.preview.vue#L80"
+        "packages/neuro-book/app/components/novel-ide/plot/PlotViewSwitcher.vue#L19-L24",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L21-L29",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L364-L380"
       ],
       "unverified": [
-        "未浏览器运行；视图交互及窄屏行为未验证"
-      ]
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot locator deterministic Lab fixture（Task K）"
+    },
+    {
+      "id": "preview.plot.workspace.thread",
+      "page": "plot.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在 PlotWorkspacePreview 的稳定 view key `thread` 选择线程视图，选择 Thread/Scene 并跳转章节",
+      "input": "plotPreviewDataset、activeView=thread、共享 thread/scene/chapter selection",
+      "fixture": "PlotWorkspacePreview 内存 mock dataset；页面不发 API",
+      "observable": "PlotThreadView 的 Thread/Scene 排列、Scene 选择、跳转 Chapter 和 Inspector 聚焦",
+      "formalSurface": "PlotThreadView 正式 Plot surface（Task K）",
+      "sourceEvidence": [
+        "packages/neuro-book/app/components/novel-ide/plot/PlotViewSwitcher.vue#L19-L24",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L382-L392"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot thread-view deterministic Lab fixture（Task K）"
+    },
+    {
+      "id": "preview.plot.workspace.chapter",
+      "page": "plot.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在 PlotWorkspacePreview 的稳定 view key `chapter` 选择章节视图，选择 Chapter/Scene 并同步共享选中态",
+      "input": "plotPreviewDataset、activeView=chapter、chapter/scene selection",
+      "fixture": "PlotWorkspacePreview 内存 mock dataset；页面不发 API",
+      "observable": "PlotChapterView 的章节/Scene 结构、选中章节、Scene 定位和 Inspector 聚焦",
+      "formalSurface": "PlotChapterView 正式 Plot surface（Task K）",
+      "sourceEvidence": [
+        "packages/neuro-book/app/components/novel-ide/plot/PlotViewSwitcher.vue#L19-L24",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L394-L403"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot chapter-view deterministic Lab fixture（Task K）"
+    },
+    {
+      "id": "preview.plot.workspace.tree",
+      "page": "plot.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在 PlotWorkspacePreview 的稳定 view key `tree` 选择树图视图并选择 Thread/Scene 节点",
+      "input": "plotPreviewDataset 派生 treeGraph、activeView=tree、共享 thread/scene selection",
+      "fixture": "PlotWorkspacePreview 内存 mock dataset；PlotTreeView editable=false，页面不发 API",
+      "observable": "PlotTreeView 的 Thread/Scene 图、节点选中、边关系和 Inspector 聚焦",
+      "formalSurface": "PlotTreeView 正式 Plot surface（Task K）",
+      "sourceEvidence": [
+        "packages/neuro-book/app/components/novel-ide/plot/PlotViewSwitcher.vue#L19-L24",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L62-L116",
+        "packages/neuro-book/app/components/novel-ide/plot/PlotWorkspacePreview.vue#L405-L413"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot workspace tree deterministic Lab fixture（Task K）"
     },
     {
       "id": "preview.plot.workbench-dialog",
       "page": "plot-workbench.preview.vue",
       "kind": "demo-only",
-      "trigger": "挂载 PlotWorkbenchPreviewWorkspace，查看 Dialog 工作台与剧情大纲侧边栏",
-      "input": "PlotWorkbenchPreviewWorkspace mock 数据、本地选中态和主题按钮",
-      "fixture": "组件内 mock 数据；页面不发 API",
-      "observable": "Dialog 工作台、Plot sidebar、mock selection 与主题切换",
+      "trigger": "挂载 PlotWorkbenchPreviewWorkspace，点击“打开剧本工作台”并操作 sidebar/Dialog 中稳定 Thread/Scene 选择",
+      "input": "plotPreviewDataset、extra thread/scene IDs、selectedThreadId/selectedSceneId、Dialog visibility",
+      "fixture": "PlotWorkbenchPreviewWorkspace 内 memory mock 数据；页面不发 API",
+      "observable": "剧情大纲 sidebar、PlotWorkbenchDialog、Thread/Scene 选择、创建/编辑/排序/菜单和 Dialog 状态",
       "formalSurface": "PlotWorkbenchDialog 正式 surface（Task L）",
-      "labFixture": "Plot workbench Lab scene（Task L）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/plot-workbench.preview.vue#L52",
-        "packages/neuro-book/app/pages/plot-workbench.preview.vue#L62"
+        "packages/neuro-book/app/pages/plot-workbench.preview.vue#L23-L63",
+        "packages/neuro-book/app/components/novel-ide/plot/workbench/PlotWorkbenchPreviewWorkspace.vue#L18-L121",
+        "packages/neuro-book/app/components/novel-ide/plot/workbench/PlotWorkbenchPreviewWorkspace.vue#L428-L450"
       ],
       "unverified": [
-        "未浏览器运行；Dialog 打开、焦点和键盘行为未验证"
-      ]
+        "未运行浏览器；Dialog 打开/关闭、焦点、键盘和 mock 编辑状态未验证"
+      ],
+      "ownerTask": "L",
+      "labFixture": "Plot workbench deterministic Lab fixture（Task L）"
     },
     {
       "id": "preview.plot.tree-view",
       "page": "plot-tree.preview.vue",
       "kind": "demo-only",
-      "trigger": "挂载 PlotTreePreviewWorkspace，查看 Thread/Scene 树图与主题",
-      "input": "PlotTreePreviewWorkspace 内存 mock 图数据；页面不发 API",
-      "fixture": "组件内主线/fork/支线/游离 Scene mock 数据",
-      "observable": "Vue Flow 树图、Thread 内链路、游离 Scene、主题切换",
+      "trigger": "挂载 PlotTreePreviewWorkspace，选择稳定 Thread/Scene 节点并使用 toolbar/layout/结构编辑动作",
+      "input": "plotTreePreviewGraph（主线、fork、支线、游离 Scene）、graph selection、editable tree actions",
+      "fixture": "plot-tree.preview-data.ts 内存 mock graph；页面不发 API",
+      "observable": "Vue Flow 节点/边、Thread 内单链、游离 Scene、节点新增/删除/移动/布局和 Inspector",
       "formalSurface": "PlotTreeView 正式 view（Task K）",
-      "labFixture": "Plot tree Lab scene（Task K）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/plot-tree.preview.vue#L51",
-        "packages/neuro-book/app/pages/plot-tree.preview.vue#L61"
+        "packages/neuro-book/app/pages/plot-tree.preview.vue#L23-L61",
+        "packages/neuro-book/app/components/novel-ide/plot/tree/PlotTreePreviewWorkspace.vue#L12-L87",
+        "packages/neuro-book/app/components/novel-ide/plot/tree/PlotTreePreviewWorkspace.vue#L90-L118"
       ],
       "unverified": [
-        "未浏览器运行；Vue Flow 布局和鼠标/键盘交互未验证"
-      ]
+        "未运行浏览器；Vue Flow 布局、鼠标/键盘拖拽和结构编辑未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot tree deterministic Lab fixture（Task K）"
     },
     {
-      "id": "preview.plot.timeline-view",
       "page": "plot-timeline.preview.vue",
       "kind": "demo-only",
-      "trigger": "挂载 PlotTimelinePreviewWorkspace，查看 StoryPhase、Thread 泳道、Scene 槽位与草稿尾区",
-      "input": "PlotTimelinePreviewWorkspace 内存 mock 数据；页面不发 API",
-      "fixture": "组件内 StoryPhase/Thread/Scene mock 数据",
-      "observable": "横向时间轴、章节分段背景、草稿尾区与主题切换",
       "formalSurface": "PlotTimelineView 正式 view（Task K）",
-      "labFixture": "Plot timeline Lab scene（Task K）",
+      "ownerTask": "K",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/plot-timeline.preview.vue#L51",
-        "packages/neuro-book/app/pages/plot-timeline.preview.vue#L62"
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L15-L22",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L123-L135",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L208-L223"
       ],
+      "id": "preview.plot.timeline.phase-arrival",
+      "trigger": "点击 StoryPhase 稳定 key `phase-arrival` 按钮，选择该阶段的 Thread/Scene",
+      "input": "plotPreviewDataset、phaseId=phase-arrival、selectedThreadId/selectedSceneId/selectedChapterId",
+      "fixture": "plotPreviewDataset 内存 mock；buildPlotTimelinePhaseView 为 phase-arrival 派生 timeline，不发 API",
+      "observable": "第一幕抵港与入笼对应的章节段、主线 Thread 泳道、Scene 槽位和 Inspector 首选项同步",
       "unverified": [
-        "未浏览器运行；横向溢出、滚动和响应式布局未验证"
-      ]
+        "未运行浏览器；phase-arrival 时间轴布局、滚动和响应式行为未验证"
+      ],
+      "labFixture": "Plot timeline phase-arrival deterministic Lab fixture（Task K）"
+    },
+    {
+      "page": "plot-timeline.preview.vue",
+      "kind": "demo-only",
+      "formalSurface": "PlotTimelineView 正式 view（Task K）",
+      "ownerTask": "K",
+      "sourceEvidence": [
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L15-L22",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L123-L135",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L208-L223"
+      ],
+      "id": "preview.plot.timeline.phase-unlock",
+      "trigger": "点击 StoryPhase 稳定 key `phase-unlock` 按钮，选择该阶段的 Thread/Scene",
+      "input": "plotPreviewDataset、phaseId=phase-unlock、selectedThreadId/selectedSceneId/selectedChapterId",
+      "fixture": "plotPreviewDataset 内存 mock；buildPlotTimelinePhaseView 为 phase-unlock 派生 timeline，不发 API",
+      "observable": "第二幕钥匙与反咬对应的章节段、旧钥匙 Thread 泳道、Scene 槽位和 Inspector 首选项同步",
+      "unverified": [
+        "未运行浏览器；phase-unlock 时间轴布局、滚动和响应式行为未验证"
+      ],
+      "labFixture": "Plot timeline phase-unlock deterministic Lab fixture（Task K）"
+    },
+    {
+      "page": "plot-timeline.preview.vue",
+      "kind": "demo-only",
+      "formalSurface": "PlotTimelineView 正式 view（Task K）",
+      "ownerTask": "K",
+      "sourceEvidence": [
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L15-L22",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L123-L135",
+        "packages/neuro-book/app/components/novel-ide/plot/timeline/PlotTimelinePreviewWorkspace.vue#L208-L223"
+      ],
+      "id": "preview.plot.timeline.phase-burning",
+      "trigger": "点击 StoryPhase 稳定 key `phase-burning` 按钮，选择该阶段的 Thread/Scene",
+      "input": "plotPreviewDataset、phaseId=phase-burning、selectedThreadId/selectedSceneId/selectedChapterId",
+      "fixture": "plotPreviewDataset 内存 mock；buildPlotTimelinePhaseView 为 phase-burning 派生 timeline，不发 API",
+      "observable": "第三幕焚港与改名对应的章节段、情感 Thread 泳道、Scene 槽位和 Inspector 首选项同步",
+      "unverified": [
+        "未运行浏览器；phase-burning 时间轴布局、滚动和响应式行为未验证"
+      ],
+      "labFixture": "Plot timeline phase-burning deterministic Lab fixture（Task K）"
     },
     {
       "id": "preview.settings.model-provider",
       "page": "model-settings.preview.vue",
       "kind": "product-behavior",
-      "trigger": "挂载模型设置面板，操作 Provider 表单、模型分组、远程发现与健康检查；可重置组件状态",
-      "input": "NovelIdeModelSettingsPanel 内部配置/Provider API 与 panelRevision",
-      "fixture": "页面明确写明直接走真实 /api/config，不使用 mock",
-      "observable": "Provider/model 表单、分组列表、发现/健康检查状态及错误反馈",
+      "trigger": "挂载固定 Model Settings panel，选择 Provider/model，操作远程发现、健康检查、编辑、启停、保存和重置",
+      "input": "NovelIdeModelSettingsPanel 默认 global scope、Provider/model 配置、真实 /api/config 数据与 panelRevision",
+      "fixture": "页面明确不使用 mock，依赖真实配置 API 和 Provider/Model 环境",
+      "observable": "Provider 表单、默认模型、可见模型、模型分组、发现/健康检查、校验问题、保存/恢复/删除反馈",
       "formalSurface": "Settings/Account 正式 surface（Task J）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/model-settings.preview.vue#L22",
-        "packages/neuro-book/app/pages/model-settings.preview.vue#L80"
+        "packages/neuro-book/app/pages/model-settings.preview.vue#L19-L29",
+        "packages/neuro-book/app/pages/model-settings.preview.vue#L31-L81",
+        "packages/neuro-book/app/components/novel-ide/settings/NovelIdeModelSettingsPanel.vue#L385-L595",
+        "packages/neuro-book/app/components/novel-ide/settings/NovelIdeModelSettingsPanel.vue#L612-L700"
       ],
       "unverified": [
-        "未浏览器运行；真实配置 API、Provider/Model 与健康检查未验证"
-      ]
+        "未调用真实 /api/config、Provider/Model 或浏览器；配置读写、发现、健康检查和敏感字段展示未在本 Task 验证"
+      ],
+      "ownerTask": "J"
     },
     {
       "id": "preview.plot.thread-panel",
       "page": "plot-thread.preview.vue",
       "kind": "demo-only",
-      "trigger": "挂载单 Thread 侧边栏，查看 Scene 纵向排列与底部详情面板",
-      "input": "PlotThreadPanelPreviewWorkspace 内存 mock 数据；页面不发 API",
-      "fixture": "组件内单 Thread/Scene mock 数据",
-      "observable": "Scene 纵向侧边栏、选中态、底部详情面板和主题切换",
+      "trigger": "挂载 PlotThreadPanelPreviewWorkspace，选择稳定 Thread/Scene，打开详情/编辑器/上下文菜单并重排 Scene",
+      "input": "plotPreviewDataset、Thread/Scene IDs、selectedThreadId/selectedSceneId、editor mode/context menu state",
+      "fixture": "PlotThreadPanelPreviewWorkspace 内存 mock 数据；页面不发 API",
+      "observable": "单 Thread 纵向 Scene 列表、选中态、底部详情、Thread/Scene editor、上下文菜单、创建/删除/重排",
       "formalSurface": "Plot thread panel 正式 view（Task K）",
-      "labFixture": "Plot thread panel Lab scene（Task K）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/plot-thread.preview.vue#L52",
-        "packages/neuro-book/app/pages/plot-thread.preview.vue#L62"
+        "packages/neuro-book/app/pages/plot-thread.preview.vue#L23-L63",
+        "packages/neuro-book/app/components/novel-ide/plot/thread-panel/PlotThreadPanelPreviewWorkspace.vue#L22-L40",
+        "packages/neuro-book/app/components/novel-ide/plot/thread-panel/PlotThreadPanelPreviewWorkspace.vue#L129-L219",
+        "packages/neuro-book/app/components/novel-ide/plot/thread-panel/PlotThreadPanelPreviewWorkspace.vue#L241-L335"
       ],
       "unverified": [
-        "未浏览器运行；详情展开/收起和窄屏行为未验证"
-      ]
+        "未运行浏览器；详情展开/收起、Dialog 焦点、上下文菜单和窄屏行为未验证"
+      ],
+      "ownerTask": "K",
+      "labFixture": "Plot thread panel deterministic Lab fixture（Task K）"
+    },
+    {
+      "id": "preview.dnd.volume-reorder",
+      "page": "dnd.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 volume IDs 上拖拽篇卡片，观察篇级排序并在取消时回滚",
+      "input": "createDndTestVolumes 的 volume-1…volume-4、Pointer/Keyboard sensor、volume drag payload",
+      "fixture": "dnd-test.data.ts 的四篇确定性 volumes（含空篇）；页面不发 API",
+      "observable": "篇级拖拽排序、空篇落点、activeVolumeId 提示、volume snapshot 回滚和树结构更新",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/dnd.preview.vue#L25-L45",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L91-L105",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L142-L157",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L184-L192",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L224-L229",
+        "packages/neuro-book/app/components/dnd-test/dnd-test.data.ts#L6-L67"
+      ],
+      "unverified": [
+        "未运行浏览器；pointer/keyboard drag 事件、空篇落点和跨浏览器行为未验证"
+      ],
+      "ownerTask": "E",
+      "labFixture": "dnd-test volume reorder deterministic Lab fixture（Task E）"
     },
     {
       "id": "preview.dnd.chapter-batch-drag",
       "page": "dnd.preview.vue",
       "kind": "demo-only",
-      "trigger": "点击/Shift/Ctrl(Cmd) 选择章节，拖拽篇或章节，跨篇移动并取消拖拽观察回滚",
-      "input": "createDndTestVolumes()、章节/篇选择、pointer/keyboard sensors、drag start/over/end payload",
-      "fixture": "dnd-test createDndTestVolumes 确定性数据；页面不发 API",
-      "observable": "批量 selection、跨篇排序、dragHint、树结构 JSON、取消拖拽回滚和 reset",
+      "trigger": "在稳定 chapter IDs 上点击/Shift/Ctrl(Cmd) 选择章节，再拖拽单章或选区跨篇移动，取消时观察回滚",
+      "input": "createDndTestVolumes 的 chapter-1…chapter-12、selection anchor、chapter drag payload 和 cross-volume target",
+      "fixture": "dnd-test.data.ts 的章节树、selection helpers、Pointer/Keyboard sensors；页面不发 API",
+      "observable": "单选/多选/连选、批量跨篇移动、chapter drag hint、章节顺序快照、取消回滚和 reset",
       "formalSurface": null,
-      "labFixture": "dnd-test experimental catalog slice Lab fixture（Task E）",
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/dnd.preview.vue#L42",
-        "packages/neuro-book/app/pages/dnd.preview.vue#L319"
+        "packages/neuro-book/app/pages/dnd.preview.vue#L25-L45",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L50-L86",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L117-L137",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L159-L206",
+        "packages/neuro-book/app/pages/dnd.preview.vue#L232-L238",
+        "packages/neuro-book/app/components/dnd-test/dnd-test.data.ts#L13-L43"
       ],
       "unverified": [
-        "未浏览器运行；真实 pointer/keyboard DnD 事件及跨浏览器行为未验证"
-      ]
+        "未运行浏览器；pointer/keyboard DnD、多选修正和跨篇排序事件未验证"
+      ],
+      "ownerTask": "E",
+      "labFixture": "dnd-test chapter batch drag deterministic Lab fixture（Task E）"
     },
     {
-      "id": "preview.diff-workbench.modes-and-merge",
+      "id": "preview.diff-workbench.markdown",
       "page": "diff-workbench.preview.vue",
       "kind": "demo-only",
-      "trigger": "选择 Markdown/TSX/JSON/二进制样例，切换主题、side-by-side、whitespace、merge readonly、语言与 diff 结果",
-      "input": "7 个静态 DiffWorkbenchDocument sample（含长文本、冲突 marker、binary metadata）",
-      "fixture": "页面内 samples 数组；明确 mock data，不访问真实 workspace",
-      "observable": "文件选择、Diff/Merge 面板、二进制摘要、result content 更新与当前结果预览",
-      "formalSurface": "DiffWorkbench 正式消费者与 Lab fixture（Task F）",
-      "labFixture": "DiffWorkbench deterministic Lab scene（Task F）",
+      "trigger": "在稳定 document id `markdown` 选择 Markdown 章节冲突样例，查看 diff/merge 结果",
+      "input": "samples[markdown]：base/current/incoming/result 内容和 markdown language",
+      "fixture": "diff-workbench.preview.vue 的静态 samples；不访问真实 workspace",
+      "observable": "Markdown side-by-side diff、merge result 编辑/保存动作和结果预览",
+      "formalSurface": null,
       "sourceEvidence": [
-        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L18",
-        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L203"
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L18-L30",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
       ],
       "unverified": [
-        "未浏览器运行；Monaco 加载、merge 编辑和二进制摘要视觉行为未验证"
-      ]
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；diff/merge 计算和 result 更新未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench markdown deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.profile",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `profile` 选择 TSX Profile 用户覆盖样例，查看 diff/merge 结果",
+      "input": "samples[profile]：current/incoming/result 内容和 typescript language",
+      "fixture": "diff-workbench.preview.vue 的静态 samples；不访问真实 workspace",
+      "observable": "TSX syntax diff、merge mode、结果内容更新和当前结果预览",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L31-L42",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；TSX language override 和 merge 结果未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench profile deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.json",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `json` 选择 JSON Config 冲突样例，查看嵌套字段合并",
+      "input": "samples[json]：base/current/incoming/result JSON 内容",
+      "fixture": "diff-workbench.preview.vue 的静态 samples；不访问真实 workspace",
+      "observable": "JSON diff、嵌套字段 merge 结果、result 内容更新和预览",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L43-L54",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；JSON diff/merge 语义未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench JSON deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.deleted",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `deleted` 选择真实文件已删除样例，查看空 incoming 与保留内容",
+      "input": "samples[deleted]：currentContent、空 incomingContent、resultContent",
+      "fixture": "diff-workbench.preview.vue 的静态 samples；不访问真实 workspace",
+      "observable": "删除态差异、保留网页内容的 merge 结果和结果预览",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L55-L65",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；删除态和 merge result 行为未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench deleted-file deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.markers",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `markers` 选择冲突 Marker 样例，查看 marker 文本与手动结果",
+      "input": "samples[markers]：current/incoming/result 中的 conflict marker 文本",
+      "fixture": "diff-workbench.preview.vue 的静态 samples；不访问真实 workspace",
+      "observable": "冲突 marker diff、手动整理后的 result 内容和结果预览",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L66-L75",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；冲突 marker 渲染/编辑未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench conflict-marker deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.long",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `long` 选择长文本样例，查看大范围差异与滚动",
+      "input": "samples[long]：120 行 current/incoming 动态生成文本",
+      "fixture": "diff-workbench.preview.vue 的静态长文本 samples；不访问真实 workspace",
+      "observable": "长文本 diff、高亮变更、滚动区域和结果预览",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L77-L86",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L187-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；长文本性能、滚动和高亮未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench long-text deterministic Lab fixture（Task F）"
+    },
+    {
+      "id": "preview.diff-workbench.binary",
+      "page": "diff-workbench.preview.vue",
+      "kind": "demo-only",
+      "trigger": "在稳定 document id `binary` 选择不可 Diff 二进制样例，查看摘要而不初始化可编辑 diff",
+      "input": "samples[binary]：diffable=false、unavailableReason=binary、bytes/SHA metadata",
+      "fixture": "diff-workbench.preview.vue 的静态 binary metadata；不访问真实 workspace",
+      "observable": "二进制不可 diff 提示、摘要 metadata、不会显示 Monaco 内容编辑器",
+      "formalSurface": null,
+      "sourceEvidence": [
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L87-L104",
+        "packages/neuro-book/app/pages/diff-workbench.preview.vue#L201-L219"
+      ],
+      "unverified": [
+        "未运行浏览器；页面交互、视觉布局和响应式行为未验证",
+        "未运行 Monaco；binary summary 与禁用模式视觉行为未验证"
+      ],
+      "ownerTask": "F",
+      "labFixture": "DiffWorkbench binary-summary deterministic Lab fixture（Task F）"
     }
   ]
 }
