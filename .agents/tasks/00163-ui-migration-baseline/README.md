@@ -46,6 +46,8 @@ agentWorkflow:
 - 不创建Lab catalog/registry、fixture或preview迁移实现。
 - 不把静态推断伪装成运行证据；无法确认的行为标记`inference`或`unverified`。
 
+行为合同未变：本Task只冻结当前源码的静态迁移基线证据，不修改产品行为、数据、接口、状态、失败或安全边界；后续实现仍由p-006与planned Spec建立行为合同。
+
 ## 依赖
 
 依赖PR #217治理revision `9e54e5d3`；可与00162并行，文件零重叠。后续A–P实现Task依赖本基线，但本Task不依赖p-006正文完成。
