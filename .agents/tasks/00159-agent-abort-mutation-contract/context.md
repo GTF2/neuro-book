@@ -1,6 +1,6 @@
 # 任务上下文（PR #216 review remediation 最终快照）
 
-快照时间：2026-08-27T02:35:56Z
+快照时间：2026-08-27T04:07:00Z
 
 ## 基线与授权
 
@@ -26,7 +26,7 @@
 - focused-test：6 files / 310 passed。
 - regression-test：156 files / 1469 passed。
 - package typecheck：exit code 0。
-- `bun run docs:check`：`failures: []`、`checkedFiles: 5290`。
+- `bun run docs:check`：`failures: []`、`checkedFiles: 5292`。
 - `bun run governance:check`：`failures: []`、`warnings: []`。
 - `git diff --check`：通过；仅 LF/CRLF 转换警告，无 whitespace error。
 - Task 18 canonical/destination hash：`sha256:fcdac89d9aab62f8f11a7c862902a7f8b7742aeba6d7cd047dc1159eb283e30b`；`sourceSha256` 未变；manifest hash：`sha256:2eb3307366b9ea880d4d69e44c8f84cda2f5b6514cf772238c54aa6fd301d67f`。
@@ -34,7 +34,7 @@
 
 ## 终态审查补充（2026-08-27）
 
-复核发现 cooperative partial auto-leaf repair 若使用默认 options，会由 `SessionWriteExecutor` 提前发布 `session_state_changed`。实现现改为 `ensureAutoLeaf(..., {suppressEvents: true})`，由 `finishInvocation()` 保持唯一终态 state 发布 owner。黑盒回归按精确 `invocationId` 断言 `invocation_aborted -> agent_end(aborted) -> session_state_changed`，terminal 前无 state 且 terminal 后恰好一个 state；临时移除抑制参数时断言收到 5 个 state 而失败，恢复后通过。完整记录见 walkthrough 009。
+复核发现 cooperative partial auto-leaf repair 若使用默认 options，会由 `SessionWriteExecutor` 提前发布 `session_state_changed`。实现现改为 `ensureAutoLeaf(..., {suppressEvents: true})`，由 `finishInvocation()` 保持唯一终态 state 发布 owner。黑盒回归按精确 `invocationId` 断言 `invocation_aborted -> agent_end(aborted) -> session_state_changed`，先验证两条终端事件存在且顺序正确，再断言 terminal 前无 state、terminal 后恰好一个 state；临时移除抑制参数时 terminal 后 state 集合为 2，唯一终态 state 断言失败，未将 prepare/lifecycle 的全生命周期 state 计入该合同。完整记录见 walkthrough 010。
 
 ## 预算（保持不变）
 

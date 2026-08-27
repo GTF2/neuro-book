@@ -1757,15 +1757,12 @@ describe("NeuroAgentHarness black-box contract", () => {
             const terminalEventAt = invocationEvents.findIndex((event, index) => index > abortEventAt
                 && event.event.type === "agent_end"
                 && event.event.status === "aborted");
-            const stateEventAt = invocationEvents.findIndex((event, index) => index > terminalEventAt
-                && event.event.type === "session_state_changed");
             expect(abortEventAt).toBeGreaterThanOrEqual(0);
             expect(terminalEventAt).toBeGreaterThan(abortEventAt);
-            expect(stateEventAt).toBeGreaterThan(terminalEventAt);
+            expect(invocationEvents.slice(abortEventAt + 1, terminalEventAt).some((event) => event.event.type === "session_state_changed")).toBe(false);
             const terminalStateEvents = invocationEvents.filter((event, index) => index > terminalEventAt
                 && event.event.type === "session_state_changed");
             expect(terminalStateEvents).toHaveLength(1);
-            expect(invocationEvents.slice(abortEventAt + 1, terminalEventAt).some((event) => event.event.type === "session_state_changed")).toBe(false);
             const snapshot = await harness.repo.readSession(created.sessionId);
             const abortedLifecycles = snapshot.entries.filter((entry) => entry.type === "invocation_lifecycle"
                 && entry.invocationId === invocationId
