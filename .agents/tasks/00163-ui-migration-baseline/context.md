@@ -10,7 +10,7 @@
 
 ## 当前合同
 
-Issue #191是唯一聚合根；本Task与00162直接共享`actionIssueId: 191`，无父Task。本Task当前为draft，不可派发。它只冻结当前证据，不创造产品行为合同。
+Issue #191是唯一聚合根；本Task与00162直接共享`actionIssueId: 191`，无父Task。本Task已由开发者逐项接受并处于`planned`，可按只读证据合同派发；它只冻结当前证据，不创造产品行为合同。
 
 SFC owner候选：C=旧theme删除项，D=ReferenceChip，E=common顶层/dnd-test，F=form/low-code-form/diff，G=markdown-studio，H=profile-template-editor，I=novel-ide壳/workspace/rag/history/jobs/ai/profile，J=settings/account/admin，K=Plot顶层/tree/timeline/thread，L=Plot workbench/planning/chapter-panel，M=World Engine叶子，N=workbench-preview/host，O=agent/workflow。冲突必须报告。
 
