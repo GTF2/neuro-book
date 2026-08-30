@@ -419,6 +419,8 @@ async function launchProduct(config: DesktopConfig): Promise<RunningProduct> {
         windowsHide: true,
         graceMs: 1_000,
         hardKillWaitMs: 5_000,
+    }, {
+        supervisorRuntime: runtimeConfig.managerBun,
     });
     diagnostics.info({
         kind: "electron-manager-spawned",
@@ -607,6 +609,8 @@ async function repairProduct(config: DesktopConfig): Promise<void> {
         windowsHide: true,
         graceMs: 1_000,
         hardKillWaitMs: 5_000,
+    }, {
+        supervisorRuntime: config.managerBun,
     });
     if (!lease.stdout || !lease.stdin) {
         await lease.terminate("startup-failure").catch(() => undefined);

@@ -17,15 +17,16 @@ type SupervisorMessage =
     | {kind: "error"; stage: string; message: string; osError?: number};
 
 type WindowsAdapterOptions = {
-    /** 仅供包内监督协议与Win32故障回归覆盖，公共spawnOwnedProcess不暴露。 */
+    /** 监督器源码仅供包内故障回归；runtime 可由宿主按需覆盖。 */
     supervisorSource?: string;
+    supervisorRuntime?: string;
 };
 
 /** Windows Adapter通过Bun FFI监督进程在目标创建前建立Job Object所有权。 */
 export function spawnWindowsOwnedProcess(spec: OwnedProcessSpec, options: WindowsAdapterOptions = {}): OwnedProcessLease {
     const graceMs = validWindow(spec.graceMs, 500, "graceMs");
     const hardKillWaitMs = validWindow(spec.hardKillWaitMs, 3_000, "hardKillWaitMs");
-    const supervisorRuntime = process.versions.bun ? process.execPath : "bun";
+    const supervisorRuntime = options.supervisorRuntime ?? (process.versions.bun ? process.execPath : "bun");
     const supervisor = spawn(supervisorRuntime, ["-e", options.supervisorSource ?? WINDOWS_SUPERVISOR_SOURCE], {
         // 监督器使用宿主Runtime环境；目标env只通过IPC传递，不能让调用方裁剪PATH后破坏ownership建立。
         env: process.env,

@@ -19,6 +19,11 @@ export type OwnedProcessCompletion = {
 
 export type OwnedProcessStdio = "pipe" | "inherit" | "ignore";
 
+/** 监督器可执行文件覆盖；宿主不是 Bun 但随包携带独立 Runtime 时必须显式传入。 */
+export type OwnedProcessOptions = {
+    supervisorRuntime?: string;
+};
+
 /** 调用方声明启动条件；平台所有权细节由Module隐藏。 */
 export type OwnedProcessSpec = {
     command: string;

@@ -184,6 +184,8 @@ async function runManagerCli(
         windowsHide: true,
         graceMs: 1_000,
         hardKillWaitMs: 5_000,
+    }, {
+        supervisorRuntime: bunPath,
     });
     const stdin = lease.stdin;
     if (!stdin) throw new Error("Manager GUI 无法打开 Manager CLI stdin。");

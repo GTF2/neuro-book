@@ -33,6 +33,40 @@ describe("Windows Adapter protocol", () => {
             stderr: "ignore",
         });
     });
+    it("显式监督器Runtime使用随包Bun而不是PATH命令", async () => {
+        const supervisor = new FakeSupervisor();
+        let runtime = "";
+        const spawnWindowsOwnedProcess = await loadAdapter(supervisor, (command) => {
+            runtime = command;
+        });
+
+        spawnWindowsOwnedProcess({command: "target"}, {supervisorRuntime: "C:\\NeuroBook\\runtime\\bun.exe"});
+
+        expect(runtime).toBe("C:\\NeuroBook\\runtime\\bun.exe");
+    });
+
+    it("未指定监督器Runtime时保留宿主Bun默认选择", async () => {
+        const supervisor = new FakeSupervisor();
+        let runtime = "";
+        const spawnWindowsOwnedProcess = await loadAdapter(supervisor, (command) => {
+            runtime = command;
+        });
+
+        spawnWindowsOwnedProcess({command: "target"});
+
+        expect(runtime).toBe(process.versions.bun ? process.execPath : "bun");
+    });
+    it("公共入口把显式监督器Runtime传给Windows Adapter", async () => {
+        const supervisor = new FakeSupervisor();
+        let runtime = "";
+        const spawnOwnedProcess = await loadPublicEntry(supervisor, (command) => {
+            runtime = command;
+        });
+
+        spawnOwnedProcess({command: "target"}, {supervisorRuntime: "C:\\NeuroBook\\runtime\\bun.exe"});
+
+        expect(runtime).toBe("C:\\NeuroBook\\runtime\\bun.exe");
+    });
 
     it("内部监督协议不根据测试宿主架构拒绝调用", async () => {
         const descriptor = Object.getOwnPropertyDescriptor(process, "arch");
@@ -134,6 +168,21 @@ async function loadAdapter(
     }));
     const module = await import("#owned-process/windows-adapter");
     return module.spawnWindowsOwnedProcess;
+}
+
+/** 动态加载公共入口，让测试覆盖 options 到平台Adapter的传递。 */
+async function loadPublicEntry(
+    supervisor: FakeSupervisor,
+    onSpawn?: (_command: string, _args: string[], options: {cwd?: string}) => void,
+) {
+    vi.doMock("node:child_process", () => ({
+        spawn: vi.fn((command: string, args: string[], options: {cwd?: string}) => {
+            onSpawn?.(command, args, options);
+            return supervisor;
+        }),
+    }));
+    const module = await import("#owned-process/index");
+    return module.spawnOwnedProcess;
 }
 
 /** 仅实现Windows Adapter消费的ChildProcess协议表面。 */

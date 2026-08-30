@@ -16,15 +16,16 @@ type SupervisorMessage =
     | {kind: "error"; stage: string; message: string};
 
 type PosixAdapterOptions = {
-    /** 仅供包内监督协议故障回归覆盖，公共 spawnOwnedProcess 不暴露。 */
+    /** 监督器源码仅供包内故障回归；runtime 可由宿主按需覆盖。 */
     supervisorSource?: string;
+    supervisorRuntime?: string;
 };
 
 /** POSIX Adapter 通过监督进程持有独立 process group，并在宿主 IPC 断开时收口。 */
 export function spawnPosixOwnedProcess(spec: OwnedProcessSpec, options: PosixAdapterOptions = {}): OwnedProcessLease {
     const graceMs = validWindow(spec.graceMs, 500, "graceMs");
     const hardKillWaitMs = validWindow(spec.hardKillWaitMs, 3_000, "hardKillWaitMs");
-    const supervisor = spawn(process.execPath, ["-e", options.supervisorSource ?? POSIX_SUPERVISOR_SOURCE], {
+    const supervisor = spawn(options.supervisorRuntime ?? process.execPath, ["-e", options.supervisorSource ?? POSIX_SUPERVISOR_SOURCE], {
         cwd: spec.cwd,
         // 监督器必须使用宿主环境；目标 env 只通过 IPC 传递。
         env: process.env,
