@@ -83,6 +83,23 @@ try {
         || !installDryRun.preflight?.blockers?.some((blocker) => blocker.code === "release.unsupported")) {
         throw new Error("install --version被顶层Manager版本选项截获。" );
     }
+    const isolatedRoot = await mkdtemp(join(managedTmpRoot, "isolated-"));
+    try {
+        const isolatedManager = join(isolatedRoot, "neuro-book.mjs");
+        await writeFile(isolatedManager, await readFile(join(temporaryRoot, "node_modules", "@notnotype", "neuro-book-manager", "dist", "neuro-book.mjs")));
+        const isolatedEnvironment = {
+            ...process.env,
+            NODE_PATH: undefined,
+            HOME: isolatedRoot,
+            USERPROFILE: isolatedRoot,
+        };
+        const isolatedVersion = await runCapture(["bun", "--no-install", isolatedManager, "--version"], isolatedRoot, isolatedEnvironment);
+        if (isolatedVersion.trim() !== packageJson.version) {
+            throw new Error(`隔离 packed Manager --version输出错误：${isolatedVersion.trim()}`);
+        }
+    } finally {
+        await rm(isolatedRoot, {recursive: true, force: true});
+    }
 } finally {
     await rm(temporaryRoot, {recursive: true, force: true});
 }
