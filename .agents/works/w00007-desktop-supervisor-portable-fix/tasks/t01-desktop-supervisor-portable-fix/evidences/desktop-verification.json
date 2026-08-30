@@ -1,0 +1,83 @@
+{
+  "schema": "nbook.desktop-verification/v1",
+  "taskId": "t01-desktop-supervisor-portable-fix",
+  "generatedAt": "2026-08-30T00:00:00Z",
+  "secretPolicy": {
+    "apiKeysRecorded": false,
+    "authorizationHeadersRecorded": false,
+    "rawProviderResponsesRecorded": false,
+    "rawLogsRecorded": false
+  },
+  "implementation": {
+    "commits": [
+      "9320856a fix: use bundled Bun for Electron supervisor",
+      "7729a441 fix: bundle Manager dependencies for portable runtime"
+    ],
+    "supervisorFailureBoundary": "beginFailure -> supervisor.disconnect -> close",
+    "processOwnership": "Windows Job Object with kill-on-close; no PID/name scan or taskkill fallback"
+  },
+  "verification": [
+    {
+      "command": "bun run --cwd packages/owned-process typecheck",
+      "result": "passed"
+    },
+    {
+      "command": "bun run --cwd desktop/electron typecheck",
+      "result": "passed"
+    },
+    {
+      "command": "bun run --cwd packages/neuro-book-manager typecheck",
+      "result": "passed"
+    },
+    {
+      "command": "bun run --cwd packages/neuro-book-manager pack:check",
+      "result": "passed",
+      "observed": ["packed Manager --version", "packed Manager start --help", "isolated HOME/USERPROFILE", "NODE_PATH cleared", "bun --no-install"]
+    },
+    {
+      "command": "git diff --check",
+      "result": "passed"
+    }
+  ],
+  "portableSmoke": {
+    "launcher": "desktop\\NeuroBook-Electron.exe --headless",
+    "pathPolicy": "C:\\Windows\\System32;C:\\Windows",
+    "localAppDataPolicy": "outside portable installation root",
+    "port": 15902,
+    "events": [
+      "electron-manager-spawned",
+      "electron-product-ready",
+      "electron-headless-ready",
+      "electron-headless-shutdown"
+    ],
+    "shutdown": "graceful",
+    "exitCode": 0,
+    "electronFatal": false
+  },
+  "artifacts": {
+    "portable": {
+      "file": "neuro-book-electron-portable-win-x64.zip",
+      "sha256": "87ac1a8dccdf1d17e60e409a6816b4a2dda148dc40368a4aa2ab8e4c312cc6f9",
+      "bytes": 400300112
+    },
+    "depot": {
+      "file": "neuro-book-desktop-depot-win-x64.zip",
+      "sha256": "841f6fb2b5c38237e7aa0c0abfdb67f0f917862d9ccfe0c1ad995edf1f0ef797",
+      "bytes": 396660792
+    },
+    "manifest": {
+      "dirty": false,
+      "imageId": "sha256:9371210baf2d1bcd68bb18e0654e2e280688d4551d0f70ffb91114e5a4960a4d",
+      "sourceRevision": "2d346ceb8aa682b724c27ee5ebce568e660fb55c",
+      "bun": "1.3.14",
+      "electron": "43.2.0"
+    }
+  },
+  "releaseGates": {
+    "releaseRunner": "not-run",
+    "platformInstall": "not-run",
+    "visibleGuiAndHumanAcceptance": "not-run",
+    "signingPublishingDeployment": "not-run",
+    "posixReleaseRunner": "not-run"
+  }
+}
