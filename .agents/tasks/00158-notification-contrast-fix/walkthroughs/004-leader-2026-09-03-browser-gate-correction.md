@@ -31,3 +31,9 @@ createdAt: 2026-09-03T21:38:28+08:00
 ## 继续条件
 
 只有在获得明确的浏览器人工验收授权后，实际运行产品页面并覆盖桌面、窄屏、通知卡片渲染、键盘/焦点路径、控制台结果和可观察截图或 DOM 证据，才能重新评估 `browser` 门禁。当前主线的静态测试与文档治理通过，不替代该 required 页面证据。
+
+## 开发者收口决定
+
+2026-09-03，开发者明确决定 `00158` 可以通过，并接受 `browser` required 尚未运行的风险。该决定只接受未运行项的风险，不改变 Task 原有 required 合同，也不把 browser 记为通过或不适用。
+
+因此：`00158` 按开发者决定通过；证据状态仍诚实保持 `browser` 未运行、`allRequiredClosed: false`。这里的“通过”是风险接受后的交付决定，不是“全部 required 验证已闭合”。结构化决策见 [`browser-gate-correction.json`](../evidences/browser-gate-correction.json)。

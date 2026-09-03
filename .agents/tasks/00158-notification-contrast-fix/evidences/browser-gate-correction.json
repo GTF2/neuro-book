@@ -54,5 +54,12 @@
   "nextRequiredEvidence": [
     "获得明确浏览器人工验收授权后，运行实际产品页面流程。",
     "覆盖桌面与窄屏视口，记录通知卡片真实渲染、键盘/焦点路径、控制台结果和可观察截图或 DOM 证据。"
-  ]
+  ],
+  "developerDecision": {
+    "recordedAt": "2026-09-03T23:24:52+08:00",
+    "decision": "通过",
+    "basis": "开发者明确决定 00158 可以通过，并接受 browser required 尚未运行的证据风险。",
+    "scope": "仅接受本 legacy Task 的未运行 browser 风险；不改变 required 合同，不把 browser 记为通过或不适用。",
+    "evidenceBoundary": "allRequiredClosed 仍为 false；本决定不等同于全部 required 验证闭合。"
+  }
 }
