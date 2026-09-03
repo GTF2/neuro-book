@@ -1,0 +1,58 @@
+{
+  "schema": "nbook.legacy-task-verification-correction/v1",
+  "task": "00158-notification-contrast-fix",
+  "recordedAt": "2026-09-03T21:38:28+08:00",
+  "reviewedRevision": "3d54933e488cb3a61f5e40bb61443b9fb78e875f",
+  "correction": "browser-required-gate",
+  "identity": {
+    "readmeFrontmatterChanged": false,
+    "historicalStatus": "completed",
+    "required": [
+      "focused-test",
+      "regression-test",
+      "typecheck",
+      "diff-check",
+      "browser"
+    ],
+    "notRun": [],
+    "interpretation": "completed 是 legacy provenance 的历史状态，不表示所有 required 验证均已通过；browser 仍是 required，且未运行，因此该完成门禁未闭合。"
+  },
+  "observations": [
+    {
+      "check": "focused-test",
+      "result": "22 passed / 0 failed",
+      "source": "verification-summary.json"
+    },
+    {
+      "check": "regression-test",
+      "result": "7 passed / 0 failed",
+      "source": "verification-summary.json"
+    },
+    {
+      "check": "typecheck",
+      "result": "exit 0",
+      "source": "verification-summary.json"
+    },
+    {
+      "check": "diff-check",
+      "result": "无空白错误",
+      "source": "verification-summary.json"
+    },
+    {
+      "check": "browser",
+      "result": "not run",
+      "closed": false,
+      "reason": "证据与既有 walkthrough 均明确记录浏览器人工验收未运行；用户可见样式变化要求真实页面证据，当前没有桌面与窄屏页面证据。",
+      "source": "verification-summary.json and 002-tasker-2026-08-25_17-23-implementation-and-verification.md"
+    }
+  ],
+  "conclusion": {
+    "assessment": "未完成验证",
+    "allRequiredClosed": false,
+    "statement": "保留原 legacy Task frontmatter 与 status: completed，不将 browser 降级为不适用；该 status 仅保留历史记录身份，不能宣称全部 required 已闭合。"
+  },
+  "nextRequiredEvidence": [
+    "获得明确浏览器人工验收授权后，运行实际产品页面流程。",
+    "覆盖桌面与窄屏视口，记录通知卡片真实渲染、键盘/焦点路径、控制台结果和可观察截图或 DOM 证据。"
+  ]
+}
