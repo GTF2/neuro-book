@@ -56,10 +56,17 @@
     "覆盖桌面与窄屏视口，记录通知卡片真实渲染、键盘/焦点路径、控制台结果和可观察截图或 DOM 证据。"
   ],
   "developerDecision": {
-    "recordedAt": "2026-09-03T23:24:52+08:00",
-    "decision": "通过",
-    "basis": "开发者明确决定 00158 可以通过，并接受 browser required 尚未运行的证据风险。",
-    "scope": "仅接受本 legacy Task 的未运行 browser 风险；不改变 required 合同，不把 browser 记为通过或不适用。",
-    "evidenceBoundary": "allRequiredClosed 仍为 false；本决定不等同于全部 required 验证闭合。"
+    "recordedAt": "2026-09-03T23:39:30+08:00",
+    "decision": "通过（开发者报告）",
+    "basis": "开发者报告已自行检查 browser，可通过；本会话未获得该检查的可观察页面证据，未独立复核。",
+    "scope": "仅记录开发者对 browser 的报告；不把报告转换为本会话的 browser 通过证据，不改变 required 合同。",
+    "report": {
+      "reportedBy": "开发者",
+      "reportedAt": "2026-09-03（具体检查时间未提供）",
+      "reviewedRevision": "开发者检查所用 revision 未提供；本地收口记录对应合并后 master 3d54933e488cb3a61f5e40bb61443b9fb78e875f，不据此推断为开发者检查 revision。",
+      "scope": "开发者仅报告 browser 可以通过；桌面/窄屏、通知渲染、主题/布局、键盘/焦点、控制台及截图/DOM 证据明细未提供。",
+      "evidenceLocation": "未提供可供本会话读取的浏览器截图、DOM、控制台、键盘/焦点或运行记录位置。"
+    },
+    "evidenceBoundary": "allRequiredClosed 仍为 false；开发者报告属于风险接受/外部报告，不等同于本会话已验证全部 required。"
   }
 }
