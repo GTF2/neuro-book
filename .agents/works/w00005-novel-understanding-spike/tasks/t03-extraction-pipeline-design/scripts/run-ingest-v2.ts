@@ -225,7 +225,7 @@ async function loadRuntime(root: string, chapters: readonly LoadedChapter[]): Pr
             ...runtime.manifest,
             pending: null,
             attempts,
-            ledger: {...runtime.manifest.ledger, failures: runtime.manifest.ledger.failures + 1, budget: {...runtime.manifest.ledger.budget, unknownReserveUsd: runtime.manifest.ledger.budget.unknownReserveUsd + pending.reserveUsd}},
+            ledger: {...runtime.manifest.ledger, failures: runtime.manifest.ledger.failures + 1, budget: {...runtime.manifest.ledger.budget, pendingReserveUsd: 0, unknownReserveUsd: runtime.manifest.ledger.budget.unknownReserveUsd + pending.reserveUsd}},
         };
         await persist(runtime);
     }
