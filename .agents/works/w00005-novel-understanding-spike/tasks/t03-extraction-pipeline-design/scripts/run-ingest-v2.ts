@@ -265,7 +265,7 @@ function providerFromConfig(raw: unknown): Provider {
     check(typeof provider.options.baseURL === "string" && provider.options.baseURL.length > 0, "provider-base-url-missing");
     const url = new URL(provider.options.baseURL);
     check(url.protocol === "https:" && url.hostname === "api.deepseek.com" && (url.pathname === "" || url.pathname === "/") && url.username === "" && url.password === "" && url.search === "" && url.hash === "", "provider-host-mismatch");
-    return {apiKey: provider.options.apiKey, baseUrl: url.origin, timeoutMs: typeof provider.options.timeoutMs === "number" && provider.options.timeoutMs > 0 ? Math.min(provider.options.timeoutMs, 180_000) : 180_000};
+    return {apiKey: provider.options.apiKey, baseUrl: url.origin, timeoutMs: typeof provider.options.timeoutMs === "number" && Number.isFinite(provider.options.timeoutMs) && provider.options.timeoutMs > 0 ? Math.min(provider.options.timeoutMs, 180_000) : 180_000};
 }
 
 function promptFingerprint(prompt: PromptBundle, stage: StageName, maxTokens: number): string {
