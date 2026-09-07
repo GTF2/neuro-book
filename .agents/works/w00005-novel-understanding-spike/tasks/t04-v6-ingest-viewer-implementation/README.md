@@ -42,6 +42,14 @@ role: tasker
 
 不允许修改：`packages/`、旧 v4 schema/数据/viewer、t01 样书登记、t02/t03 的历史 README 与允许文件清单、主工作区用户已有未跟踪文件 `eval-tmp.ts`。
 
+## A/B AST 解析边界
+
+`v6-output.ts` 只接受模型输出中的一个顶层 `const` 变量声明：A 的名称必须是 `beats`，B 的名称必须是 `extraction`；声明必须是 `const name = <literal> satisfies <contract>;`，合同类型分别严格为 `BeatDraft[]` 与 `ExtractionDraft`。最外层和任意嵌套值允许 `as const`，除此之外不允许类型断言或类型标注。
+
+字面量白名单：对象、数组、非模板字符串、有限数字、`true`、`false`、`null`。对象只接受预期的固定字段、普通属性赋值和非计算键；拒绝重复键、方法、getter/setter、简写属性、展开、计算属性和未知字段。数组拒绝空位与展开。顶层只允许这一条声明和终止分号；拒绝 import/export、第二条声明、表达式语句、调用、`new`、访问、二元/条件表达式、赋值/更新、函数/class、模板字符串及任意可执行表达式。
+
+解析错误返回稳定的 `issues[]`，每项至少包含 JSONPath 风格 `path`（如 `$.statements[1]`、`$.initializer.concepts[0].id`）和行列号；原始模型文本由调用器原样另存，解析器不删围栏、不修补、不执行。解析成功后再做阶段语义检查：A 的 Beat 必须按段号从 1 连续覆盖到本章末段；B 的局部 ID、证据区间、候选引用、来源持有者和 `at`/证据末段可见性必须合法。`known:<canonicalId>` 只能引用调用器提供的前章候选表。
+
 ## 受限动作授权
 
 开发者已批准本 Task 的批准计划，因此允许：

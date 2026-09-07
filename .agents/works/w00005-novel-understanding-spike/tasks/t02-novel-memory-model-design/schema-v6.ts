@@ -409,26 +409,42 @@ function parseStage(value: unknown, path: string, issues: ValidationIssue[]): St
         issue(issues, path, "阶段账目必须是对象");
         return null;
     }
-    const chapter = value.chapter;
-    const attempts = value.attempts;
+    const chapter = typeof value.chapter === "number" && Number.isInteger(value.chapter) && value.chapter >= 1 ? value.chapter : null;
+    const stage = value.stage === "a" || value.stage === "b" ? value.stage : null;
+    const status = typeof value.status === "string" && STAGE_STATUSES[value.status as StageStatus] ? value.status as StageStatus : null;
+    const attempts = typeof value.attempts === "number" && Number.isInteger(value.attempts) && value.attempts >= 0 ? value.attempts : null;
     const acceptedAttempt = value.acceptedAttempt;
-    const inputTokens = value.inputTokens;
-    const outputTokens = value.outputTokens;
-    const totalTokens = value.totalTokens;
-    const durationMs = value.durationMs;
+    const nullableNumberKeys = ["inputTokens", "outputTokens", "totalTokens", "durationMs"] as const;
+    const nullableNumbersValid = nullableNumberKeys.every((key) => key in value && (value[key] === null || isNonNegativeNumber(value[key])));
+    const acceptedAttemptValid = "acceptedAttempt" in value && (acceptedAttempt === null || typeof acceptedAttempt === "number" && Number.isInteger(acceptedAttempt) && acceptedAttempt >= 1);
+    const failureCategory = value.failureCategory;
+    const failureCategoryValid = "failureCategory" in value && (failureCategory === null || isNonEmptyString(failureCategory));
     const knownCostUsd = value.knownCostUsd;
     const unknownReserveUsd = value.unknownReserveUsd;
-    const failureCategory = value.failureCategory;
-    if (typeof chapter !== "number" || !Number.isInteger(chapter) || chapter < 1) issue(issues, `${path}.chapter`, "必须是正整数");
-    if (value.stage !== "a" && value.stage !== "b") issue(issues, `${path}.stage`, "阶段必须是 a 或 b");
-    if (typeof value.status !== "string" || !STAGE_STATUSES[value.status as StageStatus]) issue(issues, `${path}.status`, "阶段状态无效");
-    if (typeof attempts !== "number" || !Number.isInteger(attempts) || attempts < 0) issue(issues, `${path}.attempts`, "必须是非负整数");
-    if (acceptedAttempt !== null && (typeof acceptedAttempt !== "number" || !Number.isInteger(acceptedAttempt) || acceptedAttempt < 1)) issue(issues, `${path}.acceptedAttempt`, "必须是正整数或 null");
-    for (const key of ["inputTokens", "outputTokens", "totalTokens", "durationMs"] as const) if (value[key] !== null && !isNonNegativeNumber(value[key])) issue(issues, `${path}.${key}`, "必须是非负数字或 null");
-    for (const key of ["knownCostUsd", "unknownReserveUsd"] as const) if (!isNonNegativeNumber(value[key])) issue(issues, `${path}.${key}`, "必须是非负数字");
-    if (failureCategory !== null && !isNonEmptyString(failureCategory)) issue(issues, `${path}.failureCategory`, "必须是字符串或 null");
-    if (typeof chapter !== "number" || !Number.isInteger(chapter) || chapter < 1 || (value.stage !== "a" && value.stage !== "b") || typeof value.status !== "string" || !STAGE_STATUSES[value.status as StageStatus] || typeof attempts !== "number" || !Number.isInteger(attempts) || attempts < 0 || (acceptedAttempt !== null && (typeof acceptedAttempt !== "number" || !Number.isInteger(acceptedAttempt) || acceptedAttempt < 1)) || [inputTokens, outputTokens, totalTokens, durationMs].some((item) => item !== null && !isNonNegativeNumber(item)) || !isNonNegativeNumber(knownCostUsd) || !isNonNegativeNumber(unknownReserveUsd) || (failureCategory !== null && !isNonEmptyString(failureCategory))) return null;
-    return {chapter, stage: value.stage, status: value.status as StageStatus, attempts, acceptedAttempt, inputTokens: inputTokens as number | null, outputTokens: outputTokens as number | null, totalTokens: totalTokens as number | null, durationMs: durationMs as number | null, knownCostUsd, unknownReserveUsd, failureCategory: failureCategory as string | null};
+    const costsValid = isNonNegativeNumber(knownCostUsd) && isNonNegativeNumber(unknownReserveUsd);
+    if (chapter === null) issue(issues, `${path}.chapter`, "必须是正整数");
+    if (stage === null) issue(issues, `${path}.stage`, "阶段必须是 a 或 b");
+    if (status === null) issue(issues, `${path}.status`, "阶段状态无效");
+    if (attempts === null) issue(issues, `${path}.attempts`, "必须是非负整数");
+    if (!acceptedAttemptValid) issue(issues, `${path}.acceptedAttempt`, "必须是正整数或 null");
+    if (!nullableNumbersValid) issue(issues, path, "inputTokens/outputTokens/totalTokens/durationMs 必须存在且为非负数字或 null");
+    if (!failureCategoryValid) issue(issues, `${path}.failureCategory`, "必须是字符串或 null");
+    if (!costsValid) issue(issues, path, "knownCostUsd 和 unknownReserveUsd 必须是非负数字");
+    if (chapter === null || stage === null || status === null || attempts === null || !acceptedAttemptValid || !nullableNumbersValid || !failureCategoryValid || !costsValid) return null;
+    return {
+        chapter,
+        stage,
+        status,
+        attempts,
+        acceptedAttempt: acceptedAttempt as number | null,
+        inputTokens: value.inputTokens as number | null,
+        outputTokens: value.outputTokens as number | null,
+        totalTokens: value.totalTokens as number | null,
+        durationMs: value.durationMs as number | null,
+        knownCostUsd,
+        unknownReserveUsd,
+        failureCategory: failureCategory as string | null,
+    };
 }
 
 function parseRun(value: unknown, issues: ValidationIssue[]): RunLedger | null {
