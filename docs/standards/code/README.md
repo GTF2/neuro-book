@@ -22,6 +22,10 @@
 | `scripts/**/*.ts`、`scripts/**/*.mjs` | [`common.md`](common.md)、[`languages/typescript.md`](languages/typescript.md)、[`scripts/typescript.md`](scripts/typescript.md) |
 | `scripts/**/*.ps1`、`scripts/**/*.cmd` | [`common.md`](common.md)、[`scripts/powershell.md`](scripts/powershell.md) |
 | `scripts/**/*.sh`、容器 shell 入口 | [`common.md`](common.md)、[`scripts/bash.md`](scripts/bash.md) |
+| `.agents/works/w00005-novel-understanding-spike/tasks/t02-novel-memory-model-design/schema-v6.ts`、`viewer-v6.ts`、`scripts/*-viewer-v6.ts` | [`common.md`](common.md)、[`languages/typescript.md`](languages/typescript.md)、[`frontend.md`](frontend.md)；脚本追加 [`scripts/typescript.md`](scripts/typescript.md) |
+| `.agents/works/w00005-novel-understanding-spike/tasks/t02-novel-memory-model-design/viewer-v6.template.html`、`viewer-v6.html` | [`common.md`](common.md)、[`frontend.md`](frontend.md) |
+| `.agents/works/w00005-novel-understanding-spike/tasks/t03-extraction-pipeline-design/scripts/*v2.ts`、`scripts/v6-output.ts` | [`common.md`](common.md)、[`languages/typescript.md`](languages/typescript.md)、[`scripts/typescript.md`](scripts/typescript.md) |
+| `.agents/works/w00005-novel-understanding-spike/tasks/{t02-novel-memory-model-design,t03-extraction-pipeline-design}/**/*.json` | [`common.md`](common.md)、[`data-formats.md`](data-formats.md) |
 | `.agents/skills/**/*.md` | [`common.md`](common.md)、[`writing-for-agents/SKILL.md`](../../../.agents/skills/writing-for-agents/SKILL.md)；修改 frontmatter 或调用方式时追加 [`writing-for-agents/SKILL-MECHANICS.md`](../../../.agents/skills/writing-for-agents/SKILL-MECHANICS.md) |
 | `.json`、`.yaml`、`.yml` 配置 | 对应领域规范，再追加 [`data-formats.md`](data-formats.md) |
 
