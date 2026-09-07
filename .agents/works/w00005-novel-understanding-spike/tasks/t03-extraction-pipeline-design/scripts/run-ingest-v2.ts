@@ -343,12 +343,17 @@ async function executeStage(runtime: Runtime, provider: Provider, chapter: Loade
         const unknownReserveUsd = response?.usage ? 0 : reserve;
         let parsed: AcceptedStage["parsed"] | null = null;
         if (!failure && response) {
-            const parsedResult = parseAccepted(response.output, {stage, paragraphCount: chapter.paragraphs.length, paragraphs: chapter.paragraphs, knownConceptIds: graph?.concepts.map((concept) => concept.id)});
-            if (!parsedResult.ok) {
-                repair.push(...parsedResult.issues.map((item) => `${item.path}: ${item.message}`));
-                failure = "structure-invalid";
-                await writeJsonAtomic(resolve(directory, "parse-issues.json"), parsedResult.issues);
-            } else parsed = parsedResult.value;
+            if (response.usage === null) {
+                failure = "usage-untrusted";
+                repair.push("usage 缺失或字段不可信，不能接受本次结果");
+            } else {
+                const parsedResult = parseAccepted(response.output, {stage, paragraphCount: chapter.paragraphs.length, paragraphs: chapter.paragraphs, knownConceptIds: graph?.concepts.map((concept) => concept.id)});
+                if (!parsedResult.ok) {
+                    repair.push(...parsedResult.issues.map((item) => `${item.path}: ${item.message}`));
+                    failure = "structure-invalid";
+                    await writeJsonAtomic(resolve(directory, "parse-issues.json"), parsedResult.issues);
+                } else parsed = parsedResult.value;
+            }
         }
         const finishedAt = now();
         const settled: AttemptRecord = {...attemptRecord, status: parsed ? "accepted" : "failed", finishedAt, knownCostUsd: roundUsd(knownCostUsd), unknownReserveUsd: roundUsd(unknownReserveUsd), durationMs: response?.durationMs ?? null, inputTokens: response?.usage?.inputTokens ?? null, outputTokens: response?.usage?.outputTokens ?? null, totalTokens: response?.usage?.totalTokens ?? null, outputSha256: response?.output ? sha256(response.output.trim()) : null, failureCategory: failure || null, parseIssues: repair};
