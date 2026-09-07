@@ -77,6 +77,7 @@ export type Usage = {
     readonly inputTokens: number;
     readonly outputTokens: number;
     readonly totalTokens: number;
+    readonly cacheHitTokens?: number;
 };
 
 function check(condition: unknown, message: string): asserts condition {
@@ -264,7 +265,9 @@ export function assembleChapter(chapter: LoadedChapter, beatsDraft: readonly Bea
 }
 
 export function estimateKnownCost(usage: Usage): number {
-    return (usage.inputTokens * PRICE.inputMissPerMillion + usage.outputTokens * PRICE.outputPerMillion) / 1_000_000;
+    const cacheHitTokens = Math.min(usage.inputTokens, Math.max(0, usage.cacheHitTokens ?? 0));
+    const missTokens = usage.inputTokens - cacheHitTokens;
+    return (missTokens * PRICE.inputMissPerMillion + cacheHitTokens * PRICE.inputHitPerMillion + usage.outputTokens * PRICE.outputPerMillion) / 1_000_000;
 }
 
 export function reserveUsd(stage: StageName): number {
