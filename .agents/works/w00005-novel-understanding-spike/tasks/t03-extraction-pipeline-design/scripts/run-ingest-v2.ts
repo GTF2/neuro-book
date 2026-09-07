@@ -208,10 +208,10 @@ async function loadRuntime(root: string, chapters: readonly LoadedChapter[]): Pr
     try {
         manifest = await readJson<Manifest>(manifestPath);
         check(manifest.schema === RUN_SCHEMA && manifest.runId === RUN_ID, "run-manifest-contract-mismatch");
-        check(manifest.sourceChapters.length === chapters.length, "run-source-through-mismatch");
+        check(manifest.sourceChapters.length >= chapters.length, "run-source-through-mismatch");
         for (const chapter of chapters) {
             const saved = manifest.sourceChapters[chapter.chapter - 1];
-            check(saved?.sha256 === chapter.sourceSha256 && saved.paragraphs === chapter.paragraphs.length, `run-source-changed-${chapter.chapter}`);
+            check(saved?.chapter === chapter.chapter && saved.sha256 === chapter.sourceSha256 && saved.paragraphs === chapter.paragraphs.length, `run-source-changed-${chapter.chapter}`);
         }
     } catch (error) {
         if (error instanceof Error && !error.message.includes("ENOENT")) throw error;
@@ -399,24 +399,24 @@ async function acceptedGraph(runtime: Runtime): Promise<MemoryGraphV6 | null> {
 async function callRun(root: string, sourceRoot: string, configPath: string, through: number, budgetUsd: number): Promise<void> {
     check(budgetUsd > 0 && budgetUsd <= USD_LIMIT, "budget-invalid");
     check(process.env.NBOOK_AUTHORIZED_MODEL_CALL === PURPOSE, "model-call-not-authorized");
-    const chapters = await loadChapters(sourceRoot, through);
+    const chapters = await loadChapters(sourceRoot, MAX_CHAPTERS);
     const runtime = await loadRuntime(root, chapters);
     check(runtime.manifest.ledger.budget.usdLimit <= budgetUsd, "budget-cannot-increase-on-resume");
     const provider = providerFromConfig(JSON.parse(await readFile(resolve(configPath), "utf8")));
     let graph = await acceptedGraph(runtime);
-    for (const chapter of chapters) {
+    for (const chapter of chapters.slice(0, through)) {
         if (runtime.manifest.publishedChapters.includes(chapter.chapter)) continue;
         const prior = graph;
         const acceptedA = runtime.manifest.accepted[stageKey(chapter.chapter, "a")] ? await loadAccepted(runtime, runtime.manifest.accepted[stageKey(chapter.chapter, "a")]!) : await executeStage(runtime, provider, chapter, "a", null, prior);
         const beats = acceptedA.parsed as readonly BeatDraft[];
         const acceptedB = runtime.manifest.accepted[stageKey(chapter.chapter, "b")] ? await loadAccepted(runtime, runtime.manifest.accepted[stageKey(chapter.chapter, "b")]!) : await executeStage(runtime, provider, chapter, "b", beats, prior);
-        const run = {...runtime.manifest.ledger, completedChapters: chapter.chapter, status: chapter.chapter === MAX_CHAPTERS ? "completed" : "running"} as RunLedger;
+        const run = {...runtime.manifest.ledger, completedChapters: chapter.chapter, totalChapters: through, status: chapter.chapter === through ? "completed" : "running"} as RunLedger;
         graph = assembleChapter(chapter, beats, acceptedB.parsed as ExtractionDraft, prior, run);
         await writeJsonAtomic(resolve(runtime.evidenceRoot, "published.json"), graph);
-        runtime.manifest = {...runtime.manifest, publishedChapters: [...runtime.manifest.publishedChapters, chapter.chapter], ledger: {...runtime.manifest.ledger, completedChapters: chapter.chapter}};
+        runtime.manifest = {...runtime.manifest, publishedChapters: [...runtime.manifest.publishedChapters, chapter.chapter], ledger: {...runtime.manifest.ledger, totalChapters: through, completedChapters: chapter.chapter}};
         await persist(runtime);
     }
-    runtime.manifest = {...runtime.manifest, ledger: {...runtime.manifest.ledger, status: runtime.manifest.publishedChapters.length === MAX_CHAPTERS ? "completed" : "running", completedAt: runtime.manifest.publishedChapters.length === MAX_CHAPTERS ? now() : null}};
+    runtime.manifest = {...runtime.manifest, ledger: {...runtime.manifest.ledger, totalChapters: through, status: runtime.manifest.publishedChapters.length === through ? "completed" : "running", completedAt: runtime.manifest.publishedChapters.length === through ? now() : null}};
     await persist(runtime);
     console.log(JSON.stringify({schema: "nbook.v6-ingest-result/v1", ok: true, mode: "call", completedChapters: runtime.manifest.publishedChapters.length, requests: runtime.manifest.ledger.requests, budget: runtime.manifest.ledger.budget}, null, 2));
 }
@@ -426,7 +426,7 @@ async function preflight(root: string, sourceRoot: string, through: number): Pro
     const runtime = await loadRuntime(root, chapters);
     const totalParagraphs = chapters.reduce((sum, chapter) => sum + chapter.paragraphs.length, 0);
     const totalUtf16CodeUnits = chapters.reduce((sum, chapter) => sum + chapter.paragraphs.join("\n").length, 0);
-    const sourceManifest = {schema: "nbook.v6-source-manifest/v1", sourceNormalization: SOURCE_NORMALIZATION, chapters: runtime.manifest.sourceChapters, totalParagraphs, totalUtf16CodeUnits, archiveMembers: chapters.map((chapter) => chapter.member), networkRequests: 0, configRead: false};
+    const sourceManifest = {schema: "nbook.v6-source-manifest/v1", sourceNormalization: SOURCE_NORMALIZATION, chapters: runtime.manifest.sourceChapters.slice(0, through), totalParagraphs, totalUtf16CodeUnits, archiveMembers: chapters.map((chapter) => chapter.member), networkRequests: 0, configRead: false};
     await writeJsonAtomic(resolve(runtime.evidenceRoot, "source-manifest.json"), sourceManifest);
     console.log(JSON.stringify({schema: "nbook.v6-ingest-result/v1", ok: true, mode: "preflight", networkRequests: 0, configRead: false, chapters: chapters.length, totalParagraphs, totalUtf16CodeUnits, archiveMembers: chapters.map((chapter) => chapter.member), chapter1Sha256: chapters[0]?.sourceSha256}, null, 2));
 }

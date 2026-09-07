@@ -207,8 +207,8 @@ function parseNameDraft(ts: typeof TypeScript, sourceFile: TypeScript.SourceFile
     const concept = parseStringValue(objectField(value, "concept", path, node, sourceFile, issues), `${path}.concept`, node, sourceFile, issues);
     const label = parseStringValue(objectField(value, "label", path, node, sourceFile, issues), `${path}.label`, node, sourceFile, issues);
     const at = parseIntegerValue(objectField(value, "at", path, node, sourceFile, issues), `${path}.at`, node, sourceFile, issues);
-    if (concept !== null && !LOCAL_ID.test(concept)) addIssue(issues, sourceFile, node, `${path}.concept`, "名称必须引用本批局部概念 ID");
-    if (concept === null || label === null || at === null || concept !== null && !LOCAL_ID.test(concept)) return null;
+    if (concept !== null && !LOCAL_ID.test(concept) && !KNOWN_ID.test(concept)) addIssue(issues, sourceFile, node, `${path}.concept`, "名称必须引用本批局部概念或候选表中的 known 概念");
+    if (concept === null || label === null || at === null || concept !== null && !LOCAL_ID.test(concept) && !KNOWN_ID.test(concept)) return null;
     return {concept, label, at};
 }
 
@@ -303,7 +303,9 @@ function parseStageValue(ts: typeof TypeScript, sourceFile: TypeScript.SourceFil
         if (options.paragraphs && !options.paragraphs[concept.at - 1]?.includes(concept.label)) addIssue(issues, sourceFile, expression, `$.initializer.concepts[${index}].label`, "label 必须出现在 at 段正文中");
     });
     names.forEach((name, index) => {
-        if (!conceptsById.has(name.concept)) addIssue(issues, sourceFile, expression, `$.initializer.names[${index}].concept`, "名称引用了不存在的本批概念");
+        const localConcept = conceptsById.has(name.concept);
+        const knownConcept = KNOWN_ID.test(name.concept) && knownIds.has(name.concept.slice("known:".length));
+        if (!localConcept && !knownConcept) addIssue(issues, sourceFile, expression, `$.initializer.names[${index}].concept`, "名称引用了不存在的本批概念或候选 known 概念");
         if (name.at < 1 || name.at > options.paragraphCount) addIssue(issues, sourceFile, expression, `$.initializer.names[${index}].at`, "at 超出本章范围");
         if (options.paragraphs && !options.paragraphs[name.at - 1]?.includes(name.label)) addIssue(issues, sourceFile, expression, `$.initializer.names[${index}].label`, "名称必须出现在 at 段正文中");
     });
@@ -351,12 +353,21 @@ export function parseStageOutput(raw: string, options: OutputParseOptions): Outp
     const expectedName = options.stage === "a" ? "beats" : "extraction";
     if (declaration.name.text !== expectedName) addIssue(issues, sourceFile, declaration.name, "$.declaration.name", `变量名必须是 ${expectedName}`);
     if (declaration.type) addIssue(issues, sourceFile, declaration.type, "$.declaration.typeAnnotation", "顶层变量不允许类型标注");
-    if (!declaration.initializer || !ts.isSatisfiesExpression(declaration.initializer)) {
-        addIssue(issues, sourceFile, declaration.initializer ?? declaration, "$.declaration.initializer", "必须使用 satisfies 固定合同类型");
+    if (!declaration.initializer) {
+        addIssue(issues, sourceFile, declaration, "$.declaration.initializer", "必须包含初始化值");
         return {ok: false, issues};
     }
-    if (!parseTopLevelType(ts, declaration.initializer.type, options.stage)) addIssue(issues, sourceFile, declaration.initializer.type, "$.declaration.type", options.stage === "a" ? "必须是 BeatDraft[]" : "必须是 ExtractionDraft");
-    const value = parseStageValue(ts, sourceFile, declaration.initializer.expression, options, issues);
-    if (issues.length > 0 || value === null) return {ok: false, issues};
-    return options.stage === "a" ? {ok: true, stage: "a", value: value as readonly BeatDraft[]} : {ok: true, stage: "b", value: value as ExtractionDraft};
+    if (ts.isSatisfiesExpression(declaration.initializer)) {
+        if (!parseTopLevelType(ts, declaration.initializer.type, options.stage)) addIssue(issues, sourceFile, declaration.initializer.type, "$.declaration.type", options.stage === "a" ? "必须是 BeatDraft[]" : "必须是 ExtractionDraft");
+        const value = parseStageValue(ts, sourceFile, declaration.initializer.expression, options, issues);
+        if (issues.length > 0 || value === null) return {ok: false, issues};
+        return options.stage === "a" ? {ok: true, stage: "a", value: value as readonly BeatDraft[]} : {ok: true, stage: "b", value: value as ExtractionDraft};
+    }
+    if (options.stage === "a" && ts.isArrayLiteralExpression(declaration.initializer)) {
+        const value = parseStageValue(ts, sourceFile, declaration.initializer, options, issues);
+        if (issues.length > 0 || value === null) return {ok: false, issues};
+        return {ok: true, stage: "a", value: value as readonly BeatDraft[]};
+    }
+    addIssue(issues, sourceFile, declaration.initializer, "$.declaration.initializer", "必须使用 satisfies 固定合同类型");
+    return {ok: false, issues};
 }

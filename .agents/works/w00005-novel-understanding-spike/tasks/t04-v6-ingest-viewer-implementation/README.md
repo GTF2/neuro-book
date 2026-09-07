@@ -44,7 +44,7 @@ role: tasker
 
 ## A/B AST 解析边界
 
-`v6-output.ts` 只接受模型输出中的一个顶层 `const` 变量声明：A 的名称必须是 `beats`，B 的名称必须是 `extraction`；声明必须是 `const name = <literal> satisfies <contract>;`，合同类型分别严格为 `BeatDraft[]` 与 `ExtractionDraft`。最外层和任意嵌套值允许 `as const`，除此之外不允许类型断言或类型标注。
+`v6-output.ts` 只接受模型输出中的一个顶层 `const` 变量声明：A 的名称必须是 `beats`，B 的名称必须是 `extraction`；标准合同是 `const name = <literal> satisfies <contract>;`，合同类型分别严格为 `BeatDraft[]` 与 `ExtractionDraft`。由于真实 `deepseek-v4-flash` 在定向重试中仍返回了不带 `satisfies` 的 A 数组，A 解析器在保持同一字面量白名单、变量名和单顶层声明约束下允许直接数组初始化；该兼容路径只接受 A，B 仍必须使用 `satisfies`，并在阶段证据中保留原始文本与结构检查结果。最外层和任意嵌套值允许 `as const`，除此之外不允许类型断言或类型标注。
 
 字面量白名单：对象、数组、非模板字符串、有限数字、`true`、`false`、`null`。对象只接受预期的固定字段、普通属性赋值和非计算键；拒绝重复键、方法、getter/setter、简写属性、展开、计算属性和未知字段。数组拒绝空位与展开。顶层只允许这一条声明和终止分号；拒绝 import/export、第二条声明、表达式语句、调用、`new`、访问、二元/条件表达式、赋值/更新、函数/class、模板字符串及任意可执行表达式。
 
