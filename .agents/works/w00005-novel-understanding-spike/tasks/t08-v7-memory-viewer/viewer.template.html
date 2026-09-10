@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V7 · 小说记忆图</title>
+<style>__STYLE__</style>
+</head>
+<body>
+<a class="skip" href="#node-list">跳到记忆列表</a>
+<header class="topbar">
+  <div><h1>小说记忆 <span>V7</span></h1></div>
+  <p id="book-title" class="book-title"></p>
+  <div class="file-actions"><button id="import-button" title="导入 JSON">__IMPORT_ICON__ 导入 JSON</button><button id="export-button" title="导出 JSON">__EXPORT_ICON__ 导出 JSON</button><input id="import-file" type="file" accept=".json,application/json" hidden></div>
+</header>
+<div id="message" role="status" class="message" hidden></div>
+<section class="reading-bar" aria-label="阅读边界">
+  <label>已读至 <select id="chapter" aria-label="阅读章节"></select></label>
+  <label class="range-label"><input id="position" type="range" min="1" value="1" aria-label="阅读段落"><output id="position-label"></output></label>
+  <button id="chapter-end">读至章末</button>
+  <label>知情视角 <select id="perspective" aria-label="知情视角"><option value="reader">读者</option></select></label>
+  <p id="snapshot-label" class="muted"></p>
+</section>
+<div id="coverage" class="coverage"></div>
+<div id="overview" class="overview"></div>
+<main class="workspace">
+  <aside class="catalog" aria-label="记忆目录">
+    <nav class="catalog-tabs" aria-label="知识类型"><button data-kind-tab="entity" aria-pressed="true">主体</button><button data-kind-tab="fact" aria-pressed="false">命题</button><button data-kind-tab="episode" aria-pressed="false">情节</button><button data-kind-tab="entitySummary" aria-pressed="false">摘要</button></nav>
+    <div class="catalog-controls">
+      <label for="search">主体与记忆</label><input id="search" type="search" placeholder="搜索主体 / 命题…" autocomplete="off">
+      <details id="catalog-filters"><summary>筛选记录</summary><div class="filter-row"><select id="kind" aria-label="记忆类型"><option value="knowledge">知识入口</option><option value="all">全部类型</option></select><select id="status" aria-label="知识状态"><option value="all">全部状态</option><option value="accepted">已采纳</option><option value="tentative">待定</option><option value="disputed">有争议</option><option value="unsupported">无支撑</option><option value="stale">待重算</option><option value="pending">待处理</option></select></div>
+      <select id="assertion" aria-label="命题类别"><option value="all">全部命题类别</option><option value="world">世界命题</option><option value="belief">角色信念</option><option value="speech">发言内容</option><option value="rule">规则</option><option value="hypothesis">假设</option><option value="paratext">书外说明</option><option value="fiction">嵌套虚构</option></select>
+      </details><button id="selection-back" class="icon-button" disabled title="返回上一选择" aria-label="返回上一选择">__BACK_ICON__</button>
+      <p id="list-count" class="muted" aria-live="polite"></p>
+    </div>
+    <div id="node-list" class="node-list" tabindex="-1"></div>
+  </aside>
+  <section class="canvas-panel" aria-label="记忆浏览">
+    <nav class="view-tabs" aria-label="浏览方式"><button data-tab="graph" aria-pressed="true">记忆图</button><button data-tab="story" aria-pressed="false">章节与叙事</button></nav>
+    <div id="graph-view">
+      <div class="model-views" role="group" aria-label="模型视图"><button id="subject-view" aria-pressed="true">主体关系</button><button id="proposition-view" aria-pressed="false">命题图</button><button id="structure" aria-pressed="false">记录溯源</button></div>
+      <div class="graph-toolbar"><div id="graph-scope" class="segmented" role="group" aria-label="图谱范围"><button id="global" aria-pressed="true">全部主体</button><button id="local" aria-pressed="false">选中主体周边</button></div><label id="expand-control" class="check-control"><input id="expand-knowledge" type="checkbox">展开相关命题</label><label id="structure-control" class="check-control" hidden><input id="structure-complete" type="checkbox">完整引用</label><details class="graph-settings"><summary title="图设置" aria-label="图设置">__SETTINGS_ICON__</summary><div><label>关系标签 <select id="edge-labels" aria-label="关系标签"><option value="selected">选中周边</option><option value="all">全部</option><option value="none">隐藏</option></select></label><label>缩放 <input id="zoom" type="range" min="50" max="150" value="100" aria-label="图谱缩放"></label><label id="edge-kind-control" hidden>结构边 <select id="edge-kind" aria-label="结构边类型"><option value="all">全部</option><option value="dependency">依赖</option><option value="reference">引用</option></select></label></div></details><button id="reset-graph" class="icon-button" title="重排并居中" aria-label="重排并居中">__RESET_ICON__</button></div>
+      <p id="graph-description" class="graph-description"></p>
+      <div id="edge-visibility" class="edge-visibility" role="group" aria-label="显示联系"><label title="命题中主体之间的联系，具体内容与判断见命题"><input id="show-propositions" type="checkbox" checked><i class="line-swatch proposition-swatch"></i>命题联系</label><label id="show-knowledge-control" title="谁听闻、读到、相信或知晓了关于对方的信息"><input id="show-knowledge" type="checkbox" checked><i class="line-swatch knowledge-swatch"></i>认知联系</label></div>
+      <p id="graph-empty" class="graph-empty" role="status" hidden></p>
+      <div id="claim-pagination" class="claim-pagination" hidden><button id="claim-previous" aria-label="上一页命题">上一页</button><output id="claim-page" aria-live="polite"></output><button id="claim-next" aria-label="下一页命题">下一页</button><button id="claim-all">全部命题</button></div>
+      <div id="graph-scroll" class="graph-scroll" tabindex="0" aria-label="可滚动的记忆图"><svg id="graph" role="img" aria-label="记忆节点与有类型的关系"></svg></div>
+      <div id="graph-legend" class="graph-legend"></div>
+    </div>
+    <div id="story-view" hidden><div id="beat-list" class="beat-list"></div><div id="source-text" class="source-text"></div></div>
+  </section>
+  <aside id="detail" class="detail" aria-label="记忆详情"><p class="empty">选择一条记忆，查看内容、状态与依据。</p></aside>
+</main>
+<script id="dataset" type="application/json">__DATASET__</script>
+<script>__SCRIPT__</script>
+</body>
+</html>

@@ -1,0 +1,4202 @@
+{
+  "schema": "neurobook.memory.v7.gold-annotations",
+  "edition": 1,
+  "status": "agent-authored-review-candidate",
+  "annotationPolicy": {
+    "scope": "实际EPUB前两章逐段阅读；全部正文由Beat覆盖，重要可回答命题、关键情节和歧义边界做语义标注，非逐句穷举全部修辞。",
+    "authoring": "当前Agent手工判断；确定性构建只补引用和定位，不做自动语义抽取。独立语义审查结果另存；未获开发者认可前属于待审金标。",
+    "openWorld": true,
+    "excludedDetails": "拟声、连接句、重复情绪和纯修辞保留在Beat/原文，不逐一另建世界Fact；前世太奶幻象保留原文及回忆Beat，不判其实际出现。"
+  },
+  "entities": [
+    {
+      "id": "su",
+      "label": "苏天晴（当前意识）",
+      "category": "person",
+      "at": [
+        1,
+        5
+      ],
+      "description": "穿越后的当前意识；与身体原主人同名，不能把原主经历直接归给当前意识。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            5
+          ],
+          "text": "苏天晴"
+        },
+        {
+          "at": [
+            1,
+            24
+          ],
+          "text": "我"
+        },
+        {
+          "at": [
+            2,
+            6
+          ],
+          "text": "苏天晴"
+        }
+      ],
+      "labelAt": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": "body",
+      "label": "金毛狐女身体",
+      "category": "body",
+      "at": [
+        1,
+        10
+      ],
+      "description": "当前意识所处身体；外貌、身体反应与人格身份分开。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            10
+          ],
+          "text": "金毛狐女"
+        },
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "这副身体"
+        }
+      ],
+      "labelAt": [
+        1,
+        10
+      ]
+    },
+    {
+      "id": "book",
+      "label": "墨丘利秘典",
+      "category": "artifact",
+      "at": [
+        1,
+        7
+      ],
+      "description": "黑色古书；名称先由自称披露，章末有绑定提示。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            7
+          ],
+          "text": "黑色古书"
+        },
+        {
+          "at": [
+            1,
+            29
+          ],
+          "text": "墨丘利秘典"
+        },
+        {
+          "at": [
+            1,
+            49
+          ],
+          "text": "小破书"
+        },
+        {
+          "at": [
+            2,
+            26
+          ],
+          "text": "小破书"
+        }
+      ],
+      "labelAt": [
+        1,
+        29
+      ]
+    },
+    {
+      "id": "bedroom",
+      "label": "卧室",
+      "category": "place",
+      "at": [
+        1,
+        7
+      ],
+      "description": "开场有床与落地镜的房间；第二章明确称卧室。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            7
+          ],
+          "text": "床头"
+        },
+        {
+          "at": [
+            2,
+            69
+          ],
+          "text": "卧室"
+        }
+      ],
+      "labelAt": [
+        2,
+        69
+      ]
+    },
+    {
+      "id": "mirror",
+      "label": "卧室落地镜",
+      "category": "artifact",
+      "at": [
+        1,
+        7
+      ],
+      "description": "开场与变身后照镜对象。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            7
+          ],
+          "text": "落地镜"
+        },
+        {
+          "at": [
+            2,
+            69
+          ],
+          "text": "落地镜"
+        }
+      ],
+      "labelAt": [
+        2,
+        69
+      ]
+    },
+    {
+      "id": "past-world",
+      "label": "前世世界",
+      "category": "world",
+      "at": [
+        1,
+        15
+      ],
+      "description": "当前意识回忆中的前世世界。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            15
+          ],
+          "text": "五分钟前"
+        },
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "自己曾经的世界"
+        }
+      ],
+      "labelAt": [
+        1,
+        15
+      ]
+    },
+    {
+      "id": "contract",
+      "label": "苏天晴与秘典的契约",
+      "category": "agreement",
+      "at": [
+        1,
+        44
+      ],
+      "description": "本次具体契约，不是通用契约类别。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            44
+          ],
+          "text": "契约"
+        },
+        {
+          "at": [
+            1,
+            75
+          ],
+          "text": "契约"
+        }
+      ],
+      "labelAt": [
+        1,
+        44
+      ]
+    },
+    {
+      "id": "astral-envoy",
+      "label": "星界使者",
+      "category": "role",
+      "at": [
+        1,
+        44
+      ],
+      "description": "秘典用于自称的角色类别。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            44
+          ],
+          "text": "星界使者"
+        }
+      ],
+      "labelAt": [
+        1,
+        44
+      ]
+    },
+    {
+      "id": "villain-magical-girl",
+      "label": "反派魔法少女",
+      "category": "role",
+      "at": [
+        1,
+        63
+      ],
+      "description": "角色身份类别；未在前两章证明是组织或邪恶人格。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            63
+          ],
+          "text": "反派魔法少女"
+        },
+        {
+          "at": [
+            2,
+            81
+          ],
+          "text": "魔法少女（反派）"
+        }
+      ],
+      "labelAt": [
+        1,
+        63
+      ]
+    },
+    {
+      "id": "magical-girl",
+      "label": "魔法少女",
+      "category": "kind",
+      "at": [
+        1,
+        66
+      ],
+      "description": "能力/角色类别；原文没有提供完整成员名册。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            66
+          ],
+          "text": "魔法少女"
+        },
+        {
+          "at": [
+            2,
+            47
+          ],
+          "text": "魔法少女"
+        }
+      ],
+      "labelAt": [
+        1,
+        66
+      ]
+    },
+    {
+      "id": "creator",
+      "label": "造物主（秘典所称）",
+      "category": "unresolved",
+      "at": [
+        1,
+        66
+      ],
+      "description": "只在秘典说法中被提及，身份与存在未独立核实。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            66
+          ],
+          "text": "造物主"
+        }
+      ],
+      "labelAt": [
+        1,
+        66
+      ]
+    },
+    {
+      "id": "heroic-genre",
+      "label": "王道系故事",
+      "category": "concept",
+      "at": [
+        1,
+        68
+      ],
+      "description": "对故事类型的说法和角色预期，不是世界必然规律。",
+      "mentions": [
+        {
+          "at": [
+            1,
+            68
+          ],
+          "text": "王道系"
+        },
+        {
+          "at": [
+            1,
+            71
+          ],
+          "text": "王道系"
+        }
+      ],
+      "labelAt": [
+        1,
+        68
+      ]
+    },
+    {
+      "id": "original",
+      "label": "苏天晴（身体原主人）",
+      "category": "person",
+      "at": [
+        2,
+        18
+      ],
+      "description": "残留记忆中原主人；资助、升学、既往病史属于她。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "原主人"
+        },
+        {
+          "at": [
+            2,
+            20
+          ],
+          "text": "苏天晴"
+        },
+        {
+          "at": [
+            2,
+            47
+          ],
+          "text": "原主人"
+        }
+      ],
+      "labelAt": [
+        2,
+        18
+      ]
+    },
+    {
+      "id": "world",
+      "label": "当前世界",
+      "category": "world",
+      "at": [
+        2,
+        18
+      ],
+      "description": "记忆披露人类与兽人共存。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "这里"
+        }
+      ],
+      "labelAt": [
+        2,
+        18
+      ]
+    },
+    {
+      "id": "human",
+      "label": "人类",
+      "category": "kind",
+      "at": [
+        2,
+        18
+      ],
+      "description": "当前世界人群类别。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "人类"
+        },
+        {
+          "at": [
+            2,
+            20
+          ],
+          "text": "人类"
+        }
+      ],
+      "labelAt": [
+        2,
+        18
+      ]
+    },
+    {
+      "id": "beastfolk",
+      "label": "兽人",
+      "category": "kind",
+      "at": [
+        2,
+        18
+      ],
+      "description": "本文指猫娘狐娘一类；不导入其他作品兽人定义。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            18
+          ],
+          "text": "兽人"
+        },
+        {
+          "at": [
+            2,
+            19
+          ],
+          "text": "兽人"
+        }
+      ],
+      "labelAt": [
+        2,
+        18
+      ]
+    },
+    {
+      "id": "association",
+      "label": "兽人互助协会",
+      "category": "organization",
+      "at": [
+        2,
+        20
+      ],
+      "description": "残留记忆中的资助组织。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            20
+          ],
+          "text": "兽人互助协会"
+        }
+      ],
+      "labelAt": [
+        2,
+        20
+      ]
+    },
+    {
+      "id": "rongcheng",
+      "label": "蓉城",
+      "category": "place",
+      "at": [
+        2,
+        20
+      ],
+      "description": "原主考取医学院与任务提及的城市。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            20
+          ],
+          "text": "蓉城"
+        },
+        {
+          "at": [
+            2,
+            83
+          ],
+          "text": "蓉城"
+        }
+      ],
+      "labelAt": [
+        2,
+        20
+      ]
+    },
+    {
+      "id": "college",
+      "label": "蓉城最好的医学院（未具名）",
+      "category": "organization",
+      "at": [
+        2,
+        20
+      ],
+      "description": "残留记忆中的描述性指称，正式名称未知。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            20
+          ],
+          "text": "医学院"
+        }
+      ],
+      "labelAt": [
+        2,
+        20
+      ]
+    },
+    {
+      "id": "living-room",
+      "label": "客厅",
+      "category": "place",
+      "at": [
+        2,
+        25
+      ],
+      "description": "第二章大部分行动所在房间。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            25
+          ],
+          "text": "客厅"
+        },
+        {
+          "at": [
+            2,
+            64
+          ],
+          "text": "客厅"
+        }
+      ],
+      "labelAt": [
+        2,
+        25
+      ]
+    },
+    {
+      "id": "star",
+      "label": "守护之星",
+      "category": "artifact",
+      "at": [
+        2,
+        33
+      ],
+      "description": "掉出的金色十字星；名字来自激活提示与后续同指。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            33
+          ],
+          "text": "金色十字星"
+        },
+        {
+          "at": [
+            2,
+            38
+          ],
+          "text": "守护之星"
+        },
+        {
+          "at": [
+            2,
+            46
+          ],
+          "text": "守护之星"
+        }
+      ],
+      "labelAt": [
+        2,
+        38
+      ]
+    },
+    {
+      "id": "daily-task",
+      "label": "每日任务 1：找茬魔法少女",
+      "category": "task",
+      "at": [
+        2,
+        82
+      ],
+      "description": "秘典书页上这一次任务；发布不等于执行或完成。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            82
+          ],
+          "text": "每日任务1"
+        }
+      ],
+      "labelAt": [
+        2,
+        82
+      ]
+    },
+    {
+      "id": "orthodox-target",
+      "label": "正牌魔法少女（任务目标未具名）",
+      "category": "unresolved",
+      "at": [
+        2,
+        83
+      ],
+      "description": "任务的目标指称，不能与泛称全部魔法少女等同。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            83
+          ],
+          "text": "正牌魔法少女"
+        }
+      ],
+      "labelAt": [
+        2,
+        83
+      ]
+    },
+    {
+      "id": "stones",
+      "label": "神典石",
+      "category": "resource-kind",
+      "at": [
+        2,
+        84
+      ],
+      "description": "书页承诺的奖励种类，作用和持有量未知。",
+      "mentions": [
+        {
+          "at": [
+            2,
+            84
+          ],
+          "text": "神典石"
+        }
+      ],
+      "labelAt": [
+        2,
+        84
+      ]
+    }
+  ],
+  "beats": [
+    {
+      "id": "b101",
+      "chapter": 1,
+      "from": 1,
+      "to": 3,
+      "label": "章名与作者声明",
+      "mode": "paratext",
+      "entities": []
+    },
+    {
+      "id": "b102",
+      "chapter": 1,
+      "from": 4,
+      "to": 7,
+      "label": "报姓名并看见悬浮古书",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "bedroom",
+        "mirror"
+      ]
+    },
+    {
+      "id": "b103",
+      "chapter": 1,
+      "from": 8,
+      "to": 11,
+      "label": "镜中金毛狐女身体",
+      "mode": "description",
+      "entities": [
+        "body",
+        "su"
+      ]
+    },
+    {
+      "id": "b104",
+      "chapter": 1,
+      "from": 12,
+      "to": 15,
+      "label": "回忆五分钟前的前世倒下",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "book",
+        "past-world"
+      ]
+    },
+    {
+      "id": "b105",
+      "chapter": 1,
+      "from": 16,
+      "to": 21,
+      "label": "薅尾巴并感到真实触觉",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "body",
+        "book"
+      ]
+    },
+    {
+      "id": "b106",
+      "chapter": 1,
+      "from": 22,
+      "to": 27,
+      "label": "判断自己重生并问古书身份",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "body",
+        "book"
+      ]
+    },
+    {
+      "id": "b107",
+      "chapter": 1,
+      "from": 28,
+      "to": 31,
+      "label": "古书重复开场白与自我介绍",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book"
+      ]
+    },
+    {
+      "id": "b108",
+      "chapter": 1,
+      "from": 32,
+      "to": 38,
+      "label": "欣赏新身体并与古书对话",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "body",
+        "book",
+        "mirror"
+      ]
+    },
+    {
+      "id": "b109",
+      "chapter": 1,
+      "from": 39,
+      "to": 40,
+      "label": "推测古书知道换了身体主人",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "book",
+        "body"
+      ]
+    },
+    {
+      "id": "b110",
+      "chapter": 1,
+      "from": 41,
+      "to": 49,
+      "label": "秘典提出契约，苏立即同意",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "contract",
+        "astral-envoy"
+      ]
+    },
+    {
+      "id": "b111",
+      "chapter": 1,
+      "from": 50,
+      "to": 57,
+      "label": "解释自己认为变身已是奖励",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "body",
+        "book"
+      ]
+    },
+    {
+      "id": "b112",
+      "chapter": 1,
+      "from": 58,
+      "to": 62,
+      "label": "双方确认成立后才询问内容",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "contract"
+      ]
+    },
+    {
+      "id": "b113",
+      "chapter": 1,
+      "from": 63,
+      "to": 69,
+      "label": "获知反派魔法少女身份并质疑",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "villain-magical-girl",
+        "magical-girl",
+        "creator",
+        "heroic-genre"
+      ]
+    },
+    {
+      "id": "b114",
+      "chapter": 1,
+      "from": 70,
+      "to": 72,
+      "label": "后悔与回到原来身体的愿望",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "heroic-genre",
+        "past-world"
+      ]
+    },
+    {
+      "id": "b115",
+      "chapter": 1,
+      "from": 73,
+      "to": 76,
+      "label": "脑内绑定与契约成立提示",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "contract",
+        "villain-magical-girl"
+      ]
+    },
+    {
+      "id": "b201",
+      "chapter": 2,
+      "from": 1,
+      "to": 3,
+      "label": "章名与作者声明",
+      "mode": "paratext",
+      "entities": []
+    },
+    {
+      "id": "b202",
+      "chapter": 2,
+      "from": 4,
+      "to": 16,
+      "label": "洗漱并欣赏当前身体",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "body"
+      ]
+    },
+    {
+      "id": "b203",
+      "chapter": 2,
+      "from": 17,
+      "to": 19,
+      "label": "审视原主残留记忆和世界",
+      "mode": "exposition",
+      "entities": [
+        "su",
+        "original",
+        "world",
+        "human",
+        "beastfolk"
+      ]
+    },
+    {
+      "id": "b204",
+      "chapter": 2,
+      "from": 20,
+      "to": 21,
+      "label": "原主成长、资助、升学与患病",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "original",
+        "association",
+        "college",
+        "rongcheng",
+        "beastfolk",
+        "human"
+      ]
+    },
+    {
+      "id": "b205",
+      "chapter": 2,
+      "from": 22,
+      "to": 24,
+      "label": "回忆引发胸口幻痛",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "body"
+      ]
+    },
+    {
+      "id": "b206",
+      "chapter": 2,
+      "from": 25,
+      "to": 29,
+      "label": "客厅呼叫秘典但没有回应",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "living-room"
+      ]
+    },
+    {
+      "id": "b207",
+      "chapter": 2,
+      "from": 30,
+      "to": 36,
+      "label": "十字星掉落砸伤鼻子并吸收鼻血",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "star"
+      ]
+    },
+    {
+      "id": "b208",
+      "chapter": 2,
+      "from": 37,
+      "to": 40,
+      "label": "脑内提示激活和每日任务开放",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "star"
+      ]
+    },
+    {
+      "id": "b209",
+      "chapter": 2,
+      "from": 41,
+      "to": 46,
+      "label": "拿起十字星并猜测其用途",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "star"
+      ]
+    },
+    {
+      "id": "b210",
+      "chapter": 2,
+      "from": 47,
+      "to": 48,
+      "label": "回忆原主也梦想魔法少女变身",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "original",
+        "magical-girl"
+      ]
+    },
+    {
+      "id": "b211",
+      "chapter": 2,
+      "from": 49,
+      "to": 57,
+      "label": "尝试多个变身口令均未奏效",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "star"
+      ]
+    },
+    {
+      "id": "b212",
+      "chapter": 2,
+      "from": 58,
+      "to": 62,
+      "label": "抱怨无指引后检查道具",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "star",
+        "book"
+      ]
+    },
+    {
+      "id": "b213",
+      "chapter": 2,
+      "from": 63,
+      "to": 68,
+      "label": "按下凹陷引发光芒与首次变身",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "star",
+        "body",
+        "living-room"
+      ]
+    },
+    {
+      "id": "b214",
+      "chapter": 2,
+      "from": 69,
+      "to": 73,
+      "label": "观察变身后的力量感和衣着",
+      "mode": "description",
+      "entities": [
+        "su",
+        "body",
+        "mirror",
+        "bedroom"
+      ]
+    },
+    {
+      "id": "b215",
+      "chapter": 2,
+      "from": 74,
+      "to": 76,
+      "label": "因新外貌接受反派魔法少女身份",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "villain-magical-girl",
+        "body"
+      ]
+    },
+    {
+      "id": "b216",
+      "chapter": 2,
+      "from": 77,
+      "to": 79,
+      "label": "维持变身并翻开秘典第一页",
+      "mode": "narrative",
+      "entities": [
+        "su",
+        "book",
+        "living-room"
+      ]
+    },
+    {
+      "id": "b217",
+      "chapter": 2,
+      "from": 80,
+      "to": 84,
+      "label": "书页展示身份、任务和奖励",
+      "mode": "exposition",
+      "entities": [
+        "su",
+        "book",
+        "daily-task",
+        "villain-magical-girl",
+        "orthodox-target",
+        "rongcheng",
+        "stones"
+      ]
+    },
+    {
+      "id": "b218",
+      "chapter": 2,
+      "from": 85,
+      "to": 87,
+      "label": "认为找茬任务不好完成",
+      "mode": "reflection",
+      "entities": [
+        "su",
+        "daily-task",
+        "orthodox-target"
+      ]
+    }
+  ],
+  "claims": [
+    {
+      "id": "d101",
+      "at": [
+        1,
+        2,
+        2
+      ],
+      "text": "作者声明所有出场角色均已满 18 岁。",
+      "channel": "author",
+      "holder": null,
+      "mode": "assertion",
+      "about": [],
+      "fact": {
+        "id": "f101",
+        "predicate": "declares_age_floor",
+        "args": {
+          "age": {
+            "number": 18,
+            "unit": "岁"
+          }
+        },
+        "scope": "paratext",
+        "status": "accepted",
+        "note": "副文本声明；不自动为每个角色生成精确年龄或世界内生日。",
+        "text": "作者声明所有出场角色均已满 18 岁。"
+      }
+    },
+    {
+      "id": "d102",
+      "at": [
+        1,
+        4,
+        5
+      ],
+      "text": "问答中当前说话者报出姓名苏天晴。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su"
+      ],
+      "fact": {
+        "id": "f102",
+        "predicate": "self_names",
+        "args": {
+          "subject": "su",
+          "name": {
+            "text": "苏天晴"
+          }
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "",
+        "text": "问答中当前说话者报出姓名苏天晴。"
+      }
+    },
+    {
+      "id": "d103",
+      "at": [
+        1,
+        7,
+        7
+      ],
+      "text": "当前苏天晴坐在床头，看着悬浮在半空中的黑色古书。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "bedroom"
+      ],
+      "fact": {
+        "id": "f103",
+        "predicate": "observed_situation",
+        "args": {
+          "actor": "su",
+          "object": "book",
+          "location": "bedroom",
+          "detail": {
+            "text": "床头；古书黑色、悬浮"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "只记开场这次观察；不推断古书随时悬浮。",
+        "text": "当前苏天晴坐在床头，看着悬浮在半空中的黑色古书。",
+        "time": "t-awake"
+      }
+    },
+    {
+      "id": "d104",
+      "at": [
+        1,
+        8,
+        11
+      ],
+      "text": "镜中当前身体具有金色长发、兽耳、大尾巴，是娇小金毛狐女的模样。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f104",
+        "predicate": "observed_appearance",
+        "args": {
+          "subject": "body",
+          "appearance": {
+            "text": "金色长发、毛茸茸的耳朵、大尾巴，娇小狐女外形"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "外貌归身体；娇小与萝莉描述不等于年龄判断。",
+        "text": "镜中当前身体具有金色长发、兽耳、大尾巴，是娇小金毛狐女的模样。"
+      }
+    },
+    {
+      "id": "d105",
+      "at": [
+        1,
+        15,
+        15
+      ],
+      "text": "苏天晴回忆五分钟前结束连续三个夜班，在街边吃面时胸口疼痛、眼前发黑并倒下。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "past-world"
+      ],
+      "fact": {
+        "id": "f105",
+        "predicate": "recalls",
+        "args": {
+          "subject": "su",
+          "content": {
+            "text": "五分钟前，连续三个夜班后吃面，胸口一疼、眼前一黑并倒下"
+          },
+          "world": "past-world",
+          "recalledTime": {
+            "text": "叙述当前的五分钟前"
+          }
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "回忆中的时间和经历；没有独立医疗诊断。 回忆行为发生在当前；mentionedTime指被回忆事件，不是认知发生时刻。",
+        "holder": "su",
+        "text": "苏天晴回忆五分钟前结束连续三个夜班，在街边吃面时胸口疼痛、眼前发黑并倒下。"
+      },
+      "mentionedTime": "t-past-collapse"
+    },
+    {
+      "id": "d106",
+      "at": [
+        1,
+        16,
+        18
+      ],
+      "text": "苏天晴薅当前身体的尾巴，感到手上触感与尾巴传来的拉拽感。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f106",
+        "predicate": "experiences_body",
+        "args": {
+          "subject": "su",
+          "body": "body",
+          "experience": {
+            "text": "触碰尾巴产生双向触感及耳朵竖起的身体反应"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "",
+        "text": "苏天晴薅当前身体的尾巴，感到手上触感与尾巴传来的拉拽感。"
+      }
+    },
+    {
+      "id": "d107",
+      "at": [
+        1,
+        19,
+        21
+      ],
+      "text": "古书发问“你干嘛呢”；叙述者随后说明它不理解苏天晴薅尾巴的举动。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "book",
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f107",
+        "predicate": "speaks_in_scene",
+        "args": {
+          "subject": "book",
+          "recipient": "su",
+          "content": {
+            "text": "你干嘛呢"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "",
+        "text": "古书对苏天晴说“你干嘛呢”。"
+      }
+    },
+    {
+      "id": "d108",
+      "at": [
+        1,
+        24,
+        26
+      ],
+      "text": "苏天晴判断自己重生成了一只金毛狐女，但不明白眼前的书是什么。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body",
+        "book"
+      ],
+      "fact": {
+        "id": "f108",
+        "predicate": "believes_reincarnation",
+        "args": {
+          "subject": "su",
+          "body": "body"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "记住角色此时的自我判断，后章记忆再支持身份模型。",
+        "holder": "su",
+        "text": "苏天晴判断自己重生成了一只金毛狐女，但不明白眼前的书是什么。"
+      }
+    },
+    {
+      "id": "d109",
+      "at": [
+        1,
+        27,
+        27
+      ],
+      "text": "苏天晴问古书是谁。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "question",
+      "about": [
+        "su",
+        "book"
+      ],
+      "fact": null
+    },
+    {
+      "id": "d110",
+      "at": [
+        1,
+        28,
+        30
+      ],
+      "text": "叙述明确说古书重复两分钟前的开场白，而当前正文并未展示那次原始自我介绍。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "book",
+        "su"
+      ],
+      "fact": {
+        "id": "f110",
+        "predicate": "repeats_prior_intro",
+        "args": {
+          "speaker": "book",
+          "recipient": "su",
+          "offset": {
+            "number": 2,
+            "unit": "分钟之前"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "一次原始开场白加一次重述；不是两次相识。",
+        "text": "叙述明确说古书重复两分钟前的开场白，而当前正文并未展示那次原始自我介绍。",
+        "time": "t-reintro"
+      }
+    },
+    {
+      "id": "d111",
+      "at": [
+        1,
+        29,
+        30
+      ],
+      "text": "古书自称墨丘利秘典，来自星空彼岸，来寻找最佳适格者苏天晴。",
+      "channel": "speech",
+      "holder": "book",
+      "mode": "assertion",
+      "about": [
+        "book",
+        "su"
+      ],
+      "fact": {
+        "id": "f111",
+        "predicate": "self_introduces",
+        "args": {
+          "subject": "book",
+          "name": {
+            "text": "墨丘利秘典"
+          },
+          "origin": {
+            "text": "星空彼岸"
+          },
+          "chosen": "su"
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "发生了此自述；来历和最佳资格未独立证实。",
+        "text": "古书自称墨丘利秘典，来自星空彼岸，来寻找最佳适格者苏天晴。",
+        "time": "t-reintro"
+      }
+    },
+    {
+      "id": "d112",
+      "at": [
+        1,
+        32,
+        38
+      ],
+      "text": "苏天晴走到落地镜前欣赏身体，并向古书表达对小脚的喜爱。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body",
+        "book",
+        "mirror"
+      ],
+      "fact": {
+        "id": "f112",
+        "predicate": "expresses_preference",
+        "args": {
+          "subject": "su",
+          "object": "body",
+          "preference": {
+            "text": "满意狐女身体，尤其欣赏小脚"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "此时表达的偏好，不将夸张说法推广为世界价值。",
+        "text": "苏天晴走到落地镜前欣赏身体，并向古书表达对小脚的喜爱。"
+      }
+    },
+    {
+      "id": "d113",
+      "at": [
+        1,
+        40,
+        40
+      ],
+      "text": "苏天晴认为古书知道自己不是这副身体原来的主人。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "book",
+        "body"
+      ],
+      "fact": {
+        "id": "f113",
+        "predicate": "believes_other_knows",
+        "args": {
+          "subject": "su",
+          "other": "book",
+          "content": {
+            "text": "当前意识不是身体原来的主人"
+          }
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "角色对他人认知的推测被明确披露；不接受古书实际知道此事。",
+        "holder": "su",
+        "text": "苏天晴认为古书知道自己不是这副身体原来的主人。"
+      }
+    },
+    {
+      "id": "d114",
+      "at": [
+        1,
+        44,
+        44
+      ],
+      "text": "秘典自称星界使者，称苏天晴为最佳适格者，承诺签约后引导她走上完美生活。",
+      "channel": "speech",
+      "holder": "book",
+      "mode": "promise",
+      "about": [
+        "book",
+        "su",
+        "contract",
+        "astral-envoy"
+      ],
+      "fact": {
+        "id": "f114",
+        "predicate": "offers_contract",
+        "args": {
+          "speaker": "book",
+          "recipient": "su",
+          "contract": "contract",
+          "claimedRole": "astral-envoy",
+          "promise": {
+            "text": "签订契约后引导走上完美的生活"
+          }
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "自称与承诺，不能转换为已具备的世界能力或已兑现结果。",
+        "text": "秘典自称星界使者，称苏天晴为最佳适格者，承诺签约后引导她走上完美生活。"
+      }
+    },
+    {
+      "id": "d115",
+      "at": [
+        1,
+        45,
+        45
+      ],
+      "text": "苏天晴立即答应签约。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "contract",
+        "book"
+      ],
+      "fact": {
+        "id": "f115",
+        "predicate": "assents_to_contract",
+        "args": {
+          "subject": "su",
+          "contract": "contract",
+          "counterparty": "book"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "说出同意是实际行为，条款尚未问清。",
+        "text": "苏天晴立即答应签约。",
+        "time": "t-assent"
+      }
+    },
+    {
+      "id": "d116",
+      "at": [
+        1,
+        50,
+        55
+      ],
+      "text": "苏天晴把无尽财富和变成萝莉称为最通用愿望，认为当前狐女身体本身已是奖励。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f116",
+        "predicate": "states_reward_preference",
+        "args": {
+          "subject": "su",
+          "reward": {
+            "text": "认为成为可爱狐女本身就是很大的奖励"
+          }
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "个人夸张说法；不推断她已有无尽财富。",
+        "text": "苏天晴把无尽财富和变成萝莉称为最通用愿望，认为当前狐女身体本身已是奖励。"
+      }
+    },
+    {
+      "id": "d117",
+      "at": [
+        1,
+        58,
+        59
+      ],
+      "text": "秘典询问契约是否成立，苏天晴明确回答成立。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "contract"
+      ],
+      "fact": {
+        "id": "f117",
+        "predicate": "confirms_contract",
+        "args": {
+          "subject": "su",
+          "counterparty": "book",
+          "contract": "contract"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "",
+        "text": "秘典询问契约是否成立，苏天晴明确回答成立。",
+        "time": "t-confirm"
+      }
+    },
+    {
+      "id": "d130",
+      "at": [
+        1,
+        60,
+        61
+      ],
+      "text": "苏天晴在确认契约后才公开询问契约的具体内容。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "question",
+      "about": [
+        "su",
+        "contract"
+      ],
+      "fact": null
+    },
+    {
+      "id": "d118",
+      "at": [
+        1,
+        62,
+        62
+      ],
+      "text": "苏天晴担心刚确认的契约可能是奴隶契约。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "contract"
+      ],
+      "fact": {
+        "id": "f118",
+        "predicate": "worries_contract_terms",
+        "args": {
+          "subject": "su",
+          "contract": "contract",
+          "risk": {
+            "text": "可能是奴隶契约"
+          }
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "记录担忧，不认定契约是奴隶契约。",
+        "holder": "su",
+        "text": "苏天晴担心刚确认的契约可能是奴隶契约。",
+        "time": "t-confirm"
+      }
+    },
+    {
+      "id": "d119",
+      "at": [
+        1,
+        63,
+        66
+      ],
+      "text": "秘典告知契约的身份是反派魔法少女，并称造物主定制了任务。",
+      "channel": "speech",
+      "holder": "book",
+      "mode": "assertion",
+      "about": [
+        "book",
+        "su",
+        "contract",
+        "villain-magical-girl",
+        "magical-girl",
+        "creator"
+      ],
+      "fact": {
+        "id": "f119",
+        "predicate": "announces_role",
+        "args": {
+          "speaker": "book",
+          "recipient": "su",
+          "role": "villain-magical-girl",
+          "taskAuthor": "creator"
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "造物主身份和任务来源仅为秘典说法。",
+        "text": "秘典告知契约的身份是反派魔法少女，并称造物主定制了任务。"
+      }
+    },
+    {
+      "id": "d120",
+      "at": [
+        1,
+        67,
+        67
+      ],
+      "text": "苏天晴用疑问句把魔法少女联想到死亡率高达 90% 的高危职业。",
+      "channel": "speech",
+      "holder": "su",
+      "mode": "question",
+      "about": [
+        "su",
+        "magical-girl"
+      ],
+      "fact": null
+    },
+    {
+      "id": "d121",
+      "at": [
+        1,
+        68,
+        68
+      ],
+      "text": "秘典称这里属于王道系的魔法少女。",
+      "channel": "speech",
+      "holder": "book",
+      "mode": "assertion",
+      "about": [
+        "book",
+        "magical-girl",
+        "heroic-genre"
+      ],
+      "fact": {
+        "id": "f121",
+        "predicate": "describes_genre",
+        "args": {
+          "speaker": "book",
+          "subject": "magical-girl",
+          "genre": "heroic-genre"
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "",
+        "text": "秘典称这里属于王道系的魔法少女。"
+      }
+    },
+    {
+      "id": "d122",
+      "at": [
+        1,
+        69,
+        72
+      ],
+      "text": "苏天晴担心王道故事里的反派会被主角击败，开始后悔签约并想回原来的身体。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "contract",
+        "heroic-genre",
+        "past-world"
+      ],
+      "fact": {
+        "id": "f122",
+        "predicate": "regrets_role",
+        "args": {
+          "subject": "su",
+          "contract": "contract",
+          "reason": {
+            "text": "用前世王道故事经验担忧反派结局，希望回原身体"
+          }
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "角色预期，不是原作未来定局。",
+        "holder": "su",
+        "text": "苏天晴担心王道故事里的反派会被主角击败，开始后悔签约并想回原来的身体。",
+        "time": "t-regret"
+      }
+    },
+    {
+      "id": "d123",
+      "at": [
+        1,
+        72,
+        72
+      ],
+      "text": "苏天晴把自己前世的情况称为急性心肌梗死，并觉得也许还能抢救。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "past-world"
+      ],
+      "fact": {
+        "id": "f123",
+        "predicate": "self_diagnoses_past",
+        "args": {
+          "subject": "su",
+          "diagnosis": {
+            "text": "急性心肌梗死"
+          },
+          "world": "past-world"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "只记录自我诊断；不与原主的暴发性心肌炎合并。",
+        "holder": "su",
+        "text": "苏天晴把自己前世的情况称为急性心肌梗死，并觉得也许还能抢救。"
+      }
+    },
+    {
+      "id": "d124",
+      "at": [
+        1,
+        73,
+        76
+      ],
+      "text": "苏天晴脑内响起墨丘利秘典绑定成功、契约成立及走上反派魔法少女道路的提示。",
+      "channel": "voice",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "contract",
+        "villain-magical-girl"
+      ],
+      "fact": {
+        "id": "f124",
+        "predicate": "hears_binding_notice",
+        "args": {
+          "recipient": "su",
+          "object": "book",
+          "contract": "contract",
+          "role": "villain-magical-girl"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "脑内提示发生；声音身份未独立确证，不自动视作古书发言或造物主。",
+        "text": "苏天晴脑内响起墨丘利秘典绑定成功、契约成立及走上反派魔法少女道路的提示。",
+        "time": "t-binding"
+      }
+    },
+    {
+      "id": "d201",
+      "at": [
+        2,
+        2,
+        2
+      ],
+      "text": "本章再次给出全部出场角色已满 18 岁的作者声明。",
+      "channel": "author",
+      "holder": null,
+      "mode": "assertion",
+      "about": [],
+      "fact": {
+        "id": "f201",
+        "predicate": "declares_age_floor",
+        "args": {
+          "age": {
+            "number": 18,
+            "unit": "岁"
+          }
+        },
+        "scope": "paratext",
+        "status": "accepted",
+        "note": "同类声明重复，不是额外的独立世界内年龄证据。",
+        "text": "本章再次给出全部出场角色已满 18 岁的作者声明。"
+      }
+    },
+    {
+      "id": "d202",
+      "at": [
+        2,
+        6,
+        17
+      ],
+      "text": "苏天晴洗漱时欣赏当前狐女身体，随后收敛举动并审视残留记忆。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f202",
+        "predicate": "reviews_body_memories",
+        "args": {
+          "subject": "su",
+          "body": "body"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "",
+        "text": "苏天晴洗漱时欣赏当前狐女身体，随后收敛举动并审视残留记忆。"
+      }
+    },
+    {
+      "id": "d203",
+      "at": [
+        2,
+        17,
+        18
+      ],
+      "text": "残留记忆表明身体原主人也叫苏天晴，当前意识有自己的前世世界。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "original",
+        "body",
+        "past-world"
+      ],
+      "fact": {
+        "id": "f203",
+        "predicate": "distinct_occupants",
+        "args": {
+          "current": "su",
+          "previous": "original",
+          "body": "body",
+          "sharedName": {
+            "text": "苏天晴"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "叙述明确原主人和当前自己有别；只统一各自指称，不合并两个人。",
+        "text": "残留记忆表明身体原主人也叫苏天晴，当前意识有自己的前世世界。",
+        "time": "t-memory"
+      }
+    },
+    {
+      "id": "d204",
+      "at": [
+        2,
+        18,
+        19
+      ],
+      "text": "在残留记忆的说明中，这里是人类与兽人共存的世界，兽人指猫娘狐娘一类。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "world",
+        "human",
+        "beastfolk"
+      ],
+      "fact": {
+        "id": "f204",
+        "predicate": "world_population_description",
+        "args": {
+          "world": "world",
+          "human": "human",
+          "beastfolk": "beastfolk",
+          "description": {
+            "text": "共存；兽人指猫娘狐娘一类"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "叙述经残留记忆说明；当前证据只到第二章，不引用其他作品的兽人定义。",
+        "text": "在残留记忆的说明中，这里是人类与兽人共存的世界，兽人指猫娘狐娘一类。"
+      }
+    },
+    {
+      "id": "d205",
+      "at": [
+        2,
+        20,
+        20
+      ],
+      "text": "记忆说明兽人数量远远少于人类。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "beastfolk",
+        "human",
+        "world"
+      ],
+      "fact": {
+        "id": "f205",
+        "predicate": "population_less_than",
+        "args": {
+          "smaller": "beastfolk",
+          "larger": "human",
+          "world": "world",
+          "degree": {
+            "text": "远远少于"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "定性比较，不能制造比例。",
+        "text": "记忆说明兽人数量远远少于人类。"
+      }
+    },
+    {
+      "id": "d206",
+      "at": [
+        2,
+        20,
+        20
+      ],
+      "text": "原主人从小独自长大，社恐孤僻。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "original"
+      ],
+      "fact": {
+        "id": "f206",
+        "predicate": "past_upbringing",
+        "args": {
+          "subject": "original",
+          "description": {
+            "text": "从小独自孤独长大，社恐孤僻"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "由残留记忆展开的过去；不把社恐自动继承给当前意识。",
+        "text": "原主人从小独自长大，社恐孤僻。",
+        "time": "t-original-past"
+      }
+    },
+    {
+      "id": "d207",
+      "at": [
+        2,
+        20,
+        20
+      ],
+      "text": "兽人互助协会资助原主人。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "association",
+        "original"
+      ],
+      "fact": {
+        "id": "f207",
+        "predicate": "funds",
+        "args": {
+          "funder": "association",
+          "recipient": "original"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "过去资助；不推断原主是会员，也不推断当前意识已办理继承。",
+        "text": "兽人互助协会资助原主人。",
+        "time": "t-original-past"
+      }
+    },
+    {
+      "id": "d208",
+      "at": [
+        2,
+        20,
+        20
+      ],
+      "text": "原主人考上了蓉城最好的医学院，但临近开学时患病。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "original",
+        "college",
+        "rongcheng"
+      ],
+      "fact": {
+        "id": "f208",
+        "predicate": "admitted_to",
+        "args": {
+          "student": "original",
+          "school": "college",
+          "city": "rongcheng"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "考上不等于已经入学或毕业；学校正式名称未给出。",
+        "text": "身体原主人苏天晴考上了蓉城最好的医学院。",
+        "time": "t-original-past"
+      }
+    },
+    {
+      "id": "d209",
+      "at": [
+        2,
+        20,
+        20
+      ],
+      "text": "残留记忆描述原主人临近开学染上兽人流感，熬夜时突发暴发性心肌炎。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "original",
+        "su"
+      ],
+      "fact": {
+        "id": "f209",
+        "predicate": "past_illness",
+        "args": {
+          "subject": "original",
+          "illness": {
+            "text": "兽人流感；熬夜过程中突发暴发性心肌炎"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "疾病名称按原文保留；相似死亡体验不能支持两种病等价。",
+        "text": "残留记忆描述原主人临近开学染上兽人流感，熬夜时突发暴发性心肌炎。",
+        "time": "t-original-illness"
+      }
+    },
+    {
+      "id": "d229",
+      "at": [
+        2,
+        21,
+        21
+      ],
+      "text": "苏天晴认为原主人与自己的死法一模一样。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "original"
+      ],
+      "fact": {
+        "id": "f229",
+        "predicate": "believes_same_death",
+        "args": {
+          "subject": "su",
+          "other": "original",
+          "judgment": {
+            "text": "死法和自己一模一样"
+          }
+        },
+        "scope": "belief",
+        "holder": "su",
+        "status": "accepted",
+        "note": "忠实保留角色的等同判断；它不证明原主暴发性心肌炎与当前意识所称急性心肌梗死为同一疾病。",
+        "text": "苏天晴认为原主人与自己的死法一模一样。"
+      }
+    },
+    {
+      "id": "d210",
+      "at": [
+        2,
+        22,
+        23
+      ],
+      "text": "想到过去病情时，苏天晴感到胸口幻痛并去揉胸口。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body"
+      ],
+      "fact": {
+        "id": "f210",
+        "predicate": "experiences_phantom_pain",
+        "args": {
+          "subject": "su",
+          "body": "body",
+          "location": {
+            "text": "胸口"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "幻痛不等于当前已确诊同一种心脏疾病。",
+        "text": "想到过去病情时，苏天晴感到胸口幻痛并去揉胸口。"
+      }
+    },
+    {
+      "id": "d211",
+      "at": [
+        2,
+        25,
+        28
+      ],
+      "text": "苏天晴到客厅拿起古书并呼唤小破书，古书这次没有回应。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "living-room"
+      ],
+      "fact": {
+        "id": "f211",
+        "predicate": "receives_no_reply",
+        "args": {
+          "caller": "su",
+          "target": "book",
+          "location": "living-room"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "仅此时没说话，不推断永远失去语言能力。",
+        "text": "苏天晴到客厅拿起古书并呼唤小破书，古书这次没有回应。",
+        "time": "t-book-silent"
+      }
+    },
+    {
+      "id": "d212",
+      "at": [
+        2,
+        29,
+        30
+      ],
+      "text": "苏天晴抱着侥幸怀疑反派魔法少女也许不存在，举起古书翻开扉页。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "book",
+        "villain-magical-girl"
+      ],
+      "fact": {
+        "id": "f212",
+        "predicate": "doubts_role_reality",
+        "args": {
+          "subject": "su",
+          "role": "villain-magical-girl"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "暂时怀疑；随后经历会改变她的认识。",
+        "holder": "su",
+        "text": "苏天晴抱着侥幸怀疑反派魔法少女也许不存在，举起古书翻开扉页。"
+      }
+    },
+    {
+      "id": "d213",
+      "at": [
+        2,
+        30,
+        35
+      ],
+      "text": "苏天晴翻书时，一枚金色十字星掉出来砸中她的脸，造成鼻血。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "star"
+      ],
+      "fact": {
+        "id": "f213",
+        "predicate": "falls_and_injures",
+        "args": {
+          "object": "star",
+          "container": "book",
+          "injured": "su",
+          "injury": {
+            "text": "砸到脸并流鼻血"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "",
+        "text": "苏天晴翻书时，一枚金色十字星掉出来砸中她的脸，造成鼻血。"
+      }
+    },
+    {
+      "id": "d214",
+      "at": [
+        2,
+        36,
+        36
+      ],
+      "text": "金色十字星沾染的鼻血在微光后融入其中消失；苏天晴全然没有注意到这一过程。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "star",
+        "su"
+      ],
+      "fact": {
+        "id": "f214",
+        "predicate": "absorbs_blood_unnoticed",
+        "args": {
+          "object": "star",
+          "donor": "su",
+          "observerUnaware": "su"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "读者可知、角色此时未注意。不要因她随后听到激活通知就补成知道激活机制。",
+        "text": "金色十字星沾染的鼻血在微光后融入其中消失；苏天晴全然没有注意到这一过程。",
+        "time": "t-blood"
+      }
+    },
+    {
+      "id": "d215",
+      "at": [
+        2,
+        37,
+        40
+      ],
+      "text": "一个陌生声音在苏天晴脑内提示守护之星激活、秘典序章完成和每日任务开启。",
+      "channel": "voice",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "star"
+      ],
+      "fact": {
+        "id": "f215",
+        "predicate": "hears_activation_notice",
+        "args": {
+          "recipient": "su",
+          "object": "star",
+          "content": {
+            "text": "守护之星激活；秘典序章已完成；开启每日任务"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "声音身份未明；所报告的是开启，不是每日任务完成。",
+        "text": "一个陌生声音在苏天晴脑内提示守护之星激活、秘典序章完成和每日任务开启。",
+        "time": "t-activation"
+      }
+    },
+    {
+      "id": "d216",
+      "at": [
+        2,
+        41,
+        42
+      ],
+      "text": "苏天晴拿起材质不明的金色十字星，觉得手感扎实，并猜它是变身道具。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "star"
+      ],
+      "fact": {
+        "id": "f216",
+        "predicate": "guesses_transformation_tool",
+        "args": {
+          "subject": "su",
+          "object": "star"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "此处是角色猜测；材质仍未知。",
+        "holder": "su",
+        "text": "苏天晴拿起材质不明的金色十字星，觉得手感扎实，并猜它是变身道具。"
+      }
+    },
+    {
+      "id": "d217",
+      "at": [
+        2,
+        43,
+        44
+      ],
+      "text": "苏天晴不知道如何查看每日任务，猜测可能要默念系统或使用密码。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "question",
+      "about": [
+        "su"
+      ],
+      "fact": null
+    },
+    {
+      "id": "d218",
+      "at": [
+        2,
+        46,
+        47
+      ],
+      "text": "苏天晴对守护之星更感兴趣；残留记忆表明原主人也曾梦想魔法少女变身与战斗。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "star",
+        "original",
+        "magical-girl"
+      ],
+      "fact": {
+        "id": "f218",
+        "predicate": "past_aspiration",
+        "args": {
+          "subject": "original",
+          "role": "magical-girl",
+          "aspiration": {
+            "text": "变身、穿洋装在城市飞行，与怪人战斗"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "梦想不证明原主曾有这些能力或做过这些事。",
+        "text": "苏天晴对守护之星更感兴趣；残留记忆表明原主人也曾梦想魔法少女变身与战斗。"
+      }
+    },
+    {
+      "id": "d219",
+      "at": [
+        2,
+        49,
+        57
+      ],
+      "text": "苏天晴手持十字星试喊变身、魔法少女变身、henshin、光啊、盖亚等口令，均未引起反应。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "star"
+      ],
+      "fact": {
+        "id": "f219",
+        "predicate": "failed_voice_attempts",
+        "args": {
+          "actor": "su",
+          "object": "star",
+          "commands": {
+            "text": "变身；魔法少女变身；henshin；光啊；盖亚"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "限定本次尝试；不归纳所有声控方式在所有条件下都无效。",
+        "text": "苏天晴手持十字星试喊变身、魔法少女变身、henshin、光啊、盖亚等口令，均未引起反应。",
+        "time": "t-voice-failure"
+      }
+    },
+    {
+      "id": "d220",
+      "at": [
+        2,
+        58,
+        62
+      ],
+      "text": "苏天晴抱怨没有新手指引，随后检查十字星并猜测可能需敲击或触摸。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "conjecture",
+      "about": [
+        "su",
+        "book",
+        "star"
+      ],
+      "fact": {
+        "id": "f220",
+        "predicate": "seeks_operation_method",
+        "args": {
+          "subject": "su",
+          "object": "star"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "抱怨缺指引不证明所有页面永远没有操作说明。",
+        "holder": "su",
+        "text": "苏天晴抱怨没有新手指引，随后检查十字星并猜测可能需敲击或触摸。"
+      }
+    },
+    {
+      "id": "d221",
+      "at": [
+        2,
+        63,
+        66
+      ],
+      "text": "苏天晴把拇指按入十字星中央凹陷，客厅被光笼罩，随后感到身体轻盈并听到首次变身完成。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "star",
+        "body",
+        "living-room"
+      ],
+      "fact": {
+        "id": "f221",
+        "predicate": "successful_transformation_attempt",
+        "args": {
+          "actor": "su",
+          "instrument": "star",
+          "operation": {
+            "text": "拇指按入中央凹陷"
+          },
+          "location": "living-room"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "记录此场景中一次操作与结果；不生成无条件永久变身规则。",
+        "text": "苏天晴把拇指按入十字星中央凹陷，客厅被光笼罩，随后感到身体轻盈并听到首次变身完成。",
+        "time": "t-press-success"
+      }
+    },
+    {
+      "id": "d222",
+      "at": [
+        2,
+        68,
+        68
+      ],
+      "text": "苏天晴把成功操作理解为触摸屏，并反省原先以为是声控。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "star"
+      ],
+      "fact": {
+        "id": "f222",
+        "predicate": "revises_operation_belief",
+        "args": {
+          "subject": "su",
+          "object": "star",
+          "before": {
+            "text": "以为声控"
+          },
+          "after": {
+            "text": "认为是触摸屏"
+          }
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "触摸屏是角色类比，不证明道具电子结构。",
+        "holder": "su",
+        "text": "苏天晴把成功操作理解为触摸屏，并反省原先以为是声控。",
+        "time": "t-press-success"
+      }
+    },
+    {
+      "id": "d223",
+      "at": [
+        2,
+        69,
+        73
+      ],
+      "text": "变身后她感到周围力量流淌，并在镜中看到白色过膝袜、金色短洋装、缎带和胸前十字星，耳朵与尾巴仍在。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body",
+        "star",
+        "mirror"
+      ],
+      "fact": {
+        "id": "f223",
+        "predicate": "transformed_appearance",
+        "args": {
+          "subject": "body",
+          "appearance": {
+            "text": "白色过膝袜、金色短洋装与缎带、胸前金色十字星；兽耳和尾巴保留"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "外观变化不等于人格替换；力量感不支持具体等级或战斗数值。",
+        "text": "变身后她感到周围力量流淌，并在镜中看到白色过膝袜、金色短洋装、缎带和胸前十字星，耳朵与尾巴仍在。",
+        "time": "t-press-success"
+      }
+    },
+    {
+      "id": "d224",
+      "at": [
+        2,
+        74,
+        76
+      ],
+      "text": "看到变身后的模样，苏天晴对反派魔法少女身份残存的抵触消失，决定接受它。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "body",
+        "villain-magical-girl"
+      ],
+      "fact": {
+        "id": "f224",
+        "predicate": "accepts_role",
+        "args": {
+          "subject": "su",
+          "role": "villain-magical-girl",
+          "reason": {
+            "text": "喜欢变身后的模样"
+          }
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "本时段态度；第一章后悔仍是有效历史，不能当矛盾覆盖。",
+        "text": "看到变身后的模样，苏天晴对反派魔法少女身份残存的抵触消失，决定接受它。",
+        "time": "t-accept-role"
+      }
+    },
+    {
+      "id": "d230",
+      "at": [
+        2,
+        78,
+        79
+      ],
+      "text": "苏天晴维持变身状态回客厅，小心翻开秘典，看到第一页浮现文字。",
+      "channel": "narrator",
+      "holder": null,
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "living-room"
+      ],
+      "fact": {
+        "id": "f230",
+        "predicate": "opens_book_while_transformed",
+        "args": {
+          "actor": "su",
+          "object": "book",
+          "location": "living-room"
+        },
+        "scope": "world",
+        "status": "accepted",
+        "note": "行动由叙述者披露，与后续书页的身份文字分别保存。",
+        "text": "苏天晴维持变身状态回客厅，小心翻开秘典，看到第一页浮现文字。",
+        "time": "t-accept-role"
+      }
+    },
+    {
+      "id": "d225",
+      "at": [
+        2,
+        80,
+        81
+      ],
+      "text": "秘典第一页显示苏天晴和魔法少女（反派）的身份文字。",
+      "channel": "document",
+      "holder": "book",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "book",
+        "villain-magical-girl"
+      ],
+      "fact": {
+        "id": "f225",
+        "predicate": "displays_role",
+        "args": {
+          "document": "book",
+          "subject": "su",
+          "role": "villain-magical-girl"
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "书页显示被直接观察；显示名称不是新增第二个人。",
+        "text": "秘典第一页显示苏天晴和魔法少女（反派）的身份文字。"
+      }
+    },
+    {
+      "id": "d226",
+      "at": [
+        2,
+        82,
+        83
+      ],
+      "text": "秘典第一页列出每日任务 1：找茬魔法少女，要求给在蓉城活跃的正牌魔法少女一点颜色瞧瞧。",
+      "channel": "document",
+      "holder": "book",
+      "mode": "request",
+      "about": [
+        "book",
+        "su",
+        "daily-task",
+        "orthodox-target",
+        "rongcheng"
+      ],
+      "fact": {
+        "id": "f226",
+        "predicate": "assigns_task",
+        "args": {
+          "issuer": "book",
+          "recipient": "su",
+          "task": "daily-task",
+          "target": "orthodox-target",
+          "location": "rongcheng"
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "发布的指令；目标未具名，任务尚未执行。",
+        "text": "秘典第一页列出每日任务 1：找茬魔法少女，要求给在蓉城活跃的正牌魔法少女一点颜色瞧瞧。"
+      }
+    },
+    {
+      "id": "d227",
+      "at": [
+        2,
+        84,
+        84
+      ],
+      "text": "书页为这项每日任务列出奖励 100 神典石。",
+      "channel": "document",
+      "holder": "book",
+      "mode": "promise",
+      "about": [
+        "book",
+        "daily-task",
+        "stones"
+      ],
+      "fact": {
+        "id": "f227",
+        "predicate": "promises_task_reward",
+        "args": {
+          "issuer": "book",
+          "task": "daily-task",
+          "resource": "stones",
+          "amount": {
+            "number": 100,
+            "unit": "神典石"
+          },
+          "condition": {
+            "text": "任务奖励；本段未说明结算细则"
+          }
+        },
+        "scope": "speech",
+        "status": "accepted",
+        "note": "承诺而非持有余额；不能生成已赚到100神典石。",
+        "text": "书页为这项每日任务列出奖励 100 神典石。",
+        "time": "t-task-page"
+      }
+    },
+    {
+      "id": "d228",
+      "at": [
+        2,
+        85,
+        87
+      ],
+      "text": "看到任务，苏天晴觉得这项看似简单的日常任务并不好做。",
+      "channel": "thought",
+      "holder": "su",
+      "mode": "assertion",
+      "about": [
+        "su",
+        "daily-task"
+      ],
+      "fact": {
+        "id": "f228",
+        "predicate": "expects_difficult_task",
+        "args": {
+          "subject": "su",
+          "task": "daily-task"
+        },
+        "scope": "belief",
+        "status": "accepted",
+        "note": "对任务的当前判断；截至样本末尾没有遭遇目标。",
+        "holder": "su",
+        "text": "看到任务，苏天晴觉得这项看似简单的日常任务并不好做。",
+        "time": "t-task-page"
+      }
+    }
+  ],
+  "inferences": [
+    {
+      "id": "i101",
+      "text": "苏天晴与墨丘利秘典在第一章完成了这一次契约确认，并收到绑定成功提示。",
+      "predicate": "contract_established",
+      "args": {
+        "party": "su",
+        "counterparty": "book",
+        "contract": "contract"
+      },
+      "scope": "world",
+      "premises": [
+        "f115",
+        "f117",
+        "f124"
+      ],
+      "status": "accepted",
+      "note": "言语同意、再次确认与脑内通知共同支持当前契约关系；不补全未知条款或惩罚。"
+    },
+    {
+      "id": "i102",
+      "text": "秘典可能来自它自称的星空彼岸。",
+      "predicate": "origin_candidate",
+      "args": {
+        "subject": "book",
+        "origin": {
+          "text": "星空彼岸"
+        }
+      },
+      "scope": "world",
+      "premises": [
+        "f111"
+      ],
+      "status": "tentative",
+      "note": "唯一来源是秘典自述；独立世界命题仍暂定，不能由‘自述发生’升级为来历已证实。"
+    },
+    {
+      "id": "i201",
+      "text": "当前意识与身体原主人是同名的不同身份，当前意识经历的穿越不能吞并原主的过去。",
+      "predicate": "distinct_identity",
+      "args": {
+        "first": "su",
+        "second": "original",
+        "body": "body"
+      },
+      "scope": "world",
+      "premises": [
+        "f108",
+        "f203"
+      ],
+      "status": "accepted",
+      "note": "第二章明确区分自己、原主人和残留记忆；前世和原主病史、性格、受助关系分别保留。"
+    },
+    {
+      "id": "i202",
+      "text": "这枚守护之星在当前场景中被苏天晴作为变身媒介使用成功。",
+      "predicate": "used_as_transformation_tool",
+      "args": {
+        "user": "su",
+        "tool": "star"
+      },
+      "scope": "world",
+      "premises": [
+        "f215",
+        "f221",
+        "f223"
+      ],
+      "status": "accepted",
+      "note": "将激活通知、实际按压及变身后观察合起来，支持这次使用；不宣称任何人只需按压就必然变身。"
+    },
+    {
+      "id": "i203",
+      "text": "鼻血融入守护之星可能与随后的激活有关。",
+      "predicate": "activation_trigger_candidate",
+      "args": {
+        "object": "star",
+        "trigger": {
+          "text": "苏天晴的鼻血融入"
+        }
+      },
+      "scope": "world",
+      "premises": [
+        "f214",
+        "f215"
+      ],
+      "status": "tentative",
+      "note": "相邻叙述是机制线索，未排除其他原因；角色明确未注意吸收过程，不能放进她当时的知识。"
+    },
+    {
+      "id": "i204",
+      "text": "截至第二章，苏天晴已经实践了反派魔法少女身份，但还没有展示战斗等级或完整力量体系。",
+      "predicate": "takes_role",
+      "args": {
+        "subject": "su",
+        "role": "villain-magical-girl"
+      },
+      "scope": "world",
+      "premises": [
+        "f119",
+        "f124",
+        "f221",
+        "f224",
+        "f225"
+      ],
+      "status": "accepted",
+      "note": "身份宣告、绑定、实际变身、接受身份与书页显示共同支持；力量等级未知属于覆盖限制，不作为否定命题。"
+    },
+    {
+      "id": "i205",
+      "text": "此处反派魔法少女是魔法少女的一类身份。",
+      "predicate": "subclass_of",
+      "args": {
+        "subclass": "villain-magical-girl",
+        "superclass": "magical-girl"
+      },
+      "scope": "world",
+      "premises": [
+        "f119",
+        "f225"
+      ],
+      "status": "accepted",
+      "note": "‘成为魔法少女’与书页‘魔法少女（反派）’明确包含关系；不是魔法少女术语和反派魔法少女术语完全等价。"
+    }
+  ],
+  "episodes": [
+    {
+      "id": "ep101",
+      "label": "醒来后辨认新身体与秘典",
+      "beats": [
+        "b102",
+        "b103",
+        "b104",
+        "b105",
+        "b106",
+        "b107",
+        "b108",
+        "b109"
+      ],
+      "entities": [
+        "su",
+        "body",
+        "book"
+      ],
+      "summary": "苏天晴在陌生狐女身体中醒来，回想前世倒下，用尾巴的触感确认体验真实；古书重复此前的介绍，自称墨丘利秘典。"
+    },
+    {
+      "id": "ep102",
+      "label": "先同意契约，后得知反派身份",
+      "beats": [
+        "b110",
+        "b111",
+        "b112",
+        "b113",
+        "b114",
+        "b115"
+      ],
+      "entities": [
+        "su",
+        "book",
+        "contract",
+        "villain-magical-girl"
+      ],
+      "summary": "因满意新身体，苏天晴迅速答应并确认契约，之后才问清身份安排。得知要当反派魔法少女后，她担忧结局而后悔，但收到绑定和契约成立提示。"
+    },
+    {
+      "id": "ep201",
+      "label": "原主身份和过去被揭示",
+      "beats": [
+        "b203",
+        "b204",
+        "b205"
+      ],
+      "entities": [
+        "su",
+        "original",
+        "body",
+        "association",
+        "college"
+      ],
+      "summary": "苏天晴审视残留记忆，知道原主与自己同名，曾受协会资助考上医学院并在开学前病倒；她联想到自己前世经历并感到胸口幻痛。"
+    },
+    {
+      "id": "ep202",
+      "label": "从翻书受伤到守护之星激活",
+      "beats": [
+        "b206",
+        "b207",
+        "b208",
+        "b209"
+      ],
+      "entities": [
+        "su",
+        "book",
+        "star"
+      ],
+      "summary": "呼唤秘典无回应后，苏天晴翻书，十字星掉下砸出鼻血。读者看到血液被道具吸收，而她没注意；随后脑内通知激活和每日任务开启。"
+    },
+    {
+      "id": "ep203",
+      "label": "试错找到变身方式",
+      "beats": [
+        "b210",
+        "b211",
+        "b212",
+        "b213",
+        "b214"
+      ],
+      "entities": [
+        "su",
+        "star",
+        "body"
+      ],
+      "summary": "她带着对魔法少女变身的期待尝试多种口令，均无反应；转而检查道具，按下中央凹陷后变身成功，并在镜中观察到新衣着。"
+    },
+    {
+      "id": "ep204",
+      "label": "接受身份并查看第一项每日任务",
+      "beats": [
+        "b215",
+        "b216",
+        "b217",
+        "b218"
+      ],
+      "entities": [
+        "su",
+        "book",
+        "daily-task",
+        "orthodox-target"
+      ],
+      "summary": "变身后的外貌消除了她对身份的抵触。她维持变身翻开秘典，看见找茬正牌魔法少女的任务与100神典石奖励，觉得任务难办。"
+    },
+    {
+      "id": "ep205",
+      "label": "苏天晴对反派身份的态度变化",
+      "beats": [
+        "b111",
+        "b114",
+        "b215"
+      ],
+      "entities": [
+        "su",
+        "body",
+        "villain-magical-girl"
+      ],
+      "summary": "从认为狐女身体已是奖励，到得知反派安排而后悔，再到因变身后的外貌接受身份。这是不同故事时点的变化，各阶段都有效。"
+    }
+  ],
+  "summaries": [
+    {
+      "id": "s-su-c1",
+      "entity": "su",
+      "through": [
+        1,
+        76
+      ],
+      "facet": "overview",
+      "items": [
+        {
+          "text": "自称苏天晴的当前意识认为自己从前世重生为金毛狐女，能直接感到新身体尾巴的触觉。",
+          "refs": [
+            "f102",
+            "f106",
+            "f108"
+          ]
+        },
+        {
+          "text": "她因满意新身体迅速答应秘典契约，得知要当反派魔法少女后后悔，章末仍收到绑定成功提示。",
+          "refs": [
+            "ep102",
+            "i101"
+          ]
+        },
+        {
+          "text": "她推测秘典知道自己不是身体原主人；这只是她对秘典认知的判断。",
+          "refs": [
+            "f113"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-book-c1",
+      "entity": "book",
+      "through": [
+        1,
+        76
+      ],
+      "facet": "overview",
+      "items": [
+        {
+          "text": "开场能悬浮和说话的黑色古书，自称墨丘利秘典、星界使者，称苏天晴为最佳适格者。",
+          "refs": [
+            "f103",
+            "f107",
+            "f111",
+            "f114"
+          ]
+        },
+        {
+          "text": "它与苏天晴确认契约，告知反派魔法少女安排。星空彼岸来历仍只有它的自述。",
+          "refs": [
+            "i101",
+            "f119",
+            "i102"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-su-c2",
+      "entity": "su",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "overview",
+      "items": [
+        {
+          "text": "当前苏天晴与同名身体原主人应分开：协会资助、医学院录取和原主病史属于后者。",
+          "refs": [
+            "i201",
+            "f207",
+            "f208",
+            "f209"
+          ]
+        },
+        {
+          "text": "她用守护之星试错变身成功，因喜欢新外貌接受反派魔法少女身份。",
+          "refs": [
+            "ep203",
+            "f224",
+            "i204"
+          ]
+        },
+        {
+          "text": "她已看到找茬正牌魔法少女的每日任务，认为难办；100神典石目前只是书页列出的奖励。",
+          "refs": [
+            "f226",
+            "f227",
+            "f228"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-su-attitude",
+      "entity": "su",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "development",
+      "items": [
+        {
+          "text": "对身份的态度经历了满意狐女身体、后悔反派安排、变身后接受身份三个阶段。",
+          "refs": [
+            "ep205"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-book-c2",
+      "entity": "book",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "overview",
+      "items": [
+        {
+          "text": "秘典在卧室开场说话并推动契约，在第二章客厅呼唤时没有回应；这不证明永久失去说话能力。",
+          "refs": [
+            "f107",
+            "i101",
+            "f211"
+          ]
+        },
+        {
+          "text": "书中掉出金色十字星；之后第一页显示苏天晴身份、每日任务及奖励。",
+          "refs": [
+            "f213",
+            "f225",
+            "f226",
+            "f227"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-original",
+      "entity": "original",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "biography",
+      "items": [
+        {
+          "text": "身体原主人也叫苏天晴，与穿越后的当前意识不同。残留记忆描述她独自长大、社恐孤僻。",
+          "refs": [
+            "f203",
+            "f206"
+          ]
+        },
+        {
+          "text": "她受到兽人互助协会资助，考上蓉城最好的医学院；临近开学时染兽人流感并突发暴发性心肌炎。",
+          "refs": [
+            "f207",
+            "f208",
+            "f209"
+          ]
+        },
+        {
+          "text": "她曾梦想成为魔法少女；梦想不等于已经具备变身或飞行能力。",
+          "refs": [
+            "f218"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-star",
+      "entity": "star",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "operation",
+      "items": [
+        {
+          "text": "从秘典掉出的金色十字星砸伤苏天晴，随后吸收其鼻血；她没注意血液吸收，只听见激活提示。",
+          "refs": [
+            "f213",
+            "f214",
+            "f215"
+          ]
+        },
+        {
+          "text": "本次多种变身口令均无效，拇指按入中央凹陷后成功变身。这是实际操作记录，尚不足以构成适用于所有人的无条件规则。",
+          "refs": [
+            "f219",
+            "f221",
+            "i202"
+          ]
+        },
+        {
+          "text": "血液吸收是否就是激活原因仍是暂定推断，材质和完整机制未知。",
+          "refs": [
+            "i203",
+            "f216"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-world",
+      "entity": "world",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "worldbuilding",
+      "items": [
+        {
+          "text": "当前世界被描述为人类与兽人共存，兽人指猫娘狐娘一类，数量远远少于人类。",
+          "refs": [
+            "f204",
+            "f205"
+          ]
+        },
+        {
+          "text": "已知一例兽人互助协会资助原主考上蓉城医学院；不能据此补出组织全体成员或普遍资助制度。",
+          "refs": [
+            "f207",
+            "f208"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-task",
+      "entity": "daily-task",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "objective",
+      "items": [
+        {
+          "text": "秘典显示每日任务1：找茬魔法少女，指向蓉城一位未具名的正牌魔法少女。",
+          "refs": [
+            "f226"
+          ]
+        },
+        {
+          "text": "书页列出100神典石奖励，苏天晴认为任务不好做；前两章只展示任务发布，没有完成或结算场景。",
+          "refs": [
+            "f227",
+            "f228",
+            "ep204"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-power",
+      "entity": "magical-girl",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "power-system",
+      "items": [
+        {
+          "text": "目前实际展示的是苏天晴用守护之星变身、外观改变和力量流淌的感觉。",
+          "refs": [
+            "i202",
+            "f221",
+            "f223"
+          ]
+        },
+        {
+          "text": "反派魔法少女是其一类身份，但未展示完整等级、数值、战斗规则或成员名单。",
+          "refs": [
+            "i205",
+            "i204"
+          ]
+        },
+        {
+          "text": "90%死亡率出现在苏天晴的疑问中，王道故事的必败结局也是角色预期；都不能当作已证实的力量规则。",
+          "refs": [
+            "d120",
+            "f122"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s-association",
+      "entity": "association",
+      "through": [
+        2,
+        87
+      ],
+      "facet": "relations",
+      "items": [
+        {
+          "text": "残留记忆明确的一条关系是资助身体原主人苏天晴；没有说明协会成员、领导、规模或当前意识的会员资格。",
+          "refs": [
+            "f207"
+          ]
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "q01",
+      "question": "读完第一章，苏天晴与秘典是什么关系？",
+      "through": [
+        1,
+        76
+      ],
+      "expectedRefs": [
+        "i101",
+        "s-su-c1",
+        "s-book-c1"
+      ],
+      "forbiddenRefs": [
+        "s-su-c2",
+        "f207",
+        "f221"
+      ],
+      "note": "可用当前契约与摘要回答；不能偷用第二章经历。"
+    },
+    {
+      "id": "q02",
+      "question": "兽人互助协会资助的是谁？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f207",
+        "i201"
+      ],
+      "forbiddenRefs": [],
+      "note": "受助者是身体原主人original；不能把 su 当成受助关系的recipient，也不能推断会员。"
+    },
+    {
+      "id": "q03",
+      "question": "守护之星如何变身？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f219",
+        "f221",
+        "i202",
+        "s-star"
+      ],
+      "forbiddenRefs": [],
+      "note": "描述这次失败口令和成功按压；不泛化必要充分条件。"
+    },
+    {
+      "id": "q04",
+      "question": "苏天晴知道守护之星吸了自己的血吗？",
+      "through": [
+        2,
+        40
+      ],
+      "expectedRefs": [
+        "f214",
+        "f215"
+      ],
+      "forbiddenRefs": [
+        "i202",
+        "s-star"
+      ],
+      "note": "读者看见吸血；角色明确没注意。全书summary不能直接放到当前边界。"
+    },
+    {
+      "id": "q05",
+      "question": "她已经获得多少神典石？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f227"
+      ],
+      "forbiddenRefs": [],
+      "note": "只知任务列出100的奖励，已获数量未知；不回答余额100或0。"
+    },
+    {
+      "id": "q06",
+      "question": "原主人与穿越者是不是同一人？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f203",
+        "i201"
+      ],
+      "forbiddenRefs": [],
+      "note": "同名不同意识身份，身体为第三个实体；原主疾病不继承到当前诊断。"
+    },
+    {
+      "id": "q07",
+      "question": "魔法少女死亡率是90%吗？",
+      "through": [
+        1,
+        76
+      ],
+      "expectedRefs": [
+        "d120"
+      ],
+      "forbiddenRefs": [],
+      "note": "问题语气不可生成世界统计Fact。"
+    },
+    {
+      "id": "q08",
+      "question": "书为什么第二章不会说话？",
+      "through": [
+        2,
+        29
+      ],
+      "expectedRefs": [
+        "f211"
+      ],
+      "forbiddenRefs": [
+        "s-book-c2"
+      ],
+      "note": "目前只知呼唤没有回应，原因未知；不宣称永久失声。"
+    },
+    {
+      "id": "q09",
+      "question": "前两章剧情怎么发展？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "ep101",
+        "ep102",
+        "ep201",
+        "ep202",
+        "ep203",
+        "ep204"
+      ],
+      "forbiddenRefs": [],
+      "note": "保留接受契约先于询问条款、失败尝试先于成功操作、任务发布尚未执行。"
+    },
+    {
+      "id": "q10",
+      "question": "截至第一章第7段，这本书叫什么？",
+      "through": [
+        1,
+        7
+      ],
+      "expectedRefs": [
+        "f103"
+      ],
+      "forbiddenRefs": [
+        "f111",
+        "i101",
+        "s-book-c1"
+      ],
+      "note": "只可显示黑色古书；不能用canonical label或search暴露墨丘利秘典。"
+    },
+    {
+      "id": "q11",
+      "question": "有哪些组织？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f207",
+        "f208"
+      ],
+      "forbiddenRefs": [],
+      "note": "协会和未具名医学院；魔法少女是类别，不自动当组织；当前记录穷尽不等于全书名册。"
+    },
+    {
+      "id": "q12",
+      "question": "苏天晴前后对反派身份矛盾吗？",
+      "through": [
+        2,
+        87
+      ],
+      "expectedRefs": [
+        "f122",
+        "f224",
+        "ep205"
+      ],
+      "forbiddenRefs": [],
+      "note": "不同时间的态度变化，不撤销第一章后悔；storyAt不得以当前态度覆盖过去。"
+    }
+  ],
+  "times": [
+    {
+      "id": "t-awake",
+      "label": "当前意识在卧室面对古书",
+      "at": [
+        1,
+        7
+      ],
+      "before": [],
+      "after": []
+    },
+    {
+      "id": "t-past-collapse",
+      "label": "当前意识回忆的前世倒下",
+      "at": [
+        1,
+        15
+      ],
+      "before": [
+        "t-awake"
+      ],
+      "after": []
+    },
+    {
+      "id": "t-prior-intro",
+      "label": "古书本次重述两分钟前的原始开场白",
+      "at": [
+        1,
+        28
+      ],
+      "before": [],
+      "after": []
+    },
+    {
+      "id": "t-reintro",
+      "label": "正文中的古书重复自我介绍",
+      "at": [
+        1,
+        30
+      ],
+      "before": [],
+      "after": [
+        "t-prior-intro",
+        "t-awake"
+      ]
+    },
+    {
+      "id": "t-assent",
+      "label": "苏天晴第一次说同意签约",
+      "at": [
+        1,
+        45
+      ],
+      "before": [],
+      "after": [
+        "t-reintro"
+      ]
+    },
+    {
+      "id": "t-confirm",
+      "label": "双方再次确认契约成立",
+      "at": [
+        1,
+        59
+      ],
+      "before": [],
+      "after": [
+        "t-assent"
+      ]
+    },
+    {
+      "id": "t-regret",
+      "label": "得知反派安排后后悔",
+      "at": [
+        1,
+        70
+      ],
+      "before": [],
+      "after": [
+        "t-confirm"
+      ]
+    },
+    {
+      "id": "t-binding",
+      "label": "脑内报告绑定成功",
+      "at": [
+        1,
+        76
+      ],
+      "before": [],
+      "after": [
+        "t-regret"
+      ]
+    },
+    {
+      "id": "t-memory",
+      "label": "洗漱后审视原主残留记忆",
+      "at": [
+        2,
+        18
+      ],
+      "before": [],
+      "after": [
+        "t-binding"
+      ]
+    },
+    {
+      "id": "t-original-past",
+      "label": "原主成长、受助和考上医学院的过去阶段",
+      "at": [
+        2,
+        20
+      ],
+      "before": [
+        "t-memory"
+      ],
+      "after": []
+    },
+    {
+      "id": "t-original-illness",
+      "label": "原主临近开学时患病",
+      "at": [
+        2,
+        20
+      ],
+      "before": [
+        "t-memory"
+      ],
+      "after": [
+        "t-original-past"
+      ]
+    },
+    {
+      "id": "t-book-silent",
+      "label": "客厅呼唤秘典没有回应",
+      "at": [
+        2,
+        28
+      ],
+      "before": [],
+      "after": [
+        "t-memory"
+      ]
+    },
+    {
+      "id": "t-blood",
+      "label": "十字星掉落及鼻血被吸收",
+      "at": [
+        2,
+        36
+      ],
+      "before": [],
+      "after": [
+        "t-book-silent"
+      ]
+    },
+    {
+      "id": "t-activation",
+      "label": "收到守护之星激活提示",
+      "at": [
+        2,
+        40
+      ],
+      "before": [],
+      "after": [
+        "t-blood"
+      ]
+    },
+    {
+      "id": "t-voice-failure",
+      "label": "本次多个变身口令没有反应",
+      "at": [
+        2,
+        57
+      ],
+      "before": [],
+      "after": [
+        "t-activation"
+      ]
+    },
+    {
+      "id": "t-press-success",
+      "label": "按压凹陷并首次变身完成",
+      "at": [
+        2,
+        66
+      ],
+      "before": [],
+      "after": [
+        "t-voice-failure"
+      ]
+    },
+    {
+      "id": "t-accept-role",
+      "label": "看到变身外貌后接受反派身份",
+      "at": [
+        2,
+        76
+      ],
+      "before": [],
+      "after": [
+        "t-press-success",
+        "t-regret"
+      ]
+    },
+    {
+      "id": "t-task-page",
+      "label": "秘典显示第一项每日任务",
+      "at": [
+        2,
+        84
+      ],
+      "before": [],
+      "after": [
+        "t-accept-role"
+      ]
+    }
+  ],
+  "access": [
+    {
+      "target": "f105",
+      "holder": "su",
+      "at": [
+        1,
+        15
+      ],
+      "premises": [
+        "d105"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f108",
+      "holder": "su",
+      "at": [
+        1,
+        26
+      ],
+      "premises": [
+        "d108"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f113",
+      "holder": "su",
+      "at": [
+        1,
+        40
+      ],
+      "premises": [
+        "d113"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f118",
+      "holder": "su",
+      "at": [
+        1,
+        62
+      ],
+      "premises": [
+        "d118"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f122",
+      "holder": "su",
+      "at": [
+        1,
+        72
+      ],
+      "premises": [
+        "d122"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f123",
+      "holder": "su",
+      "at": [
+        1,
+        72
+      ],
+      "premises": [
+        "d123"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f229",
+      "holder": "su",
+      "at": [
+        2,
+        21
+      ],
+      "premises": [
+        "d229"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f212",
+      "holder": "su",
+      "at": [
+        2,
+        30
+      ],
+      "premises": [
+        "d212"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f216",
+      "holder": "su",
+      "at": [
+        2,
+        42
+      ],
+      "premises": [
+        "d216"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f220",
+      "holder": "su",
+      "at": [
+        2,
+        62
+      ],
+      "premises": [
+        "d220"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f222",
+      "holder": "su",
+      "at": [
+        2,
+        68
+      ],
+      "premises": [
+        "d222"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f228",
+      "holder": "su",
+      "at": [
+        2,
+        87
+      ],
+      "premises": [
+        "d228"
+      ],
+      "mode": "believed"
+    },
+    {
+      "target": "f111",
+      "holder": "su",
+      "at": [
+        1,
+        30
+      ],
+      "premises": [
+        "d111"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f114",
+      "holder": "su",
+      "at": [
+        1,
+        44
+      ],
+      "premises": [
+        "d114"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f119",
+      "holder": "su",
+      "at": [
+        1,
+        66
+      ],
+      "premises": [
+        "d119"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f121",
+      "holder": "su",
+      "at": [
+        1,
+        68
+      ],
+      "premises": [
+        "d121"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f124",
+      "holder": "su",
+      "at": [
+        1,
+        76
+      ],
+      "premises": [
+        "d124"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f215",
+      "holder": "su",
+      "at": [
+        2,
+        40
+      ],
+      "premises": [
+        "d215"
+      ],
+      "mode": "heard"
+    },
+    {
+      "target": "f225",
+      "holder": "su",
+      "at": [
+        2,
+        81
+      ],
+      "premises": [
+        "d225"
+      ],
+      "mode": "read"
+    },
+    {
+      "target": "f226",
+      "holder": "su",
+      "at": [
+        2,
+        83
+      ],
+      "premises": [
+        "d226"
+      ],
+      "mode": "read"
+    },
+    {
+      "target": "f227",
+      "holder": "su",
+      "at": [
+        2,
+        84
+      ],
+      "premises": [
+        "d227"
+      ],
+      "mode": "read"
+    },
+    {
+      "target": "f106",
+      "holder": "su",
+      "at": [
+        1,
+        18
+      ],
+      "premises": [
+        "d106"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f115",
+      "holder": "su",
+      "at": [
+        1,
+        45
+      ],
+      "premises": [
+        "d115"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f117",
+      "holder": "su",
+      "at": [
+        1,
+        59
+      ],
+      "premises": [
+        "d117"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f210",
+      "holder": "su",
+      "at": [
+        2,
+        23
+      ],
+      "premises": [
+        "d210"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f211",
+      "holder": "su",
+      "at": [
+        2,
+        28
+      ],
+      "premises": [
+        "d211"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f213",
+      "holder": "su",
+      "at": [
+        2,
+        35
+      ],
+      "premises": [
+        "d213"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f219",
+      "holder": "su",
+      "at": [
+        2,
+        57
+      ],
+      "premises": [
+        "d219"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f221",
+      "holder": "su",
+      "at": [
+        2,
+        66
+      ],
+      "premises": [
+        "d221"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f223",
+      "holder": "su",
+      "at": [
+        2,
+        73
+      ],
+      "premises": [
+        "d223"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f224",
+      "holder": "su",
+      "at": [
+        2,
+        76
+      ],
+      "premises": [
+        "d224"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f230",
+      "holder": "su",
+      "at": [
+        2,
+        79
+      ],
+      "premises": [
+        "d230"
+      ],
+      "mode": "known"
+    },
+    {
+      "target": "f214",
+      "holder": "su",
+      "at": [
+        2,
+        36
+      ],
+      "premises": [
+        "d214"
+      ],
+      "mode": "unaware"
+    }
+  ]
+}

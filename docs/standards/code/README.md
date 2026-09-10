@@ -30,3 +30,7 @@
 | `.json`、`.yaml`、`.yml` 配置 | 对应领域规范，再追加 [`data-formats.md`](data-formats.md) |
 
 不在表中的源码先按所有权找到最近的 `AGENTS.md`；仍无法确定归属时，更新本路由后再实现，避免临时选择一套相似规范。
+
+V7 设计验证 spike 的 `t07-v7-schema-gold/**` 与 `t08-v7-memory-viewer/**` 归属 Work `w00005-novel-understanding-spike`：TypeScript/JavaScript 读取 `common.md`、`languages/typescript.md`，schema 追加 `contracts.md`，脚本追加 `scripts/typescript.md`；HTML/CSS 追加 `frontend.md`；JSON 和生成器追加 `data-formats.md`。这是 Task 内验证资产，不是产品包的新边界。
+
+该 spike 的 `t07-v7-schema-gold/extract-source.py` 是标准库 EPUB 来源复现脚本，遵循 `common.md` 与 `data-formats.md`：XML/ZIP 结构化解析，输入只读，校验默认不写文件，生成输出必须显式指定；不作为通用生产 EPUB 导入器。

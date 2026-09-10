@@ -1,0 +1,12 @@
+{
+  "name": "novel-memory-v7-schema-spike",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --import tsx --test *.test.ts",
+    "schema": "node --import tsx export-schema.ts",
+    "build": "node --import tsx build-gold.ts",
+    "validate": "node --import tsx validate-gold.ts"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "nbook-v7-memory-viewer-spike",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build.ts",
+    "test": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc --project tsconfig.json",
+    "browser": "node --import tsx browser-check.ts"
+  }
+}

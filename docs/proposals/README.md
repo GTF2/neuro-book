@@ -4,6 +4,8 @@
 
 当前活跃提案：
 
+- [V7 小说记忆模型](novel-memory-v7.md)：整书语义与情节知识、可逆身份整理、推断与修正、实体摘要和查询边界，状态为 `reviewing`；当前具体 schema 与样本实验见 [w00005 / t07](../../.agents/works/w00005-novel-understanding-spike/tasks/t07-v7-schema-gold/README.md) 和 [t08 查看器](../../.agents/works/w00005-novel-understanding-spike/tasks/t08-v7-memory-viewer/README.md)。
+
 - [`../packages/neuro-book/docs/proposals/character-workbench.md`](../../packages/neuro-book/docs/proposals/character-workbench.md)：Character 导航、搜索、编辑与 Low-code Form 合同，状态为 `reviewing`。
 - [`../packages/neuro-book/docs/proposals/agent-skills-adaptation.md`](../../packages/neuro-book/docs/proposals/agent-skills-adaptation.md)：Agent Skills 项目化适配，状态为 `accepted`。
 - [`../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md`](../../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md)：Harness Agent、completion 与 headless 三套调用面、Catalog、授权和 Workflow 重放边界，状态为 `accepted`。
