@@ -1,0 +1,10 @@
+{
+  "name": "nbook-v7-query-cli-spike",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "query": "node --import tsx cli.ts",
+    "test": "vitest run --config vitest.config.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  }
+}

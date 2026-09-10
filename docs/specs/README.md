@@ -97,6 +97,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | World Engine | [Reference: World Engine](../../packages/neuro-book/assets/reference/world-engine/README.md) | 时间线、slice、subject、schema、calendar 与写作协作 |
 | Plot | [Reference: Plot](../../packages/neuro-book/assets/reference/plot/README.md) | Story、Thread、Scene、Writer Brief、Agent 与前端合同 |
 | Theme | [`theme/system.md`](theme/system.md) | 主题变量和消费规则 |
+| V7 只读检索 CLI | [`memory/v7-query-cli.md`](memory/v7-query-cli.md) | 两章金标查询、阅读范围/角色视角、证据追溯与分页已验证；后续 ingest 待开发者查询验收 |
 | Media | [`media/image-variants.md`](media/image-variants.md) | 图片原图、变体、缓存和 Project 封面 |
 | Character | [模块需求](https://github.com/notnotype/neuro-book/blob/master/docs/modules/character/requirements.md) | 当前需求与界面字段；尚待补齐状态和失败语义 |
 | Monorepo / Module | [Monorepo 边界](https://github.com/notnotype/neuro-book/blob/master/docs/modules/monorepo-boundaries.md) | Monorepo 当前包布局、唯一文档真相源、包级继承/覆盖、依赖方向和 worktree 根边界 |
