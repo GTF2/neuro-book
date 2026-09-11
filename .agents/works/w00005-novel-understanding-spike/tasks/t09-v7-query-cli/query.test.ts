@@ -13,6 +13,18 @@ function mutableNode<K extends NodeKind>(dataset: ReturnType<typeof parseDataset
 }
 
 describe("V7 read-only query contract", () => {
+    it("allows the validated perspective subject to query its own empty knowledge without exposing reader records", () => {
+        const query = createQueryService(gold);
+        const scope = {perspective: "su", at: {chapter: 1, paragraph: 7}};
+        const result = query({command: "knowledge", holder: "su", ...scope});
+        expect(result.items).toEqual([]);
+        expect(result.completeness).toMatchObject({returned: 0, corpusClosed: false});
+        expect(query({command: "summaries", entity: "su", ...scope}).completeness.summaryStatus).toBe("missing-or-stale");
+        expect(() => query({command: "knowledge", holder: "book", ...scope})).toThrow(/visible entity/);
+        expect(() => query({command: "get", id: "su", ...scope})).toThrow(/unavailable/);
+        expect(() => query({command: "knowledge", holder: "missing", perspective: "missing", at: scope.at})).toThrow(/Perspective/);
+    });
+
     it("keeps the first explicit hearing boundary and full speech proposition", () => {
         const query = createQueryService(gold);
         expect(query({command: "knowledge", holder: "su", about: "creator", at: {chapter: 1, paragraph: 65}}).items).toEqual([]);

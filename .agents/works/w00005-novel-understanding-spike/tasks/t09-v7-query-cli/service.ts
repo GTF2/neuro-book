@@ -36,6 +36,8 @@ export function createQueryService(input: unknown): (request: unknown) => QueryR
         const presenter = createRecordPresenter(index.dataset, scope, snapshot.nodes);
         const nodes = [...snapshot.nodes].sort(recordOrder);
         const requireEntity = (id: string) => {
+            // scopeFor already validated this subject; an empty knowledge projection can omit the subject itself.
+            if (scope.perspective !== "reader" && id === scope.perspective) return;
             if (presenter.visible.get(id)?.kind !== "entity") throw new QueryError("INVALID_ARGUMENT", "Expected a visible entity ID", 2);
         };
         const requireRecord = (id: string) => {

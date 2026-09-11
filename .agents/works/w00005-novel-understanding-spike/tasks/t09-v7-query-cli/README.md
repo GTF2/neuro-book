@@ -14,6 +14,8 @@ role: tasker
 
 当前目标是让开发者能用 Agent 查询 V7 快照并复核正确性。行为真相源为上述 Spec；仅查询，不提供写入、任意代码/SQL、模型调用、自动推断、网络、MCP 或生产包接入。开发者已跳过两章人工体验，LLM ingest 与 20 章试跑由相邻 t10 推进；本 Task 负责实际产物暴露的查询合同缺陷。
 
+formal-003 查询复核发现：早期角色视角已由scope确认主体有效，但该角色尚无 KnowledgeAccess，knowledge 命令又以空角色投影拒绝holder。主 Agent 接续本 Task 的 service/query.test 与规范修复，让已经验证的当前视角主体可以查询自己的空知情/缺失摘要；不开放其他不可见主体，不改变 get/explain 投影，不读取额外原文。query_cli 保持只读复核；t10策略源码冻结不改。
+
 开始使用见 [CLI 指南](USAGE.md)，局部指称、身份判断及披露/论证/评估的实际例子见 [记录用例](model-notes.md)。
 
 接口以宿主无关的查询请求/响应为核心，CLI 只负责参数、文件读取、输出和退出码。默认载入相邻 t07 金标，也支持显式 `--data` 文件。使用已有依赖与 strict TypeScript，运行时校验输入；stdout 成功 JSON、stderr 错误 JSON，help 为文本。完整命题保留 assertion、角色、时间、评估及证据，不将听闻转换为世界事实。分页先限定可见范围再匹配，游标绑定数据和查询。
