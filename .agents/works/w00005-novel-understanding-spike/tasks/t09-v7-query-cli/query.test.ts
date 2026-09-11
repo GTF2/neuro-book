@@ -66,6 +66,50 @@ describe("V7 read-only query contract", () => {
         expect(query({command: "search", query: "ref:book:c1"}).items).toEqual([]);
     });
 
+    it("does not reveal unscoped coverage notes through early or character queries", () => {
+        const changed = parseDataset(gold);
+        const detail = "未来章节才揭示的剧情缺口";
+        changed.coverage.gaps = [detail];
+        const query = createQueryService(changed);
+        const early = query({command: "entities", query: "墨丘利秘典", at: {chapter: 1, paragraph: 7}});
+        expect(early.items).toEqual([]);
+        expect(JSON.stringify(early)).not.toContain(detail);
+        expect(early.coverage.gaps.length).toBeGreaterThan(0);
+        expect(JSON.stringify(query({command: "info", perspective: "su"}))).not.toContain(detail);
+        expect(query({command: "info"}).coverage.gaps).toEqual([detail]);
+        expect(changed.coverage.gaps).toEqual([detail]);
+        const otherWorld = mutableNode(changed, "su", "entity");
+        changed.nodes.push({...otherWorld, id: "other-world-subject", scope: {world: "parallel", perspective: "reader"}, data: {...otherWorld.data, names: []}});
+        expect(JSON.stringify(createQueryService(changed)({command: "info"}))).not.toContain(detail);
+    });
+
+    it("applies the same coverage boundary to visible summaries and syntheses", () => {
+        const changed = parseDataset(gold);
+        const detail = "仅完整读者范围可见的覆盖说明";
+        const summary = mutableNode(changed, "s-star", "entitySummary");
+        summary.data.coverage.gaps = [detail];
+        const synthesis: NodeOf<"synthesis"> = {
+            ...summary, id: "test-synthesis", kind: "synthesis",
+            data: {topic: "已有记录的综述", items: summary.data.items, children: [], coverage: summary.data.coverage, interpretation: true},
+        };
+        changed.nodes.push(synthesis);
+        const access = changed.nodes.find(node => node.kind === "knowledgeAccess");
+        if (!access) throw new Error("Fixture has no knowledge access");
+        for (const node of [summary, synthesis]) changed.nodes.push({
+            ...access, id: `test-read-${node.id}`, availableAt: changed.snapshot.readAt,
+            data: {...access.data, holder: {id: "su", revision: 1}, target: {id: node.id, revision: node.revision}, mode: "read"},
+        });
+        const before = JSON.stringify(changed);
+        const query = createQueryService(changed);
+        for (const node of [summary, synthesis]) {
+            const character = query({command: "get", id: node.id, perspective: "su"});
+            expect(ids(character)).toEqual([node.id]);
+            expect(JSON.stringify(character)).not.toContain(detail);
+            expect(JSON.stringify(query({command: "get", id: node.id}))).toContain(detail);
+        }
+        expect(JSON.stringify(changed)).toBe(before);
+    });
+
     it("returns explicit unaware without disclosing its unavailable target or inventing absence", () => {
         const query = createQueryService(gold);
         const result = query({command: "knowledge", holder: "su", about: "f214", perspective: "su", mode: "unaware"});

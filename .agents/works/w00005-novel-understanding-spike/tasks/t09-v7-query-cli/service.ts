@@ -145,7 +145,7 @@ export function createQueryService(input: unknown): (request: unknown) => QueryR
         return structuredClone({
             schema: responseSchemaVersion, ok: true, command: request.command,
             snapshot: {...index.dataset.snapshot, contentHash}, scope, items: page.items,
-            coverage: {...snapshot.coverage, recordsExhausted, corpusClosed: false},
+            coverage: {...presenter.presentCoverage(snapshot.coverage), recordsExhausted, corpusClosed: false},
             completeness: {recordsExhausted, corpusClosed: false, matchingRecords, returned: page.items.length, ...(summaryStatus ? {summaryStatus} : {})},
             truncation: {page: page.nextCursor !== null, depth: depthTruncated, unavailableReferences},
             nextCursor: page.nextCursor,

@@ -55,6 +55,8 @@ bun cli.ts explain f119 --perspective su --depth 4
 
 原始记录中可保留指向不可见对象的引用 ID，不能据此补全正文。`get` 一个不存在、未来或失效记录会报统一的不可用错误。
 
+覆盖说明 `coverage.gaps` 没有单独的章段和视角标注，所以只有完整快照读者范围才能保留原文；较早阅读位置、角色视角或过滤了其它世界时，统一返回“未提供当前阅读范围与视角专属的语义缺口说明”。摘要和综述内部的 coverage 也遵守此规则。这表示缺少该范围专属的说明，不表示不存在语义缺口；`semantic: partial` 与 `corpusClosed: false` 仍需检查。
+
 ## 材料、情节与身份
 
 ```powershell

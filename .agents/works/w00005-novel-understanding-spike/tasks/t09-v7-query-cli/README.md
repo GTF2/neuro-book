@@ -10,7 +10,9 @@ role: tasker
 
 本 Task 拥有本目录 CLI、独立于进程输入输出的查询服务、参数合同、聚焦与实际进程测试、使用示例和 walkthrough；消费 [t07 唯一 schema 与查询](../t07-v7-schema-gold/index.ts)。t07 数据与模型、EntitySummary 和 t08 只读。Leader 维护 [查询规范](../../../../../docs/specs/memory/v7-query-cli.md)、Work 入口和面向用户的解释；Tasker 实现本目录全部代码与测试。
 
-当前目标是让开发者能用 Agent 查询两章金标并复核正确性。行为真相源为上述 Spec；仅查询，不提供写入、任意代码/SQL、模型调用、自动推断、网络、MCP 或生产包接入。真正的 LLM ingest 与 20 章试跑在开发者验证查询接口后再推进，本轮不预建实现 Task。
+2026-09-11 真实 ingest 发现 `coverage.gaps` 是不带章段/视角的全快照语义说明，会在早 readAt 或角色视角的 CLI 响应中泄漏范围外信息。当前 Agent 接续本 Task 的 Tasker 修复职责，在 t09 统一输出边界对受限范围隐藏这些说明，包含顶层及 EntitySummary/Synthesis 的内嵌 coverage；完整读者范围保留原说明。模型/EntitySummary 合同、已发布数据与 t10 活动运行源码不改。用户已授权查询与 ingest 的缺陷修复，不增加人工审批步骤。
+
+当前目标是让开发者能用 Agent 查询 V7 快照并复核正确性。行为真相源为上述 Spec；仅查询，不提供写入、任意代码/SQL、模型调用、自动推断、网络、MCP 或生产包接入。开发者已跳过两章人工体验，LLM ingest 与 20 章试跑由相邻 t10 推进；本 Task 负责实际产物暴露的查询合同缺陷。
 
 开始使用见 [CLI 指南](USAGE.md)，局部指称、身份判断及披露/论证/评估的实际例子见 [记录用例](model-notes.md)。
 
@@ -24,4 +26,4 @@ role: tasker
 
 ## 本地交付
 
-入口为 [cli.ts](cli.ts)，程序接口由 [index.ts](index.ts) 导出；可直接交给 Agent 的命令与验证任务见 [USAGE.md](USAGE.md)。当前实现 9 个只读命令，复用 t07 投影；`search --kind` 可枚举情节/材料。16 项语义与真实进程测试、strict 类型检查通过；完整证据与限制见 [实现验证](walkthroughs/2026-09-10-cli-verification.md)。此轮未提交 CLI、未推送、未运行模型 ingest。
+入口为 [cli.ts](cli.ts)，程序接口由 [index.ts](index.ts) 导出；可直接交给 Agent 的命令与验证任务见 [USAGE.md](USAGE.md)。当前实现 9 个只读命令，复用 t07 投影；`search --kind` 可枚举情节/材料。初版已提交为 `37ef4bf1`。2026-09-11 补充覆盖说明范围隔离，18 项测试和 strict 类型检查通过，真实正式首章与开发两章快照的 CLI 复验通过，见 [覆盖说明修复验证](walkthroughs/2026-09-11-coverage-scope.md)。未推送。

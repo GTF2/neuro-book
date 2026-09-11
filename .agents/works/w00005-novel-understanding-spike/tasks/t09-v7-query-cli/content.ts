@@ -51,6 +51,12 @@ export function recordOrder(a: MemoryNode, b: MemoryNode): number {
 }
 
 export function createRecordPresenter(dataset: MemoryDataset, scope: QueryScope, nodes: MemoryNode[]) {
+    const fullReaderScope = scope.perspective === "reader" && comparePosition(scope.readAt, dataset.snapshot.readAt) === 0
+        && dataset.nodes.every(node => node.scope.world === scope.world);
+    // Coverage notes have no position, perspective or world, so narrower queries cannot establish their visibility.
+    function presentCoverage(coverage: MemoryDataset["coverage"]): MemoryDataset["coverage"] {
+        return {...coverage, gaps: fullReaderScope ? coverage.gaps : ["未提供当前阅读范围与视角专属的语义缺口说明。"]};
+    }
     const visible = new Map(nodes.map(node => [node.id, node]));
     const assessments = new Map<string, NodeOf<"assessment">>();
     const argumentsByConclusion = new Map<string, NodeOf<"argument">[]>();
@@ -77,13 +83,16 @@ export function createRecordPresenter(dataset: MemoryDataset, scope: QueryScope,
         });
     }
     function present(node: MemoryNode): RecordItem {
+        let record = node;
+        if (node.kind === "entitySummary") record = {...node, data: {...node.data, coverage: presentCoverage(node.data.coverage)}};
+        else if (node.kind === "synthesis") record = {...node, data: {...node.data, coverage: presentCoverage(node.data.coverage)}};
         const assessment = assessments.get(node.id) ?? null;
         const spans = [...node.spans];
         if (node.kind === "argument") spans.push(...node.data.sourceRoots);
         if (node.kind === "mention") spans.push(node.data.span);
         if (node.kind === "fact") spans.push(...node.data.arguments.flatMap(argument => argument.anchor ? [argument.anchor] : []));
         return {
-            type: "record", record: node, assessment,
+            type: "record", record, assessment,
             assessmentStatus: assessment ? "visible" : "not-in-scope-or-not-applicable",
             provenance: {
                 references: [...new Map(collectReferences(node.data).map(ref => [ref.id, ref])).values()].map(handle),
@@ -102,5 +111,5 @@ export function createRecordPresenter(dataset: MemoryDataset, scope: QueryScope,
         if (assessment) result.set(assessment.id, {source: node.id, target: handle(assessment), relation: "assessment"});
         return [...result.values()].sort((a, b) => a.target.id < b.target.id ? -1 : a.target.id > b.target.id ? 1 : 0);
     }
-    return {visible, assessments, handle, present, links};
+    return {visible, assessments, handle, present, presentCoverage, links};
 }
