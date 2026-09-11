@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"info\",\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":3,\"paragraph\":33}},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"情报\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2589,
+    "outputTokens": 88,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 157
+  },
+  "responseId": "d2a66ac3-971e-4cdb-b544-48ad342af09e",
+  "durationMs": 705,
+  "startedAt": "2026-09-11T08:22:30.257Z",
+  "raw": {
+    "id": "d2a66ac3-971e-4cdb-b544-48ad342af09e",
+    "object": "chat.completion",
+    "created": 1789114950,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"info\",\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":3,\"paragraph\":33}},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"情报\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2589,
+      "completion_tokens": 88,
+      "total_tokens": 2677,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 157
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

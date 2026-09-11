@@ -1,0 +1,50 @@
+{
+  "answer": {
+    "text": "当前在 source 只读模式下无法查询到该章节内容（world/original 在该阅读范围不可用），且 source 模式不能读取 graph 记录，因此无法判断原文是否明确说风信子的代号是她主动向英雄协会要求的。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 5,
+            "paragraph": 43
+          },
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        }
+      ]
+    }
+  ],
+  "queries": 2,
+  "sourceQueries": 1,
+  "exhausted": false
+}

@@ -1,0 +1,49 @@
+{
+  "answer": {
+    "text": "无法从当前可查询范围确定。两次尝试在第四章原文中检索“金色十字星”和“十字星”均返回“Unknown world in this reading range”，没有读到相关原文或记录。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "query": "金色十字星"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "query": "十字星"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 2,
+  "sourceQueries": 2,
+  "exhausted": false
+}

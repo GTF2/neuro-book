@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 4,\n      \"query\": \"游戏\"\n    }\n  ]\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2511,
+    "outputTokens": 63,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 207
+  },
+  "responseId": "c91025f3-7c9c-4066-a53a-3d917edc35d9",
+  "durationMs": 883,
+  "startedAt": "2026-09-11T08:22:42.448Z",
+  "raw": {
+    "id": "c91025f3-7c9c-4066-a53a-3d917edc35d9",
+    "object": "chat.completion",
+    "created": 1789114962,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 4,\n      \"query\": \"游戏\"\n    }\n  ]\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2511,
+      "completion_tokens": 63,
+      "total_tokens": 2574,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 207
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

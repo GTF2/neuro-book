@@ -1,0 +1,97 @@
+{
+  "answer": {
+    "text": "无法从已读范围确定。对第5章第43段读取范围内，world=original 被报告为未知世界，三次检索英雄协会、魔法少女代号、风信子均失败。",
+    "status": "undetermined",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "英雄协会"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "魔法少女代号"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "代号"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "协会"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

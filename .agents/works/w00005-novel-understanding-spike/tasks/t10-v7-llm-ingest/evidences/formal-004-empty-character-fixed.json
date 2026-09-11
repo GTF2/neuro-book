@@ -1,0 +1,58 @@
+{
+  "command": "knowledge --holder c01:e_su_tianqing --about c01:e_mercury_codex --at 1:10 --perspective c01:e_su_tianqing --limit 100",
+  "snapshot": "evidences/formal-004/ch01/dataset-v7.json",
+  "queryImplementationCommit": "3e764d60",
+  "exitCode": 0,
+  "response": {
+    "schema": "neurobook.memory.query.v1",
+    "ok": true,
+    "command": "knowledge",
+    "snapshot": {
+      "id": "llm-through-1",
+      "sourceManifest": "manifest:0cb898d0b1701fc4",
+      "knowledgeRevision": 1,
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 76
+      },
+      "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+    },
+    "scope": {
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 10
+      },
+      "perspective": "c01:e_su_tianqing",
+      "world": "original"
+    },
+    "items": [],
+    "coverage": {
+      "through": {
+        "chapter": 1,
+        "paragraph": 10
+      },
+      "chapters": [
+        1
+      ],
+      "material": "complete",
+      "semantic": "partial",
+      "gaps": [
+        "未提供当前阅读范围与视角专属的语义缺口说明。"
+      ],
+      "recordsExhausted": true,
+      "corpusClosed": false
+    },
+    "completeness": {
+      "recordsExhausted": true,
+      "corpusClosed": false,
+      "matchingRecords": 0,
+      "returned": 0
+    },
+    "truncation": {
+      "page": false,
+      "depth": false,
+      "unavailableReferences": 0
+    },
+    "nextCursor": null
+  }
+}

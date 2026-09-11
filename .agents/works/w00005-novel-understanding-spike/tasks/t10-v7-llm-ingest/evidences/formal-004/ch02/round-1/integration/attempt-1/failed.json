@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 2,
+  "attempt": 1,
+  "startedAt": "2026-09-11T06:50:08.787Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nid_r_body.identity/evidence at 2:8 references d6, available only at 2:9\nid_r_official_mg.identity/evidence: reference d83 is missing or has no valid local identity\nid_r_divine_stone.identity/evidence: reference d84 is missing or has no valid local identity\nf_su_admires_body.fact dependencies at 2:8 references d6, available only at 2:9\nf_su_transforms.fact dependencies at 2:66 references d57, available only at 2:73\nf_daily_task1_targets_official_mg.fact dependencies: reference d83 is missing or has no valid local identity\narg_ch2_su_inhabits_fox.argument target/premises at 2:6 references d4, available only at 2:7\nep_morning_self_admiration.episode dependencies at 2:8 references b4, available only at 2:9\nep_morning_self_admiration.episode dependencies at 2:8 references b5, available only at 2:16\nep_morning_self_admiration.episode dependencies at 2:8 references d6, available only at 2:9\nep_morning_self_admiration.episode dependencies at 2:8 references d6, available only at 2:9\nep_orig_memory.episode dependencies at 2:21 references b6, available only at 2:23\nep_star_activation.episode dependencies at 2:39 references b9, available only at 2:40\nep_first_transformation.episode dependencies at 2:75 references b15, available only at 2:76",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.059778048,
+    "minimumUsd": 0.059778048,
+    "maximumUsd": 0.059778048,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从当前可读取的原文确定。“风信子擅长近战压制与肉搏，对魔法尚不熟练”这一表述在我实际查到的范围内没有对应原文来源；此前的查询因世界参数不被支持而失败，未能读到第3章第32段或任何相关原文，因此也不能判断它是否等于风信子本人自述。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2650,
+    "outputTokens": 100,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 218
+  },
+  "responseId": "b8a6b8a6-f893-4620-85e8-781f59e6609b",
+  "durationMs": 1322,
+  "startedAt": "2026-09-11T08:22:35.366Z",
+  "raw": {
+    "id": "b8a6b8a6-f893-4620-85e8-781f59e6609b",
+    "object": "chat.completion",
+    "created": 1789114955,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从当前可读取的原文确定。“风信子擅长近战压制与肉搏，对魔法尚不熟练”这一表述在我实际查到的范围内没有对应原文来源；此前的查询因世界参数不被支持而失败，未能读到第3章第32段或任何相关原文，因此也不能判断它是否等于风信子本人自述。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2650,
+      "completion_tokens": 100,
+      "total_tokens": 2750,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 218
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

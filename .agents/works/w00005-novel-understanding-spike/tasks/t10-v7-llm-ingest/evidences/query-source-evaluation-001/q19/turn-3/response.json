@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。此前 source 查询均因读取范围或模式限制失败，未获得任何可用原文记录。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2625,
+    "outputTokens": 48,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 193
+  },
+  "responseId": "c1fa0106-dbf6-46e0-ba61-ff4ef7f3287c",
+  "durationMs": 995,
+  "startedAt": "2026-09-11T08:22:47.103Z",
+  "raw": {
+    "id": "c1fa0106-dbf6-46e0-ba61-ff4ef7f3287c",
+    "object": "chat.completion",
+    "created": 1789114967,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。此前 source 查询均因读取范围或模式限制失败，未获得任何可用原文记录。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2625,
+      "completion_tokens": 48,
+      "total_tokens": 2673,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 193
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

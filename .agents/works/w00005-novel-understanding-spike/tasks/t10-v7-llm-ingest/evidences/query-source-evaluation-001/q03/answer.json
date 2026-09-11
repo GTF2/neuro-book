@@ -1,0 +1,97 @@
+{
+  "answer": {
+    "text": "无法确定：所有已尝试的查询均因“Unknown world in this reading range”失败，未读到任何可用原文或记录，因此无法给出墨丘利秘典与苏天晴契约内容及绑定结果。",
+    "status": "undetermined",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "墨丘利秘典"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "契约"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "墨丘利"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "契约"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

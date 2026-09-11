@@ -1,0 +1,7 @@
+{
+  "schema": "neurobook.memory.evaluation-exclusion.v1",
+  "reason": "The source-only control used empty V7 graphs. t09 requires a visible world from graph records, so source queries failed with Unknown world in this reading range. These are invalid control results, not novel question-answer quality scores.",
+  "includeInQualityComparison": false,
+  "includeInDevelopmentCost": true,
+  "replacement": "Use the same real chapter snapshots as graph evaluation while permitting only the source command. Preflight source access before paid evaluation."
+}

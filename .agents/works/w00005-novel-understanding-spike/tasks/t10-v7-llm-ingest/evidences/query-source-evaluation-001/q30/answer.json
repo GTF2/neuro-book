@@ -1,0 +1,63 @@
+{
+  "answer": {
+    "text": "无法从已读范围确定：查询记录未返回任何可用的第六章原文或记录，关于视频发布时间、播放量和当前时间的信息均未找到。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "视频"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 6,
+            "paragraph": 110
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "from": 100,
+          "to": 120
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 2,
+  "exhausted": false
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"苏天晴\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"死\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2552,
+    "outputTokens": 63,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 248
+  },
+  "responseId": "052b92c2-90ee-4261-8406-a21ec1673d0b",
+  "durationMs": 1040,
+  "startedAt": "2026-09-11T08:22:15.900Z",
+  "raw": {
+    "id": "052b92c2-90ee-4261-8406-a21ec1673d0b",
+    "object": "chat.completion",
+    "created": 1789114936,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"苏天晴\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"死\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2552,
+      "completion_tokens": 63,
+      "total_tokens": 2615,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 248
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

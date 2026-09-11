@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"每日任务\"\n    },\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"任务1\"\n    },\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"奖励\"\n    }\n  ]\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2502,
+    "outputTokens": 159,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 198
+  },
+  "responseId": "be0dcdbd-212b-4e6a-a23b-01666aeabff1",
+  "durationMs": 1152,
+  "startedAt": "2026-09-11T08:22:24.575Z",
+  "raw": {
+    "id": "be0dcdbd-212b-4e6a-a23b-01666aeabff1",
+    "object": "chat.completion",
+    "created": 1789114945,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"每日任务\"\n    },\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"任务1\"\n    },\n    {\n      \"command\": \"source\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"chapter\": 2,\n      \"query\": \"奖励\"\n    }\n  ]\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2502,
+      "completion_tokens": 159,
+      "total_tokens": 2661,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 198
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

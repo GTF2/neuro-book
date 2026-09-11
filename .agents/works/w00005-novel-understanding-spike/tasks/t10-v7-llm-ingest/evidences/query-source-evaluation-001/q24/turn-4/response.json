@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"未找到相关信息：对第5章原文中“苏天晴”和“网文”的检索均返回“Unknown world in this reading range”，无法确定原身苏天晴写什么网文及其收入状况。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2641,
+    "outputTokens": 72,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 209
+  },
+  "responseId": "1e1a526a-834d-4acf-8ff6-a27851817230",
+  "durationMs": 887,
+  "startedAt": "2026-09-11T08:22:56.610Z",
+  "raw": {
+    "id": "1e1a526a-834d-4acf-8ff6-a27851817230",
+    "object": "chat.completion",
+    "created": 1789114977,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"未找到相关信息：对第5章原文中“苏天晴”和“网文”的检索均返回“Unknown world in this reading range”，无法确定原身苏天晴写什么网文及其收入状况。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2641,
+      "completion_tokens": 72,
+      "total_tokens": 2713,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 209
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

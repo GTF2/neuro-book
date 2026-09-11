@@ -1,0 +1,99 @@
+{
+  "answer": {
+    "text": "无法确定。当前读取范围内所有查询均失败（世界“original”在读取范围未知，source-only模式也无法读取graph），没有读到任何原文或记录，因此无法回答苏天晴给触手怪设定了什么限制。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "触手"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "限制"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 5,
+            "paragraph": 24
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 50
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "限制"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 5,
+  "exhausted": true
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"未能查询到第五章末尾的每日任务内容及奖励信息：此前所有source查询均返回“Unknown world in this reading range”，且当前剩余查询次数为0，无法继续读取原文。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2741,
+    "outputTokens": 65,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 309
+  },
+  "responseId": "7a137148-12e3-4f46-a154-6629261686d6",
+  "durationMs": 564,
+  "startedAt": "2026-09-11T08:23:01.606Z",
+  "raw": {
+    "id": "7a137148-12e3-4f46-a154-6629261686d6",
+    "object": "chat.completion",
+    "created": 1789114982,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"未能查询到第五章末尾的每日任务内容及奖励信息：此前所有source查询均返回“Unknown world in this reading range”，且当前剩余查询次数为0，无法继续读取原文。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2741,
+      "completion_tokens": 65,
+      "total_tokens": 2806,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 309
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

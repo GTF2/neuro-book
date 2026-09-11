@@ -1,0 +1,80 @@
+{
+  "answer": {
+    "text": "根据当前在指定阅读范围（第3章第10段，source模式）内的查询结果，所有查询均返回“Unknown world in this reading range”，无法获取苏天晴在网上和记忆中对魔法少女与英雄协会、公众身份关系的任何记载或原文。因此当前无法回答该问题。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 10,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 10,
+          "query": "魔法少女"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 10,
+          "query": "英雄协会"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 4,
+  "sourceQueries": 4,
+  "exhausted": false
+}

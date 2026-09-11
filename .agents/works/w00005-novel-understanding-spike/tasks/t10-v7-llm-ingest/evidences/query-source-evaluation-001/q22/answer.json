@@ -1,0 +1,97 @@
+{
+  "answer": {
+    "text": "未找到相关记录：在当前阅读范围（第5章第35段，reader/original）的查询均返回“Unknown world in this reading range”，没有可引用的原文，因此无法确定每日任务1“找茬魔法少女”完成后的奖励结算方式。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "找茬魔法少女"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "每日任务"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "奖励"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "找茬"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "魔法少女"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "任务"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

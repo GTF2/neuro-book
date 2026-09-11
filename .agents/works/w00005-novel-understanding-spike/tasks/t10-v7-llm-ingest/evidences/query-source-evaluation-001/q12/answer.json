@@ -1,0 +1,79 @@
+{
+  "answer": {
+    "text": "无法从当前可读取的原文确定。“风信子擅长近战压制与肉搏，对魔法尚不熟练”这一表述在我实际查到的范围内没有对应原文来源；此前的查询因世界参数不被支持而失败，未能读到第3章第32段或任何相关原文，因此也不能判断它是否等于风信子本人自述。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 32
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "get",
+          "perspective": "reader",
+          "world": "original",
+          "id": "q12"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        },
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        }
+      ]
+    }
+  ],
+  "queries": 4,
+  "sourceQueries": 2,
+  "exhausted": true
+}

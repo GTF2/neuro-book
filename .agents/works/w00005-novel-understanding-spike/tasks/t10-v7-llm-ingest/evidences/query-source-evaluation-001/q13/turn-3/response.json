@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。当前可用范围内（第5章第97段）的只读查询均返回“Unknown world in this reading range”，未读到任何关于风信子真名、年龄或就读学校的原文记录，因此无法给出答案。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2718,
+    "outputTokens": 75,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 286
+  },
+  "responseId": "46255a67-004a-4ddd-ba88-4eee79f9bfd6",
+  "durationMs": 1819,
+  "startedAt": "2026-09-11T08:22:38.705Z",
+  "raw": {
+    "id": "46255a67-004a-4ddd-ba88-4eee79f9bfd6",
+    "object": "chat.completion",
+    "created": 1789114959,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。当前可用范围内（第5章第97段）的只读查询均返回“Unknown world in this reading range”，未读到任何关于风信子真名、年龄或就读学校的原文记录，因此无法给出答案。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2718,
+      "completion_tokens": 75,
+      "total_tokens": 2793,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 286
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

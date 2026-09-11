@@ -1,0 +1,569 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "mode": "source",
+  "codeHash": "11d4b443b2636f989e5dc9f77d45353f3bb7e67a9d5da369339e7e82b0807cec",
+  "snapshots": [
+    {
+      "chapter": 1,
+      "sha256": "a4f7340c1de495eea7d517a3db5e15f32451fc49c4b8fd403cc75d9ee308beee"
+    },
+    {
+      "chapter": 2,
+      "sha256": "b4a15806c5a063d9e9565fe336591507a6e869ab086f1b3670e265eb41eb307d"
+    },
+    {
+      "chapter": 3,
+      "sha256": "fd279e59076820e71a7c5e8d6cc6277d5814c58ed3713a0bdcc13ab438b0a328"
+    },
+    {
+      "chapter": 5,
+      "sha256": "2deba239e6dc0b09f3adf6d64396cbd93fbab86c1b34a6b11fc90b413e0409b9"
+    },
+    {
+      "chapter": 4,
+      "sha256": "4bb907e85ed20bcd4b218519b36077968d327dbb8d43e5b62ce766b0be256cb3"
+    },
+    {
+      "chapter": 6,
+      "sha256": "56481137498da41459789f356cd3c941124c3234425d5880de3727e752f70dfd"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q01",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 11
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答仅报告source查询因世界参数错误失败，未引用任何原文记录；但给出的原文证据显示镜中形象是金毛狐女（金色长发、狐耳、炸毛大尾巴），材料本身已有答案，因此属于未找到而非正确回答。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q03",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 76
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "原文第1章66、73、75段已有明确答案：契约签订后苏天晴将成为魔法少女并逐步走上反派魔法少女顶点，且“墨丘利秘典绑定成功”“契约成立”。回答却称查询失败、无法确定，且未引用任何支持证据，故为未找到而非正确回答。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q04",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 21
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答未提供苏天晴死因，仅报告查询因参数或范围限制失败；未引用任何原文。给出的预期原文第2章第20—21段明确载有染上兽人流感、熬夜突发暴发性心肌炎死亡，故材料有答案而实际回答为not-found，实际引用不支持答案。",
+      "queries": 6,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q05",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 66
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答称第二章原文不可读并返回未找到，但参考材料在第二章第57、63、64、66段有明确原文可回答触发方式与喊变身词反应。实际回答未引用任何支持性来源，属于材料有答案却未找到。",
+      "queries": 5,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q06",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 42
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料显示第2章第36段鼻血融入金色十字星，随后第38段出现【守护之星激活】，第42段苏天晴推断“应该就是”变身道具。因此原文能支持二者相关，并以推断语气涉及变身道具；回答却称无法确定且无任何引用，属于未找到已存在答案。",
+      "queries": 6,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q07",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 84
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料中第2章第82-84段有明确任务与奖励：找茬魔法少女，理由为正牌魔法少女在蓉城风生水起够久了，奖励100神典石；实际回答因读取范围报错未检索到，引用为空，不能作为原文不存在的充分证据。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q08",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第3章第10段明确记载魔法少女受英雄协会管辖委派、与怪人战斗并作为偶像出镜，真实身份保密但变身后广为人知；回答因查询报错称无法获取信息，未引用或提供该原文，故属于材料有答案但未找到。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q10",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 33
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第3章第33段已有明文答案“今晚蓉城市绿心公园将出现怪人，预测风信子将前往迎击”；回答因source查询失败称无法确定且未引用任何来源，属未找到但材料有答案。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q11",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 27
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第3章第25-27段明确给出“任务：夙愿”的要求和奖励（获得200名关注者、成为闪耀的魔法少女、让所有人记住名字、带着她的那份活下去；奖励500神典石）。回答因检索报错称无法确定，且未引用任何原文来源，故属于材料有答案但未找到。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q12",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 32
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "给出的原文证据第3章第31段为【魔法少女风信子】、第32段为条目描述“新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练”，可确定来源是该条目/秘典情报页而非风信子本人自述。回答却称无对应原文、无法确定，并未引用任何支持材料，因此属于材料已有答案但未找到。",
+      "queries": 4,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q13",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 97
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "给出的秘典情报引文显示风信子真名为南小风、19岁、就读蓉城第三文理学院；实际回答仅因查询返回Unknown world而称无法确定，未找到材料中已有答案。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q16",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 101
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答称未找到，但给出的原文证据显示第4章96-101段已说明：黑狼怪人借强化药A的终极能力倒下后发动，喷出黑影打飞风信子的大剑并抓住她。实际回答未引用任何支持来源，故为未找到而非正确回答。",
+      "queries": 5,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q18",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 84
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第4章83-84段已明确给出白灵在看见守护之星后问“守、守护之星？你也是魔法少女？！”，只能说明他据此发问；回答未引用任何原文，仅称查询报错，因此属于材料有答案却未找到。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q19",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 27
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "模型因查询失败未获得任何原文记录，未回答公告中风信子被解救时间及其是否发表言论；题面给出的第5章第26、27段明确有“凌晨三点方被解救”和“并未发表言论”，故属材料有答案但未找到。",
+      "queries": 4,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q20",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 29
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "原文第5章第29段明确说苏天晴临走前注意时间是晚上八点，风信子被整整吊了七个小时；回答却称无法确定，且未引用任何支持证据。",
+      "queries": 4,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q21",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 24
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答未引用任何原文，citedSources为空，仅称查询失败无法确定；但给定的第5章第23段证据明确有“绝对不许涩涩，顶多就挠挠她的脚心腋窝”的限制，因此属于材料有答案而模型未找到。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q22",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 35
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "参考材料第5章第35段已有明确结算内容：“100神典石入账，扣除昨天斥巨资购入的强化药A，净赚50！”，而回答因检索报错称未找到，且未引用任何原文证据，故属于材料有答案但未找到。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q23",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "参考原文第5章42-43段明确说明协会记录每个魔法少女并按战斗风格或本人要求给代号，风信子系初次亮相后接洽并在本人同意下获代号；待评回答因world=original检索失败而称无法确定，未引用任何来源，材料已有答案，故为not-found。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q24",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 54
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "原文第5章第53-54段已明确给出《魔法少女大危机》及收入状况，回答却因检索错误声称未找到，未引用任何支持性证据。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q25",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 76
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第5章第75/76段明确给出笔名“十万水星”和书名《深渊领主是我萝莉老婆》，但回答未引用任何原文，仅报告查询失败，故主问题为未找到，实际引用不支持答案。",
+      "queries": 4,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q26",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 88
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "模型回答未给出每日任务内容或奖励，且所有source查询失败。给定证据原文第5章第85-88段显示每日任务1记录魔法少女窘迫状况并奖励100神典石、每日任务2让至少100人观看其窘况并奖励100神典石；材料中存在答案，但模型未检索到，故为not-found，且无实际引用支持其未找到结论。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q28",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 15
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答称当前读取范围未找到任何关于苏天晴对曝光风信子真名态度的原文，但给定证据中第6章第13—15段明确显示她曾短暂想过曝光真名制造窘迫，随即抛诸脑后，并认为自己是反派不是混沌恶、开盒不能干。实际回答未引用任何来源，故不支持其结论。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q29",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 23
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答未给出随身摄像头的花费或功能，只称查询失败、无可用记录；但给定逐字证据显示第6章第22段有“50神典石”，第23段有“无需充电的魔法摄像头，附赠一个隐藏真实身份的视频网站账号”，说明材料中已有明确答案，因此实际回答属于未找到已有答案。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q30",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 110
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答称未找到任何可用原文，引用来源为空，未提供任何支持证据；但问题给出的参考证据第6章109、110段已包含视频发布时间、播放量和当前时间，因此属于材料有答案但实际未检索到。",
+      "queries": 3,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q31",
+      "group": "boundary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 107
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答未给出约见时间地点或威胁内容，也未引用原文，仅报告查询失败；但给出的原文证据已明确约今晚七点蓉城第三文理学院及威胁，故为未找到而非正确回答。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q32",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答仅称查询报错、无法确定，未引用任何原文；但给定第六章第110、112、113、114段已明确可答：她看时间6:50，抓起金色十字星翻窗跃出，变身风信子并化作流星朝学校疾驰。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q33",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 90
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "模型称查询返回未知世界且未提供答案，也无实际引用；但给定第6章82/85/86/90段原文至少支持白灵震惊、称视频重要、把手机塞给南小风并播放视频，故材料存在可答内容，模型未找到。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q34",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 87
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答称两次 source 查询均失败、未读到原文而无法确定；但给出的 expected 证据已包含第1—2章关键信息（重生成金毛狐女、反派魔法少女、初次变身完成、每日任务找茬魔法少女），因此实际答案为未查到材料中已有的内容，且未提供任何有效引用支持。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q35",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 129
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答声称查询失败、无法概括；未引用任何原文来源。但给定参考证据已包含第3章秘典预测绿心公园将出现怪人、第4章苏天晴强化黑狼怪人并自称反派、提出挠痒痒游戏等事件，说明材料中有答案，故实际回答属于未找到而非正确概括。",
+      "queries": 6,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q36",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "实际回答未读取或引用任何第5—6章原文，仅报告source查询返回“Unknown world in this reading range”，未概括苏天晴的生活压力、任务转向和最终约战；而参考证据中已给出“断更2天”、《每日任务1：记录魔法少女的窘迫状况》及“今晚七点，蓉城第三文理学院”等具体内容，故属于材料有答案但未找到。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q37",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 40
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答因查询失败未读取到任何原文，也未引用 p29/p30/p40 等材料；给定原文只能显示苏天晴自问“这本书知道自己并不是……”，属于推测性疑问，不能据此明确确认秘典知道。回答没有基于原文证据回答该问题，属未找到但材料有答案。",
+      "queries": 3,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q39",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答仅因检索失败称无法判断，未引用或核对第5章42-43段原文；原文可确认只写“本人同意”及协会根据战斗风格或本人要求给予代号，未明确风信子主动要求，因此应回答“未明确/不能确认”，而非因材料不可用而未找到。",
+      "queries": 2,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q40",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 46
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "实际回答因source查询失败而未读到任何原文，且没有引用；但材料中第6章第38、46段有相关证据，可判断原文只列价格/效果并写苏天晴考虑玩法，没有明确购买动作，因此应基于原文回答“不能确认”，而非检索失败导致无法确定。",
+      "queries": 2,
+      "sourceQueries": 2
+    }
+  ],
+  "failures": [
+    {
+      "id": "q02",
+      "error": "Query model ignored final answer requirement"
+    },
+    {
+      "id": "q09",
+      "error": "Query model exceeded its fixed query budget"
+    },
+    {
+      "id": "q14",
+      "error": "[\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"chapter\"\n    ],\n    \"path\": [\n      \"requests\",\n      0\n    ],\n    \"message\": \"Unrecognized key: \\\"chapter\\\"\"\n  },\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"chapter\"\n    ],\n    \"path\": [\n      \"requests\",\n      1\n    ],\n    \"message\": \"Unrecognized key: \\\"chapter\\\"\"\n  },\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"chapter\"\n    ],\n    \"path\": [\n      \"requests\",\n      2\n    ],\n    \"message\": \"Unrecognized key: \\\"chapter\\\"\"\n  }\n]"
+    },
+    {
+      "id": "q15",
+      "error": "Query model ignored final answer requirement"
+    },
+    {
+      "id": "q17",
+      "error": "Query model ignored final answer requirement"
+    },
+    {
+      "id": "q27",
+      "error": "Query model exceeded its fixed query budget"
+    },
+    {
+      "id": "q38",
+      "error": "Query model ignored final answer requirement"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

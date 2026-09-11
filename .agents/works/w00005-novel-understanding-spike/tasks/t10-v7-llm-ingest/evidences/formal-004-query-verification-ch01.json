@@ -1,0 +1,2104 @@
+{
+  "snapshot": "evidences/formal-004/ch01/dataset-v7.json",
+  "verify": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.ingest-verification.v1",
+      "observedAt": "2026-09-11T06:49:40.341Z",
+      "inputHash": "4875ca2cd860109dcce836d4164b53082eec2cab791ec53b7ce7f9283a72a7c4",
+      "policyHash": "db2d3861ac85b2f062c3cf2fdd8e1550105c55fb4d0f72560fb312bd35f2a0cc",
+      "head": 1,
+      "sourceParagraphs": 76,
+      "sourceCharacters": 2036,
+      "snapshots": [
+        {
+          "chapter": 1,
+          "records": 266,
+          "paragraphs": 76,
+          "reviewedUnits": 162,
+          "sha256": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+        }
+      ],
+      "deterministicReplay": true,
+      "latestMatches": true,
+      "rerun": null,
+      "limitations": [
+        "Complete Beat coverage and model review do not establish exhaustive semantic extraction"
+      ]
+    }
+  },
+  "audit": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.readonly-lexical-scope-audit.v1",
+      "limitation": "Exact source-name strings only; findings require semantic review and absence is not general spoiler-safety proof.",
+      "results": [
+        {
+          "path": "evidences/formal-004/ch01/dataset-v7.json",
+          "entityNames": 9,
+          "checks": [
+            {
+              "term": "苏天晴",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 5
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 4
+              },
+              "scannedRecords": 4,
+              "hits": []
+            },
+            {
+              "term": "黑色古书",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 7
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 6
+              },
+              "scannedRecords": 17,
+              "hits": []
+            },
+            {
+              "term": "古书",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 7
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 6
+              },
+              "scannedRecords": 17,
+              "hits": []
+            },
+            {
+              "term": "墨丘利秘典",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 29
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 28
+              },
+              "scannedRecords": 107,
+              "hits": [
+                {
+                  "id": "argument:c01:id_r_book",
+                  "kind": "argument",
+                  "field": "item.record.data.rationale",
+                  "text": "第7-11段出现漂浮的黑色古书，指称该持续古书对象；其名墨丘利秘典由后文披露。"
+                },
+                {
+                  "id": "c01:f_book_asks_name",
+                  "kind": "fact",
+                  "field": "item.record.label",
+                  "text": "黑色古书（墨丘利秘典）向苏天晴要求姓名。"
+                },
+                {
+                  "id": "c01:f_book_asks_name",
+                  "kind": "fact",
+                  "field": "item.record.data.proposition",
+                  "text": "黑色古书（墨丘利秘典）向苏天晴要求姓名。"
+                },
+                {
+                  "id": "c01:f_book_asks_name",
+                  "kind": "fact",
+                  "field": "item.assessment.label",
+                  "text": "评估：黑色古书（墨丘利秘典）向苏天晴要求姓名。"
+                },
+                {
+                  "id": "argument:c01:f_book_asks_name",
+                  "kind": "argument",
+                  "field": "item.record.label",
+                  "text": "依据：黑色古书（墨丘利秘典）向苏天晴要求姓名。"
+                },
+                {
+                  "id": "c01:f_book_asks_why_pull_tail",
+                  "kind": "fact",
+                  "field": "item.record.label",
+                  "text": "墨丘利秘典问：“……你干嘛呢。”"
+                },
+                {
+                  "id": "c01:f_book_asks_why_pull_tail",
+                  "kind": "fact",
+                  "field": "item.record.data.proposition",
+                  "text": "墨丘利秘典问：“……你干嘛呢。”"
+                },
+                {
+                  "id": "c01:f_book_asks_why_pull_tail",
+                  "kind": "fact",
+                  "field": "item.assessment.label",
+                  "text": "评估：墨丘利秘典问：“……你干嘛呢。”"
+                },
+                {
+                  "id": "argument:c01:f_book_asks_why_pull_tail",
+                  "kind": "argument",
+                  "field": "item.record.label",
+                  "text": "依据：墨丘利秘典问：“……你干嘛呢。”"
+                },
+                {
+                  "id": "c01:f_book_thinks_no_pain",
+                  "kind": "fact",
+                  "field": "item.record.label",
+                  "text": "墨丘利秘典心想：不疼的吗？"
+                },
+                {
+                  "id": "c01:f_book_thinks_no_pain",
+                  "kind": "fact",
+                  "field": "item.record.data.proposition",
+                  "text": "墨丘利秘典心想：不疼的吗？"
+                },
+                {
+                  "id": "c01:f_book_thinks_no_pain",
+                  "kind": "fact",
+                  "field": "item.assessment.label",
+                  "text": "评估：墨丘利秘典心想：不疼的吗？"
+                },
+                {
+                  "id": "argument:c01:f_book_thinks_no_pain",
+                  "kind": "argument",
+                  "field": "item.record.label",
+                  "text": "依据：墨丘利秘典心想：不疼的吗？"
+                },
+                {
+                  "id": "assessment:c01:f_book_asks_name:at:1:13",
+                  "kind": "assessment",
+                  "field": "item.record.label",
+                  "text": "评估：黑色古书（墨丘利秘典）向苏天晴要求姓名。"
+                },
+                {
+                  "id": "assessment:c01:f_book_asks_why_pull_tail:at:1:19",
+                  "kind": "assessment",
+                  "field": "item.record.label",
+                  "text": "评估：墨丘利秘典问：“……你干嘛呢。”"
+                },
+                {
+                  "id": "assessment:c01:f_book_thinks_no_pain:at:1:21",
+                  "kind": "assessment",
+                  "field": "item.record.label",
+                  "text": "评估：墨丘利秘典心想：不疼的吗？"
+                }
+              ]
+            },
+            {
+              "term": "金毛狐女",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 10
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 9
+              },
+              "scannedRecords": 24,
+              "hits": []
+            },
+            {
+              "term": "金毛狐狐",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 11
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 10
+              },
+              "scannedRecords": 25,
+              "hits": []
+            },
+            {
+              "term": "狐狐",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 11
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 10
+              },
+              "scannedRecords": 25,
+              "hits": []
+            },
+            {
+              "term": "太奶",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 15
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 14
+              },
+              "scannedRecords": 51,
+              "hits": []
+            },
+            {
+              "term": "造物主",
+              "firstSourceAt": {
+                "chapter": 1,
+                "paragraph": 66
+              },
+              "readAt": {
+                "chapter": 1,
+                "paragraph": 65
+              },
+              "scannedRecords": 186,
+              "hits": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "entities": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "entities",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_su_tianqing",
+            "revision": 1,
+            "label": "苏天晴",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 5
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 5,
+                "start": 3,
+                "end": 6
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "person",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": [
+                {
+                  "text": "苏天晴",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 5
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_su:mention:1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_su",
+                      "revision": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:r_su:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_su",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 5,
+                  "start": 3,
+                  "end": 6
+                },
+                "chapter": 1,
+                "text": "苏天晴"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_fox_body",
+            "revision": 1,
+            "label": "狐狐",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 7,
+                "start": 46,
+                "end": 53
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "body",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": [
+                {
+                  "text": "金毛狐女",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 11
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_fox:mention:2",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_fox",
+                      "revision": 1
+                    }
+                  ]
+                },
+                {
+                  "text": "金毛狐狐",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 11
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_fox:mention:3",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_fox",
+                      "revision": 1
+                    }
+                  ]
+                },
+                {
+                  "text": "狐狐",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 32
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_fox:mention:5",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_fox",
+                      "revision": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:r_fox:mention:2",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_fox",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r_fox:mention:3",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r_fox:mention:5",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 46,
+                  "end": 53
+                },
+                "chapter": 1,
+                "text": "陌生的娇小身影"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_mercury_codex",
+            "revision": 1,
+            "label": "墨丘利秘典",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 7,
+                "start": 24,
+                "end": 28
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "artifact",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": [
+                {
+                  "text": "黑色古书",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 11
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_book:mention:1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_book",
+                      "revision": 1
+                    }
+                  ]
+                },
+                {
+                  "text": "古书",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 28
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_book:mention:4",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_book",
+                      "revision": 1
+                    }
+                  ]
+                },
+                {
+                  "text": "墨丘利秘典",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 29
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_book:mention:5",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_book",
+                      "revision": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:r_book:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r_book:mention:4",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r_book:mention:5",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                "chapter": 1,
+                "text": "黑色古书"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_tai_nai",
+            "revision": 1,
+            "label": "太奶",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 15
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 15,
+                "start": 59,
+                "end": 61
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "person",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": [
+                {
+                  "text": "太奶",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 15
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_tai:mention:1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_tai",
+                      "revision": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:r_tai:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_tai",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 15,
+                  "start": 59,
+                  "end": 61
+                },
+                "chapter": 1,
+                "text": "太奶"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_original_owner",
+            "revision": 1,
+            "label": "c01:e_original_owner",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 40,
+                "start": 14,
+                "end": 19
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "unresolved",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": []
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 40,
+                  "start": 14,
+                  "end": 19
+                },
+                "chapter": 1,
+                "text": "原来的主人"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_creator",
+            "revision": 1,
+            "label": "造物主",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 66
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 66,
+                "start": 32,
+                "end": 35
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "unresolved",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": [
+                {
+                  "text": "造物主",
+                  "availableAt": {
+                    "chapter": 1,
+                    "paragraph": 66
+                  },
+                  "dependencies": [
+                    {
+                      "id": "c01:r_creator:mention:1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:id_r_creator",
+                      "revision": 1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:r_creator:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_creator",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 66,
+                  "start": 32,
+                  "end": 35
+                },
+                "chapter": 1,
+                "text": "造物主"
+              }
+            ]
+          },
+          "nameMatches": []
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:e_creator_tasks",
+            "revision": 1,
+            "label": "c01:e_creator_tasks",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 66
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 66,
+                "start": 42,
+                "end": 47
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "entity",
+            "data": {
+              "category": "task",
+              "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+              "names": []
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 66,
+                  "start": 42,
+                  "end": 47
+                },
+                "chapter": 1,
+                "text": "一整套任务"
+              }
+            ]
+          },
+          "nameMatches": []
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "LLM 提取与独立复核不保证语义穷尽。",
+          "太奶出现与苏天晴死亡场景是否真实、是否为幻觉或超自然干预，未确定。",
+          "造物主身份、是否真实存在及其与墨丘利秘典的关系未确定。",
+          "这副身体原来的主人姓名、身份及去向未揭示。",
+          "苏天晴是否真的死亡、重生机制为何，未由旁白确认；目前多为其自述与推断。",
+          "契约的具体条款、是否可反悔、任务的具体内容未说明。",
+          "墨丘利秘典关于星界使者、反派魔法少女顶点、造物主定制任务等说法的世界真实性未确认，记录保留其发言归属。",
+          "苏天晴提到的“魔法少女死亡率高达90%”和王道系故事判断属于其个人认知/提问，未证实。",
+          "第2段作者关于出场角色均已满18岁的声明属于paratext，不当作故事世界事实。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 7,
+        "returned": 7
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  "earlyGet": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "get",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 13
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:f_book_asks_name",
+            "revision": 1,
+            "label": "黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 13
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "fact",
+            "data": {
+              "proposition": "黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+              "predicate": {
+                "id": "c01:pred_asks",
+                "revision": 1
+              },
+              "arguments": [
+                {
+                  "role": "speaker",
+                  "value": {
+                    "type": "ref",
+                    "ref": {
+                      "id": "c01:e_mercury_codex",
+                      "revision": 1
+                    }
+                  },
+                  "anchor": null
+                },
+                {
+                  "role": "addressee",
+                  "value": {
+                    "type": "ref",
+                    "ref": {
+                      "id": "c01:e_su_tianqing",
+                      "revision": 1
+                    }
+                  },
+                  "anchor": null
+                },
+                {
+                  "role": "content",
+                  "value": {
+                    "type": "text",
+                    "text": "姓名。"
+                  },
+                  "anchor": null
+                }
+              ],
+              "polarity": "affirmative",
+              "assertion": {
+                "kind": "speech",
+                "holder": {
+                  "id": "c01:e_mercury_codex",
+                  "revision": 1
+                },
+                "opaque": true
+              },
+              "time": {
+                "kind": "unspecified"
+              },
+              "qualifiers": {
+                "quantifier": "particular",
+                "conditions": [],
+                "textualConditions": [],
+                "exceptions": [],
+                "modality": "actual"
+              },
+              "interpretationDependencies": [
+                {
+                  "id": "c01:id_r_book",
+                  "revision": 1
+                },
+                {
+                  "id": "c01:id_r_su",
+                  "revision": 1
+                }
+              ]
+            }
+          },
+          "assessment": {
+            "id": "assessment:c01:f_book_asks_name:at:1:13",
+            "revision": 1,
+            "label": "评估：黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 13
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "assessment",
+            "data": {
+              "target": {
+                "id": "c01:f_book_asks_name",
+                "revision": 1
+              },
+              "arguments": [
+                {
+                  "id": "argument:c01:f_book_asks_name",
+                  "revision": 1
+                }
+              ],
+              "epistemic": "accepted",
+              "note": "第4段问名结合第13段与古书关联，推断归属成立。",
+              "unresolved": [],
+              "evaluatedAt": {
+                "chapter": 1,
+                "paragraph": 13
+              }
+            }
+          },
+          "assessmentStatus": "visible",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:pred_asks",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:e_mercury_codex",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:e_su_tianqing",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_su",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:pred_asks",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_su",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "arguments": [
+              {
+                "id": "argument:c01:f_book_asks_name",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "excerpts": []
+          }
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 13
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 1,
+        "returned": 1
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  "earlySearch": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "search",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 13
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "argument:c01:id_r_book",
+            "revision": 1,
+            "label": "依据：局部指称归属：黑色古书",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 11
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [
+              {
+                "id": "c01:r_book:mention:1",
+                "revision": 1
+              },
+              {
+                "id": "c01:d_05",
+                "revision": 1
+              }
+            ],
+            "readiness": "ready",
+            "kind": "argument",
+            "data": {
+              "conclusion": {
+                "id": "c01:id_r_book",
+                "revision": 1
+              },
+              "polarity": "supports",
+              "method": "identity",
+              "premises": [
+                {
+                  "ref": {
+                    "id": "c01:r_book:mention:1",
+                    "revision": 1
+                  },
+                  "role": "evidence",
+                  "required": true
+                },
+                {
+                  "ref": {
+                    "id": "c01:d_05",
+                    "revision": 1
+                  },
+                  "role": "evidence",
+                  "required": true
+                }
+              ],
+              "assumptions": [],
+              "rationale": "第7-11段出现漂浮的黑色古书，指称该持续古书对象；其名墨丘利秘典由后文披露。",
+              "sourceRoots": [
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 8,
+                  "start": 0,
+                  "end": 61
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 9,
+                  "start": 0,
+                  "end": 33
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 10,
+                  "start": 0,
+                  "end": 10
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 11,
+                  "start": 0,
+                  "end": 37
+                }
+              ],
+              "applicability": "satisfied",
+              "bindings": [],
+              "jointScope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "jointTime": {
+                "kind": "unspecified"
+              },
+              "review": {
+                "verdict": "passed",
+                "reviewer": "deepseek-flash-independent-review",
+                "note": "r_book为持续漂浮古书，at=11时指称已可确定；名称后续披露不影响该指称。"
+              },
+              "status": "usable"
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r_book:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d_05",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:r_book:mention:1",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d_05",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                "chapter": 1,
+                "text": "黑色古书"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                "chapter": 1,
+                "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 8,
+                  "start": 0,
+                  "end": 61
+                },
+                "chapter": 1,
+                "text": "灿烂金色的长发垂落在肩膀后背，毛茸茸的耳朵耷拉在头顶，随着自己不经意的动作而弹动两下，与刘海底下那精致的五官与眼眸交映着。"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 9,
+                  "start": 0,
+                  "end": 33
+                },
+                "chapter": 1,
+                "text": "脖颈肩膀那白皙的肌肤倒映窗帘缝隙间洒入的阳光，让人不由得多看几眼。"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 10,
+                  "start": 0,
+                  "end": 10
+                },
+                "chapter": 1,
+                "text": "一只娇小的金毛狐女。"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 11,
+                  "start": 0,
+                  "end": 37
+                },
+                "chapter": 1,
+                "text": "如果再加上背后那只正在炸毛的大尾巴，这应该是一只乖巧可爱的毛茸茸金毛狐狐。"
+              }
+            ]
+          }
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:f_book_asks_name",
+            "revision": 1,
+            "label": "黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 13
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "fact",
+            "data": {
+              "proposition": "黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+              "predicate": {
+                "id": "c01:pred_asks",
+                "revision": 1
+              },
+              "arguments": [
+                {
+                  "role": "speaker",
+                  "value": {
+                    "type": "ref",
+                    "ref": {
+                      "id": "c01:e_mercury_codex",
+                      "revision": 1
+                    }
+                  },
+                  "anchor": null
+                },
+                {
+                  "role": "addressee",
+                  "value": {
+                    "type": "ref",
+                    "ref": {
+                      "id": "c01:e_su_tianqing",
+                      "revision": 1
+                    }
+                  },
+                  "anchor": null
+                },
+                {
+                  "role": "content",
+                  "value": {
+                    "type": "text",
+                    "text": "姓名。"
+                  },
+                  "anchor": null
+                }
+              ],
+              "polarity": "affirmative",
+              "assertion": {
+                "kind": "speech",
+                "holder": {
+                  "id": "c01:e_mercury_codex",
+                  "revision": 1
+                },
+                "opaque": true
+              },
+              "time": {
+                "kind": "unspecified"
+              },
+              "qualifiers": {
+                "quantifier": "particular",
+                "conditions": [],
+                "textualConditions": [],
+                "exceptions": [],
+                "modality": "actual"
+              },
+              "interpretationDependencies": [
+                {
+                  "id": "c01:id_r_book",
+                  "revision": 1
+                },
+                {
+                  "id": "c01:id_r_su",
+                  "revision": 1
+                }
+              ]
+            }
+          },
+          "assessment": {
+            "id": "assessment:c01:f_book_asks_name:at:1:13",
+            "revision": 1,
+            "label": "评估：黑色古书（墨丘利秘典）向苏天晴要求姓名。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 13
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "assessment",
+            "data": {
+              "target": {
+                "id": "c01:f_book_asks_name",
+                "revision": 1
+              },
+              "arguments": [
+                {
+                  "id": "argument:c01:f_book_asks_name",
+                  "revision": 1
+                }
+              ],
+              "epistemic": "accepted",
+              "note": "第4段问名结合第13段与古书关联，推断归属成立。",
+              "unresolved": [],
+              "evaluatedAt": {
+                "chapter": 1,
+                "paragraph": 13
+              }
+            }
+          },
+          "assessmentStatus": "visible",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:pred_asks",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:e_mercury_codex",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:e_su_tianqing",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_su",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:pred_asks",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_book",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:id_r_su",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "arguments": [
+              {
+                "id": "argument:c01:f_book_asks_name",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "excerpts": []
+          }
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 13
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 2,
+        "returned": 2
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  "knowledge65": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "knowledge",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 65
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 65
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 0,
+        "returned": 0
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  "knowledge66": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "knowledge",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 66
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:a_su_heard_creator_customized_tasks",
+            "revision": 1,
+            "label": "认知依据：heard",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 66
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [
+              {
+                "id": "c01:d_43",
+                "revision": 1
+              }
+            ],
+            "readiness": "ready",
+            "kind": "knowledgeAccess",
+            "data": {
+              "target": {
+                "id": "c01:f_creator_customized_tasks",
+                "revision": 1
+              },
+              "holder": {
+                "id": "c01:e_su_tianqing",
+                "revision": 1
+              },
+              "mode": "heard",
+              "establishedAt": {
+                "kind": "unspecified"
+              },
+              "evidence": [
+                {
+                  "id": "c01:d_43",
+                  "revision": 1
+                }
+              ]
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:f_creator_customized_tasks",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:e_su_tianqing",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d_43",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:d_43",
+                "revision": 1,
+                "status": "visible"
+              },
+              {
+                "id": "c01:f_creator_customized_tasks",
+                "revision": 1,
+                "status": "visible"
+              }
+            ],
+            "arguments": [],
+            "excerpts": []
+          },
+          "target": {
+            "type": "record",
+            "record": {
+              "id": "c01:f_creator_customized_tasks",
+              "revision": 1,
+              "label": "墨丘利秘典称造物主给苏天晴量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+              "availableAt": {
+                "chapter": 1,
+                "paragraph": 66
+              },
+              "scope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "spans": [],
+              "dependencies": [],
+              "readiness": "ready",
+              "kind": "fact",
+              "data": {
+                "proposition": "墨丘利秘典称造物主给苏天晴量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+                "predicate": {
+                  "id": "c01:pred_customized_tasks",
+                  "revision": 1
+                },
+                "arguments": [
+                  {
+                    "role": "creator",
+                    "value": {
+                      "type": "ref",
+                      "ref": {
+                        "id": "c01:e_creator",
+                        "revision": 1
+                      }
+                    },
+                    "anchor": null
+                  },
+                  {
+                    "role": "beneficiary",
+                    "value": {
+                      "type": "ref",
+                      "ref": {
+                        "id": "c01:e_su_tianqing",
+                        "revision": 1
+                      }
+                    },
+                    "anchor": null
+                  },
+                  {
+                    "role": "tasks",
+                    "value": {
+                      "type": "ref",
+                      "ref": {
+                        "id": "c01:e_creator_tasks",
+                        "revision": 1
+                      }
+                    },
+                    "anchor": null
+                  },
+                  {
+                    "role": "purpose",
+                    "value": {
+                      "type": "text",
+                      "text": "能帮助她逐步走上反派魔法少女的顶点"
+                    },
+                    "anchor": null
+                  }
+                ],
+                "polarity": "affirmative",
+                "assertion": {
+                  "kind": "speech",
+                  "holder": {
+                    "id": "c01:e_mercury_codex",
+                    "revision": 1
+                  },
+                  "opaque": true
+                },
+                "time": {
+                  "kind": "unspecified"
+                },
+                "qualifiers": {
+                  "quantifier": "particular",
+                  "conditions": [],
+                  "textualConditions": [],
+                  "exceptions": [],
+                  "modality": "actual"
+                },
+                "interpretationDependencies": [
+                  {
+                    "id": "c01:id_r_creator",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:id_r_su",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:id_r_tasks",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:id_r_book",
+                    "revision": 1
+                  }
+                ]
+              }
+            },
+            "assessment": {
+              "id": "assessment:c01:f_creator_customized_tasks:at:1:66",
+              "revision": 1,
+              "label": "评估：墨丘利秘典称造物主给苏天晴量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+              "availableAt": {
+                "chapter": 1,
+                "paragraph": 66
+              },
+              "scope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "spans": [],
+              "dependencies": [],
+              "readiness": "ready",
+              "kind": "assessment",
+              "data": {
+                "target": {
+                  "id": "c01:f_creator_customized_tasks",
+                  "revision": 1
+                },
+                "arguments": [
+                  {
+                    "id": "argument:c01:f_creator_customized_tasks",
+                    "revision": 1
+                  }
+                ],
+                "epistemic": "accepted",
+                "note": "第66段造物主定制任务及目的被明确归于古书发言，核心主体论元齐全。",
+                "unresolved": [],
+                "evaluatedAt": {
+                  "chapter": 1,
+                  "paragraph": 66
+                }
+              }
+            },
+            "assessmentStatus": "visible",
+            "provenance": {
+              "references": [
+                {
+                  "id": "c01:pred_customized_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:e_creator",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:e_su_tianqing",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:e_creator_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:e_mercury_codex",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_creator",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_su",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_book",
+                  "revision": 1,
+                  "status": "visible"
+                }
+              ],
+              "dependencies": [
+                {
+                  "id": "c01:pred_customized_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_creator",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_su",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:id_r_book",
+                  "revision": 1,
+                  "status": "visible"
+                }
+              ],
+              "arguments": [
+                {
+                  "id": "argument:c01:f_creator_customized_tasks",
+                  "revision": 1,
+                  "status": "visible"
+                }
+              ],
+              "excerpts": []
+            }
+          }
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 66
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 1,
+        "returned": 1
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  "noThoughtHearing": {
+    "exitCode": 0,
+    "response": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "knowledge",
+      "snapshot": {
+        "id": "llm-through-1",
+        "sourceManifest": "manifest:0cb898d0b1701fc4",
+        "knowledgeRevision": 1,
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "contentHash": "75bc03107b7b9d60e28d29cf76703fb1634ef01759304fb6155d2077bf9d2943"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 76
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "LLM 提取与独立复核不保证语义穷尽。",
+          "太奶出现与苏天晴死亡场景是否真实、是否为幻觉或超自然干预，未确定。",
+          "造物主身份、是否真实存在及其与墨丘利秘典的关系未确定。",
+          "这副身体原来的主人姓名、身份及去向未揭示。",
+          "苏天晴是否真的死亡、重生机制为何，未由旁白确认；目前多为其自述与推断。",
+          "契约的具体条款、是否可反悔、任务的具体内容未说明。",
+          "墨丘利秘典关于星界使者、反派魔法少女顶点、造物主定制任务等说法的世界真实性未确认，记录保留其发言归属。",
+          "苏天晴提到的“魔法少女死亡率高达90%”和王道系故事判断属于其个人认知/提问，未证实。",
+          "第2段作者关于出场角色均已满18岁的声明属于paratext，不当作故事世界事实。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 0,
+        "returned": 0
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  }
+}

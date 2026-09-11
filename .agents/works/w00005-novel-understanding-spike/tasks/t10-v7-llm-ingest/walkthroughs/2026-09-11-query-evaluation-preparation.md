@@ -1,0 +1,11 @@
+# 固定查询评价样本
+
+开发者批准修订计划后恢复执行。评价资产独立于ingest和金标，分别从前6章、后14章编号原文准备40题，各经过一次新的独立模型请求核对。开发集修改11项，验证集修改10项；程序核验40个唯一ID、每章覆盖、真实逐字引文及证据不越过readAt。样本均来自DeepSeek模型辅助生成和核验，不作为人工金标。
+
+固定标识：development suiteHash为20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc；holdout suiteHash为5801604199dc3d0488685b89c99b36c3daa130b557ed6e732bdd79afe5e93d5d。请求/响应完整保存在evidences/query-value-development-001和query-value-holdout-001。准备与核验共4次真实deepseek-flash请求，属于开发评价费用，不计成品ingest单价。
+
+主Agent另读开发集q01、q08、q15、q23、q31、q40所引原文及邻近上下文，六项参考结论均有对应支持；q31只是威胁，q40只是考虑购买，均没有把可能性升级为实际行为。此抽查不证明其余74题全部正确。后14章题目不会用来调整ingest提示词。
+
+查询入口统一固定readAt和模式、6次工具预算；3项聚焦测试验证省略位置时强制正确段落、禁止扩展范围或越权读原文、非法请求仍消耗预算。实验独立typecheck和主Task typecheck通过。尚未执行真实图查询或得到策略比较结论。
+
+冻结样本后启动density-baseline-001：仅运行前6章，原策略-5及8份源码冻结，唯一运行进程PID58880/session70386。旧smoke-008不恢复。主Agent完成评价准备与查询入口；本轮尚未重新启动旧协作Agent，没有把模型请求描述为多Agent人工独立审查。

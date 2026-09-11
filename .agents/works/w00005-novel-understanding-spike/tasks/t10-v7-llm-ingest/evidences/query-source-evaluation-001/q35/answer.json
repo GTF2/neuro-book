@@ -1,0 +1,107 @@
+{
+  "answer": {
+    "text": "在已执行的查询中未能获得第3—4章关于绿心公园的原文记录：三次source查询均返回“Unknown world in this reading range”，两次info查询也分别因readAt固定和source-only模式被拒绝。因此当前无法概括第3—4章围绕绿心公园的主要事件。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 600,
+          "query": "绿心公园"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 1,
+          "to": 129,
+          "query": "绿心公园"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 3
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "info",
+          "at": {
+            "chapter": 4
+          },
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Evaluation readAt is fixed"
+        },
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "query": "绿心公园"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "query": "绿心公园"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 4,
+  "exhausted": true
+}

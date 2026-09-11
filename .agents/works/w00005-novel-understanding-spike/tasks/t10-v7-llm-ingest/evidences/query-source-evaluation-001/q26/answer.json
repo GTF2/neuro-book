@@ -1,0 +1,111 @@
+{
+  "answer": {
+    "text": "未能查询到第五章末尾的每日任务内容及奖励信息：此前所有source查询均返回“Unknown world in this reading range”，且当前剩余查询次数为0，无法继续读取原文。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 80,
+          "to": 95
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 80,
+          "to": 95
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 50,
+          "query": "每日任务"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 5,
+            "paragraph": 1
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 80,
+          "to": 95
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 50,
+          "query": "每日任务"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Evaluation readAt is fixed"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 5,
+  "exhausted": true
+}

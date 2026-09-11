@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 1,
+  "startedAt": "2026-09-11T07:15:51.101Z",
+  "category": "validation",
+  "message": "Integration references invalid:\naBookHeardName.access target/evidence at 1:5 references entMoQiulMidian, available only at 1:7\nepAwaken.episode dependencies at 1:26 references epContract, available only at 1:76\nepAwaken.episode dependencies at 1:26 references D10, available only at 1:30",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.050338667999999996,
+    "minimumUsd": 0.050338667999999996,
+    "maximumUsd": 0.050338667999999996,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

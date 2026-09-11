@@ -1,0 +1,109 @@
+{
+  "answer": {
+    "text": "无法从当前阅读范围（第2章第42段）的原文确定：金色十字星是否与“守护之星”相关，以及它是否被确认为变身道具。此前三次查询因结果上限和world参数错误均未返回任何可用原文；剩余查询次数为0，无法进一步检索。",
+    "status": "undetermined",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "金色十字星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "守护之星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "变身"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "金色十字星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "守护之星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "from": 1,
+          "to": 60,
+          "query": "变身"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 3,
+  "exhausted": true
+}

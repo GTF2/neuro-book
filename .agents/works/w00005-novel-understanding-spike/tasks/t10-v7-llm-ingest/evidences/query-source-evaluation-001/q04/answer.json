@@ -1,0 +1,103 @@
+{
+  "answer": {
+    "text": "在当前可读范围（第2章第21段之前）的原文查询中，未找到关于苏天晴死因的有效记录。多次 source 查询均因世界参数或范围限制失败，无法给出确定答案。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 2,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 2,
+          "query": "死"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "死"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "死"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 4,
+  "exhausted": true
+}

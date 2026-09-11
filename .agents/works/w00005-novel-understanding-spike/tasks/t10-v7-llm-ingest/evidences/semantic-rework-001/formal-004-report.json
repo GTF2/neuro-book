@@ -1,0 +1,988 @@
+{
+  "schema": "neurobook.memory.ingest-report.v1",
+  "observedAt": "2026-09-11T07:04:38.432Z",
+  "runRoot": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\formal-004",
+  "classification": "production",
+  "inputHash": "4875ca2cd860109dcce836d4164b53082eec2cab791ec53b7ce7f9283a72a7c4",
+  "policyHash": "db2d3861ac85b2f062c3cf2fdd8e1550105c55fb4d0f72560fb312bd35f2a0cc",
+  "publishedChapters": 1,
+  "publicationVerified": true,
+  "sources": {
+    "chapters": [
+      {
+        "chapter": 1,
+        "characters": 2036
+      }
+    ],
+    "paragraphs": 76
+  },
+  "records": {
+    "argument": 39,
+    "assessment": 39,
+    "beat": 16,
+    "disclosure": 50,
+    "entity": 7,
+    "entitySummary": 9,
+    "episode": 2,
+    "fact": 30,
+    "knowledgeAccess": 15,
+    "mention": 26,
+    "predicate": 19,
+    "referent": 7,
+    "resolution": 7
+  },
+  "coverage": {
+    "through": {
+      "chapter": 1,
+      "paragraph": 76
+    },
+    "chapters": [
+      1
+    ],
+    "material": "complete",
+    "semantic": "partial",
+    "gaps": [
+      "LLM 提取与独立复核不保证语义穷尽。",
+      "太奶出现与苏天晴死亡场景是否真实、是否为幻觉或超自然干预，未确定。",
+      "造物主身份、是否真实存在及其与墨丘利秘典的关系未确定。",
+      "这副身体原来的主人姓名、身份及去向未揭示。",
+      "苏天晴是否真的死亡、重生机制为何，未由旁白确认；目前多为其自述与推断。",
+      "契约的具体条款、是否可反悔、任务的具体内容未说明。",
+      "墨丘利秘典关于星界使者、反派魔法少女顶点、造物主定制任务等说法的世界真实性未确认，记录保留其发言归属。",
+      "苏天晴提到的“魔法少女死亡率高达90%”和王道系故事判断属于其个人认知/提问，未证实。",
+      "第2段作者关于出场角色均已满18岁的声明属于paratext，不当作故事世界事实。"
+    ],
+    "recordsExhausted": false,
+    "corpusClosed": false
+  },
+  "models": [
+    "deepseek-flash"
+  ],
+  "calls": [
+    {
+      "chapter": 1,
+      "round": 1,
+      "stage": "material",
+      "attempt": 1,
+      "artifact": "ch01/round-1/material/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:29:56.938Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "d2f55803-57d4-478d-b4e6-9501530e98a1",
+      "durationMs": 95556,
+      "usage": {
+        "inputTokens": 3151,
+        "outputTokens": 22686,
+        "cacheHitTokens": 2944,
+        "cacheMissTokens": 207
+      },
+      "reasoningTokens": 18940,
+      "contentOutputTokens": 3746,
+      "cost": {
+        "estimatedUsd": 0.027302964,
+        "minimumUsd": 0.027302964,
+        "maximumUsd": 0.027302964,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 1,
+      "stage": "integration",
+      "attempt": 1,
+      "artifact": "ch01/round-1/integration/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:31:32.548Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "4f7a4ac1-6ab0-49af-9775-783aba50d716",
+      "durationMs": 191858,
+      "usage": {
+        "inputTokens": 10529,
+        "outputTokens": 50425,
+        "cacheHitTokens": 6656,
+        "cacheMissTokens": 3873
+      },
+      "reasoningTokens": 37183,
+      "contentOutputTokens": 13242,
+      "cost": {
+        "estimatedUsd": 0.061711836000000006,
+        "minimumUsd": 0.061711836000000006,
+        "maximumUsd": 0.061711836000000006,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 1,
+      "stage": "review",
+      "attempt": 1,
+      "artifact": "ch01/round-1/review/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:34:44.554Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "a28e4121-6024-4a7c-8105-a869be97f42a",
+      "durationMs": 95474,
+      "usage": {
+        "inputTokens": 21363,
+        "outputTokens": 25747,
+        "cacheHitTokens": 2688,
+        "cacheMissTokens": 18675
+      },
+      "reasoningTokens": 19756,
+      "contentOutputTokens": 5991,
+      "cost": {
+        "estimatedUsd": 0.036515028,
+        "minimumUsd": 0.036515028,
+        "maximumUsd": 0.036515028,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 2,
+      "stage": "integration",
+      "attempt": 1,
+      "artifact": "ch01/round-2/integration/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:36:20.147Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "305ce19b-8849-4213-a4c4-e906389ee05e",
+      "durationMs": 72420,
+      "usage": {
+        "inputTokens": 23904,
+        "outputTokens": 21885,
+        "cacheHitTokens": 10496,
+        "cacheMissTokens": 13408
+      },
+      "reasoningTokens": 8215,
+      "contentOutputTokens": 13670,
+      "cost": {
+        "estimatedUsd": 0.030347376,
+        "minimumUsd": 0.030347376,
+        "maximumUsd": 0.030347376,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 2,
+      "stage": "review",
+      "attempt": 1,
+      "artifact": "ch01/round-2/review/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:37:32.685Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "4dd45597-7604-4b54-8278-c2162dfc4a11",
+      "durationMs": 152988,
+      "usage": {
+        "inputTokens": 21814,
+        "outputTokens": 36039,
+        "cacheHitTokens": 13696,
+        "cacheMissTokens": 8118
+      },
+      "reasoningTokens": 29966,
+      "contentOutputTokens": 6073,
+      "cost": {
+        "estimatedUsd": 0.045764375999999996,
+        "minimumUsd": 0.045764375999999996,
+        "maximumUsd": 0.045764375999999996,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 3,
+      "stage": "material",
+      "attempt": 1,
+      "artifact": "ch01/round-3/material/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:40:05.742Z",
+      "status": "failed",
+      "failure": {
+        "category": "validation",
+        "status": null
+      },
+      "model": "deepseek-flash",
+      "responseId": "43e82583-0880-4b09-a09d-572101b83a22",
+      "durationMs": 117004,
+      "usage": {
+        "inputTokens": 7632,
+        "outputTokens": 28163,
+        "cacheHitTokens": 3072,
+        "cacheMissTokens": 4560
+      },
+      "reasoningTokens": 23387,
+      "contentOutputTokens": 4776,
+      "cost": {
+        "estimatedUsd": 0.035182032,
+        "minimumUsd": 0.035182032,
+        "maximumUsd": 0.035182032,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 3,
+      "stage": "material",
+      "attempt": 2,
+      "artifact": "ch01/round-3/material/attempt-2",
+      "classification": "production-accepted",
+      "startedAt": "2026-09-11T06:42:02.781Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "9f6b693e-5dff-4c18-9ae7-18efa9e484b1",
+      "durationMs": 23206,
+      "usage": {
+        "inputTokens": 8252,
+        "outputTokens": 5329,
+        "cacheHitTokens": 3200,
+        "cacheMissTokens": 5052
+      },
+      "reasoningTokens": 5152,
+      "contentOutputTokens": 177,
+      "cost": {
+        "estimatedUsd": 0.0079296,
+        "minimumUsd": 0.0079296,
+        "maximumUsd": 0.0079296,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 3,
+      "stage": "integration",
+      "attempt": 1,
+      "artifact": "ch01/round-3/integration/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:42:26.036Z",
+      "status": "failed",
+      "failure": {
+        "category": "validation",
+        "status": null
+      },
+      "model": "deepseek-flash",
+      "responseId": "a9d0a62a-38a0-4f21-8435-237e51f85001",
+      "durationMs": 202618,
+      "usage": {
+        "inputTokens": 12276,
+        "outputTokens": 50275,
+        "cacheHitTokens": 6656,
+        "cacheMissTokens": 5620
+      },
+      "reasoningTokens": 39298,
+      "contentOutputTokens": 10977,
+      "cost": {
+        "estimatedUsd": 0.062055936,
+        "minimumUsd": 0.062055936,
+        "maximumUsd": 0.062055936,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 3,
+      "stage": "integration",
+      "attempt": 2,
+      "artifact": "ch01/round-3/integration/attempt-2",
+      "classification": "production-accepted",
+      "startedAt": "2026-09-11T06:45:48.766Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "d94aa832-2835-4016-92c8-50c4e5783bca",
+      "durationMs": 72029,
+      "usage": {
+        "inputTokens": 22908,
+        "outputTokens": 15219,
+        "cacheHitTokens": 6912,
+        "cacheMissTokens": 15996
+      },
+      "reasoningTokens": 14106,
+      "contentOutputTokens": 1113,
+      "cost": {
+        "estimatedUsd": 0.023103072,
+        "minimumUsd": 0.023103072,
+        "maximumUsd": 0.023103072,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 1,
+      "round": 3,
+      "stage": "review",
+      "attempt": 1,
+      "artifact": "ch01/round-3/review/attempt-1",
+      "classification": "production-accepted",
+      "startedAt": "2026-09-11T06:47:00.899Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "2c3d612f-a54c-47d0-a7fe-c654bba76fd7",
+      "durationMs": 75485,
+      "usage": {
+        "inputTokens": 19907,
+        "outputTokens": 17598,
+        "cacheHitTokens": 2816,
+        "cacheMissTokens": 17091
+      },
+      "reasoningTokens": 11939,
+      "contentOutputTokens": 5659,
+      "cost": {
+        "estimatedUsd": 0.026261795999999997,
+        "minimumUsd": 0.026261795999999997,
+        "maximumUsd": 0.026261795999999997,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 2,
+      "round": 1,
+      "stage": "material",
+      "attempt": 1,
+      "artifact": "ch02/round-1/material/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:48:16.891Z",
+      "status": "failed",
+      "failure": {
+        "category": "validation",
+        "status": null
+      },
+      "model": "deepseek-flash",
+      "responseId": "1285dc1d-99df-49dd-ac16-e3a561ec7c11",
+      "durationMs": 103776,
+      "usage": {
+        "inputTokens": 3302,
+        "outputTokens": 27971,
+        "cacheHitTokens": 1024,
+        "cacheMissTokens": 2278
+      },
+      "reasoningTokens": 20977,
+      "contentOutputTokens": 6994,
+      "cost": {
+        "estimatedUsd": 0.034254744,
+        "minimumUsd": 0.034254744,
+        "maximumUsd": 0.034254744,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 2,
+      "round": 1,
+      "stage": "material",
+      "attempt": 2,
+      "artifact": "ch02/round-1/material/attempt-2",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:50:00.703Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "11735014-8be7-42f2-a41c-1e23e11abdcb",
+      "durationMs": 8036,
+      "usage": {
+        "inputTokens": 10630,
+        "outputTokens": 1559,
+        "cacheHitTokens": 1280,
+        "cacheMissTokens": 9350
+      },
+      "reasoningTokens": 1471,
+      "contentOutputTokens": 88,
+      "cost": {
+        "estimatedUsd": 0.004683479999999999,
+        "minimumUsd": 0.004683479999999999,
+        "maximumUsd": 0.004683479999999999,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 2,
+      "round": 1,
+      "stage": "integration",
+      "attempt": 1,
+      "artifact": "ch02/round-1/integration/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:50:08.787Z",
+      "status": "failed",
+      "failure": {
+        "category": "validation",
+        "status": null
+      },
+      "model": "deepseek-flash",
+      "responseId": "8ca0a730-3fe8-425c-8d96-5546f403be83",
+      "durationMs": 148076,
+      "usage": {
+        "inputTokens": 45988,
+        "outputTokens": 39447,
+        "cacheHitTokens": 4608,
+        "cacheMissTokens": 41380
+      },
+      "reasoningTokens": 25984,
+      "contentOutputTokens": 13463,
+      "cost": {
+        "estimatedUsd": 0.059778048,
+        "minimumUsd": 0.059778048,
+        "maximumUsd": 0.059778048,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 2,
+      "round": 1,
+      "stage": "integration",
+      "attempt": 2,
+      "artifact": "ch02/round-1/integration/attempt-2",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:52:36.956Z",
+      "status": "accepted",
+      "failure": null,
+      "model": "deepseek-flash",
+      "responseId": "585b9371-e337-4d6a-a0d2-ab001e33631a",
+      "durationMs": 32473,
+      "usage": {
+        "inputTokens": 60151,
+        "outputTokens": 8835,
+        "cacheHitTokens": 4992,
+        "cacheMissTokens": 55159
+      },
+      "reasoningTokens": 6719,
+      "contentOutputTokens": 2116,
+      "cost": {
+        "estimatedUsd": 0.027179652000000002,
+        "minimumUsd": 0.027179652000000002,
+        "maximumUsd": 0.027179652000000002,
+        "unknownOutcome": false,
+        "unknownUsage": false,
+        "supportedModel": true,
+        "cacheSplitKnown": true,
+        "cacheSplitValid": true,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    },
+    {
+      "chapter": 2,
+      "round": 1,
+      "stage": "review",
+      "attempt": 1,
+      "artifact": "ch02/round-1/review/attempt-1",
+      "classification": "production-repair",
+      "startedAt": "2026-09-11T06:53:09.577Z",
+      "status": "unknown-provider-outcome",
+      "failure": null,
+      "model": null,
+      "responseId": null,
+      "durationMs": null,
+      "usage": null,
+      "reasoningTokens": null,
+      "contentOutputTokens": null,
+      "cost": {
+        "estimatedUsd": null,
+        "minimumUsd": 0,
+        "maximumUsd": null,
+        "unknownOutcome": true,
+        "unknownUsage": true,
+        "supportedModel": null,
+        "cacheSplitKnown": false,
+        "cacheSplitValid": null,
+        "pricePeriod": "peak",
+        "ratesPerMillion": {
+          "hit": 0.006,
+          "miss": 0.3,
+          "output": 1.2
+        },
+        "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+        "priceDate": "2026-09-10",
+        "billingExact": false
+      }
+    }
+  ],
+  "tokensByStage": {
+    "material": {
+      "calls": 5,
+      "knownOutputTokens": 85708,
+      "knownReasoningTokens": 69927,
+      "knownContentOutputTokens": 15781,
+      "outputTokens": 85708,
+      "reasoningTokens": 69927,
+      "contentOutputTokens": 15781,
+      "unknownOutputCalls": 0,
+      "unknownSplitCalls": 0
+    },
+    "integration": {
+      "calls": 6,
+      "knownOutputTokens": 186086,
+      "knownReasoningTokens": 131505,
+      "knownContentOutputTokens": 54581,
+      "outputTokens": 186086,
+      "reasoningTokens": 131505,
+      "contentOutputTokens": 54581,
+      "unknownOutputCalls": 0,
+      "unknownSplitCalls": 0
+    },
+    "review": {
+      "calls": 4,
+      "knownOutputTokens": 79384,
+      "knownReasoningTokens": 61661,
+      "knownContentOutputTokens": 17723,
+      "outputTokens": null,
+      "reasoningTokens": null,
+      "contentOutputTokens": null,
+      "unknownOutputCalls": 1,
+      "unknownSplitCalls": 1
+    }
+  },
+  "costs": {
+    "all": {
+      "calls": 15,
+      "inputTokens": 271807,
+      "outputTokens": 351178,
+      "cacheHitTokens": 71040,
+      "cacheMissTokens": 200767,
+      "unknownUsageCalls": 1,
+      "unknownOutcomeCalls": 1,
+      "unknownCacheSplitCalls": 1,
+      "unsupportedModelCalls": 0,
+      "knownEstimatedUsd": 0.4820699400000001,
+      "minimumUsd": 0.4820699400000001,
+      "maximumUsd": null,
+      "estimatedUsd": null
+    },
+    "published": {
+      "calls": 10,
+      "inputTokens": 151736,
+      "outputTokens": 273366,
+      "cacheHitTokens": 59136,
+      "cacheMissTokens": 92600,
+      "unknownUsageCalls": 0,
+      "unknownOutcomeCalls": 0,
+      "unknownCacheSplitCalls": 0,
+      "unsupportedModelCalls": 0,
+      "knownEstimatedUsd": 0.35617401600000004,
+      "minimumUsd": 0.35617401600000004,
+      "maximumUsd": 0.35617401600000004,
+      "estimatedUsd": 0.35617401600000004
+    },
+    "unpublished": {
+      "calls": 5,
+      "inputTokens": 120071,
+      "outputTokens": 77812,
+      "cacheHitTokens": 11904,
+      "cacheMissTokens": 108167,
+      "unknownUsageCalls": 1,
+      "unknownOutcomeCalls": 1,
+      "unknownCacheSplitCalls": 1,
+      "unsupportedModelCalls": 0,
+      "knownEstimatedUsd": 0.125895924,
+      "minimumUsd": 0.125895924,
+      "maximumUsd": null,
+      "estimatedUsd": null
+    },
+    "projection": {
+      "schema": "neurobook.memory.ingest-cost.v1",
+      "characters": 2036,
+      "targetCharacters": 10000000,
+      "characterUnit": "Unicode code points in source paragraphs, without inserted separators",
+      "production": {
+        "calls": 10,
+        "inputTokens": 151736,
+        "outputTokens": 273366,
+        "cacheHitTokens": 59136,
+        "cacheMissTokens": 92600,
+        "unknownUsageCalls": 0,
+        "unknownOutcomeCalls": 0,
+        "unknownCacheSplitCalls": 0,
+        "unsupportedModelCalls": 0,
+        "knownEstimatedUsd": 0.35617401600000004,
+        "minimumUsd": 0.35617401600000004,
+        "maximumUsd": 0.35617401600000004,
+        "estimatedUsd": 0.35617401600000004
+      },
+      "byClassification": {
+        "production-accepted": {
+          "calls": 3,
+          "inputTokens": 51067,
+          "outputTokens": 38146,
+          "cacheHitTokens": 12928,
+          "cacheMissTokens": 38139,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0.057294467999999994,
+          "minimumUsd": 0.057294467999999994,
+          "maximumUsd": 0.057294467999999994,
+          "estimatedUsd": 0.057294467999999994
+        },
+        "production-repair": {
+          "calls": 7,
+          "inputTokens": 100669,
+          "outputTokens": 235220,
+          "cacheHitTokens": 46208,
+          "cacheMissTokens": 54461,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0.298879548,
+          "minimumUsd": 0.298879548,
+          "maximumUsd": 0.298879548,
+          "estimatedUsd": 0.298879548
+        },
+        "development": {
+          "calls": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "cacheHitTokens": 0,
+          "cacheMissTokens": 0,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0,
+          "minimumUsd": 0,
+          "maximumUsd": 0,
+          "estimatedUsd": 0
+        }
+      },
+      "byStage": {
+        "integration": {
+          "calls": 4,
+          "inputTokens": 69617,
+          "outputTokens": 137804,
+          "cacheHitTokens": 30720,
+          "cacheMissTokens": 38897,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0.17721822,
+          "minimumUsd": 0.17721822,
+          "maximumUsd": 0.17721822,
+          "estimatedUsd": 0.17721822
+        },
+        "material": {
+          "calls": 3,
+          "inputTokens": 19035,
+          "outputTokens": 56178,
+          "cacheHitTokens": 9216,
+          "cacheMissTokens": 9819,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0.070414596,
+          "minimumUsd": 0.070414596,
+          "maximumUsd": 0.070414596,
+          "estimatedUsd": 0.070414596
+        },
+        "review": {
+          "calls": 3,
+          "inputTokens": 63084,
+          "outputTokens": 79384,
+          "cacheHitTokens": 19200,
+          "cacheMissTokens": 43884,
+          "unknownUsageCalls": 0,
+          "unknownOutcomeCalls": 0,
+          "unknownCacheSplitCalls": 0,
+          "unsupportedModelCalls": 0,
+          "knownEstimatedUsd": 0.1085412,
+          "minimumUsd": 0.1085412,
+          "maximumUsd": 0.1085412,
+          "estimatedUsd": 0.1085412
+        }
+      },
+      "perMillionCharacters": {
+        "inputTokens": 74526522.59332024,
+        "outputTokens": 134266208.2514735
+      },
+      "projected": {
+        "observedPeriods": {
+          "minimumUsd": 1749.3812180746563,
+          "maximumUsd": 1749.3812180746563
+        },
+        "offpeakMeasuredCache": {
+          "minimumUsd": 874.6906090373282,
+          "maximumUsd": 874.6906090373282
+        },
+        "offpeakNoCache": {
+          "minimumUsd": 917.3870333988211,
+          "maximumUsd": 917.3870333988211
+        },
+        "peakNoCache": {
+          "minimumUsd": 1834.7740667976423,
+          "maximumUsd": 1834.7740667976423
+        },
+        "peakNoCacheDoubleOutput": {
+          "minimumUsd": 3445.968565815324,
+          "maximumUsd": 3445.968565815324
+        },
+        "peakNoCacheDoubleWork": {
+          "minimumUsd": 3669.5481335952845,
+          "maximumUsd": 3669.5481335952845
+        }
+      },
+      "contextGrowth": {
+        "first": null,
+        "last": null,
+        "ratio": null
+      },
+      "assumptions": [
+        "Linear extrapolation requires bounded retrieval context and local summary updates",
+        "Twenty chapters do not establish long-book quality, retrieval recall or storage performance",
+        "Unknown provider outcomes may have been billed and are excluded from exact totals"
+      ],
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "context": [
+    {
+      "chapter": 1,
+      "characters": 0,
+      "records": 0,
+      "omitted": 0,
+      "selection": null,
+      "missingReferences": null
+    },
+    {
+      "chapter": 2,
+      "characters": 89785,
+      "records": 141,
+      "omitted": 125,
+      "selection": {
+        "matchedEntities": 3,
+        "selectedEntities": 7,
+        "semanticCandidates": 56,
+        "selectedSemanticRecords": 21,
+        "recordLimit": 150,
+        "recordLimitReached": false,
+        "characterLimitReached": true,
+        "trimmedFields": 12,
+        "skippedBundles": 35,
+        "matchedIdentityBundles": 3,
+        "partialSupportRecords": 2
+      },
+      "missingReferences": {
+        "count": 8,
+        "ids": [
+          "c01:d_02",
+          "c01:d_04",
+          "c01:d_06",
+          "c01:d_07",
+          "c01:d_08",
+          "c01:d_40",
+          "c01:d_42",
+          "c01:f_su_states_name"
+        ],
+        "idsTruncated": false
+      }
+    }
+  ],
+  "semanticFailures": [
+    {
+      "chapter": 1,
+      "round": 1
+    },
+    {
+      "chapter": 1,
+      "round": 2
+    }
+  ],
+  "failureCounts": {
+    "validation": 4,
+    "unknown-provider-outcome": 1
+  },
+  "limitations": [
+    "Only published source characters form the extrapolation denominator; unpublished work is listed separately",
+    "Output splits require provider reasoning token details; content tokens are the non-reasoning output remainder",
+    "Structural validation and complete Beat coverage do not establish semantic extraction quality",
+    "This read-only report does not query provider billing or make model requests"
+  ]
+}

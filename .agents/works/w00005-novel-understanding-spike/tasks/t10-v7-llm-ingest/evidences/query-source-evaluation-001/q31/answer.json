@@ -1,0 +1,102 @@
+{
+  "answer": {
+    "text": "无法确定：此前查询均因“Unknown world in this reading range”失败，未读到第6章原文或相关记录，因此无法给出苏天晴在视频中约定的见面时间地点、威胁内容，也无法确认她是否实施威胁。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "威胁"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "info",
+          "at": {
+            "chapter": 6,
+            "paragraph": 107
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "from": 1,
+          "to": 200,
+          "query": "苏天晴"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "from": 1,
+          "to": 200,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 5,
+  "exhausted": true
+}

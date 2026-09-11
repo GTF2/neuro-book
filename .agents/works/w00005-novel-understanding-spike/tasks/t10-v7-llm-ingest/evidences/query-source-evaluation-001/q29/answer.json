@@ -1,0 +1,96 @@
+{
+  "answer": {
+    "text": "无法从已查询的原文中确定随身摄像头的花费或功能：此前三次查询均未成功读取任何记录（查询6章未命中“随身摄像头”“神典石”“摄像头”，且source模式不可读取facts），当前无可用记录支撑回答。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "随身摄像头"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "神典石"
+        },
+        {
+          "command": "facts",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "随身摄像头"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source-only mode cannot read graph"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "随身摄像头"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "神典石"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "摄像头"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        },
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 5,
+  "exhausted": true
+}

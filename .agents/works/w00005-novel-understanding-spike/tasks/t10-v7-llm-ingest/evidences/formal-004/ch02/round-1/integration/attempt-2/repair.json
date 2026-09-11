@@ -1,0 +1,443 @@
+{
+  "replacements": [
+    {
+      "collection": "identities",
+      "record": {
+        "id": "id_r_body",
+        "at": 8,
+        "referent": "r_body",
+        "entity": "known:c01:e_fox_body",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "“这副身体”在本章指苏天晴当前所在的狐女身体，映射到旧身体对象。",
+        "evidence": [
+          "d5"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "id_r_official_mg",
+        "at": 83,
+        "referent": "r_official_mg",
+        "entity": "e_official_magical_girl",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "正牌魔法少女作为持续人物对象被古书任务文本指称。",
+        "evidence": [
+          "d67"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "id_r_divine_stone",
+        "at": 84,
+        "referent": "r_divine_stone",
+        "entity": "e_divine_stone",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "神典石作为每日任务奖励资源对象出现。",
+        "evidence": [
+          "d68"
+        ]
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "f_su_admires_body",
+        "at": 9,
+        "text": "苏天晴认为抛开反派魔法少女身份不谈，这副身体的容貌绝妙，每个细节都满足自己曾经的幻想。",
+        "predicate": "known:c01:pred_thinks",
+        "arguments": [
+          {
+            "role": "thinker",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:e_su_tianqing"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "抛开反派魔法少女身份不谈，这副身体的容貌绝妙，每个细节都满足自己曾经的幻想。"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_r_su"
+        ],
+        "proof": {
+          "premises": [
+            "d5",
+            "d6"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第8-9段苏天晴的想法直接支持该信念记录。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "f_su_transforms",
+        "at": 73,
+        "text": "苏天晴通过触摸金色十字星凹陷完成初次变身，狐女身体变为魔法少女（反派）形态。",
+        "predicate": "pred_transforms",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:e_su_tianqing"
+            }
+          },
+          {
+            "role": "item",
+            "value": {
+              "type": "ref",
+              "id": "e_guardian_star"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:e_fox_body"
+            }
+          },
+          {
+            "role": "form",
+            "value": {
+              "type": "text",
+              "text": "金色短款洋装、过膝白袜、狐耳大尾巴的魔法少女（反派）形态"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_r_su",
+          "id_r_star",
+          "id_r_body"
+        ],
+        "proof": {
+          "premises": [
+            "d49",
+            "d50",
+            "d51",
+            "d57"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第64-66段白光后系统提示初次变身完成，第73段描述变身形态。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "f_daily_task1_targets_official_mg",
+        "at": 83,
+        "text": "每日任务1要求找茬正牌魔法少女。",
+        "predicate": "pred_targets",
+        "arguments": [
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "e_daily_task"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "e_official_magical_girl"
+            }
+          },
+          {
+            "role": "action",
+            "value": {
+              "type": "text",
+              "text": "找茬"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_r_task",
+          "id_r_official_mg",
+          "id_r_book"
+        ],
+        "proof": {
+          "premises": [
+            "d66",
+            "d67"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第82-83段古书页面显示每日任务1为找茬正牌魔法少女。"
+        }
+      }
+    },
+    {
+      "collection": "arguments",
+      "record": {
+        "id": "arg_ch2_su_inhabits_fox",
+        "at": 7,
+        "target": "known:c01:f_su_inhabits_fox_body",
+        "polarity": "supports",
+        "proof": {
+          "premises": [
+            "d3",
+            "d4"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第2章苏天晴继续以金毛狐狐身体照镜行动，支持其意识居于该身体。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "ep_morning_self_admiration",
+        "at": 16,
+        "title": "苏天晴晨间照镜欣赏狐狐身体",
+        "summary": "苏天晴洗漱后照镜子，欣赏金毛狐狐的外貌，并认为这副身体绝妙、满足曾经的幻想。",
+        "scale": "event",
+        "participants": [
+          "known:c01:e_su_tianqing",
+          "known:c01:e_fox_body"
+        ],
+        "materials": [
+          "b4",
+          "b5",
+          "d3",
+          "d4",
+          "d5",
+          "d6"
+        ],
+        "children": [],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d3",
+            "d4",
+            "d5",
+            "d6"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第6-16段构成晨间照镜与自我欣赏片段。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "ep_orig_memory",
+        "at": 23,
+        "title": "苏天晴审视原主残留记忆",
+        "summary": "苏天晴收敛发癫后审视身体残留记忆，得知原主也叫苏天晴，并了解人类与兽人共存、原主孤独成长、受资助考上医学院、染兽人流感后突发暴发性心肌炎而死等经历。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:e_su_tianqing",
+          "known:c01:e_original_owner",
+          "e_association",
+          "e_medical_college",
+          "e_rongcheng",
+          "e_beastfolk",
+          "e_human"
+        ],
+        "materials": [
+          "b6",
+          "d13",
+          "d15",
+          "d16",
+          "f_orig_owner_same_name",
+          "f_orig_lonely",
+          "f_association_funds_orig",
+          "f_orig_admitted_to_medical",
+          "f_orig_died_myocarditis"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "known:c01:ep_reincarnation",
+            "evidence": [
+              "known:c01:f_su_inhabits_fox_body"
+            ]
+          }
+        ],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d13",
+            "d15",
+            "d16"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第17-23段构成苏天晴审视原主记忆的序列。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "ep_star_activation",
+        "at": 40,
+        "title": "守护之星激活与每日任务开启",
+        "summary": "金色十字星从古书掉出并沾血后，系统声音提示守护之星激活、秘典序章完成并开启每日任务。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:e_su_tianqing",
+          "e_guardian_star",
+          "known:c01:e_mercury_codex",
+          "e_system_voice",
+          "e_daily_task"
+        ],
+        "materials": [
+          "b7",
+          "b8",
+          "b9",
+          "d23",
+          "d25",
+          "d26",
+          "d27",
+          "d28",
+          "f_star_activated",
+          "f_codex_prologue_completed",
+          "f_daily_task_opened"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "known:c01:ep_contract",
+            "evidence": [
+              "known:c01:f_binding_success"
+            ]
+          }
+        ],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d23",
+            "d25",
+            "d26",
+            "d27",
+            "d28"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第25-39段构成十字星掉出、激活与任务开启事件链。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "ep_first_transformation",
+        "at": 76,
+        "title": "苏天晴初次变身并接受反派魔法少女身份",
+        "summary": "苏天晴尝试喊变身词无果，后按下十字星凹陷触发白光并完成初次变身；看到变身后模样后，她消除抵触并决心当反派魔法少女。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:e_su_tianqing",
+          "e_guardian_star",
+          "known:c01:e_fox_body",
+          "e_system_voice",
+          "e_villain_mg_role"
+        ],
+        "materials": [
+          "b10",
+          "b11",
+          "b12",
+          "b13",
+          "b14",
+          "b15",
+          "d29",
+          "d36",
+          "d42",
+          "d48",
+          "d49",
+          "d50",
+          "d51",
+          "f_su_attempts_transform",
+          "f_su_presses_star",
+          "f_su_transforms",
+          "f_transformation_completed",
+          "f_su_accepts_villain_role"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "ep_star_activation",
+            "evidence": [
+              "f_star_activated"
+            ]
+          }
+        ],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d42",
+            "d48",
+            "d49",
+            "d50",
+            "d51",
+            "d57",
+            "d59"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第40-76段构成尝试变身、完成变身与接受身份的事件链。"
+        }
+      }
+    }
+  ]
+}

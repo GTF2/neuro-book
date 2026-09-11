@@ -1,0 +1,31 @@
+{
+  "answer": {
+    "text": "未找到可引用的记录：首次查询因世界参数错误失败（readAt 限定 chapter 1, paragraph 11），当前无法确定苏天晴重生后从落地镜中看到的具体身份/外貌。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "query": "落地镜"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Unknown world in this reading range"
+        }
+      ]
+    }
+  ],
+  "queries": 1,
+  "sourceQueries": 1,
+  "exhausted": false
+}

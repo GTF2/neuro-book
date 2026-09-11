@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"任务\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2453,
+    "outputTokens": 35,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 277
+  },
+  "responseId": "4232917e-5e9e-4c63-8a3a-5f9a9d718c97",
+  "durationMs": 846,
+  "startedAt": "2026-09-11T08:22:30.642Z",
+  "raw": {
+    "id": "4232917e-5e9e-4c63-8a3a-5f9a9d718c97",
+    "object": "chat.completion",
+    "created": 1789114951,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"任务\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2453,
+      "completion_tokens": 35,
+      "total_tokens": 2488,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 277
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

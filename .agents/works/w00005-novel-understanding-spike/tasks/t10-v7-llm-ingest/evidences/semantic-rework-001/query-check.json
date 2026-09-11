@@ -1,0 +1,109 @@
+{
+  "schema": "neurobook.semantic-rework-query-check.v1",
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "cli.ts",
+        "--data",
+        "../t10-v7-llm-ingest/evidences/formal-003/ch03/dataset-v7.json",
+        "entities",
+        "--query",
+        "风信子"
+      ],
+      "exitCode": 0,
+      "result": {
+        "snapshot": {
+          "id": "llm-through-3",
+          "sourceManifest": "manifest:3f091b41fd6009c9",
+          "knowledgeRevision": 3,
+          "readAt": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+        },
+        "items": [
+          {
+            "id": "c03:e_fengxinzi",
+            "label": "风信子",
+            "names": [
+              {
+                "text": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "dependencies": [
+                  {
+                    "id": "c03:R_FX:mention:2",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c03:i_fx",
+                    "revision": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "relevantGap": "风信子与第2章每日任务目标“正牌魔法少女”是否为同一人，本章仅可推测（蓉城活跃魔法少女为风信子），未明确等同。"
+      }
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "cli.ts",
+        "--data",
+        "../t10-v7-llm-ingest/evidences/formal-003/ch03/dataset-v7.json",
+        "entities",
+        "--query",
+        "正牌魔法少女"
+      ],
+      "exitCode": 0,
+      "result": {
+        "snapshot": {
+          "id": "llm-through-3",
+          "sourceManifest": "manifest:3f091b41fd6009c9",
+          "knowledgeRevision": 3,
+          "readAt": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+        },
+        "items": [
+          {
+            "id": "c02:e_official_magical_girl",
+            "label": "正牌魔法少女",
+            "names": [
+              {
+                "text": "正牌魔法少女",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "dependencies": [
+                  {
+                    "id": "c02:r_official_magical_girl:mention:1",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c02:i_official_magical_girl",
+                    "revision": 3
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "relevantGap": "风信子与第2章每日任务目标“正牌魔法少女”是否为同一人，本章仅可推测（蓉城活跃魔法少女为风信子），未明确等同。"
+      }
+    }
+  ]
+}

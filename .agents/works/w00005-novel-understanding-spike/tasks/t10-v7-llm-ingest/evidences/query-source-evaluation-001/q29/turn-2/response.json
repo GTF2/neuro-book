@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"随身摄像头\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"神典石\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"摄像头\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2578,
+    "outputTokens": 90,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 146
+  },
+  "responseId": "bc594650-1c85-4a96-9560-4c00ab0d5b93",
+  "durationMs": 1121,
+  "startedAt": "2026-09-11T08:23:04.862Z",
+  "raw": {
+    "id": "bc594650-1c85-4a96-9560-4c00ab0d5b93",
+    "object": "chat.completion",
+    "created": 1789114985,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"随身摄像头\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"神典石\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"摄像头\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2578,
+      "completion_tokens": 90,
+      "total_tokens": 2668,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 146
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

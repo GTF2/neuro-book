@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已读范围确定：查询记录未返回任何可用的第六章原文或记录，关于视频发布时间、播放量和当前时间的信息均未找到。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2592,
+    "outputTokens": 57,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 160
+  },
+  "responseId": "2bb6668b-4d81-4f2f-b0a2-a0941d677eea",
+  "durationMs": 1006,
+  "startedAt": "2026-09-11T08:23:09.291Z",
+  "raw": {
+    "id": "2bb6668b-4d81-4f2f-b0a2-a0941d677eea",
+    "object": "chat.completion",
+    "created": 1789114989,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已读范围确定：查询记录未返回任何可用的第六章原文或记录，关于视频发布时间、播放量和当前时间的信息均未找到。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2592,
+      "completion_tokens": 57,
+      "total_tokens": 2649,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 160
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

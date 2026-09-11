@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已读范围确定。对第5章第43段读取范围内，world=original 被报告为未知世界，三次检索英雄协会、魔法少女代号、风信子均失败。\",\"status\":\"undetermined\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2714,
+    "outputTokens": 67,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 282
+  },
+  "responseId": "838f5d26-7a22-4ad0-bb7c-dae8865b3850",
+  "durationMs": 752,
+  "startedAt": "2026-09-11T08:22:54.542Z",
+  "raw": {
+    "id": "838f5d26-7a22-4ad0-bb7c-dae8865b3850",
+    "object": "chat.completion",
+    "created": 1789114975,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已读范围确定。对第5章第43段读取范围内，world=original 被报告为未知世界，三次检索英雄协会、魔法少女代号、风信子均失败。\",\"status\":\"undetermined\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2714,
+      "completion_tokens": 67,
+      "total_tokens": 2781,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 282
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

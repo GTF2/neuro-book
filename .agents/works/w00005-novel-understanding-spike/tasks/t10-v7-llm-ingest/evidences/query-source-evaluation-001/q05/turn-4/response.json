@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从当前可读记录中确定。多次尝试在第二章读取原文均返回“Unknown world in this reading range”，没有取得苏天晴第一次变身或喊变身词反应的相关原文，因此无法回答。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2681,
+    "outputTokens": 69,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 249
+  },
+  "responseId": "72fd17a9-e4de-43ca-aaeb-76c53fe5b29f",
+  "durationMs": 1068,
+  "startedAt": "2026-09-11T08:22:20.702Z",
+  "raw": {
+    "id": "72fd17a9-e4de-43ca-aaeb-76c53fe5b29f",
+    "object": "chat.completion",
+    "created": 1789114941,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从当前可读记录中确定。多次尝试在第二章读取原文均返回“Unknown world in this reading range”，没有取得苏天晴第一次变身或喊变身词反应的相关原文，因此无法回答。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2681,
+      "completion_tokens": 69,
+      "total_tokens": 2750,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 249
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

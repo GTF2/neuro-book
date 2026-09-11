@@ -52,3 +52,9 @@ query_cli 只读消费正式产物，主 Agent 唯一控制活动运行及恢复
 ## 无知情记录时的角色视角交互
 
 另保存 `evidences/formal-003-empty-character-query.json`：`knowledge --holder c01:e_su --about c01:e_book --at 1:10 --limit 100` 在默认reader范围退出0并返回空；只增加 `--perspective c01:e_su` 则退出2、INVALID_ARGUMENT、Expected a visible entity ID。该角色在reader范围已存在，但此时还没有显式KnowledgeAccess，t07角色投影连holder自身也未列入characterAllowed，t09的requireEntity因此拒绝自己的知识查询。这是实际交互限制；若期望角色在无记录时也可查询空集合，应特判已被scope确认的当前视角主体，而非放宽任意不可见主体。未修改查询实现。
+
+## 最小复现与新策略首章
+
+已按 Leader 请求补齐实际 get 复现及完整返回，见 [text-scope-minimal-repro.md](text-scope-minimal-repro.md)。该文包含古书的三次 get，以及第2章守护之星和第3章时间描述的两个同类泄漏；实体名称的通用词面审计另保存了可复用命令和全部扫描结果。旧模型产物不变。
+
+策略 -4 的 smoke-007 首章结构、来源、重编译和知情边界通过；实际所有返回字段扫描在 1:7、1:10、1:28 均不含墨丘利秘典，1:65 不含造物主，详见 [query-cli-smoke-007.md](query-cli-smoke-007.md)。该随机样本通过不等于修好了旧自由文本缺陷。主 Agent 已启动 formal-004；query_cli 接续只读逐章验证，不控制运行。

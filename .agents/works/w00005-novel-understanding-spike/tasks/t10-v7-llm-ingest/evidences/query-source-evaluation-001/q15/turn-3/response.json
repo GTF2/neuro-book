@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"苏天晴\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2557,
+    "outputTokens": 37,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 253
+  },
+  "responseId": "f806a213-a1ea-417c-a197-487fbf0b40a2",
+  "durationMs": 767,
+  "startedAt": "2026-09-11T08:22:40.046Z",
+  "raw": {
+    "id": "f806a213-a1ea-417c-a197-487fbf0b40a2",
+    "object": "chat.completion",
+    "created": 1789114960,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"苏天晴\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2557,
+      "completion_tokens": 37,
+      "total_tokens": 2594,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 253
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已查询的原文中确定随身摄像头的花费或功能：此前三次查询均未成功读取任何记录（查询6章未命中“随身摄像头”“神典石”“摄像头”，且source模式不可读取facts），当前无可用记录支撑回答。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2708,
+    "outputTokens": 79,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 276
+  },
+  "responseId": "0fe2c72b-9f04-49f4-af84-9d24e3c6ba1c",
+  "durationMs": 1110,
+  "startedAt": "2026-09-11T08:23:06.007Z",
+  "raw": {
+    "id": "0fe2c72b-9f04-49f4-af84-9d24e3c6ba1c",
+    "object": "chat.completion",
+    "created": 1789114986,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法从已查询的原文中确定随身摄像头的花费或功能：此前三次查询均未成功读取任何记录（查询6章未命中“随身摄像头”“神典石”“摄像头”，且source模式不可读取facts），当前无可用记录支撑回答。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2708,
+      "completion_tokens": 79,
+      "total_tokens": 2787,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 276
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

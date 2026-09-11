@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"部分作答：受限于查询预算，无法读取第5—6章原文。此前尝试的source查询均返回“Unknown world in this reading range”，因此无法从实际读到的记录中概括苏天晴的生活压力、任务转向或最终约战。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2680,
+    "outputTokens": 78,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 248
+  },
+  "responseId": "287c7092-3af4-4de9-b6f5-1ec5f7954bb7",
+  "durationMs": 1166,
+  "startedAt": "2026-09-11T08:23:21.953Z",
+  "raw": {
+    "id": "287c7092-3af4-4de9-b6f5-1ec5f7954bb7",
+    "object": "chat.completion",
+    "created": 1789115002,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"部分作答：受限于查询预算，无法读取第5—6章原文。此前尝试的source查询均返回“Unknown world in this reading range”，因此无法从实际读到的记录中概括苏天晴的生活压力、任务转向或最终约战。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2680,
+      "completion_tokens": 78,
+      "total_tokens": 2758,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 248
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

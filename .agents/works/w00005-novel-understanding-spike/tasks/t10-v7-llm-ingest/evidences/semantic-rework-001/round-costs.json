@@ -1,0 +1,846 @@
+{
+  "schema": "neurobook.semantic-rework-cost.v1",
+  "runs": [
+    {
+      "run": "formal-003",
+      "publishedChapters": 3,
+      "rows": [
+        {
+          "chapter": 1,
+          "round": 1,
+          "calls": 6,
+          "inputTokens": 98582,
+          "outputTokens": 164584,
+          "reasoningTokens": 108363,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.10791171599999999,
+          "actualMaximumUsd": 0.10791171599999999,
+          "offpeakMinimumUsd": 0.10791171599999999,
+          "offpeakMaximumUsd": 0.10791171599999999,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.019679532,
+              "artifact": "ch01/round-1/material/attempt-1"
+            },
+            {
+              "stage": "material",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.006375815999999999,
+              "artifact": "ch01/round-1/material/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.023830517999999995,
+              "artifact": "ch01/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.021506166,
+              "artifact": "ch01/round-1/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.014523366,
+              "artifact": "ch01/round-1/integration/attempt-3"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.021996318,
+              "artifact": "ch01/round-1/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 2,
+          "round": 1,
+          "calls": 4,
+          "inputTokens": 162391,
+          "outputTokens": 139255,
+          "reasoningTokens": 99481,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.09995248200000001,
+          "actualMaximumUsd": 0.09995248200000001,
+          "offpeakMinimumUsd": 0.09995248200000001,
+          "offpeakMaximumUsd": 0.09995248200000001,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.017507166,
+              "artifact": "ch02/round-1/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.026164218,
+              "artifact": "ch02/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.021892943999999998,
+              "artifact": "ch02/round-1/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.034388154,
+              "artifact": "ch02/round-1/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 2,
+          "round": 2,
+          "calls": 5,
+          "inputTokens": 220856,
+          "outputTokens": 116380,
+          "reasoningTokens": 64721,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.077949936,
+          "actualMaximumUsd": 0.077949936,
+          "offpeakMinimumUsd": 0.077949936,
+          "offpeakMaximumUsd": 0.077949936,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.01108005,
+              "artifact": "ch02/round-2/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.021498318,
+              "artifact": "ch02/round-2/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.01106001,
+              "artifact": "ch02/round-2/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.01702896,
+              "artifact": "ch02/round-2/integration/attempt-3"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.017282598,
+              "artifact": "ch02/round-2/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 3,
+          "round": 1,
+          "calls": 6,
+          "inputTokens": 225463,
+          "outputTokens": 172236,
+          "reasoningTokens": 115961,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.121769562,
+          "actualMaximumUsd": 0.121769562,
+          "offpeakMinimumUsd": 0.121769562,
+          "offpeakMaximumUsd": 0.121769562,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.019553718,
+              "artifact": "ch03/round-1/material/attempt-1"
+            },
+            {
+              "stage": "material",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.011850552,
+              "artifact": "ch03/round-1/material/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.02788047,
+              "artifact": "ch03/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.021354084,
+              "artifact": "ch03/round-1/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.014949984000000001,
+              "artifact": "ch03/round-1/integration/attempt-3"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.026180754,
+              "artifact": "ch03/round-1/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 3,
+          "round": 2,
+          "calls": 2,
+          "inputTokens": 111502,
+          "outputTokens": 57087,
+          "reasoningTokens": 38368,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.038351963999999995,
+          "actualMaximumUsd": 0.038351963999999995,
+          "offpeakMinimumUsd": 0.038351963999999995,
+          "offpeakMaximumUsd": 0.038351963999999995,
+          "stages": [
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.017746584,
+              "artifact": "ch03/round-2/integration/attempt-1"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.020605379999999996,
+              "artifact": "ch03/round-2/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 3,
+          "round": 3,
+          "calls": 5,
+          "inputTokens": 232087,
+          "outputTokens": 183556,
+          "reasoningTokens": 116696,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.11992137,
+          "actualMaximumUsd": 0.11992137,
+          "offpeakMinimumUsd": 0.11992137,
+          "offpeakMaximumUsd": 0.11992137,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.014004618,
+              "artifact": "ch03/round-3/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.034509894,
+              "artifact": "ch03/round-3/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.028341684000000002,
+              "artifact": "ch03/round-3/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.018634584,
+              "artifact": "ch03/round-3/integration/attempt-3"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.024430589999999995,
+              "artifact": "ch03/round-3/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 1,
+          "calls": 6,
+          "inputTokens": 210014,
+          "outputTokens": 179048,
+          "reasoningTokens": 119257,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.129315924,
+          "actualMaximumUsd": 0.129315924,
+          "offpeakMinimumUsd": 0.129315924,
+          "offpeakMaximumUsd": 0.129315924,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.027969821999999995,
+              "artifact": "ch04/round-1/material/attempt-1"
+            },
+            {
+              "stage": "material",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.015186606,
+              "artifact": "ch04/round-1/material/attempt-2"
+            },
+            {
+              "stage": "material",
+              "attempt": 3,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.016232106,
+              "artifact": "ch04/round-1/material/attempt-3"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.027212124,
+              "artifact": "ch04/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.014543262000000001,
+              "artifact": "ch04/round-1/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.028172004,
+              "artifact": "ch04/round-1/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 2,
+          "calls": 6,
+          "inputTokens": 300766,
+          "outputTokens": 228176,
+          "reasoningTokens": 176662,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.147323796,
+          "actualMaximumUsd": 0.147323796,
+          "offpeakMinimumUsd": 0.147323796,
+          "offpeakMaximumUsd": 0.147323796,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.013834655999999999,
+              "artifact": "ch04/round-2/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.039827904000000004,
+              "artifact": "ch04/round-2/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.018033377999999996,
+              "artifact": "ch04/round-2/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.021644412000000002,
+              "artifact": "ch04/round-2/integration/attempt-3"
+            },
+            {
+              "stage": "integration",
+              "attempt": 4,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.018215862,
+              "artifact": "ch04/round-2/integration/attempt-4"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.035767584000000005,
+              "artifact": "ch04/round-2/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 3,
+          "calls": 3,
+          "inputTokens": 183445,
+          "outputTokens": 96942,
+          "reasoningTokens": 60735,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.063686046,
+          "actualMaximumUsd": 0.063686046,
+          "offpeakMinimumUsd": 0.063686046,
+          "offpeakMaximumUsd": 0.063686046,
+          "stages": [
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.016840662,
+              "artifact": "ch04/round-3/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.016695762,
+              "artifact": "ch04/round-3/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.030149622,
+              "artifact": "ch04/round-3/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 4,
+          "calls": 4,
+          "inputTokens": 184140,
+          "outputTokens": 135392,
+          "reasoningTokens": 99453,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.088892424,
+          "actualMaximumUsd": 0.088892424,
+          "offpeakMinimumUsd": 0.088892424,
+          "offpeakMaximumUsd": 0.088892424,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.021794406,
+              "artifact": "ch04/round-4/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.020438154,
+              "artifact": "ch04/round-4/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.020109114,
+              "artifact": "ch04/round-4/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.02655075,
+              "artifact": "ch04/round-4/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 5,
+          "calls": 7,
+          "inputTokens": 389174,
+          "outputTokens": 220926,
+          "reasoningTokens": 131876,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.148915572,
+          "actualMaximumUsd": 0.148915572,
+          "offpeakMinimumUsd": 0.148915572,
+          "offpeakMaximumUsd": 0.148915572,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.019130106,
+              "artifact": "ch04/round-5/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.025909746,
+              "artifact": "ch04/round-5/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.025849182000000002,
+              "artifact": "ch04/round-5/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.015986232,
+              "artifact": "ch04/round-5/integration/attempt-3"
+            },
+            {
+              "stage": "integration",
+              "attempt": 4,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.017238731999999996,
+              "artifact": "ch04/round-5/integration/attempt-4"
+            },
+            {
+              "stage": "integration",
+              "attempt": 5,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.017142881999999998,
+              "artifact": "ch04/round-5/integration/attempt-5"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.027658692,
+              "artifact": "ch04/round-5/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 4,
+          "round": 6,
+          "calls": 4,
+          "inputTokens": 193980,
+          "outputTokens": 129723,
+          "reasoningTokens": 87820,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.08538648000000001,
+          "actualMaximumUsd": 0.08538648000000001,
+          "offpeakMinimumUsd": 0.08538648000000001,
+          "offpeakMaximumUsd": 0.08538648000000001,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.022796706000000003,
+              "artifact": "ch04/round-6/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.025735992000000003,
+              "artifact": "ch04/round-6/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.016600566,
+              "artifact": "ch04/round-6/integration/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 3,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.020253215999999997,
+              "artifact": "ch04/round-6/integration/attempt-3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "formal-004",
+      "publishedChapters": 1,
+      "rows": [
+        {
+          "chapter": 1,
+          "round": 1,
+          "calls": 3,
+          "inputTokens": 35043,
+          "outputTokens": 98858,
+          "reasoningTokens": 75879,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.125529828,
+          "actualMaximumUsd": 0.125529828,
+          "offpeakMinimumUsd": 0.062764914,
+          "offpeakMaximumUsd": 0.062764914,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.027302964,
+              "artifact": "ch01/round-1/material/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.061711836000000006,
+              "artifact": "ch01/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.036515028,
+              "artifact": "ch01/round-1/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 1,
+          "round": 2,
+          "calls": 2,
+          "inputTokens": 45718,
+          "outputTokens": 57924,
+          "reasoningTokens": 38181,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.07611175199999999,
+          "actualMaximumUsd": 0.07611175199999999,
+          "offpeakMinimumUsd": 0.038055875999999995,
+          "offpeakMaximumUsd": 0.038055875999999995,
+          "stages": [
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.030347376,
+              "artifact": "ch01/round-2/integration/attempt-1"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.045764375999999996,
+              "artifact": "ch01/round-2/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 1,
+          "round": 3,
+          "calls": 5,
+          "inputTokens": 70975,
+          "outputTokens": 116584,
+          "reasoningTokens": 93882,
+          "unknownReasoningCalls": 0,
+          "actualMinimumUsd": 0.154532436,
+          "actualMaximumUsd": 0.154532436,
+          "offpeakMinimumUsd": 0.077266218,
+          "offpeakMaximumUsd": 0.077266218,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.035182032,
+              "artifact": "ch01/round-3/material/attempt-1"
+            },
+            {
+              "stage": "material",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.0079296,
+              "artifact": "ch01/round-3/material/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.062055936,
+              "artifact": "ch01/round-3/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.023103072,
+              "artifact": "ch01/round-3/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "accepted",
+              "classification": "production-accepted",
+              "usd": 0.026261795999999997,
+              "artifact": "ch01/round-3/review/attempt-1"
+            }
+          ]
+        },
+        {
+          "chapter": 2,
+          "round": 1,
+          "calls": 5,
+          "inputTokens": 120071,
+          "outputTokens": 77812,
+          "reasoningTokens": 55151,
+          "unknownReasoningCalls": 1,
+          "actualMinimumUsd": 0.125895924,
+          "actualMaximumUsd": null,
+          "offpeakMinimumUsd": 0.062947962,
+          "offpeakMaximumUsd": null,
+          "stages": [
+            {
+              "stage": "material",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.034254744,
+              "artifact": "ch02/round-1/material/attempt-1"
+            },
+            {
+              "stage": "material",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.004683479999999999,
+              "artifact": "ch02/round-1/material/attempt-2"
+            },
+            {
+              "stage": "integration",
+              "attempt": 1,
+              "status": "failed",
+              "classification": "production-repair",
+              "usd": 0.059778048,
+              "artifact": "ch02/round-1/integration/attempt-1"
+            },
+            {
+              "stage": "integration",
+              "attempt": 2,
+              "status": "accepted",
+              "classification": "production-repair",
+              "usd": 0.027179652000000002,
+              "artifact": "ch02/round-1/integration/attempt-2"
+            },
+            {
+              "stage": "review",
+              "attempt": 1,
+              "status": "unknown-provider-outcome",
+              "classification": "production-repair",
+              "usd": null,
+              "artifact": "ch02/round-1/review/attempt-1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Rows count actual saved request attempts; reused material has no additional provider request",
+    "Unknown provider outcomes retain an unknown upper bound",
+    "Costs include structural retries within each semantic round; rows cannot attribute price to a single review opinion"
+  ]
+}
