@@ -180,7 +180,8 @@ export function defaultRepoRoot(moduleUrl: string): string {
 }
 
 export function git(repoRoot: string, args: readonly string[]): string {
-    return execFileSync("git", [...args], {cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"]}).trimEnd();
+    // Tracked and untracked audit paths exceed Node's default 1 MiB output buffer.
+    return execFileSync("git", [...args], {cwd: repoRoot, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], maxBuffer: 32 * 1024 * 1024}).trimEnd();
 }
 
 export function gitRevision(repoRoot: string): string {
