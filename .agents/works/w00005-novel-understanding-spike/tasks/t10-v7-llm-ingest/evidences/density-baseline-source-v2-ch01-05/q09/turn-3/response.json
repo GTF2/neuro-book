@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴所在蓉城目前活跃的魔法少女代号是【风信子】。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":11},{\"chapter\":3,\"paragraph\":16}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2128,
+    "outputTokens": 63,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 1360
+  },
+  "responseId": "a5fc2038-5154-45e8-bd57-f45505c2fc99",
+  "durationMs": 600,
+  "startedAt": "2026-09-11T09:18:06.844Z",
+  "raw": {
+    "id": "a5fc2038-5154-45e8-bd57-f45505c2fc99",
+    "object": "chat.completion",
+    "created": 1789118287,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴所在蓉城目前活跃的魔法少女代号是【风信子】。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":11},{\"chapter\":3,\"paragraph\":16}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2128,
+      "completion_tokens": 63,
+      "total_tokens": 2191,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 1360
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

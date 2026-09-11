@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"找茬魔法少女\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":82,\"to\":84},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"奖励\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4873,
+    "outputTokens": 93,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2441
+  },
+  "responseId": "5912d24e-7dbf-4a97-917e-cba4c1aa84ef",
+  "durationMs": 834,
+  "startedAt": "2026-09-11T09:17:44.721Z",
+  "raw": {
+    "id": "5912d24e-7dbf-4a97-917e-cba4c1aa84ef",
+    "object": "chat.completion",
+    "created": 1789118265,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"找茬魔法少女\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":82,\"to\":84},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"query\":\"奖励\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4873,
+      "completion_tokens": 93,
+      "total_tokens": 4966,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2441
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

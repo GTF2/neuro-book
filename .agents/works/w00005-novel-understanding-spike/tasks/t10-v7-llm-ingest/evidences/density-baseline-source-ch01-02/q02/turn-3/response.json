@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"黑色古书自称“吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。”它把苏天晴称为“苏天晴小姐”，并称“那个人就是你”，即认定苏天晴是它要找的适格者／“那个人”。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":1,\"paragraph\":29},{\"chapter\":1,\"paragraph\":30}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5028,
+    "outputTokens": 102,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2596
+  },
+  "responseId": "77c44ec4-7c5e-4cef-adc2-077bd3a46035",
+  "durationMs": 1416,
+  "startedAt": "2026-09-11T08:44:13.773Z",
+  "raw": {
+    "id": "77c44ec4-7c5e-4cef-adc2-077bd3a46035",
+    "object": "chat.completion",
+    "created": 1789116254,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"黑色古书自称“吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。”它把苏天晴称为“苏天晴小姐”，并称“那个人就是你”，即认定苏天晴是它要找的适格者／“那个人”。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":1,\"paragraph\":29},{\"chapter\":1,\"paragraph\":30}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5028,
+      "completion_tokens": 102,
+      "total_tokens": 5130,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2596
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

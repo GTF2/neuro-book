@@ -1,0 +1,109 @@
+{
+  "replacements": [
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F22b",
+        "at": 48,
+        "text": "苏天晴怀疑秘典给的强化药是假的。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "秘典给的强化药该不会是假的吧"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": "known:c03:T_tonight",
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D19"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D19记录苏天晴怀疑强化药为假；秘典与强化药在本命题中仅出现于文本内容，不构成实体论元，故不列入身份解析。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F_bailing_talent_speech",
+        "at": 75,
+        "text": "白灵说风信子的魔法少女天赋是近战压制，能在肉搏中跟她不分上下的怪人相当少见。",
+        "predicate": "P_speaks_to",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "E_bailing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "自己的魔法少女天赋是近战压制，能在肉搏中跟自己不分上下的怪人相当少见"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "E_bailing",
+          "opaque": true
+        },
+        "time": "known:c03:T_tonight",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_bailing",
+          "I_fengxinzi",
+          "I_heilang"
+        ],
+        "proof": {
+          "premises": [
+            "D26"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D26（第71-75段）包含白灵关于风信子近战压制天赋与稀有肉搏对手的发言，故本条完整可用段为第75段。"
+        }
+      }
+    }
+  ]
+}

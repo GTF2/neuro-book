@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"from\":25,\"to\":40,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"近战压制\",\"kind\":\"fact\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"肉搏\",\"kind\":\"fact\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3418,
+    "outputTokens": 94,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 986
+  },
+  "responseId": "7d188eb3-6b82-4c9a-a4a5-bf81fb59ec2c",
+  "durationMs": 1489,
+  "startedAt": "2026-09-11T09:18:09.814Z",
+  "raw": {
+    "id": "7d188eb3-6b82-4c9a-a4a5-bf81fb59ec2c",
+    "object": "chat.completion",
+    "created": 1789118290,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"from\":25,\"to\":40,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"近战压制\",\"kind\":\"fact\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"肉搏\",\"kind\":\"fact\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3418,
+      "completion_tokens": 94,
+      "total_tokens": 3512,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 986
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

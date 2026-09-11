@@ -1,0 +1,1028 @@
+{
+  "answer": {
+    "text": "未能找到第六章中风信子看到视频时关于视频发布时间、播放量或当前时间的记录。已查询“风信子”“视频”“播放”等关键词，仅得到风信子在第三章、第四章的提及记录及第六章“视频网站账号”的提及，没有涉及视频发布时间、播放量和当前时间的可见事实。",
+    "status": "not-found",
+    "recordIds": [
+      "c06:rAccount:mention:1"
+    ],
+    "sources": [
+      {
+        "chapter": 6,
+        "paragraph": 23
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "query": "风信子",
+          "kind": "mention",
+          "chapter": 6,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "query": "视频",
+          "kind": "mention",
+          "chapter": 6,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "query": "播放量",
+          "kind": "mention",
+          "chapter": 6,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "search",
+          "query": "风信子",
+          "kind": "mention",
+          "at": {
+            "chapter": 6,
+            "paragraph": 110
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "query": "视频",
+          "kind": "mention",
+          "at": {
+            "chapter": 6,
+            "paragraph": 110
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "query": "播放",
+          "kind": "mention",
+          "at": {
+            "chapter": 6,
+            "paragraph": 110
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:2",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 2,
+                    "end": 5
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 2,
+                    "end": 5
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 2,
+                      "end": 5
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:4",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 31
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 31,
+                    "start": 5,
+                    "end": 8
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 31,
+                    "start": 5,
+                    "end": 8
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 31,
+                      "start": 5,
+                      "end": 8
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:5",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 33
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 33,
+                    "start": 18,
+                    "end": 21
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 33,
+                    "start": 18,
+                    "end": 21
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 33,
+                      "start": 18,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:6",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 37
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 37,
+                    "start": 31,
+                    "end": 34
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 37,
+                    "start": 31,
+                    "end": 34
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 37,
+                      "start": 31,
+                      "end": 34
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:7",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 44,
+                    "start": 68,
+                    "end": 71
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 44,
+                    "start": 68,
+                    "end": 71
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 44,
+                      "start": 68,
+                      "end": 71
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:8",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 84,
+                    "start": 33,
+                    "end": 36
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 84,
+                    "start": 33,
+                    "end": 36
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 84,
+                      "start": 33,
+                      "end": 36
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:9",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 86
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 86,
+                    "start": 5,
+                    "end": 8
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 86,
+                    "start": 5,
+                    "end": 8
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 86,
+                      "start": 5,
+                      "end": 8
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:FengXinZi:mention:1",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 2
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 2,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c04:FengXinZi",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 2,
+                    "start": 3,
+                    "end": 6
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 4,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:FengXinZi:mention:3",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 4,
+                    "start": 4,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c04:FengXinZi",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 4,
+                    "start": 4,
+                    "end": 7
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 4,
+                      "end": 7
+                    },
+                    "chapter": 4,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:FengXinZi:mention:6",
+                "revision": 6,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 14
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 14,
+                    "start": 11,
+                    "end": 14
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c04:FengXinZi",
+                    "revision": 6
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 14,
+                    "start": 11,
+                    "end": 14
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 14,
+                      "start": 11,
+                      "end": 14
+                    },
+                    "chapter": 4,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 34,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjQ2ZDI0MDQ1OTBhZDIxODE4YTIxYjE4ZGYzOTJjYWZlMGRkNzY5YWQ4MTM1MWQyOTE3MTA5YTllZTk1YWQzNWIiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6ImJlNWFiOWM3NzBjZGMzNGY5NzE5ZmI0NTM2MTdjZDIzZjE4ZGE5MGRiMjEwZDgxYTExYzZkYjg4YzEyYmJkYWEifQ"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c06:rAccount:mention:1",
+                "revision": 6,
+                "label": "视频网站账号",
+                "availableAt": {
+                  "chapter": 6,
+                  "paragraph": 23
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c06",
+                    "sourceRevision": 1,
+                    "paragraph": 23,
+                    "start": 25,
+                    "end": 31
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c06:rAccount",
+                    "revision": 6
+                  },
+                  "text": "视频网站账号",
+                  "span": {
+                    "sourceId": "source-c06",
+                    "sourceRevision": 1,
+                    "paragraph": 23,
+                    "start": 25,
+                    "end": 31
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c06:rAccount",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c06",
+                      "sourceRevision": 1,
+                      "paragraph": 23,
+                      "start": 25,
+                      "end": 31
+                    },
+                    "chapter": 6,
+                    "text": "视频网站账号"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

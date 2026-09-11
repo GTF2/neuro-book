@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴对黑狼怪人使用了【怪人强化药A】，花费50神典石。\",\"status\":\"answered\",\"recordIds\":[\"c04:E_black_wolf\"],\"sources\":[{\"chapter\":4,\"paragraph\":50}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4991,
+    "outputTokens": 62,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2559
+  },
+  "responseId": "231c232f-bb1b-4d22-b1f8-6a4fd7e4602d",
+  "durationMs": 1015,
+  "startedAt": "2026-09-11T09:10:10.344Z",
+  "raw": {
+    "id": "231c232f-bb1b-4d22-b1f8-6a4fd7e4602d",
+    "object": "chat.completion",
+    "created": 1789117810,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴对黑狼怪人使用了【怪人强化药A】，花费50神典石。\",\"status\":\"answered\",\"recordIds\":[\"c04:E_black_wolf\"],\"sources\":[{\"chapter\":4,\"paragraph\":50}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4991,
+      "completion_tokens": 62,
+      "total_tokens": 5053,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2559
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

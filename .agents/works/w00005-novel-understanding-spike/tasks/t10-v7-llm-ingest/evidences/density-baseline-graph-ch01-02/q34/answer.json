@@ -1,0 +1,502 @@
+{
+  "answer": {
+    "text": "第1—2章苏天晴的主要处境是：她原有身体与身份不明，阅读到的“苏天晴”指称入口同时连着一个名为“狐狐/金毛狐狐”的人物实体和一个第1章第40段出现的“原来的主人”未解析实体；到第2章，狐狐实体新增了“金毛狐狐”“狐狐”等称呼。已发生的关键变化是称呼/指称链的变化（第1章第5段为“苏天晴”，第2章第6段为“金毛狐狐”，第2章第37段为“狐狐”），但关于她是否死亡、重生机制、原主身份与意识、契约、任务等关键事实均未明确；现有facts查询没有返回相关事实记录。因此只能作出部分概括。",
+    "status": "partial",
+    "recordIds": [
+      "c01:E_su",
+      "c01:E_original_owner"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 5
+      },
+      {
+        "chapter": 1,
+        "paragraph": 40
+      },
+      {
+        "chapter": 2,
+        "paragraph": 6
+      },
+      {
+        "chapter": 2,
+        "paragraph": 37
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "苏天晴"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "entity": "苏天晴"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "chapter": 1,
+          "query": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "苏天晴"
+        },
+        {
+          "command": "summaries",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 2,
+                "label": "狐狐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_original_owner",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:ORIGINAL:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_original_owner",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

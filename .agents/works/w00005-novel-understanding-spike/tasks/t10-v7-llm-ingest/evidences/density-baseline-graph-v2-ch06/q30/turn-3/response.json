@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"未能找到第六章中风信子看到视频时关于视频发布时间、播放量或当前时间的记录。已查询“风信子”“视频”“播放”等关键词，仅得到风信子在第三章、第四章的提及记录及第六章“视频网站账号”的提及，没有涉及视频发布时间、播放量和当前时间的可见事实。\",\"status\":\"not-found\",\"recordIds\":[\"c06:rAccount:mention:1\"],\"sources\":[{\"chapter\":6,\"paragraph\":23}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 6126,
+    "outputTokens": 110,
+    "cacheHitTokens": 2048,
+    "cacheMissTokens": 4078
+  },
+  "responseId": "0230b2b4-6dcf-4ced-94a7-674671093d12",
+  "durationMs": 1193,
+  "startedAt": "2026-09-11T09:31:12.971Z",
+  "raw": {
+    "id": "0230b2b4-6dcf-4ced-94a7-674671093d12",
+    "object": "chat.completion",
+    "created": 1789119073,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"未能找到第六章中风信子看到视频时关于视频发布时间、播放量或当前时间的记录。已查询“风信子”“视频”“播放”等关键词，仅得到风信子在第三章、第四章的提及记录及第六章“视频网站账号”的提及，没有涉及视频发布时间、播放量和当前时间的可见事实。\",\"status\":\"not-found\",\"recordIds\":[\"c06:rAccount:mention:1\"],\"sources\":[{\"chapter\":6,\"paragraph\":23}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 6126,
+      "completion_tokens": 110,
+      "total_tokens": 6236,
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      },
+      "prompt_cache_hit_tokens": 2048,
+      "prompt_cache_miss_tokens": 4078
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

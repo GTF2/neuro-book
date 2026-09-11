@@ -1,0 +1,52 @@
+{
+  "replacements": [
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_announcement",
+        "at": 30,
+        "title": "翌日早晨：公告、回忆与尾巴的教训",
+        "summary": "翌日早晨八点闹钟吵醒苏天晴，她翻身压到自己的尾巴；洗漱时打开视频app查看英雄协会栏目，看到公告称昨晚绿心公园怪人袭击中风信子中陷阱、直到凌晨三点方被解救，她由此回忆起自己昨天在绿心公园埋伏风信子、用强化怪人设陷阱并玩到半夜才回家，并推算风信子被吊七小时。",
+        "scale": "event",
+        "participants": [
+          "known:c01:E_su"
+        ],
+        "materials": [
+          "d1",
+          "d2",
+          "d3",
+          "d4",
+          "d5",
+          "d6",
+          "d7",
+          "d8",
+          "d11",
+          "d12"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "known:c04:EP_battle",
+            "evidence": [
+              "d1",
+              "d8"
+            ]
+          }
+        ],
+        "time": "T_morning",
+        "proof": {
+          "premises": [
+            "d1",
+            "d6",
+            "d11",
+            "d12"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "多个披露共同构成翌日早晨的起床、看公告、回忆与推算被吊七小时的片段；事件完整记录至第30段。"
+        }
+      }
+    }
+  ]
+}

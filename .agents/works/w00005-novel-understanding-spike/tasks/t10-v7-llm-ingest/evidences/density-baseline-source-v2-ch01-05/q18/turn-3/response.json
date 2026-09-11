@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":84,\"to\":84,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":1}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 975,
+    "outputTokens": 38,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 207
+  },
+  "responseId": "c8a1c946-f44b-401b-bee3-0cb76c9be65b",
+  "durationMs": 902,
+  "startedAt": "2026-09-11T09:18:50.295Z",
+  "raw": {
+    "id": "c8a1c946-f44b-401b-bee3-0cb76c9be65b",
+    "object": "chat.completion",
+    "created": 1789118330,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":84,\"to\":84,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":1}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 975,
+      "completion_tokens": 38,
+      "total_tokens": 1013,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 207
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

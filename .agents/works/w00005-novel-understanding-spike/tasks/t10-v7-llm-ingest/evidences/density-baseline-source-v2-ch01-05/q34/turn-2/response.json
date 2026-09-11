@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"from\":40,\"to\":80},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":64,\"to\":87},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":34,\"to\":63}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3793,
+    "outputTokens": 96,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 3025
+  },
+  "responseId": "f7b28069-4506-4cf3-a167-8f8cd43f852d",
+  "durationMs": 1706,
+  "startedAt": "2026-09-11T09:19:36.463Z",
+  "raw": {
+    "id": "f7b28069-4506-4cf3-a167-8f8cd43f852d",
+    "object": "chat.completion",
+    "created": 1789118377,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"from\":40,\"to\":80},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":64,\"to\":87},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":34,\"to\":63}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3793,
+      "completion_tokens": 96,
+      "total_tokens": 3889,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 3025
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

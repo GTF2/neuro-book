@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"category\":\"person\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"笔名\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"书名\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2454,
+    "outputTokens": 115,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 278
+  },
+  "responseId": "db8676b5-3073-4221-bb5e-c74a9bfd77c4",
+  "durationMs": 1429,
+  "startedAt": "2026-09-11T09:19:26.564Z",
+  "raw": {
+    "id": "db8676b5-3073-4221-bb5e-c74a9bfd77c4",
+    "object": "chat.completion",
+    "created": 1789118367,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"category\":\"person\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"笔名\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":76},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"书名\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2454,
+      "completion_tokens": 115,
+      "total_tokens": 2569,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 278
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

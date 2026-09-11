@@ -1,0 +1,97 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12"
+  ],
+  "mode": "graph",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 3,
+      "sha256": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q09",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": "将原文已明确出现的活跃魔法少女代号“风信子”误判为不存在/未找到，构成否定反转。",
+      "reason": "第3章第16段原文已给出“【风信子】……”为苏天晴念出的代号，且第3章第11段说明蓉城有一名活跃魔法少女；回答却称无任何代号记录。其引用仅涉及魔法少女类别和蓉城医学院，未引用第3章第16段，不能支持“未找到代号”的结论。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q10",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 33
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": "将第3章第33段明确存在的秘典预测误判为未找到，构成否定反转",
+      "reason": "参考原文第3章第33段写明‘今晚蓉城市绿心公园将出现怪人，预测风信子将前往迎击’，回答却称未找到任何记录，且未引用该段原文。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q11",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 27
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "原文第3章第25–27段明确给出【获得200名关注者】、【成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去吧。】及【奖励：500神典石】；模型只引用第24段标题并称未找到，未回答要求与奖励，引用不支持该答案。",
+      "queries": 5,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q12",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 32
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "给出的原文证据显示该句来自第3章31-32段的秘典情报页条目（【魔法少女风信子】/【新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练】）。回答正确否认它是风信子本人自述，但错误地称完整命题在已读记录中无来源，并把最接近来源归为苏天晴第17段内心疑问，漏掉了关键秘典条目。",
+      "queries": 6,
+      "sourceQueries": 0
+    }
+  ],
+  "failures": [
+    {
+      "id": "q08",
+      "error": "Query model exceeded its fixed query budget"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

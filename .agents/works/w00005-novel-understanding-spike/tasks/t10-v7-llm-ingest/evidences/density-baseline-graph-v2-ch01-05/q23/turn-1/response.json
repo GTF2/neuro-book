@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"query\":\"英雄协会\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"entities\",\"query\":\"风信子\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"魔法少女\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2210,
+    "outputTokens": 76,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 290
+  },
+  "responseId": "8b1b864b-c6ff-429b-9d16-02dc48401ebf",
+  "durationMs": 1044,
+  "startedAt": "2026-09-11T09:20:20.947Z",
+  "raw": {
+    "id": "8b1b864b-c6ff-429b-9d16-02dc48401ebf",
+    "object": "chat.completion",
+    "created": 1789118421,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"query\":\"英雄协会\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"entities\",\"query\":\"风信子\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"魔法少女\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2210,
+      "completion_tokens": 76,
+      "total_tokens": 2286,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 290
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

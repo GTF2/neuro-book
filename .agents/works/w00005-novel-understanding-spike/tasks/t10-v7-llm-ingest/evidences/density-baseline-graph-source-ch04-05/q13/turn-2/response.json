@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"截至阅读进度，已读记录显示风信子的真名为“南小风”（第4章第4段披露），但尚未检索到关于其年龄和就读学校的记录。\",\"status\":\"partial\",\"recordIds\":[\"c04:F2\",\"c04:D2\",\"c04:B2\"],\"sources\":[{\"chapter\":4,\"paragraph\":4}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 6778,
+    "outputTokens": 85,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 4346
+  },
+  "responseId": "d321ef98-3799-40c3-8a50-29f8b6879f71",
+  "durationMs": 1532,
+  "startedAt": "2026-09-11T09:10:02.558Z",
+  "raw": {
+    "id": "d321ef98-3799-40c3-8a50-29f8b6879f71",
+    "object": "chat.completion",
+    "created": 1789117803,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"截至阅读进度，已读记录显示风信子的真名为“南小风”（第4章第4段披露），但尚未检索到关于其年龄和就读学校的记录。\",\"status\":\"partial\",\"recordIds\":[\"c04:F2\",\"c04:D2\",\"c04:B2\"],\"sources\":[{\"chapter\":4,\"paragraph\":4}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 6778,
+      "completion_tokens": 85,
+      "total_tokens": 6863,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 4346
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"未找到任何记录表明“秘典情报页”对当晚怪人袭击地点或风信子行动做过预测。已查询秘典实体、情报页实体、风信子实体、秘典相关事实以及“袭击”关键事实，均无此类预测内容；目前只能判定为not-found。\",\"status\":\"not-found\",\"recordIds\":[\"c01:E_tome\",\"c03:E_fengxinzi\"],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 11758,
+    "outputTokens": 103,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 9454
+  },
+  "responseId": "d7c88cbb-4a3a-4f68-9680-fc767f86b52b",
+  "durationMs": 1112,
+  "startedAt": "2026-09-11T08:55:53.705Z",
+  "raw": {
+    "id": "d7c88cbb-4a3a-4f68-9680-fc767f86b52b",
+    "object": "chat.completion",
+    "created": 1789116954,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"未找到任何记录表明“秘典情报页”对当晚怪人袭击地点或风信子行动做过预测。已查询秘典实体、情报页实体、风信子实体、秘典相关事实以及“袭击”关键事实，均无此类预测内容；目前只能判定为not-found。\",\"status\":\"not-found\",\"recordIds\":[\"c01:E_tome\",\"c03:E_fengxinzi\"],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 11758,
+      "completion_tokens": 103,
+      "total_tokens": 11861,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 9454
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

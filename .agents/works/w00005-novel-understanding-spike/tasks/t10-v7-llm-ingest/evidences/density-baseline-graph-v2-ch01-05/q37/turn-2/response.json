@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c01:E_tome\",\"about\":\"c01:E_su\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"墨丘利秘典\",\"about\":\"苏天晴\",\"mode\":\"known\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c01:E_tome\",\"target\":\"c01:E_su\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3505,
+    "outputTokens": 113,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 1329
+  },
+  "responseId": "699157c2-aafc-478c-822c-c705b1d2a38a",
+  "durationMs": 1236,
+  "startedAt": "2026-09-11T09:21:12.937Z",
+  "raw": {
+    "id": "699157c2-aafc-478c-822c-c705b1d2a38a",
+    "object": "chat.completion",
+    "created": 1789118473,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c01:E_tome\",\"about\":\"c01:E_su\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"墨丘利秘典\",\"about\":\"苏天晴\",\"mode\":\"known\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c01:E_tome\",\"target\":\"c01:E_su\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3505,
+      "completion_tokens": 113,
+      "total_tokens": 3618,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 1329
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

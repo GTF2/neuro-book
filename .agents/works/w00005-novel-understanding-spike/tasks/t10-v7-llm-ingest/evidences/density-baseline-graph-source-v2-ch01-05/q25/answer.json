@@ -1,0 +1,933 @@
+{
+  "answer": {
+    "text": "苏天晴重新注册写书时用的笔名是“十万水星”，书名沿用原来的《深渊领主是我萝莉老婆》。",
+    "status": "answered",
+    "recordIds": [
+      "c01:E_su",
+      "argument:c05:I_su"
+    ],
+    "sources": [
+      {
+        "chapter": 5,
+        "paragraph": 75
+      },
+      {
+        "chapter": 5,
+        "paragraph": 76
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴",
+          "category": "person"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "笔名"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "书名"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 5,
+                "label": "十万水星",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "屑狐狐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 44
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:2",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金狐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 106
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:13",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小狐狸",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 118
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:16",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "反派狐狐",
+                      "availableAt": {
+                        "chapter": 5,
+                        "paragraph": 12
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c05:r_su:mention:5",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c05:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "十万水星",
+                      "availableAt": {
+                        "chapter": 5,
+                        "paragraph": 75
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c05:r_su:mention:22",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c05:I_su",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:2",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:13",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:16",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:r_su:mention:5",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:r_su:mention:22",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c05:I_su",
+                "revision": 5,
+                "label": "依据：局部指称归属：苏天晴",
+                "availableAt": {
+                  "chapter": 5,
+                  "paragraph": 3
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c05:r_su:mention:1",
+                    "revision": 5
+                  },
+                  {
+                    "id": "c05:d1",
+                    "revision": 5
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 5
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c05:I_su",
+                    "revision": 5
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c05:r_su:mention:1",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c05:d1",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c04:I_su",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "苏天晴/狐狐/金毛狐狐/反派狐狐/本狐均指第1-4章延续的苏天晴意识所在的狐女身体主体；「十万水星」是她本章为写小说注册的笔名。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 2,
+                      "end": 5
+                    },
+                    {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 0,
+                      "end": 5
+                    },
+                    {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 15
+                    },
+                    {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 41,
+                      "start": 0,
+                      "end": 27
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c05:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:r_su:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:d1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c05:r_su:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:d1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 2,
+                      "end": 5
+                    },
+                    "chapter": 5,
+                    "text": "苏天晴"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 0,
+                      "end": 5
+                    },
+                    "chapter": 5,
+                    "text": "翌日早晨。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 15
+                    },
+                    "chapter": 5,
+                    "text": "吵醒苏天晴的是早上八点的闹钟。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 41,
+                      "start": 0,
+                      "end": 27
+                    },
+                    "chapter": 4,
+                    "text": "苏天晴认真打量起正与黑狼怪人战作一团的天蓝色魔法少女。"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "十万水星"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "书名"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 5,
+            "paragraph": 76
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "query": "笔名"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 75,
+              "text": "笔名……十万水星。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 76,
+              "text": "书名就用原来的吧，《深渊领主是我萝莉老婆》。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 75,
+              "text": "笔名……十万水星。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 76
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 3,
+  "exhausted": true
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"已读到明确规则：每个魔法少女都会被英雄协会记录在册，根据其战斗风格或本人要求给予对应的识别代号。因此“魔法少女代号”是英雄协会登记时按战斗风格或本人意愿授予的识别名。至于“风信子”这个代号具体怎么来的（是本人要求还是按战斗风格命名），当前已读原文没有说明，无法确定。\",\"status\":\"partial\",\"recordIds\":[\"c03:E_hero_association\",\"c03:E_fengxinzi\"],\"sources\":[{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":37},{\"chapter\":5,\"paragraph\":38},{\"chapter\":3,\"paragraph\":10},{\"chapter\":3,\"paragraph\":15}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4909,
+    "outputTokens": 160,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 2605
+  },
+  "responseId": "88e5172f-e4b3-4b57-99b7-cc092084ffdb",
+  "durationMs": 1478,
+  "startedAt": "2026-09-11T09:11:02.966Z",
+  "raw": {
+    "id": "88e5172f-e4b3-4b57-99b7-cc092084ffdb",
+    "object": "chat.completion",
+    "created": 1789117863,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"已读到明确规则：每个魔法少女都会被英雄协会记录在册，根据其战斗风格或本人要求给予对应的识别代号。因此“魔法少女代号”是英雄协会登记时按战斗风格或本人意愿授予的识别名。至于“风信子”这个代号具体怎么来的（是本人要求还是按战斗风格命名），当前已读原文没有说明，无法确定。\",\"status\":\"partial\",\"recordIds\":[\"c03:E_hero_association\",\"c03:E_fengxinzi\"],\"sources\":[{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":37},{\"chapter\":5,\"paragraph\":38},{\"chapter\":3,\"paragraph\":10},{\"chapter\":3,\"paragraph\":15}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4909,
+      "completion_tokens": 160,
+      "total_tokens": 5069,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 2605
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

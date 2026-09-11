@@ -1,0 +1,34 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 1,
+  "status": "accepted",
+  "startedAt": "2026-09-11T08:22:28.874Z",
+  "model": "deepseek-flash",
+  "durationMs": 71012,
+  "usage": {
+    "inputTokens": 19904,
+    "outputTokens": 19675,
+    "cacheHitTokens": 10752,
+    "cacheMissTokens": 9152
+  },
+  "cost": {
+    "estimatedUsd": 0.026420112000000003,
+    "minimumUsd": 0.026420112000000003,
+    "maximumUsd": 0.026420112000000003,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

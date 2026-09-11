@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"第二章中，秘典给苏天晴的每日任务1名称为「找茬魔法少女」（第2章第82段）；其奖励为「100神典石」（第2章第84段）。任务的具体内容描述在已读至第2章第84段的原文中未能查到，只能确定任务标题与奖励。\",\"status\":\"partial\",\"recordIds\":[\"source-c02\"],\"sources\":[{\"chapter\":2,\"paragraph\":82},{\"chapter\":2,\"paragraph\":84}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5441,
+    "outputTokens": 114,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 3137
+  },
+  "responseId": "c68a31d5-c4f8-4dc9-a6cd-198529fa17ce",
+  "durationMs": 1037,
+  "startedAt": "2026-09-11T08:44:38.325Z",
+  "raw": {
+    "id": "c68a31d5-c4f8-4dc9-a6cd-198529fa17ce",
+    "object": "chat.completion",
+    "created": 1789116278,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"第二章中，秘典给苏天晴的每日任务1名称为「找茬魔法少女」（第2章第82段）；其奖励为「100神典石」（第2章第84段）。任务的具体内容描述在已读至第2章第84段的原文中未能查到，只能确定任务标题与奖励。\",\"status\":\"partial\",\"recordIds\":[\"source-c02\"],\"sources\":[{\"chapter\":2,\"paragraph\":82},{\"chapter\":2,\"paragraph\":84}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5441,
+      "completion_tokens": 114,
+      "total_tokens": 5555,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 3137
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

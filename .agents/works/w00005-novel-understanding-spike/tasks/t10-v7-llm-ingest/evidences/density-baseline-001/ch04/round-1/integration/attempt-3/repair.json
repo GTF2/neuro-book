@@ -1,0 +1,187 @@
+{
+  "replacements": [
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_fengxinzi",
+        "at": 2,
+        "referent": "FengXinZi",
+        "entity": "known:c03:E_fengxinzi",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第2段风信子自称“我是风信子”，结合第3章同代号魔法少女风信子的旧身份，判定为同一人物。",
+        "evidence": [
+          "D1",
+          "known:c03:I_R3_fengxinzi"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_heilang",
+        "at": 29,
+        "referent": "HeiLang",
+        "entity": "E_black_wolf",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第27-29段废墟中趴伏并转头看向南小风的巨大黑色狼形怪物，即本章持续被指称的黑狼怪人个体。",
+        "evidence": [
+          "D12"
+        ]
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F40",
+        "at": 110,
+        "text": "南小风质问苏天晴是什么人，指责她使用下流手段，要求堂堂正正对决。",
+        "predicate": "P_speaks_to",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "你到底是什么人！用这种、这种下流的手段、有本事就来跟我堂堂正正地对决啊！"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c03:E_fengxinzi",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi",
+          "I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D36"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D36（至第110段才完整可用）记录风信子被抓住后的质问与要求堂堂正正对决。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_su_prepare",
+        "at": 129,
+        "title": "苏天晴准备怪人强化药A",
+        "summary": "苏天晴下午研究墨丘利秘典，获得200神典石启动资金，花50神典石买下怪人强化药A并灌给黑狼怪人，该药在倒下后发动，成为绿心公园战斗第二阶段的底牌。",
+        "scale": "event",
+        "participants": [
+          "known:c01:E_su",
+          "known:c01:E_tome",
+          "E_drug",
+          "E_black_wolf"
+        ],
+        "materials": [
+          "D20"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "enables",
+            "target": "EP_battle",
+            "evidence": [
+              "D20",
+              "D33"
+            ]
+          }
+        ],
+        "time": "T_afternoon",
+        "proof": {
+          "premises": [
+            "D20",
+            "D33"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "D20记录购买与灌药，D33揭示该药赋予黑狼倒下后发动的能力，故使能关系直到D33与EP_battle可用后才完整。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_battle",
+        "at": 129,
+        "title": "绿心公园战斗与狐狐的游戏",
+        "summary": "风信子迎战被强化药A强化的黑狼怪人，先击倒对方，但黑狼发动第二阶段暴起并抓住她；苏天晴现身自称反派，提出挠痒痒游戏，绿心公园回荡少女哀鸣。",
+        "scale": "sequence",
+        "participants": [
+          "known:c03:E_fengxinzi",
+          "E_bailing",
+          "E_black_wolf",
+          "known:c01:E_su"
+        ],
+        "materials": [
+          "D12",
+          "D13",
+          "D15",
+          "D24",
+          "D32",
+          "D33",
+          "D35",
+          "D41",
+          "D43",
+          "D44"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "EP_fengxinzi_origin",
+            "evidence": [
+              "D10"
+            ]
+          }
+        ],
+        "time": "T_night",
+        "proof": {
+          "premises": [
+            "D12",
+            "D13",
+            "D15",
+            "D24",
+            "D32",
+            "D33",
+            "D35",
+            "D41",
+            "D43",
+            "D44"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "多个披露共同构成绿心公园战斗与后续游戏；使能方向由EP_su_prepare→EP_battle记录，避免因果反向。"
+        }
+      }
+    }
+  ]
+}

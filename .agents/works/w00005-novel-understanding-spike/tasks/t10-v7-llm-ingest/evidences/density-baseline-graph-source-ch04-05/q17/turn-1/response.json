@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"search\",\n      \"query\": \"苏天晴\",\n      \"kind\": \"mention\",\n      \"limit\": 10\n    },\n    {\n      \"command\": \"search\",\n      \"query\": \"游戏\",\n      \"kind\": \"beat\",\n      \"limit\": 10\n    },\n    {\n      \"command\": \"search\",\n      \"query\": \"胜利\",\n      \"kind\": \"disclosure\",\n      \"limit\": 10\n    }\n  ]\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2477,
+    "outputTokens": 115,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 301
+  },
+  "responseId": "155af59b-9f49-4836-ac5d-b5c7545ca420",
+  "durationMs": 1166,
+  "startedAt": "2026-09-11T09:10:12.986Z",
+  "raw": {
+    "id": "155af59b-9f49-4836-ac5d-b5c7545ca420",
+    "object": "chat.completion",
+    "created": 1789117813,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"search\",\n      \"query\": \"苏天晴\",\n      \"kind\": \"mention\",\n      \"limit\": 10\n    },\n    {\n      \"command\": \"search\",\n      \"query\": \"游戏\",\n      \"kind\": \"beat\",\n      \"limit\": 10\n    },\n    {\n      \"command\": \"search\",\n      \"query\": \"胜利\",\n      \"kind\": \"disclosure\",\n      \"limit\": 10\n    }\n  ]\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2477,
+      "completion_tokens": 115,
+      "total_tokens": 2592,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 301
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

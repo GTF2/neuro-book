@@ -1,0 +1,99 @@
+{
+  "answer": {
+    "text": "无法确定。当前为graph模式，已用尽查询且此前对“找茬魔法少女”“每日任务”“找茬”的查询均未返回有效记录（部分请求因字段/模式错误失败），未获得任何可引用的任务结算记录或原文。",
+    "status": "not-found",
+    "recordIds": [],
+    "sources": []
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "query": "找茬魔法少女",
+          "kind": "task",
+          "chapter": 5,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "facts",
+          "query": "找茬魔法少女",
+          "chapter": 5,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "entities",
+          "query": "找茬魔法少女",
+          "chapter": 5,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request kind: Invalid option: expected one of \"entity\"|\"referent\"|\"mention\"|\"resolution\"|\"predicate\"|\"disclosure\"|\"beat\"|\"fact\"|\"episode\"|\"synthesis\"|\"entitySummary\"|\"argument\"|\"assessment\"|\"time\"|\"watch\"|\"knowledgeAccess\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "search",
+          "query": "每日任务",
+          "chapter": 5,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "query": "找茬",
+          "chapter": 5,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "source",
+          "chapter": 5,
+          "from": 1,
+          "to": 60,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"chapter\""
+        },
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

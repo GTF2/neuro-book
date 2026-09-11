@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"answer\",\n  \"answer\": {\n    \"text\": \"已完成每日任务1「找茬魔法少女」的奖励结算为：100神典石入账；扣除昨天购买的强化药A后，净赚50。任务最初在古书上标注的奖励即为100神典石。\",\n    \"status\": \"answered\",\n    \"recordIds\": [\n      \"c05:b7\",\n      \"c05:d14\",\n      \"c05:F_task1_done\",\n      \"c02:F_daily_task_1\",\n      \"c02:D33\"\n    ],\n    \"sources\": [\n      {\n        \"chapter\": 5,\n        \"paragraph\": 33\n      },\n      {\n        \"chapter\": 5,\n        \"paragraph\": 35\n      },\n      {\n        \"chapter\": 2,\n        \"paragraph\": 84\n      }\n    ]\n  }\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 9986,
+    "outputTokens": 189,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 7554
+  },
+  "responseId": "623a3956-e5e5-4ae2-b0e9-5597842e1fc2",
+  "durationMs": 1342,
+  "startedAt": "2026-09-11T09:10:56.900Z",
+  "raw": {
+    "id": "623a3956-e5e5-4ae2-b0e9-5597842e1fc2",
+    "object": "chat.completion",
+    "created": 1789117857,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"answer\",\n  \"answer\": {\n    \"text\": \"已完成每日任务1「找茬魔法少女」的奖励结算为：100神典石入账；扣除昨天购买的强化药A后，净赚50。任务最初在古书上标注的奖励即为100神典石。\",\n    \"status\": \"answered\",\n    \"recordIds\": [\n      \"c05:b7\",\n      \"c05:d14\",\n      \"c05:F_task1_done\",\n      \"c02:F_daily_task_1\",\n      \"c02:D33\"\n    ],\n    \"sources\": [\n      {\n        \"chapter\": 5,\n        \"paragraph\": 33\n      },\n      {\n        \"chapter\": 5,\n        \"paragraph\": 35\n      },\n      {\n        \"chapter\": 2,\n        \"paragraph\": 84\n      }\n    ]\n  }\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 9986,
+      "completion_tokens": 189,
+      "total_tokens": 10175,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 7554
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

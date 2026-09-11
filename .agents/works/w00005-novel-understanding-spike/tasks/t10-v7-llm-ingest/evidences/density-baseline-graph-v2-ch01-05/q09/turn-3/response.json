@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"风信子。查询记录显示：蓉城（c02:E_rongcheng）目前活跃的魔法少女是风信子（c03:F_fengxinzi_active，据 c03:E_fengxinzi）。\",\"status\":\"answered\",\"recordIds\":[\"c03:F_fengxinzi_active\",\"c03:E_fengxinzi\",\"c02:E_rongcheng\"],\"sources\":[{\"chapter\":3,\"paragraph\":16}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 17438,
+    "outputTokens": 104,
+    "cacheHitTokens": 2048,
+    "cacheMissTokens": 15390
+  },
+  "responseId": "0c6edee1-6972-4121-a30e-1df896779d6a",
+  "durationMs": 1512,
+  "startedAt": "2026-09-11T09:18:33.059Z",
+  "raw": {
+    "id": "0c6edee1-6972-4121-a30e-1df896779d6a",
+    "object": "chat.completion",
+    "created": 1789118313,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"风信子。查询记录显示：蓉城（c02:E_rongcheng）目前活跃的魔法少女是风信子（c03:F_fengxinzi_active，据 c03:E_fengxinzi）。\",\"status\":\"answered\",\"recordIds\":[\"c03:F_fengxinzi_active\",\"c03:E_fengxinzi\",\"c02:E_rongcheng\"],\"sources\":[{\"chapter\":3,\"paragraph\":16}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 17438,
+      "completion_tokens": 104,
+      "total_tokens": 17542,
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      },
+      "prompt_cache_hit_tokens": 2048,
+      "prompt_cache_miss_tokens": 15390
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

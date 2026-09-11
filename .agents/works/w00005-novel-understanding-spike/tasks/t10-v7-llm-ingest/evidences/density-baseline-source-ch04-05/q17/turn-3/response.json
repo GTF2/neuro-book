@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读范围内（第4章第128段前），只能确定狐狐提出玩一个游戏，并说若风信子赢了就放她下来；但游戏具体是什么、胜利条件尚未在原文中出现，无法确定。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":4,\"paragraph\":121},{\"chapter\":4,\"paragraph\":124}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3869,
+    "outputTokens": 89,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1437
+  },
+  "responseId": "72a5372a-1564-4f45-885e-fb5b0d742c42",
+  "durationMs": 994,
+  "startedAt": "2026-09-11T09:10:23.660Z",
+  "raw": {
+    "id": "72a5372a-1564-4f45-885e-fb5b0d742c42",
+    "object": "chat.completion",
+    "created": 1789117824,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读范围内（第4章第128段前），只能确定狐狐提出玩一个游戏，并说若风信子赢了就放她下来；但游戏具体是什么、胜利条件尚未在原文中出现，无法确定。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":4,\"paragraph\":121},{\"chapter\":4,\"paragraph\":124}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3869,
+      "completion_tokens": 89,
+      "total_tokens": 3958,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1437
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"get\",\"perspective\":\"reader\",\"world\":\"original\",\"id\":\"c04:E_bailing\"},{\"command\":\"get\",\"perspective\":\"reader\",\"world\":\"original\",\"id\":\"c03:E_fengxinzi\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"白灵\",\"kind\":\"disclosure\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4438,
+    "outputTokens": 83,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2006
+  },
+  "responseId": "197ce728-bb9e-4bcd-983e-4731c23e8953",
+  "durationMs": 1056,
+  "startedAt": "2026-09-11T09:18:24.911Z",
+  "raw": {
+    "id": "197ce728-bb9e-4bcd-983e-4731c23e8953",
+    "object": "chat.completion",
+    "created": 1789118305,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"get\",\"perspective\":\"reader\",\"world\":\"original\",\"id\":\"c04:E_bailing\"},{\"command\":\"get\",\"perspective\":\"reader\",\"world\":\"original\",\"id\":\"c03:E_fengxinzi\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"白灵\",\"kind\":\"disclosure\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4438,
+      "completion_tokens": 83,
+      "total_tokens": 4521,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2006
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

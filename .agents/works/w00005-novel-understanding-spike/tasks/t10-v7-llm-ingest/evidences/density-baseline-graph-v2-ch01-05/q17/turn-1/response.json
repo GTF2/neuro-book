@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"at\":{\"chapter\":4}},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"游戏\",\"at\":{\"chapter\":4}},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"at\":{\"chapter\":4}}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2206,
+    "outputTokens": 96,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 286
+  },
+  "responseId": "4ef2ea0d-9274-4060-b0a8-2c1aa54c6c53",
+  "durationMs": 1362,
+  "startedAt": "2026-09-11T09:19:47.719Z",
+  "raw": {
+    "id": "4ef2ea0d-9274-4060-b0a8-2c1aa54c6c53",
+    "object": "chat.completion",
+    "created": 1789118388,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"at\":{\"chapter\":4}},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"游戏\",\"at\":{\"chapter\":4}},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"at\":{\"chapter\":4}}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2206,
+      "completion_tokens": 96,
+      "total_tokens": 2302,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 286
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,844 @@
+{
+  "answer": {
+    "text": "苏天晴（狐狐）向风信子提出玩“挠痒痒”游戏：她用狗尾巴草挠风信子。胜利条件是风信子坚持一分钟不叫出声；若风信子赢了，苏天晴就放她下来；若不愿意/没赢，苏天晴就不会让它们松开。",
+    "status": "answered",
+    "recordIds": [
+      "c04:B31",
+      "c04:B32",
+      "c04:B33",
+      "c04:D43",
+      "c04:E_su"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 121
+      },
+      {
+        "chapter": 4,
+        "paragraph": 124
+      },
+      {
+        "chapter": 4,
+        "paragraph": 125
+      },
+      {
+        "chapter": 4,
+        "paragraph": 126
+      },
+      {
+        "chapter": 4,
+        "paragraph": 127
+      },
+      {
+        "chapter": 4,
+        "paragraph": 128
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴",
+          "category": "person"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "游戏",
+          "kind": "beat"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "query": "游戏"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 4,
+                "label": "小狐狸",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "屑狐狐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 44
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:2",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金狐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 106
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:13",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小狐狸",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 118
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:SuTianQing:mention:16",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_su",
+                          "revision": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:2",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:13",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing:mention:16",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:B31",
+                "revision": 4,
+                "label": "风信子让放她下来；狐狐提议玩游戏，若赢了就放她，否则不松开。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 122
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 120,
+                    "start": 0,
+                    "end": 15
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 121,
+                    "start": 0,
+                    "end": 41
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 122,
+                    "start": 0,
+                    "end": 36
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "风信子让放她下来；狐狐提议玩游戏，若赢了就放她，否则不松开。",
+                  "chapterId": "c04",
+                  "fromParagraph": 120,
+                  "toParagraph": 122,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:SuTianQing",
+                      "revision": 4
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c04:D40",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:D41",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D40",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D41",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 120,
+                      "start": 0,
+                      "end": 15
+                    },
+                    "chapter": 4,
+                    "text": "“你……你快把我放下来！……”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 121,
+                      "start": 0,
+                      "end": 41
+                    },
+                    "chapter": 4,
+                    "text": "“啊，对了，风信子小姐想不想跟狐狐我玩点游戏呢？要是你赢了的话我就把你放下来哟。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 122,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 4,
+                    "text": "“要是不愿意的话，狐狐我可不会让它们松开哦。”苏天晴脸上的笑容更加灿烂。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:B32",
+                "revision": 4,
+                "label": "风信子犹豫，问是什么游戏。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 124
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 123,
+                    "start": 0,
+                    "end": 13
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 124,
+                    "start": 0,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "风信子犹豫，问是什么游戏。",
+                  "chapterId": "c04",
+                  "fromParagraph": 123,
+                  "toParagraph": 124,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:SuTianQing",
+                      "revision": 4
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c04:D42",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:SuTianQing",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D42",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 123,
+                      "start": 0,
+                      "end": 13
+                    },
+                    "chapter": 4,
+                    "text": "风信子犹豫片刻，出声询问："
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 124,
+                      "start": 0,
+                      "end": 9
+                    },
+                    "chapter": 4,
+                    "text": "“什、什么游戏？”"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:B33",
+                "revision": 4,
+                "label": "苏天晴走到风信子身后，捏狗尾巴草，提出挠痒痒游戏：坚持一分钟不叫出声就放她下来。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 128
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 125,
+                    "start": 0,
+                    "end": 24
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 126,
+                    "start": 0,
+                    "end": 17
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 127,
+                    "start": 0,
+                    "end": 7
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 128,
+                    "start": 0,
+                    "end": 34
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "苏天晴走到风信子身后，捏狗尾巴草，提出挠痒痒游戏：坚持一分钟不叫出声就放她下来。",
+                  "chapterId": "c04",
+                  "fromParagraph": 125,
+                  "toParagraph": 128,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c04:SuTianQing",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 4
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c04:D43",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:SuTianQing",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D43",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 125,
+                      "start": 0,
+                      "end": 24
+                    },
+                    "chapter": 4,
+                    "text": "苏天晴踱步走到风信子身后，月光映出她脸上的坏笑。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 126,
+                      "start": 0,
+                      "end": 17
+                    },
+                    "chapter": 4,
+                    "text": "然后捏起一根狗尾巴草，轻笑着说道："
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 127,
+                      "start": 0,
+                      "end": 7
+                    },
+                    "chapter": 4,
+                    "text": "“挠痒痒哟。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 128,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 4,
+                    "text": "“这样吧，要是风信子小姐你能坚持一分钟不叫出声，狐狐我就放你下来~”"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 121,
+              "text": "“啊，对了，风信子小姐想不想跟狐狐我玩点游戏呢？要是你赢了的话我就把你放下来哟。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 124,
+              "text": "“什、什么游戏？”"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 128
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 1,
+  "exhausted": false
+}

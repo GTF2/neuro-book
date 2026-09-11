@@ -1,0 +1,555 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q01",
+    "q02",
+    "q03",
+    "q04",
+    "q05",
+    "q06",
+    "q07",
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12",
+    "q13",
+    "q14",
+    "q15",
+    "q16",
+    "q17",
+    "q18",
+    "q19",
+    "q20",
+    "q21",
+    "q22",
+    "q23",
+    "q24",
+    "q25",
+    "q26",
+    "q27",
+    "q34",
+    "q35",
+    "q37",
+    "q38",
+    "q39"
+  ],
+  "mode": "source",
+  "codeHash": "e3f7332b46022fca76eaa6738039ac0c762f71efa65d438d0842f034ddfac52e",
+  "snapshots": [
+    {
+      "chapter": 1,
+      "sha256": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+    },
+    {
+      "chapter": 2,
+      "sha256": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+    },
+    {
+      "chapter": 3,
+      "sha256": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+    },
+    {
+      "chapter": 5,
+      "sha256": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+    },
+    {
+      "chapter": 4,
+      "sha256": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q01",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 11
+      },
+      "verdict": "partial",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答正确指出镜中形象为娇小的金毛狐女，并有金发、狐耳、精致五官和白皙肌肤等依据；但遗漏原文第11段“炸毛的大尾巴”这一外貌特征，故不完整。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q02",
+      "group": "ordinary",
+      "category": "relationship",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "错误否定第1章第29段古书自称“墨丘利秘典”及从星空彼岸前来寻找最优秀适格者的原文，导致主要结论缺失/反转。",
+      "reason": "回答正确引用第1章第30段“而那个人就是你，苏天晴小姐”，但漏掉并在结论上否定了第29段“吾名墨丘利秘典……寻找我最优秀的适格者”，因此只答出苏天晴是“那个人”的片段，未正确回答古书如何自称及其适格者关系。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q03",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 76
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "错误断言原文未披露具体任务内容；参考答案第1章第66段显示造物主为其定制一整套任务并助其走上反派魔法少女顶点。",
+      "reason": "回答只抓到“小小契约”、最佳适格者/星界使者和“绑定成功”，却遗漏“将成为魔法少女、走反派顶点、契约成立/造物主定制任务”等关键内容，且误称未披露具体任务。实际引用29/44/73仅部分支持答案。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q04",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 21
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第2章第20段明确说明原主人苏天晴临近开学时染上兽人流感并在熬夜中突发暴发性心肌炎，完整回答了其死因；未提及“死法和自己一模一样”只是叙述者感想，不影响死因结论。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q05",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 66
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "将原文已说明的触发方式（拇指按入十字星、光芒笼罩客厅）误判为未说明",
+      "reason": "答案正确说明喊多种变身词时十字星无反应；但遗漏并否定第63-64段的触发细节，故未完整回答第一次变身如何触发。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q06",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 42
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "回答忽略第2章第38段‘【守护之星激活】’这一原文证据，错误声称当前已读原文未出现‘守护之星’称呼，从而否定金色十字星与守护之星的相关性。",
+      "reason": "回答正确指出第2章第42段‘应该就是’是推断而非世界事实确认；但第2章第38段已出现‘【守护之星激活】’，且第36段鼻血融入金色十字星，实际引用33/36/41/42只能支持十字星存在、微光及变身道具推测，不能支持‘未出现守护之星’的否定。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q07",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 84
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答完整对应第二章第82-84段原文：任务1为“找茬魔法少女”，说明为“正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧”，奖励100神典石。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q08",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确复述第3章第10段：魔法少女受英雄协会管辖委派，一边战斗一边作为偶像出镜；真实身份保密而变身后形象广为人知。虽指出原文未单独标明这是苏天晴网上或记忆中的了解，但已完整保留该局限，主关系结论正确。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q09",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "原文第3章第11段说明蓉城目前有一名活跃魔法少女，第16段苏天晴念出“风信子”为其代号，引用足以支持答案。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q10",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 33
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第3章第33段原文明确写出“今晚蓉城市绿心公园将出现怪人，预测风信子将前往迎击”，答案的地点、时间和风信子行动均与该原文一致。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q11",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 27
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第3章24-27段完整支持：任务要求获得200名关注者、成为闪耀的魔法少女并让所有人记住名字、带着她的那份一起活下去，奖励500神典石；回答与原文一致。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q12",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 32
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第3章第13段明确苏天晴点开视频网站上该魔法少女的介绍视频，第32段紧接的【新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练】可据此判定为介绍视频中的文字，而非风信子本人自述；回答正确且未将该句归为本人自述。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q13",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 97
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第5章第95、96段分别给出真名南小风、19岁及就读于蓉城第三文理学院，与问题所需信息一致且完整；第97段的暑假作业信息非问题所问。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q14",
+      "group": "ordinary",
+      "category": "relationship",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 20
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第4章第20段原文明确称白灵为身边的白貂、自称白灵的观星者精灵，并说明半年前离家出走的南小风遇到他、在其引导下获得守护之星、此后以风信子身份活跃，完全支持答案。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q15",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 50
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第4章第50段原文明确：苏天晴斥资50神典石买下【怪人强化药A】，并灌进黑狼怪人嘴里；答案完整且与原文一致。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q16",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 101
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答正确说明暴起源于强化药A赋予的倒下后终极能力，并指出它抓住了风信子；但漏掉已读原文中黑狼喷出无数黑影、打飞风信子大剑/使其倒飞等关键动作，且“尚未读到更具体后续动作”不准确。引用能支持其已说的原因和抓住，但不足以覆盖完整答案。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q17",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 128
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "错误断言苏天晴尚未说出具体游戏，并遗漏第127-128段“挠痒痒”及“坚持一分钟不叫出声”的胜利条件；这直接改变了主问题结论。",
+      "reason": "回答只依据第121段，正确抓到“玩游戏、赢了放下”的大意，但主问题要求的具体游戏和胜利条件均未给出；第127段为“挠痒痒哟”，第128段条件为坚持一分钟不叫出声。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q18",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 84
+      },
+      "verdict": "correct",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答准确引用第4章84段原话“守、守护之星？你也是魔法少女？！”，并正确限定为白灵把符号认作守护之星、据此询问对方是否也是魔法少女，未过度推断其确认身份或阵营；但实际引用仅第84段，缺少第83段来支持“看到胸前的金色十字星后”的前提，故证据部分支持。",
+      "queries": 3,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q19",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 27
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引文明确称风信子直到凌晨三点方被解救，并称风信子对此并未发表言论，完整回答了时间与是否发言两个问题。",
+      "queries": 1,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q20",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 29
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第5章第29段原文明确说明离开时是晚上八点，风信子被整整吊了七个小时，回答与原文及预期一致。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q21",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 24
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第5章第23段明确写出苏天晴给触手怪设定“绝对不许涩涩”的限制，顶多挠脚心腋窝；回答与此一致，且未超出原文添加未支持的人物关系。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q22",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 35
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "实际回答称未查到原文说明，但第5章第33段已标“找茬魔法少女，已完成”，第35段明确“100神典石入账，扣除……强化药A，净赚50”，材料已有答案，故属于not-found；且未引用任何来源，不能支持其未查到结论。",
+      "queries": 0,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q23",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确覆盖两个要点：第5章第42段说明英雄协会按战斗风格或本人要求给予代号并登记在册；第5章第43段说明风信子初次亮相后由工作人员接洽，并经本人同意获得【风信子】代号。引用与原文一致，无关键错误。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q24",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 54
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答仅引用第5章第51段，只能说明原身粉丝少、生活阴暗，不能证明已读范围内没有网文与收入信息；参考答案的第5章第53-54段明确有《魔法少女大危机》及每月九万字、个位数订阅、全勤五百块等内容，故属材料有答案但回答未找到。",
+      "queries": 3,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q25",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 76
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": "将原文已给出的笔名“十万水星”和书名《深渊领主是我萝莉老婆》否定为未给出/无法确定。",
+      "reason": "实际引用仅第5章第74段“退出账号，随即重新注册”，未检索到第75-76段；但给出的原文证据明确有笔名“十万水星”和书名《深渊领主是我萝莉老婆》，所以回答“无法确定/未给出”与材料不符。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q26",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 88
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用的第5章85-88段逐字给出每日任务1记录魔法少女的窘迫状况、奖励100神典石；每日任务2让至少100人观看到魔法少女的窘况、奖励100神典石，回答完整且一致。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q27",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 98
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "参考答案在5章98段有原文“【家庭住址……】”，可据此判断情报页未写完整地址；回答却称未检索到相关原文且无引用，因查询范围仅到第5章第1—10段而遗漏了第98段，故未能回答主问题。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q34",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 87
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答覆盖了金毛狐女身体、兽人世界、古书/守护之星、初次变身和“开启每日任务”等变化，但缺少第1章明确给出的“反派魔法少女”身份，也未引用或说明第2章第82段的“每日任务1：找茬魔法少女”，因此关键变化不完整，不能判为correct。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q35",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 129
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "答案正确概括了第4章绿心公园出现怪人、风信子赶往、公园昏黑疏散、与黑狼怪人交战至第129段等事件，且引用基本能支持这些内容。但未概括第3章秘典预测“风信子将前往绿心公园迎击怪人”，也未包括第4章苏天晴用【怪人强化药A】强化黑狼怪人、自称反派并提出挠痒痒游戏等关键事件，因此回答不完整；已引用材料只能支持部分答案。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q37",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 40
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "结论“原文没有明确说明”基本正确，但回答只引用第29、30段古书称苏天晴为适格者，未引用第40段“这本书知道自己并不是这副身体原来的主人，难道说……”这一关键推测性疑问，因而缺少区分“明确说明”与“苏天晴推测”的核心依据，回答不完整。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q38",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "答案与原文一致：第1章第29段仅是墨丘利秘典自称寻找“最优秀的适格者”，第30段是它称“那个人就是你，苏天晴”，二者只能证明古书作出该断言，不能独立验证其为客观事实，因此回答“不能据此确认”完整正确。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q39",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答正确区分了“本人同意”与“主动要求”：引文仅说明协会可依战斗风格或本人要求给予代号，且风信子在本人同意下获得【风信子】，并未明确说她主动要求，结论与原文一致。",
+      "queries": 6,
+      "sourceQueries": 6
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

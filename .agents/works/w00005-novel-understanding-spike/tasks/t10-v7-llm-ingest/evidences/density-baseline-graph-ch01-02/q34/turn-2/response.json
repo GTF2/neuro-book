@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\"},{\"command\":\"summaries\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2654,
+    "outputTokens": 116,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 222
+  },
+  "responseId": "7bfe2cdb-b514-4336-b939-67cc7efee4bc",
+  "durationMs": 936,
+  "startedAt": "2026-09-11T08:45:24.407Z",
+  "raw": {
+    "id": "7bfe2cdb-b514-4336-b939-67cc7efee4bc",
+    "object": "chat.completion",
+    "created": 1789116324,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\"},{\"command\":\"summaries\",\"at\":{\"chapter\":2,\"paragraph\":87},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2654,
+      "completion_tokens": 116,
+      "total_tokens": 2770,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 222
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

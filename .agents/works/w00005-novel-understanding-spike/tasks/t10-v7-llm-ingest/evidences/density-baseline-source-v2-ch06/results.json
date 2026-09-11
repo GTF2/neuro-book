@@ -1,0 +1,155 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q28",
+    "q29",
+    "q30",
+    "q31",
+    "q32",
+    "q33",
+    "q36",
+    "q40"
+  ],
+  "mode": "source",
+  "codeHash": "e3f7332b46022fca76eaa6738039ac0c762f71efa65d438d0842f034ddfac52e",
+  "snapshots": [
+    {
+      "chapter": 6,
+      "sha256": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q28",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 15
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章第13段显示苏天晴产生曝光风信子真名以制造窘迫的想法，第15段明确否定“开盒这种事肯定不能干”，实际引用足以支持其反对/不能开盒的最终态度。第3段虽关联较弱，但关键结论有第13、15段支撑。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q29",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 23
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章第22段给出随身摄像头花费50神典石；第23段给出功能为无需充电的魔法摄像头，并附赠隐藏真实身份的视频网站账号。回答与原文一致且完整。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q30",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 110
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答正确给出发布时间、播放量和同时观看人数，但未引用第6章第110段“南小风看了一眼现在的时间，六点五十”，因此漏答当前时间并误判为无法确定，属于缺关键部分。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q31",
+      "group": "boundary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 107
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章103段约今晚七点蓉城第三文理学院不见不散；106-107段威胁若七点见不到风信子，教学楼大概会被夷为平地。回答同时说明截至readAt仅确认威胁、未确认实施，与原文和预期一致。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q32",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第110至114段原文完整支持回答：她先看时间为六点五十、距七点还有十分钟，随后抓起金色十字星翻窗跃出，喊出变身并化作流星朝学校方向疾驰。没有人物误合并、虚构关系或未来泄漏等改变主要结论的错误。",
+      "queries": 2,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q33",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 90
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章82-90段原文支持白灵震惊举手机、称视频重要、强行塞给南小风并按键播放；实际回答还正确指出原文未明说苏天晴是否即“魔法少女狐狐official”或白灵如何获得视频。",
+      "queries": 6,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q36",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "答案覆盖了部分生活压力、任务转向和约战内容，但未给出最终约战的具体时间“今晚七点”和地点“蓉城第三文理学院”，也未引用第5章全勤奖“断更2天”、每日任务“记录魔法少女的窘迫状况”等关键原文；且称视频是否实际发布未明，与第6章90已播放视频的引用相矛盾。",
+      "queries": 5,
+      "sourceQueries": 5
+    },
+    {
+      "id": "q40",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 46
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第38、39、44、46段仅显示定身陷阱的价格、效果和用途设想，未出现苏天晴购买或已买下的明确动作；回答正确保留为“没有明确说已买下”。",
+      "queries": 1,
+      "sourceQueries": 1
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

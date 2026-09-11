@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴给触手怪设定了“绝对不许涩涩”的限制，顶多只能挠她的脚心和腋窝。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":23}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1753,
+    "outputTokens": 63,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 985
+  },
+  "responseId": "06807687-e5f2-49ee-9229-a6b12b569ff3",
+  "durationMs": 749,
+  "startedAt": "2026-09-11T09:19:07.722Z",
+  "raw": {
+    "id": "06807687-e5f2-49ee-9229-a6b12b569ff3",
+    "object": "chat.completion",
+    "created": 1789118348,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴给触手怪设定了“绝对不许涩涩”的限制，顶多只能挠她的脚心和腋窝。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":23}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1753,
+      "completion_tokens": 63,
+      "total_tokens": 1816,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 985
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

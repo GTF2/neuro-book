@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_black_wolf\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_drug\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c04:E_black_wolf\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 8507,
+    "outputTokens": 91,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 6331
+  },
+  "responseId": "38280647-1e88-47d4-ad00-1936cd4dbecf",
+  "durationMs": 1183,
+  "startedAt": "2026-09-11T09:19:42.736Z",
+  "raw": {
+    "id": "38280647-1e88-47d4-ad00-1936cd4dbecf",
+    "object": "chat.completion",
+    "created": 1789118383,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_black_wolf\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_drug\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c04:E_black_wolf\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 8507,
+      "completion_tokens": 91,
+      "total_tokens": 8598,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 6331
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

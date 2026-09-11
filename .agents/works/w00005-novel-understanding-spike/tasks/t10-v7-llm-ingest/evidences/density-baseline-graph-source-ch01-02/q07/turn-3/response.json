@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":2,\"from\":39,\"to\":48,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":2,\"from\":49,\"to\":58,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"奖励\",\"kind\":\"disclosure\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":2,\"paragraph\":84}}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3124,
+    "outputTokens": 105,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 692
+  },
+  "responseId": "1dd4517b-ba7f-423f-a17e-760d457b6bbf",
+  "durationMs": 977,
+  "startedAt": "2026-09-11T08:45:03.556Z",
+  "raw": {
+    "id": "1dd4517b-ba7f-423f-a17e-760d457b6bbf",
+    "object": "chat.completion",
+    "created": 1789116304,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":2,\"from\":39,\"to\":48,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":2,\"from\":49,\"to\":58,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"奖励\",\"kind\":\"disclosure\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":2,\"paragraph\":84}}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3124,
+      "completion_tokens": 105,
+      "total_tokens": 3229,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 692
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

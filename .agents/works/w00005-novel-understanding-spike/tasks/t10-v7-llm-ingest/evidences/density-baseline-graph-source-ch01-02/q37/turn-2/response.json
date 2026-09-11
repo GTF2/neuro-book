@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"paragraph\":40,\"query\":\"墨丘利秘典\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"paragraph\":40,\"query\":\"苏天晴\"},{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"at\":{\"chapter\":1,\"paragraph\":40},\"query\":\"墨丘利秘典\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2643,
+    "outputTokens": 112,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 211
+  },
+  "responseId": "37c8f61e-f0cd-45e7-8705-505637141176",
+  "durationMs": 1147,
+  "startedAt": "2026-09-11T08:45:20.242Z",
+  "raw": {
+    "id": "37c8f61e-f0cd-45e7-8705-505637141176",
+    "object": "chat.completion",
+    "created": 1789116320,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"paragraph\":40,\"query\":\"墨丘利秘典\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":1,\"paragraph\":40,\"query\":\"苏天晴\"},{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"at\":{\"chapter\":1,\"paragraph\":40},\"query\":\"墨丘利秘典\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2643,
+      "completion_tokens": 112,
+      "total_tokens": 2755,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 211
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

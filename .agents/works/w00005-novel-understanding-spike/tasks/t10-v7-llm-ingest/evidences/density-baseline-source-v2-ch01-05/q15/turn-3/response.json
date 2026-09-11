@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴对黑狼怪人使用了【怪人强化药A】（买下后灌进它嘴里），花了50神典石。\",\"status\":\"answered\",\"recordIds\":[\"source-c04\"],\"sources\":[{\"chapter\":4,\"paragraph\":50},{\"chapter\":4,\"paragraph\":49}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3097,
+    "outputTokens": 74,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 2329
+  },
+  "responseId": "74806c7e-c264-40b5-a036-df313515f107",
+  "durationMs": 1059,
+  "startedAt": "2026-09-11T09:18:31.843Z",
+  "raw": {
+    "id": "74806c7e-c264-40b5-a036-df313515f107",
+    "object": "chat.completion",
+    "created": 1789118312,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴对黑狼怪人使用了【怪人强化药A】（买下后灌进它嘴里），花了50神典石。\",\"status\":\"answered\",\"recordIds\":[\"source-c04\"],\"sources\":[{\"chapter\":4,\"paragraph\":50},{\"chapter\":4,\"paragraph\":49}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3097,
+      "completion_tokens": 74,
+      "total_tokens": 3171,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 2329
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

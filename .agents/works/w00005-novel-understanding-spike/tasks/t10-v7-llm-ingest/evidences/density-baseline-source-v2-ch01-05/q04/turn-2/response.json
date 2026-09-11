@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"这副身体原主人苏天晴的死因是：临近开学时染上一场兽人流感，熬夜过程中突发了暴发性心肌炎。\",\"status\":\"answered\",\"recordIds\":[\"source-c02\"],\"sources\":[{\"chapter\":2,\"paragraph\":20}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1423,
+    "outputTokens": 66,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 655
+  },
+  "responseId": "2753d35a-0a25-4816-ae27-9a0edb52cbdb",
+  "durationMs": 916,
+  "startedAt": "2026-09-11T09:17:32.051Z",
+  "raw": {
+    "id": "2753d35a-0a25-4816-ae27-9a0edb52cbdb",
+    "object": "chat.completion",
+    "created": 1789118252,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"这副身体原主人苏天晴的死因是：临近开学时染上一场兽人流感，熬夜过程中突发了暴发性心肌炎。\",\"status\":\"answered\",\"recordIds\":[\"source-c02\"],\"sources\":[{\"chapter\":2,\"paragraph\":20}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1423,
+      "completion_tokens": 66,
+      "total_tokens": 1489,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 655
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

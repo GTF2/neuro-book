@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"视频\",\"at\":{\"chapter\":6,\"paragraph\":110},\"kind\":\"mention\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"播放量\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2456,
+    "outputTokens": 97,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 280
+  },
+  "responseId": "a689289d-60b6-4740-8d83-4f5abcb53a30",
+  "durationMs": 1452,
+  "startedAt": "2026-09-11T09:30:57.354Z",
+  "raw": {
+    "id": "a689289d-60b6-4740-8d83-4f5abcb53a30",
+    "object": "chat.completion",
+    "created": 1789119058,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"视频\",\"at\":{\"chapter\":6,\"paragraph\":110},\"kind\":\"mention\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":6,\"query\":\"播放量\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2456,
+      "completion_tokens": 97,
+      "total_tokens": 2553,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 280
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

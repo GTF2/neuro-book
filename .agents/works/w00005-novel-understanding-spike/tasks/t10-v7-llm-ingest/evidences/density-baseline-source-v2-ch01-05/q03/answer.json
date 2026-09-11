@@ -1,0 +1,603 @@
+{
+  "answer": {
+    "text": "根据已读原文，墨丘利秘典与苏天晴订立的契约内容仅被古书单方表述为“一个小小的契约”：墨丘利秘典自称来自星空彼岸，称苏天晴为最佳适格者/星界使者，承诺引导她走上“完美的生活”，作为交换她只需与其签订该契约。原文未披露契约的完整条款、期限、违约后果或具体任务内容。绑定结果方面，原文仅出现古书系统式消息“墨丘利秘典绑定成功”，其来源和效力未获独立验证，也未说明苏天晴是否明确同意。",
+    "status": "partial",
+    "recordIds": [],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 29
+      },
+      {
+        "chapter": 1,
+        "paragraph": 44
+      },
+      {
+        "chapter": 1,
+        "paragraph": 73
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 70,
+          "to": 82,
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 10,
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "chapter": 1,
+          "query": "墨丘利",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "chapter": 1,
+          "query": "苏天晴",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 1,
+              "text": "第1章 反派魔法少女"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 2,
+              "text": "严正声明：本书出场角色均已满18岁，不存在任何未成年人！"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 3,
+              "text": "———————————"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 4,
+              "text": "【姓名。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 5,
+              "text": "“……苏天晴。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 6,
+              "text": "昏暗的房间里传出清脆悦耳的女声，还有一道仿佛来自遥远彼方的低沉言语。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 7,
+              "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 8,
+              "text": "灿烂金色的长发垂落在肩膀后背，毛茸茸的耳朵耷拉在头顶，随着自己不经意的动作而弹动两下，与刘海底下那精致的五官与眼眸交映着。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 9,
+              "text": "脖颈肩膀那白皙的肌肤倒映窗帘缝隙间洒入的阳光，让人不由得多看几眼。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 10,
+              "text": "一只娇小的金毛狐女。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 10,
+            "returned": 10
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 29,
+              "text": "【吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 44,
+              "text": "【你是墨丘利秘典的最佳适格者，作为星界使者，我会引导你走上完美的生活，而你只需要与我签订一个小小的契约——】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 73,
+              "text": "【墨丘利秘典绑定成功。】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 5,
+              "text": "“……苏天晴。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 7,
+              "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 13,
+              "text": "房间中的低沉言语再次响起，将苏天晴的注意力拽回眼前这本黑色古书。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 14,
+              "text": "苏天晴有些茫然。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 16,
+              "text": "看着在身侧摇曳的炸毛大尾巴，苏天晴鬼使神差地伸手，在尾巴上用力薅了一把。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 23,
+              "text": "苏天晴干咳两声掩饰尴尬，伸手阻止了面前这本奇怪的古书继续说话，眼珠一转，飞快地理清思绪。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 27,
+              "text": "“你是谁？”苏天晴扭头正视眼前这本书，茫然地说道。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 30,
+              "text": "【而那个人就是你，苏天晴小姐。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 31,
+              "text": "再次听完这中二到能让人用脚趾扣出三室一厅的台词，苏天晴又陷入了沉默与思索。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 39,
+              "text": "嘴上不搭调地回答着古书的话，苏天晴脑子里却也对现状有了个大概的了解。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 18,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImYzZWRhMTYyYjc5ZGViYzg3ZWJkMjE3NDI4NDVkMGRjZTAwMDJkYmYzZTBkNWU3MmVjZDIzMjczNDU3MTNhZTciLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6Ijc3NTVkM2E3YTAzYjVlODE3OWM3YWU4NmU1MDcwNWYxNGZjMjkyMzMzMzkwY2IzMzFkZDI4MzU2MWE0NTExYzIifQ"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 30,
+          "to": 50,
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 30,
+              "text": "【而那个人就是你，苏天晴小姐。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 31,
+              "text": "再次听完这中二到能让人用脚趾扣出三室一厅的台词，苏天晴又陷入了沉默与思索。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 32,
+              "text": "然后，狐狐猛地从床上蹦下，走到落地镜前，沉默地看向镜子里那穿着宽松睡裙的娇小身影。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 33,
+              "text": "接着抬起一只脚，认真欣赏起这只白皙软嫩带着红晕的小脚。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 34,
+              "text": "嗯，完美，绝品。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 35,
+              "text": "【看来你对现在的身体很满意嘛。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 36,
+              "text": "瞅见眼前这只狐狐认真欣赏脚丫的行径，古书一时语塞，憋了半天才冒出这么一句。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 37,
+              "text": "【但是你为什么要盯着脚看？正常情况下不应该是……】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 38,
+              "text": "“你不懂，小脚才是世界上最美好的瑰宝，吃饭的时候看见了都能多炫两碗。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 39,
+              "text": "嘴上不搭调地回答着古书的话，苏天晴脑子里却也对现状有了个大概的了解。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 21,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjBjOWQzNmVlYWRmMmE0Zjk3NmExNjdmMmM2OWNkN2MwMWQyYWQxMjFhOTM2MDFiNGM5ZmY1ZWE4MjU3OGQ5MWYiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6ImZjOWU4M2ZhZGFjOWQ5MGIzZmRkZjM5NzU2MjcyNTU3MTk3YjBhNWQ5OWI1YzRmYjAyZTAxZTJlOWExZmU5NGMifQ"
+        }
+      ]
+    }
+  ],
+  "queries": 5,
+  "sourceQueries": 5,
+  "exhausted": true
+}

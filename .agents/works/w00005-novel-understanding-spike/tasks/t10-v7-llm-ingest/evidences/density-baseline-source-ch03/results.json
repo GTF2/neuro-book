@@ -1,0 +1,107 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12"
+  ],
+  "mode": "source",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 3,
+      "sha256": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q08",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第3章第10段原文明确说明魔法少女受英雄协会管辖委派、一边与怪人战斗一边作为偶像出镜，真实身份保密但变身后形象广为人知；第8、9段也分别支持了解来源及魔法少女客观存在。回答完整符合查询，无关键错误。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q09",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第3章第16段已直接给出苏天晴念出的活跃魔法少女代号为【风信子】，第11段也确认蓉城有一名活跃魔法少女；回答却称信息不足且未引用任何来源，因此未找到已有答案。",
+      "queries": 0,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q10",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 33
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第3章第33段原文明确写出“今晚蓉城市绿心公园将出现怪人，预测风信子将前往迎击”，完整对应袭击地点和风信子行动预测。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q11",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 27
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答完整复述了任务要求“获得200名关注者”“成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去”，并给出奖励“500神典石”；引用第3章24-27段逐字支持，无关键错误。",
+      "queries": 4,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q12",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 32
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第3章第13段显示苏天晴点开视频网站上的风信子介绍视频，31-32段紧接标题和介绍语；原文没有第一人称或自述标记，回答正确判定其不是本人自述并保留说话人局限。",
+      "queries": 6,
+      "sourceQueries": 4
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

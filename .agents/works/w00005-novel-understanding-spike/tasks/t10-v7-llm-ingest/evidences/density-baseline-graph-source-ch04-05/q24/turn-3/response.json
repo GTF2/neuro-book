@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读至第5章第54段的原文中，只能确认原身“苏天晴”生活阴暗、粉丝关注者仅两百个，并被形容为“夙愿”；无法确定她写什么网文，也没有关于其收入状况的信息。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":51},{\"chapter\":5,\"paragraph\":44},{\"chapter\":5,\"paragraph\":9}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4210,
+    "outputTokens": 102,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 1906
+  },
+  "responseId": "16cc7274-033a-41c6-b5cb-9b4235cbfb16",
+  "durationMs": 1624,
+  "startedAt": "2026-09-11T09:11:05.320Z",
+  "raw": {
+    "id": "16cc7274-033a-41c6-b5cb-9b4235cbfb16",
+    "object": "chat.completion",
+    "created": 1789117865,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读至第5章第54段的原文中，只能确认原身“苏天晴”生活阴暗、粉丝关注者仅两百个，并被形容为“夙愿”；无法确定她写什么网文，也没有关于其收入状况的信息。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":51},{\"chapter\":5,\"paragraph\":44},{\"chapter\":5,\"paragraph\":9}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4210,
+      "completion_tokens": 102,
+      "total_tokens": 4312,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 1906
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

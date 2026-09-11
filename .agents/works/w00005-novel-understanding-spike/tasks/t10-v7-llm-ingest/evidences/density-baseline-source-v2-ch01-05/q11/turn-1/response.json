@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":27,\"query\":\"任务：夙愿\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 861,
+    "outputTokens": 46,
+    "cacheHitTokens": 640,
+    "cacheMissTokens": 221
+  },
+  "responseId": "13a25de9-cb8b-417e-a656-f4e6034865ff",
+  "durationMs": 914,
+  "startedAt": "2026-09-11T09:18:10.763Z",
+  "raw": {
+    "id": "13a25de9-cb8b-417e-a656-f4e6034865ff",
+    "object": "chat.completion",
+    "created": 1789118291,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":27,\"query\":\"任务：夙愿\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 861,
+      "completion_tokens": 46,
+      "total_tokens": 907,
+      "prompt_tokens_details": {
+        "cached_tokens": 640
+      },
+      "prompt_cache_hit_tokens": 640,
+      "prompt_cache_miss_tokens": 221
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

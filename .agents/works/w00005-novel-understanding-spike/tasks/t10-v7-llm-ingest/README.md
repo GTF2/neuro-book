@@ -8,7 +8,9 @@ role: tasker
 
 ## 当前执行状态：按修订计划继续（2026-09-11）
 
-开发者已审阅方向并明确“可以继续执行”。恢复修订计划步骤1，先固定查询评价，再比较精简建模。主Agent拥有运行控制、实验提示词与主线收敛；query_cli负责前6章评价题目和只读查询执行入口，cost_scale负责7..20章独立验证题目与现有阶段开销核查，ingest_review独立核验评价合同和实验隔离。这些既有Agent在本Task内并行，不互相覆盖文件；评价答案仅用于查询结果核验，不进入ingest输入。旧smoke-008继续保持停止，新运行使用独立目录。
+开发者已审阅方向并明确“可以继续执行”。主Agent已固定前6章与后14章各40道模型辅助评价题，并以独立模型请求核验；未将这些工作冒称为子Agent人工金标。精简候选首章两批结构尝试失败后停止，基线继续1..6；选择保持策略-5，启动独立formal-005的1..20章。主Agent唯一控制两份活动运行、评价脚本及最终交接；cost_scale已独立完成阶段开销复核，见walkthroughs/2026-09-11-density-cost-review.md；既有ingest_review复核仍适用于未改动的策略-5。query_cli不控制活动运行。评价答案不进入ingest输入，旧formal-001..004、smoke-008和density-sparse-001不再恢复。
+
+2026-09-11 17:00完整84项测试和typecheck通过；随后修复研究评测的分页默认值及禁用命令展示冲突，新增聚焦回归后query-evaluation的5项通过。主线8份策略源码未改，policyHash仍为99c37d639f129a0a058a7c7f92113446bb8feaf88c2a5bf955954e8b9e9d813b。正式20章完成状态以formal-005/manifest.json为准，不能从基线或旧运行拼接完成数。成本优化尚未证明足以用于成品千万字长篇；选择、失败与评测修订见experiments/density-selection.md及experiments/query-value/README.md。
 
 ## 方向修订时的停止记录
 

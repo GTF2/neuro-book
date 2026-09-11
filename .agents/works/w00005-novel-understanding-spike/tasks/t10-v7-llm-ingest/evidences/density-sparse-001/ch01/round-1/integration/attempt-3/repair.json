@@ -1,0 +1,77 @@
+{
+  "replacements": [
+    {
+      "collection": "entities",
+      "record": {
+        "id": "creator",
+        "category": "unresolved"
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "id_creator",
+        "at": 66,
+        "referent": "creator",
+        "entity": "creator",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "古书在讲述契约与任务时提到“造物主”，该指称在话语中明确指向一个为苏天晴定制任务的存在；其真实身份/性质未知，故映射为unresolved实体，映射本身可接受。",
+        "evidence": [
+          "d25"
+        ]
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "f16",
+        "at": 40,
+        "text": "苏天晴认为自己重生进入这副金毛狐女身体。",
+        "predicate": "reincarnated_into",
+        "arguments": [
+          {
+            "role": "consciousness",
+            "value": {
+              "type": "ref",
+              "id": "su_tianqing"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "fox_body"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "su_tianqing",
+          "opaque": true
+        },
+        "time": "time_waking",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d5",
+            "d12",
+            "b13"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "苏天晴内心明确‘我重生了……重生成了一只金毛狐女’，故记录为其信念而非世界事实。"
+        }
+      }
+    }
+  ]
+}

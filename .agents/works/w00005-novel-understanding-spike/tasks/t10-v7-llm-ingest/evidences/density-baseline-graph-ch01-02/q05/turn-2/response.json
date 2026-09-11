@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":63,\"to\":66},{\"command\":\"search\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"初次变身\",\"kind\":\"disclosure\"},{\"command\":\"search\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"触发\",\"kind\":\"beat\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 9785,
+    "outputTokens": 125,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 7353
+  },
+  "responseId": "4ad76164-f200-4055-b513-52f51848b477",
+  "durationMs": 1030,
+  "startedAt": "2026-09-11T08:44:50.644Z",
+  "raw": {
+    "id": "4ad76164-f200-4055-b513-52f51848b477",
+    "object": "chat.completion",
+    "created": 1789116291,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":2,\"from\":63,\"to\":66},{\"command\":\"search\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"初次变身\",\"kind\":\"disclosure\"},{\"command\":\"search\",\"at\":{\"chapter\":2,\"paragraph\":66},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"触发\",\"kind\":\"beat\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 9785,
+      "completion_tokens": 125,
+      "total_tokens": 9910,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 7353
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

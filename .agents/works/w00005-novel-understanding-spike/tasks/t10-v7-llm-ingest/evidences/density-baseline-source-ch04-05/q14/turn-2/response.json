@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵是一只白貂，自称“观星者精灵”。半年前，离家出走的南小风遇到了身边的这只白貂白灵；在他的引导下，南小风获得了一枚守护之星，从此以魔法少女【风信子】的身份活跃于蓉城。因此，“风信子”是南小风作为魔法少女的身份名称，二者为同一人。\",\"status\":\"answered\",\"recordIds\":[\"source-c04\"],\"sources\":[{\"chapter\":4,\"paragraph\":20},{\"chapter\":4,\"paragraph\":4}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3907,
+    "outputTokens": 123,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1475
+  },
+  "responseId": "d8deed94-5118-4fd7-af10-2b5450f766a3",
+  "durationMs": 1473,
+  "startedAt": "2026-09-11T09:10:02.144Z",
+  "raw": {
+    "id": "d8deed94-5118-4fd7-af10-2b5450f766a3",
+    "object": "chat.completion",
+    "created": 1789117802,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵是一只白貂，自称“观星者精灵”。半年前，离家出走的南小风遇到了身边的这只白貂白灵；在他的引导下，南小风获得了一枚守护之星，从此以魔法少女【风信子】的身份活跃于蓉城。因此，“风信子”是南小风作为魔法少女的身份名称，二者为同一人。\",\"status\":\"answered\",\"recordIds\":[\"source-c04\"],\"sources\":[{\"chapter\":4,\"paragraph\":20},{\"chapter\":4,\"paragraph\":4}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3907,
+      "completion_tokens": 123,
+      "total_tokens": 4030,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1475
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

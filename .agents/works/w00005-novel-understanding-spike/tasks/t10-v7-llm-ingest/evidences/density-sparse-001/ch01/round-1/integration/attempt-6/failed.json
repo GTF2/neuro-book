@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 6,
+  "startedAt": "2026-09-11T08:48:22.777Z",
+  "category": "validation",
+  "message": "Integration references invalid:\ntime_waking.time constraints at 1:7 references time_prev_death, available only at 1:15\nfact_su_name.fact dependencies at 1:5 references time_waking, available only at 1:7\nacc_mercury_heard_name.access target/evidence at 1:5 references ent_mercury_tome, available only at 1:7",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.036662244,
+    "minimumUsd": 0.036662244,
+    "maximumUsd": 0.036662244,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

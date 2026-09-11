@@ -1,0 +1,393 @@
+{
+  "answer": {
+    "text": "在当前读到的第1章第30段范围内，只能确认这本“黑色古书”会说话，并曾重复“两分钟前的开场白”；但原文尚未回放该开场白内容，因此无法确定它如何自称。第28段只显示古书在判断苏天晴“到底是不是自己要找的人”，这可作为一种关系位置线索：它可能把苏天晴视为寻找对象/目标人选，但并未明确称呼或确立为弟子、主人等具体关系。故答案仅为partial。",
+    "status": "partial",
+    "recordIds": [
+      "source-c01"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 13
+      },
+      {
+        "chapter": 1,
+        "paragraph": 20
+      },
+      {
+        "chapter": 1,
+        "paragraph": 23
+      },
+      {
+        "chapter": 1,
+        "paragraph": 26
+      },
+      {
+        "chapter": 1,
+        "paragraph": 28
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "from": 1,
+          "to": 30,
+          "query": "黑"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 7,
+              "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 13,
+              "text": "房间中的低沉言语再次响起，将苏天晴的注意力拽回眼前这本黑色古书。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 15,
+              "text": "五分钟前，结束了连续三个夜班后刚下班的自己坐在街边面摊上嗦着一碗加了煎蛋的豪华牛肉面，正往碗里加着辣椒面，突然听到自己太奶在背后说话，恍惚间回头一看，只见太奶坐在藤椅上悠闲地编着一只围巾，然后胸口一疼眼前一黑，就这么背过了气去。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 20,
+              "text": "黑色古书发出低沉的言语，不太明白眼前这只狐狐为什么要突然用怪异的手法去薅她自己的尾巴。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 26,
+              "text": "那么眼前这本黑色会说话的书是怎么回事？有人能给我解释一下吗？"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "from": 20,
+          "to": 30,
+          "query": "书"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "黑色古书",
+          "kind": "disclosure"
+        },
+        {
+          "command": "facts",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "古书 自称"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 20,
+              "text": "黑色古书发出低沉的言语，不太明白眼前这只狐狐为什么要突然用怪异的手法去薅她自己的尾巴。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 23,
+              "text": "苏天晴干咳两声掩饰尴尬，伸手阻止了面前这本奇怪的古书继续说话，眼珠一转，飞快地理清思绪。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 26,
+              "text": "那么眼前这本黑色会说话的书是怎么回事？有人能给我解释一下吗？"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 27,
+              "text": "“你是谁？”苏天晴扭头正视眼前这本书，茫然地说道。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c01",
+              "revision": 1,
+              "chapter": 1,
+              "paragraph": 28,
+              "text": "古书沉默了一会儿，像是在思考眼前这只呆头呆脑的狐狐到底是不是自己要找的人，良久后方才重复了一遍两分钟前的开场白："
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "from": 28,
+          "to": 30,
+          "query": ""
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request query: Too small: expected string to have >=1 characters"
+        }
+      ]
+    }
+  ],
+  "queries": 5,
+  "sourceQueries": 2,
+  "exhausted": true
+}

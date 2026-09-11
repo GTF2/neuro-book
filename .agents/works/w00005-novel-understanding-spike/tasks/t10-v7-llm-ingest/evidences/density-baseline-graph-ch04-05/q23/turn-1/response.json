@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"英雄协会\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"魔法少女\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"entity\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2480,
+    "outputTokens": 124,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 176
+  },
+  "responseId": "eda4e9e8-1d7b-4349-859a-3befff6c5f79",
+  "durationMs": 961,
+  "startedAt": "2026-09-11T09:11:16.716Z",
+  "raw": {
+    "id": "eda4e9e8-1d7b-4349-859a-3befff6c5f79",
+    "object": "chat.completion",
+    "created": 1789117877,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"英雄协会\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"魔法少女\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":43},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"entity\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2480,
+      "completion_tokens": 124,
+      "total_tokens": 2604,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 176
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

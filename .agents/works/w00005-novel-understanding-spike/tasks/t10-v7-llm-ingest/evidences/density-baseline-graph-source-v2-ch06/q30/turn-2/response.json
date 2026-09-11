@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"第六章第109段原文显示：视频发布时间为8月31日下午三点，播放量已经超过一万，同时观看人数100+。关于“当前时间”，第109段只给出了发布时间“8月31日下午三点”，未在同一句说明当前时间；查询未覆盖到可确定当前时刻的原文。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":109}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4322,
+    "outputTokens": 96,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1890
+  },
+  "responseId": "3e2a0520-8879-4ad5-894e-fb9fdb61c2e4",
+  "durationMs": 1141,
+  "startedAt": "2026-09-11T09:30:58.849Z",
+  "raw": {
+    "id": "3e2a0520-8879-4ad5-894e-fb9fdb61c2e4",
+    "object": "chat.completion",
+    "created": 1789119059,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"第六章第109段原文显示：视频发布时间为8月31日下午三点，播放量已经超过一万，同时观看人数100+。关于“当前时间”，第109段只给出了发布时间“8月31日下午三点”，未在同一句说明当前时间；查询未覆盖到可确定当前时刻的原文。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":109}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4322,
+      "completion_tokens": 96,
+      "total_tokens": 4418,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1890
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

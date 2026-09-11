@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前已读范围（至第5章第24段）内，未查到苏天晴给触手怪设定限制的相关记录；已读原文中出现的触手怪设定内容尚未涉及“限制”。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5006,
+    "outputTokens": 69,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2574
+  },
+  "responseId": "23407c20-22e8-4fa5-aee9-becaa75e76e2",
+  "durationMs": 1553,
+  "startedAt": "2026-09-11T09:19:11.129Z",
+  "raw": {
+    "id": "23407c20-22e8-4fa5-aee9-becaa75e76e2",
+    "object": "chat.completion",
+    "created": 1789118351,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前已读范围（至第5章第24段）内，未查到苏天晴给触手怪设定限制的相关记录；已读原文中出现的触手怪设定内容尚未涉及“限制”。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5006,
+      "completion_tokens": 69,
+      "total_tokens": 5075,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2574
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

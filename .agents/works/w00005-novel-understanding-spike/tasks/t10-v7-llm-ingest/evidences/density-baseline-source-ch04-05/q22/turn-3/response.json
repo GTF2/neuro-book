@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前可读范围（第5章第35段）内，只能看到第5章第33段确认“每日任务1：找茬魔法少女，已完成”以及第31段“管他呢！总之先把任务奖励领了再说”，但未找到该任务完成后奖励如何结算的具体内容；因此无法确定结算方式。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":33},{\"chapter\":5,\"paragraph\":31}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3795,
+    "outputTokens": 110,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1363
+  },
+  "responseId": "bb9086a7-4f91-4e93-93e3-98e33811c648",
+  "durationMs": 1103,
+  "startedAt": "2026-09-11T09:11:13.617Z",
+  "raw": {
+    "id": "bb9086a7-4f91-4e93-93e3-98e33811c648",
+    "object": "chat.completion",
+    "created": 1789117874,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前可读范围（第5章第35段）内，只能看到第5章第33段确认“每日任务1：找茬魔法少女，已完成”以及第31段“管他呢！总之先把任务奖励领了再说”，但未找到该任务完成后奖励如何结算的具体内容；因此无法确定结算方式。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":33},{\"chapter\":5,\"paragraph\":31}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3795,
+      "completion_tokens": 110,
+      "total_tokens": 3905,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1363
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

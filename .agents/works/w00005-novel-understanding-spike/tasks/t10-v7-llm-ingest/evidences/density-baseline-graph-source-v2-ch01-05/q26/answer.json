@@ -1,0 +1,337 @@
+{
+  "answer": {
+    "text": "第五章末尾（阅读范围内）的每日任务为：每日任务1“记录魔法少女的窘迫状况”，奖励100神典石；每日任务2“让至少100人观看到魔法少女的窘况”，奖励100神典石。",
+    "status": "answered",
+    "recordIds": [],
+    "sources": [
+      {
+        "chapter": 5,
+        "paragraph": 85
+      },
+      {
+        "chapter": 5,
+        "paragraph": 86
+      },
+      {
+        "chapter": 5,
+        "paragraph": 87
+      },
+      {
+        "chapter": 5,
+        "paragraph": 88
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 80,
+          "to": 98,
+          "query": "每日任务"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 88,
+          "query": "每日任务"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 88,
+          "query": "奖励"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 88,
+          "query": "观看"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 32,
+              "text": "狐狐迫不及待地洗漱完毕，跑到客厅捧起古书，翻开到每日任务的那一页。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 33,
+              "text": "【每日任务1：找茬魔法少女，已完成】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 84,
+              "text": "接着苏天晴注意到了今天的每日任务。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 85,
+              "text": "【每日任务1：记录魔法少女的窘迫状况】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 87,
+              "text": "【每日任务2：让至少100人观看到魔法少女的窘况】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 31,
+              "text": "管他呢！总之先把任务奖励领了再说！"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 39,
+              "text": "【奖励：200神典石】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 86,
+              "text": "【奖励：100神典石】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 88,
+              "text": "【奖励：100神典石】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 87,
+              "text": "【每日任务2：让至少100人观看到魔法少女的窘况】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 4,
+  "sourceQueries": 4,
+  "exhausted": false
+}

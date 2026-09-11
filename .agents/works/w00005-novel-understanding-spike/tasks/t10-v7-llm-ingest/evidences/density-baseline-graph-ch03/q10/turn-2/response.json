@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"entity\"},{\"command\":\"facts\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c01:E_tome\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"袭击\",\"kind\":\"fact\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3724,
+    "outputTokens": 122,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1292
+  },
+  "responseId": "4f03af0b-3f97-4f58-9081-47cc0d995f19",
+  "durationMs": 885,
+  "startedAt": "2026-09-11T08:55:52.778Z",
+  "raw": {
+    "id": "4f03af0b-3f97-4f58-9081-47cc0d995f19",
+    "object": "chat.completion",
+    "created": 1789116953,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"entity\"},{\"command\":\"facts\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c01:E_tome\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"袭击\",\"kind\":\"fact\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3724,
+      "completion_tokens": 122,
+      "total_tokens": 3846,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1292
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

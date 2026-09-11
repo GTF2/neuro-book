@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"最优秀的适格者\"},{\"command\":\"facts\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"entity\":\"苏天晴\",\"predicate\":\"最优秀的适格者\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2489,
+    "outputTokens": 125,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 185
+  },
+  "responseId": "1ed92888-dc18-4966-88a3-2ae9c4b32ed5",
+  "durationMs": 1117,
+  "startedAt": "2026-09-11T08:45:41.973Z",
+  "raw": {
+    "id": "1ed92888-dc18-4966-88a3-2ae9c4b32ed5",
+    "object": "chat.completion",
+    "created": 1789116342,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"最优秀的适格者\"},{\"command\":\"facts\",\"at\":{\"chapter\":1,\"paragraph\":30},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"entity\":\"苏天晴\",\"predicate\":\"最优秀的适格者\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2489,
+      "completion_tokens": 125,
+      "total_tokens": 2614,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 185
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

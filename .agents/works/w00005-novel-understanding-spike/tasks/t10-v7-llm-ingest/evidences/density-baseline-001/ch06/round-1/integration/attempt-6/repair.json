@@ -1,0 +1,52 @@
+{
+  "replacements": [
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F_trap_plan",
+        "at": 46,
+        "text": "苏天晴想到，只要自己亲身下场操作，这个看起来有点鸡肋的定身陷阱说不定还真能玩出花来。",
+        "predicate": "P_considers",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "idea",
+            "value": {
+              "type": "text",
+              "text": "亲身下场操作定身陷阱，或许能玩出花来"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": "T_ch6_day",
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su6"
+        ],
+        "proof": {
+          "premises": [
+            "d23"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d23记录她设想只要亲身下场操作，这个看似鸡肋的定身陷阱或许能玩出花来，用该谓词的subject/idea两角色完整覆盖其设想内容与主体。"
+        }
+      }
+    }
+  ]
+}

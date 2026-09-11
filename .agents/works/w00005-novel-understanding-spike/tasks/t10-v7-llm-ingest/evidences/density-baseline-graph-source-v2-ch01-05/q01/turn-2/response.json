@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读范围内，第1章第7段只写到苏天晴从床边落地镜中“瞥见一道陌生的娇小身影”，尚未给出该身影的身份或更具体的外貌描述；因此目前无法确定她看到的具体身份/外貌。\",\"status\":\"partial\",\"recordIds\":[\"c01:R1:mention:1\",\"c01:R1:mention:2\",\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":7}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4148,
+    "outputTokens": 109,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1716
+  },
+  "responseId": "7a87fd1b-f07c-40ed-b774-060219b63bdb",
+  "durationMs": 1642,
+  "startedAt": "2026-09-11T09:17:15.270Z",
+  "raw": {
+    "id": "7a87fd1b-f07c-40ed-b774-060219b63bdb",
+    "object": "chat.completion",
+    "created": 1789118235,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在已读范围内，第1章第7段只写到苏天晴从床边落地镜中“瞥见一道陌生的娇小身影”，尚未给出该身影的身份或更具体的外貌描述；因此目前无法确定她看到的具体身份/外貌。\",\"status\":\"partial\",\"recordIds\":[\"c01:R1:mention:1\",\"c01:R1:mention:2\",\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":7}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4148,
+      "completion_tokens": 109,
+      "total_tokens": 4257,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1716
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

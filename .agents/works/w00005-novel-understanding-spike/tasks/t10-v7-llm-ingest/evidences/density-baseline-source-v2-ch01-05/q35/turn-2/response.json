@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"绿心公园\",\"from\":1,\"to\":129},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"怪人\",\"from\":1,\"to\":129},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"绿心公园\",\"from\":1,\"to\":129}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4285,
+    "outputTokens": 113,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 3517
+  },
+  "responseId": "1cc09f26-0fb0-46c9-ab4d-68365115114a",
+  "durationMs": 809,
+  "startedAt": "2026-09-11T09:19:43.898Z",
+  "raw": {
+    "id": "1cc09f26-0fb0-46c9-ab4d-68365115114a",
+    "object": "chat.completion",
+    "created": 1789118384,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"绿心公园\",\"from\":1,\"to\":129},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"怪人\",\"from\":1,\"to\":129},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"绿心公园\",\"from\":1,\"to\":129}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4285,
+      "completion_tokens": 113,
+      "total_tokens": 4398,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 3517
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

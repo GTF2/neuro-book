@@ -1,0 +1,605 @@
+{
+  "answer": {
+    "text": "白灵被描述为“白貂般的奇妙生物”（第4章第15段），属于一种奇妙生物；南小风与“风信子”指向同一实体记录（第3章第15段称其为“天蓝色的少女”，第4章第4段出现“南小风”之名）。但就“白灵与南小风/风信子如何结识”，当前已读记录未提供结识经过，无法确定。",
+    "status": "partial",
+    "recordIds": [
+      "c04:E_bailing",
+      "c03:E_fengxinzi"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 15
+      },
+      {
+        "chapter": 3,
+        "paragraph": 15
+      },
+      {
+        "chapter": 4,
+        "paragraph": 4
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "白灵"
+        },
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "南小风"
+        },
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "白灵"
+        },
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "南小风"
+        },
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 20
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:E_bailing",
+                "revision": 4,
+                "label": "白灵",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 12,
+                    "end": 20
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "白灵",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:BaiLing:mention:2",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_bailing",
+                          "revision": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:BaiLing:mention:2",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_bailing",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 12,
+                      "end": 20
+                    },
+                    "chapter": 4,
+                    "text": "白貂般的奇妙生物"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "白灵",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 4,
+                "label": "南小风",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "南小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:4",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:4",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "南小风",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 4,
+                "label": "南小风",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "南小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:4",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:4",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "风信子",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 20
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

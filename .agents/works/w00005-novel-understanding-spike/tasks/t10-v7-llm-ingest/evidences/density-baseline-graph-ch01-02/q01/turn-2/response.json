@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"entities\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"苏天晴\"\n    },\n    {\n      \"command\": \"search\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"落地镜\",\n      \"kind\": \"mention\"\n    },\n    {\n      \"command\": \"facts\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"落地镜\"\n    }\n  ]\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2587,
+    "outputTokens": 147,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 155
+  },
+  "responseId": "9d5c575a-f0ea-4c5e-bc35-569ddc5e4d36",
+  "durationMs": 1152,
+  "startedAt": "2026-09-11T08:44:23.551Z",
+  "raw": {
+    "id": "9d5c575a-f0ea-4c5e-bc35-569ddc5e4d36",
+    "object": "chat.completion",
+    "created": 1789116264,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"query\",\n  \"requests\": [\n    {\n      \"command\": \"entities\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"苏天晴\"\n    },\n    {\n      \"command\": \"search\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"落地镜\",\n      \"kind\": \"mention\"\n    },\n    {\n      \"command\": \"facts\",\n      \"perspective\": \"reader\",\n      \"world\": \"original\",\n      \"limit\": 10,\n      \"query\": \"落地镜\"\n    }\n  ]\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2587,
+      "completion_tokens": 147,
+      "total_tokens": 2734,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 155
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

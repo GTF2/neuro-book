@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴离开绿心公园时记得是晚上八点；她推算风信子被整整吊了七个小时。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":29}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3749,
+    "outputTokens": 62,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 1445
+  },
+  "responseId": "3a1c1abb-fc1f-45f3-b5db-dd5db99967c8",
+  "durationMs": 1089,
+  "startedAt": "2026-09-11T09:11:08.393Z",
+  "raw": {
+    "id": "3a1c1abb-fc1f-45f3-b5db-dd5db99967c8",
+    "object": "chat.completion",
+    "created": 1789117869,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴离开绿心公园时记得是晚上八点；她推算风信子被整整吊了七个小时。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":29}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3749,
+      "completion_tokens": 62,
+      "total_tokens": 3811,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 1445
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

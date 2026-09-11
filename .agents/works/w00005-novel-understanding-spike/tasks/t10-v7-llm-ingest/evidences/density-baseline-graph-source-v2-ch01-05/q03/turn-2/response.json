@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"entity\":\"c01:E_tome\",\"limit\":10},{\"command\":\"knowledge\",\"holder\":\"c01:E_su\",\"about\":\"c01:E_tome\",\"limit\":10},{\"command\":\"summaries\",\"entity\":\"c01:E_tome\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 14415,
+    "outputTokens": 67,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 11983
+  },
+  "responseId": "65f0daf1-e822-4467-9110-9820c1398616",
+  "durationMs": 1157,
+  "startedAt": "2026-09-11T09:17:20.744Z",
+  "raw": {
+    "id": "65f0daf1-e822-4467-9110-9820c1398616",
+    "object": "chat.completion",
+    "created": 1789118241,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"entity\":\"c01:E_tome\",\"limit\":10},{\"command\":\"knowledge\",\"holder\":\"c01:E_su\",\"about\":\"c01:E_tome\",\"limit\":10},{\"command\":\"summaries\",\"entity\":\"c01:E_tome\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 14415,
+      "completion_tokens": 67,
+      "total_tokens": 14482,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 11983
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

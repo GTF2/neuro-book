@@ -1,0 +1,145 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q28",
+    "q29",
+    "q30",
+    "q31",
+    "q32",
+    "q33",
+    "q36",
+    "q40"
+  ],
+  "mode": "graph-source",
+  "codeHash": "e3f7332b46022fca76eaa6738039ac0c762f71efa65d438d0842f034ddfac52e",
+  "snapshots": [
+    {
+      "chapter": 6,
+      "sha256": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q28",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 15
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章14、15段直接支持：开盒想法一瞬被抛诸脑后，且明确“开盒这种事肯定不能干”，与所答否定态度一致；未发现关键误合并或反转。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q29",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 23
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确给出第6章第22段的售价50神典石，并完整引用第23段的功能：无需充电的魔法摄像头、附赠隐藏真实身份的视频网站账号，与查询证据一致。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q30",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 110
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答正确给出第109段的视频发布时间、播放量和同时观看人数，但未给出第110段明确的当前时间“六点五十”，因此缺少问题所需的关键部分。",
+      "queries": 3,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q31",
+      "group": "boundary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 107
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第6章第103、106-107段的原文明确支持“今晚七点、蓉城第三文理学院、不见不散”及“见不到就夷平教学楼”的威胁；回答同时正确说明截至第6章第107段尚未确认实施威胁。引用与结论相符，无关键性错误。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q32",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用的第110-114段逐字支持：南小风看到六点五十、距七点十分钟，随后抓起金色十字星翻窗跃出，发动“魔法少女风信子——变身！”并化作流星朝学校方向疾驰。回答完整覆盖该行动链，无关键错误。",
+      "queries": 6,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q33",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 90
+      },
+      "verdict": "correct",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "答案准确概括白灵震惊举手机、强塞手机并播放视频，使风信子得知；但实际引用未含第85段“视频很重要/赶紧看第一个视频”，故引用仅部分支持。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q36",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "将原文已明确的约战时间地点（今晚七点、蓉城第三文理学院）说成无法确定，并遗漏全勤‘断更2天’与每日任务1记录魔法少女窘迫的关键内容。",
+      "reason": "答案只部分涉及任务转向，引用仅支持十万水星、本狐/狐狐、每日任务200块等枝节；生活压力未用原文断更2天事实，最终约战也未给出明确时间地点，概括不完整且有关键错判。",
+      "queries": 3,
+      "sourceQueries": 0
+    }
+  ],
+  "failures": [
+    {
+      "id": "q40",
+      "error": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [],\n    \"note\": \"No matching discriminator\",\n    \"discriminator\": \"action\",\n    \"options\": [\n      \"query\",\n      \"answer\"\n    ],\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid discriminator value. Expected 'query' | 'answer'\"\n  }\n]"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

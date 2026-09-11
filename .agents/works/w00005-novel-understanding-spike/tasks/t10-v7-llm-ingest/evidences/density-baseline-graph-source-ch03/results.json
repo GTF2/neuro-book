@@ -1,0 +1,97 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q08",
+    "q09",
+    "q10",
+    "q11",
+    "q12"
+  ],
+  "mode": "graph-source",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 3,
+      "sha256": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q08",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答完整复述了第3章第10段的核心关系：魔法少女受英雄协会管辖委派、与怪人战斗并作为偶像出镜、真实身份保密但变身后广为人知，还补充战斗成为宣传方式。虽未在已查记录中确认“苏天晴网上/记忆中了解”这一来源，但已明确保留该局限，核心内容有原文支持，无关键错误。",
+      "queries": 6,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q09",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第3章第11段说明蓉城目前有一名活跃魔法少女，第3章第16段苏天晴呢喃念出“她的代号”为【风信子】，两处结合完整支持代号是风信子。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q10",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 33
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答声称未找到预测，但期望证据显示第3章第33段原文已明确写出怪人地点和风信子行动；其引用第3章第21段仅证明秘典自我介绍，不能支持“无法确定”的结论。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q12",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 3,
+        "paragraph": 32
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答指认第3章第32段的原文，并据第31段标题及上下文说明这是介绍/资料式文本，明确否定风信子本人自述；关键结论有原文支持。",
+      "queries": 6,
+      "sourceQueries": 3
+    }
+  ],
+  "failures": [
+    {
+      "id": "q11",
+      "error": "Query model exceeded its fixed query budget"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

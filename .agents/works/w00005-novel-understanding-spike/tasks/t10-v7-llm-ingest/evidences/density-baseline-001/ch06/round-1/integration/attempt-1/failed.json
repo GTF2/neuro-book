@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 6,
+  "attempt": 1,
+  "startedAt": "2026-09-11T09:10:33.959Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nT_ch6_day.time constraints at 6:7 references T_ch6_evening, available only at 6:49\nT_ch6_evening.time constraints at 6:49 references T_7pm, available only at 6:103\nF_su_scene.fact dependencies at 6:5 references T_ch6_day, available only at 6:7\nF_su_reliance.fact dependencies at 6:6 references T_ch6_day, available only at 6:7\nEP_nan_homework_ch6.episode dependencies at 6:77 references EP_video_ch6, available only at 6:111\nEP_nan_homework_ch6.episode dependencies at 6:77 references d33, available only at 6:83\nEP_nan_homework_ch6.episode dependencies at 6:77 references d40, available only at 6:111\nEP_video_ch6.episode dependencies at 6:111 references EP_nan_departure_ch6, available only at 6:114\nEP_video_ch6.episode dependencies at 6:111 references d41, available only at 6:114",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.06641541599999999,
+    "minimumUsd": 0.06641541599999999,
+    "maximumUsd": 0.06641541599999999,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":5,\"chapter\":2,\"from\":38,\"to\":48},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"金色十字星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"守护之星\",\"kind\":\"mention\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2458,
+    "outputTokens": 93,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 282
+  },
+  "responseId": "2ec948b3-bbd4-4973-abb4-b7f115031031",
+  "durationMs": 1145,
+  "startedAt": "2026-09-11T09:17:42.918Z",
+  "raw": {
+    "id": "2ec948b3-bbd4-4973-abb4-b7f115031031",
+    "object": "chat.completion",
+    "created": 1789118263,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":5,\"chapter\":2,\"from\":38,\"to\":48},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"金色十字星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"守护之星\",\"kind\":\"mention\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2458,
+      "completion_tokens": 93,
+      "total_tokens": 2551,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 282
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

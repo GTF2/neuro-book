@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 5,
+  "attempt": 1,
+  "startedAt": "2026-09-11T09:02:25.508Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nEP_announcement.episode dependencies at 5:27 references d12, available only at 5:30\nEP_announcement.episode dependencies at 5:27 references d12, available only at 5:30",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.07445001600000001,
+    "minimumUsd": 0.07445001600000001,
+    "maximumUsd": 0.07445001600000001,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":16,\"to\":16,\"query\":\"魔法少女\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 860,
+    "outputTokens": 44,
+    "cacheHitTokens": 640,
+    "cacheMissTokens": 220
+  },
+  "responseId": "c25abda2-9d21-429c-ba16-1408201e630f",
+  "durationMs": 989,
+  "startedAt": "2026-09-11T09:18:04.703Z",
+  "raw": {
+    "id": "c25abda2-9d21-429c-ba16-1408201e630f",
+    "object": "chat.completion",
+    "created": 1789118285,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":16,\"to\":16,\"query\":\"魔法少女\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 860,
+      "completion_tokens": 44,
+      "total_tokens": 904,
+      "prompt_tokens_details": {
+        "cached_tokens": 640
+      },
+      "prompt_cache_hit_tokens": 640,
+      "prompt_cache_miss_tokens": 220
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

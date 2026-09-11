@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"风信子擅长近战压制与肉搏，对魔法尚不熟练\",\"kind\":\"disclosure\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":3,\"query\":\"风信子擅长近战压制与肉搏\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":3,\"query\":\"风信子\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2472,
+    "outputTokens": 114,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 296
+  },
+  "responseId": "4c24d384-4b05-432d-8164-0b0b54481369",
+  "durationMs": 1243,
+  "startedAt": "2026-09-11T09:18:08.539Z",
+  "raw": {
+    "id": "4c24d384-4b05-432d-8164-0b0b54481369",
+    "object": "chat.completion",
+    "created": 1789118289,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"风信子擅长近战压制与肉搏，对魔法尚不熟练\",\"kind\":\"disclosure\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":3,\"query\":\"风信子擅长近战压制与肉搏\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":3,\"query\":\"风信子\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2472,
+      "completion_tokens": 114,
+      "total_tokens": 2586,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 296
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":5,\"query\":\"绿心公园\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":5,\"query\":\"吊\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":5,\"query\":\"离开\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2644,
+    "outputTokens": 89,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 212
+  },
+  "responseId": "1ba4dfaa-16db-404a-8beb-2895e265dfe5",
+  "durationMs": 1350,
+  "startedAt": "2026-09-11T09:11:06.996Z",
+  "raw": {
+    "id": "1ba4dfaa-16db-404a-8beb-2895e265dfe5",
+    "object": "chat.completion",
+    "created": 1789117867,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":5,\"query\":\"绿心公园\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":5,\"query\":\"吊\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"source\",\"chapter\":5,\"query\":\"离开\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2644,
+      "completion_tokens": 89,
+      "total_tokens": 2733,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 212
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

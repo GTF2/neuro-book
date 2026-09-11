@@ -1,0 +1,1080 @@
+{
+  "answer": {
+    "text": "截至阅读进度，已读记录显示风信子的真名为“南小风”（第4章第4段披露），但尚未检索到关于其年龄和就读学校的记录。",
+    "status": "partial",
+    "recordIds": [
+      "c04:F2",
+      "c04:D2",
+      "c04:B2"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 4
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        },
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "秘典情报"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "真名"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 5,
+                "label": "风信子小姐",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "南小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:4",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 67
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:10",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "风信子小姐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 121
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:18",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:4",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:10",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:18",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "风信子",
+                  "match": "exact"
+                },
+                {
+                  "text": "风信子小姐",
+                  "match": "prefix"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c04:F2",
+                "revision": 5,
+                "label": "依据：魔法少女风信子的真名是南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c04:D2",
+                    "revision": 5
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c04:F2",
+                    "revision": 5
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c04:D2",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "D2直接说明风信子真名南小风。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 56
+                    },
+                    {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 0,
+                      "end": 14
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:F2",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D2",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c04:D2",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 56
+                    },
+                    "chapter": 4,
+                    "text": "天空中划过一道天蓝的轨迹，人们纷纷抬头张望指指点点，可流星般划过整个蓉城上空的天蓝色少女心情却并没有那么美妙——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 0,
+                      "end": 14
+                    },
+                    "chapter": 4,
+                    "text": "魔法少女风信子，真名南小风。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:B2",
+                "revision": 5,
+                "label": "风信子报告正赶往绿心公园；天蓝色轨迹划过蓉城；揭示魔法少女风信子真名南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 2,
+                    "start": 0,
+                    "end": 24
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 3,
+                    "start": 0,
+                    "end": 56
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 4,
+                    "start": 0,
+                    "end": 14
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "风信子报告正赶往绿心公园；天蓝色轨迹划过蓉城；揭示魔法少女风信子真名南小风。",
+                  "chapterId": "c04",
+                  "fromParagraph": 2,
+                  "toParagraph": 4,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 5
+                    },
+                    {
+                      "id": "c04:LvXinGongYuan",
+                      "revision": 5
+                    },
+                    {
+                      "id": "c04:RongCheng",
+                      "revision": 5
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c04:D1",
+                      "revision": 5
+                    },
+                    {
+                      "id": "c04:D2",
+                      "revision": 5
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:LvXinGongYuan",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:RongCheng",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D2",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 0,
+                      "end": 24
+                    },
+                    "chapter": 4,
+                    "text": "“我是风信子，已经接到报告，正在赶往绿心公园！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 56
+                    },
+                    "chapter": 4,
+                    "text": "天空中划过一道天蓝的轨迹，人们纷纷抬头张望指指点点，可流星般划过整个蓉城上空的天蓝色少女心情却并没有那么美妙——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 0,
+                      "end": 14
+                    },
+                    "chapter": 4,
+                    "text": "魔法少女风信子，真名南小风。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:D2",
+                "revision": 5,
+                "label": "天空中划过天蓝色轨迹，人们纷纷抬头张望；天蓝色少女是魔法少女风信子，真名南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 3,
+                    "start": 0,
+                    "end": 56
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 4,
+                    "start": 0,
+                    "end": 14
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "天空中划过天蓝色轨迹，人们纷纷抬头张望；天蓝色少女是魔法少女风信子，真名南小风。",
+                  "channel": "narrator",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "narrator",
+                      "holder": null
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 5
+                    },
+                    {
+                      "id": "c04:RongCheng",
+                      "revision": 5
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:RongCheng",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 3,
+                      "start": 0,
+                      "end": 56
+                    },
+                    "chapter": 4,
+                    "text": "天空中划过一道天蓝的轨迹，人们纷纷抬头张望指指点点，可流星般划过整个蓉城上空的天蓝色少女心情却并没有那么美妙——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 0,
+                      "end": 14
+                    },
+                    "chapter": 4,
+                    "text": "魔法少女风信子，真名南小风。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F2",
+                "revision": 5,
+                "label": "魔法少女风信子的真名是南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "魔法少女风信子的真名是南小风。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 5
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 5
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "真名南小风"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_fengxinzi",
+                      "revision": 5
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F2:at:4:4",
+                "revision": 5,
+                "label": "评估：魔法少女风信子的真名是南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 4
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F2",
+                    "revision": 5
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F2",
+                      "revision": 5
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 4
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F2",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c05:I_wind",
+                "revision": 5,
+                "label": "依据：局部指称归属：风信子",
+                "availableAt": {
+                  "chapter": 5,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c05:r_wind:mention:1",
+                    "revision": 5
+                  },
+                  {
+                    "id": "c05:d7",
+                    "revision": 5
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c05:I_wind",
+                    "revision": 5
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c05:r_wind:mention:1",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c05:d7",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c04:I_fengxinzi",
+                        "revision": 5
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "风信子与第3、4章的魔法少女风信子同名同角色；本章情报页披露的真名南小风与第4章一致。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 9,
+                      "end": 12
+                    },
+                    {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 29
+                    },
+                    {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 0,
+                      "end": 24
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c05:I_wind",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:r_wind:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:d7",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c05:r_wind:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c05:d7",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 9,
+                      "end": 12
+                    },
+                    "chapter": 5,
+                    "text": "风信子"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c05",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 29
+                    },
+                    "chapter": 5,
+                    "text": "“公告？与魔法少女风信子有关？”苏天晴有点讶异地自言自语。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 2,
+                      "start": 0,
+                      "end": 24
+                    },
+                    "chapter": 4,
+                    "text": "“我是风信子，已经接到报告，正在赶往绿心公园！”"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 97
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 0,
+  "exhausted": false
+}

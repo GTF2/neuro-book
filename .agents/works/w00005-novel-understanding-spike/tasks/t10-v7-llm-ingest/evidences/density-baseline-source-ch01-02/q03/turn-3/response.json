@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":1,\"from\":76,\"to\":76,\"query\":\"墨丘利\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2758,
+    "outputTokens": 45,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 326
+  },
+  "responseId": "1b922dbe-e708-4e24-acaf-db362f861a51",
+  "durationMs": 933,
+  "startedAt": "2026-09-11T08:44:20.173Z",
+  "raw": {
+    "id": "1b922dbe-e708-4e24-acaf-db362f861a51",
+    "object": "chat.completion",
+    "created": 1789116260,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":1,\"from\":76,\"to\":76,\"query\":\"墨丘利\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2758,
+      "completion_tokens": 45,
+      "total_tokens": 2803,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 326
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

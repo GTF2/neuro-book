@@ -1,0 +1,4409 @@
+{
+  "answer": {
+    "text": "第1—2章中，苏天晴的主要处境是：她结束连续三个夜班后在街边面摊吃面时，听到太奶在背后说话并看到太奶坐在藤椅上编围巾，随后胸口一疼、眼前一黑失去意识；醒来后她已身处/具有一具娇小的金毛狐女身体，并认为自己重生为金毛狐女。关键变化包括：她向一本古书报出姓名“苏天晴”；墨丘利秘典（古书）声称前来寻找最优秀的适格者并指认她，随后向她提出签订一个小契约，称将引导她走上完美生活，她立刻同意签约；她确认契约成立，契约内容为“反派魔法少女”，她将从当天开始成为魔法少女活跃于世，系统也提示契约成立。上述关于“重生”、太奶出现、古书身份与说辞等，部分仅为其个人认知/古书单方说法或未独立证实；她是否真正死亡及原主身份、契约完整条款、原身下落等仍属未知。",
+    "status": "partial",
+    "recordIds": [
+      "c01:E_su",
+      "c01:F3",
+      "c01:F4",
+      "c01:F2",
+      "c01:F5",
+      "c01:F8",
+      "c01:F11",
+      "c01:F13",
+      "c01:F14",
+      "c01:F15",
+      "c01:F16",
+      "c01:F23"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 5
+      },
+      {
+        "chapter": 1,
+        "paragraph": 16
+      },
+      {
+        "chapter": 1,
+        "paragraph": 25
+      },
+      {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      {
+        "chapter": 1,
+        "paragraph": 44
+      },
+      {
+        "chapter": 1,
+        "paragraph": 45
+      },
+      {
+        "chapter": 1,
+        "paragraph": 59
+      },
+      {
+        "chapter": 1,
+        "paragraph": 64
+      },
+      {
+        "chapter": 1,
+        "paragraph": 67
+      },
+      {
+        "chapter": 1,
+        "paragraph": 75
+      },
+      {
+        "chapter": 2,
+        "paragraph": 87
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴"
+        },
+        {
+          "command": "summaries",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "苏天晴"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴",
+          "kind": "mention"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 2,
+                "label": "狐狐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_original_owner",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:ORIGINAL:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_original_owner",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:1",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:2",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 3
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 3
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 3
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:3",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 30,
+                    "start": 9,
+                    "end": 12
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 30,
+                    "start": 9,
+                    "end": 12
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 30,
+                      "start": 9,
+                      "end": 12
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:4",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 43
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 43,
+                    "start": 4,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 43,
+                    "start": 4,
+                    "end": 7
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 43,
+                      "start": 4,
+                      "end": 7
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:5",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 76
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 76,
+                    "start": 14,
+                    "end": 17
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 76,
+                    "start": 14,
+                    "end": 17
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 76,
+                      "start": 14,
+                      "end": 17
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STQ:mention:1",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 6
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 6,
+                    "start": 10,
+                    "end": 13
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STQ",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 6,
+                    "start": 10,
+                    "end": 13
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 10,
+                      "end": 13
+                    },
+                    "chapter": 2,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STQ:mention:4",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 12,
+                    "end": 15
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STQ",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 12,
+                    "end": 15
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 12,
+                      "end": 15
+                    },
+                    "chapter": 2,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:ORIGINAL:mention:1",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 18
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 18,
+                    "start": 10,
+                    "end": 13
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:ORIGINAL",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 18,
+                    "start": 10,
+                    "end": 13
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 18,
+                      "start": 10,
+                      "end": 13
+                    },
+                    "chapter": 2,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:ORIGINAL:mention:2",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 20
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 20,
+                    "start": 20,
+                    "end": 23
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:ORIGINAL",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 20,
+                    "start": 20,
+                    "end": 23
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 20,
+                      "start": 20,
+                      "end": 23
+                    },
+                    "chapter": 2,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STQ:mention:5",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 25,
+                    "start": 8,
+                    "end": 11
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STQ",
+                    "revision": 2
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 25,
+                    "start": 8,
+                    "end": 11
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 25,
+                      "start": 8,
+                      "end": 11
+                    },
+                    "chapter": 2,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 19,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImM0OWQzMTdkMWRjZjc4Y2ExNjFhOTk0MjJmOGY3NDBkYWMxZDg5OWRlOTI4ODRhNGY5NTg5NWE0M2MyOWJhOWYiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6Ijc3ODczNjdjZjQ0ODhjZDAwZmRiNTM2MTA4NTU1YzNlNjM0ZjQxNmQ4ZDVlMjBhOGRiYjRiY2NhNThkNjUxYzQifQ"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "c01:E_su"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "c02:STQ"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "契约",
+          "kind": "fact"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F1",
+                "revision": 2,
+                "label": "苏天晴向古书报出自己的姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴向古书报出自己的姓名“苏天晴”。",
+                  "predicate": {
+                    "id": "c01:P1",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "speaker",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "addressee",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "name",
+                      "value": {
+                        "type": "text",
+                        "text": "苏天晴"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F1:at:1:7",
+                "revision": 2,
+                "label": "评估：苏天晴向古书报出自己的姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F1",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F1",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 7
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F2",
+                "revision": 2,
+                "label": "苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                  "predicate": {
+                    "id": "c01:P10",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "body",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_fox_body",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_fox_body",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F2:at:1:11",
+                "revision": 2,
+                "label": "评估：苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F2",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F2",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 11
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P10",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P10",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F2",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F3",
+                "revision": 2,
+                "label": "在进入当前场景前，苏天晴结束连续三个夜班后在街边面摊吃加煎蛋的牛肉面，听到太奶在背后说话，随后胸口一疼、眼前一黑并失去意识。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "在进入当前场景前，苏天晴结束连续三个夜班后在街边面摊吃加煎蛋的牛肉面，听到太奶在背后说话，随后胸口一疼、眼前一黑并失去意识。",
+                  "predicate": {
+                    "id": "c01:P11",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "event",
+                      "value": {
+                        "type": "text",
+                        "text": "结束连续三个夜班后在街边面摊吃加煎蛋的牛肉面，听到太奶在背后说话，随后胸口一疼、眼前一黑并失去意识"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c01:T_before_current",
+                      "revision": 2
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F3:at:1:16",
+                "revision": 2,
+                "label": "评估：在进入当前场景前，苏天晴结束连续三个夜班后在街边面摊吃加煎蛋的牛肉面，听到太奶在背后说话，随后胸口一疼、眼前一黑并失去意识。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F3",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F3",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P11",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_before_current",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P11",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_before_current",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F3",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F4",
+                "revision": 2,
+                "label": "苏天晴在昏死前听到太奶在背后说话，并看到太奶坐在藤椅上编围巾。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴在昏死前听到太奶在背后说话，并看到太奶坐在藤椅上编围巾。",
+                  "predicate": {
+                    "id": "c01:P12",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "perceived",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_grandma",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "context",
+                      "value": {
+                        "type": "text",
+                        "text": "太奶坐在藤椅上悠闲地编着一只围巾"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c01:T_before_current",
+                      "revision": 2
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_grandma",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F4:at:1:16",
+                "revision": 2,
+                "label": "评估：苏天晴在昏死前听到太奶在背后说话，并看到太奶坐在藤椅上编围巾。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F4",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F4",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P12",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_grandma",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_before_current",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_grandma",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P12",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_grandma",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_before_current",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F4",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F5",
+                "revision": 2,
+                "label": "苏天晴认为/意识到自己已重生为一只金毛狐女。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴认为/意识到自己已重生为一只金毛狐女。",
+                  "predicate": {
+                    "id": "c01:P13",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "believer",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "proposition",
+                      "value": {
+                        "type": "text",
+                        "text": "我重生了，重生成了一只金毛狐女"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "belief",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F5:at:1:25",
+                "revision": 2,
+                "label": "评估：苏天晴认为/意识到自己已重生为一只金毛狐女。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F5",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F5",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 25
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F5",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F8",
+                "revision": 2,
+                "label": "墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                  "predicate": {
+                    "id": "c01:P4",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "seeker",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "qualification",
+                      "value": {
+                        "type": "text",
+                        "text": "最优秀的适格者"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F8:at:1:30",
+                "revision": 2,
+                "label": "评估：墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F8",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F8",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 30
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P4",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P4",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F8",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F9",
+                "revision": 2,
+                "label": "苏天晴推测墨丘利秘典知道她并不是这具金毛狐女身体原来的主人。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 41
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴推测墨丘利秘典知道她并不是这具金毛狐女身体原来的主人。",
+                  "predicate": {
+                    "id": "c01:P14",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "suspecter",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "knower",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "body",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_fox_body",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "original_owner",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_original_owner",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "belief",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "possible"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_fox_body",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_original_owner",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F9:at:1:41",
+                "revision": 2,
+                "label": "评估：苏天晴推测墨丘利秘典知道她并不是这具金毛狐女身体原来的主人。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 41
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F9",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F9",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 41
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P14",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P14",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F9",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F11",
+                "revision": 2,
+                "label": "墨丘利秘典向苏天晴提出签订一个小契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典向苏天晴提出签订一个小契约。",
+                  "predicate": {
+                    "id": "c01:P5",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "offerer",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "offeree",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F11:at:1:44",
+                "revision": 2,
+                "label": "评估：墨丘利秘典向苏天晴提出签订一个小契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F11",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F11",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 44
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P5",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P5",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F11",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F12",
+                "revision": 2,
+                "label": "墨丘利秘典称将引导苏天晴走上完美的生活。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典称将引导苏天晴走上完美的生活。",
+                  "predicate": {
+                    "id": "c01:P16",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "guide",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "guided",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "goal",
+                      "value": {
+                        "type": "text",
+                        "text": "走上完美的生活"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F12:at:1:44",
+                "revision": 2,
+                "label": "评估：墨丘利秘典称将引导苏天晴走上完美的生活。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F12",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F12",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 44
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P16",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P16",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F12",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F13",
+                "revision": 2,
+                "label": "苏天晴立即说“好，我签”，同意签订契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 45
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴立即说“好，我签”，同意签订契约。",
+                  "predicate": {
+                    "id": "c01:P6",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F13:at:1:45",
+                "revision": 2,
+                "label": "评估：苏天晴立即说“好，我签”，同意签订契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 45
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F13",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F13",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 45
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P6",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P6",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F13",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 33,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjVkODJkZTAwZTkwODM1M2ZhNmM2NGVlMzQwZjY5M2E1ZDBiMmFiZGIxNDRjYTg3ZjI1OGJlZjJlZmEwZWQ2ZGEiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6ImI4NjljODE3Y2ZlMTg1N2Q0OTY5MTczY2M1OTljZTllYTRiNDk2MjQ1MjEyMGFlMDRkOGYzMzEzOTliZWM0NzYifQ"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F11",
+                "revision": 2,
+                "label": "墨丘利秘典向苏天晴提出签订一个小契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典向苏天晴提出签订一个小契约。",
+                  "predicate": {
+                    "id": "c01:P5",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "offerer",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "offeree",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F11:at:1:44",
+                "revision": 2,
+                "label": "评估：墨丘利秘典向苏天晴提出签订一个小契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 44
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F11",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F11",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 44
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P5",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P5",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F11",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F13",
+                "revision": 2,
+                "label": "苏天晴立即说“好，我签”，同意签订契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 45
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴立即说“好，我签”，同意签订契约。",
+                  "predicate": {
+                    "id": "c01:P6",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F13:at:1:45",
+                "revision": 2,
+                "label": "评估：苏天晴立即说“好，我签”，同意签订契约。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 45
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F13",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F13",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 45
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P6",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P6",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F13",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F14",
+                "revision": 2,
+                "label": "苏天晴确认与墨丘利秘典的契约成立。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 59
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴确认与墨丘利秘典的契约成立。",
+                  "predicate": {
+                    "id": "c01:P7",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F14:at:1:59",
+                "revision": 2,
+                "label": "评估：苏天晴确认与墨丘利秘典的契约成立。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 59
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F14",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F14",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 59
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P7",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P7",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F14",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F15",
+                "revision": 2,
+                "label": "墨丘利秘典称契约内容为“反派魔法少女”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 64
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典称契约内容为“反派魔法少女”。",
+                  "predicate": {
+                    "id": "c01:P8",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "party",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "role",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_villain",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_villain",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F15:at:1:64",
+                "revision": 2,
+                "label": "评估：墨丘利秘典称契约内容为“反派魔法少女”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 64
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F15",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F15",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 64
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P8",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_villain",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_villain",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P8",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_villain",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F15",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F16",
+                "revision": 2,
+                "label": "墨丘利秘典称契约已签订，苏天晴将从今天开始成为魔法少女活跃于世。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 67
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典称契约已签订，苏天晴将从今天开始成为魔法少女活跃于世。",
+                  "predicate": {
+                    "id": "c01:P9",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "role",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_magical_girl",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c01:T_today",
+                      "revision": 2
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_magical_girl",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F16:at:1:67",
+                "revision": 2,
+                "label": "评估：墨丘利秘典称契约已签订，苏天晴将从今天开始成为魔法少女活跃于世。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 67
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F16",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F16",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 67
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P9",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_magical_girl",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_today",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_magical_girl",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P9",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_magical_girl",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:T_today",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F16",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F23",
+                "revision": 2,
+                "label": "系统提示契约成立；结合古书先前提议与苏天晴同意，契约双方为墨丘利秘典与苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 75
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "系统提示契约成立；结合古书先前提议与苏天晴同意，契约双方为墨丘利秘典与苏天晴。",
+                  "predicate": {
+                    "id": "c01:P22",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "contract",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_contract",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "party1",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "party2",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_contract",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F23:at:1:75",
+                "revision": 2,
+                "label": "评估：系统提示契约成立；结合古书先前提议与苏天晴同意，契约双方为墨丘利秘典与苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 75
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F23",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F23",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 75
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P22",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P22",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_contract",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F23",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。",
+              "系统声音与墨丘利秘典是否同一来源未确认。",
+              "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+              "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+              "每日任务1的具体执行方式、成功判定、失败后果未知。",
+              "神典石的用途、兑换方式未知。",
+              "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+              "古书先前为何沉默、为何掉出金色十字星未解释。",
+              "兽人互助协会的详情与蓉城医学院名称未知。",
+              "变身触发为何是触摸十字星凹陷而非声控未解释。",
+              "人类与兽人在该世界的政治、社会关系未展开。",
+              "第2章 material 漏项：原文第36段明确苏天晴“全然没注意到”鼻血被金色十字星吸收；D14/B9及B的F_star_absorb只记录吸收事件，未记录她的unaware，影响对关键事件知情状态的建模。",
+              "第2章 integration 漏项：A的D6/D7已给出苏天晴审视身体残留记忆并得知原主经历；B仅为F_orig_name建立A_su_known_memory，未对F_orig_body、F_world_coexist、F_grew_up_alone、F_funded_by、F_admitted_to、F_contracted_disease、F_died_of等建立她的known访问，漏掉其基于记忆的知情范围。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 6,
+            "returned": 6
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

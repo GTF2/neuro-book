@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"任务：夙愿\",\"kind\":\"mention\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"夙愿\",\"kind\":\"predicate\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2480,
+    "outputTokens": 126,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 176
+  },
+  "responseId": "d7edc0a1-1594-4bf8-b950-f880b104d431",
+  "durationMs": 1204,
+  "startedAt": "2026-09-11T08:56:00.603Z",
+  "raw": {
+    "id": "d7edc0a1-1594-4bf8-b950-f880b104d431",
+    "object": "chat.completion",
+    "created": 1789116961,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典\",\"kind\":\"entity\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"任务：夙愿\",\"kind\":\"mention\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":27},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"夙愿\",\"kind\":\"predicate\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2480,
+      "completion_tokens": 126,
+      "total_tokens": 2606,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 176
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

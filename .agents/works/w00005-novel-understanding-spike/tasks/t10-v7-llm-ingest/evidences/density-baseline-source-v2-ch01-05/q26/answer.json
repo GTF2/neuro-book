@@ -1,0 +1,355 @@
+{
+  "answer": {
+    "text": "第五章末尾的每日任务要求：任务1记录魔法少女的窘迫状况，奖励100神典石；任务2让至少100人观看到魔法少女的窘况，奖励100神典石。",
+    "status": "answered",
+    "recordIds": [
+      "source-c05"
+    ],
+    "sources": [
+      {
+        "chapter": 5,
+        "paragraph": 85
+      },
+      {
+        "chapter": 5,
+        "paragraph": 86
+      },
+      {
+        "chapter": 5,
+        "paragraph": 87
+      },
+      {
+        "chapter": 5,
+        "paragraph": 88
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 85,
+          "to": 95
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 88
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 1,
+              "text": "第5章 为生活奔波"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 2,
+              "text": "翌日早晨。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 3,
+              "text": "吵醒苏天晴的是早上八点的闹钟。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 4,
+              "text": "一团蠕动的被子在床上蛄蛹，迅速从里面伸出一只小手关掉闹钟，好像里面藏着什么狐狸妖怪。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 5,
+              "text": "只见那狐狸妖怪在床上翻了个身，然后猛地怪叫："
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 6,
+              "text": "“咕哇！好疼！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 7,
+              "text": "金毛狐狐压到了自己的尾巴。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 8,
+              "text": "."
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 9,
+              "text": "苏天晴从床上坐起，头发乱糟糟地落在身边，眼皮与耳朵一同耷拉着提不起精神，只有尾巴根的刺痛在提醒着自己——以后绝对不能平躺着睡。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 10,
+              "text": "“嗯……嗯唔——~”"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 88,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjRkNjc1Y2YxOWVhYjNmNDMwNTg3MzI0YjE4MTJiMGI0OTM4NzJkMGY2YTE0Yzg0MjkwNzJlNDY4YzdhMGVlMzMiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjQ4Y2I1NjgwOTk1OGZhMGJlZDVhNmRkZGU0NjFmZmUxMTNmNTk3YTdmMWY5MjU3YTc2ODhjYmEwZjZhNzY1OGMifQ"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 79,
+          "to": 88
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 79,
+              "text": "一边安抚着躁动的肚皮，一边思索着未来。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 80,
+              "text": "希望自己的书能尽快过稿吧，这样下个月的五百块全勤就能吃到了。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 81,
+              "text": "那么接下来……"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 82,
+              "text": "狐狐从桌上拿起那本秘典。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 83,
+              "text": "200个关注者，魔法少女代号，这两个任务自己没有半点想法。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 84,
+              "text": "接着苏天晴注意到了今天的每日任务。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 85,
+              "text": "【每日任务1：记录魔法少女的窘迫状况】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 86,
+              "text": "【奖励：100神典石】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 87,
+              "text": "【每日任务2：让至少100人观看到魔法少女的窘况】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 88,
+              "text": "【奖励：100神典石】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 88
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 10,
+            "returned": 10
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 3,
+  "exhausted": true
+}

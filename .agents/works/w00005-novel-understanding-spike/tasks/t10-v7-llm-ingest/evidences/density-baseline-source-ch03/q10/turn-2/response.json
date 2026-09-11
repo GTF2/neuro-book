@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"怪人\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"风信子\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"预测\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2815,
+    "outputTokens": 114,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 383
+  },
+  "responseId": "5e14a853-1291-48f9-a08e-553ba781c3de",
+  "durationMs": 1053,
+  "startedAt": "2026-09-11T08:55:53.410Z",
+  "raw": {
+    "id": "5e14a853-1291-48f9-a08e-553ba781c3de",
+    "object": "chat.completion",
+    "created": 1789116953,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"怪人\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"风信子\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"预测\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2815,
+      "completion_tokens": 114,
+      "total_tokens": 2929,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 383
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

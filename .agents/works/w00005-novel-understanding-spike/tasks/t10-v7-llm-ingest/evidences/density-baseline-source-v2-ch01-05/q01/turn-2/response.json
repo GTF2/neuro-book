@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴从落地镜中看到自己变成了一只娇小的金毛狐女：灿烂金色长发垂落肩背，头顶有毛茸茸的耳朵，五官与眼眸精致，脖颈肩膀肌肤白皙。\",\"status\":\"answered\",\"recordIds\":[\"source-c01\"],\"sources\":[{\"chapter\":1,\"paragraph\":7},{\"chapter\":1,\"paragraph\":8},{\"chapter\":1,\"paragraph\":9},{\"chapter\":1,\"paragraph\":10}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1751,
+    "outputTokens": 104,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 983
+  },
+  "responseId": "9c9f6de6-a542-4420-a568-5866bbb6a1b5",
+  "durationMs": 1215,
+  "startedAt": "2026-09-11T09:17:14.700Z",
+  "raw": {
+    "id": "9c9f6de6-a542-4420-a568-5866bbb6a1b5",
+    "object": "chat.completion",
+    "created": 1789118235,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴从落地镜中看到自己变成了一只娇小的金毛狐女：灿烂金色长发垂落肩背，头顶有毛茸茸的耳朵，五官与眼眸精致，脖颈肩膀肌肤白皙。\",\"status\":\"answered\",\"recordIds\":[\"source-c01\"],\"sources\":[{\"chapter\":1,\"paragraph\":7},{\"chapter\":1,\"paragraph\":8},{\"chapter\":1,\"paragraph\":9},{\"chapter\":1,\"paragraph\":10}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1751,
+      "completion_tokens": 104,
+      "total_tokens": 1855,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 983
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

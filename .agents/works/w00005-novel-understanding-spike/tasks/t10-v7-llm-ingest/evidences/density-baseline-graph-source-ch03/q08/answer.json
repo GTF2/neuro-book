@@ -1,0 +1,620 @@
+{
+  "answer": {
+    "text": "已到作答截止，现有证据只能确定第3章第10段的原文陈述：魔法少女们接受英雄协会的管辖委派，一边与怪人战斗一边作为偶像出镜；真实身份保密，但变身后的样子广为人知，与怪人怪兽的战斗成了另类宣传方式。另查到第3章第9段称“魔法少女与怪人怪兽是客观存在的”。关于“苏天晴在网上和记忆中的了解”这一特定来源（网上了解、记忆内容，或其个人信念/知识）在已读范围内没有检索到直接记录，查询也因剩余次数为0无法继续；因此不能确认这些内容是苏天晴本人通过网上或记忆获知或相信的，只能作为当前阅读范围内可见的世界/叙述事实陈述。",
+    "status": "partial",
+    "recordIds": [],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      {
+        "chapter": 3,
+        "paragraph": 9
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴"
+        },
+        {
+          "command": "knowledge",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "苏天晴",
+          "about": "魔法少女"
+        },
+        {
+          "command": "knowledge",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "苏天晴",
+          "about": "英雄协会"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 3,
+                "label": "狐狐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_original_owner",
+                "revision": 3,
+                "label": "苏天晴小姐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:ORIGINAL:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_original_owner",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "苏天晴小姐",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 8
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R2:mention:2",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c03:I_R2_original",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R2:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R2_original",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                },
+                {
+                  "text": "苏天晴小姐",
+                  "match": "prefix"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "query": "英雄协会"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "query": "魔法少女"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 10
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "query": "网上"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 10,
+              "text": "魔法少女们接受英雄协会的管辖委派，一边与怪人战斗一边作为偶像出镜，真实身份虽然保密，但其变身魔法少女后的样子却是广为人知，与怪人怪兽之间的战斗甚至成了另类的宣传方式。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 4,
+              "text": "反派为什么要去找茬魔法少女。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 9,
+              "text": "魔法少女与怪人怪兽是客观存在的。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 10,
+              "text": "魔法少女们接受英雄协会的管辖委派，一边与怪人战斗一边作为偶像出镜，真实身份虽然保密，但其变身魔法少女后的样子却是广为人知，与怪人怪兽之间的战斗甚至成了另类的宣传方式。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 10
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 3,
+  "exhausted": true
+}

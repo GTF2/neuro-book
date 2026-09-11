@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 4,
+  "attempt": 1,
+  "startedAt": "2026-09-11T08:56:18.006Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nF22b.fact dependencies at 4:48 references I_miqiu, available only at 4:50\nF22b.fact dependencies at 4:48 references I_drug, available only at 4:50\nF_bailing_talent_speech.fact dependencies at 4:73 references D26, available only at 4:75",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.048823692,
+    "minimumUsd": 0.048823692,
+    "maximumUsd": 0.048823692,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

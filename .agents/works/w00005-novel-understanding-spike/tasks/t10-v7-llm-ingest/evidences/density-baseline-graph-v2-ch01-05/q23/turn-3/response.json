@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"英雄协会会把每个魔法少女记录在册，并根据其战斗风格或本人要求给予对应的识别代号。风信子的代号来源是：她半年前初次亮相后，英雄协会工作人员前去接洽，经她本人同意后获得了【风信子】这一代号。\",\"status\":\"answered\",\"recordIds\":[\"c05:F_codename_rule\",\"c03:F_fengxinzi_codename\",\"c03:D12\"],\"sources\":[{\"chapter\":5,\"paragraph\":43},{\"chapter\":3,\"paragraph\":16}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 16740,
+    "outputTokens": 122,
+    "cacheHitTokens": 2048,
+    "cacheMissTokens": 14692
+  },
+  "responseId": "7a80e8e5-6557-41dc-85c1-2123a6e9b67f",
+  "durationMs": 1484,
+  "startedAt": "2026-09-11T09:20:23.114Z",
+  "raw": {
+    "id": "7a80e8e5-6557-41dc-85c1-2123a6e9b67f",
+    "object": "chat.completion",
+    "created": 1789118423,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"英雄协会会把每个魔法少女记录在册，并根据其战斗风格或本人要求给予对应的识别代号。风信子的代号来源是：她半年前初次亮相后，英雄协会工作人员前去接洽，经她本人同意后获得了【风信子】这一代号。\",\"status\":\"answered\",\"recordIds\":[\"c05:F_codename_rule\",\"c03:F_fengxinzi_codename\",\"c03:D12\"],\"sources\":[{\"chapter\":5,\"paragraph\":43},{\"chapter\":3,\"paragraph\":16}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 16740,
+      "completion_tokens": 122,
+      "total_tokens": 16862,
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      },
+      "prompt_cache_hit_tokens": 2048,
+      "prompt_cache_miss_tokens": 14692
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

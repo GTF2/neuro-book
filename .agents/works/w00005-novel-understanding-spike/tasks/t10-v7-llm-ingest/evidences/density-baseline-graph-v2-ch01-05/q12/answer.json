@@ -1,0 +1,1062 @@
+{
+  "answer": {
+    "text": "在已读至第3章第32段的原文范围内，没有找到“风信子擅长近战压制与肉搏，对魔法尚不熟练”这一整句或等价命题的记录。可查到的最接近来源是苏天晴的内心推测：第3章第16段苏天晴呢喃念出代号“风信子”（c03:D12），第3章第17段她想到“她能变出大剑砍掉怪兽的脑袋诶，我去跟这种肉搏型的魔法少女找茬？真的假的？”（c03:D13），相应事实记录c03:F_su_believes_fengxinzi_greatsword标注其断定类型为belief、持有者为苏天晴，即“苏天晴认为风信子能变出大剑砍掉怪兽的脑袋”。但其中没有“擅长近战压制”“对魔法尚不熟练”的表述，也没有任何以风信子本人为发言/信念持有者的自述记录。因此该说法不是风信子本人的自述；在现有证据下它最多属于苏天晴基于传闻/印象的推测性认知，且“对魔法尚不熟练”部分在原文当前范围内未找到来源。",
+    "status": "partial",
+    "recordIds": [
+      "c03:D12",
+      "c03:D13",
+      "c03:F_su_believes_fengxinzi_greatsword"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      {
+        "chapter": 3,
+        "paragraph": 17
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子",
+          "kind": "disclosure"
+        },
+        {
+          "command": "facts",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "近战压制"
+        },
+        {
+          "command": "facts",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "对魔法尚不熟练"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D12",
+                "revision": 3,
+                "label": "苏天晴呢喃念出她的代号：【风信子】。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 0,
+                    "end": 21
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴呢喃念出她的代号：【风信子】。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D13",
+                "revision": 3,
+                "label": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 0,
+                    "end": 36
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                  "channel": "thought",
+                  "mode": "question",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R6",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R5",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R5",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 3,
+                    "text": "她能变出大剑砍掉怪兽的脑袋诶，我去跟这种肉搏型的魔法少女找茬？真的假的？"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "尚不熟练",
+          "kind": "disclosure"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "近战",
+          "kind": "disclosure"
+        },
+        {
+          "command": "facts",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_active",
+                "revision": 3,
+                "label": "风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "风信子是蓉城目前活跃的魔法少女。",
+                  "predicate": {
+                    "id": "c03:P_active_in",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "place",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_rongcheng",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:I_R8_rongcheng",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_active:at:3:16",
+                "revision": 3,
+                "label": "评估：风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_active",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_active",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_codename",
+                "revision": 3,
+                "label": "这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "这名魔法少女的代号是风信子。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "代号：风信子"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_codename:at:3:16",
+                "revision": 3,
+                "label": "评估：这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_codename",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_codename",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_codename",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_su_believes_fengxinzi_greatsword",
+                "revision": 3,
+                "label": "苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                  "predicate": {
+                    "id": "c01:P13",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "believer",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "proposition",
+                      "value": {
+                        "type": "text",
+                        "text": "风信子能变出大剑砍掉怪兽的脑袋"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "belief",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 3
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "possible"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R1_su",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_su_believes_fengxinzi_greatsword:at:3:17",
+                "revision": 3,
+                "label": "评估：苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_su_believes_fengxinzi_greatsword",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 17
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R1_su",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R1_su",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

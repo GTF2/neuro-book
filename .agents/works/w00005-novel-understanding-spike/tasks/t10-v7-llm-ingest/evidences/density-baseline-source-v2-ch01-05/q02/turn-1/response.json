@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":1,\"from\":1,\"to\":30,\"query\":\"古书\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 861,
+    "outputTokens": 43,
+    "cacheHitTokens": 128,
+    "cacheMissTokens": 733
+  },
+  "responseId": "a9809ae0-c466-40e4-b036-13b190d007bf",
+  "durationMs": 1067,
+  "startedAt": "2026-09-11T09:17:13.872Z",
+  "raw": {
+    "id": "a9809ae0-c466-40e4-b036-13b190d007bf",
+    "object": "chat.completion",
+    "created": 1789118234,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":1,\"from\":1,\"to\":30,\"query\":\"古书\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 861,
+      "completion_tokens": 43,
+      "total_tokens": 904,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 733
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

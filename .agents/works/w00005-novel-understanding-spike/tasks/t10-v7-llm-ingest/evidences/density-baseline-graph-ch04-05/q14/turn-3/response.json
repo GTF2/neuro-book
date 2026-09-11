@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵被描述为“白貂般的奇妙生物”（第4章第15段），属于一种奇妙生物；南小风与“风信子”指向同一实体记录（第3章第15段称其为“天蓝色的少女”，第4章第4段出现“南小风”之名）。但就“白灵与南小风/风信子如何结识”，当前已读记录未提供结识经过，无法确定。\",\"status\":\"partial\",\"recordIds\":[\"c04:E_bailing\",\"c03:E_fengxinzi\"],\"sources\":[{\"chapter\":4,\"paragraph\":15},{\"chapter\":3,\"paragraph\":15},{\"chapter\":4,\"paragraph\":4}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4699,
+    "outputTokens": 155,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 2395
+  },
+  "responseId": "53a5a832-01af-4aab-83c7-ee8f92905bde",
+  "durationMs": 1654,
+  "startedAt": "2026-09-11T09:10:03.033Z",
+  "raw": {
+    "id": "53a5a832-01af-4aab-83c7-ee8f92905bde",
+    "object": "chat.completion",
+    "created": 1789117803,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵被描述为“白貂般的奇妙生物”（第4章第15段），属于一种奇妙生物；南小风与“风信子”指向同一实体记录（第3章第15段称其为“天蓝色的少女”，第4章第4段出现“南小风”之名）。但就“白灵与南小风/风信子如何结识”，当前已读记录未提供结识经过，无法确定。\",\"status\":\"partial\",\"recordIds\":[\"c04:E_bailing\",\"c03:E_fengxinzi\"],\"sources\":[{\"chapter\":4,\"paragraph\":15},{\"chapter\":3,\"paragraph\":15},{\"chapter\":4,\"paragraph\":4}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4699,
+      "completion_tokens": 155,
+      "total_tokens": 4854,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 2395
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

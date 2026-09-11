@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"source\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"query\":\"苏天晴\"},{\"command\":\"source\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"query\":\"网文\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2455,
+    "outputTokens": 121,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 279
+  },
+  "responseId": "ed0d1ce1-e316-4dca-80bb-de776ffdb9b6",
+  "durationMs": 1642,
+  "startedAt": "2026-09-11T09:19:23.403Z",
+  "raw": {
+    "id": "ed0d1ce1-e316-4dca-80bb-de776ffdb9b6",
+    "object": "chat.completion",
+    "created": 1789118364,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"source\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"query\":\"苏天晴\"},{\"command\":\"source\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"query\":\"网文\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2455,
+      "completion_tokens": 121,
+      "total_tokens": 2576,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 279
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

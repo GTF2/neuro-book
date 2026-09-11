@@ -1,0 +1,2615 @@
+{
+  "value": {
+    "referentAdditions": [
+      {
+        "id": "BEAST_FLU",
+        "mentions": [
+          {
+            "paragraph": 20,
+            "text": "兽人流感",
+            "occurrence": 0,
+            "name": false
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "E_guardian_star",
+        "category": "object"
+      },
+      {
+        "id": "E_system_voice",
+        "category": "unknown"
+      },
+      {
+        "id": "E_daily_task",
+        "category": "task"
+      },
+      {
+        "id": "E_regular_magical_girl",
+        "category": "unresolved"
+      },
+      {
+        "id": "E_rongcheng",
+        "category": "place"
+      },
+      {
+        "id": "E_beastfolk_mutual_aid",
+        "category": "organization"
+      },
+      {
+        "id": "E_divine_stone",
+        "category": "resource-kind"
+      },
+      {
+        "id": "E_beastfolk",
+        "category": "kind"
+      },
+      {
+        "id": "E_beast_flu",
+        "category": "concept"
+      }
+    ],
+    "identities": [
+      {
+        "id": "I_stq_su",
+        "at": 6,
+        "referent": "STQ",
+        "entity": "known:c01:E_su",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "STQ在本章指苏天晴的意识/人物，与第1章苏天晴身份连续。",
+        "evidence": [
+          "D2",
+          "known:c01:I_su"
+        ]
+      },
+      {
+        "id": "I_original_owner",
+        "at": 20,
+        "referent": "ORIGINAL",
+        "entity": "known:c01:E_original_owner",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "ORIGINAL指这具狐女身体的原主人，本章说明其也叫苏天晴，仍为未知主体。",
+        "evidence": [
+          "D7"
+        ]
+      },
+      {
+        "id": "I_body_fox",
+        "at": 10,
+        "referent": "BODY",
+        "entity": "known:c01:E_fox_body",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "BODY指苏天晴当前所在的狐女身体，与第1章金毛狐女身体一致。",
+        "evidence": [
+          "D4",
+          "known:c01:I_fox_body"
+        ]
+      },
+      {
+        "id": "I_book_tome",
+        "at": 25,
+        "referent": "BOOK",
+        "entity": "known:c01:E_tome",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "BOOK指本章的古书/秘典，与第1章黑色古书一致。",
+        "evidence": [
+          "D9",
+          "known:c01:I_tome"
+        ]
+      },
+      {
+        "id": "I_star",
+        "at": 33,
+        "referent": "STAR",
+        "entity": "E_guardian_star",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "STAR指从古书掉出的金色十字星，作为持续物体；后文系统称其为守护之星。",
+        "evidence": [
+          "D13"
+        ]
+      },
+      {
+        "id": "I_system_voice",
+        "at": 37,
+        "referent": "SYSTEM_VOICE",
+        "entity": "E_system_voice",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "SYSTEM_VOICE指在苏天晴脑中响起的陌生声音；后文系统提示由该声音发出。",
+        "evidence": [
+          "D15"
+        ]
+      },
+      {
+        "id": "I_daily_task",
+        "at": 39,
+        "referent": "DAILY_TASK",
+        "entity": "E_daily_task",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "DAILY_TASK指系统提示中开启的每日任务；后文古书显示其具体内容。",
+        "evidence": [
+          "D17"
+        ]
+      },
+      {
+        "id": "I_villain",
+        "at": 8,
+        "referent": "VILLAIN_MG",
+        "entity": "known:c01:E_villain",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "VILLAIN_MG指反派魔法少女角色/身份，与第1章契约中的反派魔法少女一致。",
+        "evidence": [
+          "D4",
+          "known:c01:I_villain"
+        ]
+      },
+      {
+        "id": "I_regular_mg",
+        "at": 84,
+        "referent": "REGULAR_MG",
+        "entity": "E_regular_magical_girl",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "REGULAR_MG指被任务针对的正牌魔法少女，身份未知。",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "I_rongcheng",
+        "at": 20,
+        "referent": "RONGCHENG",
+        "entity": "E_rongcheng",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "RONGCHENG指蓉城。",
+        "evidence": [
+          "D7"
+        ]
+      },
+      {
+        "id": "I_org",
+        "at": 20,
+        "referent": "ORG",
+        "entity": "E_beastfolk_mutual_aid",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "ORG指资助原主的兽人互助协会。",
+        "evidence": [
+          "D7"
+        ]
+      },
+      {
+        "id": "I_stone",
+        "at": 84,
+        "referent": "STONE",
+        "entity": "E_divine_stone",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "STONE指任务奖励神典石。",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "I_beastfolk",
+        "at": 20,
+        "referent": "BEASTFOLK",
+        "entity": "E_beastfolk",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "BEASTFOLK指此世界与人类共存的兽人（猫娘狐娘）。",
+        "evidence": [
+          "D7"
+        ]
+      },
+      {
+        "id": "I_beast_flu",
+        "at": 20,
+        "referent": "BEAST_FLU",
+        "entity": "E_beast_flu",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "BEAST_FLU指原主染上的兽人流感。",
+        "evidence": [
+          "D7"
+        ]
+      }
+    ],
+    "predicates": [
+      {
+        "id": "P_coexist_kinds",
+        "name": "coexist_kinds",
+        "definition": "某世界中两种族群共存，并给出相对数量。",
+        "roles": [
+          {
+            "name": "world",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "kind1",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "kind2",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "abundance",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "classification"
+      },
+      {
+        "id": "P_original_owner_of",
+        "name": "original_owner_of",
+        "definition": "一个主体是某具身体的原主人。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "body",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "identity"
+      },
+      {
+        "id": "P_named",
+        "name": "named",
+        "definition": "一个主体被称为某名字。",
+        "roles": [
+          {
+            "name": "entity",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "name",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "identity"
+      },
+      {
+        "id": "P_grew_up_alone",
+        "name": "grew_up_alone",
+        "definition": "一个主体从小孤独长大。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "life"
+      },
+      {
+        "id": "P_funded_by",
+        "name": "funded_by",
+        "definition": "一个人受到某组织资助。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "organization",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "support"
+      },
+      {
+        "id": "P_admitted_to",
+        "name": "admitted_to",
+        "definition": "一个人考上或进入某学校。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "institution",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "life"
+      },
+      {
+        "id": "P_contracted_disease",
+        "name": "contracted_disease",
+        "definition": "一个人染上某种疾病。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "disease",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "health"
+      },
+      {
+        "id": "P_died_of",
+        "name": "died_of",
+        "definition": "一个人因某原因死亡。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "cause",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "health"
+      },
+      {
+        "id": "P_asks_entity",
+        "name": "asks_entity",
+        "definition": "一个人向某对象发问。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "content",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "P_suspects_not_exist",
+        "name": "suspects_not_exist",
+        "definition": "一个主体怀疑某实体或角色根本不存在。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "entity",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "P_drops_hits",
+        "name": "drops_hits",
+        "definition": "某物从某来源掉出并砸中目标，造成某效果。",
+        "roles": [
+          {
+            "name": "object",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "source",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "target",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "effect",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "event"
+      },
+      {
+        "id": "P_absorbs_blood",
+        "name": "absorbs_blood",
+        "definition": "某物吸收血液。",
+        "roles": [
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "substance",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "event"
+      },
+      {
+        "id": "P_activates_star",
+        "name": "activates_star",
+        "definition": "系统或主体宣告守护之星激活。",
+        "roles": [
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "announcer",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "system"
+      },
+      {
+        "id": "P_opens_daily_task",
+        "name": "opens_daily_task",
+        "definition": "某秘典序章完成并开启每日任务。",
+        "roles": [
+          {
+            "name": "tome",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "task",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "system"
+      },
+      {
+        "id": "P_attempts_transformation",
+        "name": "attempts_transformation",
+        "definition": "一个主体尝试用某道具变身，并喊出若干口令。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "commands",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "action"
+      },
+      {
+        "id": "P_triggers_transformation",
+        "name": "triggers_transformation",
+        "definition": "一个主体用某道具触发或完成变身。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "result",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "action"
+      },
+      {
+        "id": "P_wears_outfit",
+        "name": "wears_outfit",
+        "definition": "一个主体变身后呈现某种服装或外观。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "outfit",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "appearance"
+      },
+      {
+        "id": "P_accepts_role",
+        "name": "accepts_role",
+        "definition": "一个主体在意图上接受某角色身份。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "attitude"
+      },
+      {
+        "id": "P_displays_text",
+        "name": "displays_text",
+        "definition": "某书页显示关于某主体的文字。",
+        "roles": [
+          {
+            "name": "tome",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "about",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "text",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "document"
+      },
+      {
+        "id": "P_assigns_task",
+        "name": "assigns_task",
+        "definition": "某来源向某主体分配任务。",
+        "roles": [
+          {
+            "name": "assigner",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "task",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "assignee",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "task"
+      },
+      {
+        "id": "P_task_targets",
+        "name": "task_targets",
+        "definition": "某任务以某对象为目标。",
+        "roles": [
+          {
+            "name": "task",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "target",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "task"
+      },
+      {
+        "id": "P_task_reason",
+        "name": "task_reason",
+        "definition": "某任务给出文本理由。",
+        "roles": [
+          {
+            "name": "task",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "reason",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "task"
+      },
+      {
+        "id": "P_task_reward",
+        "name": "task_reward",
+        "definition": "某任务奖励某资源及数量。",
+        "roles": [
+          {
+            "name": "task",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "resource",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "quantity",
+            "valueKinds": [
+              "number"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "task"
+      },
+      {
+        "id": "P_remains_silent",
+        "name": "remains_silent",
+        "definition": "某对象保持沉默，不再开口。",
+        "roles": [
+          {
+            "name": "entity",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      }
+    ],
+    "times": [],
+    "facts": [
+      {
+        "id": "F_body_admire",
+        "at": 14,
+        "text": "苏天晴认为这具身体的模样绝妙中的绝妙，满足自己曾经的幻想。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "这副身体的模样绝妙中的绝妙，满足自己曾经的幻想"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D4",
+            "D5"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D4与D5记录苏天晴对这具身体的欣赏与认同。"
+        }
+      },
+      {
+        "id": "F_orig_name",
+        "at": 20,
+        "text": "这具狐女身体的原主也叫苏天晴。",
+        "predicate": "P_named",
+        "arguments": [
+          {
+            "role": "entity",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "name",
+            "value": {
+              "type": "text",
+              "text": "苏天晴"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述这副身体的原主人叫苏天晴。"
+        }
+      },
+      {
+        "id": "F_orig_body",
+        "at": 20,
+        "text": "原主是这具狐女身体原来的主人。",
+        "predicate": "P_original_owner_of",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_fox_body"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner",
+          "I_body_fox",
+          "known:c01:I_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7说明这副身体的原主人叫苏天晴。"
+        }
+      },
+      {
+        "id": "F_world_coexist",
+        "at": 20,
+        "text": "此世界人类与兽人共存，兽人指猫娘狐娘，且兽人数量远不及人类。",
+        "predicate": "P_coexist_kinds",
+        "arguments": [
+          {
+            "role": "world",
+            "value": {
+              "type": "text",
+              "text": "此世界"
+            }
+          },
+          {
+            "role": "kind1",
+            "value": {
+              "type": "text",
+              "text": "人类"
+            }
+          },
+          {
+            "role": "kind2",
+            "value": {
+              "type": "ref",
+              "id": "E_beastfolk"
+            }
+          },
+          {
+            "role": "abundance",
+            "value": {
+              "type": "text",
+              "text": "兽人数量远不及人类"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_beastfolk"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7介绍世界设定：人类与兽人共存，兽人是猫娘狐娘，数量不及人类。"
+        }
+      },
+      {
+        "id": "F_grew_up_alone",
+        "at": 20,
+        "text": "原主苏天晴从小便独自一人孤独地长大，社恐孤僻。",
+        "predicate": "P_grew_up_alone",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述原主从小孤独长大、社恐孤僻。"
+        }
+      },
+      {
+        "id": "F_funded_by",
+        "at": 20,
+        "text": "原主苏天晴受到兽人互助协会资助。",
+        "predicate": "P_funded_by",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "organization",
+            "value": {
+              "type": "ref",
+              "id": "E_beastfolk_mutual_aid"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner",
+          "I_org"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述兽人互助协会资助原主。"
+        }
+      },
+      {
+        "id": "F_admitted_to",
+        "at": 20,
+        "text": "原主苏天晴考上蓉城最好的医学院。",
+        "predicate": "P_admitted_to",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "institution",
+            "value": {
+              "type": "text",
+              "text": "蓉城最好的医学院"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述原主考上蓉城最好的医学院。"
+        }
+      },
+      {
+        "id": "F_contracted_disease",
+        "at": 20,
+        "text": "原主苏天晴临近开学时染上一场兽人流感。",
+        "predicate": "P_contracted_disease",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "disease",
+            "value": {
+              "type": "ref",
+              "id": "E_beast_flu"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner",
+          "I_beast_flu"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述原主染上兽人流感。"
+        }
+      },
+      {
+        "id": "F_died_of",
+        "at": 20,
+        "text": "原主苏天晴在熬夜过程中突发暴发性心肌炎而死。",
+        "predicate": "P_died_of",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_original_owner"
+            }
+          },
+          {
+            "role": "cause",
+            "value": {
+              "type": "text",
+              "text": "暴发性心肌炎"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_original_owner"
+        ],
+        "proof": {
+          "premises": [
+            "D7"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D7叙述原主熬夜时突发暴发性心肌炎。"
+        }
+      },
+      {
+        "id": "F_death_same",
+        "at": 21,
+        "text": "苏天晴认为原主的死法和自己一模一样。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "原主的死法和自己一模一样"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_original_owner",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D8"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D8记录苏天晴的内心判断：原主死法和自己一样。"
+        }
+      },
+      {
+        "id": "F_su_asks_book",
+        "at": 26,
+        "text": "苏天晴问古书：“……喂？小破书你在吗？”",
+        "predicate": "P_asks_entity",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "……喂？小破书你在吗？"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_book_tome",
+          "known:c01:I_su",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D10"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D10记录苏天晴向古书发问。"
+        }
+      },
+      {
+        "id": "F_book_silent",
+        "at": 28,
+        "text": "古书没有像刚才那样开口说话，保持沉默。",
+        "predicate": "P_remains_silent",
+        "arguments": [
+          {
+            "role": "entity",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_book_tome",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D11"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D11记录古书沉默。"
+        }
+      },
+      {
+        "id": "F_su_suspects_villain",
+        "at": 29,
+        "text": "苏天晴揣着一丝侥幸怀疑所谓的反派魔法少女根本不存在。",
+        "predicate": "P_suspects_not_exist",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "entity",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_villain"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_villain",
+          "known:c01:I_su",
+          "known:c01:I_villain"
+        ],
+        "proof": {
+          "premises": [
+            "D12"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D12记录苏天晴怀疑反派魔法少女不存在。"
+        }
+      },
+      {
+        "id": "F_star_drop",
+        "at": 33,
+        "text": "一枚金色十字星从书里掉出，狠狠砸在毫无防备的苏天晴脸上，使她流鼻血。",
+        "predicate": "P_drops_hits",
+        "arguments": [
+          {
+            "role": "object",
+            "value": {
+              "type": "ref",
+              "id": "E_guardian_star"
+            }
+          },
+          {
+            "role": "source",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "effect",
+            "value": {
+              "type": "text",
+              "text": "砸中脸并流鼻血"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_star",
+          "I_book_tome",
+          "I_stq_su",
+          "known:c01:I_tome",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D13"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D13记录金色十字星从书中掉出并砸中苏天晴。"
+        }
+      },
+      {
+        "id": "F_star_absorb",
+        "at": 36,
+        "text": "金色十字星上沾染的鼻血在一阵微弱光芒后悄然融入十字星中消失不见。",
+        "predicate": "P_absorbs_blood",
+        "arguments": [
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "E_guardian_star"
+            }
+          },
+          {
+            "role": "substance",
+            "value": {
+              "type": "text",
+              "text": "鼻血"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_star"
+        ],
+        "proof": {
+          "premises": [
+            "D14"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D14记录十字星吸收鼻血。"
+        }
+      },
+      {
+        "id": "F_system_star_activate",
+        "at": 38,
+        "text": "系统声音提示：【守护之星激活】。",
+        "predicate": "P_activates_star",
+        "arguments": [
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "E_guardian_star"
+            }
+          },
+          {
+            "role": "announcer",
+            "value": {
+              "type": "ref",
+              "id": "E_system_voice"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "E_system_voice",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_star",
+          "I_system_voice"
+        ],
+        "proof": {
+          "premises": [
+            "D16"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D16记录系统提示守护之星激活。"
+        }
+      },
+      {
+        "id": "F_system_daily_open",
+        "at": 39,
+        "text": "系统声音提示：【秘典序章已完成，开启每日任务】。",
+        "predicate": "P_opens_daily_task",
+        "arguments": [
+          {
+            "role": "tome",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "E_daily_task"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "E_system_voice",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_book_tome",
+          "I_daily_task",
+          "I_system_voice",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D17"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D17记录系统提示秘典序章完成并开启每日任务。"
+        }
+      },
+      {
+        "id": "F_star_item_belief",
+        "at": 42,
+        "text": "苏天晴认为这枚材质不明的金色十字星应该是魔法少女必备的变身道具。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "这枚金色十字星是魔法少女必备的变身道具"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_star",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D19"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D19记录苏天晴对十字星用途的推测。"
+        }
+      },
+      {
+        "id": "F_trans_attempts",
+        "at": 57,
+        "text": "苏天晴尝试喊出多种变身口令，十字星仍无动静。",
+        "predicate": "P_attempts_transformation",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "E_guardian_star"
+            }
+          },
+          {
+            "role": "commands",
+            "value": {
+              "type": "text",
+              "text": "变身！/魔法少女变身！/henshin！/光啊！/盖亚！！"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_star",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D22",
+            "D23",
+            "D24"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D22至D24记录苏天晴多次喊变身口令但十字星无反应。"
+        }
+      },
+      {
+        "id": "F_initial_transform",
+        "at": 66,
+        "text": "系统宣告初次变身已完成；苏天晴通过将拇指摁入十字星凹陷触发变身。",
+        "predicate": "P_triggers_transformation",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "E_guardian_star"
+            }
+          },
+          {
+            "role": "result",
+            "value": {
+              "type": "text",
+              "text": "初次变身，已完成"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "E_system_voice",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_star",
+          "I_system_voice",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D26",
+            "D28"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D26记录拇指按入凹陷后光芒笼罩客厅，D28记录系统提示初次变身完成。"
+        }
+      },
+      {
+        "id": "F_trans_outfit",
+        "at": 73,
+        "text": "变身后苏天晴呈现过膝白袜、金色短款洋装、缎带装饰、胸前金色十字星、毛茸茸大尾巴与两只耳朵。",
+        "predicate": "P_wears_outfit",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "outfit",
+            "value": {
+              "type": "text",
+              "text": "过膝白袜、金色短款洋装、缎带装饰、胸前金色十字星、毛茸茸大尾巴与两只耳朵"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D30"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D30记录变身后的外观。"
+        }
+      },
+      {
+        "id": "F_accept_villain",
+        "at": 75,
+        "text": "看到变身后的模样，苏天晴对反派魔法少女身份的最后抵触荡然无存，决定当好反派魔法少女。",
+        "predicate": "P_accepts_role",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_villain"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "I_villain",
+          "known:c01:I_su",
+          "known:c01:I_villain"
+        ],
+        "proof": {
+          "premises": [
+            "D31"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D31记录苏天晴接受反派魔法少女身份。"
+        }
+      },
+      {
+        "id": "F_book_identity",
+        "at": 84,
+        "text": "古书第一页显示：【苏天晴】【魔法少女（反派）】。",
+        "predicate": "P_displays_text",
+        "arguments": [
+          {
+            "role": "tome",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "about",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "text",
+            "value": {
+              "type": "text",
+              "text": "【苏天晴】【魔法少女（反派）】"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_tome",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_book_tome",
+          "I_stq_su",
+          "known:c01:I_tome",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D33记录古书第一页显示苏天晴身份为魔法少女（反派）。"
+        }
+      },
+      {
+        "id": "F_daily_task_1",
+        "at": 84,
+        "text": "古书显示每日任务1：找茬魔法少女，并把它分配给苏天晴。",
+        "predicate": "P_assigns_task",
+        "arguments": [
+          {
+            "role": "assigner",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "E_daily_task"
+            }
+          },
+          {
+            "role": "assignee",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_tome",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "obligatory",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_book_tome",
+          "I_daily_task",
+          "I_stq_su",
+          "known:c01:I_tome",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D33记录古书显示每日任务1：找茬魔法少女。"
+        }
+      },
+      {
+        "id": "F_task_target",
+        "at": 84,
+        "text": "每日任务1的目标是找茬正牌魔法少女。",
+        "predicate": "P_task_targets",
+        "arguments": [
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "E_daily_task"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "E_regular_magical_girl"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_tome",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_daily_task",
+          "I_regular_mg",
+          "I_book_tome",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D33记录任务是找茬正牌魔法少女。"
+        }
+      },
+      {
+        "id": "F_task_reason",
+        "at": 84,
+        "text": "任务理由是：正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧。",
+        "predicate": "P_task_reason",
+        "arguments": [
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "E_daily_task"
+            }
+          },
+          {
+            "role": "reason",
+            "value": {
+              "type": "text",
+              "text": "正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_tome",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_daily_task",
+          "I_regular_mg",
+          "I_rongcheng",
+          "I_book_tome",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D33记录任务理由提及正牌魔法少女在蓉城已久。"
+        }
+      },
+      {
+        "id": "F_task_reward",
+        "at": 84,
+        "text": "每日任务1奖励100神典石。",
+        "predicate": "P_task_reward",
+        "arguments": [
+          {
+            "role": "task",
+            "value": {
+              "type": "ref",
+              "id": "E_daily_task"
+            }
+          },
+          {
+            "role": "resource",
+            "value": {
+              "type": "ref",
+              "id": "E_divine_stone"
+            }
+          },
+          {
+            "role": "quantity",
+            "value": {
+              "type": "number",
+              "number": 100,
+              "unit": "神典石"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_tome",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_daily_task",
+          "I_stone",
+          "I_book_tome",
+          "known:c01:I_tome"
+        ],
+        "proof": {
+          "premises": [
+            "D33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D33记录奖励为100神典石。"
+        }
+      },
+      {
+        "id": "F_task_difficult",
+        "at": 87,
+        "text": "苏天晴看到找茬正牌魔法少女的任务后一怔，觉得这看似简单的日常任务好像还真不好做。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "这看似简单的日常任务好像还真不好做"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_stq_su",
+          "known:c01:I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D34",
+            "D35"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D34与D35记录苏天晴对任务难度的反应。"
+        }
+      }
+    ],
+    "arguments": [],
+    "access": [
+      {
+        "id": "A_su_known_memory",
+        "at": 20,
+        "holder": "known:c01:E_su",
+        "target": "F_orig_name",
+        "mode": "known",
+        "evidence": [
+          "D6",
+          "D7"
+        ]
+      },
+      {
+        "id": "A_su_believed_star_item",
+        "at": 42,
+        "holder": "known:c01:E_su",
+        "target": "F_star_item_belief",
+        "mode": "believed",
+        "evidence": [
+          "D19"
+        ]
+      },
+      {
+        "id": "A_su_heard_star_activate",
+        "at": 38,
+        "holder": "known:c01:E_su",
+        "target": "F_system_star_activate",
+        "mode": "heard",
+        "evidence": [
+          "D16"
+        ]
+      },
+      {
+        "id": "A_su_heard_daily_open",
+        "at": 39,
+        "holder": "known:c01:E_su",
+        "target": "F_system_daily_open",
+        "mode": "heard",
+        "evidence": [
+          "D17"
+        ]
+      },
+      {
+        "id": "A_su_heard_initial_transform",
+        "at": 66,
+        "holder": "known:c01:E_su",
+        "target": "F_initial_transform",
+        "mode": "heard",
+        "evidence": [
+          "D28"
+        ]
+      },
+      {
+        "id": "A_su_read_task",
+        "at": 84,
+        "holder": "known:c01:E_su",
+        "target": "F_daily_task_1",
+        "mode": "read",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "A_su_read_task_target",
+        "at": 84,
+        "holder": "known:c01:E_su",
+        "target": "F_task_target",
+        "mode": "read",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "A_su_read_task_reward",
+        "at": 84,
+        "holder": "known:c01:E_su",
+        "target": "F_task_reward",
+        "mode": "read",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "A_su_read_book_identity",
+        "at": 84,
+        "holder": "known:c01:E_su",
+        "target": "F_book_identity",
+        "mode": "read",
+        "evidence": [
+          "D33"
+        ]
+      },
+      {
+        "id": "A_su_read_task_reason",
+        "at": 84,
+        "holder": "known:c01:E_su",
+        "target": "F_task_reason",
+        "mode": "read",
+        "evidence": [
+          "D33"
+        ]
+      }
+    ],
+    "episodes": [
+      {
+        "id": "EP_original_memory",
+        "at": 21,
+        "title": "审视原主记忆",
+        "summary": "苏天晴收敛发癫后审视这具身体残留的记忆，得知原主也叫苏天晴、是狐女身体原主人，世界人类与兽人共存，原主孤独长大、受兽人互助协会资助考上蓉城医学院，因兽人流感熬夜突发暴发性心肌炎而死，死法与苏天晴相同。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:E_su",
+          "known:c01:E_original_owner",
+          "E_beastfolk_mutual_aid",
+          "E_rongcheng",
+          "E_beast_flu"
+        ],
+        "materials": [
+          "D7",
+          "D8",
+          "B5"
+        ],
+        "children": [],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "D7",
+            "D8",
+            "B5"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "D7、D8与B5共同呈现原主记忆与死亡背景。"
+        }
+      },
+      {
+        "id": "EP_star_transformation",
+        "at": 68,
+        "title": "守护之星激活与初次变身",
+        "summary": "金色十字星从古书掉出砸中苏天晴并吸收鼻血，系统提示守护之星激活、秘典序章完成并开启每日任务；苏天晴多次喊口令无效后，将拇指按入十字星凹陷，白光笼罩客厅，系统宣告初次变身完成。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:E_su",
+          "E_guardian_star",
+          "E_system_voice",
+          "known:c01:E_tome"
+        ],
+        "materials": [
+          "D13",
+          "D16",
+          "D17",
+          "D26",
+          "D28",
+          "B15"
+        ],
+        "children": [
+          "F_star_drop",
+          "F_star_absorb",
+          "F_system_star_activate",
+          "F_system_daily_open",
+          "F_trans_attempts",
+          "F_initial_transform"
+        ],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "D13",
+            "D16",
+            "D26",
+            "D28"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "这些披露与Beat连续记录守护之星激活和初次变身过程。"
+        }
+      },
+      {
+        "id": "EP_daily_task_assigned",
+        "at": 87,
+        "title": "古书发布每日任务1",
+        "summary": "苏天晴维持变身回到客厅翻开古书，第一页显示她的身份为魔法少女（反派），每日任务1为找茬正牌魔法少女，理由是正牌魔法少女在蓉城风生水起已久，奖励100神典石；她看后觉得这任务不好做。",
+        "scale": "event",
+        "participants": [
+          "known:c01:E_su",
+          "known:c01:E_tome",
+          "E_daily_task",
+          "E_regular_magical_girl",
+          "E_rongcheng",
+          "E_divine_stone"
+        ],
+        "materials": [
+          "D33",
+          "D34",
+          "D35",
+          "B18"
+        ],
+        "children": [
+          "F_book_identity",
+          "F_daily_task_1",
+          "F_task_target",
+          "F_task_reason",
+          "F_task_reward",
+          "F_task_difficult"
+        ],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "D33",
+            "D34",
+            "D35"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "D33至D35记录古书任务内容与苏天晴反应。"
+        }
+      }
+    ],
+    "summaries": [
+      {
+        "id": "SUM_su_c02",
+        "entity": "known:c01:E_su",
+        "facet": "第2章状态与任务",
+        "items": [
+          {
+            "text": "苏天晴认为这副身体绝妙并满足曾经的幻想；变身后接受反派魔法少女身份，决心当给看。",
+            "refs": [
+              "F_body_admire",
+              "F_trans_outfit",
+              "F_accept_villain"
+            ]
+          },
+          {
+            "text": "她获得金色十字星（守护之星），系统称其激活并开启每日任务；她通过触摸十字星凹陷触发初次变身。",
+            "refs": [
+              "F_star_drop",
+              "F_system_star_activate",
+              "F_system_daily_open",
+              "F_initial_transform"
+            ]
+          },
+          {
+            "text": "她阅读古书第一页，得知每日任务1是找茬在蓉城风生水起的正牌魔法少女，奖励100神典石，并觉得任务不好做。",
+            "refs": [
+              "F_book_identity",
+              "F_daily_task_1",
+              "F_task_target",
+              "F_task_reward",
+              "F_task_difficult"
+            ]
+          },
+          {
+            "text": "她通过身体残留记忆得知原主也叫苏天晴，死因与自己相同。",
+            "refs": [
+              "F_orig_name",
+              "F_death_same",
+              "F_died_of"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_original_owner_c02",
+        "entity": "known:c01:E_original_owner",
+        "facet": "身份与经历",
+        "items": [
+          {
+            "text": "原主也叫苏天晴，是这具狐女身体原主人；从小孤独、社恐孤僻，受兽人互助协会资助考上蓉城最好的医学院，临近开学染兽人流感，熬夜突发暴发性心肌炎而死。",
+            "refs": [
+              "F_orig_name",
+              "F_orig_body",
+              "F_grew_up_alone",
+              "F_funded_by",
+              "F_admitted_to",
+              "F_contracted_disease",
+              "F_died_of"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_star_c02",
+        "entity": "E_guardian_star",
+        "facet": "守护之星",
+        "items": [
+          {
+            "text": "金色十字星从古书掉出，吸收苏天晴鼻血；系统提示守护之星激活，苏天晴把它视为变身道具，触摸凹陷后初次变身完成。",
+            "refs": [
+              "F_star_drop",
+              "F_star_absorb",
+              "F_system_star_activate",
+              "F_star_item_belief",
+              "F_initial_transform"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_daily_task_c02",
+        "entity": "E_daily_task",
+        "facet": "每日任务",
+        "items": [
+          {
+            "text": "秘典序章完成后开启每日任务；古书显示每日任务1找茬正牌魔法少女，理由是她已在蓉城风生水起够久，奖励100神典石。",
+            "refs": [
+              "F_system_daily_open",
+              "F_daily_task_1",
+              "F_task_target",
+              "F_task_reason",
+              "F_task_reward"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_regular_mg_c02",
+        "entity": "E_regular_magical_girl",
+        "facet": "被任务针对",
+        "items": [
+          {
+            "text": "被古书任务描述为在蓉城风生水起已久、需要给点颜色瞧瞧的正牌魔法少女；其身份未知。",
+            "refs": [
+              "F_task_target",
+              "F_task_reason"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_rongcheng_c02",
+        "entity": "E_rongcheng",
+        "facet": "提及",
+        "items": [
+          {
+            "text": "蓉城是原主考上最好医学院的城市，也是正牌魔法少女活跃已久的地点。",
+            "refs": [
+              "F_admitted_to",
+              "F_task_reason"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_divine_stone_c02",
+        "entity": "E_divine_stone",
+        "facet": "任务奖励",
+        "items": [
+          {
+            "text": "每日任务1奖励100神典石。",
+            "refs": [
+              "F_task_reward"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_tome_c02",
+        "entity": "known:c01:E_tome",
+        "facet": "第2章行为",
+        "items": [
+          {
+            "text": "古书起初沉默；后掉出金色十字星；第一页显示苏天晴身份与每日任务1，奖励100神典石。",
+            "refs": [
+              "F_book_silent",
+              "F_star_drop",
+              "F_book_identity",
+              "F_daily_task_1"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_villain_c02",
+        "entity": "known:c01:E_villain",
+        "facet": "身份接受",
+        "items": [
+          {
+            "text": "苏天晴在看到变身后接受反派魔法少女身份；古书第一页也将她标为魔法少女（反派）。",
+            "refs": [
+              "F_accept_villain",
+              "F_book_identity"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_beastfolk_c02",
+        "entity": "E_beastfolk",
+        "facet": "世界设定",
+        "items": [
+          {
+            "text": "此世界人类与兽人（猫娘狐娘）共存，兽人数量远少于人类。",
+            "refs": [
+              "F_world_coexist"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_org_c02",
+        "entity": "E_beastfolk_mutual_aid",
+        "facet": "资助原主",
+        "items": [
+          {
+            "text": "兽人互助协会资助原主苏天晴考上蓉城最好的医学院。",
+            "refs": [
+              "F_funded_by"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_beast_flu_c02",
+        "entity": "E_beast_flu",
+        "facet": "原主死因链条",
+        "items": [
+          {
+            "text": "原主临近开学染上兽人流感，熬夜时突发暴发性心肌炎而死。",
+            "refs": [
+              "F_contracted_disease",
+              "F_died_of"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "SUM_system_voice_c02",
+        "entity": "E_system_voice",
+        "facet": "系统提示",
+        "items": [
+          {
+            "text": "提示守护之星激活、秘典序章完成开启每日任务、初次变身完成。",
+            "refs": [
+              "F_system_star_activate",
+              "F_system_daily_open",
+              "F_initial_transform"
+            ]
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "系统声音与墨丘利秘典是否同一来源未确认。",
+      "守护之星的来源、材质以及吸收鼻血的意义未说明。",
+      "正牌魔法少女的姓名、身份、能力与所在位置未知。",
+      "每日任务1的具体执行方式、成功判定、失败后果未知。",
+      "神典石的用途、兑换方式未知。",
+      "原主苏天晴死亡与苏天晴重生/替换机制、原主意识状态未知。",
+      "古书先前为何沉默、为何掉出金色十字星未解释。",
+      "兽人互助协会的详情与蓉城医学院名称未知。",
+      "变身触发为何是触摸十字星凹陷而非声控未解释。",
+      "人类与兽人在该世界的政治、社会关系未展开。"
+    ]
+  }
+}

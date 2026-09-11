@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"随身摄像头\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 859,
+    "outputTokens": 36,
+    "cacheHitTokens": 640,
+    "cacheMissTokens": 219
+  },
+  "responseId": "aa26a2e0-b8e1-48d9-91fc-fd48400f3232",
+  "durationMs": 1258,
+  "startedAt": "2026-09-11T09:30:53.912Z",
+  "raw": {
+    "id": "aa26a2e0-b8e1-48d9-91fc-fd48400f3232",
+    "object": "chat.completion",
+    "created": 1789119054,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"随身摄像头\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 859,
+      "completion_tokens": 36,
+      "total_tokens": 895,
+      "prompt_tokens_details": {
+        "cached_tokens": 640
+      },
+      "prompt_cache_hit_tokens": 640,
+      "prompt_cache_miss_tokens": 219
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

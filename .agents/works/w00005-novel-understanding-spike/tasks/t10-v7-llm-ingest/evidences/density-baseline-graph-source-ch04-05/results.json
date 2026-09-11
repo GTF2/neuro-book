@@ -1,0 +1,303 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q13",
+    "q14",
+    "q15",
+    "q16",
+    "q17",
+    "q18",
+    "q19",
+    "q20",
+    "q21",
+    "q22",
+    "q23",
+    "q24",
+    "q25",
+    "q26",
+    "q27",
+    "q35",
+    "q39"
+  ],
+  "mode": "graph-source",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 5,
+      "sha256": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+    },
+    {
+      "chapter": 4,
+      "sha256": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q13",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 97
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答只引第4章第4段确认真名南小风，未找到第5章秘典情报中应有的年龄与就读学校；因此部分正确但遗漏关键信息。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q14",
+      "group": "ordinary",
+      "category": "relationship",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 20
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答与原文证据一致：第4章15段称其为“模样如白貂般的奇妙生物”，第4章20段说明它是自称白灵的观星者精灵，并交代半年前南小风遇到他、获守护之星后以风信子身份活跃；第4章16段关于警告“怪人的气息”的补充也有原文支持。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q15",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 50
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "原文第4章第50段明确写到苏天晴花50神典石买下【怪人强化药A】，并灌进黑狼怪人嘴里；回答与此完全一致。",
+      "queries": 3,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q16",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 101
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答抓住了药A相关、暴起、喷吐黑影、打飞大剑和砸飞风信子等部分事实；但漏掉4:100黑狼怪人抓住风信子，且4:101已明确这是强化药A赋予的倒下后发动的终极能力，回答却称机制未明确，因此未完整回答问题。",
+      "queries": 6,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q17",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 128
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第127段直接写“挠痒痒哟”，第128段明确胜利条件：坚持一分钟不叫出声就放她下来；回答与之一致。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q18",
+      "group": "boundary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 84
+      },
+      "verdict": "not-found",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "材料中第四章第83-84段明确写白灵看到狐狸胸前的金色十字星后问“守、守护之星？你也是魔法少女？！”，原回答却称无记录、无法确定，漏掉决定性原文。其引用只支持金色十字星早先出现等背景，不支持“未找到”结论。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q19",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 27
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第5章第26段公告明确说风信子直到凌晨三点方被解救；第27段明确说“风信子对此并未发表言论”。回答完整对应两个问题，无关键错误。",
+      "queries": 6,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q20",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 29
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第5章第29段原文明确：苏天晴临走前注意到时间是晚上八点，并据此说明风信子被整整吊了七个小时。回答与原文完全一致。",
+      "queries": 5,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q21",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 24
+      },
+      "verdict": "correct",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答内容与查询记录 c05:F_monster_limit 及参考答案一致：绝对不许涩涩、顶多挠风信子脚心腋窝，并正确限定为苏天晴自认/信念。但实际引用的第5章第24段只写“总不能脚心也有奇怪的反应吧”，未逐字涵盖限制内容，引用证据仅部分支持。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q22",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 35
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答与第5章第35段原文一致：任务已完成，100神典石入账，扣除购入强化药A后净赚50；第2章第84段的“奖励：100神典石”也支持奖品数额。引用来源充分且无关键错误。",
+      "queries": 3,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q23",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答正确引用了第5章第42段，说明英雄协会按战斗风格或本人要求授予代号；但未引用第5章第43段，遗漏了风信子半年前亮相后由工作人员接洽并在本人同意下获得【风信子】代号的来源，因此关键部分缺失。",
+      "queries": 6,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q24",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 54
+      },
+      "verdict": "not-found",
+      "evidence": "partial",
+      "criticalError": "将原文第53-54段已给出的网文与收入信息否定为无法确定/没有信息",
+      "reason": "原文第53-54段可确认《魔法少女大危机》及每月九万字、个位数订阅、仅全勤五百；回答却称无法确定且无收入信息。实际引用仅支持生活阴暗/两百粉丝，未支持其对网文和收入的否定结论。",
+      "queries": 6,
+      "sourceQueries": 6
+    },
+    {
+      "id": "q25",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 76
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "第5章第75段原文明确“笔名……十万水星”，第76段明确书名沿用《深渊领主是我萝莉老婆》，回答与该两处原文完全一致。",
+      "queries": 6,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q26",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 88
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用原文第85、87段分别给出每日任务1和任务2的要求，第86、88段分别给出两项奖励均为100神典石，回答完整准确。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q27",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 98
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第5章第98段仅见“【家庭住址……】”，省略号后无具体地址；回答正确指出情报页未给出完整住址，并保留无法确定具体住址的局限。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q35",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 4,
+        "paragraph": 129
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答完整覆盖第3—4章绿心公园主线：秘典预测、苏天晴用怪人强化药A强化黑狼怪人、自称反派并提出挠痒痒游戏；对应查询记录与逐字原文均支持，未发现关键事实错误。",
+      "queries": 6,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q39",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 5,
+        "paragraph": 43
+      },
+      "verdict": "correct",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "结论正确：第5章42-43只说协会按战斗风格或本人要求给予代号、风信子在本人同意下获得【风信子】，未说她主动要求。但回答实际引用仅证明风信子代号存在、受英雄协会管辖和秘典任务，未引用42-43关键原文，故引用不足以支持其“未读到”的否定检索结论。",
+      "queries": 6,
+      "sourceQueries": 0
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

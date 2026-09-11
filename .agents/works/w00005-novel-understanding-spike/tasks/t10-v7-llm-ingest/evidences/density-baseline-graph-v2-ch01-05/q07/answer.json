@@ -1,0 +1,1452 @@
+{
+  "answer": {
+    "text": "第二章第84段秘典（古书）给苏天晴的每日任务1内容是“找茬正牌魔法少女”，奖励为100神典石。",
+    "status": "answered",
+    "recordIds": [
+      "c02:F_daily_task_1",
+      "c02:F_task_target",
+      "c02:F_task_reward"
+    ],
+    "sources": [
+      {
+        "chapter": 2,
+        "paragraph": 84
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "query": "秘典",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "query": "每日任务",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "kind": "fact"
+        },
+        {
+          "command": "search",
+          "query": "苏天晴",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "kind": "entity"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 2,
+                "label": "秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小破书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 49
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:5",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "古书",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 25
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:BOOK:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_book_tome",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "秘典",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 39
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:BOOK:mention:4",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_book_tome",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:5",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:BOOK:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:BOOK:mention:4",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_system_daily_open",
+                "revision": 2,
+                "label": "系统声音提示：【秘典序章已完成，开启每日任务】。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 39
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "系统声音提示：【秘典序章已完成，开启每日任务】。",
+                  "predicate": {
+                    "id": "c02:P_opens_daily_task",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "tome",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "task",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_daily_task",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c02:E_system_voice",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_book_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_daily_task",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_system_voice",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_system_daily_open:at:2:39",
+                "revision": 2,
+                "label": "评估：系统声音提示：【秘典序章已完成，开启每日任务】。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 39
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_system_daily_open",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_system_daily_open",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 39
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_opens_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_system_voice",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_system_voice",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_opens_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_system_voice",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_system_daily_open",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_daily_task_1",
+                "revision": 2,
+                "label": "古书显示每日任务1：找茬魔法少女，并把它分配给苏天晴。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "古书显示每日任务1：找茬魔法少女，并把它分配给苏天晴。",
+                  "predicate": {
+                    "id": "c02:P_assigns_task",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "assigner",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "task",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_daily_task",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "assignee",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "obligatory"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_book_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_daily_task",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_stq_su",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_daily_task_1:at:2:84",
+                "revision": 2,
+                "label": "评估：古书显示每日任务1：找茬魔法少女，并把它分配给苏天晴。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_daily_task_1",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_daily_task_1",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 84
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_assigns_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_assigns_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_daily_task_1",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_task_reward",
+                "revision": 2,
+                "label": "每日任务1奖励100神典石。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "每日任务1奖励100神典石。",
+                  "predicate": {
+                    "id": "c02:P_task_reward",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "task",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_daily_task",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "resource",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_divine_stone",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "quantity",
+                      "value": {
+                        "type": "number",
+                        "number": 100,
+                        "unit": "神典石"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_daily_task",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_stone",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_book_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_task_reward:at:2:84",
+                "revision": 2,
+                "label": "评估：每日任务1奖励100神典石。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_task_reward",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_task_reward",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 84
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_task_reward",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_divine_stone",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stone",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_task_reward",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stone",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_task_reward",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_task_target",
+                "revision": 2,
+                "label": "每日任务1的目标是找茬正牌魔法少女。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "每日任务1的目标是找茬正牌魔法少女。",
+                  "predicate": {
+                    "id": "c02:P_task_targets",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "role": "task",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_daily_task",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_regular_magical_girl",
+                          "revision": 2
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 2
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_daily_task",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_regular_mg",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c02:I_book_tome",
+                      "revision": 2
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 2
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_task_target:at:2:84",
+                "revision": 2,
+                "label": "评估：每日任务1的目标是找茬正牌魔法少女。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_task_target",
+                    "revision": 2
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_task_target",
+                      "revision": 2
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 84
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_task_targets",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_regular_magical_girl",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_task_targets",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_task_target",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 2,
+                "label": "狐狐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_original_owner",
+                "revision": 2,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:ORIGINAL:mention:1",
+                          "revision": 2
+                        },
+                        {
+                          "id": "c02:I_original_owner",
+                          "revision": 2
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL:mention:1",
+                    "revision": 2,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 0,
+  "exhausted": false
+}

@@ -1,0 +1,3 @@
+{
+  "regenerate": "integration.entities 重复使用了 material.referents 的局部 ID（su_tianqing、mercury_tome、original_owner、great_grandmother、creator），违反 A/B 所有数组间新 ID 唯一的要求；结构修复需删除这些重复实体，为持续主体分配新的实体 ID，并统一更新 identities、facts、access、episodes、summaries 等所有引用。这涉及增删记录和统一改名，无法用仅替换已有 record.id 的 replacements 表达，请完整重建。"
+}

@@ -1,0 +1,773 @@
+{
+  "answer": {
+    "text": "当前在已读至第5章第43段的范围内，未能找到英雄协会为魔法少女分配代号的规则，也未能找到风信子这一代号来源的说明。已知的事实仅有：英雄协会是一个组织实体（c03:E_hero_association），风信子小姐/南小风（c03:E_fengxinzi）是另一人物实体，两者之间在已读记录中没有任何关于代号授予或来源的显式联系。因此该问题在当前知识范围内无法确定。",
+    "status": "not-found",
+    "recordIds": [
+      "c03:E_hero_association",
+      "c03:E_fengxinzi"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 10
+      },
+      {
+        "chapter": 3,
+        "paragraph": 15
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "at": {
+            "chapter": 5,
+            "paragraph": 43
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "英雄协会",
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 5,
+            "paragraph": 43
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "魔法少女",
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 5,
+            "paragraph": 43
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子",
+          "kind": "entity"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_hero_association",
+                "revision": 5,
+                "label": "英雄协会",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 10
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 10,
+                    "start": 7,
+                    "end": 11
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "organization",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "英雄协会",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 10
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R7:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c03:I_R7_hero_assoc",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R7:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R7_hero_assoc",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 7,
+                      "end": 11
+                    },
+                    "chapter": 3,
+                    "text": "英雄协会"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_villain",
+                "revision": 5,
+                "label": "反派",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 63
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 63,
+                    "start": 1,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "role",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "反派魔法少女",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 63
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R7:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c01:I_villain",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "魔法少女（反派）",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 81
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:VILLAIN_MG:mention:5",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c02:I_villain",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "反派",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 84
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R15:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c03:I_R15_villain",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R7:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_villain",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:VILLAIN_MG:mention:5",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_villain",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R15:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R15_villain",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 63,
+                      "start": 1,
+                      "end": 7
+                    },
+                    "chapter": 1,
+                    "text": "反派魔法少女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_magical_girl",
+                "revision": 5,
+                "label": "魔法少女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 66
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 66,
+                    "start": 23,
+                    "end": 27
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "role",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "魔法少女",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 66
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R6:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c01:I_magical_girl",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R6:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_magical_girl",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 66,
+                      "start": 23,
+                      "end": 27
+                    },
+                    "chapter": 1,
+                    "text": "魔法少女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:E_regular_magical_girl",
+                "revision": 5,
+                "label": "正牌魔法少女",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 83
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 83,
+                    "start": 1,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "正牌魔法少女",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 84
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:REGULAR_MG:mention:1",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c02:I_regular_mg",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:REGULAR_MG:mention:1",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 83,
+                      "start": 1,
+                      "end": 7
+                    },
+                    "chapter": 2,
+                    "text": "正牌魔法少女"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 5,
+                "label": "风信子小姐",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "南小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:4",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 67
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:10",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    },
+                    {
+                      "text": "风信子小姐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 121
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:18",
+                          "revision": 5
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 5
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:4",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:10",
+                    "revision": 5,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:18",
+                    "revision": 5,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 43
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 0,
+  "exhausted": false
+}

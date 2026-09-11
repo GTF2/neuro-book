@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"金色十字星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"守护之星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"变身道具\",\"kind\":\"mention\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2615,
+    "outputTokens": 91,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 183
+  },
+  "responseId": "fc5e064b-ea01-4b0e-ab56-9a8c7ecc73ba",
+  "durationMs": 913,
+  "startedAt": "2026-09-11T08:44:56.316Z",
+  "raw": {
+    "id": "fc5e064b-ea01-4b0e-ab56-9a8c7ecc73ba",
+    "object": "chat.completion",
+    "created": 1789116296,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"金色十字星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"守护之星\",\"kind\":\"mention\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"变身道具\",\"kind\":\"mention\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2615,
+      "completion_tokens": 91,
+      "total_tokens": 2706,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 183
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

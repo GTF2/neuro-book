@@ -1,0 +1,495 @@
+{
+  "answer": {
+    "text": "第六章第109段原文显示：视频发布时间为8月31日下午三点，播放量已经超过一万，同时观看人数100+。关于“当前时间”，第109段只给出了发布时间“8月31日下午三点”，未在同一句说明当前时间；查询未覆盖到可确定当前时刻的原文。",
+    "status": "partial",
+    "recordIds": [],
+    "sources": [
+      {
+        "chapter": 6,
+        "paragraph": 109
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "视频",
+          "at": {
+            "chapter": 6,
+            "paragraph": 110
+          },
+          "kind": "mention"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 6,
+          "query": "播放量"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 6,
+                "label": "魔法少女风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 6
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 6
+                        }
+                      ]
+                    },
+                    {
+                      "text": "南小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:4",
+                          "revision": 6
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 6
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小风",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 67
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:10",
+                          "revision": 6
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 6
+                        }
+                      ]
+                    },
+                    {
+                      "text": "风信子小姐",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 121
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:FengXinZi:mention:18",
+                          "revision": 6
+                        },
+                        {
+                          "id": "c04:I_fengxinzi",
+                          "revision": 6
+                        }
+                      ]
+                    },
+                    {
+                      "text": "魔法少女风信子",
+                      "availableAt": {
+                        "chapter": 6,
+                        "paragraph": 4
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c06:rNan:mention:1",
+                          "revision": 6
+                        },
+                        {
+                          "id": "c06:I_nan6",
+                          "revision": 6
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:4",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:10",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi:mention:18",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c06:rNan:mention:1",
+                    "revision": 6,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c06:I_nan6",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "风信子",
+                  "match": "exact"
+                },
+                {
+                  "text": "风信子小姐",
+                  "match": "prefix"
+                },
+                {
+                  "text": "魔法少女风信子",
+                  "match": "substring"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c06:rAccount:mention:1",
+                "revision": 6,
+                "label": "视频网站账号",
+                "availableAt": {
+                  "chapter": 6,
+                  "paragraph": 23
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c06",
+                    "sourceRevision": 1,
+                    "paragraph": 23,
+                    "start": 25,
+                    "end": 31
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c06:rAccount",
+                    "revision": 6
+                  },
+                  "text": "视频网站账号",
+                  "span": {
+                    "sourceId": "source-c06",
+                    "sourceRevision": 1,
+                    "paragraph": 23,
+                    "start": 25,
+                    "end": 31
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c06:rAccount",
+                    "revision": 6,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c06",
+                      "sourceRevision": 1,
+                      "paragraph": 23,
+                      "start": 25,
+                      "end": 31
+                    },
+                    "chapter": 6,
+                    "text": "视频网站账号"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 109,
+              "text": "发布时间8月31日下午三点，播放量已经超过了一万，同时观看人数100+。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 1,
+  "exhausted": false
+}

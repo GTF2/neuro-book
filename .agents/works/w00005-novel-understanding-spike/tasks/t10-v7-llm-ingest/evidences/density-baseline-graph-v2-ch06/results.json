@@ -1,0 +1,134 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q28",
+    "q29",
+    "q30",
+    "q31",
+    "q32",
+    "q33",
+    "q36",
+    "q40"
+  ],
+  "mode": "graph",
+  "codeHash": "e3f7332b46022fca76eaa6738039ac0c762f71efa65d438d0842f034ddfac52e",
+  "snapshots": [
+    {
+      "chapter": 6,
+      "sha256": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q28",
+      "group": "ordinary",
+      "category": "knowledge",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 15
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "实际引用第6章第14段支持开盒念头一瞬被抛诸脑后，第15段明确否定开盒；记录 c06:d08 与答案否定态度一致，虽未引第13段但不影响主要结论。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q29",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 23
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "第六章第22段已明确给出“随身摄像头：50神典石”，第23段应有功能描述；回答却称未检索到价格与功能，且其引用不能支持该结论。",
+      "queries": 2,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q30",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 110
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "参考答案第6章109/110段明确给出视频发布时间8月31日下午三点、播放量超一万、同时观看100+，当前时间六点五十；回答却称未找到，且仅引用视频网站账号，未查询到这些信息，引用不支持其结论。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q31",
+      "group": "boundary",
+      "category": "event",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 107
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "七点、条件性威胁以及截至readAt未确认实施均正确；但参考证据显示原文第6章第103段已明确约定“今晚七点，蓉城第三文理学院，不见不散”，回答却称地点未明确，漏掉关键地点信息。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q36",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 114
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "答案正确提到第5章断更2天导致全勤泡汤及为生活费开新书，但未提第5章“记录魔法少女的窘迫状况”每日任务，且误称第6章无最终约战直接记录；原文第6章已有“今晚七点，蓉城第三文理学院，我们不见不散~”，关键内容缺失。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q40",
+      "group": "boundary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 6,
+        "paragraph": 46
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答正确指出截至第6章第46段原文没有明确写苏天晴已买下【定身陷阱】；所引第38段仅为价格、第44段为性价比比较、第46段为苏天晴考虑可能玩出花来，均无购买动作，且明确保留无法确认这一局限。",
+      "queries": 6,
+      "sourceQueries": 0
+    }
+  ],
+  "failures": [
+    {
+      "id": "q33",
+      "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received array\"\n  }\n]"
+    },
+    {
+      "id": "q32",
+      "error": "Expected double-quoted property name in JSON at position 526 (line 1 column 527)"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"每日任务\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"奖励\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"观看\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2513,
+    "outputTokens": 112,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 209
+  },
+  "responseId": "bd15f35d-9844-45c4-af22-7cfc5b845c50",
+  "durationMs": 1070,
+  "startedAt": "2026-09-11T09:19:32.919Z",
+  "raw": {
+    "id": "bd15f35d-9844-45c4-af22-7cfc5b845c50",
+    "object": "chat.completion",
+    "created": 1789118373,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"每日任务\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"奖励\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":5,\"from\":1,\"to\":88,\"query\":\"观看\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2513,
+      "completion_tokens": 112,
+      "total_tokens": 2625,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 209
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

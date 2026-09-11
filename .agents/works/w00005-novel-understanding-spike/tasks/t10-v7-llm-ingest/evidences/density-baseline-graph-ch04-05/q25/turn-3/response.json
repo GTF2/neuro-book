@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前读到范围内无法确定。已知苏天晴的ID实体（c01:E_su）有别名“十万水星”，该别名在第五章第75段可用，但未查到“重新注册写书时用的笔名和书名”的记录；前两次搜索“笔名”“注册”“写书”均无结果，entities只返回人物实体，未返回书名或注册事件。\",\"status\":\"partial\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":5,\"paragraph\":75}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 7283,
+    "outputTokens": 120,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 4851
+  },
+  "responseId": "b2633ef2-4d07-455a-bda1-c8f8e0dd6c4d",
+  "durationMs": 1414,
+  "startedAt": "2026-09-11T09:11:42.093Z",
+  "raw": {
+    "id": "b2633ef2-4d07-455a-bda1-c8f8e0dd6c4d",
+    "object": "chat.completion",
+    "created": 1789117902,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前读到范围内无法确定。已知苏天晴的ID实体（c01:E_su）有别名“十万水星”，该别名在第五章第75段可用，但未查到“重新注册写书时用的笔名和书名”的记录；前两次搜索“笔名”“注册”“写书”均无结果，entities只返回人物实体，未返回书名或注册事件。\",\"status\":\"partial\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":5,\"paragraph\":75}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 7283,
+      "completion_tokens": 120,
+      "total_tokens": 7403,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 4851
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

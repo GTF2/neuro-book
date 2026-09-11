@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在第六章风信子看到的视频中，视频发布信息为：发布时间8月31日下午三点，播放量已经超过了一万，同时观看人数100+。关于“当前时间”，所读到的原文只说明视频结束后并给出上述发布信息，没有直接写明当时的当前时间；因此当前时间在已读范围内无法确定。\",\"status\":\"partial\",\"recordIds\":[\"source-c06\"],\"sources\":[{\"chapter\":6,\"paragraph\":108},{\"chapter\":6,\"paragraph\":109}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2745,
+    "outputTokens": 114,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 1977
+  },
+  "responseId": "f0f71e56-9a18-4032-af71-ca9f7025b9c7",
+  "durationMs": 1302,
+  "startedAt": "2026-09-11T09:31:02.278Z",
+  "raw": {
+    "id": "f0f71e56-9a18-4032-af71-ca9f7025b9c7",
+    "object": "chat.completion",
+    "created": 1789119062,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在第六章风信子看到的视频中，视频发布信息为：发布时间8月31日下午三点，播放量已经超过了一万，同时观看人数100+。关于“当前时间”，所读到的原文只说明视频结束后并给出上述发布信息，没有直接写明当时的当前时间；因此当前时间在已读范围内无法确定。\",\"status\":\"partial\",\"recordIds\":[\"source-c06\"],\"sources\":[{\"chapter\":6,\"paragraph\":108},{\"chapter\":6,\"paragraph\":109}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2745,
+      "completion_tokens": 114,
+      "total_tokens": 2859,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 1977
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

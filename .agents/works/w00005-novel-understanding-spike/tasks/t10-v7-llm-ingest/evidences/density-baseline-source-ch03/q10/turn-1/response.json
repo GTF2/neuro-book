@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"秘典\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2483,
+    "outputTokens": 44,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 179
+  },
+  "responseId": "3ab8c161-21ad-4720-843a-947e91e1ff43",
+  "durationMs": 798,
+  "startedAt": "2026-09-11T08:55:52.584Z",
+  "raw": {
+    "id": "3ab8c161-21ad-4720-843a-947e91e1ff43",
+    "object": "chat.completion",
+    "created": 1789116953,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":33,\"query\":\"秘典\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2483,
+      "completion_tokens": 44,
+      "total_tokens": 2527,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 179
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

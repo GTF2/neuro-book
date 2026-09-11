@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":5,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 866,
+    "outputTokens": 37,
+    "cacheHitTokens": 640,
+    "cacheMissTokens": 226
+  },
+  "responseId": "3a9b475a-f96f-4498-85fe-b30ffbbb9919",
+  "durationMs": 836,
+  "startedAt": "2026-09-11T09:19:03.651Z",
+  "raw": {
+    "id": "3a9b475a-f96f-4498-85fe-b30ffbbb9919",
+    "object": "chat.completion",
+    "created": 1789118344,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":5,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 866,
+      "completion_tokens": 37,
+      "total_tokens": 903,
+      "prompt_tokens_details": {
+        "cached_tokens": 640
+      },
+      "prompt_cache_hit_tokens": 640,
+      "prompt_cache_miss_tokens": 226
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴 网文\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴 收入\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2211,
+    "outputTokens": 119,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 291
+  },
+  "responseId": "39a14974-e7ef-455d-ab56-1aff428dc84d",
+  "durationMs": 1452,
+  "startedAt": "2026-09-11T09:20:30.766Z",
+  "raw": {
+    "id": "39a14974-e7ef-455d-ab56-1aff428dc84d",
+    "object": "chat.completion",
+    "created": 1789118431,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴 网文\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴 收入\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2211,
+      "completion_tokens": 119,
+      "total_tokens": 2330,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 291
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,1763 @@
+{
+  "answer": {
+    "text": "黑狼怪人倒下后又在苏天晴拍掌后骤然暴起，原因是苏天晴此前将怪人强化药A灌给了它，且她称这是“精心准备的小礼物”生效。暴起后它没有发射魔力光束，而是从口中喷吐无数黑影（“暗影冲击”），对风信子（少女）造成攻击：她的大剑（由魔杖化成）脱手，整个人被砸得倒飞而出，惊叫“好恶心”。但具体是强化药A的什么机制、或黑影是否为药效产物，在当前读到的4:50、4:60、4:91-99记录中没有明确解释，属于部分未定。",
+    "status": "partial",
+    "recordIds": [
+      "c04:F21",
+      "c04:F24",
+      "c04:F35",
+      "c04:B24",
+      "c04:D32"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 50
+      },
+      {
+        "chapter": 4,
+        "paragraph": 60
+      },
+      {
+        "chapter": 4,
+        "paragraph": 91
+      },
+      {
+        "chapter": 4,
+        "paragraph": 92
+      },
+      {
+        "chapter": 4,
+        "paragraph": 93
+      },
+      {
+        "chapter": 4,
+        "paragraph": 96
+      },
+      {
+        "chapter": 4,
+        "paragraph": 97
+      },
+      {
+        "chapter": 4,
+        "paragraph": 99
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 4,
+          "from": 80,
+          "to": 110,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 4,
+            "paragraph": 101
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "黑狼"
+        },
+        {
+          "command": "knowledge",
+          "at": {
+            "chapter": 4,
+            "paragraph": 101
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "风信子",
+          "about": "黑狼"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:E_black_wolf",
+                "revision": 4,
+                "label": "黑狼兽人",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 29
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 14,
+                    "end": 18
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unknown",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑狼",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 35
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:HeiLang:mention:4",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_heilang",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "黑狼怪人",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 41
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:HeiLang:mention:5",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_heilang",
+                          "revision": 4
+                        }
+                      ]
+                    },
+                    {
+                      "text": "黑狼兽人",
+                      "availableAt": {
+                        "chapter": 4,
+                        "paragraph": 93
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c04:HeiLang:mention:8",
+                          "revision": 4
+                        },
+                        {
+                          "id": "c04:I_heilang",
+                          "revision": 4
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:HeiLang:mention:4",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:HeiLang:mention:5",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:HeiLang:mention:8",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 29,
+                      "start": 14,
+                      "end": 18
+                    },
+                    "chapter": 4,
+                    "text": "黑色怪物"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "黑狼",
+                  "match": "exact"
+                },
+                {
+                  "text": "黑狼怪人",
+                  "match": "prefix"
+                },
+                {
+                  "text": "黑狼兽人",
+                  "match": "prefix"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 4,
+          "from": 90,
+          "to": 101,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 4,
+            "paragraph": 101
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "暴起",
+          "kind": "beat"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 4,
+            "paragraph": 101
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "c04:E_black_wolf"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 90,
+              "text": "“是反派哦。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 91,
+              "text": "“啪！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 92,
+              "text": "没有给南小风从错愕中反应过来的时间，苏天晴抬起双手，在脸侧轻轻拍掌。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 93,
+              "text": "刹那间，原本倒伏在地的黑狼兽人骤然暴起！可从他嘴里喷吐而出的却并非魔炮一类的魔力光束，而是——"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 94,
+              "text": "“哗啦啦啦！！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 95,
+              "text": "“噗唰！！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 96,
+              "text": "——无数黑影从它口中喷吐而出！"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 97,
+              "text": "少女只来得及惊叫一声，那由魔杖化成的大剑便在暗影冲击中脱手而出，南小风整个人都被砸得倒飞而出！"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 98,
+              "text": "“呜哇！这是、这是什么东西？！好恶心！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 99,
+              "text": "“嗯——哼~看来我精心为你准备的小礼物终于生效了呢~”"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 12,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImRiODJhYTIzYTg4MTljZWRhZDU3NGU5ZjUwZTA1NWY5N2QxNmZlNzg2NjBkNzIwY2U4MTkwNGNlOGRlNDAxZDciLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjZiNWUyMzNiMzVhNWU3NjM3ZGE0ZjY0NDBmNGU1MTFiMWRkNTNmY2E0N2NlNDdkYTU3ZDkwMTMzOGI4NmQ5ODIifQ"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:B24",
+                "revision": 4,
+                "label": "苏天晴拍掌，倒下的黑狼暴起，喷吐无数黑影；风信子大剑脱手，被砸飞，惊叫恶心。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 98
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 91,
+                    "start": 0,
+                    "end": 4
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 92,
+                    "start": 0,
+                    "end": 34
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 93,
+                    "start": 0,
+                    "end": 47
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 94,
+                    "start": 0,
+                    "end": 8
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 95,
+                    "start": 0,
+                    "end": 6
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 96,
+                    "start": 0,
+                    "end": 15
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 97,
+                    "start": 0,
+                    "end": 47
+                  },
+                  {
+                    "sourceId": "source-c04",
+                    "sourceRevision": 1,
+                    "paragraph": 98,
+                    "start": 0,
+                    "end": 20
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "苏天晴拍掌，倒下的黑狼暴起，喷吐无数黑影；风信子大剑脱手，被砸飞，惊叫恶心。",
+                  "chapterId": "c04",
+                  "fromParagraph": 91,
+                  "toParagraph": 98,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c04:SuTianQing",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:HeiLang",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:FengXinZi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:MoZhang",
+                      "revision": 4
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c04:D32",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:SuTianQing",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:HeiLang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:FengXinZi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:MoZhang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:D32",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 91,
+                      "start": 0,
+                      "end": 4
+                    },
+                    "chapter": 4,
+                    "text": "“啪！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 92,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 4,
+                    "text": "没有给南小风从错愕中反应过来的时间，苏天晴抬起双手，在脸侧轻轻拍掌。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 93,
+                      "start": 0,
+                      "end": 47
+                    },
+                    "chapter": 4,
+                    "text": "刹那间，原本倒伏在地的黑狼兽人骤然暴起！可从他嘴里喷吐而出的却并非魔炮一类的魔力光束，而是——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 94,
+                      "start": 0,
+                      "end": 8
+                    },
+                    "chapter": 4,
+                    "text": "“哗啦啦啦！！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 95,
+                      "start": 0,
+                      "end": 6
+                    },
+                    "chapter": 4,
+                    "text": "“噗唰！！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 96,
+                      "start": 0,
+                      "end": 15
+                    },
+                    "chapter": 4,
+                    "text": "——无数黑影从它口中喷吐而出！"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 97,
+                      "start": 0,
+                      "end": 47
+                    },
+                    "chapter": 4,
+                    "text": "少女只来得及惊叫一声，那由魔杖化成的大剑便在暗影冲击中脱手而出，南小风整个人都被砸得倒飞而出！"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c04",
+                      "sourceRevision": 1,
+                      "paragraph": 98,
+                      "start": 0,
+                      "end": 20
+                    },
+                    "chapter": 4,
+                    "text": "“呜哇！这是、这是什么东西？！好恶心！”"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F13",
+                "revision": 4,
+                "label": "废墟中趴着一只体型巨大的黑色狼形怪物，它转头以狠厉视线看向南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 29
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "废墟中趴着一只体型巨大的黑色狼形怪物，它转头以狠厉视线看向南小风。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_black_wolf",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "体型巨大的黑色狼形怪物，在废墟中趴伏并看向南小风"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c03:T_tonight",
+                      "revision": 4
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_heilang",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F13:at:4:29",
+                "revision": 4,
+                "label": "评估：废墟中趴着一只体型巨大的黑色狼形怪物，它转头以狠厉视线看向南小风。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 29
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F13",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F13",
+                      "revision": 4
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 29
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_black_wolf",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F13",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F16",
+                "revision": 4,
+                "label": "怪人形态不限于人形，都会散发魔力气息；但南小风揍过的十几只怪人里没有一只比得上黑狼。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 35
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "怪人形态不限于人形，都会散发魔力气息；但南小风揍过的十几只怪人里没有一只比得上黑狼。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_black_wolf",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "比南小风此前揍过的十几只怪人都更强"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c03:T_tonight",
+                      "revision": 4
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_heilang",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_fengxinzi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_guai",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F16:at:4:35",
+                "revision": 4,
+                "label": "评估：怪人形态不限于人形，都会散发魔力气息；但南小风揍过的十几只怪人里没有一只比得上黑狼。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 35
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F16",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F16",
+                      "revision": 4
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 35
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_black_wolf",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_guai",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_guai",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F16",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F21",
+                "revision": 4,
+                "label": "苏天晴将怪人强化药A灌给黑狼怪人。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 50
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴将怪人强化药A灌给黑狼怪人。",
+                  "predicate": {
+                    "id": "c04:P_uses_item_on",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "role": "agent",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "item",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_drug",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_black_wolf",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c04:T_afternoon",
+                      "revision": 4
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_su",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_drug",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_heilang",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F21:at:4:50",
+                "revision": 4,
+                "label": "评估：苏天晴将怪人强化药A灌给黑狼怪人。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 50
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F21",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F21",
+                      "revision": 4
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 50
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:P_uses_item_on",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_drug",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_black_wolf",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:T_afternoon",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_drug",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c04:P_uses_item_on",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_su",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_drug",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:T_afternoon",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F21",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F24",
+                "revision": 4,
+                "label": "风信子以大剑劈砍，黑狼怪人头部中剑后倒伏在地，哀嚎几声后没了动静。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 60
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "风信子以大剑劈砍，黑狼怪人头部中剑后倒伏在地，哀嚎几声后没了动静。",
+                  "predicate": {
+                    "id": "c04:P_defeats",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "role": "agent",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_black_wolf",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c03:T_tonight",
+                      "revision": 4
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_fengxinzi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_heilang",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_mozhang",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F24:at:4:60",
+                "revision": 4,
+                "label": "评估：风信子以大剑劈砍，黑狼怪人头部中剑后倒伏在地，哀嚎几声后没了动静。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 60
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F24",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F24",
+                      "revision": 4
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 60
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c04:P_defeats",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_black_wolf",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_mozhang",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c04:P_defeats",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_mozhang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F24",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c04:F35",
+                "revision": 4,
+                "label": "苏天晴拍掌后，倒下的黑狼怪人骤然暴起，从口中喷吐无数黑影，风信子的大剑脱手，她整个人被砸得倒飞而出。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 98
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴拍掌后，倒下的黑狼怪人骤然暴起，从口中喷吐无数黑影，风信子的大剑脱手，她整个人被砸得倒飞而出。",
+                  "predicate": {
+                    "id": "c03:P_attacks",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "role": "attacker",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c04:E_black_wolf",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 4
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "point",
+                    "point": {
+                      "id": "c03:T_tonight",
+                      "revision": 4
+                    }
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c04:I_heilang",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_fengxinzi",
+                      "revision": 4
+                    },
+                    {
+                      "id": "c04:I_mozhang",
+                      "revision": 4
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c04:F35:at:4:98",
+                "revision": 4,
+                "label": "评估：苏天晴拍掌后，倒下的黑狼怪人骤然暴起，从口中喷吐无数黑影，风信子的大剑脱手，她整个人被砸得倒飞而出。",
+                "availableAt": {
+                  "chapter": 4,
+                  "paragraph": 98
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c04:F35",
+                    "revision": 4
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c04:F35",
+                      "revision": 4
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 4,
+                    "paragraph": 98
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_attacks",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:E_black_wolf",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_mozhang",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_attacks",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_heilang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_fengxinzi",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c04:I_mozhang",
+                    "revision": 4,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:T_tonight",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c04:F35",
+                    "revision": 4,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 2,
+  "exhausted": true
+}

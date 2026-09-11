@@ -1,0 +1,276 @@
+{
+  "answer": {
+    "text": "未发现原文明确说明墨丘利秘典知道苏天晴不是这副身体原来的主人；在已查询的第1章第40段范围内，仅确认“墨丘利秘典”作为器物实体存在，无相关获知记录。",
+    "status": "not-found",
+    "recordIds": [
+      "c01:E_tome"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 7
+      },
+      {
+        "chapter": 1,
+        "paragraph": 29
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "from": 35,
+          "to": 45,
+          "query": "墨丘利秘典"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "from": 35,
+          "to": 45,
+          "query": "苏天晴"
+        },
+        {
+          "command": "knowledge",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "墨丘利秘典",
+          "about": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "paragraph": 40,
+          "query": "墨丘利秘典"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 1,
+          "paragraph": 40,
+          "query": "苏天晴"
+        },
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "at": {
+            "chapter": 1,
+            "paragraph": 40
+          },
+          "query": "墨丘利秘典"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"paragraph\""
+        },
+        {
+          "ok": false,
+          "error": "Invalid request fields: Unrecognized key: \"paragraph\""
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 1,
+                "label": "墨丘利秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "墨丘利秘典",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 2,
+  "exhausted": true
+}

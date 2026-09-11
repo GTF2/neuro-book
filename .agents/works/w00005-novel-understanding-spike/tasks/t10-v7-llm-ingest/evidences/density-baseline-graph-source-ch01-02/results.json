@@ -1,0 +1,181 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q01",
+    "q02",
+    "q03",
+    "q04",
+    "q05",
+    "q06",
+    "q07",
+    "q34",
+    "q37",
+    "q38"
+  ],
+  "mode": "graph-source",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 1,
+      "sha256": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+    },
+    {
+      "chapter": 2,
+      "sha256": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q01",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 11
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "材料第1章第7、8、10、11段已明确描写镜中形象：金色长发、毛茸茸耳朵、金毛狐女和炸毛大尾巴；实际回答未引用这些原文，仅以第5段“苏天晴”确认人物指称出现，并称未查询到镜中外貌，故未回答主问题，属于材料有答案但未找到。",
+      "queries": 4,
+      "sourceQueries": 1
+    },
+    {
+      "id": "q02",
+      "group": "ordinary",
+      "category": "relationship",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "将第29段已明确的古书自称及第30段“那个人就是你，苏天晴小姐”的关系定位误判为尚未回放、无法确定，导致遗漏核心结论。",
+      "reason": "回答只依据第28段等推断古书可能把苏天晴视为寻找对象，未引用第29/30段；原文第29段已自称“墨丘利秘典”并称寻找最优秀适格者，第30段明确苏天晴就是那个人。因此有部分背景但缺关键答案，判为partial。",
+      "queries": 5,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q03",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 76
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确涵盖原文披露的契约核心内容：苏天晴将成魔法少女、由造物主任务引导走上反派魔法少女顶点，并说明绑定成功与契约成立；同时明确完整条款未被披露，未添加原文没有的主要结论。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q04",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 21
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "引用第2章第20段明确交代原主人临近开学染上兽人流感、熬夜时突发暴发性心肌炎；第21段‘死法和自己一模一样呢’支持其死因结论，回答完整且与原文一致。",
+      "queries": 3,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q05",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 66
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确覆盖两次关键行为：多次喊变身词时十字星毫无反应，后把拇指摁进十字星中央凹陷才触发变身并收到初次变身完成提示；所引原文均直接支持。",
+      "queries": 5,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q06",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 42
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答正确指出第42段只是苏天晴推测金色十字星“应该就是”变身道具，未获原文确认；但忽略了第36段鼻血融入十字星后第38段出现【守护之星激活】这一关键连续证据，因而把金色十字星与“守护之星”的关系说成“未确定”过于否定；其实际引用也未包含第36段，故仅部分支持结论。",
+      "queries": 3,
+      "sourceQueries": 3
+    },
+    {
+      "id": "q34",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 87
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "回答概括了附身狐女、原主经历、古书掉落十字星、按入凹陷后变身及古书沉默等，并有第2章引文支持；但漏掉“成为反派魔法少女”“初次变身已完成”“每日任务1：找茬魔法少女”等关键变化，且未引用对应第1章或第2章证据，因此只算部分正确。",
+      "queries": 6,
+      "sourceQueries": 4
+    },
+    {
+      "id": "q37",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 40
+      },
+      "verdict": "correct",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "结论正确：原文并未明确说墨丘利秘典知道苏天晴不是原主；但实际引用只列第7、29段，未列出第40段苏天晴的推测性自问，因此引用对“无相关获知记录”的证明不完整。",
+      "queries": 6,
+      "sourceQueries": 2
+    },
+    {
+      "id": "q38",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "correct",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答准确指出“最优秀的适格者”及“那个人就是你，苏天晴小姐”均出自墨丘利秘典的自我介绍式宣称，原文未提供独立验证，因此不能据此确认为客观事实；引用第1章第29、30段可支持该结论。",
+      "queries": 3,
+      "sourceQueries": 2
+    }
+  ],
+  "failures": [
+    {
+      "id": "q07",
+      "error": "Query model exceeded its fixed query budget"
+    }
+  ],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

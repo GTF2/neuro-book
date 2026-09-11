@@ -1,0 +1,1528 @@
+{
+  "referentAdditions": [],
+  "entities": [
+    {
+      "id": "E_baidu",
+      "category": "object"
+    },
+    {
+      "id": "E_college_third",
+      "category": "organization"
+    },
+    {
+      "id": "E_novel_mgcrisis",
+      "category": "artifact"
+    },
+    {
+      "id": "E_novel_abyss",
+      "category": "artifact"
+    }
+  ],
+  "identities": [
+    {
+      "id": "I_su",
+      "at": 3,
+      "referent": "r_su",
+      "entity": "known:c01:E_su",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "苏天晴/狐狐/金毛狐狐/反派狐狐/本狐均指第1-4章延续的苏天晴意识所在的狐女身体主体；「十万水星」是她本章为写小说注册的笔名。",
+      "evidence": [
+        "d1",
+        "known:c04:I_su"
+      ]
+    },
+    {
+      "id": "I_monster_limit",
+      "at": 24,
+      "referent": "r_su",
+      "entity": "known:c01:E_su",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第22-24段内心判断的发出者仍是苏天晴本人。",
+      "evidence": [
+        "d10",
+        "known:c04:I_su"
+      ]
+    },
+    {
+      "id": "I_original",
+      "at": 52,
+      "referent": "r_original",
+      "entity": "known:c01:E_original_owner",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "原身/原身小姐/狐狐小姐/「苏天晴」指这具身体的原主人，与第2、3章记录的原主一致。",
+      "evidence": [
+        "d21",
+        "d22",
+        "known:c02:I_original_owner"
+      ]
+    },
+    {
+      "id": "I_wind",
+      "at": 15,
+      "referent": "r_wind",
+      "entity": "known:c03:E_fengxinzi",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "风信子与第3、4章的魔法少女风信子同名同角色；本章情报页披露的真名南小风与第4章一致。",
+      "evidence": [
+        "d7",
+        "known:c04:I_fengxinzi"
+      ]
+    },
+    {
+      "id": "I_hero",
+      "at": 13,
+      "referent": "r_hero_assoc",
+      "entity": "known:c03:E_hero_association",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "英雄协会与第3章记录、负责怪人预测与魔法少女事务的英雄协会同名同职能，本章以栏目与记录魔法少女的方式出现。",
+      "evidence": [
+        "d6",
+        "known:c03:E_hero_association"
+      ]
+    },
+    {
+      "id": "I_book",
+      "at": 33,
+      "referent": "r_book",
+      "entity": "known:c01:E_tome",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "本章的「古书」「秘典」显示每日任务、奖励与情报页，与第1-3章发放任务、给予奖励的秘典为同一件物品。",
+      "evidence": [
+        "d14",
+        "known:c01:E_tome"
+      ]
+    },
+    {
+      "id": "I_tentacle",
+      "at": 27,
+      "referent": "r_tentacle",
+      "entity": "known:c04:E_black_wolf",
+      "decision": "candidate",
+      "certainty": "tentative",
+      "rationale": "「强化怪人」「触手怪」「怪人」指苏天晴昨天在绿心公园用强化药A强化并设陷阱的怪人；第4章被强化的是黑狼怪人，故候选为同一对象，但原文未明说「触手怪」即黑狼怪人。",
+      "evidence": [
+        "d8",
+        "d10",
+        "d11",
+        "known:c04:I_heilang"
+      ]
+    },
+    {
+      "id": "I_park",
+      "at": 19,
+      "referent": "r_park",
+      "entity": "known:c03:E_luxin_park",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "绿心公园与第3、4章怪人袭击预测及风信子迎击的地点为同一公园。",
+      "evidence": [
+        "d8",
+        "known:c04:I_lvxin"
+      ]
+    },
+    {
+      "id": "I_mutual",
+      "at": 52,
+      "referent": "r_mutual",
+      "entity": "known:c02:E_beastfolk_mutual_aid",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "「互助会」与第2、3章的兽人互助会为同一组织，本章说明其资助原身并帮忙租房。",
+      "evidence": [
+        "d22",
+        "known:c02:E_beastfolk_mutual_aid"
+      ]
+    },
+    {
+      "id": "I_currency",
+      "at": 35,
+      "referent": "r_currency",
+      "entity": "known:c02:E_divine_stone",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "神典石与第2章以来作为任务奖励的资源为同一种。",
+      "evidence": [
+        "d15",
+        "known:c02:E_divine_stone"
+      ]
+    },
+    {
+      "id": "I_baidu",
+      "at": 43,
+      "referent": "r_baidu",
+      "entity": "E_baidu",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "「度娘」指苏天晴用来搜索英雄协会与魔法少女代号规则的搜索引擎/网站，本章首次出现，作为持续对象。",
+      "evidence": [
+        "d18"
+      ]
+    },
+    {
+      "id": "I_net_novel",
+      "at": 54,
+      "referent": "r_net_novel",
+      "entity": "E_novel_mgcrisis",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "《魔法少女大危机》指原身在小说网站连载的网络小说作品，本章首次出现。",
+      "evidence": [
+        "d23"
+      ]
+    },
+    {
+      "id": "I_new_novel",
+      "at": 77,
+      "referent": "r_new_novel",
+      "entity": "E_novel_abyss",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "《深渊领主是我萝莉老婆》指苏天晴新注册并内投的网络小说作品，本章首次出现。",
+      "evidence": [
+        "d33"
+      ]
+    },
+    {
+      "id": "I_college",
+      "at": 98,
+      "referent": "r_college",
+      "entity": "E_college_third",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "蓉城第三文理学院指秘典情报页所载风信子（南小风）就读的学校。",
+      "evidence": [
+        "d38"
+      ]
+    },
+    {
+      "id": "I_med_college",
+      "at": 63,
+      "referent": "r_med_college",
+      "entity": "known:c03:E_rongcheng_medical_college",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "蓉城医学院与第3章提到的医学院为同一机构，本章说明互助会在其附近为原身租房。",
+      "evidence": [
+        "d28",
+        "known:c03:E_rongcheng_medical_college"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "id": "P_announces",
+      "name": "announces",
+      "definition": "某主体或媒介（如秘典、协会公告）发布、宣告或显示某一内容。",
+      "roles": [
+        {
+          "name": "speaker",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "speech"
+    },
+    {
+      "id": "P_writes",
+      "name": "writes",
+      "definition": "某作者创作或更新某作品，创作情况、收益等细节为文本。",
+      "roles": [
+        {
+          "name": "author",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "work",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "detail",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "creation"
+    }
+  ],
+  "times": [
+    {
+      "id": "T_morning",
+      "at": 2,
+      "description": "第5章当天早晨，绿心公园事件翌日的早晨",
+      "precision": "relative",
+      "before": [],
+      "after": [
+        "known:c03:T_tonight"
+      ]
+    },
+    {
+      "id": "T_three_am",
+      "at": 26,
+      "description": "昨晚凌晨三点，风信子被解救的时间",
+      "precision": "point",
+      "before": [],
+      "after": [
+        "known:c03:T_tonight"
+      ]
+    },
+    {
+      "id": "T_noon",
+      "at": 78,
+      "description": "第5章临近中午，苏天晴写完两万字并感到饥饿时",
+      "precision": "relative",
+      "before": [],
+      "after": [
+        "T_morning"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "F_monster_limit",
+      "at": 24,
+      "text": "苏天晴自认给触手怪设定了绝对不许涩涩的限制，顶多挠风信子的脚心腋窝，不应导致她那么大反应。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "自认给触手怪设定了绝对不许涩涩的限制，顶多挠她的脚心腋窝，不应有这么大的反应"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d8",
+          "d10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d8记录她回忆设陷阱经过，d10记录她对限制与风信子反应的判断。"
+      }
+    },
+    {
+      "id": "F_ann",
+      "at": 27,
+      "text": "英雄协会公告称：昨晚蓉城绿心公园出现怪人袭击，魔法少女风信子前往镇压，不料中了怪人的陷阱，直到凌晨三点方被解救；风信子对此并未发表言论。",
+      "predicate": "P_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:E_hero_association"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "昨晚蓉城绿心公园出现怪人袭击，魔法少女风信子前往镇压，不料中了怪人的陷阱，直到凌晨三点方被解救；风信子对此并未发表言论。"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c03:E_hero_association",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_hero"
+      ],
+      "proof": {
+        "premises": [
+          "d6",
+          "d11"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d6记录苏天晴打开视频app查看英雄协会栏目，d11为公告视频的报道内容；内容归属英雄协会公告，不据此升级为世界事实。"
+      }
+    },
+    {
+      "id": "F_seven_hours",
+      "at": 30,
+      "text": "苏天晴推算：自己晚上八点离开，风信子直到凌晨三点获救，因此被吊了整整七个小时。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:E_fengxinzi"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "据苏天晴推算，从昨晚八点到凌晨三点被整整吊了七个小时"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_three_am",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_wind",
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d11",
+          "d12"
+        ],
+        "method": "inference",
+        "certainty": "tentative",
+        "rationale": "由公告时间与苏天晴自己离开的时间推算，属其个人推断。"
+      }
+    },
+    {
+      "id": "F_task1_done",
+      "at": 33,
+      "text": "秘典每日任务页显示：每日任务1「找茬魔法少女」已完成。",
+      "predicate": "P_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_tome"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "每日任务1：找茬魔法少女，已完成"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:E_tome",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_book"
+      ],
+      "proof": {
+        "premises": [
+          "d14"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d14记录苏天晴翻到古书每日任务页、任务1显示已完成。"
+      }
+    },
+    {
+      "id": "F_reward",
+      "at": 35,
+      "text": "苏天晴认为完成每日任务1获得100神典石，扣除昨天购入强化药A的花费后净赚50。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "完成每日任务1获得100神典石，扣除昨天购入强化药A的花费后净赚50"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d15"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d15为苏天晴关于奖励入账与净赚50的内心计算。"
+      }
+    },
+    {
+      "id": "F_task_codename",
+      "at": 39,
+      "text": "秘典显示任务：拥有一个魔法少女代号，每个魔法少女都应该有独属于自己的代号，奖励200神典石。",
+      "predicate": "P_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_tome"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "任务：拥有一个魔法少女代号；每个魔法少女都应该有独属于自己的代号；奖励：200神典石"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:E_tome",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_book"
+      ],
+      "proof": {
+        "premises": [
+          "d16"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d16为秘典显示的新任务及其奖励。"
+      }
+    },
+    {
+      "id": "F_codename_rule",
+      "at": 43,
+      "text": "英雄协会把每个魔法少女记录在册，根据战斗风格或本人要求给予识别代号；风信子半年前初次亮相后由英雄协会工作人员接洽，经本人同意获得【风信子】代号。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:E_hero_association"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "每个魔法少女都会被记录在册，并根据其战斗风格或本人要求给予对应的识别代号；例：风信子半年前初次亮相后有工作人员前去接洽、经本人同意获得【风信子】代号"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "rule",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "T_morning",
+      "quantifier": "all",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_hero"
+      ],
+      "proof": {
+        "premises": [
+          "d18"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d18为苏天晴搜索到的英雄协会代号登记规则与风信子获得代号的经过。"
+      }
+    },
+    {
+      "id": "F_task_wish",
+      "at": 49,
+      "text": "秘典显示任务「夙愿」：获得200名关注者；成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去。",
+      "predicate": "P_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_tome"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "任务：夙愿；获得200名关注者；成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去吧"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:E_tome",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_book"
+      ],
+      "proof": {
+        "premises": [
+          "d20"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d20为秘典显示的夙愿任务内容。"
+      }
+    },
+    {
+      "id": "F_original_economy",
+      "at": 52,
+      "text": "原身“苏天晴”每月开销约一千块，从互助会获得五百块资助，仍有约五百块缺口。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_original_owner"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "每月开销约一千块，从互助会每月获得五百块资助，剩下约五百块左右的缺口"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": null,
+      "quantifier": "usually",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_original"
+      ],
+      "proof": {
+        "premises": [
+          "d22"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d22叙述原身每月收支与互助会资助的缺口。"
+      }
+    },
+    {
+      "id": "F_original_novel",
+      "at": 54,
+      "text": "原身在小说网站连载《魔法少女大危机》，每月更新九万字，个位数订阅，除全勤五百块外没有其他收入。",
+      "predicate": "P_writes",
+      "arguments": [
+        {
+          "role": "author",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_original_owner"
+          }
+        },
+        {
+          "role": "work",
+          "value": {
+            "type": "ref",
+            "id": "E_novel_mgcrisis"
+          }
+        },
+        {
+          "role": "detail",
+          "value": {
+            "type": "text",
+            "text": "《魔法少女大危机》讲述史莱姆主角与魔法少女们的异世界冒险故事；每月更新九万字，个位数订阅，除全勤五百块外再无其他收入"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": null,
+      "quantifier": "usually",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_original",
+        "I_net_novel"
+      ],
+      "proof": {
+        "premises": [
+          "d23"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d23叙述原身写网络小说的内容与收入情况。"
+      }
+    },
+    {
+      "id": "F_death_cause",
+      "at": 55,
+      "text": "叙述推测：原身可能因月底赶稿熬夜冲全勤，加上兽人流感，因暴发性心肌炎猝死。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_original_owner"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "可能因月底赶稿熬夜冲全勤加上兽人流感，因暴发性心肌炎猝死"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "hypothesis",
+        "holder": null,
+        "opaque": false
+      },
+      "time": null,
+      "quantifier": "particular",
+      "modality": "possible",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_original"
+      ],
+      "proof": {
+        "premises": [
+          "d24"
+        ],
+        "method": "inference",
+        "certainty": "tentative",
+        "rationale": "d24原文为推测语气（“估计是”），只作为可能死因记录。"
+      }
+    },
+    {
+      "id": "F_lost_attendance",
+      "at": 60,
+      "text": "苏天晴认为原身完全依赖小说的五百块全勤维生，而自己昨天一个字都没写，这五百块全勤很可能泡汤。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "认为原身完全依赖那本小说的五百块全勤维生，自己昨天一个字都没写，这五百块全勤很可能泡汤"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "possible",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d26"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d26为苏天晴意识到断更可能导致全勤泡汤的推断。"
+      }
+    },
+    {
+      "id": "F_backend",
+      "at": 62,
+      "text": "苏天晴打开小说网站作者后台，看到全勤奖一栏显示红色「断更2天」。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "打开小说网站作者后台，全勤奖一栏显示红色「断更2天」字样"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d27"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d27叙述作者后台的实际显示。"
+      }
+    },
+    {
+      "id": "F_apartment",
+      "at": 63,
+      "text": "苏天晴所住公寓是互助会在蓉城医学院附近帮忙租的，租金不用担心。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "所住公寓由互助会在蓉城医学院附近帮忙租下，租金不用担心"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": null,
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d28"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d28叙述公寓来源、位置与租金情况。"
+      }
+    },
+    {
+      "id": "F_plan_livelihood",
+      "at": 67,
+      "text": "苏天晴认为任务已不重要，先要解决未来的生活费。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "认为任务什么的已经不重要，先把未来的生活费搞定才要紧"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d30"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d30为她面对经济压力时的打算。"
+      }
+    },
+    {
+      "id": "F_past_life",
+      "at": 73,
+      "text": "苏天晴回忆自己前世是医生，平时喜欢写网络小说打发时间，前后写过不少书但成绩都不怎么样。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "前世是医生，平时喜欢写网络小说打发时间，前后写过不少书，成绩都不怎么样"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": null,
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d32"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d32为苏天晴对前世经历的回忆。"
+      }
+    },
+    {
+      "id": "F_new_novel",
+      "at": 77,
+      "text": "苏天晴退出原身账号重新注册，笔名「十万水星」，新书《深渊领主是我萝莉老婆》，靠前世记忆一上午写两万字凑齐签约字数并私发编辑内投。",
+      "predicate": "P_writes",
+      "arguments": [
+        {
+          "role": "author",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "work",
+          "value": {
+            "type": "ref",
+            "id": "E_novel_abyss"
+          }
+        },
+        {
+          "role": "detail",
+          "value": {
+            "type": "text",
+            "text": "退出原身账号并重新注册，笔名「十万水星」；书名《深渊领主是我萝莉老婆》；凭前世记忆一上午写两万字，凑齐足够签约的字数，随便找了个编辑邮箱私发内投"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "T_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su",
+        "I_new_novel"
+      ],
+      "proof": {
+        "premises": [
+          "d33"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d33叙述注册、取笔名书名、写作与内投过程。"
+      }
+    },
+    {
+      "id": "F_today_tasks",
+      "at": 88,
+      "text": "秘典显示今日每日任务1：记录魔法少女的窘迫状况（奖励100神典石）；每日任务2：让至少100人观看魔法少女的窘况（奖励100神典石）。",
+      "predicate": "P_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_tome"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "每日任务1：记录魔法少女的窘迫状况，奖励100神典石；每日任务2：让至少100人观看到魔法少女的窘况，奖励100神典石"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:E_tome",
+        "opaque": true
+      },
+      "time": "T_noon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_book"
+      ],
+      "proof": {
+        "premises": [
+          "d36"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d36为秘典显示的今日每日任务及奖励。"
+      }
+    },
+    {
+      "id": "F_intel",
+      "at": 98,
+      "text": "秘典情报页显示：魔法少女风信子，真名南小风，19岁，就读于蓉城第三文理学院，正在为恶补暑假作业苦恼中，并列出家庭住址。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:E_fengxinzi"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "秘典情报页记载：真名南小风；19岁，就读于蓉城第三文理学院；正在为恶补暑假作业苦恼中；家庭住址……"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:E_tome",
+        "opaque": true
+      },
+      "time": "T_noon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_wind",
+        "I_book"
+      ],
+      "proof": {
+        "premises": [
+          "d37",
+          "d38"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d37记录她翻到情报页，d38为情报页内容；内容归属秘典情报页而非独立世界事实。"
+      }
+    },
+    {
+      "id": "F_idea",
+      "at": 102,
+      "text": "苏天晴想到把记录魔法少女窘况、让至少100人观看与获得200名关注者联系起来，合上秘典，认为已有绝妙想法。",
+      "predicate": "known:c03:P_has_attribute",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:E_su"
+          }
+        },
+        {
+          "role": "attribute",
+          "value": {
+            "type": "text",
+            "text": "打算把记录魔法少女窘况、让至少100人观看与获得200名关注者联系起来；已冒出绝妙想法，笑容浮现"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:E_su",
+        "opaque": true
+      },
+      "time": "T_noon",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "I_su"
+      ],
+      "proof": {
+        "premises": [
+          "d37",
+          "d39",
+          "d40"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "d37/d39/d40记录她的联想、被震撼与成算在胸的想法，具体方案未披露。"
+      }
+    }
+  ],
+  "arguments": [],
+  "access": [
+    {
+      "id": "A_ann_heard",
+      "at": 27,
+      "holder": "known:c01:E_su",
+      "target": "F_ann",
+      "mode": "heard",
+      "evidence": [
+        "d6",
+        "d11"
+      ]
+    },
+    {
+      "id": "A_codename_read",
+      "at": 40,
+      "holder": "known:c01:E_su",
+      "target": "F_task_codename",
+      "mode": "read",
+      "evidence": [
+        "d16",
+        "d17"
+      ]
+    },
+    {
+      "id": "A_rule_read",
+      "at": 43,
+      "holder": "known:c01:E_su",
+      "target": "F_codename_rule",
+      "mode": "read",
+      "evidence": [
+        "d18"
+      ]
+    },
+    {
+      "id": "A_wish_read",
+      "at": 51,
+      "holder": "known:c01:E_su",
+      "target": "F_task_wish",
+      "mode": "read",
+      "evidence": [
+        "d20",
+        "d21"
+      ]
+    },
+    {
+      "id": "A_today_read",
+      "at": 88,
+      "holder": "known:c01:E_su",
+      "target": "F_today_tasks",
+      "mode": "read",
+      "evidence": [
+        "d35",
+        "d36"
+      ]
+    },
+    {
+      "id": "A_intel_read",
+      "at": 98,
+      "holder": "known:c01:E_su",
+      "target": "F_intel",
+      "mode": "read",
+      "evidence": [
+        "d37",
+        "d38"
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "EP_announcement",
+      "at": 30,
+      "title": "翌日早晨：公告、回忆与尾巴的教训",
+      "summary": "翌日早晨八点闹钟吵醒苏天晴，她翻身压到自己的尾巴；洗漱时打开视频app查看英雄协会栏目，看到公告称昨晚绿心公园怪人袭击中风信子中陷阱、直到凌晨三点方被解救，她由此回忆起自己昨天在绿心公园埋伏风信子、用强化怪人设陷阱并玩到半夜才回家，并推算风信子被吊七小时。",
+      "scale": "event",
+      "participants": [
+        "known:c01:E_su"
+      ],
+      "materials": [
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6",
+        "d7",
+        "d8",
+        "d11",
+        "d12"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "known:c04:EP_battle",
+          "evidence": [
+            "d1",
+            "d8"
+          ]
+        }
+      ],
+      "time": "T_morning",
+      "proof": {
+        "premises": [
+          "d1",
+          "d6",
+          "d11",
+          "d12"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "多个披露共同构成翌日早晨的起床、看公告、回忆与推算被吊七小时的片段；事件完整记录至第30段。"
+      }
+    },
+    {
+      "id": "EP_livelihood",
+      "at": 80,
+      "title": "为生活费开新书",
+      "summary": "苏天晴领到每日任务1奖励（100神典石，净赚50），并看到要求拥有魔法少女代号的新任务；随后发现原身赖以维生的网络小说因断更2天全勤泡汤，生活压力暴涨；她决定先解决生活费，退出原身账号重新注册，以笔名「十万水星」写新书《深渊领主是我萝莉老婆》，一上午写两万字凑齐签约字数并私发编辑内投，希望尽快过稿补回下月全勤。",
+      "scale": "sequence",
+      "participants": [
+        "known:c01:E_su"
+      ],
+      "materials": [
+        "d13",
+        "d14",
+        "d15",
+        "d16",
+        "d18",
+        "d19",
+        "d20",
+        "d21",
+        "d22",
+        "d23",
+        "d24",
+        "d26",
+        "d27",
+        "d28",
+        "d30",
+        "d31",
+        "d32",
+        "d33",
+        "d34"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "EP_announcement",
+          "evidence": [
+            "d13",
+            "d14"
+          ]
+        }
+      ],
+      "time": "T_morning",
+      "proof": {
+        "premises": [
+          "d14",
+          "d15",
+          "d26",
+          "d27",
+          "d33"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "任务奖励、全勤危机与开新书投稿构成连贯生计线。"
+      }
+    },
+    {
+      "id": "EP_intel_plan",
+      "at": 102,
+      "title": "秘典任务与风信子情报",
+      "summary": "临近中午后苏天晴查看秘典：今日每日任务要求记录魔法少女的窘迫状况并让至少100人观看，各奖励100神典石；她把这些与200名关注者的夙愿任务联系起来，翻到情报页，发现风信子真名南小风、19岁、就读蓉城第三文理学院、正为暑假作业苦恼并附家庭住址，被这情报震撼后萌生绝妙想法。",
+      "scale": "sequence",
+      "participants": [
+        "known:c01:E_su"
+      ],
+      "materials": [
+        "d35",
+        "d36",
+        "d37",
+        "d38",
+        "d39",
+        "d40"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "EP_livelihood",
+          "evidence": [
+            "d35"
+          ]
+        }
+      ],
+      "time": "T_noon",
+      "proof": {
+        "premises": [
+          "d36",
+          "d38",
+          "d39",
+          "d40"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "今日任务、情报页内容与其后的想法构成一条连续线索。"
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "id": "SUM_su_c05",
+      "entity": "known:c01:E_su",
+      "facet": "生计、任务与情报行动",
+      "items": [
+        {
+          "text": "翌日早晨得知英雄协会公告称昨晚绿心公园怪人袭击中风信子中陷阱、直到凌晨三点才被解救，她据此推算风信子被吊七小时；并确认每日任务1「找茬魔法少女」已完成、100神典石入账（她自称扣除强化药A花费后净赚50）。",
+          "refs": [
+            "d11",
+            "d12",
+            "d14",
+            "d15"
+          ]
+        },
+        {
+          "text": "发现原身赖以维生的网络小说全勤因后台显示「断更2天」而泡汤后，决定先解决生活费：退出原身账号、以笔名「十万水星」重新注册并写新书《深渊领主是我萝莉老婆》，一上午写两万字私发编辑内投，希望尽快过稿吃到下月五百块全勤。",
+          "refs": [
+            "d26",
+            "d27",
+            "d28",
+            "d30",
+            "d33",
+            "d34"
+          ]
+        },
+        {
+          "text": "从秘典接获新任务（要有魔法少女代号；夙愿为获得200名关注者；今日记录并让至少100人观看魔法少女窘况）；又从秘典情报页读到风信子真名南小风、19岁、就读蓉城第三文理学院、为暑假作业苦恼及家庭住址，被震撼后产生利用窘况记录与传播来获取关注者的想法（具体方案未明）。",
+          "refs": [
+            "d16",
+            "d20",
+            "d36",
+            "d38",
+            "d39",
+            "d40"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SUM_fengxinzi_c05",
+      "entity": "known:c03:E_fengxinzi",
+      "facet": "被记录与暴露的近况",
+      "items": [
+        {
+          "text": "据英雄协会公告（公告说法），她昨晚在蓉城绿心公园中怪人的陷阱，直到凌晨三点才被解救，本人未发表言论；苏天晴据此推算她自晚八点起被吊七小时。",
+          "refs": [
+            "d11",
+            "d12"
+          ]
+        },
+        {
+          "text": "秘典情报页列出其真名南小风、19岁、就读蓉城第三文理学院、正为恶补暑假作业苦恼，并载有家庭住址（情报页所载，原文未展开地址）。",
+          "refs": [
+            "d37",
+            "d38"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "SUM_original_c05",
+      "entity": "known:c01:E_original_owner",
+      "facet": "生前生计与死因（叙述与推测）",
+      "items": [
+        {
+          "text": "每月开销约一千块，靠互助会五百块资助，仍有约五百块缺口，于是写网络小说《魔法少女大危机》（每月九万字、个位数订阅，除全勤五百块外无其他收入）。",
+          "refs": [
+            "d22",
+            "d23"
+          ]
+        },
+        {
+          "text": "叙述推测其可能因月底赶稿熬夜冲全勤加上兽人流感，因暴发性心肌炎猝死（推测，未确证）。",
+          "refs": [
+            "d24"
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "苏天晴的新书能否过稿、能否恢复/获得下月五百块全勤未明。",
+    "「触手怪」与第4章黑狼怪人的同一性未在原文明说，本章只作候选归属。",
+    "风信子被救后的去向、她的态度与是否知道苏天晴身份未明。",
+    "苏天晴结尾「绝妙想法」的具体内容未披露。",
+    "原身死因（赶稿熬夜＋兽人流感致暴发性心肌炎）仍为叙述推测。",
+    "秘典情报页为何掌握风信子真名、年龄、学校与家庭住址等信息来源未说明。",
+    "神典石能否兑换现实生活费、其用途未展开。",
+    "夙愿任务中「带着她的那份」的指代仍未明确。",
+    "每日任务与夙愿任务是否存在时限或失败惩罚未知。",
+    "原主意识状态、苏天晴前世死亡与替换机制仍未明确。"
+  ]
+}

@@ -1,0 +1,548 @@
+{
+  "answer": {
+    "text": "在当前阅读范围（第6章第90段）内，只能确定：白灵拿着手机飞来找南小风（风信子），惊呼“小风你快看！快看这个视频！”并强调“这个视频很重要！你赶紧看看吧！”，然后白灵把手机塞到南小风手里，南小风看到“魔法少女狐狐official？”，白灵说“不是！你看她的第一个视频！”并伸手按屏幕让视频播放。但原文尚未直接说明风信子（南小风）是如何“得知”苏天晴发布该视频的——只显示白灵主动把视频/手机展示给她；苏天晴是否即“魔法少女狐狐official”、以及白灵如何获得该视频，在读到的证据中均未明确。",
+    "status": "partial",
+    "recordIds": [
+      "source-c06"
+    ],
+    "sources": [
+      {
+        "chapter": 6,
+        "paragraph": 82
+      },
+      {
+        "chapter": 6,
+        "paragraph": 83
+      },
+      {
+        "chapter": 6,
+        "paragraph": 85
+      },
+      {
+        "chapter": 6,
+        "paragraph": 86
+      },
+      {
+        "chapter": 6,
+        "paragraph": 88
+      },
+      {
+        "chapter": 6,
+        "paragraph": 89
+      },
+      {
+        "chapter": 6,
+        "paragraph": 90
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "query": "风信子",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "source",
+          "chapter": 6,
+          "query": "苏天晴",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "source",
+          "chapter": 6,
+          "query": "白灵",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 4,
+              "text": "魔法少女风信子被怪人抓住，失去往日的灵动，只剩下惊惧与恐慌，在月光下无助地哀鸣。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 10,
+              "text": "自己是反派没错，重生后的人生阅历倒也算丰富，但作为魔法少女的经验可远远比不上那个风信子。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 13,
+              "text": "要是咱把风信子的真名给曝光出去……岂不是能给她制造出巨大的窘迫状况吗……？"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 53,
+              "text": "南小风，或者说魔法少女风信子，正在绝赞补作业中。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 62,
+              "text": "——昨晚，魔法少女风信子前去绿心公园对抗怪人，被不知名的魔法少女暗算，整整七个小时后才被察觉情况的英雄协会给解救出来。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 3,
+              "text": "看到这个问题的第一瞬间，苏天晴脑子里出现了昨天晚上的场景："
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 6,
+              "text": "但苏天晴自己也很清楚，昨天那样的状况完全是借助强化后的黑狼怪人才实现的，并非自己的真正实力。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 12,
+              "text": "反复翻阅着秘典，看着那一行惊心动魄的盒打击，苏天晴心里冒出了一个危险的想法。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 17,
+              "text": "“看来只能花些神典石来消灾了呢。”苏天晴呢喃自语。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 25,
+              "text": "没有丝毫犹豫，在用一声疑惑的轻呼表达了心中困惑后，苏天晴果断将它买下。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 30,
+              "text": "可即便解决了第二个任务的前置，“如何让魔法少女窘迫”这个问题依然像个梦魇一样萦绕在苏天晴脑子里。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 37,
+              "text": "苏天晴的目光继续下滑。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 41,
+              "text": "苏天晴捏着下巴，尾巴左右摇摆，陷入沉思。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 45,
+              "text": "苏天晴眼珠子一转。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 9,
+            "returned": 9
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 66,
+              "text": "“……那个金色头发的女孩子，白灵你知道多少。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 81,
+              "text": "“白灵你别乱叫，吵死了。”南小风没好气地说道。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 82,
+              "text": "可白灵却满脸震惊地飞到书桌前，朝埋头苦干的南小风举起手中的手机。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 86,
+              "text": "白灵急得翅膀扑扇，强行把手机塞到南小风手里。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 88,
+              "text": "“魔法少女狐狐official？……白灵你在看什么奇怪的主播吗？”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 90,
+              "text": "白灵伸手按了一下手机屏幕，视频播放。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 6,
+            "returned": 6
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 64,
+          "to": 95,
+          "query": "",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Invalid request query: Too small: expected string to have >=1 characters"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 64,
+          "to": 95,
+          "query": "白灵",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        },
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 60,
+          "to": 90,
+          "query": "视频",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 83,
+              "text": "“小风你快看！快看这个视频！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 85,
+              "text": "“这个视频很重要！你赶紧看看吧！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 89,
+              "text": "“不是！你看她的第一个视频！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 90,
+              "text": "白灵伸手按了一下手机屏幕，视频播放。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 90
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 5,
+  "exhausted": true
+}

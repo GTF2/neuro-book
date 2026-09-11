@@ -1,0 +1,146 @@
+{
+  "schema": "neurobook.memory.ingest-query-verification.v1",
+  "observedAt": "2026-09-11T09:23:53.916Z",
+  "head": 5,
+  "inputHash": "4875ca2cd860109dcce836d4164b53082eec2cab791ec53b7ce7f9283a72a7c4",
+  "policyHash": "99c37d639f129a0a058a7c7f92113446bb8feaf88c2a5bf955954e8b9e9d813b",
+  "totalQueries": 340,
+  "chapters": [
+    {
+      "chapter": 1,
+      "sourceParagraphs": 76,
+      "entities": 11,
+      "freshSummarySubjects": 6,
+      "missingSummarySubjects": 5,
+      "scopeChecks": [
+        {
+          "at": {
+            "chapter": 1,
+            "paragraph": 38
+          },
+          "visibleFacts": 8,
+          "visibleBeats": 10
+        },
+        {
+          "at": {
+            "chapter": 1,
+            "paragraph": 76
+          },
+          "visibleFacts": 24,
+          "visibleBeats": 22
+        }
+      ]
+    },
+    {
+      "chapter": 2,
+      "sourceParagraphs": 87,
+      "entities": 20,
+      "freshSummarySubjects": 15,
+      "missingSummarySubjects": 5,
+      "scopeChecks": [
+        {
+          "at": {
+            "chapter": 2,
+            "paragraph": 44
+          },
+          "visibleFacts": 42,
+          "visibleBeats": 32
+        },
+        {
+          "at": {
+            "chapter": 2,
+            "paragraph": 87
+          },
+          "visibleFacts": 52,
+          "visibleBeats": 41
+        }
+      ]
+    },
+    {
+      "chapter": 3,
+      "sourceParagraphs": 87,
+      "entities": 30,
+      "freshSummarySubjects": 12,
+      "missingSummarySubjects": 18,
+      "scopeChecks": [
+        {
+          "at": {
+            "chapter": 3,
+            "paragraph": 44
+          },
+          "visibleFacts": 77,
+          "visibleBeats": 52
+        },
+        {
+          "at": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "visibleFacts": 91,
+          "visibleBeats": 59
+        }
+      ]
+    },
+    {
+      "chapter": 4,
+      "sourceParagraphs": 129,
+      "entities": 35,
+      "freshSummarySubjects": 17,
+      "missingSummarySubjects": 18,
+      "scopeChecks": [
+        {
+          "at": {
+            "chapter": 4,
+            "paragraph": 65
+          },
+          "visibleFacts": 116,
+          "visibleBeats": 75
+        },
+        {
+          "at": {
+            "chapter": 4,
+            "paragraph": 129
+          },
+          "visibleFacts": 142,
+          "visibleBeats": 93
+        }
+      ]
+    },
+    {
+      "chapter": 5,
+      "sourceParagraphs": 102,
+      "entities": 39,
+      "freshSummarySubjects": 17,
+      "missingSummarySubjects": 22,
+      "scopeChecks": [
+        {
+          "at": {
+            "chapter": 5,
+            "paragraph": 51
+          },
+          "visibleFacts": 150,
+          "visibleBeats": 102
+        },
+        {
+          "at": {
+            "chapter": 5,
+            "paragraph": 102
+          },
+          "visibleFacts": 162,
+          "visibleBeats": 108
+        }
+      ],
+      "explicitAccess": 66,
+      "emptyKnowledgeSubjects": 35
+    }
+  ],
+  "cli": {
+    "outsideRepository": true,
+    "chapter": 5,
+    "characters": 3273
+  },
+  "limitations": [
+    "Checks verify published CLI, paging, source fidelity and structural scope, not prose truth or semantic recall",
+    "Missing summaries and empty knowledge queries are observations, not evidence of absent real-world knowledge"
+  ]
+}

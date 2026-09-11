@@ -1,0 +1,202 @@
+{
+  "schema": "neurobook.memory.ingest-profile.v1",
+  "observedAt": "2026-09-11T09:31:08.306Z",
+  "head": 6,
+  "inputHash": "4875ca2cd860109dcce836d4164b53082eec2cab791ec53b7ce7f9283a72a7c4",
+  "policyHash": "99c37d639f129a0a058a7c7f92113446bb8feaf88c2a5bf955954e8b9e9d813b",
+  "characters": 15872,
+  "chapters": [
+    {
+      "chapter": 1,
+      "characters": 2036,
+      "records": 266,
+      "snapshotBytes": 379786,
+      "rounds": 2,
+      "calls": 6,
+      "knownMs": 556943,
+      "unknownCalls": 0,
+      "totalMs": 556943,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 234540,
+        "unknownCalls": 0,
+        "totalMs": 234540
+      },
+      "repair": {
+        "calls": 3,
+        "knownMs": 322403,
+        "unknownCalls": 0,
+        "totalMs": 322403
+      },
+      "inputTokens": 87549,
+      "outputTokens": 127421
+    },
+    {
+      "chapter": 2,
+      "characters": 2198,
+      "records": 591,
+      "snapshotBytes": 882268,
+      "rounds": 2,
+      "calls": 8,
+      "knownMs": 663143,
+      "unknownCalls": 0,
+      "totalMs": 663143,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 160386,
+        "unknownCalls": 0,
+        "totalMs": 160386
+      },
+      "repair": {
+        "calls": 5,
+        "knownMs": 502757,
+        "unknownCalls": 0,
+        "totalMs": 502757
+      },
+      "inputTokens": 320804,
+      "outputTokens": 162553
+    },
+    {
+      "chapter": 3,
+      "characters": 2672,
+      "records": 1034,
+      "snapshotBytes": 1543260,
+      "rounds": 2,
+      "calls": 6,
+      "knownMs": 671113,
+      "unknownCalls": 0,
+      "totalMs": 671113,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 310909,
+        "unknownCalls": 0,
+        "totalMs": 310909
+      },
+      "repair": {
+        "calls": 3,
+        "knownMs": 360204,
+        "unknownCalls": 0,
+        "totalMs": 360204
+      },
+      "inputTokens": 279425,
+      "outputTokens": 166665
+    },
+    {
+      "chapter": 4,
+      "characters": 3397,
+      "records": 1485,
+      "snapshotBytes": 2286105,
+      "rounds": 2,
+      "calls": 9,
+      "knownMs": 798936,
+      "unknownCalls": 0,
+      "totalMs": 798936,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 133561,
+        "unknownCalls": 0,
+        "totalMs": 133561
+      },
+      "repair": {
+        "calls": 6,
+        "knownMs": 665375,
+        "unknownCalls": 0,
+        "totalMs": 665375
+      },
+      "inputTokens": 436510,
+      "outputTokens": 213544
+    },
+    {
+      "chapter": 5,
+      "characters": 2531,
+      "records": 1765,
+      "snapshotBytes": 2823536,
+      "rounds": 1,
+      "calls": 5,
+      "knownMs": 489759,
+      "unknownCalls": 0,
+      "totalMs": 489759,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 156729,
+        "unknownCalls": 0,
+        "totalMs": 156729
+      },
+      "repair": {
+        "calls": 2,
+        "knownMs": 333030,
+        "unknownCalls": 0,
+        "totalMs": 333030
+      },
+      "inputTokens": 161291,
+      "outputTokens": 113706
+    },
+    {
+      "chapter": 6,
+      "characters": 3038,
+      "records": 2169,
+      "snapshotBytes": 3591835,
+      "rounds": 2,
+      "calls": 12,
+      "knownMs": 1038332,
+      "unknownCalls": 1,
+      "totalMs": null,
+      "accepted": {
+        "calls": 3,
+        "knownMs": 332615,
+        "unknownCalls": 0,
+        "totalMs": 332615
+      },
+      "repair": {
+        "calls": 9,
+        "knownMs": 705717,
+        "unknownCalls": 1,
+        "totalMs": null
+      },
+      "inputTokens": null,
+      "outputTokens": null
+    }
+  ],
+  "providerTime": {
+    "calls": 46,
+    "knownMs": 4218226,
+    "unknownCalls": 1,
+    "totalMs": null
+  },
+  "byStage": {
+    "material": {
+      "calls": 9,
+      "knownMs": 739585,
+      "unknownCalls": 0,
+      "totalMs": 739585
+    },
+    "integration": {
+      "calls": 23,
+      "knownMs": 2078893,
+      "unknownCalls": 0,
+      "totalMs": 2078893
+    },
+    "review": {
+      "calls": 14,
+      "knownMs": 1399748,
+      "unknownCalls": 1,
+      "totalMs": null
+    }
+  },
+  "knownRequestResponseSpanMs": 4476516,
+  "snapshots": {
+    "latestBytes": 3591835,
+    "cumulativeBytes": 11506790
+  },
+  "serialTenMillionCharacters": {
+    "knownProviderDays": 30.759866548125746,
+    "providerDays": null
+  },
+  "limitations": [
+    "Only published calls and source characters are measured; failed calls without responses have unknown duration",
+    "Provider duration includes network and provider processing, not just model computation",
+    "Request-response span can include debugging pauses; only summed provider duration is projected",
+    "Linear time projection assumes unchanged chapter density, provider speed, bounded context and repair rate",
+    "Snapshot bytes are measured on disk; this does not establish production storage or retrieval performance"
+  ]
+}

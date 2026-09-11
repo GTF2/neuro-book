@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。当前为graph模式，已用尽查询且此前对“找茬魔法少女”“每日任务”“找茬”的查询均未返回有效记录（部分请求因字段/模式错误失败），未获得任何可引用的任务结算记录或原文。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2873,
+    "outputTokens": 81,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 569
+  },
+  "responseId": "85ca4a7e-d765-4af2-84cb-340245c1d402",
+  "durationMs": 1384,
+  "startedAt": "2026-09-11T09:11:11.921Z",
+  "raw": {
+    "id": "85ca4a7e-d765-4af2-84cb-340245c1d402",
+    "object": "chat.completion",
+    "created": 1789117872,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"无法确定。当前为graph模式，已用尽查询且此前对“找茬魔法少女”“每日任务”“找茬”的查询均未返回有效记录（部分请求因字段/模式错误失败），未获得任何可引用的任务结算记录或原文。\",\"status\":\"not-found\",\"recordIds\":[],\"sources\":[]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2873,
+      "completion_tokens": 81,
+      "total_tokens": 2954,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 569
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

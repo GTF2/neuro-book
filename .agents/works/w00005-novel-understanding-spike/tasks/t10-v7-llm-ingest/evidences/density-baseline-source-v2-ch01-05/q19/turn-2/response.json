@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"公告称风信子直到凌晨三点方被解救；公告并称风信子对此并未发表言论。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":26},{\"chapter\":5,\"paragraph\":27}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1411,
+    "outputTokens": 67,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 643
+  },
+  "responseId": "2076e6ba-e365-443a-b481-2c6db6eaaaf7",
+  "durationMs": 1317,
+  "startedAt": "2026-09-11T09:19:02.376Z",
+  "raw": {
+    "id": "2076e6ba-e365-443a-b481-2c6db6eaaaf7",
+    "object": "chat.completion",
+    "created": 1789118343,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"公告称风信子直到凌晨三点方被解救；公告并称风信子对此并未发表言论。\",\"status\":\"answered\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":26},{\"chapter\":5,\"paragraph\":27}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1411,
+      "completion_tokens": 67,
+      "total_tokens": 1478,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 643
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"黑狼怪人倒下后又在苏天晴拍掌后骤然暴起，原因是苏天晴此前将怪人强化药A灌给了它，且她称这是“精心准备的小礼物”生效。暴起后它没有发射魔力光束，而是从口中喷吐无数黑影（“暗影冲击”），对风信子（少女）造成攻击：她的大剑（由魔杖化成）脱手，整个人被砸得倒飞而出，惊叫“好恶心”。但具体是强化药A的什么机制、或黑影是否为药效产物，在当前读到的4:50、4:60、4:91-99记录中没有明确解释，属于部分未定。\",\"status\":\"partial\",\"recordIds\":[\"c04:F21\",\"c04:F24\",\"c04:F35\",\"c04:B24\",\"c04:D32\"],\"sources\":[{\"chapter\":4,\"paragraph\":50},{\"chapter\":4,\"paragraph\":60},{\"chapter\":4,\"paragraph\":91},{\"chapter\":4,\"paragraph\":92},{\"chapter\":4,\"paragraph\":93},{\"chapter\":4,\"paragraph\":96},{\"chapter\":4,\"paragraph\":97},{\"chapter\":4,\"paragraph\":99}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 9671,
+    "outputTokens": 259,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 7367
+  },
+  "responseId": "725af025-7692-47ff-80b2-2b8b0926d71c",
+  "durationMs": 2422,
+  "startedAt": "2026-09-11T09:10:13.175Z",
+  "raw": {
+    "id": "725af025-7692-47ff-80b2-2b8b0926d71c",
+    "object": "chat.completion",
+    "created": 1789117813,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"黑狼怪人倒下后又在苏天晴拍掌后骤然暴起，原因是苏天晴此前将怪人强化药A灌给了它，且她称这是“精心准备的小礼物”生效。暴起后它没有发射魔力光束，而是从口中喷吐无数黑影（“暗影冲击”），对风信子（少女）造成攻击：她的大剑（由魔杖化成）脱手，整个人被砸得倒飞而出，惊叫“好恶心”。但具体是强化药A的什么机制、或黑影是否为药效产物，在当前读到的4:50、4:60、4:91-99记录中没有明确解释，属于部分未定。\",\"status\":\"partial\",\"recordIds\":[\"c04:F21\",\"c04:F24\",\"c04:F35\",\"c04:B24\",\"c04:D32\"],\"sources\":[{\"chapter\":4,\"paragraph\":50},{\"chapter\":4,\"paragraph\":60},{\"chapter\":4,\"paragraph\":91},{\"chapter\":4,\"paragraph\":92},{\"chapter\":4,\"paragraph\":93},{\"chapter\":4,\"paragraph\":96},{\"chapter\":4,\"paragraph\":97},{\"chapter\":4,\"paragraph\":99}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 9671,
+      "completion_tokens": 259,
+      "total_tokens": 9930,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 7367
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

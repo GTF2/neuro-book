@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"秘典中的“任务：夙愿”要求获得200名关注者，并成为闪耀的魔法少女、让所有人记住你的名字、带着她的那份一起活下去；奖励为500神典石。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":24},{\"chapter\":3,\"paragraph\":25},{\"chapter\":3,\"paragraph\":26},{\"chapter\":3,\"paragraph\":27}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1632,
+    "outputTokens": 102,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 864
+  },
+  "responseId": "9269ab9e-a3eb-461d-81cf-9144da1fe961",
+  "durationMs": 1500,
+  "startedAt": "2026-09-11T09:18:12.631Z",
+  "raw": {
+    "id": "9269ab9e-a3eb-461d-81cf-9144da1fe961",
+    "object": "chat.completion",
+    "created": 1789118293,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"秘典中的“任务：夙愿”要求获得200名关注者，并成为闪耀的魔法少女、让所有人记住你的名字、带着她的那份一起活下去；奖励为500神典石。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":24},{\"chapter\":3,\"paragraph\":25},{\"chapter\":3,\"paragraph\":26},{\"chapter\":3,\"paragraph\":27}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1632,
+      "completion_tokens": 102,
+      "total_tokens": 1734,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 864
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

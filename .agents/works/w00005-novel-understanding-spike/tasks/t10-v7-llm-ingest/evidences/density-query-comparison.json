@@ -1,0 +1,834 @@
+{
+  "schema": "neurobook.memory.query-comparison.v1",
+  "sample": "development 1..6",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "codeHash": "e3f7332b46022fca76eaa6738039ac0c762f71efa65d438d0842f034ddfac52e",
+  "groups": [
+    {
+      "mode": "source",
+      "attempted": 40,
+      "quality": {
+        "scored": 40,
+        "verdicts": {
+          "partial": 12,
+          "correct": 24,
+          "not-found": 4
+        },
+        "correctWithSupportingEvidence": 23,
+        "criticalErrors": 6
+      },
+      "byGroup": {
+        "ordinary": {
+          "scored": 30,
+          "verdicts": {
+            "partial": 10,
+            "correct": 17,
+            "not-found": 3
+          },
+          "correctWithSupportingEvidence": 17,
+          "criticalErrors": 5
+        },
+        "boundary": {
+          "scored": 10,
+          "verdicts": {
+            "partial": 2,
+            "correct": 7,
+            "not-found": 1
+          },
+          "correctWithSupportingEvidence": 6,
+          "criticalErrors": 1
+        }
+      },
+      "failures": [],
+      "costs": {
+        "query": {
+          "calls": 119,
+          "knownEstimatedUsd": 0.05390668800000001,
+          "estimatedUsd": 0.05390668800000001,
+          "unknownOutcomeCalls": 0
+        },
+        "judge": {
+          "calls": 40,
+          "knownEstimatedUsd": 0.08555032799999998,
+          "estimatedUsd": 0.08555032799999998,
+          "unknownOutcomeCalls": 0
+        },
+        "allDevelopment": {
+          "calls": 159,
+          "knownEstimatedUsd": 0.139457016,
+          "estimatedUsd": 0.139457016,
+          "unknownOutcomeCalls": 0
+        }
+      }
+    },
+    {
+      "mode": "graph",
+      "attempted": 40,
+      "quality": {
+        "scored": 38,
+        "verdicts": {
+          "not-found": 7,
+          "correct": 19,
+          "partial": 12
+        },
+        "correctWithSupportingEvidence": 16,
+        "criticalErrors": 5
+      },
+      "byGroup": {
+        "ordinary": {
+          "scored": 29,
+          "verdicts": {
+            "not-found": 7,
+            "correct": 14,
+            "partial": 8
+          },
+          "correctWithSupportingEvidence": 13,
+          "criticalErrors": 4
+        },
+        "boundary": {
+          "scored": 9,
+          "verdicts": {
+            "partial": 4,
+            "correct": 5
+          },
+          "correctWithSupportingEvidence": 3,
+          "criticalErrors": 1
+        }
+      },
+      "failures": [
+        {
+          "id": "q33",
+          "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received array\"\n  }\n]"
+        },
+        {
+          "id": "q32",
+          "error": "Expected double-quoted property name in JSON at position 526 (line 1 column 527)"
+        }
+      ],
+      "costs": {
+        "query": {
+          "calls": 101,
+          "knownEstimatedUsd": 0.15952051199999995,
+          "estimatedUsd": 0.15952051199999995,
+          "unknownOutcomeCalls": 0
+        },
+        "judge": {
+          "calls": 38,
+          "knownEstimatedUsd": 0.21785732400000002,
+          "estimatedUsd": 0.21785732400000002,
+          "unknownOutcomeCalls": 0
+        },
+        "allDevelopment": {
+          "calls": 139,
+          "knownEstimatedUsd": 0.3773778360000001,
+          "estimatedUsd": 0.3773778360000001,
+          "unknownOutcomeCalls": 0
+        }
+      }
+    },
+    {
+      "mode": "graph-source",
+      "attempted": 40,
+      "quality": {
+        "scored": 38,
+        "verdicts": {
+          "partial": 6,
+          "correct": 27,
+          "not-found": 4,
+          "wrong": 1
+        },
+        "correctWithSupportingEvidence": 25,
+        "criticalErrors": 5
+      },
+      "byGroup": {
+        "ordinary": {
+          "scored": 29,
+          "verdicts": {
+            "partial": 4,
+            "correct": 22,
+            "not-found": 3
+          },
+          "correctWithSupportingEvidence": 21,
+          "criticalErrors": 4
+        },
+        "boundary": {
+          "scored": 9,
+          "verdicts": {
+            "partial": 2,
+            "not-found": 1,
+            "wrong": 1,
+            "correct": 5
+          },
+          "correctWithSupportingEvidence": 4,
+          "criticalErrors": 1
+        }
+      },
+      "failures": [
+        {
+          "id": "q02",
+          "error": "DeepSeek network request failed; provider outcome is unknown"
+        },
+        {
+          "id": "q40",
+          "error": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [],\n    \"note\": \"No matching discriminator\",\n    \"discriminator\": \"action\",\n    \"options\": [\n      \"query\",\n      \"answer\"\n    ],\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid discriminator value. Expected 'query' | 'answer'\"\n  }\n]"
+        }
+      ],
+      "costs": {
+        "query": {
+          "calls": 101,
+          "knownEstimatedUsd": 0.11086115999999999,
+          "estimatedUsd": null,
+          "unknownOutcomeCalls": 1
+        },
+        "judge": {
+          "calls": 38,
+          "knownEstimatedUsd": 0.14961606,
+          "estimatedUsd": 0.14961606,
+          "unknownOutcomeCalls": 0
+        },
+        "allDevelopment": {
+          "calls": 139,
+          "knownEstimatedUsd": 0.26047721999999995,
+          "estimatedUsd": null,
+          "unknownOutcomeCalls": 1
+        }
+      }
+    }
+  ],
+  "sourceReports": {
+    "schema": "neurobook.memory.query-evaluation-report.v1",
+    "reports": [
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-source-v2-ch01-05",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "source",
+        "excluded": false,
+        "attemptedQuestions": 32,
+        "failures": [],
+        "quality": {
+          "scored": 32,
+          "verdicts": {
+            "correct": 18,
+            "partial": 10,
+            "wrong": 0,
+            "not-found": 4,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 17,
+          "criticalErrors": 6,
+          "toolQueries": 103,
+          "sourceQueries": 101
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 7,
+            "verdicts": {
+              "correct": 4,
+              "partial": 2,
+              "wrong": 0,
+              "not-found": 1,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 3,
+            "criticalErrors": 1,
+            "toolQueries": 25,
+            "sourceQueries": 24
+          },
+          "ordinary": {
+            "scored": 25,
+            "verdicts": {
+              "correct": 14,
+              "partial": 8,
+              "wrong": 0,
+              "not-found": 3,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 14,
+            "criticalErrors": 5,
+            "toolQueries": 78,
+            "sourceQueries": 77
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 125,
+            "inputTokens": 234193,
+            "outputTokens": 47158,
+            "cacheHitTokens": 75904,
+            "cacheMissTokens": 158289,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.10453172399999998,
+            "minimumUsd": 0.10453172399999998,
+            "maximumUsd": 0.10453172399999998,
+            "estimatedUsd": 0.10453172399999998
+          },
+          "query": {
+            "calls": 93,
+            "inputTokens": 156982,
+            "outputTokens": 8329,
+            "cacheHitTokens": 66304,
+            "cacheMissTokens": 90678,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.037596024000000006,
+            "minimumUsd": 0.037596024000000006,
+            "maximumUsd": 0.037596024000000006,
+            "estimatedUsd": 0.037596024000000006
+          },
+          "judge": {
+            "calls": 32,
+            "inputTokens": 77211,
+            "outputTokens": 38829,
+            "cacheHitTokens": 9600,
+            "cacheMissTokens": 67611,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.06693569999999999,
+            "minimumUsd": 0.06693569999999999,
+            "maximumUsd": 0.06693569999999999,
+            "estimatedUsd": 0.06693569999999999
+          },
+          "queryUsdPerAttemptedQuestion": 0.0011748757500000002
+        }
+      },
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-source-v2-ch06",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "source",
+        "excluded": false,
+        "attemptedQuestions": 8,
+        "failures": [],
+        "quality": {
+          "scored": 8,
+          "verdicts": {
+            "correct": 6,
+            "partial": 2,
+            "wrong": 0,
+            "not-found": 0,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 6,
+          "criticalErrors": 0,
+          "toolQueries": 29,
+          "sourceQueries": 28
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 3,
+            "verdicts": {
+              "correct": 3,
+              "partial": 0,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 3,
+            "criticalErrors": 0,
+            "toolQueries": 12,
+            "sourceQueries": 11
+          },
+          "ordinary": {
+            "scored": 5,
+            "verdicts": {
+              "correct": 3,
+              "partial": 2,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 3,
+            "criticalErrors": 0,
+            "toolQueries": 17,
+            "sourceQueries": 17
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 34,
+            "inputTokens": 95089,
+            "outputTokens": 10632,
+            "cacheHitTokens": 21632,
+            "cacheMissTokens": 73457,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.034925292000000004,
+            "minimumUsd": 0.034925292000000004,
+            "maximumUsd": 0.034925292000000004,
+            "estimatedUsd": 0.034925292000000004
+          },
+          "query": {
+            "calls": 26,
+            "inputTokens": 63482,
+            "outputTokens": 2363,
+            "cacheHitTokens": 18944,
+            "cacheMissTokens": 44538,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.016310664,
+            "minimumUsd": 0.016310664,
+            "maximumUsd": 0.016310664,
+            "estimatedUsd": 0.016310664
+          },
+          "judge": {
+            "calls": 8,
+            "inputTokens": 31607,
+            "outputTokens": 8269,
+            "cacheHitTokens": 2688,
+            "cacheMissTokens": 28919,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.018614627999999998,
+            "minimumUsd": 0.018614627999999998,
+            "maximumUsd": 0.018614627999999998,
+            "estimatedUsd": 0.018614627999999998
+          },
+          "queryUsdPerAttemptedQuestion": 0.002038833
+        }
+      },
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-graph-v2-ch01-05",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "graph",
+        "excluded": false,
+        "attemptedQuestions": 32,
+        "failures": [],
+        "quality": {
+          "scored": 32,
+          "verdicts": {
+            "correct": 17,
+            "partial": 10,
+            "wrong": 0,
+            "not-found": 5,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 14,
+          "criticalErrors": 5,
+          "toolQueries": 153,
+          "sourceQueries": 0
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 7,
+            "verdicts": {
+              "correct": 4,
+              "partial": 3,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 2,
+            "criticalErrors": 1,
+            "toolQueries": 36,
+            "sourceQueries": 0
+          },
+          "ordinary": {
+            "scored": 25,
+            "verdicts": {
+              "correct": 13,
+              "partial": 7,
+              "wrong": 0,
+              "not-found": 5,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 12,
+            "criticalErrors": 4,
+            "toolQueries": 117,
+            "sourceQueries": 0
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 115,
+            "inputTokens": 868692,
+            "outputTokens": 85907,
+            "cacheHitTokens": 176000,
+            "cacheMissTokens": 692692,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.3119520000000001,
+            "minimumUsd": 0.3119520000000001,
+            "maximumUsd": 0.3119520000000001,
+            "estimatedUsd": 0.3119520000000001
+          },
+          "query": {
+            "calls": 83,
+            "inputTokens": 563527,
+            "outputTokens": 10396,
+            "cacheHitTokens": 166016,
+            "cacheMissTokens": 397511,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.13272459599999994,
+            "minimumUsd": 0.13272459599999994,
+            "maximumUsd": 0.13272459599999994,
+            "estimatedUsd": 0.13272459599999994
+          },
+          "judge": {
+            "calls": 32,
+            "inputTokens": 305165,
+            "outputTokens": 75511,
+            "cacheHitTokens": 9984,
+            "cacheMissTokens": 295181,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.179227404,
+            "minimumUsd": 0.179227404,
+            "maximumUsd": 0.179227404,
+            "estimatedUsd": 0.179227404
+          },
+          "queryUsdPerAttemptedQuestion": 0.004147643624999998
+        }
+      },
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-graph-v2-ch06",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "graph",
+        "excluded": false,
+        "attemptedQuestions": 8,
+        "failures": [
+          {
+            "id": "q33",
+            "error": "[\n  {\n    \"code\": \"invalid_type\",\n    \"expected\": \"object\",\n    \"path\": [],\n    \"message\": \"Invalid input: expected object, received array\"\n  }\n]"
+          },
+          {
+            "id": "q32",
+            "error": "Expected double-quoted property name in JSON at position 526 (line 1 column 527)"
+          }
+        ],
+        "quality": {
+          "scored": 6,
+          "verdicts": {
+            "correct": 2,
+            "partial": 2,
+            "wrong": 0,
+            "not-found": 2,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 2,
+          "criticalErrors": 0,
+          "toolQueries": 26,
+          "sourceQueries": 0
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 2,
+            "verdicts": {
+              "correct": 1,
+              "partial": 1,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 1,
+            "criticalErrors": 0,
+            "toolQueries": 9,
+            "sourceQueries": 0
+          },
+          "ordinary": {
+            "scored": 4,
+            "verdicts": {
+              "correct": 1,
+              "partial": 1,
+              "wrong": 0,
+              "not-found": 2,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 1,
+            "criticalErrors": 0,
+            "toolQueries": 17,
+            "sourceQueries": 0
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 24,
+            "inputTokens": 175797,
+            "outputTokens": 20043,
+            "cacheHitTokens": 38656,
+            "cacheMissTokens": 137141,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.06542583599999999,
+            "minimumUsd": 0.06542583599999999,
+            "maximumUsd": 0.06542583599999999,
+            "estimatedUsd": 0.06542583599999999
+          },
+          "query": {
+            "calls": 18,
+            "inputTokens": 115741,
+            "outputTokens": 2395,
+            "cacheHitTokens": 36736,
+            "cacheMissTokens": 79005,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.026795915999999996,
+            "minimumUsd": 0.026795915999999996,
+            "maximumUsd": 0.026795915999999996,
+            "estimatedUsd": 0.026795915999999996
+          },
+          "judge": {
+            "calls": 6,
+            "inputTokens": 60056,
+            "outputTokens": 17648,
+            "cacheHitTokens": 1920,
+            "cacheMissTokens": 58136,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.03862992,
+            "minimumUsd": 0.03862992,
+            "maximumUsd": 0.03862992,
+            "estimatedUsd": 0.03862992
+          },
+          "queryUsdPerAttemptedQuestion": 0.0033494894999999995
+        }
+      },
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-graph-source-v2-ch01-05",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "graph-source",
+        "excluded": false,
+        "attemptedQuestions": 32,
+        "failures": [
+          {
+            "id": "q02",
+            "error": "DeepSeek network request failed; provider outcome is unknown"
+          }
+        ],
+        "quality": {
+          "scored": 31,
+          "verdicts": {
+            "correct": 22,
+            "partial": 4,
+            "wrong": 1,
+            "not-found": 4,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 21,
+          "criticalErrors": 4,
+          "toolQueries": 139,
+          "sourceQueries": 67
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 7,
+            "verdicts": {
+              "correct": 3,
+              "partial": 2,
+              "wrong": 1,
+              "not-found": 1,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 3,
+            "criticalErrors": 1,
+            "toolQueries": 36,
+            "sourceQueries": 20
+          },
+          "ordinary": {
+            "scored": 24,
+            "verdicts": {
+              "correct": 19,
+              "partial": 2,
+              "wrong": 0,
+              "not-found": 3,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 18,
+            "criticalErrors": 3,
+            "toolQueries": 103,
+            "sourceQueries": 47
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 113,
+            "inputTokens": 650185,
+            "outputTokens": 59432,
+            "cacheHitTokens": 192896,
+            "cacheMissTokens": 457289,
+            "unknownUsageCalls": 1,
+            "unknownOutcomeCalls": 1,
+            "unknownCacheSplitCalls": 1,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.20966247599999996,
+            "minimumUsd": 0.20966247599999996,
+            "maximumUsd": null,
+            "estimatedUsd": null
+          },
+          "query": {
+            "calls": 82,
+            "inputTokens": 441854,
+            "outputTokens": 10437,
+            "cacheHitTokens": 183168,
+            "cacheMissTokens": 258686,
+            "unknownUsageCalls": 1,
+            "unknownOutcomeCalls": 1,
+            "unknownCacheSplitCalls": 1,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.09122920799999999,
+            "minimumUsd": 0.09122920799999999,
+            "maximumUsd": null,
+            "estimatedUsd": null
+          },
+          "judge": {
+            "calls": 31,
+            "inputTokens": 208331,
+            "outputTokens": 48995,
+            "cacheHitTokens": 9728,
+            "cacheMissTokens": 198603,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.11843326800000001,
+            "minimumUsd": 0.11843326800000001,
+            "maximumUsd": 0.11843326800000001,
+            "estimatedUsd": 0.11843326800000001
+          },
+          "queryUsdPerAttemptedQuestion": null
+        }
+      },
+      {
+        "root": "C:\\Users\\notnotype\\Documents\\CodeRepository\\GithubProjects\\neuro-book\\.worktree\\w00005-novel-understanding-spike\\.agents\\works\\w00005-novel-understanding-spike\\tasks\\t10-v7-llm-ingest\\evidences\\density-baseline-graph-source-v2-ch06",
+        "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+        "mode": "graph-source",
+        "excluded": false,
+        "attemptedQuestions": 8,
+        "failures": [
+          {
+            "id": "q40",
+            "error": "[\n  {\n    \"code\": \"invalid_union\",\n    \"errors\": [],\n    \"note\": \"No matching discriminator\",\n    \"discriminator\": \"action\",\n    \"options\": [\n      \"query\",\n      \"answer\"\n    ],\n    \"path\": [\n      \"action\"\n    ],\n    \"message\": \"Invalid discriminator value. Expected 'query' | 'answer'\"\n  }\n]"
+          }
+        ],
+        "quality": {
+          "scored": 7,
+          "verdicts": {
+            "correct": 5,
+            "partial": 2,
+            "wrong": 0,
+            "not-found": 0,
+            "undetermined": 0
+          },
+          "correctWithSupportingEvidence": 4,
+          "criticalErrors": 1,
+          "toolQueries": 30,
+          "sourceQueries": 13
+        },
+        "byGroup": {
+          "boundary": {
+            "scored": 2,
+            "verdicts": {
+              "correct": 2,
+              "partial": 0,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 1,
+            "criticalErrors": 0,
+            "toolQueries": 12,
+            "sourceQueries": 7
+          },
+          "ordinary": {
+            "scored": 5,
+            "verdicts": {
+              "correct": 3,
+              "partial": 2,
+              "wrong": 0,
+              "not-found": 0,
+              "undetermined": 0
+            },
+            "correctWithSupportingEvidence": 3,
+            "criticalErrors": 1,
+            "toolQueries": 18,
+            "sourceQueries": 6
+          }
+        },
+        "cost": {
+          "allDevelopment": {
+            "calls": 26,
+            "inputTokens": 146598,
+            "outputTokens": 16923,
+            "cacheHitTokens": 45824,
+            "cacheMissTokens": 100774,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.050814744,
+            "minimumUsd": 0.050814744,
+            "maximumUsd": 0.050814744,
+            "estimatedUsd": 0.050814744
+          },
+          "query": {
+            "calls": 19,
+            "inputTokens": 99436,
+            "outputTokens": 2132,
+            "cacheHitTokens": 43392,
+            "cacheMissTokens": 56044,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.019631952,
+            "minimumUsd": 0.019631952,
+            "maximumUsd": 0.019631952,
+            "estimatedUsd": 0.019631952
+          },
+          "judge": {
+            "calls": 7,
+            "inputTokens": 47162,
+            "outputTokens": 14791,
+            "cacheHitTokens": 2432,
+            "cacheMissTokens": 44730,
+            "unknownUsageCalls": 0,
+            "unknownOutcomeCalls": 0,
+            "unknownCacheSplitCalls": 0,
+            "unsupportedModelCalls": 0,
+            "knownEstimatedUsd": 0.031182791999999997,
+            "minimumUsd": 0.031182791999999997,
+            "maximumUsd": 0.031182791999999997,
+            "estimatedUsd": 0.031182791999999997
+          },
+          "queryUsdPerAttemptedQuestion": 0.002453994
+        }
+      }
+    ],
+    "limitations": [
+      "Rates are estimated at request start and may differ from invoices",
+      "Model-assisted labels and judging require source checks",
+      "Failure questions remain in the denominator; excluded controls contribute no quality scores",
+      "Question sets concentrate on their reading checkpoints and do not establish ten-million-character retrieval quality"
+    ]
+  },
+  "limitations": [
+    "Same frozen questions and immutable chapter snapshots; one v2 run per mode, model-assisted labels and scores",
+    "Failure questions remain in all denominators; absent responses have unknown cost",
+    "V1 diagnostic scores are retained separately and not pooled",
+    "These checkpoint questions do not measure long-range retrieval across ten million characters"
+  ]
+}

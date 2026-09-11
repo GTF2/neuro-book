@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":1,\"to\":16,\"query\":\"蓉城\"},{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":1,\"to\":16,\"query\":\"苏天晴\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1154,
+    "outputTokens": 80,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 386
+  },
+  "responseId": "43190942-7e73-4f99-9539-6139425a712d",
+  "durationMs": 1112,
+  "startedAt": "2026-09-11T09:18:05.714Z",
+  "raw": {
+    "id": "43190942-7e73-4f99-9539-6139425a712d",
+    "object": "chat.completion",
+    "created": 1789118286,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":1,\"to\":16,\"query\":\"蓉城\"},{\"command\":\"source\",\"chapter\":3,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"from\":1,\"to\":16,\"query\":\"苏天晴\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1154,
+      "completion_tokens": 80,
+      "total_tokens": 1234,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 386
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

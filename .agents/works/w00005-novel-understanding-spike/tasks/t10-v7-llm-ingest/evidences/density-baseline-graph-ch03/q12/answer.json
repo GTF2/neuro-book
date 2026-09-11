@@ -1,0 +1,3280 @@
+{
+  "answer": {
+    "text": "在当前已读记录中，没有找到“风信子擅长近战压制与肉搏，对魔法尚不熟练”这一完整命题的来源记录。最接近的是第3章第17段苏天晴的内心疑问：她称风信子为“这种肉搏型的魔法少女”，并怀疑自己去跟对方找茬是否可行（c03:D13；同时关联c03:F_su_believes_fengxinzi_greatsword）。这是苏天晴的内心想法/疑问，不是风信子本人的自述。已读记录中也没有任何风信子本人关于自己擅长近战压制、肉搏或魔法不熟练的自述；因此“是否等于风信子本人自述”的答案为否（就现有记录而言），但“对魔法尚不熟练”这一部分在已读记录中没有找到来源，属于未确定/未找到。",
+    "status": "partial",
+    "recordIds": [
+      "c03:D13",
+      "c03:F_su_believes_fengxinzi_greatsword",
+      "c03:D14",
+      "c03:F_fengxinzi_active",
+      "c03:F_fengxinzi_codename"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 17
+      },
+      {
+        "chapter": 3,
+        "paragraph": 18
+      },
+      {
+        "chapter": 3,
+        "paragraph": 16
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "knowledge",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "风信子"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "风信子"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_active",
+                "revision": 3,
+                "label": "风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "风信子是蓉城目前活跃的魔法少女。",
+                  "predicate": {
+                    "id": "c03:P_active_in",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "place",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_rongcheng",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:I_R8_rongcheng",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_active:at:3:16",
+                "revision": 3,
+                "label": "评估：风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_active",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_active",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_codename",
+                "revision": 3,
+                "label": "这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "这名魔法少女的代号是风信子。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "代号：风信子"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_codename:at:3:16",
+                "revision": 3,
+                "label": "评估：这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_codename",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_codename",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_codename",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_su_believes_fengxinzi_greatsword",
+                "revision": 3,
+                "label": "苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                  "predicate": {
+                    "id": "c01:P13",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "believer",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "proposition",
+                      "value": {
+                        "type": "text",
+                        "text": "风信子能变出大剑砍掉怪兽的脑袋"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "belief",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 3
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "possible"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R1_su",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_su_believes_fengxinzi_greatsword:at:3:17",
+                "revision": 3,
+                "label": "评估：苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_su_believes_fengxinzi_greatsword",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 17
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R1_su",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P13",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R1_su",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:E_fengxinzi",
+                "revision": 3,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 15
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 3,
+                    "end": 9
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "风信子",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 16
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R3:mention:2",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c03:I_R3_fengxinzi",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c03:F_fengxinzi_active",
+                "revision": 3,
+                "label": "依据：风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c03:D8",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c03:D8",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c03:D12",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "D8称蓉城有一名活跃魔法少女，D12点明代号风信子。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 25
+                    },
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D8",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:D8",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 25
+                    },
+                    "chapter": 3,
+                    "text": "而自己所在的蓉城，目前就正好有一名活跃的魔法少女。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c03:F_fengxinzi_codename",
+                "revision": 3,
+                "label": "依据：这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c03:D12",
+                    "revision": 3
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c03:F_fengxinzi_codename",
+                    "revision": 3
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c03:D12",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "D12中苏天晴念出代号风信子，叙述确认该代号。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:F_fengxinzi_codename",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c03:I_R3_fengxinzi",
+                "revision": 3,
+                "label": "依据：局部指称归属：天蓝色的少女",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c03:R3:mention:1",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c03:D11",
+                    "revision": 3
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c03:R3:mention:1",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c03:R3:mention:2",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c03:D11",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c03:D12",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R3指视频与秘典中代号风信子的魔法少女；真实身份未知另记。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 2,
+                      "end": 5
+                    },
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 86
+                    },
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D11",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:R3:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D11",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D12",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 3,
+                      "end": 9
+                    },
+                    "chapter": 3,
+                    "text": "天蓝色的少女"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 2,
+                      "end": 5
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 86
+                    },
+                    "chapter": 3,
+                    "text": "画面中天蓝色的少女上下翻飞舞动，与一只凶猛的怪兽在街心交战，场面并不绚烂华丽，可那招招到肉的攻击手段却让苏天晴心中一紧，不由得低头看了一眼自己白皙娇嫩的手腕肌肤，眼角猛跳。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D12",
+                "revision": 3,
+                "label": "苏天晴呢喃念出她的代号：【风信子】。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 0,
+                    "end": 21
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴呢喃念出她的代号：【风信子】。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_active",
+                "revision": 3,
+                "label": "风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "风信子是蓉城目前活跃的魔法少女。",
+                  "predicate": {
+                    "id": "c03:P_active_in",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "place",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_rongcheng",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:I_R8_rongcheng",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_active:at:3:16",
+                "revision": 3,
+                "label": "评估：风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_active",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_active",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_codename",
+                "revision": 3,
+                "label": "这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "这名魔法少女的代号是风信子。",
+                  "predicate": {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "attribute",
+                      "value": {
+                        "type": "text",
+                        "text": "代号：风信子"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_codename:at:3:16",
+                "revision": 3,
+                "label": "评估：这名魔法少女的代号是风信子。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_codename",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_codename",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_has_attribute",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_codename",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R3:mention:2",
+                "revision": 3,
+                "label": "风信子",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 2,
+                    "end": 5
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R3",
+                    "revision": 3
+                  },
+                  "text": "风信子",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 2,
+                    "end": 5
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 2,
+                      "end": 5
+                    },
+                    "chapter": 3,
+                    "text": "风信子"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c03:F_su_believes_fengxinzi_greatsword",
+                "revision": 3,
+                "label": "依据：苏天晴认为风信子能变出大剑砍掉怪兽的脑袋。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c03:D13",
+                    "revision": 3
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c03:D13",
+                        "revision": 3
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "D13记录苏天晴对风信子能变出大剑砍怪兽的疑问/感叹，应保留其思想归属与不确定语气。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 36
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:F_su_believes_fengxinzi_greatsword",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:D13",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:D13",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 3,
+                    "text": "她能变出大剑砍掉怪兽的脑袋诶，我去跟这种肉搏型的魔法少女找茬？真的假的？"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D13",
+                "revision": 3,
+                "label": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 0,
+                    "end": 36
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                  "channel": "thought",
+                  "mode": "question",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R6",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R5",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R5",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 3,
+                    "text": "她能变出大剑砍掉怪兽的脑袋诶，我去跟这种肉搏型的魔法少女找茬？真的假的？"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 13,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImZhZWIyZGZlYWZkOWQ4ZjQ0ZjZlZGUwN2QzNjM4YzdlOTc2ZmNlMzFmMGVkZThlOTM4MTRmNWFlOTU3ZTI4MDgiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjU0ZjhiMDQ4NTA3YTY2NmI5Y2Q5ZDIzZDkyODQxNTNmZWNjOGNlZTI4OWVkMjY0ZGU3ZjQwMDEwNWZmMTk1ZGIifQ"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 30,
+          "to": 34
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "肉搏",
+          "kind": "disclosure"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 32
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "魔法",
+          "kind": "disclosure"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D13",
+                "revision": 3,
+                "label": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 17
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 0,
+                    "end": 36
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "风信子能变出大剑砍掉怪兽的脑袋；苏天晴怀疑自己去跟这种肉搏型魔法少女找茬是否可行。",
+                  "channel": "thought",
+                  "mode": "question",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R6",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R5",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R5",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 3,
+                    "text": "她能变出大剑砍掉怪兽的脑袋诶，我去跟这种肉搏型的魔法少女找茬？真的假的？"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D14",
+                "revision": 3,
+                "label": "苏天晴对自己变身后的力量没有直观感受，但看自己细皮嫩肉的萝莉造型，绝对不是能跟人贴身肉搏的模样。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 18
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 18,
+                    "start": 0,
+                    "end": 52
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴对自己变身后的力量没有直观感受，但看自己细皮嫩肉的萝莉造型，绝对不是能跟人贴身肉搏的模样。",
+                  "channel": "thought",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 18,
+                      "start": 0,
+                      "end": 52
+                    },
+                    "chapter": 3,
+                    "text": "苏天晴对自己变身后的力量没有任何直观的感受，但看自己这细皮嫩肉的萝莉造型，绝对不是能跟人贴身肉搏的模样。"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D27",
+                "revision": 3,
+                "label": "古书没有停顿地回答：契约是反派魔法少女。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 64
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 63,
+                    "start": 0,
+                    "end": 9
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 64,
+                    "start": 0,
+                    "end": 14
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "古书没有停顿地回答：契约是反派魔法少女。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R2",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R7",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R7",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 63,
+                      "start": 0,
+                      "end": 9
+                    },
+                    "chapter": 1,
+                    "text": "【反派魔法少女。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 64,
+                      "start": 0,
+                      "end": 14
+                    },
+                    "chapter": 1,
+                    "text": "没有丝毫停顿，古书这般说道。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D28",
+                "revision": 3,
+                "label": "既然契约已经签订，从今天开始苏天晴将成为魔法少女活跃于世；造物主给她量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 67
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 66,
+                    "start": 0,
+                    "end": 67
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 67,
+                    "start": 0,
+                    "end": 38
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "既然契约已经签订，从今天开始苏天晴将成为魔法少女活跃于世；造物主给她量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+                  "channel": "speech",
+                  "mode": "plan",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R2",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R6",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R7",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R8",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R7",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R8",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 66,
+                      "start": 0,
+                      "end": 67
+                    },
+                    "chapter": 1,
+                    "text": "【既然契约已经签订，那么从今天开始，你就将成为魔法少女活跃于世，造物主给你量身定制了一整套任务，能帮助你逐步走上反派魔法少女的顶点！】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 67,
+                      "start": 0,
+                      "end": 38
+                    },
+                    "chapter": 1,
+                    "text": "“不是、等一下！魔法少女是怎么回事！是那种死亡率高达90%的高危职业吗？！”"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D29",
+                "revision": 3,
+                "label": "苏天晴惊问魔法少女是怎么回事，是不是死亡率高达90%的高危职业。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 67
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 67,
+                    "start": 0,
+                    "end": 38
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴惊问魔法少女是怎么回事，是不是死亡率高达90%的高危职业。",
+                  "channel": "speech",
+                  "mode": "question",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R6",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 67,
+                      "start": 0,
+                      "end": 38
+                    },
+                    "chapter": 1,
+                    "text": "“不是、等一下！魔法少女是怎么回事！是那种死亡率高达90%的高危职业吗？！”"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D32",
+                "revision": 3,
+                "label": "苏天晴后悔，想到王道系就是魔法少女们面对强敌逐渐成长，喊着友情和羁绊冲上去把反派干碎；就算反派有系统有任务也很难在王道系故事里把主角干碎。她想反悔，想被送回原来的身体，觉得急性心肌梗死还有抢救机会。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 73
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 70,
+                    "start": 0,
+                    "end": 11
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 71,
+                    "start": 0,
+                    "end": 71
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 72,
+                    "start": 0,
+                    "end": 43
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 73,
+                    "start": 0,
+                    "end": 12
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴后悔，想到王道系就是魔法少女们面对强敌逐渐成长，喊着友情和羁绊冲上去把反派干碎；就算反派有系统有任务也很难在王道系故事里把主角干碎。她想反悔，想被送回原来的身体，觉得急性心肌梗死还有抢救机会。",
+                  "channel": "thought",
+                  "mode": "conjecture",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c01:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R6",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R7",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R9",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R6",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R7",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R9",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 70,
+                      "start": 0,
+                      "end": 11
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴突然有点后悔了。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 71,
+                      "start": 0,
+                      "end": 71
+                    },
+                    "chapter": 1,
+                    "text": "王道系是什么？魔法少女们面对强敌逐渐成长然后喊着友情和羁绊冲上去把反派干碎的那种故事啊！就算反派有系统有任务也很难在王道系故事里把主角干碎吧！"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 72,
+                      "start": 0,
+                      "end": 43
+                    },
+                    "chapter": 1,
+                    "text": "我还能有反悔的机会吗？能不能把我送回原来的身体里啊我觉得急性心肌梗死还有抢救的机会——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 73,
+                      "start": 0,
+                      "end": 12
+                    },
+                    "chapter": 1,
+                    "text": "【墨丘利秘典绑定成功。】"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D34",
+                "revision": 3,
+                "label": "走上反派魔法少女的道路吧，苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 76
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 76,
+                    "start": 0,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "走上反派魔法少女的道路吧，苏天晴。",
+                  "channel": "in-world-system",
+                  "mode": "request",
+                  "attribution": [
+                    {
+                      "channel": "in-world-system",
+                      "holder": {
+                        "id": "c01:R2",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:R7",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R7",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 76,
+                      "start": 0,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "【走上反派魔法少女的道路吧，苏天晴。】"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:D4",
+                "revision": 3,
+                "label": "抛开听起来很离谱的反派魔法少女身份不谈，这副身体的模样绝妙中的绝妙。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 8
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 8,
+                    "start": 0,
+                    "end": 37
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "抛开听起来很离谱的反派魔法少女身份不谈，这副身体的模样绝妙中的绝妙。",
+                  "channel": "thought",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c02:STQ",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c02:STQ",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:BODY",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:VILLAIN_MG",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:BODY",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:VILLAIN_MG",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 8,
+                      "start": 0,
+                      "end": 37
+                    },
+                    "chapter": 2,
+                    "text": "抛开那听起来就很离谱的反派魔法少女不谈，这副身体的模样还真是绝妙中的绝妙。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:D12",
+                "revision": 3,
+                "label": "苏天晴揣着一丝侥幸怀疑所谓的反派魔法少女根本不存在。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 29
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 0,
+                    "end": 20
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴揣着一丝侥幸怀疑所谓的反派魔法少女根本不存在。",
+                  "channel": "thought",
+                  "mode": "conjecture",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c02:STQ",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c02:STQ",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:VILLAIN_MG",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:VILLAIN_MG",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 29,
+                      "start": 0,
+                      "end": 20
+                    },
+                    "chapter": 2,
+                    "text": "该不会所谓的反派魔法少女根本就不存在吧？"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:D19",
+                "revision": 3,
+                "label": "苏天晴认为这枚材质不明、做工精致的金色十字星应该是魔法少女必备的变身道具。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 42
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 42,
+                    "start": 0,
+                    "end": 51
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴认为这枚材质不明、做工精致的金色十字星应该是魔法少女必备的变身道具。",
+                  "channel": "thought",
+                  "mode": "conjecture",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c02:STQ",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c02:STQ",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:STAR",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STAR",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 42,
+                      "start": 0,
+                      "end": 51
+                    },
+                    "chapter": 2,
+                    "text": "材质不明的金色十字星，做工蛮精致，手感扎实，不像是塑料玩具，这个应该就是魔法少女们必备的变身道具了吧。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:D21",
+                "revision": 3,
+                "label": "苏天晴想到魔法少女变身、穿华丽洋装在城间穿梭飞行并与怪人战斗，并想到这具身体的原主人也曾梦想过这种场面。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 47
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 47,
+                    "start": 0,
+                    "end": 47
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴想到魔法少女变身、穿华丽洋装在城间穿梭飞行并与怪人战斗，并想到这具身体的原主人也曾梦想过这种场面。",
+                  "channel": "thought",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "thought",
+                      "holder": {
+                        "id": "c02:STQ",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c02:STQ",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:ORIGINAL",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:VILLAIN_MG",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:ORIGINAL",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:VILLAIN_MG",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 47,
+                      "start": 0,
+                      "end": 47
+                    },
+                    "chapter": 2,
+                    "text": "魔法少女变身！穿着华丽的洋装在城市间穿梭飞行与怪人战斗！这具身体的原主人也曾经梦想过这种场面！"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:D23",
+                "revision": 3,
+                "label": "苏天晴连续喊出“魔法少女变身！”“henshin！”“光啊！”“盖亚！！”等变身词。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 56
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 53,
+                    "start": 0,
+                    "end": 9
+                  },
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 54,
+                    "start": 0,
+                    "end": 10
+                  },
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 55,
+                    "start": 0,
+                    "end": 5
+                  },
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 56,
+                    "start": 0,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴连续喊出“魔法少女变身！”“henshin！”“光啊！”“盖亚！！”等变身词。",
+                  "channel": "speech",
+                  "mode": "request",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c02:STQ",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c02:STQ",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:STAR",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STQ",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STAR",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 53,
+                      "start": 0,
+                      "end": 9
+                    },
+                    "chapter": 2,
+                    "text": "“魔法少女变身！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 54,
+                      "start": 0,
+                      "end": 10
+                    },
+                    "chapter": 2,
+                    "text": "“henshin！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 55,
+                      "start": 0,
+                      "end": 5
+                    },
+                    "chapter": 2,
+                    "text": "“光啊！”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 56,
+                      "start": 0,
+                      "end": 6
+                    },
+                    "chapter": 2,
+                    "text": "“盖亚！！”"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 32
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 20,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImNiMDJmNGYxMDQ3ZThmMDhlZDEzN2MxOWFkNTYyMGQ1OWI4NzU0Y2U1OGUzMWUzMzZhY2Q0MmQ1OGYzYWU1OTMiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjU4M2NmMjk4ZTVkZGI4OTk2NDBmNmJjOTM4NTE5Y2IwYzYyMzA4OWE0NzNlZjRmMjRhOTgxOGRiMzg4ODFmZTgifQ"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

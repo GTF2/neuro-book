@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴重生后从落地镜中看到的是一道陌生的娇小身影：灿烂金色长发垂落在肩膀后背，头顶有毛茸茸的耳朵（会随动作弹动），刘海下是精致五官与眼眸，颈肩肌肤白皙；整体是一只娇小的金毛狐女。\",\"status\":\"answered\",\"recordIds\":[\"source-c01\"],\"sources\":[{\"chapter\":1,\"paragraph\":7},{\"chapter\":1,\"paragraph\":8},{\"chapter\":1,\"paragraph\":9},{\"chapter\":1,\"paragraph\":10}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3370,
+    "outputTokens": 121,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 938
+  },
+  "responseId": "2d5ff254-72c3-49c2-835a-335b0252ffa6",
+  "durationMs": 1325,
+  "startedAt": "2026-09-11T08:44:13.229Z",
+  "raw": {
+    "id": "2d5ff254-72c3-49c2-835a-335b0252ffa6",
+    "object": "chat.completion",
+    "created": 1789116253,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴重生后从落地镜中看到的是一道陌生的娇小身影：灿烂金色长发垂落在肩膀后背，头顶有毛茸茸的耳朵（会随动作弹动），刘海下是精致五官与眼眸，颈肩肌肤白皙；整体是一只娇小的金毛狐女。\",\"status\":\"answered\",\"recordIds\":[\"source-c01\"],\"sources\":[{\"chapter\":1,\"paragraph\":7},{\"chapter\":1,\"paragraph\":8},{\"chapter\":1,\"paragraph\":9},{\"chapter\":1,\"paragraph\":10}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3370,
+      "completion_tokens": 121,
+      "total_tokens": 3491,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 938
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

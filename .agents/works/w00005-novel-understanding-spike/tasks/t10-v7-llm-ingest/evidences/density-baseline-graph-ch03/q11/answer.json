@@ -1,0 +1,603 @@
+{
+  "answer": {
+    "text": "在当前可读范围（至第3章第27段）内，仅能确认“任务：夙愿”是第3章第24段出现的一个条目名称（提及记录 c03:R18:mention:1）。其具体要求和奖励在已读取的记录中未找到；第3章第24–27段原文因当前为 graph 模式无法读取，因此无法给出任务要求与奖励内容。",
+    "status": "partial",
+    "recordIds": [
+      "c03:R18:mention:1",
+      "c03:R18",
+      "c01:E_tome"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 24
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 27
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "秘典",
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 27
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "任务：夙愿",
+          "kind": "mention"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 27
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "夙愿",
+          "kind": "predicate"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 3,
+                "label": "秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "小破书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 49
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:5",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "古书",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 25
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:BOOK:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_book_tome",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "秘典",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 39
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:BOOK:mention:4",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_book_tome",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:5",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:BOOK:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:BOOK:mention:4",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R18:mention:1",
+                "revision": 3,
+                "label": "任务：夙愿",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 24
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 24,
+                    "start": 1,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c03:R18",
+                    "revision": 3
+                  },
+                  "text": "任务：夙愿",
+                  "span": {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 24,
+                    "start": 1,
+                    "end": 6
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R18",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 24,
+                      "start": 1,
+                      "end": 6
+                    },
+                    "chapter": 3,
+                    "text": "任务：夙愿"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "get",
+          "at": {
+            "chapter": 3,
+            "paragraph": 27
+          },
+          "perspective": "reader",
+          "world": "original",
+          "id": "c03:R18"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 27
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 24,
+          "to": 27
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "get",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:R18",
+                "revision": 3,
+                "label": "任务：夙愿",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 24
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "referent",
+                "data": {
+                  "localName": "任务：夙愿",
+                  "mentions": [
+                    {
+                      "id": "c03:R18:mention:1",
+                      "revision": 3
+                    }
+                  ],
+                  "splitFrom": null
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R18:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        }
+      ]
+    }
+  ],
+  "queries": 5,
+  "sourceQueries": 0,
+  "exhausted": false
+}

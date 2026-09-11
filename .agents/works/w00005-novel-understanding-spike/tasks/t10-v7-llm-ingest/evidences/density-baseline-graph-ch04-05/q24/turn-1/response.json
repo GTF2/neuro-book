@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"entity\":\"苏天晴\",\"predicate\":\"写\"},{\"command\":\"knowledge\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"holder\":\"苏天晴\",\"about\":\"网文\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2481,
+    "outputTokens": 124,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 177
+  },
+  "responseId": "d2937892-9858-46a4-a14d-67dfbeb46752",
+  "durationMs": 946,
+  "startedAt": "2026-09-11T09:11:35.844Z",
+  "raw": {
+    "id": "d2937892-9858-46a4-a14d-67dfbeb46752",
+    "object": "chat.completion",
+    "created": 1789117896,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"entity\":\"苏天晴\",\"predicate\":\"写\"},{\"command\":\"knowledge\",\"at\":{\"chapter\":5,\"paragraph\":54},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"holder\":\"苏天晴\",\"about\":\"网文\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2481,
+      "completion_tokens": 124,
+      "total_tokens": 2605,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 177
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

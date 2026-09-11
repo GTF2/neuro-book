@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"category\":\"person\"},{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"category\":\"person\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\",\"kind\":\"mention\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2215,
+    "outputTokens": 93,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 295
+  },
+  "responseId": "eef07f48-e541-4a0e-a049-cefdfe83cada",
+  "durationMs": 1116,
+  "startedAt": "2026-09-11T09:20:04.069Z",
+  "raw": {
+    "id": "eef07f48-e541-4a0e-a049-cefdfe83cada",
+    "object": "chat.completion",
+    "created": 1789118404,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"苏天晴\",\"category\":\"person\"},{\"command\":\"entities\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"category\":\"person\"},{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\",\"kind\":\"mention\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2215,
+      "completion_tokens": 93,
+      "total_tokens": 2308,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 295
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"disclosure\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"近战压制\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"对魔法尚不熟练\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2228,
+    "outputTokens": 88,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 308
+  },
+  "responseId": "271dd448-1611-4d2e-aba4-a0deee17c105",
+  "durationMs": 1036,
+  "startedAt": "2026-09-11T09:19:00.434Z",
+  "raw": {
+    "id": "271dd448-1611-4d2e-aba4-a0deee17c105",
+    "object": "chat.completion",
+    "created": 1789118341,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\",\"kind\":\"disclosure\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"近战压制\"},{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"对魔法尚不熟练\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2228,
+      "completion_tokens": 88,
+      "total_tokens": 2316,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 308
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

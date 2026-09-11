@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"query\":\"夙愿\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"source\",\"chapter\":3,\"query\":\"秘典\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"source\",\"chapter\":3,\"query\":\"任务\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2481,
+    "outputTokens": 86,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 177
+  },
+  "responseId": "038b0bd6-c943-4d44-89c6-42215406fa10",
+  "durationMs": 1530,
+  "startedAt": "2026-09-11T08:56:05.396Z",
+  "raw": {
+    "id": "038b0bd6-c943-4d44-89c6-42215406fa10",
+    "object": "chat.completion",
+    "created": 1789116965,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"query\":\"夙愿\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"source\",\"chapter\":3,\"query\":\"秘典\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"source\",\"chapter\":3,\"query\":\"任务\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2481,
+      "completion_tokens": 86,
+      "total_tokens": 2567,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 177
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

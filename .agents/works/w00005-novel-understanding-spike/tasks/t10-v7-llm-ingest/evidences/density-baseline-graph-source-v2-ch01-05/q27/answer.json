@@ -1,0 +1,379 @@
+{
+  "answer": {
+    "text": "已读到的秘典情报页片段仅显示【魔法少女风信子】和【真名：南小风】，未出现风信子/南小风的完整家庭住址；在章节5第98段可读范围内无法确定该情报页是否给出了完整地址。",
+    "status": "not-found",
+    "recordIds": [
+      "source-c05"
+    ],
+    "sources": [
+      {
+        "chapter": 5,
+        "paragraph": 92
+      },
+      {
+        "chapter": 5,
+        "paragraph": 94
+      },
+      {
+        "chapter": 5,
+        "paragraph": 95
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 90,
+          "to": 110,
+          "query": "秘典"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 90,
+          "to": 110,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 90,
+          "to": 110,
+          "query": "南小风"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 98,
+          "query": "秘典"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 98,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 5,
+          "from": 1,
+          "to": 98,
+          "query": "南小风"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 45,
+              "text": "既然秘典上都这么安排了，自己也去想办法给魔法少女这重身份搞个好听的代号吧。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 82,
+              "text": "狐狐从桌上拿起那本秘典。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 15,
+              "text": "“公告？与魔法少女风信子有关？”苏天晴有点讶异地自言自语。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 17,
+              "text": "到绿心公园享受大自然，顺便埋伏魔法少女风信子，给她来了一点惊喜——用强化怪人的形式。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 18,
+              "text": "跟风信子玩了一会儿抽陀螺的游戏，自己就迅速离开了，本狐也是要睡觉的嘛！"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 26,
+              "text": "“昨晚蓉城绿心公园出现怪人袭击，魔法少女风信子前往镇压，不料中了怪人的陷阱，直到凌晨三点方被解救。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 27,
+              "text": "“风信子对此并未发表言论。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 29,
+              "text": "自己临走前特地注意了一下时间，那时候是晚上八点，也就是说风信子被整整吊了七个小时。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 43,
+              "text": "就比如风信子，半年前初次亮相后便有英雄协会的工作人员前去接洽，在本人的同意下给予了【风信子】这一代号。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 92,
+              "text": "若是再跟200个关注者联系起来……苏天晴连忙将书页翻到情报页，看向魔法少女风信子的那一节。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 94,
+              "text": "【魔法少女风信子】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 9,
+            "returned": 9
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-5",
+            "sourceManifest": "manifest:2e7cf5908e7c0c12",
+            "knowledgeRevision": 5,
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 102
+            },
+            "contentHash": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c05",
+              "revision": 1,
+              "chapter": 5,
+              "paragraph": 95,
+              "text": "【真名：南小风】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 5,
+              "paragraph": 98
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

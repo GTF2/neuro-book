@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"英雄协会\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"魔法少女\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"网上\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5614,
+    "outputTokens": 146,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 3182
+  },
+  "responseId": "7398f0e6-965e-402a-a357-114d9ef910e3",
+  "durationMs": 1181,
+  "startedAt": "2026-09-11T09:17:51.351Z",
+  "raw": {
+    "id": "7398f0e6-965e-402a-a357-114d9ef910e3",
+    "object": "chat.completion",
+    "created": 1789118271,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"英雄协会\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"魔法少女\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":10},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"from\":1,\"to\":40,\"query\":\"网上\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5614,
+      "completion_tokens": 146,
+      "total_tokens": 5760,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 3182
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

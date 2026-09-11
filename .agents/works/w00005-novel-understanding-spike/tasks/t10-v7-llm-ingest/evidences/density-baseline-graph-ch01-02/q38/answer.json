@@ -1,0 +1,294 @@
+{
+  "answer": {
+    "text": "在当前阅读范围（第1章第30段）内，仅查到“苏天晴”这一人物实体记录（c01:E_su），未查到任何以“最优秀的适格者”为谓词或内容的事实记录。因此无法据此确认古书评价她为“最优秀的适格者”，更无法确认该评价为客观事实。",
+    "status": "not-found",
+    "recordIds": [
+      "c01:E_su"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 5
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "苏天晴"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "最优秀的适格者"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "entity": "苏天晴",
+          "predicate": "最优秀的适格者"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "entity": "苏天晴",
+          "predicate": "最优秀的适格者"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 1,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "苏天晴",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 5,
+  "sourceQueries": 0,
+  "exhausted": false
+}

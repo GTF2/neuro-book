@@ -1,0 +1,116 @@
+{
+  "replacements": [
+    {
+      "collection": "times",
+      "record": {
+        "id": "T_ch6_day",
+        "at": 5,
+        "description": "第6章开场至白天，苏天晴思考与筹划如何让风信子窘迫时",
+        "precision": "interval",
+        "before": [],
+        "after": []
+      }
+    },
+    {
+      "collection": "times",
+      "record": {
+        "id": "T_ch6_evening",
+        "at": 49,
+        "description": "8月31日傍晚，南小风在家补作业时",
+        "precision": "relative",
+        "before": [],
+        "after": [
+          "T_ch6_day"
+        ]
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_nan_homework_ch6",
+        "at": 77,
+        "title": "南小风补作业与白灵夜谈",
+        "summary": "8月31日傍晚南小风在蓉城花天里小区卧室补作业，距离开学一天；白灵催她早做作业。南小风问白灵关于昨晚金色魔法少女，白灵称不认识、只知南小风一个魔法少女；南小风说对方有守护之星且自称反派。",
+        "scale": "sequence",
+        "participants": [
+          "known:c03:E_fengxinzi",
+          "known:c04:E_bailing"
+        ],
+        "materials": [
+          "d24",
+          "d25",
+          "d26",
+          "d27",
+          "d28",
+          "d29",
+          "d30",
+          "d31",
+          "d32"
+        ],
+        "children": [],
+        "relations": [],
+        "time": "T_ch6_evening",
+        "proof": {
+          "premises": [
+            "d24",
+            "d26",
+            "d29",
+            "d31"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "d24至d32构成补作业与夜谈的连续线索。"
+        }
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_video_ch6",
+        "at": 111,
+        "title": "狐狐发布引诱视频",
+        "summary": "白灵发现账号“魔法少女狐狐official”的视频并让南小风观看；视频中狐狐自称来自蓉城的新人反派魔法少女，对风信子感兴趣，约风信子今晚七点在蓉城第三文理学院见面，并威胁若不来就夷平教学楼。视频8月31日下午三点发布，播放量过万。",
+        "scale": "sequence",
+        "participants": [
+          "known:c01:E_su",
+          "known:c03:E_fengxinzi",
+          "known:c04:E_bailing"
+        ],
+        "materials": [
+          "d33",
+          "d34",
+          "d35",
+          "d36",
+          "d37",
+          "d38",
+          "d39",
+          "d40"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "EP_nan_homework_ch6",
+            "evidence": [
+              "d33",
+              "d34"
+            ]
+          }
+        ],
+        "time": "T_video_publish",
+        "proof": {
+          "premises": [
+            "d34",
+            "d36",
+            "d38",
+            "d39",
+            "d40"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "d34至d40构成视频发现、播放与内容披露的连续线索。"
+        }
+      }
+    }
+  ]
+}

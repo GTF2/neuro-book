@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_bailing\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c04:E_bailing\",\"about\":\"c03:E_fengxinzi\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":1,\"to\":20,\"query\":\"白灵\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4495,
+    "outputTokens": 106,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2063
+  },
+  "responseId": "1bbed359-740e-4502-a9f2-fd5bfae39dfd",
+  "durationMs": 1088,
+  "startedAt": "2026-09-11T09:10:02.554Z",
+  "raw": {
+    "id": "1bbed359-740e-4502-a9f2-fd5bfae39dfd",
+    "object": "chat.completion",
+    "created": 1789117803,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_bailing\"},{\"command\":\"knowledge\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"holder\":\"c04:E_bailing\",\"about\":\"c03:E_fengxinzi\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":1,\"to\":20,\"query\":\"白灵\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4495,
+      "completion_tokens": 106,
+      "total_tokens": 4601,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2063
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

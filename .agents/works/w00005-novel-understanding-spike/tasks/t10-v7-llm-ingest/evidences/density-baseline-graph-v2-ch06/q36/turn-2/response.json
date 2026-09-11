@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"压力\",\"kind\":\"episode\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"约战\",\"kind\":\"beat\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"任务\",\"kind\":\"disclosure\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 11849,
+    "outputTokens": 87,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 9673
+  },
+  "responseId": "646c93dd-2282-4229-93c0-d16728b69840",
+  "durationMs": 1426,
+  "startedAt": "2026-09-11T09:31:41.050Z",
+  "raw": {
+    "id": "646c93dd-2282-4229-93c0-d16728b69840",
+    "object": "chat.completion",
+    "created": 1789119101,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"压力\",\"kind\":\"episode\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"约战\",\"kind\":\"beat\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"任务\",\"kind\":\"disclosure\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 11849,
+      "completion_tokens": 87,
+      "total_tokens": 11936,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 9673
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

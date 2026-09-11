@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"query\":\"苏天晴\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"entities\",\"query\":\"触手怪\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"facts\",\"query\":\"限制\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2207,
+    "outputTokens": 76,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 287
+  },
+  "responseId": "53355f39-8cde-4d96-8e4c-b5cffcbf46cf",
+  "durationMs": 942,
+  "startedAt": "2026-09-11T09:20:06.496Z",
+  "raw": {
+    "id": "53355f39-8cde-4d96-8e4c-b5cffcbf46cf",
+    "object": "chat.completion",
+    "created": 1789118407,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"query\":\"苏天晴\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"entities\",\"query\":\"触手怪\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"facts\",\"query\":\"限制\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2207,
+      "completion_tokens": 76,
+      "total_tokens": 2283,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 287
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

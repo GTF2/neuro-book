@@ -1,0 +1,349 @@
+{
+  "answer": {
+    "text": "在第六章风信子看到的视频中，视频发布信息为：发布时间8月31日下午三点，播放量已经超过了一万，同时观看人数100+。关于“当前时间”，所读到的原文只说明视频结束后并给出上述发布信息，没有直接写明当时的当前时间；因此当前时间在已读范围内无法确定。",
+    "status": "partial",
+    "recordIds": [
+      "source-c06"
+    ],
+    "sources": [
+      {
+        "chapter": 6,
+        "paragraph": 108
+      },
+      {
+        "chapter": 6,
+        "paragraph": 109
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 100,
+          "to": 120,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 1,
+          "to": 99,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 1,
+              "text": "第6章 引诱"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 2,
+              "text": "提问，如何让魔法少女出现窘况。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 3,
+              "text": "看到这个问题的第一瞬间，苏天晴脑子里出现了昨天晚上的场景："
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 4,
+              "text": "魔法少女风信子被怪人抓住，失去往日的灵动，只剩下惊惧与恐慌，在月光下无助地哀鸣。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 5,
+              "text": "那种场景实在是太美妙了。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 6,
+              "text": "但苏天晴自己也很清楚，昨天那样的状况完全是借助强化后的黑狼怪人才实现的，并非自己的真正实力。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 7,
+              "text": "今天秘典上并没有报告怪人出现的地点，也就是说，只能凭借自己本身的力量来做这两个每日任务。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 8,
+              "text": "“真难办啊。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 9,
+              "text": "穿着缎带洋装的金毛狐狐坐在写字楼楼顶，两只小脚悬在半空，在风中轻盈摇曳。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 10,
+              "text": "自己是反派没错，重生后的人生阅历倒也算丰富，但作为魔法少女的经验可远远比不上那个风信子。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 99,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjIxZGE0YTU1OGY2ZGU4YTE4ZjVlMWEzMDRlZWFkZWFhZTk3ZDhhZTliMDNjYTBkM2ZlYjdiM2JhNTA4YTJjMDEiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjFkMmViOTg4M2U4MTcyYzQ4MzY0OTJlNGYzOWU1ODhlZGMwNzM0MGJlNDE3OTIzZDM5NGU3NzY2NWZiODJhMDUifQ"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 6,
+          "from": 100,
+          "to": 110,
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-6",
+            "sourceManifest": "manifest:3739db56713af694",
+            "knowledgeRevision": 6,
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 114
+            },
+            "contentHash": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 100,
+              "text": "“可惜的是，昨天晚上在绿心公园里跟她完全没有玩够呢、所以说……”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 101,
+              "text": "金色的魔法少女突然凑近到镜头前，再次露出了她那熟悉的微笑。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 102,
+              "text": "“如果风信子小姐你正在看这个视频的话，狐狐想要告诉你一件事。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 103,
+              "text": "“今晚七点，蓉城第三文理学院，我们不见不散~”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 104,
+              "text": "金毛狐狐卖了个萌。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 105,
+              "text": "可紧接着，她又像是想起了什么似的，小声念叨了一句："
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 106,
+              "text": "“哎呀呀，如果狐狐我七点钟见不到风信子小姐的话……”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 107,
+              "text": "“那么，蓉城第三文理学院的教学楼——大概会被夷为平地吧~”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 108,
+              "text": "视频结束。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c06",
+              "revision": 1,
+              "chapter": 6,
+              "paragraph": 109,
+              "text": "发布时间8月31日下午三点，播放量已经超过了一万，同时观看人数100+。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 6,
+              "paragraph": 110
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 11,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6IjRkY2UwYjI1NmVlMTVlZDQyZWMxNjM3MGUzOGM2ZjRmNWFiZjM4OTQyMGNhNDM5NDUxZjRhMDY4MDI4MzgxZWUiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjNlMTUyMTRkODE0YjExOGVkMjQ2OTY4NTBiMDA0NWM0MDM3NWEyOTI3YTdjYTNlNTYxYTg3ZDU4Y2FiN2Q0ZDYifQ"
+        }
+      ]
+    }
+  ],
+  "queries": 3,
+  "sourceQueries": 3,
+  "exhausted": true
+}

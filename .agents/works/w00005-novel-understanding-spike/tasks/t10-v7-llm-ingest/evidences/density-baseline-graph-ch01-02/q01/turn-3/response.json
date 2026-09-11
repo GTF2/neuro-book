@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前可查询范围内（readAt 第1章第11段、reader/original）未找到关于苏天晴从落地镜中看到自己身份或外貌的记录。已确认存在实体“苏天晴”（c01:E_su），但无落地镜相关提及或事实。\",\"status\":\"not-found\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":5}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3719,
+    "outputTokens": 99,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1287
+  },
+  "responseId": "c1ad940f-df9d-4195-b1f2-5ca3a586f47f",
+  "durationMs": 992,
+  "startedAt": "2026-09-11T08:44:24.722Z",
+  "raw": {
+    "id": "c1ad940f-df9d-4195-b1f2-5ca3a586f47f",
+    "object": "chat.completion",
+    "created": 1789116265,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"在当前可查询范围内（readAt 第1章第11段、reader/original）未找到关于苏天晴从落地镜中看到自己身份或外貌的记录。已确认存在实体“苏天晴”（c01:E_su），但无落地镜相关提及或事实。\",\"status\":\"not-found\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":5}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3719,
+      "completion_tokens": 99,
+      "total_tokens": 3818,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1287
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

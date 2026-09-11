@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"苏天晴\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"风信子\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"威胁\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2223,
+    "outputTokens": 109,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 303
+  },
+  "responseId": "1c1b7f58-fc46-4002-93a4-0ae08151503e",
+  "durationMs": 1143,
+  "startedAt": "2026-09-11T09:31:24.985Z",
+  "raw": {
+    "id": "1c1b7f58-fc46-4002-93a4-0ae08151503e",
+    "object": "chat.completion",
+    "created": 1789119085,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"苏天晴\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"风信子\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"威胁\",\"at\":{\"chapter\":6,\"paragraph\":107},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2223,
+      "completion_tokens": 109,
+      "total_tokens": 2332,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 303
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

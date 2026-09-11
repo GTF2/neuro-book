@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"原文中“最优秀的适格者”一语出自古书（墨丘利秘典）在第一章第29段的自我宣称，随后第30段它直接对苏天晴说“而那个人就是你，苏天晴小姐”。这只是古书的单方声明/评价，当前已读范围内没有独立第三方或客观事实层面的佐证，因此不能据此确认该评价为客观事实；只能确认古书如此声称。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":1,\"paragraph\":29},{\"chapter\":1,\"paragraph\":30}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3775,
+    "outputTokens": 129,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1343
+  },
+  "responseId": "624e4a5e-370b-4467-9cc2-6fe3bfbd7e4a",
+  "durationMs": 1338,
+  "startedAt": "2026-09-11T09:20:22.089Z",
+  "raw": {
+    "id": "624e4a5e-370b-4467-9cc2-6fe3bfbd7e4a",
+    "object": "chat.completion",
+    "created": 1789118422,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"原文中“最优秀的适格者”一语出自古书（墨丘利秘典）在第一章第29段的自我宣称，随后第30段它直接对苏天晴说“而那个人就是你，苏天晴小姐”。这只是古书的单方声明/评价，当前已读范围内没有独立第三方或客观事实层面的佐证，因此不能据此确认该评价为客观事实；只能确认古书如此声称。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":1,\"paragraph\":29},{\"chapter\":1,\"paragraph\":30}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3775,
+      "completion_tokens": 129,
+      "total_tokens": 3904,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1343
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

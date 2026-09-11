@@ -1,0 +1,1686 @@
+{
+  "answer": {
+    "text": "苏天晴所在蓉城目前活跃的魔法少女代号是【风信子】。苏天晴在第三章第16段呢喃念出她的代号，且有记录明确“风信子是蓉城目前活跃的魔法少女”。",
+    "status": "answered",
+    "recordIds": [
+      "c03:D12",
+      "c03:F_fengxinzi_active"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 16
+      },
+      {
+        "chapter": 3,
+        "paragraph": 11
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴",
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "蓉城",
+          "kind": "entity"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "魔法少女",
+          "kind": "entity"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 3,
+                "label": "狐狐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "金毛狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:2",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "狐狐",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 37
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:STQ:mention:8",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_stq_su",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_stq_su",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:STQ:mention:8",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_original_owner",
+                "revision": 3,
+                "label": "苏天晴小姐",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:ORIGINAL:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_original_owner",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "苏天晴小姐",
+                      "availableAt": {
+                        "chapter": 3,
+                        "paragraph": 8
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c03:R2:mention:2",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c03:I_R2_original",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:ORIGINAL:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R2:mention:2",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R2_original",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:E_rongcheng",
+                "revision": 3,
+                "label": "蓉城",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 20
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 20,
+                    "start": 64,
+                    "end": 66
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "place",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "蓉城",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 20
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:RONGCHENG:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_rongcheng",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:RONGCHENG:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 20,
+                      "start": 64,
+                      "end": 66
+                    },
+                    "chapter": 2,
+                    "text": "蓉城"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_villain",
+                "revision": 3,
+                "label": "魔法少女（反派）",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 63
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 63,
+                    "start": 1,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "role",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "反派魔法少女",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 63
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R7:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_villain",
+                          "revision": 3
+                        }
+                      ]
+                    },
+                    {
+                      "text": "魔法少女（反派）",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 81
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:VILLAIN_MG:mention:5",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_villain",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R7:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_villain",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:VILLAIN_MG:mention:5",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_villain",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 63,
+                      "start": 1,
+                      "end": 7
+                    },
+                    "chapter": 1,
+                    "text": "反派魔法少女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_magical_girl",
+                "revision": 3,
+                "label": "魔法少女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 66
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 66,
+                    "start": 23,
+                    "end": 27
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "role",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "魔法少女",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 66
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R6:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c01:I_magical_girl",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R6:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_magical_girl",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 66,
+                      "start": 23,
+                      "end": 27
+                    },
+                    "chapter": 1,
+                    "text": "魔法少女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:E_regular_magical_girl",
+                "revision": 3,
+                "label": "正牌魔法少女",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 83
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 83,
+                    "start": 1,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "unresolved",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "正牌魔法少女",
+                      "availableAt": {
+                        "chapter": 2,
+                        "paragraph": 84
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c02:REGULAR_MG:mention:1",
+                          "revision": 3
+                        },
+                        {
+                          "id": "c02:I_regular_mg",
+                          "revision": 3
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:REGULAR_MG:mention:1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 83,
+                      "start": 1,
+                      "end": 7
+                    },
+                    "chapter": 2,
+                    "text": "正牌魔法少女"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "代号",
+          "kind": "disclosure"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "蓉城",
+          "kind": "fact"
+        },
+        {
+          "command": "source",
+          "at": {
+            "chapter": 3,
+            "paragraph": 16
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 16,
+          "query": "魔法少女"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:D12",
+                "revision": 3,
+                "label": "苏天晴呢喃念出她的代号：【风信子】。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c03",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 0,
+                    "end": 21
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴呢喃念出她的代号：【风信子】。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c03:R1",
+                        "revision": 3
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c03:R1",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:R3",
+                      "revision": 3
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:R1",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:R3",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c03",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 21
+                    },
+                    "chapter": 3,
+                    "text": "“【风信子】……”苏天晴呢喃念出她的代号。"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_admitted_to",
+                "revision": 3,
+                "label": "原主苏天晴考上蓉城最好的医学院。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 20
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "原主苏天晴考上蓉城最好的医学院。",
+                  "predicate": {
+                    "id": "c02:P_admitted_to",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_original_owner",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "institution",
+                      "value": {
+                        "type": "text",
+                        "text": "蓉城最好的医学院"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_original_owner",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_admitted_to:at:2:20",
+                "revision": 3,
+                "label": "评估：原主苏天晴考上蓉城最好的医学院。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 20
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_admitted_to",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_admitted_to",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 20
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_admitted_to",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_original_owner",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_admitted_to",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_original_owner",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_admitted_to",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:F_task_reason",
+                "revision": 3,
+                "label": "任务理由是：正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "任务理由是：正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧。",
+                  "predicate": {
+                    "id": "c02:P_task_reason",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "task",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_daily_task",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "reason",
+                      "value": {
+                        "type": "text",
+                        "text": "正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 3
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c02:I_daily_task",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:I_regular_mg",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:I_rongcheng",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c02:I_book_tome",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c02:F_task_reason:at:2:84",
+                "revision": 3,
+                "label": "评估：任务理由是：正牌魔法少女在蓉城风生水起已经够久了，给她一点颜色瞧瞧。",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 84
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c02:F_task_reason",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c02:F_task_reason",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 2,
+                    "paragraph": 84
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:P_task_reason",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_daily_task",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c02:P_task_reason",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_daily_task",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_regular_mg",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:I_book_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c02:F_task_reason",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c03:F_fengxinzi_active",
+                "revision": 3,
+                "label": "风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "风信子是蓉城目前活跃的魔法少女。",
+                  "predicate": {
+                    "id": "c03:P_active_in",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "role": "subject",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c03:E_fengxinzi",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "place",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c02:E_rongcheng",
+                          "revision": 3
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c03:I_R3_fengxinzi",
+                      "revision": 3
+                    },
+                    {
+                      "id": "c03:I_R8_rongcheng",
+                      "revision": 3
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c03:F_fengxinzi_active:at:3:16",
+                "revision": 3,
+                "label": "评估：风信子是蓉城目前活跃的魔法少女。",
+                "availableAt": {
+                  "chapter": 3,
+                  "paragraph": 16
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c03:F_fengxinzi_active",
+                    "revision": 3
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c03:F_fengxinzi_active",
+                      "revision": 3
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 3,
+                    "paragraph": 16
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:E_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c02:E_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c03:P_active_in",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R3_fengxinzi",
+                    "revision": 3,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c03:I_R8_rongcheng",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c03:F_fengxinzi_active",
+                    "revision": 3,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 4,
+              "text": "反派为什么要去找茬魔法少女。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 9,
+              "text": "魔法少女与怪人怪兽是客观存在的。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 10,
+              "text": "魔法少女们接受英雄协会的管辖委派，一边与怪人战斗一边作为偶像出镜，真实身份虽然保密，但其变身魔法少女后的样子却是广为人知，与怪人怪兽之间的战斗甚至成了另类的宣传方式。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 11,
+              "text": "而自己所在的蓉城，目前就正好有一名活跃的魔法少女。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 13,
+              "text": "咬一口抹了劣质果酱的吐司面包，苏天晴点开了视频网站上有关这名魔法少女的介绍视频。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 16
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 5,
+            "returned": 5
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 1,
+  "exhausted": true
+}

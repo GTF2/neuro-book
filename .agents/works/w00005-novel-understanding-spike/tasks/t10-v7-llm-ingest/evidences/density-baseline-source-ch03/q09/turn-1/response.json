@@ -1,0 +1,42 @@
+{
+  "text": "{\n  \"action\": \"answer\",\n  \"answer\": {\n    \"text\": \"当前信息不足，无法确定苏天晴所在蓉城活跃的魔法少女代号。\",\n    \"status\": \"not-found\",\n    \"recordIds\": [],\n    \"sources\": []\n  }\n}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2479,
+    "outputTokens": 60,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 303
+  },
+  "responseId": "c701575f-fa1a-4c8a-b92f-1bd5ca2c2fca",
+  "durationMs": 1285,
+  "startedAt": "2026-09-11T08:55:47.772Z",
+  "raw": {
+    "id": "c701575f-fa1a-4c8a-b92f-1bd5ca2c2fca",
+    "object": "chat.completion",
+    "created": 1789116948,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\n  \"action\": \"answer\",\n  \"answer\": {\n    \"text\": \"当前信息不足，无法确定苏天晴所在蓉城活跃的魔法少女代号。\",\n    \"status\": \"not-found\",\n    \"recordIds\": [],\n    \"sources\": []\n  }\n}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2479,
+      "completion_tokens": 60,
+      "total_tokens": 2539,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 303
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

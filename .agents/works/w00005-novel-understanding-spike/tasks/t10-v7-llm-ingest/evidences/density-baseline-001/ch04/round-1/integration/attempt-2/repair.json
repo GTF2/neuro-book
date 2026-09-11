@@ -1,0 +1,1060 @@
+{
+  "replacements": [
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_fengxinzi",
+        "at": 4,
+        "referent": "FengXinZi",
+        "entity": "known:c03:E_fengxinzi",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "风信子真名南小风，与第3章出现的魔法少女风信子为同一人物。",
+        "evidence": [
+          "D2",
+          "known:c03:I_R3_fengxinzi"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_su",
+        "at": 41,
+        "referent": "SuTianQing",
+        "entity": "known:c01:E_su",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "苏天晴指狐女身体内的苏天晴意识，与第1、2、3章苏天晴连续。",
+        "evidence": [
+          "D17",
+          "known:c03:I_R1_su"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_lvxin",
+        "at": 2,
+        "referent": "LvXinGongYuan",
+        "entity": "known:c03:E_luxin_park",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "绿心公园与第3章怪人袭击预测地点为同一公园。",
+        "evidence": [
+          "D1",
+          "known:c03:I_R9_luxin_park"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_guai",
+        "at": 6,
+        "referent": "GuaiRen",
+        "entity": "known:c03:E_monster_kind",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "怪人指第3章已确认的怪人怪兽类别。",
+        "evidence": [
+          "D4",
+          "known:c03:I_R6_monster"
+        ]
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F2",
+        "at": 4,
+        "text": "魔法少女风信子的真名是南小风。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "真名南小风"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D2"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D2直接说明风信子真名南小风。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F4",
+        "at": 5,
+        "text": "今天是开学前第二天，南小风本来在家补暑假作业。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "开学前第二天在家补暑假作业"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_today",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D3"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D3说明补作业与紧急通讯。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F6",
+        "at": 13,
+        "text": "绿心公园原本有路灯却一片昏黑，居民已被疏散，周围安静得只能听到晚夏虫鸣。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_luxin_park"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "原本有路灯却一片昏黑，居民已被疏散，周围安静得只能听到晚夏虫鸣"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_lvxin"
+        ],
+        "proof": {
+          "premises": [
+            "D6"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D6描述公园环境。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F9",
+        "at": 21,
+        "text": "白灵自称观星者精灵。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "E_bailing"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "自称观星者精灵"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "E_bailing",
+          "opaque": true
+        },
+        "time": "T_half_year_ago",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_bailing",
+          "I_guanxing"
+        ],
+        "proof": {
+          "premises": [
+            "D10"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D10说明白灵自称观星者精灵。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F12",
+        "at": 21,
+        "text": "风信子成功解决十几起英雄协会无法处理的怪人袭击，成为蓉城民众常谈论的话题。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "成功解决十几起英雄协会无法处理的怪人袭击，成为蓉城民众常谈论的话题"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi",
+          "I_yingxiong",
+          "I_guai",
+          "I_rongcheng"
+        ],
+        "proof": {
+          "premises": [
+            "D10"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D10说明其解决怪人袭击并成为话题。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F13",
+        "at": 29,
+        "text": "废墟中趴着一只体型巨大的黑色狼形怪物，它转头以狠厉视线看向南小风。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "E_black_wolf"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "体型巨大的黑色狼形怪物，在废墟中趴伏并看向南小风"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_heilang"
+        ],
+        "proof": {
+          "premises": [
+            "D12"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D12描述黑狼怪人出现。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F14",
+        "at": 31,
+        "text": "魔法少女风信子摆出战斗姿势，魔杖在手中化作大剑。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "E_wand"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "魔杖在战斗时化作大剑"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_mozhang",
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D13"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D13记录魔杖化作大剑。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F16",
+        "at": 35,
+        "text": "怪人形态不限于人形，都会散发魔力气息；但南小风揍过的十几只怪人里没有一只比得上黑狼。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "E_black_wolf"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "比南小风此前揍过的十几只怪人都更强"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_heilang",
+          "I_fengxinzi",
+          "I_guai"
+        ],
+        "proof": {
+          "premises": [
+            "D15"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D15比较黑狼与此前怪人。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F18",
+        "at": 44,
+        "text": "苏天晴认为风信子动作干练、大剑有力、五官可爱、裙子漂亮，但吐槽她穿船袜。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "风信子动作干练简洁，大剑有力，五官可爱，裙子漂亮，但穿船袜不合魔法少女风格"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su",
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D18"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D18记录苏天晴对风信子的评价。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F19",
+        "at": 50,
+        "text": "苏天晴下午研究墨丘利秘典，发现这个系统能买东西，并获得200神典石启动资金。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_tome"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "系统能买东西，并提供200神典石启动资金"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_afternoon",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_miqiu",
+          "I_su",
+          "I_shen"
+        ],
+        "proof": {
+          "premises": [
+            "D20"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D20说明秘典购买功能与启动资金。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F22",
+        "at": 48,
+        "text": "风信子在战斗中逐渐占据上风，苏天晴因此怀疑强化药是否无效。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "在战斗中逐渐占据上风"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi",
+          "I_heilang"
+        ],
+        "proof": {
+          "premises": [
+            "D19"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D19记录风信子占上风与苏天晴疑惑。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F23",
+        "at": 56,
+        "text": "苏天晴心中盘算：等风信子自以为打败黑狼怪人的时候，才是真正的开始。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "等风信子自以为打败黑狼怪人的时候，才是真正的开始"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su",
+          "I_fengxinzi",
+          "I_heilang"
+        ],
+        "proof": {
+          "premises": [
+            "D22"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D22记录苏天晴的计划想法。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F27",
+        "at": 75,
+        "text": "南小风觉得黑狼无论速度还是力量都很强，但总感觉怪怪的；以往怪人或多或少有魔法能力，眼前这只却没有。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "黑狼速度力量都很强，但总感觉怪怪的；以往怪人或多或少有魔法能力，眼前这只却没有"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c03:E_fengxinzi",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi",
+          "I_heilang",
+          "I_guai"
+        ],
+        "proof": {
+          "premises": [
+            "D26"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D26记录南小风的疑惑。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F28",
+        "at": 80,
+        "text": "苏天晴沐浴月光现身，有毛茸茸尾巴与耳朵、金色长发，娇小可爱，令南小风失神。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "金色狐耳狐尾、金色长发，在月光下现身，娇小可爱"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D27"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D27描述苏天晴现身。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F49",
+        "at": 84,
+        "text": "苏天晴胸前有金色十字星，即守护之星。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "胸前有金色十字星（守护之星）"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su",
+          "I_shouhu"
+        ],
+        "proof": {
+          "premises": [
+            "D28"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D28记录白灵看见金色十字星并认出守护之星。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F31",
+        "at": 87,
+        "text": "苏天晴内心其实很慌，全靠提前演练才装出熟练的反派范。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "内心很慌，全靠提前演练装出反派范"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su"
+        ],
+        "proof": {
+          "premises": [
+            "D29"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D29记录苏天晴的内心真实状态。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F32",
+        "at": 89,
+        "text": "南小风困惑对方知道自己的代号，追问对方是谁、代号是什么、为什么蓉城会有；她意识到蓉城只有自己一名魔法少女，没有观星者帮助不可能得到守护之星。",
+        "predicate": "known:c01:P13",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "蓉城只有自己一名魔法少女，没有观星者的帮助不可能得到守护之星；眼前这个陌生魔法少女的身份和代号未知"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "known:c03:E_fengxinzi",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_fengxinzi",
+          "I_su",
+          "I_rongcheng",
+          "I_guanxing",
+          "I_shouhu",
+          "I_mofa"
+        ],
+        "proof": {
+          "premises": [
+            "D30"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D30记录南小风的困惑与推断。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F35",
+        "at": 98,
+        "text": "苏天晴拍掌后，倒下的黑狼怪人骤然暴起，从口中喷吐无数黑影，风信子的大剑脱手，她整个人被砸得倒飞而出。",
+        "predicate": "known:c03:P_attacks",
+        "arguments": [
+          {
+            "role": "attacker",
+            "value": {
+              "type": "ref",
+              "id": "E_black_wolf"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_heilang",
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D32"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D32记录黑狼暴起攻击。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F41",
+        "at": 113,
+        "text": "苏天晴说风信子全身软软嘴却硬，并让她今晚在这里老实待着。",
+        "predicate": "known:c03:P_threatens",
+        "arguments": [
+          {
+            "role": "agent",
+            "value": {
+              "type": "ref",
+              "id": "known:c01:E_su"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_fengxinzi"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "既然如此，你今晚就在这里老实待着吧，风信子~"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "known:c01:E_su",
+          "opaque": true
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_su",
+          "I_fengxinzi"
+        ],
+        "proof": {
+          "premises": [
+            "D37"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D37记录苏天晴的威胁式低语。"
+        }
+      }
+    },
+    {
+      "collection": "facts",
+      "record": {
+        "id": "F48",
+        "at": 129,
+        "text": "蓉城绿心公园里回荡着少女的哀鸣。",
+        "predicate": "known:c03:P_has_attribute",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "known:c03:E_luxin_park"
+            }
+          },
+          {
+            "role": "attribute",
+            "value": {
+              "type": "text",
+              "text": "回荡着少女的哀鸣"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "T_night",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "I_lvxin",
+          "I_fengxinzi",
+          "I_rongcheng"
+        ],
+        "proof": {
+          "premises": [
+            "D44"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "D44记录公园回荡哀鸣。"
+        }
+      }
+    }
+  ]
+}

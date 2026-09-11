@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴重新注册写书时用的笔名是“十万水星”，书名是《深渊领主是我萝莉老婆》。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":75},{\"chapter\":5,\"paragraph\":76}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3899,
+    "outputTokens": 67,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 1595
+  },
+  "responseId": "d88a4c69-aa33-4a9e-81ce-63013823bef0",
+  "durationMs": 986,
+  "startedAt": "2026-09-11T09:11:30.054Z",
+  "raw": {
+    "id": "d88a4c69-aa33-4a9e-81ce-63013823bef0",
+    "object": "chat.completion",
+    "created": 1789117890,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴重新注册写书时用的笔名是“十万水星”，书名是《深渊领主是我萝莉老婆》。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":75},{\"chapter\":5,\"paragraph\":76}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3899,
+      "completion_tokens": 67,
+      "total_tokens": 3966,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 1595
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

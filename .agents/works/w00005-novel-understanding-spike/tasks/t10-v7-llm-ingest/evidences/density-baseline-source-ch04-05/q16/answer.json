@@ -1,0 +1,336 @@
+{
+  "answer": {
+    "text": "黑狼怪人倒下后能暴起，是因为那瓶强化药A赋予它的终极能力——能在倒下后发动力量（第4章第101段）。暴起后它一把抓住了魔法少女风信子（第4章第100段），原文称风信子被其抓住而显得狼狈；苏天晴在旁观赏这一场面。至于抓住后具体还做了什么，当前读到的原文未进一步说明。",
+    "status": "partial",
+    "recordIds": [
+      "source-c04"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 93
+      },
+      {
+        "chapter": 4,
+        "paragraph": 100
+      },
+      {
+        "chapter": 4,
+        "paragraph": 101
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 120,
+          "query": "黑狼"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 120,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 120,
+          "query": "怪人"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 101,
+          "query": "黑狼"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 101,
+          "query": "风信子"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 101,
+          "query": "怪人"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 93,
+              "text": "刹那间，原本倒伏在地的黑狼兽人骤然暴起！可从他嘴里喷吐而出的却并非魔炮一类的魔力光束，而是——"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 100,
+              "text": "苏天晴脸上露出诡计得逞的坏笑，指尖轻轻抚在自己下巴上，借着月光认真观赏起魔法少女风信子被复活的黑狼怪人一把抓住的狼狈模样。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 101,
+              "text": "没错，这是那瓶强化药A赋予黑狼怪人的终极能力，能在倒下后发动的力量！"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 87,
+              "text": "“很精彩的战斗，风信子。干得漂亮。”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 100,
+              "text": "苏天晴脸上露出诡计得逞的坏笑，指尖轻轻抚在自己下巴上，借着月光认真观赏起魔法少女风信子被复活的黑狼怪人一把抓住的狼狈模样。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 100,
+              "text": "苏天晴脸上露出诡计得逞的坏笑，指尖轻轻抚在自己下巴上，借着月光认真观赏起魔法少女风信子被复活的黑狼怪人一把抓住的狼狈模样。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 101,
+              "text": "没错，这是那瓶强化药A赋予黑狼怪人的终极能力，能在倒下后发动的力量！"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 101
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 2,
+            "returned": 2
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

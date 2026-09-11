@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\",\"query\":\"绿心公园\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"风信子\",\"query\":\"吊\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\",\"kind\":\"episode\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5169,
+    "outputTokens": 129,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 2737
+  },
+  "responseId": "80a2c2eb-0c3d-4d15-8069-5a9c97c4213d",
+  "durationMs": 1114,
+  "startedAt": "2026-09-11T09:10:57.985Z",
+  "raw": {
+    "id": "80a2c2eb-0c3d-4d15-8069-5a9c97c4213d",
+    "object": "chat.completion",
+    "created": 1789117858,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"苏天晴\",\"query\":\"绿心公园\"},{\"command\":\"facts\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"风信子\",\"query\":\"吊\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":29},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"绿心公园\",\"kind\":\"episode\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5169,
+      "completion_tokens": 129,
+      "total_tokens": 5298,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 2737
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

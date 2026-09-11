@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {parseRequest, type QueryRequest, type QueryResponse} from "../../../t09-v7-query-cli/index.ts";
+import {parseRequest, requestSchema, type QueryRequest, type QueryResponse} from "../../../t09-v7-query-cli/index.ts";
 
 export const answerSchema = z.strictObject({
     text: z.string().min(1), status: z.enum(["answered", "partial", "not-found", "undetermined"]),
@@ -11,12 +11,28 @@ export const actionSchema = z.discriminatedUnion("action", [
 ]);
 export type QuestionInput = {id: string; question: string; readAt: {chapter: number; paragraph: number}};
 export type EvaluationMode = "graph" | "graph-source" | "source";
+
+export function advertisedActionSchema(mode: EvaluationMode) {
+    const requests = requestSchema.options
+        .filter(option => mode === "graph-source" || (option.shape.command.value === "source") === (mode === "source"))
+        .map(option => {
+            const object: z.ZodObject = option;
+            return "limit" in object.shape ? object.safeExtend({limit: z.number().int().min(1).max(10).default(10)}) : object;
+        });
+    return z.union([
+        z.strictObject({action: z.literal("query"), requests: z.array(z.union(requests)).min(1).max(3)}),
+        z.strictObject({action: z.literal("answer"), answer: answerSchema}),
+    ]);
+}
+
 type Turn = {requests: unknown[]; results: unknown[]};
 export interface QuestionState {question: QuestionInput; mode: EvaluationMode; remainingQueries: number; answerRequired: boolean; history: Turn[]}
 
 /** The evaluation owner fixes scope; a query model cannot widen it or enable another tool mode. */
 export function scopedQuery(request: unknown, question: QuestionInput, mode: EvaluationMode): QueryRequest {
     const parsed = parseRequest(request);
+    // The study's smaller page default must match its advertised schema, while the public CLI keeps its own default.
+    if (request && typeof request === "object" && !("limit" in request) && "limit" in parsed) parsed.limit = 10;
     if (parsed.at && (parsed.at.chapter !== question.readAt.chapter || parsed.at.paragraph !== undefined && parsed.at.paragraph !== question.readAt.paragraph)) throw new Error("Evaluation readAt is fixed");
     if (parsed.perspective !== "reader" || parsed.world !== "original") throw new Error("Evaluation perspective is fixed");
     if (mode === "graph" && parsed.command === "source") throw new Error("Graph-only mode cannot read source");

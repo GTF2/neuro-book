@@ -1,0 +1,177 @@
+{
+  "answer": {
+    "text": "在本次读数范围（第1章第76段）及已有查询结果中，未检索到关于“墨丘利秘典与苏天晴订立的契约内容”或“绑定结果”的具体原文；覆盖信息只指出“契约的完整条款、期限、违约后果、任务具体内容未披露”，且“墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证”。因此无法给出契约内容或绑定结果，属未确定/未找到。",
+    "status": "undetermined",
+    "recordIds": [],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 76
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 200,
+          "query": "墨丘利秘典",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 200,
+          "query": "苏天晴",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 80,
+          "query": "墨丘利",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 80,
+          "query": "苏天晴",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        },
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 1,
+          "to": 80,
+          "query": "契约",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "chapter": 1,
+          "from": 76,
+          "to": 76,
+          "query": "墨丘利",
+          "limit": 10,
+          "perspective": "reader",
+          "world": "original"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "LLM 提取与独立复核不保证语义穷尽。",
+              "苏天晴是否真正死亡及“重生”机制未明确，仅有其记忆、判断与古文书的认知。",
+              "狐女身体原主人的身份、姓名、意识状态未知。",
+              "太奶在昏死前出现的性质（真实、幻象或死亡幻觉）未说明。",
+              "契约的完整条款、期限、违约后果、任务具体内容未披露。",
+              "“造物主”身份与存在未证实。",
+              "古书自称来自星空彼岸、星界使者、保障王道系等均为其单方说法，真伪未定。",
+              "魔法少女死亡率90%是苏天晴的猜测，古书只说“王道系”。",
+              "墨丘利秘典绑定/契约成立的系统消息来源和效力未独立验证。",
+              "苏天晴原来的身体下落及能否返回未知。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

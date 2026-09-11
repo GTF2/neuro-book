@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"该句原文出自第3章第32段，是视频网站上对魔法少女风信子的介绍文字（苏天晴点开的介绍视频中的文字），并非风信子本人的自述。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":32},{\"chapter\":3,\"paragraph\":13}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2592,
+    "outputTokens": 85,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 1824
+  },
+  "responseId": "8396bd9c-add7-4129-b44c-51c829f86fbc",
+  "durationMs": 1528,
+  "startedAt": "2026-09-11T09:18:17.079Z",
+  "raw": {
+    "id": "8396bd9c-add7-4129-b44c-51c829f86fbc",
+    "object": "chat.completion",
+    "created": 1789118297,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"该句原文出自第3章第32段，是视频网站上对魔法少女风信子的介绍文字（苏天晴点开的介绍视频中的文字），并非风信子本人的自述。\",\"status\":\"answered\",\"recordIds\":[\"source-c03\"],\"sources\":[{\"chapter\":3,\"paragraph\":32},{\"chapter\":3,\"paragraph\":13}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2592,
+      "completion_tokens": 85,
+      "total_tokens": 2677,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 1824
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

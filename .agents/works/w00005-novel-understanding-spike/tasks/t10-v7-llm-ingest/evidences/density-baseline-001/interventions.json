@@ -1,0 +1,14 @@
+{
+  "schema": "neurobook.memory.ingest-interventions.v1",
+  "events": [
+    {
+      "chapter": 6,
+      "round": 1,
+      "stage": "integration",
+      "afterAttempt": 3,
+      "reason": "First automatic batch exhausted: time dependencies were corrected, then an incomplete predicate role set was found; the next replacement response had malformed JSON.",
+      "action": "Inspected saved candidates and responses, then resumed the same frozen policy without changing inputs or model output.",
+      "humanOrAgentDiagnosticResumes": 1
+    }
+  ]
+}

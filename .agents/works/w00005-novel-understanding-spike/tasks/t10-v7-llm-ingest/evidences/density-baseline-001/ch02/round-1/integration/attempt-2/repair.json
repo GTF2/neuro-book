@@ -1,0 +1,109 @@
+{
+  "replacements": [
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_star",
+        "at": 33,
+        "referent": "STAR",
+        "entity": "E_guardian_star",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "STAR指从古书掉出的金色十字星，作为持续物体；后文系统称其为守护之星。",
+        "evidence": [
+          "D13"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_system_voice",
+        "at": 37,
+        "referent": "SYSTEM_VOICE",
+        "entity": "E_system_voice",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "SYSTEM_VOICE指在苏天晴脑中响起的陌生声音；后文系统提示由该声音发出。",
+        "evidence": [
+          "D15"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_daily_task",
+        "at": 39,
+        "referent": "DAILY_TASK",
+        "entity": "E_daily_task",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "DAILY_TASK指系统提示中开启的每日任务；后文古书显示其具体内容。",
+        "evidence": [
+          "D17"
+        ]
+      }
+    },
+    {
+      "collection": "identities",
+      "record": {
+        "id": "I_villain",
+        "at": 8,
+        "referent": "VILLAIN_MG",
+        "entity": "known:c01:E_villain",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "VILLAIN_MG指反派魔法少女角色/身份，与第1章契约中的反派魔法少女一致。",
+        "evidence": [
+          "D4",
+          "known:c01:I_villain"
+        ]
+      }
+    },
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "EP_daily_task_assigned",
+        "at": 87,
+        "title": "古书发布每日任务1",
+        "summary": "苏天晴维持变身回到客厅翻开古书，第一页显示她的身份为魔法少女（反派），每日任务1为找茬正牌魔法少女，理由是正牌魔法少女在蓉城风生水起已久，奖励100神典石；她看后觉得这任务不好做。",
+        "scale": "event",
+        "participants": [
+          "known:c01:E_su",
+          "known:c01:E_tome",
+          "E_daily_task",
+          "E_regular_magical_girl",
+          "E_rongcheng",
+          "E_divine_stone"
+        ],
+        "materials": [
+          "D33",
+          "D34",
+          "D35",
+          "B18"
+        ],
+        "children": [
+          "F_book_identity",
+          "F_daily_task_1",
+          "F_task_target",
+          "F_task_reason",
+          "F_task_reward",
+          "F_task_difficult"
+        ],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "D33",
+            "D34",
+            "D35"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "D33至D35记录古书任务内容与苏天晴反应。"
+        }
+      }
+    }
+  ]
+}

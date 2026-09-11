@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"风信子\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"视频\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"播放量\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2212,
+    "outputTokens": 99,
+    "cacheHitTokens": 1920,
+    "cacheMissTokens": 292
+  },
+  "responseId": "5c4b6eca-ac22-4fcb-98b5-c27d03095321",
+  "durationMs": 1114,
+  "startedAt": "2026-09-11T09:31:10.838Z",
+  "raw": {
+    "id": "5c4b6eca-ac22-4fcb-98b5-c27d03095321",
+    "object": "chat.completion",
+    "created": 1789119071,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"风信子\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"视频\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"query\":\"播放量\",\"kind\":\"mention\",\"chapter\":6,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2212,
+      "completion_tokens": 99,
+      "total_tokens": 2311,
+      "prompt_tokens_details": {
+        "cached_tokens": 1920
+      },
+      "prompt_cache_hit_tokens": 1920,
+      "prompt_cache_miss_tokens": 292
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

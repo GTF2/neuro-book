@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"根据当前读到第5章第43段的原文：英雄协会会为每个魔法少女记录在册，并根据其战斗风格或本人要求给予对应的识别代号（第5章第42段）。风信子的代号来源是：她半年前初次亮相后，英雄协会的工作人员前去接洽，在本人的同意下给予了【风信子】这一代号（第5章第43段）。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":43}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2778,
+    "outputTokens": 122,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 2010
+  },
+  "responseId": "1ef1765e-85d7-42ec-9172-8cf223bef4ae",
+  "durationMs": 1106,
+  "startedAt": "2026-09-11T09:19:13.233Z",
+  "raw": {
+    "id": "1ef1765e-85d7-42ec-9172-8cf223bef4ae",
+    "object": "chat.completion",
+    "created": 1789118353,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"根据当前读到第5章第43段的原文：英雄协会会为每个魔法少女记录在册，并根据其战斗风格或本人要求给予对应的识别代号（第5章第42段）。风信子的代号来源是：她半年前初次亮相后，英雄协会的工作人员前去接洽，在本人的同意下给予了【风信子】这一代号（第5章第43段）。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":43}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2778,
+      "completion_tokens": 122,
+      "total_tokens": 2900,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 2010
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,613 @@
+{
+  "answer": {
+    "text": "在截止阅读范围（第2章第42段）内，实体 c02:STAR 同时出现了“金色十字星”（第2章第33、36、41、42段）和“守护之星”（第2章第38段）两种称呼，但原文并未明确说明二者相关或等同，也没有查到“变身道具”这一说法；因此无法确认它就是变身道具。",
+    "status": "partial",
+    "recordIds": [
+      "c02:STAR:mention:1",
+      "c02:STAR:mention:2",
+      "c02:STAR:mention:4",
+      "c02:STAR:mention:5",
+      "c02:STAR:mention:3"
+    ],
+    "sources": [
+      {
+        "chapter": 2,
+        "paragraph": 33
+      },
+      {
+        "chapter": 2,
+        "paragraph": 36
+      },
+      {
+        "chapter": 2,
+        "paragraph": 38
+      },
+      {
+        "chapter": 2,
+        "paragraph": 41
+      },
+      {
+        "chapter": 2,
+        "paragraph": 42
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "金色十字星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "守护之星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 2,
+          "query": "变身道具"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        },
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        },
+        {
+          "ok": false,
+          "error": "Graph-only mode cannot read source"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "金色十字星",
+          "kind": "mention"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "守护之星",
+          "kind": "mention"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "变身道具",
+          "kind": "mention"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STAR:mention:1",
+                "revision": 2,
+                "label": "金色十字星",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 33
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 33,
+                    "start": 2,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STAR",
+                    "revision": 2
+                  },
+                  "text": "金色十字星",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 33,
+                    "start": 2,
+                    "end": 7
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STAR",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 33,
+                      "start": 2,
+                      "end": 7
+                    },
+                    "chapter": 2,
+                    "text": "金色十字星"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STAR:mention:2",
+                "revision": 2,
+                "label": "金色十字星",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 36
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 36,
+                    "start": 22,
+                    "end": 27
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STAR",
+                    "revision": 2
+                  },
+                  "text": "金色十字星",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 36,
+                    "start": 22,
+                    "end": 27
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STAR",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 36,
+                      "start": 22,
+                      "end": 27
+                    },
+                    "chapter": 2,
+                    "text": "金色十字星"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STAR:mention:4",
+                "revision": 2,
+                "label": "金色十字星",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 41
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 41,
+                    "start": 37,
+                    "end": 42
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STAR",
+                    "revision": 2
+                  },
+                  "text": "金色十字星",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 41,
+                    "start": 37,
+                    "end": 42
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STAR",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 41,
+                      "start": 37,
+                      "end": 42
+                    },
+                    "chapter": 2,
+                    "text": "金色十字星"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STAR:mention:5",
+                "revision": 2,
+                "label": "金色十字星",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 42
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 42,
+                    "start": 5,
+                    "end": 10
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STAR",
+                    "revision": 2
+                  },
+                  "text": "金色十字星",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 42,
+                    "start": 5,
+                    "end": 10
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STAR",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 42,
+                      "start": 5,
+                      "end": 10
+                    },
+                    "chapter": 2,
+                    "text": "金色十字星"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c02:STAR:mention:3",
+                "revision": 2,
+                "label": "守护之星",
+                "availableAt": {
+                  "chapter": 2,
+                  "paragraph": 38
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 38,
+                    "start": 1,
+                    "end": 5
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c02:STAR",
+                    "revision": 2
+                  },
+                  "text": "守护之星",
+                  "span": {
+                    "sourceId": "source-c02",
+                    "sourceRevision": 1,
+                    "paragraph": 38,
+                    "start": 1,
+                    "end": 5
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c02:STAR",
+                    "revision": 2,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c02",
+                      "sourceRevision": 1,
+                      "paragraph": 38,
+                      "start": 1,
+                      "end": 5
+                    },
+                    "chapter": 2,
+                    "text": "守护之星"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-2",
+            "sourceManifest": "manifest:5f3e24ecdc495fd9",
+            "knowledgeRevision": 2,
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 87
+            },
+            "contentHash": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 2,
+              "paragraph": 42
+            },
+            "chapters": [
+              1,
+              2
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

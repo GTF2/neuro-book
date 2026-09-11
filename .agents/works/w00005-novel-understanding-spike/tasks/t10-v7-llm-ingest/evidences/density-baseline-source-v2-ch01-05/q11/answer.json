@@ -1,0 +1,213 @@
+{
+  "answer": {
+    "text": "秘典中的“任务：夙愿”要求获得200名关注者，并成为闪耀的魔法少女、让所有人记住你的名字、带着她的那份一起活下去；奖励为500神典石。",
+    "status": "answered",
+    "recordIds": [
+      "source-c03"
+    ],
+    "sources": [
+      {
+        "chapter": 3,
+        "paragraph": 24
+      },
+      {
+        "chapter": 3,
+        "paragraph": 25
+      },
+      {
+        "chapter": 3,
+        "paragraph": 26
+      },
+      {
+        "chapter": 3,
+        "paragraph": 27
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 1,
+          "to": 27,
+          "query": "任务：夙愿"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 24,
+              "text": "【任务：夙愿】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 3,
+          "from": 24,
+          "to": 27
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-3",
+            "sourceManifest": "manifest:3f091b41fd6009c9",
+            "knowledgeRevision": 3,
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 87
+            },
+            "contentHash": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 24,
+              "text": "【任务：夙愿】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 25,
+              "text": "【获得200名关注者】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 26,
+              "text": "【成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去吧。】"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c03",
+              "revision": 1,
+              "chapter": 3,
+              "paragraph": 27,
+              "text": "【奖励：500神典石】"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 3,
+              "paragraph": 27
+            },
+            "chapters": [
+              1,
+              2,
+              3
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 2,
+  "sourceQueries": 2,
+  "exhausted": false
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴给黑狼怪人灌了一瓶【怪人强化药A】，花费50神典石。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":4,\"paragraph\":50}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3817,
+    "outputTokens": 56,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1385
+  },
+  "responseId": "7cea60a0-0075-4882-b1f2-dc112f79d3ae",
+  "durationMs": 806,
+  "startedAt": "2026-09-11T09:10:08.885Z",
+  "raw": {
+    "id": "7cea60a0-0075-4882-b1f2-dc112f79d3ae",
+    "object": "chat.completion",
+    "created": 1789117809,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"苏天晴给黑狼怪人灌了一瓶【怪人强化药A】，花费50神典石。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":4,\"paragraph\":50}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3817,
+      "completion_tokens": 56,
+      "total_tokens": 3873,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1385
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

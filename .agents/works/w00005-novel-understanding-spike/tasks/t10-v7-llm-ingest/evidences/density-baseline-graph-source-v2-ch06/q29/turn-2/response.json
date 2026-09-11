@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"【随身摄像头】售价50神典石。功能：一个无需充电的魔法摄像头，并附赠一个隐藏真实身份的视频网站账号。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":22},{\"chapter\":6,\"paragraph\":23}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3558,
+    "outputTokens": 70,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1126
+  },
+  "responseId": "aedec6b6-2419-476b-a612-268b22944f51",
+  "durationMs": 988,
+  "startedAt": "2026-09-11T09:30:55.015Z",
+  "raw": {
+    "id": "aedec6b6-2419-476b-a612-268b22944f51",
+    "object": "chat.completion",
+    "created": 1789119055,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"【随身摄像头】售价50神典石。功能：一个无需充电的魔法摄像头，并附赠一个隐藏真实身份的视频网站账号。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":22},{\"chapter\":6,\"paragraph\":23}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3558,
+      "completion_tokens": 70,
+      "total_tokens": 3628,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1126
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

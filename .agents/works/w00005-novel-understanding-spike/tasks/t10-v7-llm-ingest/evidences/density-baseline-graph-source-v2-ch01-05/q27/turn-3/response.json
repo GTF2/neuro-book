@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"已读到的秘典情报页片段仅显示【魔法少女风信子】和【真名：南小风】，未出现风信子/南小风的完整家庭住址；在章节5第98段可读范围内无法确定该情报页是否给出了完整地址。\",\"status\":\"not-found\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":92},{\"chapter\":5,\"paragraph\":94},{\"chapter\":5,\"paragraph\":95}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 4107,
+    "outputTokens": 112,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 1931
+  },
+  "responseId": "a86d11e7-5ba2-4978-ae92-a9be93120bce",
+  "durationMs": 1368,
+  "startedAt": "2026-09-11T09:19:35.207Z",
+  "raw": {
+    "id": "a86d11e7-5ba2-4978-ae92-a9be93120bce",
+    "object": "chat.completion",
+    "created": 1789118375,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"已读到的秘典情报页片段仅显示【魔法少女风信子】和【真名：南小风】，未出现风信子/南小风的完整家庭住址；在章节5第98段可读范围内无法确定该情报页是否给出了完整地址。\",\"status\":\"not-found\",\"recordIds\":[\"source-c05\"],\"sources\":[{\"chapter\":5,\"paragraph\":92},{\"chapter\":5,\"paragraph\":94},{\"chapter\":5,\"paragraph\":95}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 4107,
+      "completion_tokens": 112,
+      "total_tokens": 4219,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 1931
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

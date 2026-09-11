@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"触手怪\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"限制\",\"kind\":\"fact\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2477,
+    "outputTokens": 116,
+    "cacheHitTokens": 2304,
+    "cacheMissTokens": 173
+  },
+  "responseId": "e4ae95cb-319e-44fc-8ef0-03e7f82e1dd8",
+  "durationMs": 1208,
+  "startedAt": "2026-09-11T09:11:03.185Z",
+  "raw": {
+    "id": "e4ae95cb-319e-44fc-8ef0-03e7f82e1dd8",
+    "object": "chat.completion",
+    "created": 1789117863,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"苏天晴\"},{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"触手怪\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":24},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"限制\",\"kind\":\"fact\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2477,
+      "completion_tokens": 116,
+      "total_tokens": 2593,
+      "prompt_tokens_details": {
+        "cached_tokens": 2304
+      },
+      "prompt_cache_hit_tokens": 2304,
+      "prompt_cache_miss_tokens": 173
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

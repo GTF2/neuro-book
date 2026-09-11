@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵看见小狐狸（苏天晴）胸前的金色十字星后，大声叫道：“守、守护之星？你也是魔法少女？！”她据此认出那是守护之星，并确认对方也是魔法少女。\",\"status\":\"answered\",\"recordIds\":[\"c04:D28\",\"c02:STAR:mention:1\",\"c02:STAR:mention:2\",\"c02:STAR:mention:4\",\"c02:STAR:mention:5\",\"c02:STAR:mention:9\"],\"sources\":[{\"chapter\":4,\"paragraph\":83},{\"chapter\":4,\"paragraph\":84},{\"chapter\":2,\"paragraph\":73}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 12050,
+    "outputTokens": 147,
+    "cacheHitTokens": 2048,
+    "cacheMissTokens": 10002
+  },
+  "responseId": "cc52b9b9-29b6-4bec-958f-f2925fdde026",
+  "durationMs": 2133,
+  "startedAt": "2026-09-11T09:19:54.829Z",
+  "raw": {
+    "id": "cc52b9b9-29b6-4bec-958f-f2925fdde026",
+    "object": "chat.completion",
+    "created": 1789118395,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"白灵看见小狐狸（苏天晴）胸前的金色十字星后，大声叫道：“守、守护之星？你也是魔法少女？！”她据此认出那是守护之星，并确认对方也是魔法少女。\",\"status\":\"answered\",\"recordIds\":[\"c04:D28\",\"c02:STAR:mention:1\",\"c02:STAR:mention:2\",\"c02:STAR:mention:4\",\"c02:STAR:mention:5\",\"c02:STAR:mention:9\"],\"sources\":[{\"chapter\":4,\"paragraph\":83},{\"chapter\":4,\"paragraph\":84},{\"chapter\":2,\"paragraph\":73}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 12050,
+      "completion_tokens": 147,
+      "total_tokens": 12197,
+      "prompt_tokens_details": {
+        "cached_tokens": 2048
+      },
+      "prompt_cache_hit_tokens": 2048,
+      "prompt_cache_miss_tokens": 10002
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"风信子\"},{\"command\":\"facts\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"风信子\",\"predicate\":\"擅长近战压制与肉搏\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2498,
+    "outputTokens": 129,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 322
+  },
+  "responseId": "a8c91126-4a9a-43d0-8f32-453c903d18c1",
+  "durationMs": 995,
+  "startedAt": "2026-09-11T08:55:57.772Z",
+  "raw": {
+    "id": "a8c91126-4a9a-43d0-8f32-453c903d18c1",
+    "object": "chat.completion",
+    "created": 1789116958,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"风信子\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"风信子\"},{\"command\":\"facts\",\"at\":{\"chapter\":3,\"paragraph\":32},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"风信子\",\"predicate\":\"擅长近战压制与肉搏\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2498,
+      "completion_tokens": 129,
+      "total_tokens": 2627,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 322
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

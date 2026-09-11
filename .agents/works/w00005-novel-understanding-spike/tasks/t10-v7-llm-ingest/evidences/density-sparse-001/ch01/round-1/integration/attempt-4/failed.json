@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 4,
+  "startedAt": "2026-09-11T08:47:55.538Z",
+  "category": "validation",
+  "message": "Duplicate local IDs: [{\"id\":\"su_tianqing\",\"origins\":[\"material.referents\",\"integration.entities\"]},{\"id\":\"mercury_tome\",\"origins\":[\"material.referents\",\"integration.entities\"]},{\"id\":\"original_owner\",\"origins\":[\"material.referents\",\"integration.entities\"]},{\"id\":\"great_grandmother\",\"origins\":[\"material.referents\",\"integration.entities\"]},{\"id\":\"creator\",\"origins\":[\"material.referents\",\"integration.entities\"]}]. integration.referentAdditions must only contain additions absent from material; do not repeat A records.",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.0050669159999999994,
+    "minimumUsd": 0.0050669159999999994,
+    "maximumUsd": 0.0050669159999999994,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"规则\",\"from\":121,\"to\":128},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"赢\",\"from\":121,\"to\":128},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"输\",\"from\":121,\"to\":128}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2499,
+    "outputTokens": 108,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 1731
+  },
+  "responseId": "681b1aac-619a-49b3-a8e2-69a077b0e679",
+  "durationMs": 952,
+  "startedAt": "2026-09-11T09:18:36.723Z",
+  "raw": {
+    "id": "681b1aac-619a-49b3-a8e2-69a077b0e679",
+    "object": "chat.completion",
+    "created": 1789118317,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"规则\",\"from\":121,\"to\":128},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"赢\",\"from\":121,\"to\":128},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"query\":\"输\",\"from\":121,\"to\":128}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2499,
+      "completion_tokens": 108,
+      "total_tokens": 2607,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 1731
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

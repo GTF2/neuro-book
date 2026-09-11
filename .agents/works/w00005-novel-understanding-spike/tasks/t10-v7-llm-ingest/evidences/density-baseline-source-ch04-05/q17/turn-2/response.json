@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"游戏\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"赢\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"胜利\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2853,
+    "outputTokens": 111,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 421
+  },
+  "responseId": "f53c3239-bf2d-46d7-89a9-f808b044b1ea",
+  "durationMs": 1068,
+  "startedAt": "2026-09-11T09:10:22.544Z",
+  "raw": {
+    "id": "f53c3239-bf2d-46d7-89a9-f808b044b1ea",
+    "object": "chat.completion",
+    "created": 1789117823,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"游戏\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"赢\"},{\"command\":\"source\",\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":4,\"from\":121,\"to\":128,\"query\":\"胜利\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2853,
+      "completion_tokens": 111,
+      "total_tokens": 2964,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 421
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

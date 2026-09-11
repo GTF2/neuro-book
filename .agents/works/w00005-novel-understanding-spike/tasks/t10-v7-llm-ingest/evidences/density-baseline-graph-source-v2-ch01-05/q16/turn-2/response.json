@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":93,\"to\":101,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}},{\"command\":\"source\",\"chapter\":4,\"from\":56,\"to\":60,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}},{\"command\":\"search\",\"query\":\"强化药A\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 15145,
+    "outputTokens": 122,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 12713
+  },
+  "responseId": "64299a58-4ce9-4747-ad1e-ddc54bebf9ee",
+  "durationMs": 2116,
+  "startedAt": "2026-09-11T09:18:29.397Z",
+  "raw": {
+    "id": "64299a58-4ce9-4747-ad1e-ddc54bebf9ee",
+    "object": "chat.completion",
+    "created": 1789118310,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":93,\"to\":101,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}},{\"command\":\"source\",\"chapter\":4,\"from\":56,\"to\":60,\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}},{\"command\":\"search\",\"query\":\"强化药A\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\",\"at\":{\"chapter\":4,\"paragraph\":101}}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 15145,
+      "completion_tokens": 122,
+      "total_tokens": 15267,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 12713
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

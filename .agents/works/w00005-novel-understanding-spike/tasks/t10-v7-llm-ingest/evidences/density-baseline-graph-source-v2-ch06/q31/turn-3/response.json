@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"视频中“狐狐”（苏天晴）约定：今晚七点，蓉城第三文理学院，不见不散（第6章第103段）。随后她小声威胁：“哎呀呀，如果狐狐我七点钟见不到风信子小姐的话……那么，蓉城第三文理学院的教学楼——大概会被夷为平地吧~”（第6章第106-107段）。截至当前阅读范围（第6章第107段），原文只展示了视频中的约定与威胁言论，尚未确认她实际实施该威胁。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":103},{\"chapter\":6,\"paragraph\":106},{\"chapter\":6,\"paragraph\":107}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 5901,
+    "outputTokens": 162,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 3725
+  },
+  "responseId": "2b4e9cf1-9a53-41f6-abd7-1db257640035",
+  "durationMs": 1187,
+  "startedAt": "2026-09-11T09:31:07.066Z",
+  "raw": {
+    "id": "2b4e9cf1-9a53-41f6-abd7-1db257640035",
+    "object": "chat.completion",
+    "created": 1789119067,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"视频中“狐狐”（苏天晴）约定：今晚七点，蓉城第三文理学院，不见不散（第6章第103段）。随后她小声威胁：“哎呀呀，如果狐狐我七点钟见不到风信子小姐的话……那么，蓉城第三文理学院的教学楼——大概会被夷为平地吧~”（第6章第106-107段）。截至当前阅读范围（第6章第107段），原文只展示了视频中的约定与威胁言论，尚未确认她实际实施该威胁。\",\"status\":\"partial\",\"recordIds\":[],\"sources\":[{\"chapter\":6,\"paragraph\":103},{\"chapter\":6,\"paragraph\":106},{\"chapter\":6,\"paragraph\":107}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 5901,
+      "completion_tokens": 162,
+      "total_tokens": 6063,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 3725
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

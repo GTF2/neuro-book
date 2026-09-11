@@ -1,0 +1,3149 @@
+{
+  "answer": {
+    "text": "原文未明确说明墨丘利秘典知道苏天晴并不是这副身体原来的主人。已读到的范围内，墨丘利秘典只称呼并寻找“苏天晴小姐”、评价“对现在的身体很满意”，但没有读取到其知道“苏天晴并非原主人”的表述；第1章第40段只出现“原来的主人”这个指称，未与墨丘利秘典的知晓状态关联。因此只能判定为not-found。",
+    "status": "not-found",
+    "recordIds": [
+      "c01:E_tome",
+      "c01:D13",
+      "c01:F8",
+      "c01:D14",
+      "c01:B10",
+      "c01:R5",
+      "c01:R5:mention:1",
+      "c01:I_original_owner"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 29
+      },
+      {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      {
+        "chapter": 1,
+        "paragraph": 35
+      },
+      {
+        "chapter": 1,
+        "paragraph": 40
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "墨丘利秘典"
+        },
+        {
+          "command": "knowledge",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "墨丘利秘典",
+          "about": "苏天晴"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "秘典"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 1,
+                "label": "墨丘利秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "墨丘利秘典",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:I_tome",
+                "revision": 1,
+                "label": "依据：局部指称归属：黑色古书",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:R2",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:I_tome",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:R2:mention:1",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:R2",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R2指漂浮的黑色古书，后文自称墨丘利秘典。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 1,
+                "label": "墨丘利秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R2:mention:3",
+                "revision": 1,
+                "label": "墨丘利秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 29
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 3,
+                    "end": 8
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R2",
+                    "revision": 1
+                  },
+                  "text": "墨丘利秘典",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 3,
+                    "end": 8
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 29,
+                      "start": 3,
+                      "end": 8
+                    },
+                    "chapter": 1,
+                    "text": "墨丘利秘典"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D13",
+                "revision": 1,
+                "label": "吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者；而那个人就是你，苏天晴小姐。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 0,
+                    "end": 33
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 30,
+                    "start": 0,
+                    "end": 16
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者；而那个人就是你，苏天晴小姐。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R2",
+                        "revision": 1
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R2",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 29,
+                      "start": 0,
+                      "end": 33
+                    },
+                    "chapter": 1,
+                    "text": "【吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 30,
+                      "start": 0,
+                      "end": 16
+                    },
+                    "chapter": 1,
+                    "text": "【而那个人就是你，苏天晴小姐。】"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F6",
+                "revision": 1,
+                "label": "墨丘利秘典自称其名为“墨丘利秘典”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典自称其名为“墨丘利秘典”。",
+                  "predicate": {
+                    "id": "c01:P2",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "role": "entity",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "name",
+                      "value": {
+                        "type": "text",
+                        "text": "墨丘利秘典"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 1
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F6:at:1:30",
+                "revision": 1,
+                "label": "评估：墨丘利秘典自称其名为“墨丘利秘典”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F6",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F6",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 30
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F6",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F7",
+                "revision": 1,
+                "label": "墨丘利秘典自称从星空彼岸远行至此。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典自称从星空彼岸远行至此。",
+                  "predicate": {
+                    "id": "c01:P3",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "role": "entity",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "origin",
+                      "value": {
+                        "type": "text",
+                        "text": "星空彼岸"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 1
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F7:at:1:30",
+                "revision": 1,
+                "label": "评估：墨丘利秘典自称从星空彼岸远行至此。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F7",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F7",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 30
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F7",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F8",
+                "revision": 1,
+                "label": "墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                  "predicate": {
+                    "id": "c01:P4",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "role": "seeker",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "target",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "qualification",
+                      "value": {
+                        "type": "text",
+                        "text": "最优秀的适格者"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_tome",
+                      "revision": 1
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:I_su",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F8:at:1:30",
+                "revision": 1,
+                "label": "评估：墨丘利秘典声称前来寻找它最优秀的适格者，并指认那个人就是苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 30
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F8",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F8",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 30
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P4",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P4",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F8",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:B8",
+                "revision": 1,
+                "label": "苏天晴问古书是谁；古书沉默后重复开场白，自称墨丘利秘典，从星空彼岸来寻找最优秀适格者，而那个人就是苏天晴。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 31
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 27,
+                    "start": 0,
+                    "end": 25
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 28,
+                    "start": 0,
+                    "end": 56
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 29,
+                    "start": 0,
+                    "end": 33
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 30,
+                    "start": 0,
+                    "end": 16
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 31,
+                    "start": 0,
+                    "end": 37
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "苏天晴问古书是谁；古书沉默后重复开场白，自称墨丘利秘典，从星空彼岸来寻找最优秀适格者，而那个人就是苏天晴。",
+                  "chapterId": "c01",
+                  "fromParagraph": 27,
+                  "toParagraph": 31,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R2",
+                      "revision": 1
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c01:D11",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:D12",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:D13",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D11",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D12",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D13",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 27,
+                      "start": 0,
+                      "end": 25
+                    },
+                    "chapter": 1,
+                    "text": "“你是谁？”苏天晴扭头正视眼前这本书，茫然地说道。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 28,
+                      "start": 0,
+                      "end": 56
+                    },
+                    "chapter": 1,
+                    "text": "古书沉默了一会儿，像是在思考眼前这只呆头呆脑的狐狐到底是不是自己要找的人，良久后方才重复了一遍两分钟前的开场白："
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 29,
+                      "start": 0,
+                      "end": 33
+                    },
+                    "chapter": 1,
+                    "text": "【吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 30,
+                      "start": 0,
+                      "end": 16
+                    },
+                    "chapter": 1,
+                    "text": "【而那个人就是你，苏天晴小姐。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 31,
+                      "start": 0,
+                      "end": 37
+                    },
+                    "chapter": 1,
+                    "text": "再次听完这中二到能让人用脚趾扣出三室一厅的台词，苏天晴又陷入了沉默与思索。"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 8,
+            "returned": 8
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "knowledge",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "holder": "墨丘利秘典",
+          "about": "苏天晴"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "原来的主人"
+        },
+        {
+          "command": "search",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "身体"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Expected a visible entity ID"
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:I_original_owner",
+                "revision": 1,
+                "label": "依据：局部指称归属：原来的主人",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:I_original_owner",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:R5:mention:1",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:R5",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R5指这具身体原来的主人，身份未知，用unresolved主体表示。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:I_original_owner",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R5",
+                "revision": 1,
+                "label": "原来的主人",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "referent",
+                "data": {
+                  "localName": "原来的主人",
+                  "mentions": [
+                    {
+                      "id": "c01:R5:mention:1",
+                      "revision": 1
+                    }
+                  ],
+                  "splitFrom": null
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R5:mention:1",
+                "revision": 1,
+                "label": "原来的主人",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R5",
+                    "revision": 1
+                  },
+                  "text": "原来的主人",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 40,
+                    "start": 14,
+                    "end": 19
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 3,
+            "returned": 3
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:I_fox_body",
+                "revision": 1,
+                "label": "依据：局部指称归属：金毛狐女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 10
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:R3:mention:1",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:I_fox_body",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:R3:mention:1",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:R3",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R3金毛狐女/狐狐指同一具娇小狐女身体。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 5,
+                      "end": 9
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:R3:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 5,
+                      "end": 9
+                    },
+                    "chapter": 1,
+                    "text": "金毛狐女"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F2",
+                "revision": 1,
+                "label": "苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                  "predicate": {
+                    "id": "c01:P10",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "role": "person",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "body",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_fox_body",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "world",
+                    "holder": null,
+                    "opaque": false
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:I_fox_body",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F2:at:1:11",
+                "revision": 1,
+                "label": "评估：苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F2",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F2",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 11
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P10",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_fox_body",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P10",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_fox_body",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:P10",
+                "revision": 1,
+                "label": "has_body",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "predicate",
+                "data": {
+                  "name": "has_body",
+                  "definition": "一个人的当前身体是某具身体。",
+                  "roles": [
+                    {
+                      "name": "person",
+                      "valueKinds": [
+                        "entity"
+                      ]
+                    },
+                    {
+                      "name": "body",
+                      "valueKinds": [
+                        "entity"
+                      ]
+                    }
+                  ],
+                  "symmetric": false,
+                  "family": "identity"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:B5",
+                "revision": 1,
+                "label": "苏天晴回忆五分钟前下班吃面时听到太奶说话，随后胸痛昏死；她触摸狐尾，感受到真实触感，狐耳竖起、身体绷直。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 18
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 15,
+                    "start": 0,
+                    "end": 114
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 16,
+                    "start": 0,
+                    "end": 36
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 17,
+                    "start": 0,
+                    "end": 60
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 18,
+                    "start": 0,
+                    "end": 7
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "苏天晴回忆五分钟前下班吃面时听到太奶说话，随后胸痛昏死；她触摸狐尾，感受到真实触感，狐耳竖起、身体绷直。",
+                  "chapterId": "c01",
+                  "fromParagraph": 15,
+                  "toParagraph": 18,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R4",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R3",
+                      "revision": 1
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c01:D5",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R4",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 114
+                    },
+                    "chapter": 1,
+                    "text": "五分钟前，结束了连续三个夜班后刚下班的自己坐在街边面摊上嗦着一碗加了煎蛋的豪华牛肉面，正往碗里加着辣椒面，突然听到自己太奶在背后说话，恍惚间回头一看，只见太奶坐在藤椅上悠闲地编着一只围巾，然后胸口一疼眼前一黑，就这么背过了气去。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 1,
+                    "text": "看着在身侧摇曳的炸毛大尾巴，苏天晴鬼使神差地伸手，在尾巴上用力薅了一把。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 17,
+                      "start": 0,
+                      "end": 60
+                    },
+                    "chapter": 1,
+                    "text": "无比柔顺的绝妙触感从手上传来，随后是一股陌生的摩挲拉拽感，从尾巴尖直冲天灵盖，惊得两只耳朵猛然竖起，整只狐都绷直了身体。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 18,
+                      "start": 0,
+                      "end": 7
+                    },
+                    "chapter": 1,
+                    "text": "好真实的触感！"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:E1",
+                "revision": 1,
+                "label": "依据：苏天晴昏死与转生金毛狐女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:D5",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:D9",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:B3",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:E1",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "aggregation",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:D5",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:D9",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:B3",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "综合昏死前回忆、醒来后的认知与镜中身体描述；不在本段向前引用后续才成立的契约事件。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 114
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 36
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 24,
+                      "start": 0,
+                      "end": 5
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 25,
+                      "start": 0,
+                      "end": 11
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 55
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 8,
+                      "start": 0,
+                      "end": 61
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 9,
+                      "start": 0,
+                      "end": 33
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 0,
+                      "end": 10
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 37
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:E1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D5",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D9",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:B3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:D5",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D9",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:B3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 15,
+                      "start": 0,
+                      "end": 114
+                    },
+                    "chapter": 1,
+                    "text": "五分钟前，结束了连续三个夜班后刚下班的自己坐在街边面摊上嗦着一碗加了煎蛋的豪华牛肉面，正往碗里加着辣椒面，突然听到自己太奶在背后说话，恍惚间回头一看，只见太奶坐在藤椅上悠闲地编着一只围巾，然后胸口一疼眼前一黑，就这么背过了气去。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 16,
+                      "start": 0,
+                      "end": 36
+                    },
+                    "chapter": 1,
+                    "text": "看着在身侧摇曳的炸毛大尾巴，苏天晴鬼使神差地伸手，在尾巴上用力薅了一把。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 24,
+                      "start": 0,
+                      "end": 5
+                    },
+                    "chapter": 1,
+                    "text": "我重生了。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 25,
+                      "start": 0,
+                      "end": 11
+                    },
+                    "chapter": 1,
+                    "text": "重生成了一只金毛狐女。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 55
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 8,
+                      "start": 0,
+                      "end": 61
+                    },
+                    "chapter": 1,
+                    "text": "灿烂金色的长发垂落在肩膀后背，毛茸茸的耳朵耷拉在头顶，随着自己不经意的动作而弹动两下，与刘海底下那精致的五官与眼眸交映着。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 9,
+                      "start": 0,
+                      "end": 33
+                    },
+                    "chapter": 1,
+                    "text": "脖颈肩膀那白皙的肌肤倒映窗帘缝隙间洒入的阳光，让人不由得多看几眼。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 0,
+                      "end": 10
+                    },
+                    "chapter": 1,
+                    "text": "一只娇小的金毛狐女。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 37
+                    },
+                    "chapter": 1,
+                    "text": "如果再加上背后那只正在炸毛的大尾巴，这应该是一只乖巧可爱的毛茸茸金毛狐狐。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E1",
+                "revision": 1,
+                "label": "苏天晴昏死与转生金毛狐女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:F3",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:F4",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:F5",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:F2",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "episode",
+                "data": {
+                  "summary": "苏天晴在下班吃面时听到太奶说话，随后胸痛昏死；她醒来后发现自己在一具娇小金毛狐女身体中，并认为/意识到自己重生为狐女。",
+                  "scale": "sequence",
+                  "participants": [
+                    {
+                      "role": "participant",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "participant",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_grandma",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "participant",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_fox_body",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "materials": [
+                    {
+                      "id": "c01:F3",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:F4",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:F5",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:F2",
+                      "revision": 1
+                    }
+                  ],
+                  "components": [
+                    {
+                      "role": "title",
+                      "text": "苏天晴昏死与转生金毛狐女",
+                      "dependencies": [
+                        {
+                          "id": "c01:F3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F4",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F5",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F2",
+                          "revision": 1
+                        }
+                      ]
+                    },
+                    {
+                      "role": "step",
+                      "text": "苏天晴在下班吃面时听到太奶说话，随后胸痛昏死；她醒来后发现自己在一具娇小金毛狐女身体中，并认为/意识到自己重生为狐女。",
+                      "dependencies": [
+                        {
+                          "id": "c01:F3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F4",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F5",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:F2",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "children": [],
+                  "relations": [],
+                  "time": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:E1:at:1:25",
+                "revision": 1,
+                "label": "评估：苏天晴昏死与转生金毛狐女",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 25
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:E1",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:E1",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 25
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:E_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_grandma",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_fox_body",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F4",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F5",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:F3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F4",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F5",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:F2",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:E1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D14",
+                "revision": 1,
+                "label": "古书说看来苏天晴对现在的身体很满意。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 35
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 35,
+                    "start": 0,
+                    "end": 16
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "古书说看来苏天晴对现在的身体很满意。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R2",
+                        "revision": 1
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R3",
+                      "revision": 1
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 35,
+                      "start": 0,
+                      "end": 16
+                    },
+                    "chapter": 1,
+                    "text": "【看来你对现在的身体很满意嘛。】"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:B10",
+                "revision": 1,
+                "label": "古书认为苏天晴对现在的身体满意，问她为什么盯着脚看；苏天晴称小脚是世界最美好的瑰宝。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 38
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 35,
+                    "start": 0,
+                    "end": 16
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 36,
+                    "start": 0,
+                    "end": 37
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 37,
+                    "start": 0,
+                    "end": 25
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 38,
+                    "start": 0,
+                    "end": 35
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "古书认为苏天晴对现在的身体满意，问她为什么盯着脚看；苏天晴称小脚是世界最美好的瑰宝。",
+                  "chapterId": "c01",
+                  "fromParagraph": 35,
+                  "toParagraph": 38,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c01:R2",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R3",
+                      "revision": 1
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c01:D14",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:D15",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:D16",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R3",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D14",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D15",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D16",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 35,
+                      "start": 0,
+                      "end": 16
+                    },
+                    "chapter": 1,
+                    "text": "【看来你对现在的身体很满意嘛。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 36,
+                      "start": 0,
+                      "end": 37
+                    },
+                    "chapter": 1,
+                    "text": "瞅见眼前这只狐狐认真欣赏脚丫的行径，古书一时语塞，憋了半天才冒出这么一句。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 37,
+                      "start": 0,
+                      "end": 25
+                    },
+                    "chapter": 1,
+                    "text": "【但是你为什么要盯着脚看？正常情况下不应该是……】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 38,
+                      "start": 0,
+                      "end": 35
+                    },
+                    "chapter": 1,
+                    "text": "“你不懂，小脚才是世界上最美好的瑰宝，吃饭的时候看见了都能多炫两碗。”"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:I_original_owner",
+                "revision": 1,
+                "label": "依据：局部指称归属：原来的主人",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 40
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:I_original_owner",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:R5:mention:1",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:R5",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R5指这具身体原来的主人，身份未知，用unresolved主体表示。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:I_original_owner",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:R5:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R5",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 40,
+                      "start": 14,
+                      "end": 19
+                    },
+                    "chapter": 1,
+                    "text": "原来的主人"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 40
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 9,
+            "returned": 9
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

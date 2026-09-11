@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"近战\"},{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"魔法\"},{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"自述\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 1244,
+    "outputTokens": 113,
+    "cacheHitTokens": 768,
+    "cacheMissTokens": 476
+  },
+  "responseId": "5c78cff2-ed5a-447e-af58-b26e14041df9",
+  "durationMs": 1061,
+  "startedAt": "2026-09-11T09:18:15.964Z",
+  "raw": {
+    "id": "5c78cff2-ed5a-447e-af58-b26e14041df9",
+    "object": "chat.completion",
+    "created": 1789118296,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"近战\"},{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"魔法\"},{\"command\":\"source\",\"chapter\":3,\"from\":1,\"to\":32,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"自述\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 1244,
+      "completion_tokens": 113,
+      "total_tokens": 1357,
+      "prompt_tokens_details": {
+        "cached_tokens": 768
+      },
+      "prompt_cache_hit_tokens": 768,
+      "prompt_cache_miss_tokens": 476
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

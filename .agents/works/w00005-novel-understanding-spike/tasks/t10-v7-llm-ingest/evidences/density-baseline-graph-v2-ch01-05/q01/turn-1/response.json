@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"苏天晴\",\"kind\":\"entity\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"落地镜\",\"kind\":\"mention\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"重生\",\"kind\":\"beat\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2211,
+    "outputTokens": 90,
+    "cacheHitTokens": 128,
+    "cacheMissTokens": 2083
+  },
+  "responseId": "73b7a012-9770-4a61-90dc-d68704bd329d",
+  "durationMs": 1102,
+  "startedAt": "2026-09-11T09:17:14.143Z",
+  "raw": {
+    "id": "73b7a012-9770-4a61-90dc-d68704bd329d",
+    "object": "chat.completion",
+    "created": 1789118234,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"search\",\"query\":\"苏天晴\",\"kind\":\"entity\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"落地镜\",\"kind\":\"mention\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"},{\"command\":\"search\",\"query\":\"重生\",\"kind\":\"beat\",\"limit\":10,\"perspective\":\"reader\",\"world\":\"original\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2211,
+      "completion_tokens": 90,
+      "total_tokens": 2301,
+      "prompt_tokens_details": {
+        "cached_tokens": 128
+      },
+      "prompt_cache_hit_tokens": 128,
+      "prompt_cache_miss_tokens": 2083
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

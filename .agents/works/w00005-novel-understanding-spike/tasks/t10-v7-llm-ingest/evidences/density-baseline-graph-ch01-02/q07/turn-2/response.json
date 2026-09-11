@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"第二章秘典给苏天晴的每日任务1是“找茬魔法少女”（目标为找茬正牌魔法少女），奖励为100神典石。\",\"status\":\"answered\",\"recordIds\":[\"c02:F_daily_task_1\",\"c02:F_task_target\",\"c02:F_task_reward\"],\"sources\":[{\"chapter\":2,\"paragraph\":84}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 6097,
+    "outputTokens": 88,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 3665
+  },
+  "responseId": "e1a768cf-7708-4808-aca7-b84fafb0f3f2",
+  "durationMs": 1115,
+  "startedAt": "2026-09-11T08:45:10.540Z",
+  "raw": {
+    "id": "e1a768cf-7708-4808-aca7-b84fafb0f3f2",
+    "object": "chat.completion",
+    "created": 1789116311,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"第二章秘典给苏天晴的每日任务1是“找茬魔法少女”（目标为找茬正牌魔法少女），奖励为100神典石。\",\"status\":\"answered\",\"recordIds\":[\"c02:F_daily_task_1\",\"c02:F_task_target\",\"c02:F_task_reward\"],\"sources\":[{\"chapter\":2,\"paragraph\":84}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 6097,
+      "completion_tokens": 88,
+      "total_tokens": 6185,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 3665
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

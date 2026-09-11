@@ -1,0 +1,1536 @@
+{
+  "answer": {
+    "text": "截至第1章第30段所能读到的记录中，黑色古书实体（c01:E_tome）的可用名称为“黑色古书”（第7段出现）与“墨丘利秘典”（第29段出现）；但已查询到的记录未包含该古书如何“自称”的陈述，也未出现它把苏天晴放在某种关系位置（如主人、持有者、契约者等）的明确事实。已知可支持的只有：苏天晴向该古书报出自己姓名“苏天晴”（c01:D3、c01:F1），古书被作为该言语的受话对象（addressee）出现。因此，“古书如何自称及其将苏天晴置于何关系位置”在当前证据下无法确定。",
+    "status": "partial",
+    "recordIds": [
+      "c01:E_tome",
+      "c01:D3",
+      "c01:F1",
+      "c01:E_su"
+    ],
+    "sources": [
+      {
+        "chapter": 1,
+        "paragraph": 7
+      },
+      {
+        "chapter": 1,
+        "paragraph": 29
+      },
+      {
+        "chapter": 1,
+        "paragraph": 5
+      },
+      {
+        "chapter": 1,
+        "paragraph": 6
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "黑色古书"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "黑色古书"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 20,
+          "query": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        },
+        {
+          "ok": false,
+          "error": "Use at most 10 results per query and paginate if needed"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "entities",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "黑色古书"
+        },
+        {
+          "command": "facts",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "黑色古书"
+        },
+        {
+          "command": "search",
+          "at": {
+            "chapter": 1,
+            "paragraph": 30
+          },
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "query": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "entities",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_tome",
+                "revision": 1,
+                "label": "墨丘利秘典",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "artifact",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "黑色古书",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 7
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    },
+                    {
+                      "text": "墨丘利秘典",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 29
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R2:mention:3",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_tome",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R2:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R2:mention:3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 24,
+                      "end": 28
+                    },
+                    "chapter": 1,
+                    "text": "黑色古书"
+                  }
+                ]
+              },
+              "nameMatches": [
+                {
+                  "text": "黑色古书",
+                  "match": "exact"
+                }
+              ]
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "facts",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 0,
+            "returned": 0
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "search",
+          "snapshot": {
+            "id": "llm-through-1",
+            "sourceManifest": "manifest:0cb898d0b1701fc4",
+            "knowledgeRevision": 1,
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 76
+            },
+            "contentHash": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:E_su",
+                "revision": 1,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "entity",
+                "data": {
+                  "category": "person",
+                  "identityNote": "持续指称入口；属性与身份以有依据记录为准。",
+                  "names": [
+                    {
+                      "text": "苏天晴",
+                      "availableAt": {
+                        "chapter": 1,
+                        "paragraph": 6
+                      },
+                      "dependencies": [
+                        {
+                          "id": "c01:R1:mention:1",
+                          "revision": 1
+                        },
+                        {
+                          "id": "c01:I_su",
+                          "revision": 1
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1",
+                "revision": 1,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "referent",
+                "data": {
+                  "localName": "苏天晴",
+                  "mentions": [
+                    {
+                      "id": "c01:R1:mention:1",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R1:mention:2",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:R1:mention:3",
+                      "revision": 1
+                    }
+                  ],
+                  "splitFrom": null
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1:mention:2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1:mention:3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:1",
+                "revision": 1,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 5
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 1
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 3,
+                    "end": 6
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:I_su",
+                "revision": 1,
+                "label": "依据：局部指称归属：苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 6
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1
+                  },
+                  {
+                    "id": "c01:D3",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:I_su",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "identity",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:R1:mention:1",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    },
+                    {
+                      "ref": {
+                        "id": "c01:D3",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "R1的姓名由苏天晴本人报出，指称同一人物/意识主体。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:R1:mention:1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 3,
+                      "end": 6
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    "chapter": 1,
+                    "text": "“……苏天晴。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 1,
+                    "text": "昏暗的房间里传出清脆悦耳的女声，还有一道仿佛来自遥远彼方的低沉言语。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:B2",
+                "revision": 1,
+                "label": "有声音询问姓名，苏天晴报出名字；昏暗房间里响起女声与低沉言语。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 6
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 4,
+                    "start": 0,
+                    "end": 5
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 0,
+                    "end": 8
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 6,
+                    "start": 0,
+                    "end": 34
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "beat",
+                "data": {
+                  "gist": "有声音询问姓名，苏天晴报出名字；昏暗房间里响起女声与低沉言语。",
+                  "chapterId": "c01",
+                  "fromParagraph": 4,
+                  "toParagraph": 6,
+                  "mode": "narrative",
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    }
+                  ],
+                  "disclosures": [
+                    {
+                      "id": "c01:D2",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:D3",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 4,
+                      "start": 0,
+                      "end": 5
+                    },
+                    "chapter": 1,
+                    "text": "【姓名。】"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    "chapter": 1,
+                    "text": "“……苏天晴。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 1,
+                    "text": "昏暗的房间里传出清脆悦耳的女声，还有一道仿佛来自遥远彼方的低沉言语。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:D3",
+                "revision": 1,
+                "label": "苏天晴报出姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 6
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 5,
+                    "start": 0,
+                    "end": 8
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 6,
+                    "start": 0,
+                    "end": 34
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "disclosure",
+                "data": {
+                  "text": "苏天晴报出姓名“苏天晴”。",
+                  "channel": "speech",
+                  "mode": "assertion",
+                  "attribution": [
+                    {
+                      "channel": "speech",
+                      "holder": {
+                        "id": "c01:R1",
+                        "revision": 1
+                      }
+                    }
+                  ],
+                  "referents": [
+                    {
+                      "id": "c01:R1",
+                      "revision": 1
+                    }
+                  ],
+                  "mentionedTime": {
+                    "kind": "unspecified"
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    "chapter": 1,
+                    "text": "“……苏天晴。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 1,
+                    "text": "昏暗的房间里传出清脆悦耳的女声，还有一道仿佛来自遥远彼方的低沉言语。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:F1",
+                "revision": 1,
+                "label": "依据：苏天晴向古书报出自己的姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:D3",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:F1",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:D3",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "D3记录苏天晴报出姓名。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:F1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:D3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:D3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 5,
+                      "start": 0,
+                      "end": 8
+                    },
+                    "chapter": 1,
+                    "text": "“……苏天晴。”"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 6,
+                      "start": 0,
+                      "end": 34
+                    },
+                    "chapter": 1,
+                    "text": "昏暗的房间里传出清脆悦耳的女声，还有一道仿佛来自遥远彼方的低沉言语。"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:F1",
+                "revision": 1,
+                "label": "苏天晴向古书报出自己的姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "fact",
+                "data": {
+                  "proposition": "苏天晴向古书报出自己的姓名“苏天晴”。",
+                  "predicate": {
+                    "id": "c01:P1",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "role": "speaker",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_su",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "addressee",
+                      "value": {
+                        "type": "ref",
+                        "ref": {
+                          "id": "c01:E_tome",
+                          "revision": 1
+                        }
+                      },
+                      "anchor": null
+                    },
+                    {
+                      "role": "name",
+                      "value": {
+                        "type": "text",
+                        "text": "苏天晴"
+                      },
+                      "anchor": null
+                    }
+                  ],
+                  "polarity": "affirmative",
+                  "assertion": {
+                    "kind": "speech",
+                    "holder": {
+                      "id": "c01:E_su",
+                      "revision": 1
+                    },
+                    "opaque": true
+                  },
+                  "time": {
+                    "kind": "unspecified"
+                  },
+                  "qualifiers": {
+                    "quantifier": "particular",
+                    "conditions": [],
+                    "textualConditions": [],
+                    "exceptions": [],
+                    "modality": "actual"
+                  },
+                  "interpretationDependencies": [
+                    {
+                      "id": "c01:I_su",
+                      "revision": 1
+                    },
+                    {
+                      "id": "c01:I_tome",
+                      "revision": 1
+                    }
+                  ]
+                }
+              },
+              "assessment": {
+                "id": "assessment:c01:F1:at:1:7",
+                "revision": 1,
+                "label": "评估：苏天晴向古书报出自己的姓名“苏天晴”。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "assessment",
+                "data": {
+                  "target": {
+                    "id": "c01:F1",
+                    "revision": 1
+                  },
+                  "arguments": [
+                    {
+                      "id": "argument:c01:F1",
+                      "revision": 1
+                    }
+                  ],
+                  "epistemic": "accepted",
+                  "note": "逐项独立复核未报告实质问题；这不是正确性保证。",
+                  "unresolved": [],
+                  "evaluatedAt": {
+                    "chapter": 1,
+                    "paragraph": 7
+                  }
+                }
+              },
+              "assessmentStatus": "visible",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:P1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:E_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:P1",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_su",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:I_tome",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [
+                  {
+                    "id": "argument:c01:F1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "excerpts": []
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "c01:R1:mention:2",
+                "revision": 1,
+                "label": "苏天晴",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 3
+                  }
+                ],
+                "dependencies": [],
+                "readiness": "ready",
+                "kind": "mention",
+                "data": {
+                  "referent": {
+                    "id": "c01:R1",
+                    "revision": 1
+                  },
+                  "text": "苏天晴",
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 3
+                  }
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:R1",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 3
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "record",
+              "record": {
+                "id": "argument:c01:F2",
+                "revision": 1,
+                "label": "依据：苏天晴当前所在/所具有的身体是一具娇小的金毛狐女身体。",
+                "availableAt": {
+                  "chapter": 1,
+                  "paragraph": 11
+                },
+                "scope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "spans": [],
+                "dependencies": [
+                  {
+                    "id": "c01:B3",
+                    "revision": 1
+                  }
+                ],
+                "readiness": "ready",
+                "kind": "argument",
+                "data": {
+                  "conclusion": {
+                    "id": "c01:F2",
+                    "revision": 1
+                  },
+                  "polarity": "supports",
+                  "method": "direct",
+                  "premises": [
+                    {
+                      "ref": {
+                        "id": "c01:B3",
+                        "revision": 1
+                      },
+                      "role": "evidence",
+                      "required": true
+                    }
+                  ],
+                  "assumptions": [],
+                  "rationale": "叙述从镜中显示苏天晴看到自己成为金毛狐女，并感受到狐耳狐尾。",
+                  "sourceRoots": [
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 55
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 8,
+                      "start": 0,
+                      "end": 61
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 9,
+                      "start": 0,
+                      "end": 33
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 0,
+                      "end": 10
+                    },
+                    {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 37
+                    }
+                  ],
+                  "applicability": "satisfied",
+                  "bindings": [],
+                  "jointScope": {
+                    "world": "original",
+                    "perspective": "reader"
+                  },
+                  "jointTime": {
+                    "kind": "unspecified"
+                  },
+                  "review": {
+                    "verdict": "passed",
+                    "reviewer": "deepseek-flash-independent-review",
+                    "note": "逐项独立复核未报告实质问题；这不是正确性保证。"
+                  },
+                  "status": "usable"
+                }
+              },
+              "assessment": null,
+              "assessmentStatus": "not-in-scope-or-not-applicable",
+              "provenance": {
+                "references": [
+                  {
+                    "id": "c01:F2",
+                    "revision": 1,
+                    "status": "visible"
+                  },
+                  {
+                    "id": "c01:B3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "dependencies": [
+                  {
+                    "id": "c01:B3",
+                    "revision": 1,
+                    "status": "visible"
+                  }
+                ],
+                "arguments": [],
+                "excerpts": [
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 7,
+                      "start": 0,
+                      "end": 55
+                    },
+                    "chapter": 1,
+                    "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 8,
+                      "start": 0,
+                      "end": 61
+                    },
+                    "chapter": 1,
+                    "text": "灿烂金色的长发垂落在肩膀后背，毛茸茸的耳朵耷拉在头顶，随着自己不经意的动作而弹动两下，与刘海底下那精致的五官与眼眸交映着。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 9,
+                      "start": 0,
+                      "end": 33
+                    },
+                    "chapter": 1,
+                    "text": "脖颈肩膀那白皙的肌肤倒映窗帘缝隙间洒入的阳光，让人不由得多看几眼。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 10,
+                      "start": 0,
+                      "end": 10
+                    },
+                    "chapter": 1,
+                    "text": "一只娇小的金毛狐女。"
+                  },
+                  {
+                    "span": {
+                      "sourceId": "source-c01",
+                      "sourceRevision": 1,
+                      "paragraph": 11,
+                      "start": 0,
+                      "end": 37
+                    },
+                    "chapter": 1,
+                    "text": "如果再加上背后那只正在炸毛的大尾巴，这应该是一只乖巧可爱的毛茸茸金毛狐狐。"
+                  }
+                ]
+              }
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 1,
+              "paragraph": 30
+            },
+            "chapters": [
+              1
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": false,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": false,
+            "corpusClosed": false,
+            "matchingRecords": 31,
+            "returned": 10
+          },
+          "truncation": {
+            "page": true,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": "eyJ2ZXJzaW9uIjoxLCJxdWVyeSI6ImYyMGE4NWEyZDU3YjZkZDEzNTdhYjg1OTRhOTQ1MTg0OGRiMzA3MmI0NDdiNGE2MWQ1MTE2NzYwYzJkMWI4ODgiLCJvZmZzZXQiOjEwLCJjaGVja3N1bSI6IjM1YzU3ODk4NGQ1MzgyODQ5YjY4NGI5MTk4YWU2ZDdiN2FlMGYzMmZkNDcyNmYxMGQ5OWU3OTc3ZTAzMTE4MTAifQ"
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 0,
+  "exhausted": true
+}

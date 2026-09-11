@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"风信子\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"秘典情报\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"风信子\",\"kind\":\"disclosure\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2482,
+    "outputTokens": 119,
+    "cacheHitTokens": 2176,
+    "cacheMissTokens": 306
+  },
+  "responseId": "b28b2acb-3224-47c5-abb4-c14abca5ccf9",
+  "durationMs": 1674,
+  "startedAt": "2026-09-11T09:10:01.223Z",
+  "raw": {
+    "id": "b28b2acb-3224-47c5-abb4-c14abca5ccf9",
+    "object": "chat.completion",
+    "created": 1789117801,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"风信子\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"秘典情报\"},{\"command\":\"search\",\"at\":{\"chapter\":5,\"paragraph\":97},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":20,\"query\":\"风信子\",\"kind\":\"disclosure\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2482,
+      "completion_tokens": 119,
+      "total_tokens": 2601,
+      "prompt_tokens_details": {
+        "cached_tokens": 2176
+      },
+      "prompt_cache_hit_tokens": 2176,
+      "prompt_cache_miss_tokens": 306
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

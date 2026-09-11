@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典情报页\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典情报页\",\"kind\":\"mention\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"秘典\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 2666,
+    "outputTokens": 123,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 234
+  },
+  "responseId": "a76d134c-56c4-4b60-a599-546d059e1b29",
+  "durationMs": 1330,
+  "startedAt": "2026-09-11T08:55:56.236Z",
+  "raw": {
+    "id": "a76d134c-56c4-4b60-a599-546d059e1b29",
+    "object": "chat.completion",
+    "created": 1789116956,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"entities\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典情报页\"},{\"command\":\"search\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"秘典情报页\",\"kind\":\"mention\"},{\"command\":\"source\",\"at\":{\"chapter\":3,\"paragraph\":33},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"chapter\":3,\"query\":\"秘典\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 2666,
+      "completion_tokens": 123,
+      "total_tokens": 2789,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 234
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

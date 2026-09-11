@@ -1,0 +1,101 @@
+{
+  "schema": "neurobook.memory.ingest-verification.v1",
+  "observedAt": "2026-09-11T09:31:04.471Z",
+  "inputHash": "4875ca2cd860109dcce836d4164b53082eec2cab791ec53b7ce7f9283a72a7c4",
+  "policyHash": "99c37d639f129a0a058a7c7f92113446bb8feaf88c2a5bf955954e8b9e9d813b",
+  "head": 6,
+  "sourceParagraphs": 595,
+  "sourceCharacters": 15872,
+  "snapshots": [
+    {
+      "chapter": 1,
+      "records": 266,
+      "paragraphs": 76,
+      "reviewedUnits": 162,
+      "rejectedUnits": 0,
+      "reportedMissing": 0,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 266,
+      "readerUnavailableRecords": 0,
+      "sha256": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+    },
+    {
+      "chapter": 2,
+      "records": 591,
+      "paragraphs": 163,
+      "reviewedUnits": 169,
+      "rejectedUnits": 0,
+      "reportedMissing": 2,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 585,
+      "readerUnavailableRecords": 6,
+      "sha256": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+    },
+    {
+      "chapter": 3,
+      "records": 1034,
+      "paragraphs": 250,
+      "reviewedUnits": 207,
+      "rejectedUnits": 0,
+      "reportedMissing": 0,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 1013,
+      "readerUnavailableRecords": 21,
+      "sha256": "40d80efbd9b5c85fe0419ce8ec1e13a12de58354e5c3087f7607a01ac9ff723e"
+    },
+    {
+      "chapter": 4,
+      "records": 1485,
+      "paragraphs": 379,
+      "reviewedUnits": 199,
+      "rejectedUnits": 0,
+      "reportedMissing": 0,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 1452,
+      "readerUnavailableRecords": 33,
+      "sha256": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+    },
+    {
+      "chapter": 5,
+      "records": 1765,
+      "paragraphs": 481,
+      "reviewedUnits": 125,
+      "rejectedUnits": 0,
+      "reportedMissing": 0,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 1713,
+      "readerUnavailableRecords": 52,
+      "sha256": "c94cc6ef57b78477537d7124037cc8d9e1a1a9f351dd7370e14bde5905d005c3"
+    },
+    {
+      "chapter": 6,
+      "records": 2169,
+      "paragraphs": 595,
+      "reviewedUnits": 189,
+      "rejectedUnits": 0,
+      "reportedMissing": 0,
+      "cumulativeRejectedUnits": 0,
+      "pendingRecords": 0,
+      "readerVisibleRecords": 2100,
+      "readerUnavailableRecords": 69,
+      "sha256": "d0f3a8d6ed8fc2fd84a9f3d1ec3405b033a5c2569861939f2e493649de3dc8f2"
+    }
+  ],
+  "deterministicReplay": true,
+  "latestMatches": true,
+  "rerun": {
+    "calls": 0,
+    "requestsBefore": 46,
+    "requestsAfter": 46,
+    "immutableFiles": 12
+  },
+  "limitations": [
+    "Complete Beat coverage and model review do not establish exhaustive semantic extraction",
+    "Unavailable record counts also include dependency, summary freshness and scope rules; they are not all caused by pending review"
+  ]
+}

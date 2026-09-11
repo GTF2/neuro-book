@@ -1,0 +1,29 @@
+{
+  "stage": "integration",
+  "chapter": 4,
+  "attempt": 2,
+  "startedAt": "2026-09-11T08:51:45.275Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nF3.fact dependencies at 4:2 references I_fengxinzi, available only at 4:4\nF3.identities lacks explicit identity for arguments.subject=known:c03:E_fengxinzi at 4:2; provided=[\"I_fengxinzi\",\"I_lvxin\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nF3.identities lacks explicit identity for assertion.holder=known:c03:E_fengxinzi at 4:2; provided=[\"I_fengxinzi\",\"I_lvxin\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nF13.fact dependencies at 4:29 references I_heilang, available only at 4:35\nF13.identities lacks explicit identity for arguments.subject=E_black_wolf at 4:29; provided=[\"I_heilang\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nF15.fact dependencies at 4:32 references I_heilang, available only at 4:35\nF40.fact dependencies at 4:109 references D36, available only at 4:110\nEP_su_prepare.episode dependencies at 4:50 references EP_battle, available only at 4:129\nEP_su_prepare.episode dependencies at 4:50 references D33, available only at 4:102",
+  "nextMaxTokens": 64000,
+  "nextResponseMode": "record-patch",
+  "cost": {
+    "estimatedUsd": 0.032419619999999996,
+    "minimumUsd": 0.032419619999999996,
+    "maximumUsd": 0.032419619999999996,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

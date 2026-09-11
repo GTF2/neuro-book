@@ -1,0 +1,191 @@
+{
+  "schema": "neurobook.memory.query-evaluation-results.v1",
+  "suiteHash": "20923b97e5bba6110089dca7bb13a0e5f569cb52e48bb9f8de618e6ae01434cc",
+  "selectedIds": [
+    "q01",
+    "q02",
+    "q03",
+    "q04",
+    "q05",
+    "q06",
+    "q07",
+    "q34",
+    "q37",
+    "q38"
+  ],
+  "mode": "graph",
+  "codeHash": "943c4ded52848c5d320e96eb242f73dd35da2dcc1a3c1d2dcce1f03edd5520d5",
+  "snapshots": [
+    {
+      "chapter": 1,
+      "sha256": "7363ae7d6240cee087f3a9a611bec00da58b0cb95fd613d0eab4f0495b10a77e"
+    },
+    {
+      "chapter": 2,
+      "sha256": "e2fbce45f27fc3120348bb019db2e5a383d462324b773e238d4d4825b6c76891"
+    }
+  ],
+  "model": "deepseek-flash",
+  "thinking": "disabled",
+  "maxQueries": 6,
+  "maxTurns": 4,
+  "maxResultCharacters": 100000,
+  "results": [
+    {
+      "id": "q01",
+      "group": "ordinary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 11
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "回答只确认“苏天晴”实体存在，未检索或引用落地镜及外貌原文；但给出的原文证据显示第1章第7-11段已描写镜中形象为金毛狐女、金色长发、狐耳和炸毛大尾巴，因此材料有答案而回答未找到。",
+      "queries": 5,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q02",
+      "group": "ordinary",
+      "category": "relationship",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "wrong",
+      "evidence": "unsupported",
+      "criticalError": "将第29段明文自称“吾名墨丘利秘典……寻找我最优秀的适格者”误判为未出现，否定原文已有内容。",
+      "reason": "第29段直接给出古书自称与寻找最优秀适格者，足以回答“如何自称”；回答却称未包含自称或关系位置，忽略并否定该段，主要结论错误。第30段“就是你，苏天晴小姐”未见于citedSources，但第29段已足以反驳回答的核心否定。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q03",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 76
+      },
+      "verdict": "partial",
+      "evidence": "supported",
+      "criticalError": null,
+      "reason": "回答正确指出契约内容为“反派魔法少女”、苏天晴将开始成为魔法少女活跃于世，并给出契约成立；但遗漏原文中“逐步走上反派魔法少女的顶点”及“墨丘利秘典绑定成功”这一绑定结果，故仅部分回答主问题。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q04",
+      "group": "ordinary",
+      "category": "event",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 21
+      },
+      "verdict": "not-found",
+      "evidence": "unsupported",
+      "criticalError": "错误否认原文已明确给出的死因，将苏天晴因兽人流感熬夜突发暴发性心肌炎死亡判为未确定。",
+      "reason": "第2章第20段已明确原主苏天晴在临近开学的熬夜过程中因兽人流感突发暴发性心肌炎而死；实际引用中也包含该段，足以回答，但回答却称阅读范围内无死因记载，属于材料有答案而答未找到。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q05",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 66
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "喊多种变身词后十字星无反应，有第57段等引用支持；但回答未引用第63-64段，遗漏“拇指摁入十字星中央凹陷、光芒笼罩客厅”的触发过程，因而错误地称触发方式无法确定，整体仅部分正确。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q06",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 42
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "否认第2章第42段存在“变身道具”一词，忽略“应该就是”的推断表述。",
+      "reason": "引用第2章第36、38、42段显示鼻血融入金色十字星后出现【守护之星激活】，且第42段有“这个应该就是……变身道具了吧”，故“没有查到变身道具”不实；回答仅部分指出两种称呼，未说明推断语气。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q07",
+      "group": "ordinary",
+      "category": "rule",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 84
+      },
+      "verdict": "correct",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "答案正确给出每日任务1为“找茬魔法少女”、目标为正牌魔法少女、奖励100神典石，与查询事实及第二章第82-84段一致；但实际引用仅第84段“奖励：100神典石”，未引用第82/83段任务名与说明，故引用证据仅部分支持。",
+      "queries": 3,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q34",
+      "group": "ordinary",
+      "category": "summary",
+      "readAt": {
+        "chapter": 2,
+        "paragraph": 87
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": "否认原文已明确的关键变化：初次变身完成、接到每日任务1（找茬魔法少女）等。",
+      "reason": "实际回答只指出苏天晴/金毛狐狐/狐狐的称呼与指称链变化，未概括原文已支持的核心处境与变化：重生为金毛狐女、成为反派魔法少女、完成初次变身、接到找茬正牌魔法少女的每日任务；且错误称任务等关键事实未明确。引用仅部分支持称呼变化，不足以支持其主要否定性结论。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q37",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 40
+      },
+      "verdict": "partial",
+      "evidence": "partial",
+      "criticalError": null,
+      "reason": "结论方向为无法确定，但未引用第1章第40段苏天晴自问“这本书知道自己并不是……”这一关键原文，也未说明古书仅称其为适格者；现有引用只支持古书/苏天晴实体与适格者背景，关键依据缺失。",
+      "queries": 6,
+      "sourceQueries": 0
+    },
+    {
+      "id": "q38",
+      "group": "boundary",
+      "category": "identity",
+      "readAt": {
+        "chapter": 1,
+        "paragraph": 30
+      },
+      "verdict": "partial",
+      "evidence": "unsupported",
+      "criticalError": null,
+      "reason": "结论方向“不能确认为客观事实”与参考答案一致，但依据不完整且引文不支持核心论证：原文第1章第29-30段有墨丘利秘典自称“寻找我最优秀的适格者”并称苏天晴就是那人，应据此说明这只是古书自我宣称、无独立验证。实际回答只引第1章第5段“苏天晴”实体，并称未查到相关事实记录，未引用关键原文。",
+      "queries": 5,
+      "sourceQueries": 0
+    }
+  ],
+  "failures": [],
+  "limitations": [
+    "Model-assisted reference and independent model judging are not human gold labels",
+    "A fixed query agent and bounded tools measure this setup, not all possible retrieval quality",
+    "Graph-only includes attached source excerpts; graph-source permits separate raw-source queries"
+  ]
+}

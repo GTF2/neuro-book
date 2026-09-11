@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"秘典情报页预测：当晚蓉城市绿心公园将出现怪人，并预测风信子将前往迎击。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":3,\"paragraph\":33}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3630,
+    "outputTokens": 59,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 1198
+  },
+  "responseId": "0d04a9b6-9e60-4937-9b99-9379cc77a10c",
+  "durationMs": 933,
+  "startedAt": "2026-09-11T09:18:03.326Z",
+  "raw": {
+    "id": "0d04a9b6-9e60-4937-9b99-9379cc77a10c",
+    "object": "chat.completion",
+    "created": 1789118283,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"秘典情报页预测：当晚蓉城市绿心公园将出现怪人，并预测风信子将前往迎击。\",\"status\":\"answered\",\"recordIds\":[],\"sources\":[{\"chapter\":3,\"paragraph\":33}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3630,
+      "completion_tokens": 59,
+      "total_tokens": 3689,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 1198
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

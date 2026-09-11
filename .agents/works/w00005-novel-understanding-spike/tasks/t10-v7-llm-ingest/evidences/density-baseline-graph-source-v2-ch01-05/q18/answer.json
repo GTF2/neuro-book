@@ -1,0 +1,392 @@
+{
+  "answer": {
+    "text": "截至当前阅读范围（第4章第84段），原文只写到白灵看见小狐狸胸前的金色十字星后“第一个反应了过来，大声叫道：”，但叫声的具体内容尚未给出，因此无法回答她“问出什么”。同样，没有读到后续台词或叙述说明她由此确认了什么，故这层确认内容也无法确定；现有证据只能表明金色十字星使她先于他人反应过来。",
+    "status": "partial",
+    "recordIds": [
+      "source-c04"
+    ],
+    "sources": [
+      {
+        "chapter": 4,
+        "paragraph": 83
+      },
+      {
+        "chapter": 4,
+        "paragraph": 41
+      },
+      {
+        "chapter": 4,
+        "paragraph": 48
+      },
+      {
+        "chapter": 4,
+        "paragraph": 50
+      },
+      {
+        "chapter": 4,
+        "paragraph": 55
+      }
+    ]
+  },
+  "history": [
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 90,
+          "query": "白灵"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 90,
+          "query": "十字星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 80,
+          "to": 90,
+          "query": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        },
+        {
+          "ok": false,
+          "error": "Source paragraph range is outside the reading range"
+        }
+      ]
+    },
+    {
+      "requests": [
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 1,
+          "to": 83,
+          "query": "白灵"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 1,
+          "to": 83,
+          "query": "十字星"
+        },
+        {
+          "command": "source",
+          "perspective": "reader",
+          "world": "original",
+          "limit": 10,
+          "chapter": 4,
+          "from": 1,
+          "to": 83,
+          "query": "苏天晴"
+        }
+      ],
+      "results": [
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 20,
+              "text": "半年前，离家出走的南小风遇到了身边这只白貂——自称白灵的观星者精灵，在他的引导下获得了一枚守护之星，从此便以魔法少女【风信子】的身份活跃于蓉城。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 23,
+              "text": "白灵飘在空中左闻右看，突然这么叫了一声，便朝着某个方向飞去。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 25,
+              "text": "“慢点！白灵你慢点！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 32,
+              "text": "“这家伙……好强烈的魔力气息……”白灵飞回南小风身旁，小声说道，“当心，这是个很厉害的怪人！”"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 68,
+              "text": "白灵关切地飞到风信子身边，焦急地往她身上洒落魔力粒子，帮助她恢复体力。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 70,
+              "text": "“今天的怪人实在是太难缠了，比咱们以前见过的任何一个怪人都要强！”白灵接着说道。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 73,
+              "text": "这黑狼怪人的确很是厉害，白灵说自己的魔法少女天赋是近战压制，能在肉搏中跟自己不分上下的怪人相当少见，更别说是今天这样颇具压力的肉搏对决。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 83,
+              "text": "可在看见那小狐狸胸前的金色十字星后，白灵第一个反应了过来，大声叫道："
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 8,
+            "returned": 8
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 83,
+              "text": "可在看见那小狐狸胸前的金色十字星后，白灵第一个反应了过来，大声叫道："
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 1,
+            "returned": 1
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        },
+        {
+          "schema": "neurobook.memory.query.v1",
+          "ok": true,
+          "command": "source",
+          "snapshot": {
+            "id": "llm-through-4",
+            "sourceManifest": "manifest:ab921696d519ac1a",
+            "knowledgeRevision": 4,
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 129
+            },
+            "contentHash": "2123d98d1e4add30fc01cf4b64041aa9bb8c95ccce05a21d9e21e7aa2b744de8"
+          },
+          "scope": {
+            "readAt": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "perspective": "reader",
+            "world": "original"
+          },
+          "items": [
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 41,
+              "text": "苏天晴认真打量起正与黑狼怪人战作一团的天蓝色魔法少女。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 48,
+              "text": "苏天晴很想朝那本秘典质问一下。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 50,
+              "text": "于是苏天晴斥资50神典石巨款，买下了一瓶看起来就很带劲的【怪人强化药A】，往乖巧匍匐在自己脚边的黑狼怪人嘴里灌了进去。"
+            },
+            {
+              "type": "source",
+              "sourceId": "source-c04",
+              "revision": 1,
+              "chapter": 4,
+              "paragraph": 55,
+              "text": "“原来如此……”苏天晴在心中呢喃自语。"
+            }
+          ],
+          "coverage": {
+            "through": {
+              "chapter": 4,
+              "paragraph": 84
+            },
+            "chapters": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "material": "complete",
+            "semantic": "partial",
+            "gaps": [
+              "未提供当前阅读范围与视角专属的语义缺口说明。"
+            ],
+            "recordsExhausted": true,
+            "corpusClosed": false
+          },
+          "completeness": {
+            "recordsExhausted": true,
+            "corpusClosed": false,
+            "matchingRecords": 4,
+            "returned": 4
+          },
+          "truncation": {
+            "page": false,
+            "depth": false,
+            "unavailableReferences": 0
+          },
+          "nextCursor": null
+        }
+      ]
+    }
+  ],
+  "queries": 6,
+  "sourceQueries": 6,
+  "exhausted": true
+}

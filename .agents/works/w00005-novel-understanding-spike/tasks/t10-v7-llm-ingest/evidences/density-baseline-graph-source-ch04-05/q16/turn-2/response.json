@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":90,\"to\":101,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"at\":{\"chapter\":4,\"paragraph\":101},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"暴起\",\"kind\":\"beat\"},{\"command\":\"facts\",\"at\":{\"chapter\":4,\"paragraph\":101},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_black_wolf\"}]}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3370,
+    "outputTokens": 115,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 938
+  },
+  "responseId": "d040b484-59ce-43f6-85a5-02fa3ad705f7",
+  "durationMs": 823,
+  "startedAt": "2026-09-11T09:10:12.313Z",
+  "raw": {
+    "id": "d040b484-59ce-43f6-85a5-02fa3ad705f7",
+    "object": "chat.completion",
+    "created": 1789117812,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"query\",\"requests\":[{\"command\":\"source\",\"chapter\":4,\"from\":90,\"to\":101,\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10},{\"command\":\"search\",\"at\":{\"chapter\":4,\"paragraph\":101},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"query\":\"暴起\",\"kind\":\"beat\"},{\"command\":\"facts\",\"at\":{\"chapter\":4,\"paragraph\":101},\"perspective\":\"reader\",\"world\":\"original\",\"limit\":10,\"entity\":\"c04:E_black_wolf\"}]}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3370,
+      "completion_tokens": 115,
+      "total_tokens": 3485,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 938
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

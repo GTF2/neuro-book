@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"英雄协会会给每个登记在册的魔法少女分配识别代号，依据是“其战斗风格或本人要求”，并需经本人同意。风信子半年前初次亮相后，英雄协会工作人员前去接洽，经她本人同意，给予了【风信子】这一代号。这些信息是苏天晴在“度娘”上搜索后得知的。\",\"status\":\"answered\",\"recordIds\":[\"c05:d18\",\"c05:d16\",\"c03:E_hero_association\"],\"sources\":[{\"chapter\":5,\"paragraph\":41},{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":43}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 6151,
+    "outputTokens": 143,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 3719
+  },
+  "responseId": "8e33a247-b340-4bcb-a6c5-3cc1fc29f5bb",
+  "durationMs": 1658,
+  "startedAt": "2026-09-11T09:19:21.589Z",
+  "raw": {
+    "id": "8e33a247-b340-4bcb-a6c5-3cc1fc29f5bb",
+    "object": "chat.completion",
+    "created": 1789118362,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"英雄协会会给每个登记在册的魔法少女分配识别代号，依据是“其战斗风格或本人要求”，并需经本人同意。风信子半年前初次亮相后，英雄协会工作人员前去接洽，经她本人同意，给予了【风信子】这一代号。这些信息是苏天晴在“度娘”上搜索后得知的。\",\"status\":\"answered\",\"recordIds\":[\"c05:d18\",\"c05:d16\",\"c03:E_hero_association\"],\"sources\":[{\"chapter\":5,\"paragraph\":41},{\"chapter\":5,\"paragraph\":42},{\"chapter\":5,\"paragraph\":43}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 6151,
+      "completion_tokens": 143,
+      "total_tokens": 6294,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 3719
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}

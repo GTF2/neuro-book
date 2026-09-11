@@ -1,0 +1,73 @@
+{
+  "replacements": [
+    {
+      "collection": "episodes",
+      "record": {
+        "id": "ep_contract",
+        "at": 76,
+        "title": "与墨丘利秘典签订反派魔法少女契约",
+        "summary": "墨丘利秘典自称从星空彼岸来寻找最优秀适格者并认定苏天晴；它提出作为星界使者引导她走上完美生活、只需签小契约。苏天晴立即同意，之后才询问契约内容，古书说明内容是‘反派魔法少女’并称造物主为她定制了走向反派顶点的任务；系统宣告绑定成功、契约成立。苏天晴得知是王道系反派后后悔，但已无法反悔。",
+        "scale": "sequence",
+        "participants": [
+          "su_tianqing",
+          "mercury_tome",
+          "creator"
+        ],
+        "materials": [
+          "b10",
+          "b15",
+          "b16",
+          "b17",
+          "b18",
+          "b19",
+          "b20",
+          "b22",
+          "d8",
+          "d9",
+          "d14",
+          "d15",
+          "d24",
+          "d25",
+          "d30",
+          "d31"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "continues",
+            "target": "ep_rebirth",
+            "evidence": [
+              "d5",
+              "b13",
+              "b10"
+            ]
+          }
+        ],
+        "time": "time_contract",
+        "proof": {
+          "premises": [
+            "b10",
+            "b15",
+            "b16",
+            "b17",
+            "b18",
+            "b19",
+            "b20",
+            "b22",
+            "d8",
+            "d9",
+            "d14",
+            "d15",
+            "d24",
+            "d25",
+            "d30",
+            "d31"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "由古书自我介绍、签约对话、契约内容说明及系统宣告聚合而成。"
+        }
+      }
+    }
+  ]
+}

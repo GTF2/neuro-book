@@ -1,0 +1,42 @@
+{
+  "text": "{\"action\":\"answer\",\"answer\":{\"text\":\"仅能确认“苏天晴”这一人物指称在第1章第5段已出现；当前已读范围到第1章第11段，但尚未查询到她在落地镜中看到自己身份/外貌的原文或事实记录。\",\"status\":\"partial\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":5}]}}",
+  "model": "deepseek-flash",
+  "finishReason": "stop",
+  "usage": {
+    "inputTokens": 3270,
+    "outputTokens": 90,
+    "cacheHitTokens": 2432,
+    "cacheMissTokens": 838
+  },
+  "responseId": "d2eabd70-d9cc-42a2-b651-ccf0622ca241",
+  "durationMs": 956,
+  "startedAt": "2026-09-11T08:44:35.177Z",
+  "raw": {
+    "id": "d2eabd70-d9cc-42a2-b651-ccf0622ca241",
+    "object": "chat.completion",
+    "created": 1789116275,
+    "model": "deepseek-flash",
+    "choices": [
+      {
+        "index": 0,
+        "message": {
+          "role": "assistant",
+          "content": "{\"action\":\"answer\",\"answer\":{\"text\":\"仅能确认“苏天晴”这一人物指称在第1章第5段已出现；当前已读范围到第1章第11段，但尚未查询到她在落地镜中看到自己身份/外貌的原文或事实记录。\",\"status\":\"partial\",\"recordIds\":[\"c01:E_su\"],\"sources\":[{\"chapter\":1,\"paragraph\":5}]}}"
+        },
+        "logprobs": null,
+        "finish_reason": "stop"
+      }
+    ],
+    "usage": {
+      "prompt_tokens": 3270,
+      "completion_tokens": 90,
+      "total_tokens": 3360,
+      "prompt_tokens_details": {
+        "cached_tokens": 2432
+      },
+      "prompt_cache_hit_tokens": 2432,
+      "prompt_cache_miss_tokens": 838
+    },
+    "system_fingerprint": "aeb56401ca74e127821c4f9126dcb669"
+  }
+}
