@@ -1,0 +1,169 @@
+{
+  "id": "ch02-integration-final",
+  "source": "ch02/round-1/integration/attempt-2",
+  "stage": "integration",
+  "chapter": 2,
+  "sourceRequestHash": "24df53cc80e9153d135cd484ed13593f477903d36a7e58e0376d0f2953d23c72",
+  "inputCaveats": {
+    "priorCandidate": true,
+    "priorAttemptProblems": true
+  },
+  "baseline": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 50936,
+      "outputTokens": 34466,
+      "cacheHitTokens": 42240,
+      "cacheMissTokens": 8696
+    },
+    "durationMs": 126048,
+    "reasoningTokens": 25540,
+    "estimated": {
+      "estimatedUsd": 0.044221439999999994,
+      "minimumUsd": 0.044221439999999994,
+      "maximumUsd": 0.044221439999999994,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.022110719999999997,
+      "minimumUsd": 0.022110719999999997,
+      "maximumUsd": 0.022110719999999997,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.044221439999999994,
+      "minimumUsd": 0.044221439999999994,
+      "maximumUsd": 0.044221439999999994,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "disabled": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 50911,
+      "outputTokens": 7583,
+      "cacheHitTokens": 0,
+      "cacheMissTokens": 50911
+    },
+    "durationMs": 21705,
+    "reasoningTokens": null,
+    "estimated": {
+      "estimatedUsd": 0.024372900000000003,
+      "minimumUsd": 0.024372900000000003,
+      "maximumUsd": 0.024372900000000003,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.012186450000000001,
+      "minimumUsd": 0.012186450000000001,
+      "maximumUsd": 0.012186450000000001,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.024372900000000003,
+      "minimumUsd": 0.024372900000000003,
+      "maximumUsd": 0.024372900000000003,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "validation": {
+    "schemaPassed": true,
+    "validationPassed": false,
+    "validationMeaning": "Deterministic candidate validation only; semantic quality is not established",
+    "counts": {
+      "referentAdditions": 0,
+      "entities": 0,
+      "identities": 7,
+      "predicates": 13,
+      "times": 0,
+      "facts": 17,
+      "arguments": 0,
+      "access": 5,
+      "episodes": 4,
+      "summaries": 9,
+      "gaps": 7
+    },
+    "errors": "Integration references invalid:\nid_star2.identity/evidence: reference ent_shizixing is missing or has no valid local identity\nid_shouren2.identity/evidence: reference ent_shouren is missing or has no valid local identity\nid_villain_role2.identity/evidence: reference ent_fanpai_role is missing or has no valid local identity\nid_genuine2.identity/evidence: reference ent_zhengpai is missing or has no valid local identity\nf_su_speaks_book.fact dependencies at 2:26 references id_book2, available only at 2:28\nf_su_speaks_book.identities lacks explicit identity for arguments.addressee=known:c01:ent_book at 2:26; provided=[\"id_su2\",\"id_book2\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf_book_displays_identity.fact dependencies at 2:81 references b17, available only at 2:84\na_su_read_identity.access target/evidence at 2:81 references b17, available only at 2:84\nep_book_silent_and_star.episode dependencies: reference ent_shizixing is missing or has no valid local identity\nep_transformation_ch2.episode dependencies: reference ent_shizixing is missing or has no valid local identity\nep_transformation_ch2.episode dependencies: reference ent_fanpai_role is missing or has no valid local identity\nep_daily_task_reveal.episode dependencies: reference ent_zhengpai is missing or has no valid local identity\nsum_star2.summary evidence: reference ent_shizixing is missing or has no valid local identity\nsum_genuine2.summary evidence: reference ent_zhengpai is missing or has no valid local identity\nsum_shouren2.summary evidence: reference ent_shouren is missing or has no valid local identity\nsum_villain_role2.summary evidence: reference ent_fanpai_role is missing or has no valid local identity",
+    "reviewComparison": null
+  }
+}

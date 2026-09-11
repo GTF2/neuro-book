@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 1,
+  "startedAt": "2026-09-11T03:06:27.565Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nid_book.identity/evidence at 1:7 references d3, available only at 1:11\nid_foxbody.identity/evidence at 1:10 references d3, available only at 1:11\na_su_believed_tasks.access target/evidence at 1:70 references d41, available only at 1:71",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.039751704,
+    "minimumUsd": 0.039751704,
+    "maximumUsd": 0.039751704,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

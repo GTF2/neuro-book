@@ -1,0 +1,2108 @@
+{
+  "value": {
+    "referentAdditions": [],
+    "entities": [
+      {
+        "id": "ent_su",
+        "category": "person"
+      },
+      {
+        "id": "ent_fox_body",
+        "category": "body"
+      },
+      {
+        "id": "ent_book",
+        "category": "artifact"
+      },
+      {
+        "id": "ent_greatgrandma",
+        "category": "person"
+      },
+      {
+        "id": "ent_original_owner",
+        "category": "unresolved"
+      },
+      {
+        "id": "ent_creator",
+        "category": "unresolved"
+      }
+    ],
+    "identities": [
+      {
+        "id": "id_su",
+        "at": 5,
+        "referent": "su",
+        "entity": "ent_su",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d1中女声回答姓名“苏天晴”，与后文同名指称一致，可确认指向苏天晴这一持续人物。",
+        "evidence": [
+          "d1"
+        ]
+      },
+      {
+        "id": "id_fox_body",
+        "at": 11,
+        "referent": "fox_body",
+        "entity": "ent_fox_body",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d3描述镜中陌生娇小身影为金毛狐女，并将该身体与苏天晴所在场景关联，可确认该持续身体对象。",
+        "evidence": [
+          "d3"
+        ]
+      },
+      {
+        "id": "id_book",
+        "at": 11,
+        "referent": "book",
+        "entity": "ent_book",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d3中飘浮在半空中的黑色古书与后文墨丘利秘典指称一致，可确认同一持续器物。",
+        "evidence": [
+          "d3"
+        ]
+      },
+      {
+        "id": "id_greatgrandma",
+        "at": 16,
+        "referent": "greatgrandma",
+        "entity": "ent_greatgrandma",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d6中苏天晴回忆太奶在背后说话并坐在藤椅上编围巾，可确认该持续人物指称。",
+        "evidence": [
+          "d6"
+        ]
+      },
+      {
+        "id": "id_original_owner",
+        "at": 41,
+        "referent": "original_owner",
+        "entity": "ent_original_owner",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d19中苏天晴认为古书知道她并非“这副身体原来的主人”，该指称指向一个身份未知的原主人持续对象。",
+        "evidence": [
+          "d19"
+        ]
+      },
+      {
+        "id": "id_creator",
+        "at": 67,
+        "referent": "creator",
+        "entity": "ent_creator",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "d35中墨丘利秘典提及“造物主”为苏天晴定制任务，可确认该未揭示真实身份的持续对象。",
+        "evidence": [
+          "d35"
+        ]
+      }
+    ],
+    "predicates": [
+      {
+        "id": "pred_has_name",
+        "name": "has_name",
+        "definition": "某个实体拥有或被称为某个名称。",
+        "roles": [
+          {
+            "name": "bearer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "name",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "identity"
+      },
+      {
+        "id": "pred_has_appearance",
+        "name": "has_appearance",
+        "definition": "某个身体或实体呈现某种外观。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "appearance",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "descriptive"
+      },
+      {
+        "id": "pred_inhabits",
+        "name": "inhabits",
+        "definition": "某个意识或人物占据、控制某具身体。",
+        "roles": [
+          {
+            "name": "consciousness",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "body",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "possession"
+      },
+      {
+        "id": "pred_believes_reincarnated_as",
+        "name": "believes_reincarnated_as",
+        "definition": "某人相信自己转生或重生为某具身体。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "body",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "pred_experienced_death",
+        "name": "experienced_death",
+        "definition": "某人经历死亡或昏死事件。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "cause",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "event"
+      },
+      {
+        "id": "pred_is_relative_of",
+        "name": "is_relative_of",
+        "definition": "某人与另一人有亲属关系，并给出关系称呼。",
+        "roles": [
+          {
+            "name": "relative",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "relation",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "kinship"
+      },
+      {
+        "id": "pred_heard_speak",
+        "name": "heard_speak",
+        "definition": "某人听到某个说话者说话，内容为某文本。",
+        "roles": [
+          {
+            "name": "hearer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "content",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "perception"
+      },
+      {
+        "id": "pred_is_original_owner_of",
+        "name": "is_original_owner_of",
+        "definition": "某人是某具身体的原本所有者。",
+        "roles": [
+          {
+            "name": "owner",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "body",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "ownership"
+      },
+      {
+        "id": "pred_is_suitable_for",
+        "name": "is_suitable_for",
+        "definition": "某人被某物认定为适格者或适合之人。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "evaluation"
+      },
+      {
+        "id": "pred_traveled_from",
+        "name": "traveled_from",
+        "definition": "某实体从某处远行而来，目的为某内容。",
+        "roles": [
+          {
+            "name": "traveler",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "origin",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "purpose",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "motion"
+      },
+      {
+        "id": "pred_offered_contract",
+        "name": "offered_contract",
+        "definition": "某方向另一方提议签订契约，内容为某文本。",
+        "roles": [
+          {
+            "name": "offerer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "offeree",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "content",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "pred_agreed_to_contract",
+        "name": "agreed_to_contract",
+        "definition": "某人同意与另一方签订契约。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "counterparty",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "agreement"
+      },
+      {
+        "id": "pred_contract_established_between",
+        "name": "contract_established_between",
+        "definition": "契约在双方之间成立。",
+        "roles": [
+          {
+            "name": "party_a",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "party_b",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": true,
+        "family": "agreement"
+      },
+      {
+        "id": "pred_contract_role",
+        "name": "contract_role",
+        "definition": "契约规定某人将担任或成为某种角色。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "agreement"
+      },
+      {
+        "id": "pred_will_become",
+        "name": "will_become",
+        "definition": "某人将变成或成为某种角色或身份。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "change"
+      },
+      {
+        "id": "pred_created_tasks_for",
+        "name": "created_tasks_for",
+        "definition": "某造物主为某人定制任务，目的为某内容。",
+        "roles": [
+          {
+            "name": "creator",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "beneficiary",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "purpose",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "creation"
+      },
+      {
+        "id": "pred_regrets",
+        "name": "regrets",
+        "definition": "某人对某事物感到后悔。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "emotion"
+      },
+      {
+        "id": "pred_bound_to",
+        "name": "bound_to",
+        "definition": "某物绑定于某人。",
+        "roles": [
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "binding"
+      },
+      {
+        "id": "pred_believes_knows",
+        "name": "believes_knows",
+        "definition": "某人相信另一人知道某命题。",
+        "roles": [
+          {
+            "name": "believer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "knower",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "proposition",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "pred_fears",
+        "name": "fears",
+        "definition": "某人害怕某事物。",
+        "roles": [
+          {
+            "name": "subject",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "emotion"
+      }
+    ],
+    "times": [
+      {
+        "id": "time_present",
+        "at": 4,
+        "description": "本章当前，苏天晴在昏暗房间内面对黑色古书。",
+        "precision": "point",
+        "before": [],
+        "after": []
+      },
+      {
+        "id": "time_past",
+        "at": 15,
+        "description": "五分钟前，苏天晴在原世界街边面摊下班吃面并猝死。",
+        "precision": "relative",
+        "before": [
+          "time_present"
+        ],
+        "after": []
+      },
+      {
+        "id": "time_future",
+        "at": 66,
+        "description": "契约签订后，苏天晴将走上反派魔法少女道路的未来。",
+        "precision": "unknown",
+        "before": [],
+        "after": [
+          "time_present"
+        ]
+      }
+    ],
+    "facts": [
+      {
+        "id": "fact_name_su",
+        "at": 5,
+        "text": "苏天晴回答自己的名字为苏天晴。",
+        "predicate": "pred_has_name",
+        "arguments": [
+          {
+            "role": "bearer",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "name",
+            "value": {
+              "type": "text",
+              "text": "苏天晴"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d1",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d1中女声回答“……苏天晴。”"
+        }
+      },
+      {
+        "id": "fact_name_book",
+        "at": 30,
+        "text": "墨丘利秘典自称名为墨丘利秘典。",
+        "predicate": "pred_has_name",
+        "arguments": [
+          {
+            "role": "bearer",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          },
+          {
+            "role": "name",
+            "value": {
+              "type": "text",
+              "text": "墨丘利秘典"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d13",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d13中古书自称“吾名墨丘利秘典”。"
+        }
+      },
+      {
+        "id": "fact_fox_body_appearance",
+        "at": 11,
+        "text": "镜中身影是一只娇小的金毛狐女，有金色长发、毛茸茸耳朵、白皙肌肤与炸毛大尾巴。",
+        "predicate": "pred_has_appearance",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_fox_body"
+            }
+          },
+          {
+            "role": "appearance",
+            "value": {
+              "type": "text",
+              "text": "娇小的金毛狐女，金色长发，毛茸茸耳朵，白皙肌肤，炸毛大尾巴"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d3",
+            "id_fox_body"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d3描述镜中陌生娇小身影为金毛狐女及其外貌。"
+        }
+      },
+      {
+        "id": "fact_su_inhabits_fox_body",
+        "at": 18,
+        "text": "苏天晴的意识处于并控制金毛狐女身体，能感受并移动该身体。",
+        "predicate": "pred_inhabits",
+        "arguments": [
+          {
+            "role": "consciousness",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "ent_fox_body"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d7",
+            "id_su",
+            "id_fox_body"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d7中苏天晴伸手薅自己的尾巴并感受到尾巴尖传来的拉拽感，惊得整只狐绷直身体。"
+        }
+      },
+      {
+        "id": "fact_su_believes_reincarnated",
+        "at": 25,
+        "text": "苏天晴认为自己重生为一只金毛狐女。",
+        "predicate": "pred_believes_reincarnated_as",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "ent_fox_body"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d10",
+            "id_su",
+            "id_fox_body"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d10为苏天晴心想“我重生了，重生成了一只金毛狐女。”"
+        }
+      },
+      {
+        "id": "fact_su_death_memory",
+        "at": 16,
+        "text": "苏天晴回忆自己在连续三个夜班下班后吃面时胸口一疼、眼前一黑，昏死过去。",
+        "predicate": "pred_experienced_death",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "cause",
+            "value": {
+              "type": "text",
+              "text": "胸口一疼，眼前一黑，背过气去"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_past",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d6",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d6为苏天晴回忆下班吃面时胸口一疼、眼前一黑昏死。"
+        }
+      },
+      {
+        "id": "fact_greatgrandma_relative",
+        "at": 16,
+        "text": "苏天晴回忆中，太奶是其长辈亲属。",
+        "predicate": "pred_is_relative_of",
+        "arguments": [
+          {
+            "role": "relative",
+            "value": {
+              "type": "ref",
+              "id": "ent_greatgrandma"
+            }
+          },
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "relation",
+            "value": {
+              "type": "text",
+              "text": "太奶"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_past",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_greatgrandma"
+        ],
+        "proof": {
+          "premises": [
+            "d6",
+            "id_su",
+            "id_greatgrandma"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d6中苏天晴称其为“太奶”。"
+        }
+      },
+      {
+        "id": "fact_su_heard_greatgrandma",
+        "at": 16,
+        "text": "苏天晴回忆在面摊时听到太奶在背后说话，回头见太奶坐在藤椅上编围巾。",
+        "predicate": "pred_heard_speak",
+        "arguments": [
+          {
+            "role": "hearer",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "ent_greatgrandma"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "太奶在背后说话，坐在藤椅上悠闲编着围巾"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_past",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_greatgrandma"
+        ],
+        "proof": {
+          "premises": [
+            "d6",
+            "id_su",
+            "id_greatgrandma"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d6为苏天晴回忆听到太奶背后说话并看见其编围巾。"
+        }
+      },
+      {
+        "id": "fact_body_original_owner",
+        "at": 41,
+        "text": "苏天晴认为这副金毛狐女身体原本有主人，而她并非原来的主人。",
+        "predicate": "pred_is_original_owner_of",
+        "arguments": [
+          {
+            "role": "owner",
+            "value": {
+              "type": "ref",
+              "id": "ent_original_owner"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "ent_fox_body"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_original_owner",
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d19",
+            "id_su",
+            "id_original_owner",
+            "id_fox_body"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d19中苏天晴认为这本书知道自己并不是这副身体原来的主人。"
+        }
+      },
+      {
+        "id": "fact_su_not_original_owner",
+        "at": 41,
+        "text": "苏天晴认为自己不是这副身体原来的主人。",
+        "predicate": "pred_is_original_owner_of",
+        "arguments": [
+          {
+            "role": "owner",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "body",
+            "value": {
+              "type": "ref",
+              "id": "ent_fox_body"
+            }
+          }
+        ],
+        "polarity": "negative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_fox_body"
+        ],
+        "proof": {
+          "premises": [
+            "d19",
+            "id_su",
+            "id_fox_body"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d19中苏天晴认为这本书知道自己并不是这副身体原来的主人。"
+        }
+      },
+      {
+        "id": "fact_su_believes_book_knows",
+        "at": 41,
+        "text": "苏天晴认为这本书知道她并不是这副身体原来的主人。",
+        "predicate": "pred_believes_knows",
+        "arguments": [
+          {
+            "role": "believer",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "knower",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          },
+          {
+            "role": "proposition",
+            "value": {
+              "type": "text",
+              "text": "苏天晴并不是这副身体原来的主人"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d19",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d19中苏天晴心想这本书知道自己并不是这副身体原来的主人。"
+        }
+      },
+      {
+        "id": "fact_book_traveled",
+        "at": 30,
+        "text": "墨丘利秘典自称从星空彼岸远行至此，前来寻找最优秀的适格者。",
+        "predicate": "pred_traveled_from",
+        "arguments": [
+          {
+            "role": "traveler",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          },
+          {
+            "role": "origin",
+            "value": {
+              "type": "text",
+              "text": "星空彼岸"
+            }
+          },
+          {
+            "role": "purpose",
+            "value": {
+              "type": "text",
+              "text": "寻找最优秀的适格者"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d13",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d13中古书称“吾名墨丘利秘典，从星空彼岸远行至此，前来寻找我最优秀的适格者。”"
+        }
+      },
+      {
+        "id": "fact_su_suitable",
+        "at": 30,
+        "text": "墨丘利秘典称苏天晴就是它最优秀的适格者。",
+        "predicate": "pred_is_suitable_for",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d13",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d13中古书称“而那个人就是你，苏天晴小姐。”"
+        }
+      },
+      {
+        "id": "fact_book_offered_contract",
+        "at": 44,
+        "text": "墨丘利秘典向苏天晴提议：她只需与其签订一个小小的契约。",
+        "predicate": "pred_offered_contract",
+        "arguments": [
+          {
+            "role": "offerer",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          },
+          {
+            "role": "offeree",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "签订一个小小的契约"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_book",
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d21",
+            "id_book",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d21中古书邀请苏天晴签订契约。"
+        }
+      },
+      {
+        "id": "fact_su_agreed_contract",
+        "at": 45,
+        "text": "苏天晴说“好，我签”，同意与墨丘利秘典签订契约。",
+        "predicate": "pred_agreed_to_contract",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "counterparty",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d22",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d22中苏天晴说“好，我签。”"
+        }
+      },
+      {
+        "id": "fact_contract_established",
+        "at": 75,
+        "text": "墨丘利秘典宣告绑定成功、契约成立。",
+        "predicate": "pred_contract_established_between",
+        "arguments": [
+          {
+            "role": "party_a",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "party_b",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d42",
+            "d44",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d42宣告“墨丘利秘典绑定成功”，d44宣告“契约成立。”"
+        }
+      },
+      {
+        "id": "fact_contract_role",
+        "at": 64,
+        "text": "墨丘利秘典称契约内容或角色为“反派魔法少女”。",
+        "predicate": "pred_contract_role",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "text",
+              "text": "反派魔法少女"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d33",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d33中古书回答“反派魔法少女。”"
+        }
+      },
+      {
+        "id": "fact_will_become_magical_girl",
+        "at": 67,
+        "text": "墨丘利秘典称，从今天开始苏天晴将成为魔法少女活跃于世。",
+        "predicate": "pred_will_become",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "text",
+              "text": "魔法少女"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_future",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d35",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d35中古书说明苏天晴将作为魔法少女活跃于世。"
+        }
+      },
+      {
+        "id": "fact_creator_tasks",
+        "at": 67,
+        "text": "墨丘利秘典称造物主给苏天晴量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+        "predicate": "pred_created_tasks_for",
+        "arguments": [
+          {
+            "role": "creator",
+            "value": {
+              "type": "ref",
+              "id": "ent_creator"
+            }
+          },
+          {
+            "role": "beneficiary",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "purpose",
+            "value": {
+              "type": "text",
+              "text": "帮助她逐步走上反派魔法少女的顶点"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_future",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_creator",
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d35",
+            "id_creator",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d35中古书说明造物主定制任务帮助苏天晴逐步走上反派顶点。"
+        }
+      },
+      {
+        "id": "fact_su_regrets",
+        "at": 70,
+        "text": "苏天晴突然有点后悔签订契约。",
+        "predicate": "pred_regrets",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "text",
+              "text": "签订契约并成为反派魔法少女"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d39",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d39为苏天晴突然有点后悔了。"
+        }
+      },
+      {
+        "id": "fact_su_fears",
+        "at": 69,
+        "text": "苏天晴认为魔法少女是死亡率高达90%的高危职业，并认为在王道故事里当反派是找死。",
+        "predicate": "pred_fears",
+        "arguments": [
+          {
+            "role": "subject",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "text",
+              "text": "魔法少女是死亡率高达90%的高危职业，在王道故事里当反派是找死"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d36",
+            "d38",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d36与d38中苏天晴质疑魔法少女高危并认为王道故事里当反派是找死。"
+        }
+      },
+      {
+        "id": "fact_book_bound",
+        "at": 73,
+        "text": "墨丘利秘典宣告绑定成功。",
+        "predicate": "pred_bound_to",
+        "arguments": [
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          },
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_book",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_book",
+          "id_su"
+        ],
+        "proof": {
+          "premises": [
+            "d42",
+            "id_book",
+            "id_su"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d42宣告“墨丘利秘典绑定成功。”"
+        }
+      },
+      {
+        "id": "fact_su_affirmed_contract",
+        "at": 59,
+        "text": "苏天晴回答“成立”，确认双方契约成立。",
+        "predicate": "pred_contract_established_between",
+        "arguments": [
+          {
+            "role": "party_a",
+            "value": {
+              "type": "ref",
+              "id": "ent_su"
+            }
+          },
+          {
+            "role": "party_b",
+            "value": {
+              "type": "ref",
+              "id": "ent_book"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "ent_su",
+          "opaque": true
+        },
+        "time": "time_present",
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_su",
+          "id_book"
+        ],
+        "proof": {
+          "premises": [
+            "d30",
+            "id_su",
+            "id_book"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "d30中苏天晴不假思索回答“成立。”"
+        }
+      }
+    ],
+    "arguments": [],
+    "access": [
+      {
+        "id": "access_su_heard_book_name",
+        "at": 30,
+        "holder": "ent_su",
+        "target": "fact_name_book",
+        "mode": "heard",
+        "evidence": [
+          "d13"
+        ]
+      },
+      {
+        "id": "access_su_heard_book_travel",
+        "at": 30,
+        "holder": "ent_su",
+        "target": "fact_book_traveled",
+        "mode": "heard",
+        "evidence": [
+          "d13"
+        ]
+      },
+      {
+        "id": "access_su_heard_suitable",
+        "at": 30,
+        "holder": "ent_su",
+        "target": "fact_su_suitable",
+        "mode": "heard",
+        "evidence": [
+          "d13"
+        ]
+      },
+      {
+        "id": "access_su_heard_offer",
+        "at": 44,
+        "holder": "ent_su",
+        "target": "fact_book_offered_contract",
+        "mode": "heard",
+        "evidence": [
+          "d21"
+        ]
+      },
+      {
+        "id": "access_su_heard_contract_role",
+        "at": 64,
+        "holder": "ent_su",
+        "target": "fact_contract_role",
+        "mode": "heard",
+        "evidence": [
+          "d33"
+        ]
+      },
+      {
+        "id": "access_su_heard_will_become",
+        "at": 67,
+        "holder": "ent_su",
+        "target": "fact_will_become_magical_girl",
+        "mode": "heard",
+        "evidence": [
+          "d35"
+        ]
+      },
+      {
+        "id": "access_su_heard_creator_tasks",
+        "at": 67,
+        "holder": "ent_su",
+        "target": "fact_creator_tasks",
+        "mode": "heard",
+        "evidence": [
+          "d35"
+        ]
+      },
+      {
+        "id": "access_su_heard_binding",
+        "at": 73,
+        "holder": "ent_su",
+        "target": "fact_book_bound",
+        "mode": "heard",
+        "evidence": [
+          "d42"
+        ]
+      },
+      {
+        "id": "access_su_heard_contract_established",
+        "at": 75,
+        "holder": "ent_su",
+        "target": "fact_contract_established",
+        "mode": "heard",
+        "evidence": [
+          "d44"
+        ]
+      },
+      {
+        "id": "access_book_heard_agreement",
+        "at": 45,
+        "holder": "ent_book",
+        "target": "fact_su_agreed_contract",
+        "mode": "heard",
+        "evidence": [
+          "d22"
+        ]
+      },
+      {
+        "id": "access_book_heard_affirm",
+        "at": 59,
+        "holder": "ent_book",
+        "target": "fact_su_affirmed_contract",
+        "mode": "heard",
+        "evidence": [
+          "d30"
+        ]
+      },
+      {
+        "id": "access_su_believes_reincarnated",
+        "at": 25,
+        "holder": "ent_su",
+        "target": "fact_su_believes_reincarnated",
+        "mode": "believed",
+        "evidence": [
+          "d10"
+        ]
+      }
+    ],
+    "episodes": [
+      {
+        "id": "episode_death_rebirth",
+        "at": 25,
+        "title": "苏天晴猝死与转生",
+        "summary": "苏天晴回忆自己在连续夜班后吃面时胸口一疼、眼前一黑昏死；醒来后处于金毛狐女身体中，并认为自己重生为该狐女。",
+        "scale": "event",
+        "participants": [
+          "ent_su",
+          "ent_greatgrandma",
+          "ent_fox_body"
+        ],
+        "materials": [
+          "d6",
+          "d7",
+          "d10",
+          "fact_su_death_memory",
+          "fact_su_believes_reincarnated",
+          "fact_su_inhabits_fox_body"
+        ],
+        "children": [],
+        "relations": [],
+        "time": "time_past",
+        "proof": {
+          "premises": [
+            "d6",
+            "d7",
+            "d10",
+            "fact_su_death_memory",
+            "fact_su_believes_reincarnated",
+            "fact_su_inhabits_fox_body"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "综合苏天晴死亡回忆、薅尾触感与重生认知，形成其猝死并转生到狐女身体的事件记录。"
+        }
+      },
+      {
+        "id": "episode_contract_with_book",
+        "at": 75,
+        "title": "与墨丘利秘典签订契约",
+        "summary": "墨丘利秘典认定苏天晴为最佳适格者，向她提出契约；苏天晴立即同意并确认成立。古书随后宣告反派魔法少女契约成立、绑定成功，并称造物主定制任务帮助她走向反派顶点。",
+        "scale": "sequence",
+        "participants": [
+          "ent_su",
+          "ent_book",
+          "ent_creator"
+        ],
+        "materials": [
+          "d13",
+          "d21",
+          "d22",
+          "d30",
+          "d33",
+          "d35",
+          "d42",
+          "d44",
+          "fact_su_suitable",
+          "fact_book_offered_contract",
+          "fact_su_agreed_contract",
+          "fact_su_affirmed_contract",
+          "fact_contract_role",
+          "fact_creator_tasks",
+          "fact_contract_established",
+          "fact_book_bound"
+        ],
+        "children": [],
+        "relations": [],
+        "time": "time_present",
+        "proof": {
+          "premises": [
+            "d13",
+            "d21",
+            "d22",
+            "d30",
+            "d33",
+            "d35",
+            "d42",
+            "d44",
+            "fact_su_suitable",
+            "fact_book_offered_contract",
+            "fact_su_agreed_contract",
+            "fact_su_affirmed_contract",
+            "fact_contract_role",
+            "fact_creator_tasks",
+            "fact_contract_established",
+            "fact_book_bound"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "综合古书认定适格者、提出契约、苏天晴同意、双方确认及绑定成功的披露，形成签订契约的事件记录。"
+        }
+      }
+    ],
+    "summaries": [
+      {
+        "id": "summary_su_identity",
+        "entity": "ent_su",
+        "facet": "身份与状态",
+        "items": [
+          {
+            "text": "苏天晴回忆自己是连续三个夜班后下班吃面时胸口一疼、眼前一黑昏死；她认为自己重生为一只金毛狐女，并能感受和移动该狐女身体。",
+            "refs": [
+              "d6",
+              "d10",
+              "d7",
+              "fact_su_inhabits_fox_body"
+            ]
+          },
+          {
+            "text": "墨丘利秘典向她提出契约，她立即同意并确认成立；古书宣告绑定成功、契约成立，并称契约角色为“反派魔法少女”。",
+            "refs": [
+              "d22",
+              "d30",
+              "d33",
+              "d42",
+              "d44",
+              "fact_contract_established"
+            ]
+          },
+          {
+            "text": "她后来对签订契约感到后悔，并担心在王道故事里当反派的危险。",
+            "refs": [
+              "d39",
+              "d36",
+              "d38",
+              "fact_su_regrets"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_su_relations",
+        "entity": "ent_su",
+        "facet": "关系",
+        "items": [
+          {
+            "text": "她回忆太奶是其长辈亲属，并在猝死前听到太奶在背后说话、见太奶坐在藤椅上编围巾。",
+            "refs": [
+              "d6",
+              "fact_greatgrandma_relative"
+            ]
+          },
+          {
+            "text": "她认为墨丘利秘典知道她并不是这副身体原来的主人。",
+            "refs": [
+              "d19",
+              "fact_su_believes_book_knows"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_book_identity",
+        "entity": "ent_book",
+        "facet": "身份与目的",
+        "items": [
+          {
+            "text": "墨丘利秘典自称从星空彼岸远行而来，寻找最优秀的适格者，并称苏天晴就是那个人。",
+            "refs": [
+              "d13",
+              "fact_book_traveled",
+              "fact_su_suitable"
+            ]
+          },
+          {
+            "text": "它向苏天晴提议契约；宣告绑定成功、契约成立，并称苏天晴将走上反派魔法少女道路、由造物主定制任务帮助她达到顶点。",
+            "refs": [
+              "d21",
+              "d35",
+              "d42",
+              "d44",
+              "fact_contract_established",
+              "fact_creator_tasks"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_fox_body",
+        "entity": "ent_fox_body",
+        "facet": "外观与归属",
+        "items": [
+          {
+            "text": "该身体是娇小的金毛狐女，有金色长发、毛茸茸耳朵、白皙肌肤与炸毛大尾巴。",
+            "refs": [
+              "d3",
+              "fact_fox_body_appearance"
+            ]
+          },
+          {
+            "text": "苏天晴能感受并移动该身体，并认为它原本属于另一主人；原主人身份未知。",
+            "refs": [
+              "d7",
+              "d19",
+              "fact_body_original_owner"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_original_owner",
+        "entity": "ent_original_owner",
+        "facet": "身份",
+        "items": [
+          {
+            "text": "苏天晴认为这副金毛狐女身体原本有主人，她并非原主人；原主人的姓名、身份与去向均未揭示。",
+            "refs": [
+              "d19",
+              "fact_body_original_owner",
+              "fact_su_not_original_owner"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_creator",
+        "entity": "ent_creator",
+        "facet": "提及",
+        "items": [
+          {
+            "text": "墨丘利秘典称造物主给苏天晴量身定制了一整套任务，能帮助她逐步走上反派魔法少女的顶点。",
+            "refs": [
+              "d35",
+              "fact_creator_tasks"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "summary_greatgrandma",
+        "entity": "ent_greatgrandma",
+        "facet": "回忆中",
+        "items": [
+          {
+            "text": "苏天晴回忆猝死前听到太奶在背后说话，回头见太奶坐在藤椅上悠闲编着围巾。",
+            "refs": [
+              "d6",
+              "fact_su_heard_greatgrandma"
+            ]
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "原金毛狐女身体的原主人身份、姓名、去向均未揭示。",
+      "造物主的身份、是否真实存在及其与墨丘利秘典的关系未确定。",
+      "墨丘利秘典与苏天晴契约的具体条款、任务内容、反派魔法少女体系与所谓“顶点”未展开。",
+      "苏天晴原世界的死亡原因未由可靠叙述确认为急性心肌梗死；太奶在猝死前出现是真实还是幻觉未知。",
+      "章末脑中宣告绑定成功、契约成立的声音与古书是否为同一来源，文本未明确区分。",
+      "苏天晴是否仍能反悔或返回原来的身体未知。"
+    ]
+  }
+}

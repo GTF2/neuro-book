@@ -1,0 +1,735 @@
+{
+  "judgments": [
+    {
+      "id": "material:su",
+      "verdict": "passed",
+      "note": "su在p5自报姓名并在本章持续作为苏天晴出现，建模正确。"
+    },
+    {
+      "id": "material:book",
+      "verdict": "passed",
+      "note": "book指称黑色古书/墨丘利秘典，贯穿p7-p76，建模正确。"
+    },
+    {
+      "id": "material:fox_body",
+      "verdict": "passed",
+      "note": "fox_body指苏天晴镜中看到的金毛狐女身体，p7-p34可支持。"
+    },
+    {
+      "id": "material:greatgrandma",
+      "verdict": "passed",
+      "note": "greatgrandma在p15回忆中出现，作为太奶人物指称。"
+    },
+    {
+      "id": "material:original_owner",
+      "verdict": "passed",
+      "note": "original_owner由p40“这副身体原来的主人”指称，未揭示身份，建模为unresolved合适。"
+    },
+    {
+      "id": "material:creator",
+      "verdict": "passed",
+      "note": "creator由p66“造物主”指称，身份未明，建模合适。"
+    },
+    {
+      "id": "material:system_voice",
+      "verdict": "passed",
+      "note": "system_voice由p74“脑子里响起的声音”指称，并连接p75-p76系统发言。"
+    },
+    {
+      "id": "material:d0",
+      "verdict": "passed",
+      "note": "p2作者声明角色均已满18岁，记录为author assertion且about空，符合原文。"
+    },
+    {
+      "id": "material:d_ask_name",
+      "verdict": "passed",
+      "note": "p4有声音询问姓名，未明说话者，记录为voice question且holder null合适。"
+    },
+    {
+      "id": "material:d_answer_name",
+      "verdict": "passed",
+      "note": "p5苏天晴回答姓名，记录为speech assertion holder su，符合原文。"
+    },
+    {
+      "id": "material:d_heard_name",
+      "verdict": "passed",
+      "note": "d_heard_name依据p4询问和p30称“苏天晴小姐”推断墨丘利秘典听到姓名，证据充分。"
+    },
+    {
+      "id": "material:d2",
+      "verdict": "passed",
+      "note": "p6昏暗房间传出女声与低沉言语，narrator assertion记录正确。"
+    },
+    {
+      "id": "material:d3",
+      "verdict": "passed",
+      "note": "p7-p11描写苏天晴看古书、镜中金毛狐女外貌，记录正确。"
+    },
+    {
+      "id": "material:d4",
+      "verdict": "passed",
+      "note": "p12-p13古书低语并拉回苏天晴注意，归属book，符合。"
+    },
+    {
+      "id": "material:d5",
+      "verdict": "passed",
+      "note": "p14苏天晴茫然，记录为su thought assertion，符合。"
+    },
+    {
+      "id": "material:d6",
+      "verdict": "passed",
+      "note": "p15回忆下班吃面、听到太奶、胸口疼昏死，归属narrator，符合。"
+    },
+    {
+      "id": "material:d7",
+      "verdict": "passed",
+      "note": "p16-p17苏天晴薅自己尾巴并感受触感，记录正确。"
+    },
+    {
+      "id": "material:d8",
+      "verdict": "passed",
+      "note": "p18“好真实的触感！”为苏天晴内心感叹，记录为su thought，合适。"
+    },
+    {
+      "id": "material:d9",
+      "verdict": "passed",
+      "note": "p19-p21古书问“你干嘛呢”并想不疼吗，归属book，符合。"
+    },
+    {
+      "id": "material:d10",
+      "verdict": "passed",
+      "note": "p22-p23苏天晴干咳并阻止古书继续说话，记录为speech request，符合。"
+    },
+    {
+      "id": "material:d11",
+      "verdict": "passed",
+      "note": "p24-p25苏天晴心想重生为金毛狐女，记录为su thought assertion，符合。"
+    },
+    {
+      "id": "material:d12",
+      "verdict": "passed",
+      "note": "p26苏天晴心想黑书怎么回事，记录为su thought question，符合。"
+    },
+    {
+      "id": "material:d13",
+      "verdict": "passed",
+      "note": "p27苏天晴问“你是谁？”，记录为speech question，符合。"
+    },
+    {
+      "id": "material:d14",
+      "verdict": "passed",
+      "note": "p28-p30古书自称墨丘利秘典并指名苏天晴，归属book assertion，符合。"
+    },
+    {
+      "id": "material:d15",
+      "verdict": "passed",
+      "note": "p31苏天晴听完中二台词沉默思索，记录为su thought，符合。"
+    },
+    {
+      "id": "material:d16",
+      "verdict": "passed",
+      "note": "p32-p34狐狐照镜、欣赏小脚并觉完美绝品，记录为su thought，符合。"
+    },
+    {
+      "id": "material:d17",
+      "verdict": "passed",
+      "note": "p35-p36古书说“看来你对现在的身体很满意嘛”，归属book，符合。"
+    },
+    {
+      "id": "material:d18",
+      "verdict": "passed",
+      "note": "p37古书问为何盯着脚看，归属book question，符合。"
+    },
+    {
+      "id": "material:d19",
+      "verdict": "passed",
+      "note": "p38苏天晴回答小脚是瑰宝，记录为su speech assertion，符合。"
+    },
+    {
+      "id": "material:d20",
+      "verdict": "passed",
+      "note": "p39-p40苏天晴心中推测古书知道自己不是原主，记录为su belief，符合。"
+    },
+    {
+      "id": "material:d21",
+      "verdict": "passed",
+      "note": "p41-p42古书提议快进下一步，苏天晴被唤回，记录为book plan，符合。"
+    },
+    {
+      "id": "material:d22",
+      "verdict": "passed",
+      "note": "p43-p44古书邀苏天晴签约并自称星界使者，记录为book request，符合。"
+    },
+    {
+      "id": "material:d23",
+      "verdict": "passed",
+      "note": "p45苏天晴说“好，我签”，记录为su promise，符合。"
+    },
+    {
+      "id": "material:d24",
+      "verdict": "passed",
+      "note": "p46-p48古书惊讶她不按套路，记录为book question，符合。"
+    },
+    {
+      "id": "material:d25",
+      "verdict": "passed",
+      "note": "p49苏天晴称其为小破书，记录为su speech assertion，符合。"
+    },
+    {
+      "id": "material:d26",
+      "verdict": "passed",
+      "note": "p50苏天晴问最通用愿望是哪两个，记录为su question，符合。"
+    },
+    {
+      "id": "material:d27",
+      "verdict": "passed",
+      "note": "p51古书反问哪两个，记录为book question，符合。"
+    },
+    {
+      "id": "material:d28",
+      "verdict": "passed",
+      "note": "p52-p55苏天晴说财富与变萝莉是通用愿望，记录为su speech assertion，符合。"
+    },
+    {
+      "id": "material:d29",
+      "verdict": "passed",
+      "note": "p56-p57沉默后古书把话题拖回正题，记录为narrator assertion，符合。"
+    },
+    {
+      "id": "material:d30",
+      "verdict": "passed",
+      "note": "p58古书问契约是否算成立，记录为book question，符合。"
+    },
+    {
+      "id": "material:d31",
+      "verdict": "passed",
+      "note": "p59苏天晴答“成立”，记录为su speech assertion，符合。"
+    },
+    {
+      "id": "material:d32",
+      "verdict": "passed",
+      "note": "p60-p61苏天晴问契约具体内容，记录为su question，符合。"
+    },
+    {
+      "id": "material:d33",
+      "verdict": "passed",
+      "note": "p62苏天晴心想不会是奴隶契约，记录为su conjecture，符合。"
+    },
+    {
+      "id": "material:d34",
+      "verdict": "passed",
+      "note": "p63-p64古书答“反派魔法少女”，记录为book assertion，符合。"
+    },
+    {
+      "id": "material:d35",
+      "verdict": "passed",
+      "note": "p65苏天晴说“啊？”，记录为su question，符合原文反应。"
+    },
+    {
+      "id": "material:d36",
+      "verdict": "passed",
+      "note": "p66古书说明将成为魔法少女、造物主定制任务，记录为book assertion，符合。"
+    },
+    {
+      "id": "material:d37",
+      "verdict": "passed",
+      "note": "p67苏天晴问魔法少女是否死亡率90%高危职业，记录为su question，符合。"
+    },
+    {
+      "id": "material:d38",
+      "verdict": "passed",
+      "note": "p68古书答是王道系那种，记录为book assertion，符合。"
+    },
+    {
+      "id": "material:d39",
+      "verdict": "passed",
+      "note": "p69苏天晴反问在王道故事当反派是找死，记录为su question，符合。"
+    },
+    {
+      "id": "material:d40",
+      "verdict": "passed",
+      "note": "p70苏天晴突然有点后悔，记录为su thought assertion，符合。"
+    },
+    {
+      "id": "material:d41",
+      "verdict": "passed",
+      "note": "p71苏天晴思考王道系反派难敌主角，记录为su thought assertion，符合。"
+    },
+    {
+      "id": "material:d42",
+      "verdict": "passed",
+      "note": "p72苏天晴心想能否反悔回原身体，记录为su thought question，符合。"
+    },
+    {
+      "id": "material:d43",
+      "verdict": "passed",
+      "note": "p73系统/脑中声音宣告墨丘利秘典绑定成功，记录为in-world-system，符合。"
+    },
+    {
+      "id": "material:d44",
+      "verdict": "passed",
+      "note": "p74脑中声音让苏天晴欲哭无泪，记录为narrator assertion，符合。"
+    },
+    {
+      "id": "material:d45",
+      "verdict": "passed",
+      "note": "p75系统宣告契约成立，记录为in-world-system，符合。"
+    },
+    {
+      "id": "material:d46",
+      "verdict": "passed",
+      "note": "p76系统指示走上反派魔法少女道路，记录为in-world-system request，符合。"
+    },
+    {
+      "id": "material:b1",
+      "verdict": "passed",
+      "note": "p1-p3为标题、免责声明与分隔线，paratext归属正确。"
+    },
+    {
+      "id": "material:b2",
+      "verdict": "passed",
+      "note": "p4-p6组合问名与房间声响，about su合理。"
+    },
+    {
+      "id": "material:b3",
+      "verdict": "passed",
+      "note": "p7-p11描写苏天晴看黑书与镜中狐女外貌，about正确。"
+    },
+    {
+      "id": "material:b4",
+      "verdict": "passed",
+      "note": "p12-p14古书低语与苏天晴茫然，about正确。"
+    },
+    {
+      "id": "material:b5",
+      "verdict": "passed",
+      "note": "p15-p18回忆猝死并薅尾感受触感，about正确。"
+    },
+    {
+      "id": "material:b6",
+      "verdict": "passed",
+      "note": "p19-p21古书问薅尾并想不疼吗，about正确。"
+    },
+    {
+      "id": "material:b7",
+      "verdict": "passed",
+      "note": "p22-p27苏天晴理清重生并问古书是谁，about正确。"
+    },
+    {
+      "id": "material:b8",
+      "verdict": "passed",
+      "note": "p28-p31古书重复开场白并指名苏天晴，about正确。"
+    },
+    {
+      "id": "material:b9",
+      "verdict": "passed",
+      "note": "p32-p38照镜赏脚与古书评论，about正确。"
+    },
+    {
+      "id": "material:b10",
+      "verdict": "passed",
+      "note": "p39-p42苏天晴心中推测古书知原主，古书提议下一步，about正确。"
+    },
+    {
+      "id": "material:b11",
+      "verdict": "passed",
+      "note": "p43-p48古书邀约与苏天晴立刻答应，about正确。"
+    },
+    {
+      "id": "material:b12",
+      "verdict": "passed",
+      "note": "p49-p55苏天晴谈通用愿望与狐狐奖励，about正确。"
+    },
+    {
+      "id": "material:b13",
+      "verdict": "passed",
+      "note": "p56-p59古书确认、苏天晴答成立，about正确。"
+    },
+    {
+      "id": "material:b14",
+      "verdict": "passed",
+      "note": "p60-p65询问契约内容并得答复反派魔法少女，about正确。"
+    },
+    {
+      "id": "material:b15",
+      "verdict": "passed",
+      "note": "p66-p69造物主任务、王道系问答，about正确。"
+    },
+    {
+      "id": "material:b16",
+      "verdict": "passed",
+      "note": "p70-p72苏天晴后悔并想回原身体，about正确。"
+    },
+    {
+      "id": "material:b17",
+      "verdict": "passed",
+      "note": "p73-p76系统宣告绑定成功、契约成立并指示，about正确。"
+    },
+    {
+      "id": "semantic:contract",
+      "verdict": "passed",
+      "note": "contract在p44、58、61、66、75作为契约对象出现，指称正确。"
+    },
+    {
+      "id": "semantic:ent_su",
+      "verdict": "passed",
+      "note": "ent_su对应苏天晴这一持续人物，类别person正确。"
+    },
+    {
+      "id": "semantic:ent_book",
+      "verdict": "passed",
+      "note": "ent_book对应黑色古书/墨丘利秘典，类别artifact正确。"
+    },
+    {
+      "id": "semantic:ent_fox_body",
+      "verdict": "passed",
+      "note": "ent_fox_body对应苏天晴当前金毛狐女身体，类别body正确。"
+    },
+    {
+      "id": "semantic:ent_greatgrandma",
+      "verdict": "passed",
+      "note": "ent_greatgrandma对应p15太奶，类别person正确。"
+    },
+    {
+      "id": "semantic:ent_original_owner",
+      "verdict": "passed",
+      "note": "ent_original_owner是p40未知原主，类别unresolved正确。"
+    },
+    {
+      "id": "semantic:ent_creator",
+      "verdict": "passed",
+      "note": "ent_creator是p66古书提及的造物主，身份未明，类别unknown正确。"
+    },
+    {
+      "id": "semantic:ent_system_voice",
+      "verdict": "passed",
+      "note": "ent_system_voice对应p74脑中声音，类别unknown正确。"
+    },
+    {
+      "id": "semantic:ent_contract",
+      "verdict": "passed",
+      "note": "ent_contract对应持续契约协议，类别agreement正确。"
+    },
+    {
+      "id": "semantic:id_su",
+      "verdict": "passed",
+      "note": "p5自报姓名可确认su为苏天晴，identity accepted正确。"
+    },
+    {
+      "id": "semantic:id_book",
+      "verdict": "passed",
+      "note": "p7-p11黑色古书与p29自称墨丘利秘典可确认book同一，accepted正确。"
+    },
+    {
+      "id": "semantic:id_fox_body",
+      "verdict": "passed",
+      "note": "p7-p11镜中金毛狐女与苏天晴当前身体同一，accepted正确。"
+    },
+    {
+      "id": "semantic:id_greatgrandma",
+      "verdict": "passed",
+      "note": "p15太奶作为回忆人物，identity accepted正确。"
+    },
+    {
+      "id": "semantic:id_original_owner",
+      "verdict": "passed",
+      "note": "p40“原来的主人”身份未明，映射ent_original_owner，accepted正确。"
+    },
+    {
+      "id": "semantic:id_creator",
+      "verdict": "passed",
+      "note": "p66“造物主”指称持续未知存在，映射ent_creator，accepted正确。"
+    },
+    {
+      "id": "semantic:id_system_voice",
+      "verdict": "passed",
+      "note": "p74脑中声音连接p75-p76发话，映射ent_system_voice，accepted正确。"
+    },
+    {
+      "id": "semantic:id_contract",
+      "verdict": "passed",
+      "note": "p44提出的契约作为持续协议对象，映射ent_contract，accepted正确。"
+    },
+    {
+      "id": "semantic:pred_states_name",
+      "verdict": "passed",
+      "note": "states_name角色含speaker/addressee/name，适用p5自报姓名。"
+    },
+    {
+      "id": "semantic:pred_asks",
+      "verdict": "passed",
+      "note": "asks角色含speaker/addressee/content，适用于本章多个问句。"
+    },
+    {
+      "id": "semantic:pred_says",
+      "verdict": "passed",
+      "note": "says角色定义清晰，虽未单独用于本章事实，无碍。"
+    },
+    {
+      "id": "semantic:pred_reborn_as",
+      "verdict": "passed",
+      "note": "reborn_as定义某意识/存在重生为某身体，适用p24-p25苏天晴信念。"
+    },
+    {
+      "id": "semantic:pred_self_introduces",
+      "verdict": "passed",
+      "note": "self_introduces含speaker/name/origin/purpose，适用p29-p30古书自介。"
+    },
+    {
+      "id": "semantic:pred_offers_contract",
+      "verdict": "passed",
+      "note": "offers_contract含speaker/addressee/content，适用p43-p44邀约。"
+    },
+    {
+      "id": "semantic:pred_agrees_to_contract",
+      "verdict": "passed",
+      "note": "agrees_to_contract含person/other/agreement，适用p45/p59同意。"
+    },
+    {
+      "id": "semantic:pred_asks_contract_content",
+      "verdict": "passed",
+      "note": "asks_contract_content适用p60-p61询问契约内容。"
+    },
+    {
+      "id": "semantic:pred_states_contract_content",
+      "verdict": "passed",
+      "note": "states_contract_content适用p63-p64答“反派魔法少女”。"
+    },
+    {
+      "id": "semantic:pred_assigns_role",
+      "verdict": "passed",
+      "note": "assigns_role含role/task_source，适用p66造物主定制任务宣告。"
+    },
+    {
+      "id": "semantic:pred_questions_risk",
+      "verdict": "passed",
+      "note": "questions_risk适用p67追问魔法少女高危职业。"
+    },
+    {
+      "id": "semantic:pred_says_system_type",
+      "verdict": "passed",
+      "note": "says_system_type适用p68答“王道系”。"
+    },
+    {
+      "id": "semantic:pred_regrets",
+      "verdict": "passed",
+      "note": "regrets含person/reason，适用p70-p72后悔与思考。"
+    },
+    {
+      "id": "semantic:pred_system_notifies",
+      "verdict": "passed",
+      "note": "system_notifies含announcer/target/content，适用p73绑定宣告。"
+    },
+    {
+      "id": "semantic:pred_system_instructs",
+      "verdict": "passed",
+      "note": "system_instructs含announcer/addressee/content，适用p75-p76系统指示。"
+    },
+    {
+      "id": "semantic:pred_knows_not_original",
+      "verdict": "passed",
+      "note": "knows_not_original含holder/book/body/original_owner，适用p39-p40苏天晴推测。"
+    },
+    {
+      "id": "semantic:f_su_reborn",
+      "verdict": "passed",
+      "note": "以belief隐晦记录苏天晴自认重生为狐女，未把重生写成世界事实，支持充分。"
+    },
+    {
+      "id": "semantic:f_book_asks_name",
+      "verdict": "passed",
+      "note": "书问名由p4询问和p30称名共同支持，speaker/addressee建模合理。"
+    },
+    {
+      "id": "semantic:f_su_name_speech",
+      "verdict": "passed",
+      "note": "p5苏天晴答名，p30古书称其名，addressee为book，支持充分。"
+    },
+    {
+      "id": "semantic:f_book_identifies_self",
+      "verdict": "passed",
+      "note": "p29-p30古书自称墨丘利秘典并点名苏天晴，opaque speech记录正确。"
+    },
+    {
+      "id": "semantic:f_book_knows_not_original",
+      "verdict": "passed",
+      "note": "p39-p40仅为苏天晴心中推测古书知原主，belief holder su记录正确。"
+    },
+    {
+      "id": "semantic:f_book_offers_contract",
+      "verdict": "passed",
+      "note": "p43-p44古书邀约内容完整，addressee su正确。"
+    },
+    {
+      "id": "semantic:f_su_agrees_contract",
+      "verdict": "passed",
+      "note": "p45“好，我签”与p59“成立”共同支持同意契约，记录正确。"
+    },
+    {
+      "id": "semantic:f_su_asks_contract_content",
+      "verdict": "passed",
+      "note": "p60-p61苏天晴问契约内容，addressee book正确。"
+    },
+    {
+      "id": "semantic:f_book_states_contract_content",
+      "verdict": "passed",
+      "note": "p63-p64古书答“反派魔法少女”，speech opaque记录正确。"
+    },
+    {
+      "id": "semantic:f_book_assigns_role",
+      "verdict": "passed",
+      "note": "p66古书称造物主定制任务并指向反派魔法少女，task_source creator正确。"
+    },
+    {
+      "id": "semantic:f_su_questions_risk",
+      "verdict": "passed",
+      "note": "p67苏天晴问死亡率90%高危职业，记录为speech question正确。"
+    },
+    {
+      "id": "semantic:f_book_says_system_type",
+      "verdict": "passed",
+      "note": "p68古书答“王道系的那种”，归属book speech正确。"
+    },
+    {
+      "id": "semantic:f_su_regrets",
+      "verdict": "passed",
+      "note": "p70-p72后悔、思考王道系并想反悔回原身体，belief聚合合理。"
+    },
+    {
+      "id": "semantic:f_system_notifies",
+      "verdict": "passed",
+      "note": "p73-p74系统声音宣告绑定成功，target su合理。"
+    },
+    {
+      "id": "semantic:f_system_instructs",
+      "verdict": "passed",
+      "note": "p75-p76系统宣告契约成立并指示反派魔法少女道路，记录正确。"
+    },
+    {
+      "id": "semantic:a_book_heard_name",
+      "verdict": "passed",
+      "note": "book听到苏天晴自报姓名，指向f_su_name_speech，修复了此前的知情关系缺失。"
+    },
+    {
+      "id": "semantic:a_su_believes_reborn",
+      "verdict": "passed",
+      "note": "su相信f_su_reborn，mode believed正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_book_intro",
+      "verdict": "passed",
+      "note": "su听到古书自介，指向f_book_identifies_self，mode heard正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_book_offer",
+      "verdict": "passed",
+      "note": "su听到签约邀约，指向f_book_offers_contract，正确。"
+    },
+    {
+      "id": "semantic:a_book_heard_su_agreement",
+      "verdict": "passed",
+      "note": "book听到苏天晴同意契约，指向f_su_agrees_contract，正确。"
+    },
+    {
+      "id": "semantic:a_book_heard_su_question",
+      "verdict": "passed",
+      "note": "book听到苏天晴问契约内容，指向f_su_asks_contract_content，正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_contract_content",
+      "verdict": "passed",
+      "note": "su听到契约内容“反派魔法少女”，指向f_book_states_contract_content，正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_role_assignment",
+      "verdict": "passed",
+      "note": "su听到角色与造物主任命，指向f_book_assigns_role，正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_system_type",
+      "verdict": "passed",
+      "note": "su听到“王道系”回答，指向f_book_says_system_type，正确。"
+    },
+    {
+      "id": "semantic:a_su_believes_book_knows_not_original",
+      "verdict": "passed",
+      "note": "su相信古书知原主，指向f_book_knows_not_original，正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_system_binding",
+      "verdict": "passed",
+      "note": "su听到系统绑定宣告，指向f_system_notifies，正确。"
+    },
+    {
+      "id": "semantic:a_su_heard_system_instruction",
+      "verdict": "passed",
+      "note": "su听到系统契约成立与路线指示，指向f_system_instructs，正确。"
+    },
+    {
+      "id": "semantic:ep_rebirth",
+      "verdict": "passed",
+      "note": "p15回忆与p24-p25重生信念聚合，participants和时间定位合理。"
+    },
+    {
+      "id": "semantic:ep_body_discovery",
+      "verdict": "passed",
+      "note": "p7-p17外貌与薅尾、p32-p34赏脚聚合为身体发现检查，合理。"
+    },
+    {
+      "id": "semantic:ep_book_arrival",
+      "verdict": "passed",
+      "note": "p28-p30古书自称与指名聚合为事件，合理。"
+    },
+    {
+      "id": "semantic:ep_contract",
+      "verdict": "passed",
+      "note": "p43-p76邀约、同意、揭示内容、任务说明与系统宣告聚合为签约序列，来源归属清楚。"
+    },
+    {
+      "id": "semantic:ep_system_binding",
+      "verdict": "passed",
+      "note": "p73-p76系统绑定、契约成立与路线指示聚合为事件，合理。"
+    },
+    {
+      "id": "semantic:sum_su",
+      "verdict": "passed",
+      "note": "苏天晴身份、处境、签约与后悔均按refs归属，保留古书与系统发言来源。"
+    },
+    {
+      "id": "semantic:sum_fox_body",
+      "verdict": "passed",
+      "note": "狐女外貌、睡裙小脚与狐狐奖励按refs记录，先前睡裙引用错误已修复。"
+    },
+    {
+      "id": "semantic:sum_book",
+      "verdict": "passed",
+      "note": "古书自介、邀约、契约内容和绑定宣告按refs记录，未把系统声音误归为古书发言。"
+    },
+    {
+      "id": "semantic:sum_system_voice",
+      "verdict": "passed",
+      "note": "系统绑定与契约成立/路线指示按refs记录，保留声音归属。"
+    },
+    {
+      "id": "semantic:sum_original_owner",
+      "verdict": "passed",
+      "note": "仅记录苏天晴推测古书知原主，refs d20，未升级为世界事实。"
+    },
+    {
+      "id": "semantic:sum_greatgrandma",
+      "verdict": "passed",
+      "note": "太奶仅在p15回忆中出现，记录准确。"
+    },
+    {
+      "id": "semantic:sum_creator",
+      "verdict": "passed",
+      "note": "造物主任务仅作为古书宣称记录，refs d36，未写成事实。"
+    },
+    {
+      "id": "semantic:sum_contract",
+      "verdict": "passed",
+      "note": "契约邀约、同意、内容与系统成立宣告按refs记录，归属清楚。"
+    }
+  ],
+  "missing": []
+}

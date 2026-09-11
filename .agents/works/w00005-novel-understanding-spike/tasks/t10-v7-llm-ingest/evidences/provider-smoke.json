@@ -1,0 +1,17 @@
+{
+  "purpose": "Explicit deepseek-flash connectivity and JSON response check",
+  "date": "2026-09-10",
+  "requestedModel": "deepseek-flash",
+  "actualModel": "deepseek-flash",
+  "thinking": "disabled",
+  "maxTokens": 128,
+  "finishReason": "stop",
+  "responseId": "0b418a8b-930c-428e-9dc8-7036d25ba961",
+  "systemFingerprint": "aeb56401ca74e127821c4f9126dcb669",
+  "content": {"ok": true, "format": "json"},
+  "usage": {"inputTokens": 56, "outputTokens": 9, "cacheHitTokens": 0, "cacheMissTokens": 56},
+  "durationMs": 414,
+  "containsNovelData": false,
+  "category": "development",
+  "note": "This connection check is separate from production chapter ingestion and its cost extrapolation. No credential or request header is persisted."
+}

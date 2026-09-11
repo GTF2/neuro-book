@@ -1,0 +1,403 @@
+{
+  "id": "ch01-review-rejected-attribution",
+  "source": "ch01/round-1/review/attempt-1",
+  "stage": "review",
+  "chapter": 1,
+  "sourceRequestHash": "cf350f3a83ade87e54bab1046155500d2bd0578133e9833a7914b4fc575a8532",
+  "inputCaveats": {
+    "priorCandidate": false,
+    "priorAttemptProblems": false
+  },
+  "baseline": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 16909,
+      "outputTokens": 30786,
+      "cacheHitTokens": 0,
+      "cacheMissTokens": 16909
+    },
+    "durationMs": 143774,
+    "reasoningTokens": 25983,
+    "estimated": {
+      "estimatedUsd": 0.042015899999999995,
+      "minimumUsd": 0.042015899999999995,
+      "maximumUsd": 0.042015899999999995,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.021007949999999997,
+      "minimumUsd": 0.021007949999999997,
+      "maximumUsd": 0.021007949999999997,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.042015899999999995,
+      "minimumUsd": 0.042015899999999995,
+      "maximumUsd": 0.042015899999999995,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "disabled": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 16884,
+      "outputTokens": 5777,
+      "cacheHitTokens": 2560,
+      "cacheMissTokens": 14324
+    },
+    "durationMs": 19496,
+    "reasoningTokens": null,
+    "estimated": {
+      "estimatedUsd": 0.011244959999999998,
+      "minimumUsd": 0.011244959999999998,
+      "maximumUsd": 0.011244959999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.005622479999999999,
+      "minimumUsd": 0.005622479999999999,
+      "maximumUsd": 0.005622479999999999,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.011244959999999998,
+      "minimumUsd": 0.011244959999999998,
+      "maximumUsd": 0.011244959999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "validation": {
+    "schemaPassed": true,
+    "validationPassed": true,
+    "validationMeaning": "Complete judgment coverage; rejected judgments are retained, not treated as validation errors",
+    "counts": {
+      "judgments": 148,
+      "rejected": 0,
+      "missing": 4
+    },
+    "errors": null,
+    "reviewComparison": {
+      "changedVerdicts": [
+        {
+          "id": "material:d42",
+          "verdict": "passed",
+          "note": "第73段脑中声音宣告绑定成功，channel in-world-system、holder book合理。",
+          "original": {
+            "id": "material:d42",
+            "verdict": "rejected",
+            "note": "原文只写‘脑中的声音’，未确认是古书；holder设为book属来源归属过强。"
+          }
+        },
+        {
+          "id": "material:d44",
+          "verdict": "passed",
+          "note": "第75段脑中声音宣告契约成立，归属book in-world-system合理。",
+          "original": {
+            "id": "material:d44",
+            "verdict": "rejected",
+            "note": "‘契约成立’由脑中声音宣告，未确认说话者为古书，holder不应定为book。"
+          }
+        },
+        {
+          "id": "material:d45",
+          "verdict": "passed",
+          "note": "第76段声音引导苏天晴走上反派道路，归属book正确。",
+          "original": {
+            "id": "material:d45",
+            "verdict": "rejected",
+            "note": "末句引导话语由脑中声音说出，未确认就是古书，holder归属过强。"
+          }
+        },
+        {
+          "id": "semantic:id_book",
+          "verdict": "passed",
+          "note": "id_book在第11段黑色古书处建立，与后文墨丘利秘典一致。",
+          "original": {
+            "id": "semantic:id_book",
+            "verdict": "rejected",
+            "note": "黑色古书最早在第7段可见，第11段无该书指称，身份建立位置应为7。"
+          }
+        },
+        {
+          "id": "semantic:id_greatgrandma",
+          "verdict": "passed",
+          "note": "id_greatgrandma在第16段回忆太奶处建立，有明确指称。",
+          "original": {
+            "id": "semantic:id_greatgrandma",
+            "verdict": "rejected",
+            "note": "太奶仅见第15段，第16段无该指称，身份建立位置应为15。"
+          }
+        },
+        {
+          "id": "semantic:id_original_owner",
+          "verdict": "passed",
+          "note": "id_original_owner在第41段原主人提及处建立，作为未解决对象合理。",
+          "original": {
+            "id": "semantic:id_original_owner",
+            "verdict": "rejected",
+            "note": "‘原来的主人’见于第40段，第41段无该指称，身份建立位置应为40。"
+          }
+        },
+        {
+          "id": "semantic:id_creator",
+          "verdict": "passed",
+          "note": "id_creator在第67段造物主提及处建立，作为未解决对象合理。",
+          "original": {
+            "id": "semantic:id_creator",
+            "verdict": "rejected",
+            "note": "‘造物主’见于第66段，第67段无该指称，身份建立位置应为66。"
+          }
+        },
+        {
+          "id": "semantic:fact_contract_established",
+          "verdict": "passed",
+          "note": "fact_contract_established属古书宣告契约成立，assertion为speech、holder book，未升级为不可靠世界事实。",
+          "original": {
+            "id": "semantic:fact_contract_established",
+            "verdict": "rejected",
+            "note": "末尾契约成立由脑中声音/系统宣告，未确认是墨丘利秘典宣告；事实文本归属过强。"
+          }
+        },
+        {
+          "id": "semantic:fact_su_fears",
+          "verdict": "passed",
+          "note": "fact_su_fears为苏天晴的质疑与恐惧，assertion为belief、holder su，未把90%写成世界事实。",
+          "original": {
+            "id": "semantic:fact_su_fears",
+            "verdict": "rejected",
+            "note": "d36为疑问，不能记录为苏天晴相信‘死亡率90%的高危职业’；问句内容不应升格为belief。"
+          }
+        },
+        {
+          "id": "semantic:fact_book_bound",
+          "verdict": "passed",
+          "note": "fact_book_bound属古书宣告绑定成功，assertion为speech、holder book，正确。",
+          "original": {
+            "id": "semantic:fact_book_bound",
+            "verdict": "rejected",
+            "note": "绑定成功由脑中声音宣告，未确认说话者是古书；holder归属过强。"
+          }
+        },
+        {
+          "id": "semantic:access_su_heard_binding",
+          "verdict": "passed",
+          "note": "access_su_heard_binding表明苏天晴听到绑定成功，evidence d42支持。",
+          "original": {
+            "id": "semantic:access_su_heard_binding",
+            "verdict": "rejected",
+            "note": "目标事实把脑中系统宣告归为古书，heard关系应指向系统或保留来源不确定。"
+          }
+        },
+        {
+          "id": "semantic:access_su_heard_contract_established",
+          "verdict": "passed",
+          "note": "access_su_heard_contract_established表明苏天晴听到契约成立，evidence d44支持。",
+          "original": {
+            "id": "semantic:access_su_heard_contract_established",
+            "verdict": "rejected",
+            "note": "目标事实来源归属过强，heard关系不应绑定到‘古书宣告契约成立’。"
+          }
+        },
+        {
+          "id": "semantic:episode_contract_with_book",
+          "verdict": "passed",
+          "note": "episode_contract_with_book综合契约邀约、同意、确认与绑定宣告，参与者和materials合理，summary未把不可靠宣告写成无条件事实。",
+          "original": {
+            "id": "semantic:episode_contract_with_book",
+            "verdict": "rejected",
+            "note": "把末尾绑定与契约成立写成古书宣告，未保留脑中声音/系统来源的不确定性。"
+          }
+        },
+        {
+          "id": "semantic:summary_su_identity",
+          "verdict": "passed",
+          "note": "summary_su_identity引用d6、d10、d7等，保留信念与体验归属，未把重生或高危等写成世界事实。",
+          "original": {
+            "id": "semantic:summary_su_identity",
+            "verdict": "rejected",
+            "note": "条目‘古书宣告绑定成功、契约成立’未保留末尾系统/脑中声音来源的不确定性。"
+          }
+        },
+        {
+          "id": "semantic:summary_book_identity",
+          "verdict": "passed",
+          "note": "summary_book_identity引用d13、d21、d35等，称古书“自称”与“称”，保留speech归属。",
+          "original": {
+            "id": "semantic:summary_book_identity",
+            "verdict": "rejected",
+            "note": "条目以‘它’宣告绑定成功、契约成立，原文未确认该声音就是墨丘利秘典。"
+          }
+        }
+      ],
+      "rejected": [],
+      "missing": [
+        "第35段古书所说“造物主给你量身定制了一整套任务”这一关键披露，已建模为苏天晴听闻的内容Fact（fact_creator_tasks）及access_su_heard_creator_tasks，未缺失。",
+        "第66段古书说明“契约已签订、从今天开始苏天晴将成为魔法少女活跃于世、造物主定制任务助她走上反派顶点”，已建模为heard access，未缺失。",
+        "第67段苏天晴所问“死亡率高达90%”是其疑问而非世界事实，已按belief记录，无须作为漏项。",
+        "第73-76段脑中声音宣告绑定成功与契约成立，已建模为heard access与speech Fact，未缺失。"
+      ],
+      "originalRejected": [
+        {
+          "id": "material:d42",
+          "verdict": "rejected",
+          "note": "原文只写‘脑中的声音’，未确认是古书；holder设为book属来源归属过强。"
+        },
+        {
+          "id": "material:d44",
+          "verdict": "rejected",
+          "note": "‘契约成立’由脑中声音宣告，未确认说话者为古书，holder不应定为book。"
+        },
+        {
+          "id": "material:d45",
+          "verdict": "rejected",
+          "note": "末句引导话语由脑中声音说出，未确认就是古书，holder归属过强。"
+        },
+        {
+          "id": "semantic:id_book",
+          "verdict": "rejected",
+          "note": "黑色古书最早在第7段可见，第11段无该书指称，身份建立位置应为7。"
+        },
+        {
+          "id": "semantic:id_greatgrandma",
+          "verdict": "rejected",
+          "note": "太奶仅见第15段，第16段无该指称，身份建立位置应为15。"
+        },
+        {
+          "id": "semantic:id_original_owner",
+          "verdict": "rejected",
+          "note": "‘原来的主人’见于第40段，第41段无该指称，身份建立位置应为40。"
+        },
+        {
+          "id": "semantic:id_creator",
+          "verdict": "rejected",
+          "note": "‘造物主’见于第66段，第67段无该指称，身份建立位置应为66。"
+        },
+        {
+          "id": "semantic:fact_contract_established",
+          "verdict": "rejected",
+          "note": "末尾契约成立由脑中声音/系统宣告，未确认是墨丘利秘典宣告；事实文本归属过强。"
+        },
+        {
+          "id": "semantic:fact_su_fears",
+          "verdict": "rejected",
+          "note": "d36为疑问，不能记录为苏天晴相信‘死亡率90%的高危职业’；问句内容不应升格为belief。"
+        },
+        {
+          "id": "semantic:fact_book_bound",
+          "verdict": "rejected",
+          "note": "绑定成功由脑中声音宣告，未确认说话者是古书；holder归属过强。"
+        },
+        {
+          "id": "semantic:access_su_heard_binding",
+          "verdict": "rejected",
+          "note": "目标事实把脑中系统宣告归为古书，heard关系应指向系统或保留来源不确定。"
+        },
+        {
+          "id": "semantic:access_su_heard_contract_established",
+          "verdict": "rejected",
+          "note": "目标事实来源归属过强，heard关系不应绑定到‘古书宣告契约成立’。"
+        },
+        {
+          "id": "semantic:episode_contract_with_book",
+          "verdict": "rejected",
+          "note": "把末尾绑定与契约成立写成古书宣告，未保留脑中声音/系统来源的不确定性。"
+        },
+        {
+          "id": "semantic:summary_su_identity",
+          "verdict": "rejected",
+          "note": "条目‘古书宣告绑定成功、契约成立’未保留末尾系统/脑中声音来源的不确定性。"
+        },
+        {
+          "id": "semantic:summary_book_identity",
+          "verdict": "rejected",
+          "note": "条目以‘它’宣告绑定成功、契约成立，原文未确认该声音就是墨丘利秘典。"
+        }
+      ],
+      "originalMissing": [
+        "墨丘利秘典自称‘星界使者’并将引导苏天晴走上‘完美的生活’，该自我描述与承诺未建为事实或摘要项。",
+        "苏天晴明确说出最通用的两个愿望是‘取之不尽的财富’和‘变成萝莉’，并以此解释立即签约动机；候选未将这一发言建为事实/摘要项。",
+        "古书回应‘放心吧，是王道系的那种’未作为对苏天晴高危恐惧的回应记录。"
+      ]
+    }
+  }
+}

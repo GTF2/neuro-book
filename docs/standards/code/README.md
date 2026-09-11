@@ -36,3 +36,5 @@ V7 设计验证 spike 的 `t07-v7-schema-gold/**` 与 `t08-v7-memory-viewer/**` 
 该 spike 的 `t07-v7-schema-gold/extract-source.py` 是标准库 EPUB 来源复现脚本，遵循 `common.md` 与 `data-formats.md`：XML/ZIP 结构化解析，输入只读，校验默认不写文件，生成输出必须显式指定；不作为通用生产 EPUB 导入器。
 
 同一 spike 的 `t09-v7-query-cli/**` 为 V7 只读检索入口，读取 `common.md`、`languages/typescript.md`、`contracts.md`、`scripts/typescript.md` 与 `data-formats.md`；复用 t07 唯一领域合同。
+
+同一 spike 的 `t10-v7-llm-ingest/**` 为章节模型抽取、整合、复核及快照运行资产，读取 `common.md`、`languages/typescript.md`、`contracts.md`、`scripts/typescript.md` 与 `data-formats.md`。EPUB 按 XML/ZIP 结构解析；模型输出只作数据；领域发布复用 t07 合同，研究产物与密钥分离。

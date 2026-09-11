@@ -1,0 +1,3914 @@
+{
+  "value": {
+    "referentAdditions": [
+      {
+        "id": "r_contract",
+        "mentions": [
+          {
+            "paragraph": 44,
+            "text": "契约",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 58,
+            "text": "契约",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 61,
+            "text": "契约",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 66,
+            "text": "契约",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 75,
+            "text": "契约",
+            "occurrence": 0,
+            "name": false
+          }
+        ]
+      },
+      {
+        "id": "r_magical_role",
+        "mentions": [
+          {
+            "paragraph": 66,
+            "text": "魔法少女",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 67,
+            "text": "魔法少女",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 71,
+            "text": "魔法少女们",
+            "occurrence": 0,
+            "name": false
+          },
+          {
+            "paragraph": 76,
+            "text": "反派魔法少女",
+            "occurrence": 0,
+            "name": false
+          }
+        ]
+      },
+      {
+        "id": "r_task_set",
+        "mentions": [
+          {
+            "paragraph": 66,
+            "text": "一整套任务",
+            "occurrence": 0,
+            "name": false
+          }
+        ]
+      },
+      {
+        "id": "r_new_body",
+        "mentions": [
+          {
+            "paragraph": 10,
+            "text": "金毛狐女",
+            "occurrence": 0,
+            "name": true
+          },
+          {
+            "paragraph": 11,
+            "text": "金毛狐狐",
+            "occurrence": 0,
+            "name": true
+          }
+        ]
+      },
+      {
+        "id": "r_old_body",
+        "mentions": [
+          {
+            "paragraph": 72,
+            "text": "原来的身体",
+            "occurrence": 0,
+            "name": false
+          }
+        ]
+      }
+    ],
+    "entities": [
+      {
+        "id": "e_su_tianqing",
+        "category": "person"
+      },
+      {
+        "id": "e_mercury_codex",
+        "category": "artifact"
+      },
+      {
+        "id": "e_tanai",
+        "category": "person"
+      },
+      {
+        "id": "e_original_owner",
+        "category": "unresolved"
+      },
+      {
+        "id": "e_creator",
+        "category": "unknown"
+      },
+      {
+        "id": "e_contract",
+        "category": "agreement"
+      },
+      {
+        "id": "e_magical_girl_role",
+        "category": "role"
+      },
+      {
+        "id": "e_task_set",
+        "category": "task"
+      },
+      {
+        "id": "e_new_body",
+        "category": "body"
+      },
+      {
+        "id": "e_old_body",
+        "category": "body"
+      }
+    ],
+    "identities": [
+      {
+        "id": "id_rsu_su",
+        "at": 5,
+        "referent": "r_su",
+        "entity": "e_su_tianqing",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第5段苏天晴报出姓名，后续苏天晴指称同一持续人物；狐狐外形为其当前身体表征。",
+        "evidence": [
+          "d03"
+        ]
+      },
+      {
+        "id": "id_rbook_mercury",
+        "at": 29,
+        "referent": "r_book",
+        "entity": "e_mercury_codex",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第29段古书自称墨丘利秘典，后续古书指称同一对象。",
+        "evidence": [
+          "d16"
+        ]
+      },
+      {
+        "id": "id_rtanai_tanai",
+        "at": 15,
+        "referent": "r_tanai",
+        "entity": "e_tanai",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第15段苏天晴回忆中称太奶。",
+        "evidence": [
+          "d07"
+        ]
+      },
+      {
+        "id": "id_rowner_owner",
+        "at": 40,
+        "referent": "r_owner",
+        "entity": "e_original_owner",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第40段提及的‘这副身体原来的主人’，身份未知。",
+        "evidence": [
+          "d22"
+        ]
+      },
+      {
+        "id": "id_rcreator_creator",
+        "at": 66,
+        "referent": "r_creator",
+        "entity": "e_creator",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第66段古书提及造物主。",
+        "evidence": [
+          "d39"
+        ]
+      },
+      {
+        "id": "id_rcontract_contract",
+        "at": 44,
+        "referent": "r_contract",
+        "entity": "e_contract",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第44段首次出现契约，后续契约指同一约定。",
+        "evidence": [
+          "d25"
+        ]
+      },
+      {
+        "id": "id_rmagical_role",
+        "at": 66,
+        "referent": "r_magical_role",
+        "entity": "e_magical_girl_role",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第66段古书提及魔法少女，后续指同一角色概念。",
+        "evidence": [
+          "d39"
+        ]
+      },
+      {
+        "id": "id_rtask_task",
+        "at": 66,
+        "referent": "r_task_set",
+        "entity": "e_task_set",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第66段古书提及造物主定制的一整套任务。",
+        "evidence": [
+          "d39"
+        ]
+      },
+      {
+        "id": "id_rnewbody_body",
+        "at": 11,
+        "referent": "r_new_body",
+        "entity": "e_new_body",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第10-11段描述的金毛狐女/金毛狐狐为苏天晴当前身体。",
+        "evidence": [
+          "b03"
+        ]
+      },
+      {
+        "id": "id_roldbody_body",
+        "at": 72,
+        "referent": "r_old_body",
+        "entity": "e_old_body",
+        "decision": "same",
+        "certainty": "accepted",
+        "rationale": "第72段苏天晴想回到原来的身体。",
+        "evidence": [
+          "d44"
+        ]
+      }
+    ],
+    "predicates": [
+      {
+        "id": "p_named",
+        "name": "named",
+        "definition": "某实体拥有某个名字。",
+        "roles": [
+          {
+            "name": "entity",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "name",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "identity"
+      },
+      {
+        "id": "p_reborn_as",
+        "name": "reborn_as",
+        "definition": "某人物认为自己或实际以某形态重生。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "form",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "state"
+      },
+      {
+        "id": "p_located_with",
+        "name": "located_with",
+        "definition": "某人与某物在场景中同处。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "location"
+      },
+      {
+        "id": "p_sees_in_mirror",
+        "name": "sees_in_mirror",
+        "definition": "某人从镜中看到某影像。",
+        "roles": [
+          {
+            "name": "seer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "image",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "perception"
+      },
+      {
+        "id": "p_acknowledges_name",
+        "name": "acknowledges_name",
+        "definition": "某存在对某人的姓名表示知悉。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_recalls_event",
+        "name": "recalls_event",
+        "definition": "某人回忆一段事件内容。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "content",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "memory"
+      },
+      {
+        "id": "p_recalls_person",
+        "name": "recalls_person",
+        "definition": "某人回忆另一人的行动。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "remembered",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "action",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "memory"
+      },
+      {
+        "id": "p_touches_own_tail",
+        "name": "touches_own_tail",
+        "definition": "某人触碰自己的尾巴并产生触感。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "sensation",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "perception"
+      },
+      {
+        "id": "p_asks_action",
+        "name": "asks_action",
+        "definition": "某方向某人询问某动作。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "action",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asks_identity",
+        "name": "asks_identity",
+        "definition": "某方向某人询问身份。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_self_identifies_as",
+        "name": "self_identifies_as",
+        "definition": "某方自称拥有某名字。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "name",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_seeks_candidate",
+        "name": "seeks_candidate",
+        "definition": "某方寻找某候选者或宣称某人是候选者。",
+        "roles": [
+          {
+            "name": "seeker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "target",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "description",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "action"
+      },
+      {
+        "id": "p_evaluates",
+        "name": "evaluates",
+        "definition": "某人评价某对象。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "evaluation",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "p_remarks_satisfaction",
+        "name": "remarks_satisfaction",
+        "definition": "某方评论某人对某对象满意。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asks_reason",
+        "name": "asks_reason",
+        "definition": "某方向某人询问某动作的原因。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "action",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asserts_value",
+        "name": "asserts_value",
+        "definition": "某方对某人宣称某对象具有某价值。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "object",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "value",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_thinks_knows_not_owner",
+        "name": "thinks_knows_not_owner",
+        "definition": "某人推测某存在知道另一人不是身体原主人。",
+        "roles": [
+          {
+            "name": "thinker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "knower",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "p_plans_next_step",
+        "name": "plans_next_step",
+        "definition": "某方提出进入下一阶段。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_is_best_candidate",
+        "name": "is_best_candidate",
+        "definition": "某人是某事物的最佳适格者。",
+        "roles": [
+          {
+            "name": "candidate",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "for",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "state"
+      },
+      {
+        "id": "p_guides_to_life",
+        "name": "guides_to_life",
+        "definition": "某存在引导某人走向某种生活。",
+        "roles": [
+          {
+            "name": "guide",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "recipient",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "goal",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "action"
+      },
+      {
+        "id": "p_offers_contract",
+        "name": "offers_contract",
+        "definition": "某方向某人提供某契约。",
+        "roles": [
+          {
+            "name": "offerer",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "recipient",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_agrees_to_contract",
+        "name": "agrees_to_contract",
+        "definition": "某人同意某契约。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "agreement"
+      },
+      {
+        "id": "p_questions_haste",
+        "name": "questions_haste",
+        "definition": "某方质疑某人签约过快。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_calls_narrow",
+        "name": "calls_narrow",
+        "definition": "某人称某方思想狭隘并给绰号。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "nickname",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asks_question",
+        "name": "asks_question",
+        "definition": "某方向某人提问。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "question",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_claims_wishes",
+        "name": "claims_wishes",
+        "definition": "某人宣称两个最通用的愿望。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "wish1",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "wish2",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_evaluates_reward",
+        "name": "evaluates_reward",
+        "definition": "某人评价某奖励或对象。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "reward",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "target",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asks_contract_established",
+        "name": "asks_contract_established",
+        "definition": "某方询问契约是否成立。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_asks_contract_content",
+        "name": "asks_contract_content",
+        "definition": "某方询问契约内容。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_worries_about",
+        "name": "worries_about",
+        "definition": "某人担忧某种可能。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "concern",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "p_contract_content_is",
+        "name": "contract_content_is",
+        "definition": "某契约的内容是某事物。",
+        "roles": [
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "content",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "agreement"
+      },
+      {
+        "id": "p_contract_established",
+        "name": "contract_established",
+        "definition": "某契约成立，涉及双方。",
+        "roles": [
+          {
+            "name": "contract",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "party1",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "party2",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "agreement"
+      },
+      {
+        "id": "p_becomes_magical_girl",
+        "name": "becomes_magical_girl",
+        "definition": "某人将成为魔法少女。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "role"
+      },
+      {
+        "id": "p_grants_tasks",
+        "name": "grants_tasks",
+        "definition": "某存在给某人定制任务。",
+        "roles": [
+          {
+            "name": "grantor",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "recipient",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "task_set",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "action"
+      },
+      {
+        "id": "p_aims_for_apex",
+        "name": "aims_for_apex",
+        "definition": "某人将走上某角色的顶点。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "goal"
+      },
+      {
+        "id": "p_asks_risk",
+        "name": "asks_risk",
+        "definition": "某人质问某角色职业的风险。",
+        "roles": [
+          {
+            "name": "asker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "risk",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_answers_genre",
+        "name": "answers_genre",
+        "definition": "某方回答某角色属于某故事类型。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "genre",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_warns_danger",
+        "name": "warns_danger",
+        "definition": "某人警告在某故事类型中担当某角色有危险。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "reason",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      },
+      {
+        "id": "p_believes_genre",
+        "name": "believes_genre",
+        "definition": "某人相信某故事类型的运作方式。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "genre",
+            "valueKinds": [
+              "text"
+            ]
+          },
+          {
+            "name": "description",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "belief"
+      },
+      {
+        "id": "p_regrets",
+        "name": "regrets",
+        "definition": "某人后悔某决定并希望改变。",
+        "roles": [
+          {
+            "name": "person",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "decision",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "desire",
+            "valueKinds": [
+              "text"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "emotion"
+      },
+      {
+        "id": "p_binds",
+        "name": "binds",
+        "definition": "某物绑定到某人。",
+        "roles": [
+          {
+            "name": "artifact",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "target",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "magic"
+      },
+      {
+        "id": "p_directs_path",
+        "name": "directs_path",
+        "definition": "某方指示某人走上某角色的道路。",
+        "roles": [
+          {
+            "name": "speaker",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "addressee",
+            "valueKinds": [
+              "entity"
+            ]
+          },
+          {
+            "name": "role",
+            "valueKinds": [
+              "entity"
+            ]
+          }
+        ],
+        "symmetric": false,
+        "family": "communication"
+      }
+    ],
+    "times": [],
+    "facts": [
+      {
+        "id": "f1",
+        "at": 5,
+        "text": "苏天晴报出姓名：苏天晴。",
+        "predicate": "p_named",
+        "arguments": [
+          {
+            "role": "entity",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "name",
+            "value": {
+              "type": "text",
+              "text": "苏天晴"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d03"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第5段苏天晴报出姓名。"
+        }
+      },
+      {
+        "id": "f2",
+        "at": 25,
+        "text": "苏天晴心想自己重生成了一只金毛狐女。",
+        "predicate": "p_reborn_as",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "form",
+            "value": {
+              "type": "text",
+              "text": "金毛狐女"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d12",
+            "d13"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第24-25段苏天晴心想自己重生为金毛狐女。"
+        }
+      },
+      {
+        "id": "f3a",
+        "at": 7,
+        "text": "苏天晴坐在床头，面前飘浮着黑色古书。",
+        "predicate": "p_located_with",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d05"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第7段苏天晴坐在床头看着飘浮的黑色古书。"
+        }
+      },
+      {
+        "id": "f3b",
+        "at": 7,
+        "text": "苏天晴从落地镜中瞥见一道陌生的娇小身影。",
+        "predicate": "p_sees_in_mirror",
+        "arguments": [
+          {
+            "role": "seer",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "image",
+            "value": {
+              "type": "text",
+              "text": "陌生的娇小身影"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d05"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第7段苏天晴从镜中瞥见陌生娇小身影。"
+        }
+      },
+      {
+        "id": "f4",
+        "at": 12,
+        "text": "古书对苏天晴的姓名表示知道了。",
+        "predicate": "p_acknowledges_name",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d06"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第12段古书发出低沉言语表示知道了。"
+        }
+      },
+      {
+        "id": "f5",
+        "at": 15,
+        "text": "苏天晴回忆五分钟前结束夜班，在街边面摊吃加煎蛋的牛肉面并加辣椒面，随后胸口一疼眼前一黑。",
+        "predicate": "p_recalls_event",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "五分钟前结束连续三个夜班后下班，在街边面摊吃加煎蛋的牛肉面并加辣椒面，突然听到太奶在背后说话，回头见太奶坐在藤椅上编围巾，随后胸口一疼眼前一黑"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d07"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第15段苏天晴回想五分钟前的事件。"
+        }
+      },
+      {
+        "id": "f5b",
+        "at": 15,
+        "text": "苏天晴回忆太奶在背后说话，坐在藤椅上编围巾。",
+        "predicate": "p_recalls_person",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "remembered",
+            "value": {
+              "type": "ref",
+              "id": "e_tanai"
+            }
+          },
+          {
+            "role": "action",
+            "value": {
+              "type": "text",
+              "text": "在背后说话，坐在藤椅上编围巾"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rtanai_tanai"
+        ],
+        "proof": {
+          "premises": [
+            "d07"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第15段苏天晴回忆太奶坐在藤椅上编围巾。"
+        }
+      },
+      {
+        "id": "f6",
+        "at": 18,
+        "text": "苏天晴薅自己的大尾巴，感受到柔顺触感和陌生摩挲拉拽感，耳朵竖起，身体绷直。",
+        "predicate": "p_touches_own_tail",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "sensation",
+            "value": {
+              "type": "text",
+              "text": "柔顺触感，陌生摩挲拉拽感，耳朵竖起，整只狐绷直"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "world",
+          "holder": null,
+          "opaque": false
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "b06"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第16-18段描述苏天晴薅尾巴并感到真实触感。"
+        }
+      },
+      {
+        "id": "f7",
+        "at": 19,
+        "text": "古书问苏天晴在干嘛，不明白她为何用怪异手法薅自己的尾巴。",
+        "predicate": "p_asks_action",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "action",
+            "value": {
+              "type": "text",
+              "text": "在干嘛，为什么用怪异手法薅自己的尾巴"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d08",
+            "d09"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第19-20段古书询问并困惑苏天晴薅尾巴。"
+        }
+      },
+      {
+        "id": "f8",
+        "at": 27,
+        "text": "苏天晴问古书：你是谁？",
+        "predicate": "p_asks_identity",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d15"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第27段苏天晴问古书是谁。"
+        }
+      },
+      {
+        "id": "f9a",
+        "at": 29,
+        "text": "古书自称名为墨丘利秘典。",
+        "predicate": "p_self_identifies_as",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "name",
+            "value": {
+              "type": "text",
+              "text": "墨丘利秘典"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d16"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第29段古书自称墨丘利秘典。"
+        }
+      },
+      {
+        "id": "f9b",
+        "at": 30,
+        "text": "古书说它从星空彼岸远行至此，寻找最优秀的适格者，并说那个人就是苏天晴。",
+        "predicate": "p_seeks_candidate",
+        "arguments": [
+          {
+            "role": "seeker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "description",
+            "value": {
+              "type": "text",
+              "text": "最优秀的适格者"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d16",
+            "d17"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第29-30段古书宣称寻找最优秀适格者，并指认苏天晴。"
+        }
+      },
+      {
+        "id": "f10",
+        "at": 34,
+        "text": "苏天晴心中评价自己的小脚：完美，绝品。",
+        "predicate": "p_evaluates",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "text",
+              "text": "自己的小脚"
+            }
+          },
+          {
+            "role": "evaluation",
+            "value": {
+              "type": "text",
+              "text": "完美，绝品"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d18"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第34段苏天晴心想完美、绝品。"
+        }
+      },
+      {
+        "id": "f11",
+        "at": 36,
+        "text": "古书说看来苏天晴对现在的身体很满意。",
+        "predicate": "p_remarks_satisfaction",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "text",
+              "text": "现在的身体"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d19"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第35-36段古书说苏天晴对现在的身体满意。"
+        }
+      },
+      {
+        "id": "f11b",
+        "at": 37,
+        "text": "古书问苏天晴为什么盯着脚看。",
+        "predicate": "p_asks_reason",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "action",
+            "value": {
+              "type": "text",
+              "text": "盯着脚看"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d20"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第37段古书问苏天晴为什么盯着脚看。"
+        }
+      },
+      {
+        "id": "f12",
+        "at": 38,
+        "text": "苏天晴回答小脚是世界上最美好的瑰宝，吃饭时看见都能多炫两碗。",
+        "predicate": "p_asserts_value",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "object",
+            "value": {
+              "type": "text",
+              "text": "小脚"
+            }
+          },
+          {
+            "role": "value",
+            "value": {
+              "type": "text",
+              "text": "世界上最美好的瑰宝，吃饭时看见都能多炫两碗"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d21"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第38段苏天晴宣称小脚是世界上最美好的瑰宝。"
+        }
+      },
+      {
+        "id": "f13",
+        "at": 40,
+        "text": "苏天晴心想这本书知道自己并不是这副身体原来的主人。",
+        "predicate": "p_thinks_knows_not_owner",
+        "arguments": [
+          {
+            "role": "thinker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "knower",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d22"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第40段苏天晴推测古书知道她不是原主人。"
+        }
+      },
+      {
+        "id": "f14",
+        "at": 42,
+        "text": "古书说既然苏天晴满意，就可以直接快进到下个步骤。",
+        "predicate": "p_plans_next_step",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d23"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第41-42段古书提议进入下个步骤。"
+        }
+      },
+      {
+        "id": "f15a",
+        "at": 44,
+        "text": "古书告诉苏天晴：她是墨丘利秘典的最佳适格者。",
+        "predicate": "p_is_best_candidate",
+        "arguments": [
+          {
+            "role": "candidate",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "for",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d25"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第44段古书称苏天晴是墨丘利秘典最佳适格者。"
+        }
+      },
+      {
+        "id": "f15b",
+        "at": 44,
+        "text": "古书作为星界使者会引导苏天晴走上完美的生活。",
+        "predicate": "p_guides_to_life",
+        "arguments": [
+          {
+            "role": "guide",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "recipient",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "goal",
+            "value": {
+              "type": "text",
+              "text": "完美的生活"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d25"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第44段古书说会引导苏天晴走上完美生活。"
+        }
+      },
+      {
+        "id": "f15c",
+        "at": 44,
+        "text": "古书要求苏天晴签订一个小小的契约。",
+        "predicate": "p_offers_contract",
+        "arguments": [
+          {
+            "role": "offerer",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "recipient",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d25"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第44段古书提出只需签订小契约。"
+        }
+      },
+      {
+        "id": "f16",
+        "at": 45,
+        "text": "苏天晴立即答应：好，我签。",
+        "predicate": "p_agrees_to_contract",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d26"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第45段苏天晴说好我签。"
+        }
+      },
+      {
+        "id": "f17",
+        "at": 48,
+        "text": "古书质疑苏天晴不按套路出牌，契约怎么说签就签。",
+        "predicate": "p_questions_haste",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d28"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第48段古书质疑苏天晴不按套路出牌。"
+        }
+      },
+      {
+        "id": "f18",
+        "at": 49,
+        "text": "苏天晴说古书思想狭隘，并称它为小破书。",
+        "predicate": "p_calls_narrow",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "nickname",
+            "value": {
+              "type": "text",
+              "text": "小破书"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d29"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第49段苏天晴称古书思想狭隘，叫它小破书。"
+        }
+      },
+      {
+        "id": "f19",
+        "at": 50,
+        "text": "苏天晴问古书：世界上最通用的愿望是哪两个。",
+        "predicate": "p_asks_question",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "question",
+            "value": {
+              "type": "text",
+              "text": "世界上最通用的愿望是哪两个"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury"
+        ],
+        "proof": {
+          "premises": [
+            "d30"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第50段苏天晴问世界上最通用的两个愿望是什么。"
+        }
+      },
+      {
+        "id": "f19b",
+        "at": 53,
+        "text": "苏天晴宣称取之不尽的财富以及变成萝莉是世界上最通用的两个愿望。",
+        "predicate": "p_claims_wishes",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "wish1",
+            "value": {
+              "type": "text",
+              "text": "取之不尽的财富"
+            }
+          },
+          {
+            "role": "wish2",
+            "value": {
+              "type": "text",
+              "text": "变成萝莉"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d32"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第53段苏天晴宣称两个最通用愿望。"
+        }
+      },
+      {
+        "id": "f19c",
+        "at": 55,
+        "text": "苏天晴说变成萝莉本身就是最大的奖励，更何况是这样一只可爱的狐狐。",
+        "predicate": "p_evaluates_reward",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "reward",
+            "value": {
+              "type": "text",
+              "text": "变成萝莉本身就是最大的奖励"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "text",
+              "text": "这样一只可爱的狐狐"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d33"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第55段苏天晴称变成狐狐本身就是最大奖励。"
+        }
+      },
+      {
+        "id": "f20",
+        "at": 58,
+        "text": "古书问既然苏天晴答应，契约是否成立。",
+        "predicate": "p_asks_contract_established",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d34"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第58段古书问契约是否成立。"
+        }
+      },
+      {
+        "id": "f20b",
+        "at": 59,
+        "text": "苏天晴回答：成立。",
+        "predicate": "p_agrees_to_contract",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d35"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第59段苏天晴回答成立。"
+        }
+      },
+      {
+        "id": "f21",
+        "at": 61,
+        "text": "苏天晴问能否询问契约的具体内容。",
+        "predicate": "p_asks_contract_content",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rbook_mercury",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d36"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第61段苏天晴询问契约具体内容。"
+        }
+      },
+      {
+        "id": "f22",
+        "at": 62,
+        "text": "苏天晴心想总不能是激活了奇怪的奴隶契约。",
+        "predicate": "p_worries_about",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "concern",
+            "value": {
+              "type": "text",
+              "text": "不会激活奇怪的奴隶契约"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "possible",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d37"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第62段苏天晴担心是奴隶契约。"
+        }
+      },
+      {
+        "id": "f23",
+        "at": 64,
+        "text": "古书回答契约内容是：反派魔法少女。",
+        "predicate": "p_contract_content_is",
+        "arguments": [
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          },
+          {
+            "role": "content",
+            "value": {
+              "type": "text",
+              "text": "反派魔法少女"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d38"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第63-64段古书回答契约内容是反派魔法少女。"
+        }
+      },
+      {
+        "id": "f24a",
+        "at": 66,
+        "text": "古书说契约已签订。",
+        "predicate": "p_contract_established",
+        "arguments": [
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          },
+          {
+            "role": "party1",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "party2",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rcontract_contract",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d39"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第66段古书宣称契约已签订。"
+        }
+      },
+      {
+        "id": "f24b",
+        "at": 66,
+        "text": "古书说从今天起苏天晴将成为魔法少女活跃于世。",
+        "predicate": "p_becomes_magical_girl",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "e_magical_girl_role"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su",
+          "id_rmagical_role"
+        ],
+        "proof": {
+          "premises": [
+            "d39"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第66段古书称苏天晴将成为魔法少女。"
+        }
+      },
+      {
+        "id": "f24c",
+        "at": 66,
+        "text": "古书说造物主给苏天晴量身定制了一整套任务。",
+        "predicate": "p_grants_tasks",
+        "arguments": [
+          {
+            "role": "grantor",
+            "value": {
+              "type": "ref",
+              "id": "e_creator"
+            }
+          },
+          {
+            "role": "recipient",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "task_set",
+            "value": {
+              "type": "ref",
+              "id": "e_task_set"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rcreator_creator",
+          "id_rsu_su",
+          "id_rtask_task"
+        ],
+        "proof": {
+          "premises": [
+            "d39"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第66段古书称造物主定制任务。"
+        }
+      },
+      {
+        "id": "f24d",
+        "at": 66,
+        "text": "古书说这些任务能帮助苏天晴逐步走上反派魔法少女的顶点。",
+        "predicate": "p_aims_for_apex",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "e_magical_girl_role"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su",
+          "id_rmagical_role"
+        ],
+        "proof": {
+          "premises": [
+            "d39"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第66段古书称任务帮助苏天晴走上反派魔法少女顶点。"
+        }
+      },
+      {
+        "id": "f25",
+        "at": 67,
+        "text": "苏天晴质问魔法少女是不是死亡率高达90%的高危职业。",
+        "predicate": "p_asks_risk",
+        "arguments": [
+          {
+            "role": "asker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "e_magical_girl_role"
+            }
+          },
+          {
+            "role": "risk",
+            "value": {
+              "type": "text",
+              "text": "死亡率高达90%的高危职业"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rmagical_role"
+        ],
+        "proof": {
+          "premises": [
+            "d40"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第67段苏天晴质问魔法少女是否高危职业。"
+        }
+      },
+      {
+        "id": "f26",
+        "at": 68,
+        "text": "古书回答：放心吧，是王道系的那种。",
+        "predicate": "p_answers_genre",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "genre",
+            "value": {
+              "type": "text",
+              "text": "王道系"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d41"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第68段古书回答是王道系那种。"
+        }
+      },
+      {
+        "id": "f27",
+        "at": 69,
+        "text": "苏天晴反问在王道故事里当反派是纯纯找死。",
+        "predicate": "p_warns_danger",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "e_magical_girl_role"
+            }
+          },
+          {
+            "role": "reason",
+            "value": {
+              "type": "text",
+              "text": "在王道故事里当反派是纯纯找死"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rmagical_role"
+        ],
+        "proof": {
+          "premises": [
+            "d42"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第69段苏天晴反驳在王道故事里当反派危险。"
+        }
+      },
+      {
+        "id": "f28",
+        "at": 71,
+        "text": "苏天晴心想王道系是魔法少女们面对强敌逐渐成长然后喊着友情和羁绊把反派干碎的故事；反派有系统有任务也很难把主角干碎。",
+        "predicate": "p_believes_genre",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "genre",
+            "value": {
+              "type": "text",
+              "text": "王道系"
+            }
+          },
+          {
+            "role": "description",
+            "value": {
+              "type": "text",
+              "text": "魔法少女们面对强敌逐渐成长然后喊着友情和羁绊把反派干碎；反派有系统有任务也很难把主角干碎"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d43"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第71段苏天晴心想王道系故事的运作方式。"
+        }
+      },
+      {
+        "id": "f29",
+        "at": 72,
+        "text": "苏天晴后悔，想反悔、回到原来的身体，并觉得急性心肌梗死还有抢救机会。",
+        "predicate": "p_regrets",
+        "arguments": [
+          {
+            "role": "person",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "decision",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          },
+          {
+            "role": "desire",
+            "value": {
+              "type": "text",
+              "text": "想反悔，想被送回原来的身体，觉得急性心肌梗死还有抢救机会"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "belief",
+          "holder": "e_su_tianqing",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rsu_su",
+          "id_rcontract_contract"
+        ],
+        "proof": {
+          "premises": [
+            "d44"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第72段苏天晴后悔并想回原身体。"
+        }
+      },
+      {
+        "id": "f30",
+        "at": 73,
+        "text": "系统宣告：墨丘利秘典绑定成功。",
+        "predicate": "p_binds",
+        "arguments": [
+          {
+            "role": "artifact",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "target",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d45"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第73段系统宣告墨丘利秘典绑定成功。"
+        }
+      },
+      {
+        "id": "f31",
+        "at": 75,
+        "text": "系统宣告：契约成立。",
+        "predicate": "p_contract_established",
+        "arguments": [
+          {
+            "role": "contract",
+            "value": {
+              "type": "ref",
+              "id": "e_contract"
+            }
+          },
+          {
+            "role": "party1",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "party2",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "actual",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rcontract_contract",
+          "id_rsu_su"
+        ],
+        "proof": {
+          "premises": [
+            "d46"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第75段系统宣告契约成立。"
+        }
+      },
+      {
+        "id": "f32",
+        "at": 76,
+        "text": "古书或系统让苏天晴走上反派魔法少女的道路。",
+        "predicate": "p_directs_path",
+        "arguments": [
+          {
+            "role": "speaker",
+            "value": {
+              "type": "ref",
+              "id": "e_mercury_codex"
+            }
+          },
+          {
+            "role": "addressee",
+            "value": {
+              "type": "ref",
+              "id": "e_su_tianqing"
+            }
+          },
+          {
+            "role": "role",
+            "value": {
+              "type": "ref",
+              "id": "e_magical_girl_role"
+            }
+          }
+        ],
+        "polarity": "affirmative",
+        "assertion": {
+          "kind": "speech",
+          "holder": "e_mercury_codex",
+          "opaque": true
+        },
+        "time": null,
+        "quantifier": "particular",
+        "modality": "intended",
+        "conditions": [],
+        "textualConditions": [],
+        "exceptions": [],
+        "identities": [
+          "id_rbook_mercury",
+          "id_rsu_su",
+          "id_rmagical_role"
+        ],
+        "proof": {
+          "premises": [
+            "d47"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第76段古书或系统让苏天晴走上反派魔法少女道路。"
+        }
+      }
+    ],
+    "arguments": [],
+    "access": [
+      {
+        "id": "ac1",
+        "at": 5,
+        "holder": "e_mercury_codex",
+        "target": "f1",
+        "mode": "heard",
+        "evidence": [
+          "d03"
+        ]
+      },
+      {
+        "id": "ac2",
+        "at": 25,
+        "holder": "e_su_tianqing",
+        "target": "f2",
+        "mode": "believed",
+        "evidence": [
+          "d12",
+          "d13"
+        ]
+      },
+      {
+        "id": "ac3",
+        "at": 44,
+        "holder": "e_su_tianqing",
+        "target": "f15a",
+        "mode": "heard",
+        "evidence": [
+          "d25"
+        ]
+      },
+      {
+        "id": "ac4",
+        "at": 45,
+        "holder": "e_mercury_codex",
+        "target": "f16",
+        "mode": "heard",
+        "evidence": [
+          "d26"
+        ]
+      },
+      {
+        "id": "ac5",
+        "at": 64,
+        "holder": "e_su_tianqing",
+        "target": "f23",
+        "mode": "heard",
+        "evidence": [
+          "d38"
+        ]
+      },
+      {
+        "id": "ac6",
+        "at": 66,
+        "holder": "e_su_tianqing",
+        "target": "f24b",
+        "mode": "heard",
+        "evidence": [
+          "d39"
+        ]
+      },
+      {
+        "id": "ac7",
+        "at": 73,
+        "holder": "e_su_tianqing",
+        "target": "f30",
+        "mode": "heard",
+        "evidence": [
+          "d45"
+        ]
+      },
+      {
+        "id": "ac8",
+        "at": 75,
+        "holder": "e_su_tianqing",
+        "target": "f31",
+        "mode": "heard",
+        "evidence": [
+          "d46"
+        ]
+      },
+      {
+        "id": "ac9",
+        "at": 76,
+        "holder": "e_su_tianqing",
+        "target": "f32",
+        "mode": "heard",
+        "evidence": [
+          "d47"
+        ]
+      },
+      {
+        "id": "ac10",
+        "at": 40,
+        "holder": "e_su_tianqing",
+        "target": "f13",
+        "mode": "believed",
+        "evidence": [
+          "d22"
+        ]
+      },
+      {
+        "id": "ac11",
+        "at": 59,
+        "holder": "e_mercury_codex",
+        "target": "f20b",
+        "mode": "heard",
+        "evidence": [
+          "d35"
+        ]
+      }
+    ],
+    "episodes": [
+      {
+        "id": "ep_reincarnation",
+        "at": 25,
+        "title": "苏天晴重生为金毛狐女",
+        "summary": "苏天晴在下班吃面时胸口疼眼前黑，随后认为自己重生为金毛狐女，并在昏暗房间中面对墨丘利秘典。",
+        "scale": "event",
+        "participants": [
+          "e_su_tianqing",
+          "e_tanai"
+        ],
+        "materials": [
+          "d07",
+          "d12",
+          "d13",
+          "f2",
+          "f5",
+          "f5b"
+        ],
+        "children": [],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d12",
+            "d13"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第24-25段苏天晴明确心想自己重生为金毛狐女；第15段回忆死亡前一刻。"
+        }
+      },
+      {
+        "id": "ep_contract",
+        "at": 76,
+        "title": "签订契约并成为反派魔法少女",
+        "summary": "墨丘利秘典自称来自星空彼岸，认定苏天晴为最佳适格者，提供契约；苏天晴先同意后询问内容，得知契约是反派魔法少女，契约成立并绑定成功，她将走上反派魔法少女顶点。",
+        "scale": "sequence",
+        "participants": [
+          "e_su_tianqing",
+          "e_mercury_codex",
+          "e_contract",
+          "e_magical_girl_role",
+          "e_creator",
+          "e_task_set"
+        ],
+        "materials": [
+          "d16",
+          "d17",
+          "d25",
+          "d26",
+          "d34",
+          "d35",
+          "d38",
+          "d39",
+          "d45",
+          "d46",
+          "d47",
+          "f15a",
+          "f15c",
+          "f16",
+          "f20b",
+          "f23",
+          "f24a",
+          "f24b",
+          "f24c",
+          "f24d",
+          "f31",
+          "f32"
+        ],
+        "children": [],
+        "relations": [
+          {
+            "relation": "before",
+            "target": "ep_reincarnation",
+            "evidence": [
+              "d07",
+              "d12"
+            ]
+          }
+        ],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d25",
+            "d26",
+            "d38",
+            "d39",
+            "d45",
+            "d46"
+          ],
+          "method": "aggregation",
+          "certainty": "accepted",
+          "rationale": "第44-76段契约从提议到成立、系统绑定。"
+        }
+      },
+      {
+        "id": "ep_search",
+        "at": 30,
+        "title": "古书寻找适格者",
+        "summary": "墨丘利秘典自称从星空彼岸远行而来，寻找最优秀的适格者，并认定苏天晴就是那个人。",
+        "scale": "event",
+        "participants": [
+          "e_mercury_codex",
+          "e_su_tianqing"
+        ],
+        "materials": [
+          "d16",
+          "d17",
+          "f9a",
+          "f9b"
+        ],
+        "children": [],
+        "relations": [],
+        "time": null,
+        "proof": {
+          "premises": [
+            "d16",
+            "d17"
+          ],
+          "method": "direct",
+          "certainty": "accepted",
+          "rationale": "第29-30段古书寻找并指认适格者。"
+        }
+      }
+    ],
+    "summaries": [
+      {
+        "id": "sum_su",
+        "entity": "e_su_tianqing",
+        "facet": "当前状态与契约",
+        "items": [
+          {
+            "text": "苏天晴坚信自己已重生为金毛狐女，并欣赏现在的身体。",
+            "refs": [
+              "d12",
+              "d13",
+              "d18"
+            ]
+          },
+          {
+            "text": "苏天晴与墨丘利秘典签订契约；古书称她将作为反派魔法少女活跃，造物主为她定制任务；她听到后后悔，想回原来的身体。",
+            "refs": [
+              "d25",
+              "d26",
+              "d38",
+              "d39",
+              "d44"
+            ]
+          },
+          {
+            "text": "苏天晴回忆五分钟前在面摊吃面时听到太奶说话，随后胸口疼眼前黑；此为她本人的回忆/判断。",
+            "refs": [
+              "d07"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_mercury",
+        "entity": "e_mercury_codex",
+        "facet": "身份与行动",
+        "items": [
+          {
+            "text": "墨丘利秘典自称从星空彼岸远行而来，寻找最优秀的适格者；它认定苏天晴为最佳适格者并与其签约。",
+            "refs": [
+              "d16",
+              "d17",
+              "d25"
+            ]
+          },
+          {
+            "text": "它宣称契约内容是反派魔法少女，契约成立并绑定成功，苏天晴将走上反派魔法少女顶点；这些为系统/古书宣告。",
+            "refs": [
+              "d38",
+              "d39",
+              "d45",
+              "d46",
+              "d47"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_tanai",
+        "entity": "e_tanai",
+        "facet": "在苏天晴回忆中的出现",
+        "items": [
+          {
+            "text": "苏天晴回忆太奶在她背后说话，坐在藤椅上编围巾；随后苏天晴胸口疼眼前黑。此仅为苏天晴的回忆/信念。",
+            "refs": [
+              "d07"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_original_owner",
+        "entity": "e_original_owner",
+        "facet": "身份",
+        "items": [
+          {
+            "text": "苏天晴推测古书知道她不是这副身体原来的主人；原主人身份未知。",
+            "refs": [
+              "d22"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_creator",
+        "entity": "e_creator",
+        "facet": "被提及",
+        "items": [
+          {
+            "text": "古书称造物主为苏天晴量身定制了一整套任务，帮助她走上反派魔法少女的顶点；造物主身份未知。",
+            "refs": [
+              "d39"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_contract",
+        "entity": "e_contract",
+        "facet": "契约",
+        "items": [
+          {
+            "text": "苏天晴先同意签约，后询问内容；古书称契约内容是反派魔法少女，并宣告契约成立、绑定成功。",
+            "refs": [
+              "d26",
+              "d34",
+              "d35",
+              "d38",
+              "d39",
+              "d45",
+              "d46"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_role",
+        "entity": "e_magical_girl_role",
+        "facet": "反派魔法少女",
+        "items": [
+          {
+            "text": "古书称苏天晴将成为魔法少女并走上反派魔法少女顶点；苏天晴担忧这是高危职业、在王道故事里当反派危险。",
+            "refs": [
+              "d39",
+              "d40",
+              "d41",
+              "d42",
+              "d43"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_new_body",
+        "entity": "e_new_body",
+        "facet": "身体",
+        "items": [
+          {
+            "text": "苏天晴现在的外表为金毛狐女，有金发、狐耳、大尾巴；她薅尾巴感受到真实触感。",
+            "refs": [
+              "b03",
+              "b06"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "sum_old_body",
+        "entity": "e_old_body",
+        "facet": "旧身体",
+        "items": [
+          {
+            "text": "苏天晴想回到原来的身体，并认为急性心肌梗死还有抢救机会；这是她的想法。",
+            "refs": [
+              "d44"
+            ]
+          }
+        ]
+      }
+    ],
+    "gaps": [
+      "苏天晴原身体的原主人姓名与身份未知。",
+      "造物主的身份与性质未知。",
+      "系统声音的来源与墨丘利秘典的关系未明确。",
+      "太奶的出现是真实事件、临终幻觉还是其他，文本未确认。",
+      "苏天晴是否死亡、能否回到原身体未知。",
+      "契约的具体任务内容未披露。",
+      "魔法少女职业死亡率90%为苏天晴的疑问/猜测，未证实。",
+      "古书知道苏天晴不是原主人是苏天晴的推测，未获直接确认。"
+    ]
+  }
+}

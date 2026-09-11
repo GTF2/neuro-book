@@ -1,0 +1,202 @@
+{
+  "id": "ch01-review-rejected-summary",
+  "source": "ch01/round-3/review/attempt-1",
+  "stage": "review",
+  "chapter": 1,
+  "sourceRequestHash": "264816a462a165b2af72d91074c8c2533d58a93c12d98e82281d1517ef93e123",
+  "inputCaveats": {
+    "priorCandidate": false,
+    "priorAttemptProblems": true
+  },
+  "baseline": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 15592,
+      "outputTokens": 39482,
+      "cacheHitTokens": 7040,
+      "cacheMissTokens": 8552
+    },
+    "durationMs": 178334,
+    "reasoningTokens": 35317,
+    "estimated": {
+      "estimatedUsd": 0.04998624,
+      "minimumUsd": 0.04998624,
+      "maximumUsd": 0.04998624,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.02499312,
+      "minimumUsd": 0.02499312,
+      "maximumUsd": 0.02499312,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.04998624,
+      "minimumUsd": 0.04998624,
+      "maximumUsd": 0.04998624,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "disabled": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 15567,
+      "outputTokens": 4942,
+      "cacheHitTokens": 7040,
+      "cacheMissTokens": 8527
+    },
+    "durationMs": 19117,
+    "reasoningTokens": null,
+    "estimated": {
+      "estimatedUsd": 0.00853074,
+      "minimumUsd": 0.00853074,
+      "maximumUsd": 0.00853074,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.00426537,
+      "minimumUsd": 0.00426537,
+      "maximumUsd": 0.00426537,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.00853074,
+      "minimumUsd": 0.00853074,
+      "maximumUsd": 0.00853074,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "validation": {
+    "schemaPassed": true,
+    "validationPassed": true,
+    "validationMeaning": "Complete judgment coverage; rejected judgments are retained, not treated as validation errors",
+    "counts": {
+      "judgments": 133,
+      "rejected": 1,
+      "missing": 0
+    },
+    "errors": null,
+    "reviewComparison": {
+      "changedVerdicts": [
+        {
+          "id": "semantic:id_book",
+          "verdict": "rejected",
+          "note": "黑色古书在第7段已可见，身份建立位置应为7而非11。",
+          "original": {
+            "id": "semantic:id_book",
+            "verdict": "passed",
+            "note": "第7段黑色古书已可见，身份位置已修正为7，后续同指。"
+          }
+        },
+        {
+          "id": "semantic:sum_foxbody",
+          "verdict": "passed",
+          "note": "sum_foxbody记录狐女外貌与薅尾触感，区分苏天晴意识与身体。",
+          "original": {
+            "id": "semantic:sum_foxbody",
+            "verdict": "rejected",
+            "note": "“身穿宽松睡裙”出自第32段/d16，不在所引d3（第7-11段），summary与refs不符。"
+          }
+        }
+      ],
+      "rejected": [
+        {
+          "id": "semantic:id_book",
+          "verdict": "rejected",
+          "note": "黑色古书在第7段已可见，身份建立位置应为7而非11。"
+        }
+      ],
+      "missing": [],
+      "originalRejected": [
+        {
+          "id": "semantic:sum_foxbody",
+          "verdict": "rejected",
+          "note": "“身穿宽松睡裙”出自第32段/d16，不在所引d3（第7-11段），summary与refs不符。"
+        }
+      ],
+      "originalMissing": [
+        "墨丘利秘典在第4-5段问名并听到苏天晴自报姓名的知情关系未建模：f_su_name没有接收者角色，也没有a_book_heard_name指向该内容事实。"
+      ]
+    }
+  }
+}

@@ -1,0 +1,162 @@
+{
+  "id": "ch01-material-final",
+  "source": "ch01/round-4/material/attempt-1",
+  "stage": "material",
+  "chapter": 1,
+  "sourceRequestHash": "95e0c1c26fea60f7f0b773db6d18ed157300db6242679cda32d6f27748be6c05",
+  "inputCaveats": {
+    "priorCandidate": true,
+    "priorAttemptProblems": true
+  },
+  "baseline": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 7813,
+      "outputTokens": 16799,
+      "cacheHitTokens": 3072,
+      "cacheMissTokens": 4741
+    },
+    "durationMs": 68612,
+    "reasoningTokens": 12089,
+    "estimated": {
+      "estimatedUsd": 0.021599531999999998,
+      "minimumUsd": 0.021599531999999998,
+      "maximumUsd": 0.021599531999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.010799765999999999,
+      "minimumUsd": 0.010799765999999999,
+      "maximumUsd": 0.010799765999999999,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.021599531999999998,
+      "minimumUsd": 0.021599531999999998,
+      "maximumUsd": 0.021599531999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "disabled": {
+    "model": "deepseek-flash",
+    "finishReason": "stop",
+    "usage": {
+      "inputTokens": 7788,
+      "outputTokens": 6602,
+      "cacheHitTokens": 0,
+      "cacheMissTokens": 7788
+    },
+    "durationMs": 17011,
+    "reasoningTokens": null,
+    "estimated": {
+      "estimatedUsd": 0.010258799999999998,
+      "minimumUsd": 0.010258799999999998,
+      "maximumUsd": 0.010258799999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeak": {
+      "estimatedUsd": 0.005129399999999999,
+      "minimumUsd": 0.005129399999999999,
+      "maximumUsd": 0.005129399999999999,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "peak": {
+      "estimatedUsd": 0.010258799999999998,
+      "minimumUsd": 0.010258799999999998,
+      "maximumUsd": 0.010258799999999998,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "peak",
+      "ratesPerMillion": {
+        "hit": 0.006,
+        "miss": 0.3,
+        "output": 1.2
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    }
+  },
+  "validation": {
+    "schemaPassed": true,
+    "validationPassed": false,
+    "validationMeaning": "Deterministic candidate validation only; semantic quality is not established",
+    "counts": {
+      "referents": 7,
+      "disclosures": 48,
+      "beats": 17,
+      "mentions": 32
+    },
+    "errors": "Material validation failed:\nd1b ends at paragraph 5 but references book, first mentioned at 7; adjust evidence range/Beat boundaries or remove unsupported attribution",
+    "reviewComparison": null
+  }
+}

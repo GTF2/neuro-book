@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 1,
+  "startedAt": "2026-09-11T02:11:32.043Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nf3a.fact dependencies at 1:7 references id_rbook_mercury, available only at 1:29\nf3a.identities lacks explicit identity for arguments.object=e_mercury_codex at 1:7; provided=[\"id_rsu_su\",\"id_rbook_mercury\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf4.fact dependencies at 1:12 references id_rbook_mercury, available only at 1:29\nf4.identities lacks explicit identity for arguments.speaker=e_mercury_codex at 1:12; provided=[\"id_rbook_mercury\",\"id_rsu_su\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf4.identities lacks explicit identity for assertion.holder=e_mercury_codex at 1:12; provided=[\"id_rbook_mercury\",\"id_rsu_su\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf7.fact dependencies at 1:19 references id_rbook_mercury, available only at 1:29\nf7.fact dependencies at 1:19 references d09, available only at 1:20\nf7.identities lacks explicit identity for arguments.speaker=e_mercury_codex at 1:19; provided=[\"id_rbook_mercury\",\"id_rsu_su\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf7.identities lacks explicit identity for assertion.holder=e_mercury_codex at 1:19; provided=[\"id_rbook_mercury\",\"id_rsu_su\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf8.fact dependencies at 1:27 references id_rbook_mercury, available only at 1:29\nf8.identities lacks explicit identity for arguments.addressee=e_mercury_codex at 1:27; provided=[\"id_rsu_su\",\"id_rbook_mercury\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nac1.access target/evidence at 1:5 references e_mercury_codex, available only at 1:7",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.052435103999999996,
+    "minimumUsd": 0.052435103999999996,
+    "maximumUsd": 0.052435103999999996,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "peak",
+    "ratesPerMillion": {
+      "hit": 0.006,
+      "miss": 0.3,
+      "output": 1.2
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

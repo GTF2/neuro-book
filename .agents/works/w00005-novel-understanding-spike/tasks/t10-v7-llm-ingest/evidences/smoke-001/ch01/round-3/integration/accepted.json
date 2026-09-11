@@ -1,0 +1,1181 @@
+{
+  "entities": [
+    {
+      "id": "sutianqing",
+      "category": "person"
+    },
+    {
+      "id": "moqiulimidian",
+      "category": "object"
+    },
+    {
+      "id": "foxbody",
+      "category": "body"
+    },
+    {
+      "id": "original_owner",
+      "category": "person"
+    },
+    {
+      "id": "taitsan",
+      "category": "person"
+    },
+    {
+      "id": "creator",
+      "category": "unknown"
+    },
+    {
+      "id": "magical_girl_role",
+      "category": "role"
+    },
+    {
+      "id": "villain_magical_girl_path",
+      "category": "concept"
+    },
+    {
+      "id": "mercurius_creed",
+      "category": "concept"
+    }
+  ],
+  "identities": [
+    {
+      "id": "id_a_sutianqing",
+      "at": 5,
+      "referent": "a",
+      "entity": "sutianqing",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "苏天晴回答姓名为苏天晴，后续叙述均以苏天晴称此人物。",
+      "evidence": [
+        "b2",
+        "material:d1"
+      ]
+    },
+    {
+      "id": "id_b_moqiulimidian",
+      "at": 29,
+      "referent": "b",
+      "entity": "moqiulimidian",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "黑色古书自称吾名墨丘利秘典，叙述中黑色古书与墨丘利秘典指同一对象。",
+      "evidence": [
+        "material:d10",
+        "b9"
+      ]
+    },
+    {
+      "id": "id_foxbody",
+      "at": 10,
+      "referent": "a",
+      "entity": "foxbody",
+      "decision": "candidate",
+      "certainty": "tentative",
+      "rationale": "苏天晴从镜中看到自己成为金毛狐女，但叙述同时将身体与本人视角混同，需区分意识与身体。",
+      "evidence": [
+        "b3",
+        "material:d2"
+      ]
+    },
+    {
+      "id": "id_original_owner",
+      "at": 39,
+      "referent": "a",
+      "entity": "original_owner",
+      "decision": "unresolved",
+      "certainty": "tentative",
+      "rationale": "苏天晴心中猜测古书知道自己并不是这副身体原来的主人，但原主人身份未定。",
+      "evidence": [
+        "material:d14",
+        "b12"
+      ]
+    },
+    {
+      "id": "id_d",
+      "at": 29,
+      "referent": "d",
+      "entity": "moqiulimidian",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "“吾”与“墨丘利秘典”在同一句话中由古书自称，指同一对象。",
+      "evidence": [
+        "material:d10"
+      ]
+    },
+    {
+      "id": "id_e",
+      "at": 30,
+      "referent": "e",
+      "entity": "sutianqing",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "古书称“那个人就是你，苏天晴小姐”，你指苏天晴。",
+      "evidence": [
+        "material:d10"
+      ]
+    },
+    {
+      "id": "id_taitsan",
+      "at": 15,
+      "referent": "c",
+      "entity": "taitsan",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "叙述中太奶出现两次，指同一人物，苏天晴回忆中见到她。",
+      "evidence": [
+        "material:d3",
+        "b5"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "id": "named",
+      "name": "named",
+      "definition": "某人或某对象具有名字。",
+      "roles": [
+        {
+          "name": "entity",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "name",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "attribute"
+    },
+    {
+      "id": "speaks",
+      "name": "speaks",
+      "definition": "说话者发出可听见的话语。",
+      "roles": [
+        {
+          "name": "speaker",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "communication"
+    },
+    {
+      "id": "hears",
+      "name": "hears",
+      "definition": "听者听到某个声音或话语。",
+      "roles": [
+        {
+          "name": "listener",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "source",
+          "valueKinds": [
+            "entity",
+            "fact",
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "perception"
+    },
+    {
+      "id": "aware_of",
+      "name": "aware_of",
+      "definition": "认知主体知道或相信某个命题。",
+      "roles": [
+        {
+          "name": "holder",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "fact",
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "cognition"
+    },
+    {
+      "id": "is_reincarnated_as",
+      "name": "is_reincarnated_as",
+      "definition": "意识或人物转生为另一个身体或存在。",
+      "roles": [
+        {
+          "name": "consciousness",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "body",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "transformation"
+    },
+    {
+      "id": "contracts_with",
+      "name": "contracts_with",
+      "definition": "两个主体之间成立契约。",
+      "roles": [
+        {
+          "name": "party1",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "party2",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": true,
+      "family": "agreement"
+    },
+    {
+      "id": "becomes",
+      "name": "becomes",
+      "definition": "主体成为某种角色或走上某种道路。",
+      "roles": [
+        {
+          "name": "entity",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "role",
+          "valueKinds": [
+            "entity",
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "transformation"
+    },
+    {
+      "id": "possesses_body",
+      "name": "possesses_body",
+      "definition": "意识或灵魂拥有或控制某个身体。",
+      "roles": [
+        {
+          "name": "possessor",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "body",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "ownership"
+    },
+    {
+      "id": "is_best_aptitude",
+      "name": "is_best_aptitude",
+      "definition": "某对象被某本书认定为其最佳适格者。",
+      "roles": [
+        {
+          "name": "book",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "evaluation"
+    },
+    {
+      "id": "comes_from",
+      "name": "comes_from",
+      "definition": "某主体来自某处或某来源。",
+      "roles": [
+        {
+          "name": "entity",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "origin",
+          "valueKinds": [
+            "text",
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "origin"
+    },
+    {
+      "id": "guides",
+      "name": "guides",
+      "definition": "某主体引导另一主体走上某种生活或道路。",
+      "roles": [
+        {
+          "name": "guide",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "guided",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "path",
+          "valueKinds": [
+            "text",
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "action"
+    },
+    {
+      "id": "traits",
+      "name": "traits",
+      "definition": "主体具有某些外貌或生理特征。",
+      "roles": [
+        {
+          "name": "entity",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "feature",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "attribute"
+    },
+    {
+      "id": "creates",
+      "name": "creates",
+      "definition": "造物主或主体创造某物或任务。",
+      "roles": [
+        {
+          "name": "creator",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "created",
+          "valueKinds": [
+            "entity",
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "creation"
+    }
+  ],
+  "times": [
+    {
+      "id": "t_contract_time",
+      "at": 63,
+      "description": "契约成立及古书回答反派魔法少女的时刻，约在故事开始后短时间内。",
+      "precision": "relative",
+      "before": [],
+      "after": []
+    },
+    {
+      "id": "t_binding_time",
+      "at": 73,
+      "description": "系统提示墨丘利秘典绑定成功的时刻，紧接契约成立之后。",
+      "precision": "relative",
+      "before": [],
+      "after": [
+        "t_contract_time"
+      ]
+    },
+    {
+      "id": "t_reincarnation",
+      "at": 15,
+      "description": "苏天晴回忆中约五分钟前下班吃面时发生的昏死事件。",
+      "precision": "interval",
+      "before": [],
+      "after": []
+    },
+    {
+      "id": "t_wake",
+      "at": 4,
+      "description": "故事开始时苏天晴在昏暗房间里与古书对话的时刻。",
+      "precision": "point",
+      "before": [],
+      "after": [
+        "t_reincarnation"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "f_name",
+      "at": 5,
+      "text": "苏天晴报出自己的姓名。",
+      "predicate": "named",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        },
+        {
+          "role": "name",
+          "value": {
+            "type": "text",
+            "text": "苏天晴"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "sutianqing",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_a_sutianqing"
+      ],
+      "proof": {
+        "premises": [
+          "material:d1"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "苏天晴回答姓名。"
+      }
+    },
+    {
+      "id": "f_book_name",
+      "at": 29,
+      "text": "古书自称吾名墨丘利秘典。",
+      "predicate": "named",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "id_b_moqiulimidian"
+          }
+        },
+        {
+          "role": "name",
+          "value": {
+            "type": "text",
+            "text": "墨丘利秘典"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_b_moqiulimidian",
+        "id_d"
+      ],
+      "proof": {
+        "premises": [
+          "material:d10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书自称墨丘利秘典。"
+      }
+    },
+    {
+      "id": "f_book_comes",
+      "at": 29,
+      "text": "古书声称从星空彼岸远行至此。",
+      "predicate": "comes_from",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "id_b_moqiulimidian"
+          }
+        },
+        {
+          "role": "origin",
+          "value": {
+            "type": "text",
+            "text": "星空彼岸"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_b_moqiulimidian"
+      ],
+      "proof": {
+        "premises": [
+          "material:d10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书声称来自星空彼岸。"
+      }
+    },
+    {
+      "id": "f_best_aptitude",
+      "at": 30,
+      "text": "古书声称苏天晴是墨丘利秘典的最佳适格者。",
+      "predicate": "is_best_aptitude",
+      "arguments": [
+        {
+          "role": "book",
+          "value": {
+            "type": "ref",
+            "id": "id_b_moqiulimidian"
+          }
+        },
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_b_moqiulimidian",
+        "id_a_sutianqing",
+        "id_e"
+      ],
+      "proof": {
+        "premises": [
+          "material:d10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书称苏天晴为最佳适格者。"
+      }
+    },
+    {
+      "id": "f_reincarnated",
+      "at": 25,
+      "text": "苏天晴心中认为自己重生成了金毛狐女。",
+      "predicate": "is_reincarnated_as",
+      "arguments": [
+        {
+          "role": "consciousness",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        },
+        {
+          "role": "body",
+          "value": {
+            "type": "ref",
+            "id": "id_foxbody"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "sutianqing",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_a_sutianqing",
+        "id_foxbody"
+      ],
+      "proof": {
+        "premises": [
+          "material:d8"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "苏天晴内心独白明确说自己重生成了金毛狐女。"
+      }
+    },
+    {
+      "id": "f_contract",
+      "at": 58,
+      "text": "苏天晴与墨丘利秘典之间成立契约。",
+      "predicate": "contracts_with",
+      "arguments": [
+        {
+          "role": "party1",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        },
+        {
+          "role": "party2",
+          "value": {
+            "type": "ref",
+            "id": "id_b_moqiulimidian"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_contract_time",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_a_sutianqing",
+        "id_b_moqiulimidian"
+      ],
+      "proof": {
+        "premises": [
+          "material:d28",
+          "b15"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书宣告契约成立，苏天晴答应。"
+      }
+    },
+    {
+      "id": "f_becomes_villain",
+      "at": 66,
+      "text": "古书声称苏天晴将成为反派魔法少女并走上顶点。",
+      "predicate": "becomes",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        },
+        {
+          "role": "role",
+          "value": {
+            "type": "ref",
+            "id": "villain_magical_girl_path"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_contract_time",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_a_sutianqing",
+        "id_b_moqiulimidian"
+      ],
+      "proof": {
+        "premises": [
+          "material:d21",
+          "b17"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书声称苏天晴将成为反派魔法少女。"
+      }
+    },
+    {
+      "id": "f_guides",
+      "at": 44,
+      "text": "古书声称作为星界使者会引导苏天晴走上完美的生活。",
+      "predicate": "guides",
+      "arguments": [
+        {
+          "role": "guide",
+          "value": {
+            "type": "ref",
+            "id": "id_b_moqiulimidian"
+          }
+        },
+        {
+          "role": "guided",
+          "value": {
+            "type": "ref",
+            "id": "id_a_sutianqing"
+          }
+        },
+        {
+          "role": "path",
+          "value": {
+            "type": "text",
+            "text": "完美的生活"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_b_moqiulimidian",
+        "id_a_sutianqing"
+      ],
+      "proof": {
+        "premises": [
+          "material:d16",
+          "b13"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书承诺引导苏天晴。"
+      }
+    },
+    {
+      "id": "f_traits",
+      "at": 10,
+      "text": "苏天晴的狐女身体具有金色长发、毛茸茸耳朵、大尾巴、白皙肌肤等特征。",
+      "predicate": "traits",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "id_foxbody"
+          }
+        },
+        {
+          "role": "feature",
+          "value": {
+            "type": "text",
+            "text": "金色长发、毛茸茸耳朵、炸毛大尾巴、白皙肌肤"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_wake",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_foxbody"
+      ],
+      "proof": {
+        "premises": [
+          "material:d2",
+          "b3"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "叙述者描述镜中狐女身体特征。"
+      }
+    },
+    {
+      "id": "f_creator_creates_task",
+      "at": 66,
+      "text": "古书声称造物主为苏天晴量身定制了一整套任务。",
+      "predicate": "creates",
+      "arguments": [
+        {
+          "role": "creator",
+          "value": {
+            "type": "ref",
+            "id": "creator"
+          }
+        },
+        {
+          "role": "created",
+          "value": {
+            "type": "text",
+            "text": "一整套任务"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "moqiulimidian",
+        "opaque": true
+      },
+      "time": "t_contract_time",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "id_b_moqiulimidian"
+      ],
+      "proof": {
+        "premises": [
+          "material:d21"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "古书声称造物主定制任务。"
+      }
+    }
+  ],
+  "arguments": [],
+  "access": [
+    {
+      "id": "ac_a_hears_book",
+      "at": 20,
+      "holder": "id_a_sutianqing",
+      "target": "material:d5",
+      "mode": "heard",
+      "evidence": [
+        "b6",
+        "material:d5"
+      ]
+    },
+    {
+      "id": "ac_a_hears_book_name",
+      "at": 29,
+      "holder": "id_a_sutianqing",
+      "target": "material:d10",
+      "mode": "heard",
+      "evidence": [
+        "b9",
+        "material:d10"
+      ]
+    },
+    {
+      "id": "ac_a_believes_not_original",
+      "at": 39,
+      "holder": "id_a_sutianqing",
+      "target": "material:d14",
+      "mode": "believed",
+      "evidence": [
+        "material:d14",
+        "b12"
+      ]
+    },
+    {
+      "id": "ac_book_believes",
+      "at": 20,
+      "holder": "id_b_moqiulimidian",
+      "target": "material:d6",
+      "mode": "believed",
+      "evidence": [
+        "material:d6",
+        "b6"
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "ep_contract",
+      "at": 43,
+      "title": "苏天晴与墨丘利秘典签订契约",
+      "summary": "古书提出契约，苏天晴立刻答应，随后得知契约内容是成为反派魔法少女，系统提示绑定成功，古书宣告契约成立。",
+      "scale": "sequence",
+      "participants": [
+        "sutianqing",
+        "moqiulimidian"
+      ],
+      "materials": [
+        "b13",
+        "b15",
+        "b17",
+        "b19"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "before",
+          "target": "b17",
+          "evidence": [
+            "b15",
+            "b17"
+          ]
+        }
+      ],
+      "time": "t_contract_time",
+      "proof": {
+        "premises": [
+          "b13",
+          "b15",
+          "b17",
+          "b19"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "按叙事顺序整理契约成立过程。"
+      }
+    },
+    {
+      "id": "ep_rebirth",
+      "at": 15,
+      "title": "苏天晴死亡与重生",
+      "summary": "苏天晴回忆下夜班吃面时胸口疼昏死，之后在昏暗房间中醒来，发现自己成为金毛狐女。",
+      "scale": "sequence",
+      "participants": [
+        "sutianqing",
+        "taitsan",
+        "foxbody"
+      ],
+      "materials": [
+        "b5",
+        "b3",
+        "b8"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "causes",
+          "target": "b3",
+          "evidence": [
+            "b5",
+            "b3"
+          ]
+        }
+      ],
+      "time": "t_reincarnation",
+      "proof": {
+        "premises": [
+          "b5",
+          "b3",
+          "b8"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "苏天晴回忆死亡，随后看到狐女身体。"
+      }
+    },
+    {
+      "id": "ep_identity",
+      "at": 4,
+      "title": "苏天晴与古书初步交流",
+      "summary": "苏天晴回答古书姓名，看到镜中狐女身体，薅自己尾巴，并问古书是谁；古书自称墨丘利秘典。",
+      "scale": "sequence",
+      "participants": [
+        "sutianqing",
+        "moqiulimidian"
+      ],
+      "materials": [
+        "b2",
+        "b3",
+        "b6",
+        "b9"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "ep_rebirth",
+          "evidence": [
+            "b5",
+            "b3",
+            "b9"
+          ]
+        }
+      ],
+      "time": "t_wake",
+      "proof": {
+        "premises": [
+          "b2",
+          "b3",
+          "b6",
+          "b9"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "叙事连续描述苏醒后交流。"
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "id": "sum_sutianqing",
+      "entity": "sutianqing",
+      "facet": "状态变化",
+      "items": [
+        {
+          "text": "苏天晴从原世界死亡后，在昏暗房间中醒来，发现自己成为金毛狐女。",
+          "refs": [
+            "material:d3",
+            "material:d8",
+            "b5",
+            "b3"
+          ]
+        },
+        {
+          "text": "苏天晴与墨丘利秘典签订契约，被宣告将作为反派魔法少女活跃。",
+          "refs": [
+            "material:d28",
+            "material:d21",
+            "b15",
+            "b17"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sum_moqiulimidian",
+      "entity": "moqiulimidian",
+      "facet": "行动与目标",
+      "items": [
+        {
+          "text": "墨丘利秘典自称来自星空彼岸，前来寻找最佳适格者，并确认苏天晴是适格者。",
+          "refs": [
+            "material:d10",
+            "b9"
+          ]
+        },
+        {
+          "text": "墨丘利秘典与苏天晴签订契约，要求她成为反派魔法少女。",
+          "refs": [
+            "material:d28",
+            "material:d21",
+            "b17"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sum_foxbody",
+      "entity": "foxbody",
+      "facet": "外貌特征",
+      "items": [
+        {
+          "text": "镜中的狐女身体是娇小金毛狐女，有金色长发、毛茸茸耳朵、炸毛大尾巴和白皙肌肤。",
+          "refs": [
+            "material:d2",
+            "b3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sum_taitsan",
+      "entity": "taitsan",
+      "facet": "在回忆中出现",
+      "items": [
+        {
+          "text": "苏天晴回忆中，太奶坐在藤椅上编围巾，并曾在她背后说话。",
+          "refs": [
+            "material:d3",
+            "b5"
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "古书自称从星空彼岸远行至此并寻找最优秀适格者，这些属于古书言语，苏天晴是否完全相信尚未明确记录。",
+    "苏天晴在p39-40猜测古书知道自己不是原身体主人，但原主人身份与关系未定。",
+    "作者声明角色均满18岁属paratext，正文未直接给出苏天晴年龄或该声明对应的世界内证据。",
+    "太奶是否真实存在或只是苏天晴临死幻觉，原文未明确。",
+    "造物主身份未明，仅有古书言语提及。",
+    "墨丘利秘典与苏天晴契约的具体约束、代价与任务细节尚未在正文中给出。"
+  ]
+}
