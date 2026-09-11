@@ -18,6 +18,8 @@ bun run ingest -- --run-dir 'evidences/smoke-003' --report --development
 
 标准输出只有结果 JSON，进度和错误写到标准错误。Node 当前可能在标准错误显示 SQLite 实验特性警告，不影响 JSON 输出。`--report` 默认将本目录视为生产实验；开发 smoke 必须加 `--development`，避免把调试成本当作成品单位成本。未知用量、缓存或中断后服务端结果用未知值或区间表示。
 
+只读吞吐与快照体积测量可运行 `node --import tsx experiments/profile-published.ts --run-dir evidences/formal-003`。它只计入已发布前缀，给出各章有效/修复调用耗时、快照实际字节及当前串行调用时间的千万字外推；未知耗时保留未知。与价格报告一起读取，不能把原始请求首末跨度当作纯模型工作时间。
+
 ## 导出与查询
 
 `manifest.json` 的 `head` 是唯一发布进度。`dataset-v7.json` 是最新已发布前缀，`chNN/dataset-v7.json` 是对应章末的不可变快照，均可交给 t09 CLI。历史姓名可在最新快照使用 `--at` 检查；历史摘要使用当时的章末快照。
@@ -37,5 +39,7 @@ node --import tsx ../t09-v7-query-cli/cli.ts --help
 同目录只能有一个写入者。SQLite 事务锁由操作系统在进程退出后释放；输出 JSON 使用临时文件、同步落盘和原子替换。发布中断后重复执行会补齐章末快照或发布指针。不能手工篡改已发布快照或已接受候选；恢复时会验证散列。
 
 策略 -3 的 C 漏项显式分为 material/integration：只有整合层漏项且全部 A 单元通过时沿用 A；材料漏项仍重新提取。每轮独立 C 不带上一语义轮的拒绝反馈，格式或覆盖错误仍在 C 内修复。身份判断可晚于首次提及，但不得早于其证据可用边界。新旧策略必须用不同运行目录，旧章末 dataset 的 t09 查询不受影响。
+
+策略 -4 在 A/B 结构错误重试中使用按记录替换。请求的 `responseMode` 明确为 `complete` 或 `record-patch`；补丁原文保存在 `response.json`/`repair.json`，合成的完整数据保存在 `candidate.json`/`parsed.json`，成功阶段仍是完整 `accepted.json`。非法补丁保留上一基底；合成后仍有错误时继续修复最新候选。需要增删或拆分时模型显式返回 `regenerate`，下一次完整重建。模式和容量进入失败检查点，恢复不会把补丁当完整候选，也不重发已保存响应。语义返工的首次输出及 C 始终为完整数据。
 
 当前实验不保证语义穷尽，导出明确标记 `semantic: partial`、`corpusClosed: false`；没有检索到关系不等于小说明确否认该关系。单本千万字的生产边界与成本口径见 [规模与成本](scale-and-cost.md)。

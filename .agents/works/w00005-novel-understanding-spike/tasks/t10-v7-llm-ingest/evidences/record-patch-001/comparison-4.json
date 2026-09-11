@@ -1,0 +1,361 @@
+{
+  "schema": "neurobook.record-patch.comparison.v1",
+  "classification": "development",
+  "cases": [
+    {
+      "id": "material-enum",
+      "source": "ch04/round-1/material/attempt-2",
+      "stage": "material",
+      "requestHash": "694b65e83a877d21d38dd7a014124211b0286e52b1470a85d633ee0490e73dc2",
+      "baseline": {
+        "usage": {
+          "inputTokens": 19589,
+          "outputTokens": 21480,
+          "cacheHitTokens": 4352,
+          "cacheMissTokens": 15237
+        },
+        "durationMs": 72924,
+        "reasoningTokens": 11418,
+        "cost": {
+          "estimatedUsd": 0.015186606,
+          "minimumUsd": 0.015186606,
+          "maximumUsd": 0.015186606,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.01582635,
+        "validation": {
+          "passed": false,
+          "error": "Material validation failed:\nMention r_sutianqing text \"苏天晴\" occurrence 0 absent at paragraph 111\nMention r_guardstar text \"守护之星\" occurrence 0 absent at paragraph 83"
+        }
+      },
+      "patch": {
+        "usage": {
+          "inputTokens": 19815,
+          "outputTokens": 8182,
+          "cacheHitTokens": 0,
+          "cacheMissTokens": 19815
+        },
+        "durationMs": 28040,
+        "reasoningTokens": 5969,
+        "cost": {
+          "estimatedUsd": 0.00788145,
+          "minimumUsd": 0.00788145,
+          "maximumUsd": 0.00788145,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.00788145,
+        "validation": {
+          "passed": false,
+          "error": "Material validation failed:\nMention r_sutianqing text \"苏天晴\" occurrence 0 absent at paragraph 99\nMention r_sutianqing text \"苏天晴\" occurrence 0 absent at paragraph 111\nMention r_guardstar text \"守护之星\" occurrence 0 absent at paragraph 83"
+        },
+        "changed": [
+          "disclosures/d8",
+          "disclosures/d9",
+          "disclosures/d10",
+          "disclosures/d14",
+          "disclosures/d19",
+          "disclosures/d20",
+          "disclosures/d22",
+          "disclosures/d23",
+          "disclosures/d25",
+          "disclosures/d26",
+          "disclosures/d28",
+          "disclosures/d29",
+          "disclosures/d30",
+          "disclosures/d32",
+          "disclosures/d38",
+          "disclosures/d40",
+          "disclosures/d44",
+          "disclosures/d46",
+          "disclosures/d48",
+          "disclosures/d54",
+          "disclosures/d63",
+          "disclosures/d68",
+          "disclosures/d69",
+          "disclosures/d71",
+          "disclosures/d74",
+          "disclosures/d78",
+          "disclosures/d80",
+          "disclosures/d84",
+          "disclosures/d86"
+        ],
+        "unchangedRecordsVerified": 96
+      },
+      "semanticReview": "not-performed"
+    },
+    {
+      "id": "integration-identity-id",
+      "source": "ch04/round-2/integration/attempt-4",
+      "stage": "integration",
+      "requestHash": "a7981dab304188cf28b2fc39060efa3c0434df006bffd98fe3def5e292cfbd01",
+      "baseline": {
+        "usage": {
+          "inputTokens": 61897,
+          "outputTokens": 27210,
+          "cacheHitTokens": 50304,
+          "cacheMissTokens": 11593
+        },
+        "durationMs": 98765,
+        "reasoningTokens": 16022,
+        "cost": {
+          "estimatedUsd": 0.018215862,
+          "minimumUsd": 0.018215862,
+          "maximumUsd": 0.018215862,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.02561055,
+        "validation": {
+          "passed": true,
+          "error": null
+        }
+      },
+      "patch": {
+        "usage": {
+          "inputTokens": 62141,
+          "outputTokens": 1511,
+          "cacheHitTokens": 0,
+          "cacheMissTokens": 62141
+        },
+        "durationMs": 7193,
+        "reasoningTokens": 868,
+        "cost": {
+          "estimatedUsd": 0.01022775,
+          "minimumUsd": 0.01022775,
+          "maximumUsd": 0.01022775,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.01022775,
+        "validation": {
+          "passed": true,
+          "error": null
+        },
+        "changed": [
+          "facts/f_wind_obtains_star",
+          "facts/f_bailing_is_stargazer",
+          "facts/f_bailing_recognizes_star"
+        ],
+        "unchangedRecordsVerified": 78
+      },
+      "semanticReview": "not-performed"
+    },
+    {
+      "id": "integration-role-names",
+      "source": "ch04/round-5/integration/attempt-4",
+      "stage": "integration",
+      "requestHash": "2679b6d464fb606fb08861fb2b4e168e74b6479216a447d61fb010d5432c7e55",
+      "baseline": {
+        "usage": {
+          "inputTokens": 64746,
+          "outputTokens": 25026,
+          "cacheHitTokens": 50944,
+          "cacheMissTokens": 13802
+        },
+        "durationMs": 78694,
+        "reasoningTokens": 8690,
+        "cost": {
+          "estimatedUsd": 0.017238731999999996,
+          "minimumUsd": 0.017238731999999996,
+          "maximumUsd": 0.017238731999999996,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.0247275,
+        "validation": {
+          "passed": false,
+          "error": "Integration references invalid:\nf_003_true_name.fact dependencies at 4:4 references t_ch4_day, available only at 4:5"
+        }
+      },
+      "patch": {
+        "usage": {
+          "inputTokens": 64990,
+          "outputTokens": 2119,
+          "cacheHitTokens": 0,
+          "cacheMissTokens": 64990
+        },
+        "durationMs": 10402,
+        "reasoningTokens": 1833,
+        "cost": {
+          "estimatedUsd": 0.0110199,
+          "minimumUsd": 0.0110199,
+          "maximumUsd": 0.0110199,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.0110199,
+        "validation": {
+          "passed": true,
+          "error": null
+        },
+        "changed": [
+          "predicates/p_meets",
+          "facts/f_007_meets_bailin"
+        ],
+        "unchangedRecordsVerified": 93
+      },
+      "semanticReview": "not-performed"
+    },
+    {
+      "id": "integration-availability",
+      "source": "ch04/round-1/integration/attempt-2",
+      "stage": "integration",
+      "requestHash": "8518ab94ffb4e3a33e37c95a94e9926cb8a91e201876014e165b292ca1cdd840",
+      "baseline": {
+        "usage": {
+          "inputTokens": 62273,
+          "outputTokens": 20995,
+          "cacheHitTokens": 50304,
+          "cacheMissTokens": 11969
+        },
+        "durationMs": 70947,
+        "reasoningTokens": 9896,
+        "cost": {
+          "estimatedUsd": 0.014543262000000001,
+          "minimumUsd": 0.014543262000000001,
+          "maximumUsd": 0.014543262000000001,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.021937949999999998,
+        "validation": {
+          "passed": true,
+          "error": null
+        }
+      },
+      "patch": {
+        "usage": {
+          "inputTokens": 62517,
+          "outputTokens": 8383,
+          "cacheHitTokens": 0,
+          "cacheMissTokens": 62517
+        },
+        "durationMs": 35926,
+        "reasoningTokens": 8066,
+        "cost": {
+          "estimatedUsd": 0.01440735,
+          "minimumUsd": 0.01440735,
+          "maximumUsd": 0.01440735,
+          "unknownOutcome": false,
+          "unknownUsage": false,
+          "supportedModel": true,
+          "cacheSplitKnown": true,
+          "cacheSplitValid": true,
+          "pricePeriod": "offpeak",
+          "ratesPerMillion": {
+            "hit": 0.003,
+            "miss": 0.15,
+            "output": 0.6
+          },
+          "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+          "priceDate": "2026-09-10",
+          "billingExact": false
+        },
+        "offpeakAllMissUsd": 0.01440735,
+        "validation": {
+          "passed": true,
+          "error": null
+        },
+        "changed": [
+          "times/t_ch4_night",
+          "facts/f_hero_alert"
+        ],
+        "unchangedRecordsVerified": 77
+      },
+      "semanticReview": "not-performed"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "Single structural repair step, not end-to-end convergence or semantic quality",
+    "No records may be deleted to game validation",
+    "Original inputs and formal snapshots remain unchanged",
+    "Actual-period cost and a normalized offpeak all-miss estimate are distinct"
+  ]
+}

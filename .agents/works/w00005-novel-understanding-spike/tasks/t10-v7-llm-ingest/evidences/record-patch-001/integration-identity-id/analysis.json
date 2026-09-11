@@ -1,0 +1,81 @@
+{
+  "id": "integration-identity-id",
+  "source": "ch04/round-2/integration/attempt-4",
+  "stage": "integration",
+  "requestHash": "a7981dab304188cf28b2fc39060efa3c0434df006bffd98fe3def5e292cfbd01",
+  "baseline": {
+    "usage": {
+      "inputTokens": 61897,
+      "outputTokens": 27210,
+      "cacheHitTokens": 50304,
+      "cacheMissTokens": 11593
+    },
+    "durationMs": 98765,
+    "reasoningTokens": 16022,
+    "cost": {
+      "estimatedUsd": 0.018215862,
+      "minimumUsd": 0.018215862,
+      "maximumUsd": 0.018215862,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeakAllMissUsd": 0.02561055,
+    "validation": {
+      "passed": true,
+      "error": null
+    }
+  },
+  "patch": {
+    "usage": {
+      "inputTokens": 62141,
+      "outputTokens": 1511,
+      "cacheHitTokens": 0,
+      "cacheMissTokens": 62141
+    },
+    "durationMs": 7193,
+    "reasoningTokens": 868,
+    "cost": {
+      "estimatedUsd": 0.01022775,
+      "minimumUsd": 0.01022775,
+      "maximumUsd": 0.01022775,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeakAllMissUsd": 0.01022775,
+    "validation": {
+      "passed": true,
+      "error": null
+    },
+    "changed": [
+      "facts/f_wind_obtains_star",
+      "facts/f_bailing_is_stargazer",
+      "facts/f_bailing_recognizes_star"
+    ],
+    "unchangedRecordsVerified": 78
+  },
+  "semanticReview": "not-performed"
+}

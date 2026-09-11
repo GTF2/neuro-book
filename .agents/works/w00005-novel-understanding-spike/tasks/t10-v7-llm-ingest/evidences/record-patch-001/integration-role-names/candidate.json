@@ -1,0 +1,2966 @@
+{
+  "referentAdditions": [],
+  "entities": [
+    {
+      "id": "e_bailin",
+      "category": "person"
+    },
+    {
+      "id": "e_blackwolf",
+      "category": "unresolved"
+    },
+    {
+      "id": "e_drugA",
+      "category": "artifact"
+    },
+    {
+      "id": "e_wand",
+      "category": "artifact"
+    }
+  ],
+  "identities": [
+    {
+      "id": "i_wind",
+      "at": 4,
+      "referent": "r_wind",
+      "entity": "known:c03:e_fengxinzi",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第2段自称风信子，第4段揭示真名南小风，映射旧魔法少女风信子持续主体。",
+      "evidence": [
+        "d1",
+        "d3",
+        "known:c03:i_fx"
+      ]
+    },
+    {
+      "id": "i_bailin",
+      "at": 20,
+      "referent": "r_bailin",
+      "entity": "e_bailin",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第15段白貂般奇妙生物由第20段自称白灵的观星者精灵确认，创建持续人物白灵。",
+      "evidence": [
+        "d12",
+        "d16",
+        "d16a"
+      ]
+    },
+    {
+      "id": "i_sutianqing",
+      "at": 41,
+      "referent": "r_sutianqing",
+      "entity": "known:c01:e_su",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第41段苏天晴在树丛后观察，与旧持续人物苏天晴（意识主体）一致，未与原主或身体归并。",
+      "evidence": [
+        "d30",
+        "known:c03:i_stq"
+      ]
+    },
+    {
+      "id": "i_blackwolf",
+      "at": 31,
+      "referent": "r_heiwolf",
+      "entity": "e_blackwolf",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第29段黑色怪物与第31段狼形怪物为同一指称，后续黑狼怪人/黑狼兽人一致，创建个体怪人；真实身份未揭示。",
+      "evidence": [
+        "d22",
+        "d23"
+      ]
+    },
+    {
+      "id": "i_secretbook",
+      "at": 49,
+      "referent": "r_secretbook",
+      "entity": "known:c01:e_book",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第47至49段秘典/墨丘利秘典继续映射旧墨丘利秘典artifact。",
+      "evidence": [
+        "d34",
+        "d35",
+        "known:c03:i_book"
+      ]
+    },
+    {
+      "id": "i_drugA",
+      "at": 50,
+      "referent": "r_drugA",
+      "entity": "e_drugA",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第47段苏天晴质问秘典给的强化药，第50段购买怪人强化药A并喂给黑狼怪人，为同一持续道具。",
+      "evidence": [
+        "d34",
+        "d36"
+      ]
+    },
+    {
+      "id": "i_guardstar",
+      "at": 20,
+      "referent": "r_guardstar",
+      "entity": "known:c02:e_guardian_star",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第20段守护之星映射旧守护之星artifact；第83段金色十字星为同一物后续指称。",
+      "evidence": [
+        "d16"
+      ]
+    },
+    {
+      "id": "i_heroassociation",
+      "at": 5,
+      "referent": "r_heroassociation",
+      "entity": "known:c03:e_hero_assoc",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第5段英雄协会与旧英雄协会组织一致。",
+      "evidence": [
+        "d4"
+      ]
+    },
+    {
+      "id": "i_park",
+      "at": 2,
+      "referent": "r_park",
+      "entity": "known:c03:e_green_park",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第2段绿心公园与旧绿心公园地点一致。",
+      "evidence": [
+        "d1"
+      ]
+    },
+    {
+      "id": "i_rongcheng",
+      "at": 3,
+      "referent": "r_rongcheng",
+      "entity": "known:c02:e_rongcheng",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第3段蓉城与旧蓉城市地点一致。",
+      "evidence": [
+        "d2"
+      ]
+    },
+    {
+      "id": "i_wand",
+      "at": 31,
+      "referent": "r_wand",
+      "entity": "e_wand",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第11至12段魔杖由第31段化作大剑，为风信子持有的持续武器artifact。",
+      "evidence": [
+        "d9",
+        "d23"
+      ]
+    },
+    {
+      "id": "i_shendianshi",
+      "at": 49,
+      "referent": "r_shendianshi",
+      "entity": "known:c02:e_divine_stone",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第49段神典石与旧神典石资源类型一致。",
+      "evidence": [
+        "d35"
+      ]
+    },
+    {
+      "id": "i_monster",
+      "at": 6,
+      "referent": "r_monster",
+      "entity": "known:c03:e_monster",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第6段怪人袭击中的怪人映射旧怪人怪兽类别。",
+      "evidence": [
+        "d5"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "id": "p_true_name",
+      "name": "has_true_name",
+      "definition": "人物拥有真名或化名。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "name",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "identity"
+    },
+    {
+      "id": "p_notified",
+      "name": "notified",
+      "definition": "某人接到某来源的通知。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        },
+        {
+          "name": "source",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "communication"
+    },
+    {
+      "id": "p_decides",
+      "name": "decides",
+      "definition": "某人决定或打算做某事。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "intention"
+    },
+    {
+      "id": "p_has_species",
+      "name": "has_species",
+      "definition": "某存在属于某物种或类别。",
+      "roles": [
+        {
+          "name": "entity",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "species",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "classification"
+    },
+    {
+      "id": "p_meets",
+      "name": "meets",
+      "definition": "某人与某人相遇。",
+      "roles": [
+        {
+          "name": "person1",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "person2",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": true,
+      "family": "relation"
+    },
+    {
+      "id": "p_grants",
+      "name": "grants",
+      "definition": "某人给予或引导他人获得某物。",
+      "roles": [
+        {
+          "name": "giver",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "recipient",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "object",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "transfer"
+    },
+    {
+      "id": "p_resolves",
+      "name": "resolves",
+      "definition": "某人解决或处理某威胁事件。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "threat",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_is_topic",
+      "name": "is_topic",
+      "definition": "某人在某地成为民众谈论的话题。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "social"
+    },
+    {
+      "id": "p_buys",
+      "name": "buys",
+      "definition": "某人以某价格购买某物。",
+      "roles": [
+        {
+          "name": "buyer",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "item",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "price",
+          "valueKinds": [
+            "number"
+          ]
+        },
+        {
+          "name": "currency",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "commerce"
+    },
+    {
+      "id": "p_administer",
+      "name": "administer",
+      "definition": "某人将某物喂给或灌入某对象。",
+      "roles": [
+        {
+          "name": "agent",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "patient",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "substance",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "action"
+    },
+    {
+      "id": "p_revives",
+      "name": "revives",
+      "definition": "某对象倒下后复活或重新暴起。",
+      "roles": [
+        {
+          "name": "subject",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "transformation"
+    },
+    {
+      "id": "p_emits_attack",
+      "name": "emits_attack",
+      "definition": "某生物从口中喷吐攻击物攻击某目标。",
+      "roles": [
+        {
+          "name": "attacker",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "target",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "projectile",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_captures",
+      "name": "captures",
+      "definition": "某抓住或束缚某对象。",
+      "roles": [
+        {
+          "name": "captor",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "captive",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_proposes",
+      "name": "proposes",
+      "definition": "某人向某人提议某内容或条件。",
+      "roles": [
+        {
+          "name": "proposer",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "addressee",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "speech"
+    },
+    {
+      "id": "p_has_talent",
+      "name": "has_talent",
+      "definition": "某人的天赋或能力是某内容。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "talent",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "attribute"
+    },
+    {
+      "id": "p_questions",
+      "name": "questions",
+      "definition": "某人内心质问或怀疑某事。",
+      "roles": [
+        {
+          "name": "holder",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        },
+        {
+          "name": "about",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "belief"
+    },
+    {
+      "id": "p_believes",
+      "name": "believes",
+      "definition": "某人相信或认为某内容。",
+      "roles": [
+        {
+          "name": "holder",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        },
+        {
+          "name": "about",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "belief"
+    },
+    {
+      "id": "p_plans",
+      "name": "plans",
+      "definition": "某人在心中计划或宣告某计划。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "intention"
+    },
+    {
+      "id": "p_active_as",
+      "name": "active_as",
+      "definition": "某人以某身份在某地活动。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "role",
+          "valueKinds": [
+            "text"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "identity"
+    },
+    {
+      "id": "p_sees",
+      "name": "sees",
+      "definition": "某人看见某对象。",
+      "roles": [
+        {
+          "name": "observer",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "object",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "perception"
+    },
+    {
+      "id": "p_combats",
+      "name": "combats",
+      "definition": "某人与某怪物战斗。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "monster",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_defeats",
+      "name": "defeats",
+      "definition": "某人击败某怪物。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "monster",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_announces",
+      "name": "announces",
+      "definition": "某人宣布或报告自身状态、行动或意图。",
+      "roles": [
+        {
+          "name": "speaker",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "speech"
+    }
+  ],
+  "times": [
+    {
+      "id": "t_ch4_day",
+      "at": 4,
+      "description": "第4章开学前第二天白天：南小风在家补作业时接到英雄协会通讯，随后准备前往绿心公园。",
+      "precision": "interval",
+      "before": [],
+      "after": []
+    },
+    {
+      "id": "t_ch4_afternoon",
+      "at": 49,
+      "description": "第4章下午：苏天晴研究墨丘利秘典、购买怪人强化药A并喂给黑狼怪人。",
+      "precision": "interval",
+      "before": [
+        "t_ch4_night"
+      ],
+      "after": [
+        "t_ch4_day"
+      ]
+    },
+    {
+      "id": "t_ch4_night",
+      "at": 12,
+      "description": "第4章夜间至深夜：风信子赶往绿心公园迎击怪人，与黑狼怪人激战，黑狼复活后擒住她，苏天晴现身。",
+      "precision": "interval",
+      "before": [],
+      "after": [
+        "t_ch4_day"
+      ]
+    },
+    {
+      "id": "t_half_year_ago",
+      "at": 20,
+      "description": "半年前：离家出走的南小风遇到白灵，并在其引导下获得守护之星。",
+      "precision": "relative",
+      "before": [
+        "t_ch4_day"
+      ],
+      "after": []
+    }
+  ],
+  "facts": [
+    {
+      "id": "f_001_hero_report",
+      "at": 6,
+      "text": "英雄协会发布紧急通讯：蓉城绿心公园出现怪人袭击，立刻前往支援。",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_hero_assoc"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "蓉城绿心公园出现怪人袭击，立刻前往支援"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c03:e_hero_assoc",
+        "opaque": true
+      },
+      "time": "t_ch4_day",
+      "quantifier": "particular",
+      "modality": "obligatory",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_hero",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d5"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第6段英雄协会通讯直接记录为英雄协会发出的支援要求。"
+      }
+    },
+    {
+      "id": "f_002_wind_announce",
+      "at": 2,
+      "text": "风信子自称已接到报告，正在赶往绿心公园。",
+      "predicate": "p_announces",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "我是风信子，已经接到报告，正在赶往绿心公园"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c03:e_fengxinzi",
+        "opaque": true
+      },
+      "time": null,
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d1"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第2段风信子自称与报告内容直接录入为发言。"
+      }
+    },
+    {
+      "id": "f_003_true_name",
+      "at": 4,
+      "text": "魔法少女风信子的真名是南小风。",
+      "predicate": "p_true_name",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "name",
+          "value": {
+            "type": "text",
+            "text": "南小风"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_day",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d3"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第4段叙述者直接给出风信子真名南小风。"
+      }
+    },
+    {
+      "id": "f_004_su_summoned",
+      "at": 5,
+      "text": "南小风在开学前第二天收到英雄协会的紧急通讯。",
+      "predicate": "p_notified",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "紧急通讯打断补暑假作业"
+          }
+        },
+        {
+          "role": "source",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_hero_assoc"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_day",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "known:c03:i_hero"
+      ],
+      "proof": {
+        "premises": [
+          "d4"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第5段叙述者说明英雄协会紧急通讯打断南小风补作业。"
+      }
+    },
+    {
+      "id": "f_005_wind_decides",
+      "at": 8,
+      "text": "南小风决定今天袭击绿心公园的怪人不会有好下场。",
+      "predicate": "p_decides",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "今天袭击绿心公园的怪人绝对不会有什么好下场"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c03:e_fengxinzi",
+        "opaque": true
+      },
+      "time": "t_ch4_day",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d7"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第8段为南小风内心决定，保留其思想归属。"
+      }
+    },
+    {
+      "id": "f_006_bailin_species",
+      "at": 20,
+      "text": "白灵是观星者精灵，自称白灵。",
+      "predicate": "p_has_species",
+      "arguments": [
+        {
+          "role": "entity",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "species",
+          "value": {
+            "type": "text",
+            "text": "观星者精灵"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": null,
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin"
+      ],
+      "proof": {
+        "premises": [
+          "d16a"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第20段叙述者明确白灵是自称白灵的观星者精灵。"
+      }
+    },
+    {
+      "id": "f_007_meets_bailin",
+      "at": 20,
+      "text": "半年前离家出走的南小风遇到白灵。",
+      "predicate": "p_meets",
+      "arguments": [
+        {
+          "role": "person1",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "person2",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_half_year_ago",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_bailin"
+      ],
+      "proof": {
+        "premises": [
+          "d16"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第20段叙述者说明半年前离家出走的南小风遇到白灵。"
+      }
+    },
+    {
+      "id": "f_008_grants_guardian",
+      "at": 20,
+      "text": "在白灵的引导下，南小风获得了一枚守护之星。",
+      "predicate": "p_grants",
+      "arguments": [
+        {
+          "role": "giver",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "recipient",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_guardian_star"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_half_year_ago",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin",
+        "known:c03:i_fx",
+        "i_guardstar"
+      ],
+      "proof": {
+        "premises": [
+          "d16"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第20段叙述者说明白灵引导南小风获得守护之星。"
+      }
+    },
+    {
+      "id": "f_009_active_as",
+      "at": 20,
+      "text": "南小风从此以魔法少女风信子的身份活跃于蓉城。",
+      "predicate": "p_active_as",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "role",
+          "value": {
+            "type": "text",
+            "text": "魔法少女风信子"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_rongcheng"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_half_year_ago",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_rongcheng"
+      ],
+      "proof": {
+        "premises": [
+          "d16"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第20段叙述者说明南小风以风信子身份活跃于蓉城。"
+      }
+    },
+    {
+      "id": "f_010_resolves",
+      "at": 21,
+      "text": "风信子屡次成功解决英雄协会无法处理的怪人袭击。",
+      "predicate": "p_resolves",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "threat",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_monster"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_half_year_ago",
+      "quantifier": "some",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "known:c03:i_monster"
+      ],
+      "proof": {
+        "premises": [
+          "d17"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第21段叙述者说明风信子屡次解决英雄协会无法处理的怪人袭击。"
+      }
+    },
+    {
+      "id": "f_011_topic",
+      "at": 21,
+      "text": "风信子成为蓉城民众常常谈论的话题。",
+      "predicate": "p_is_topic",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_rongcheng"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_half_year_ago",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_rongcheng"
+      ],
+      "proof": {
+        "premises": [
+          "d17a"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第21段叙述者说明风信子成为蓉城民众常常谈论的话题。"
+      }
+    },
+    {
+      "id": "f_012_wind_slow",
+      "at": 26,
+      "text": "南小风喊白灵慢点，并让白灵稍微等自己一下。",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "慢点！白灵你慢点！稍微等我一下——"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c03:e_fengxinzi",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_bailin"
+      ],
+      "proof": {
+        "premises": [
+          "d21"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第25至26段南小风对白灵说话，受事与请求对象均为白灵。"
+      }
+    },
+    {
+      "id": "f_013_bailin_warns",
+      "at": 32,
+      "text": "白灵警告南小风：这是个很厉害的怪人，当心。",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "这是个很厉害的怪人，当心"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "e_bailin",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d24"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第32段白灵对南小风发出警告，保留发言归属。"
+      }
+    },
+    {
+      "id": "f_014_wind_fights",
+      "at": 37,
+      "text": "风信子与黑狼怪人展开战斗。",
+      "predicate": "p_combats",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "monster",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_blackwolf"
+      ],
+      "proof": {
+        "premises": [
+          "d28",
+          "d23"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第31段魔杖化剑警惕狼形怪物，第37段风信子猛冲上前，聚合为两者战斗。"
+      }
+    },
+    {
+      "id": "f_015_su_evals_wind",
+      "at": 44,
+      "text": "苏天晴评价风信子动作干练简洁、大剑每下攻击有力、五官可爱、裙子华丽蓬松，只嫌袜子短。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "动作干练简洁，大剑每下攻击很有力，五官可爱，裙子华丽蓬松，就是袜子短了点"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d31"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第42至44段为苏天晴内心评价，保留思想归属。"
+      }
+    },
+    {
+      "id": "f_016_su_questions_drug",
+      "at": 50,
+      "text": "苏天晴心中质问秘典：你给我的强化药该不会是假的吧？",
+      "predicate": "p_questions",
+      "arguments": [
+        {
+          "role": "holder",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "你给我的强化药该不会是假的吧"
+          }
+        },
+        {
+          "role": "about",
+          "value": {
+            "type": "ref",
+            "id": "e_drugA"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "i_drugA"
+      ],
+      "proof": {
+        "premises": [
+          "d34"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第47段为苏天晴内心质问秘典，受事为秘典给她的强化药，保留思想归属。"
+      }
+    },
+    {
+      "id": "f_017_su_finds_system",
+      "at": 49,
+      "text": "苏天晴发现墨丘利秘典系统能买东西，并准备了200神典石启动资金。",
+      "predicate": "p_believes",
+      "arguments": [
+        {
+          "role": "holder",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "墨丘利秘典系统能买东西，并准备了200神典石启动资金"
+          }
+        },
+        {
+          "role": "about",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "known:c03:i_book",
+        "i_shendianshi"
+      ],
+      "proof": {
+        "premises": [
+          "d35"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第49段为苏天晴研究秘典后的内心认知，保留其归属。"
+      }
+    },
+    {
+      "id": "f_018_su_buys_drug",
+      "at": 50,
+      "text": "苏天晴花50神典石买下一瓶怪人强化药A。",
+      "predicate": "p_buys",
+      "arguments": [
+        {
+          "role": "buyer",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "item",
+          "value": {
+            "type": "ref",
+            "id": "e_drugA"
+          }
+        },
+        {
+          "role": "price",
+          "value": {
+            "type": "number",
+            "number": 50,
+            "unit": "神典石"
+          }
+        },
+        {
+          "role": "currency",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_divine_stone"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "i_drugA",
+        "i_shendianshi"
+      ],
+      "proof": {
+        "premises": [
+          "d36"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第50段叙述者记录苏天晴花50神典石买下怪人强化药A。"
+      }
+    },
+    {
+      "id": "f_019_su_feeds_wolf",
+      "at": 50,
+      "text": "苏天晴将怪人强化药A灌入黑狼怪人嘴里。",
+      "predicate": "p_administer",
+      "arguments": [
+        {
+          "role": "agent",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "patient",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        },
+        {
+          "role": "substance",
+          "value": {
+            "type": "ref",
+            "id": "e_drugA"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "i_blackwolf",
+        "i_drugA"
+      ],
+      "proof": {
+        "premises": [
+          "d36"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第50段叙述者记录苏天晴往黑狼怪人嘴里灌药。"
+      }
+    },
+    {
+      "id": "f_020_su_plan",
+      "at": 56,
+      "text": "苏天晴心中盘算：等风信子自以为打败黑狼怪人的时候，才是真正的开始。",
+      "predicate": "p_plans",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "等那风信子自以为打败黑狼怪人的时候……才是真正的开始啊"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "d41"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第55至56段为苏天晴心中计划，保留思想归属。"
+      }
+    },
+    {
+      "id": "f_021_wind_defeats_wolf",
+      "at": 60,
+      "text": "风信子以化成大剑的魔杖劈中黑狼怪人，黑狼倒下没了动静。",
+      "predicate": "p_defeats",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "monster",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_blackwolf"
+      ],
+      "proof": {
+        "premises": [
+          "d43"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第59至60段叙述者记录大剑劈砍后黑狼怪人倒伏没了动静。"
+      }
+    },
+    {
+      "id": "f_022_bailin_sees_star",
+      "at": 83,
+      "text": "白灵看见小狐狸胸前的金色十字星。",
+      "predicate": "p_sees",
+      "arguments": [
+        {
+          "role": "observer",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_guardian_star"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin",
+        "i_guardstar"
+      ],
+      "proof": {
+        "premises": [
+          "d56"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第83段叙述者明确看见小狐狸胸前金色十字星的是白灵。"
+      }
+    },
+    {
+      "id": "f_023_bailin_asks",
+      "at": 84,
+      "text": "白灵大声问：守、守护之星？你也是魔法少女？！",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "e_bailin"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "守、守护之星？你也是魔法少女？！"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "e_bailin",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin",
+        "known:c03:i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "d56a"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第84段白灵看见十字星后大声发问，发言归属白灵。"
+      }
+    },
+    {
+      "id": "f_024_su_answers_villain",
+      "at": 90,
+      "text": "苏天晴回答：是反派哦。",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "是反派哦"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d62"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第90段苏天晴对风信子回答自己是反派。"
+      }
+    },
+    {
+      "id": "f_025_wind_confused",
+      "at": 89,
+      "text": "南小风心想蓉城只有自己一名魔法少女，没有观星者的帮助不可能得到守护之星，不知道眼前这个陌生魔法少女是怎么回事。",
+      "predicate": "p_believes",
+      "arguments": [
+        {
+          "role": "holder",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "蓉城只有自己一名魔法少女，没有观星者的帮助是不可能得到守护之星的，那眼前这个陌生魔法少女……"
+          }
+        },
+        {
+          "role": "about",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_guardian_star"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c03:e_fengxinzi",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "i_guardstar"
+      ],
+      "proof": {
+        "premises": [
+          "d60",
+          "d61"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第88至89段为南小风追问与内心推测，明确保留为风信子的认知而非叙述事实。"
+      }
+    },
+    {
+      "id": "f_026_wolf_revives",
+      "at": 96,
+      "text": "原本倒伏在地的黑狼兽人骤然暴起。",
+      "predicate": "p_revives",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_blackwolf"
+      ],
+      "proof": {
+        "premises": [
+          "d64"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第93至96段叙述者记录黑狼兽人骤然暴起。"
+      }
+    },
+    {
+      "id": "f_027_wolf_emits",
+      "at": 97,
+      "text": "黑狼兽人口中喷吐出无数黑影，击飞风信子。",
+      "predicate": "p_emits_attack",
+      "arguments": [
+        {
+          "role": "attacker",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        },
+        {
+          "role": "target",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "projectile",
+          "value": {
+            "type": "text",
+            "text": "无数黑影"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_blackwolf",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d64",
+          "d65"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第93至97段黑狼喷出无数黑影，风信子被砸得倒飞。"
+      }
+    },
+    {
+      "id": "f_028_wolf_captures",
+      "at": 100,
+      "text": "复活的黑狼怪人抓住风信子。",
+      "predicate": "p_captures",
+      "arguments": [
+        {
+          "role": "captor",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        },
+        {
+          "role": "captive",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_blackwolf",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d68"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第100段叙述者记录黑狼怪人抓住风信子。"
+      }
+    },
+    {
+      "id": "f_029_su_belief_ability",
+      "at": 101,
+      "text": "苏天晴心中认定这是强化药A赋予黑狼怪人的终极能力，能在倒下后发动。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_blackwolf"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "这是那瓶强化药A赋予黑狼怪人的终极能力，能在倒下后发动"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "i_blackwolf",
+        "i_drugA"
+      ],
+      "proof": {
+        "premises": [
+          "d69"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第101段为苏天晴心中判断，明确保留其认知归属而非世界事实。"
+      }
+    },
+    {
+      "id": "f_030_su_declares_phase2",
+      "at": 102,
+      "text": "苏天晴在心中以反派口吻宣告：第二阶段，堂堂展开！",
+      "predicate": "p_plans",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "第二阶段，堂堂展开！"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "d69a"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第102段为苏天晴内心/反派口吻宣告，保留为思想内容。"
+      }
+    },
+    {
+      "id": "f_031_su_proposes_game",
+      "at": 122,
+      "text": "苏天晴向风信子提议：想不想玩游戏，赢了就放她下来；否则不松爪。",
+      "predicate": "p_proposes",
+      "arguments": [
+        {
+          "role": "proposer",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "想不想跟狐狐我玩点游戏呢？要是你赢了的话我就把你放下来哟。要是不愿意的话，狐狐我可不会让它们松开哦。"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d82"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第121至122段苏天晴向风信子提出游戏条件。"
+      }
+    },
+    {
+      "id": "f_032_wind_pleads",
+      "at": 115,
+      "text": "风信子失去矜持，哀鸣着叫苏天晴等等、别走。",
+      "predicate": "known:c03:p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "给我等等！等一下！别走！！"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c03:e_fengxinzi",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_fx",
+        "known:c03:i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "d77"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第114至115段风信子哀鸣叫对方等等别走。"
+      }
+    },
+    {
+      "id": "f_033_talent",
+      "at": 73,
+      "text": "白灵说南小风的魔法少女天赋是近战压制。",
+      "predicate": "p_has_talent",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "talent",
+          "value": {
+            "type": "text",
+            "text": "近战压制"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "e_bailin",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_bailin",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d52a"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第73段白灵说南小风的魔法少女天赋是近战压制。"
+      }
+    },
+    {
+      "id": "f_034_game_condition",
+      "at": 128,
+      "text": "苏天晴说游戏是挠痒痒，并提出风信子坚持一分钟不叫出声就放她下来。",
+      "predicate": "p_proposes",
+      "arguments": [
+        {
+          "role": "proposer",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "known:c03:e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "挠痒痒哟。要是风信子小姐你能坚持一分钟不叫出声，狐狐我就放你下来~"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch4_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "known:c03:i_stq",
+        "known:c03:i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "d85"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第126至128段苏天晴提出挠痒痒游戏与坚持一分钟的条件。"
+      }
+    }
+  ],
+  "arguments": [],
+  "access": [
+    {
+      "id": "a_001_wind_heard_report",
+      "at": 6,
+      "holder": "known:c03:e_fengxinzi",
+      "target": "f_001_hero_report",
+      "mode": "heard",
+      "evidence": [
+        "d1",
+        "d5"
+      ]
+    },
+    {
+      "id": "a_002_wind_heard_warning",
+      "at": 32,
+      "holder": "known:c03:e_fengxinzi",
+      "target": "f_013_bailin_warns",
+      "mode": "heard",
+      "evidence": [
+        "d24"
+      ]
+    },
+    {
+      "id": "a_003_wind_heard_talent",
+      "at": 73,
+      "holder": "known:c03:e_fengxinzi",
+      "target": "f_033_talent",
+      "mode": "heard",
+      "evidence": [
+        "d52a"
+      ]
+    },
+    {
+      "id": "a_004_su_reads_book",
+      "at": 49,
+      "holder": "known:c01:e_su",
+      "target": "f_017_su_finds_system",
+      "mode": "read",
+      "evidence": [
+        "d35"
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "ep_ch4_su_prep",
+      "at": 56,
+      "title": "苏天晴购买强化药A并喂给黑狼怪人",
+      "summary": "下午苏天晴研究墨丘利秘典，发现系统能购物并有200神典石启动资金，花50神典石买下怪人强化药A，灌入黑狼怪人嘴里；后因黑狼被风信子压着打而翻看说明，心中认定倒下后发动的第二阶段才是真正开始。",
+      "scale": "event",
+      "participants": [
+        "known:c01:e_su",
+        "e_blackwolf",
+        "e_drugA",
+        "known:c01:e_book"
+      ],
+      "materials": [
+        "d35",
+        "d36",
+        "d38",
+        "d39",
+        "d40",
+        "d41"
+      ],
+      "children": [],
+      "relations": [],
+      "time": "t_ch4_afternoon",
+      "proof": {
+        "premises": [
+          "d35",
+          "d36",
+          "d38",
+          "d41"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第49至56段聚合为苏天晴研究秘典、购买并喂药、盘算第二阶段的下午事件。"
+      }
+    },
+    {
+      "id": "ep_ch4_park_battle",
+      "at": 129,
+      "title": "绿心公园魔法少女与黑狼怪人之战",
+      "summary": "风信子接到英雄协会通讯后赶往绿心公园，与黑狼怪人激战并将其击倒；黑狼倒下后暴起喷吐黑影击飞并抓住她。苏天晴现身自称反派，并提议挠痒痒游戏，章末回荡少女哀鸣。",
+      "scale": "sequence",
+      "participants": [
+        "known:c03:e_fengxinzi",
+        "e_blackwolf",
+        "known:c01:e_su",
+        "e_bailin",
+        "known:c03:e_green_park"
+      ],
+      "materials": [
+        "d1",
+        "d3",
+        "d4",
+        "d5",
+        "d7",
+        "d9",
+        "d12",
+        "d13",
+        "d16",
+        "d17",
+        "d21",
+        "d24",
+        "d28",
+        "d31",
+        "d34",
+        "d35",
+        "d36",
+        "d37",
+        "d38",
+        "d41",
+        "d43",
+        "d47",
+        "d48",
+        "d50",
+        "d51",
+        "d52a",
+        "d56",
+        "d56a",
+        "d57",
+        "d58",
+        "d62",
+        "d63",
+        "d64",
+        "d65",
+        "d68",
+        "d69",
+        "d69a",
+        "d70",
+        "d77",
+        "d81",
+        "d82",
+        "d85",
+        "d86"
+      ],
+      "children": [
+        "ep_ch4_su_prep"
+      ],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "known:c03:ep_ch3_monster",
+          "evidence": [
+            "known:c03:D48",
+            "d5"
+          ]
+        }
+      ],
+      "time": "t_ch4_night",
+      "proof": {
+        "premises": [
+          "d1",
+          "d5",
+          "d36",
+          "d43",
+          "d64",
+          "d68",
+          "d82",
+          "d86"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第2至129段聚合为风信子前往公园、与黑狼战斗、黑狼复活擒人、苏天晴提议游戏的连续事件。"
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "id": "s_wind_ch4",
+      "entity": "known:c03:e_fengxinzi",
+      "facet": "风信子",
+      "items": [
+        {
+          "text": "真名南小风；开学前第二天在家补暑假作业时接到英雄协会紧急通讯，得知蓉城绿心公园出现怪人袭击并前往支援。",
+          "refs": [
+            "d3",
+            "d4",
+            "d5",
+            "d7"
+          ]
+        },
+        {
+          "text": "半年前离家出走遇到自称白灵的观星者精灵，在其引导下获得守护之星，以魔法少女风信子身份活跃于蓉城；屡次解决英雄协会无法处理的怪人袭击并成为蓉城民众常常谈论的话题。",
+          "refs": [
+            "d16",
+            "d16a",
+            "d17",
+            "d17a"
+          ]
+        },
+        {
+          "text": "在绿心公园与黑狼怪人激战并一度将其击倒，但黑狼复活后用黑影击飞并抓住她。",
+          "refs": [
+            "d43",
+            "d64",
+            "d65",
+            "d68"
+          ]
+        },
+        {
+          "text": "白灵看见小狐狸胸前金色十字星后惊问“你也是魔法少女”；风信子本人困惑并心想蓉城只有自己一名魔法少女、没有观星者帮助不可能得到守护之星（此为风信子内心推测）。",
+          "refs": [
+            "d56",
+            "d56a",
+            "d60",
+            "d61"
+          ]
+        },
+        {
+          "text": "被苏天晴称为反派，并被她提议玩挠痒痒游戏。",
+          "refs": [
+            "d62",
+            "d82",
+            "d85"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_su_ch4",
+      "entity": "known:c01:e_su",
+      "facet": "苏天晴",
+      "items": [
+        {
+          "text": "下午研究墨丘利秘典，发现系统能购物并有200神典石启动资金；花50神典石买下怪人强化药A，灌入黑狼怪人嘴里。",
+          "refs": [
+            "d35",
+            "d36"
+          ]
+        },
+        {
+          "text": "在树丛后观察风信子战斗，评价其动作、大剑、可爱五官与华丽裙装，并吐槽船袜；见风信子占上风时疑惑并质问秘典给的强化药是不是假的。",
+          "refs": [
+            "d30",
+            "d31",
+            "d33",
+            "d34"
+          ]
+        },
+        {
+          "text": "现身以反派姿态鼓掌，内心慌乱但全靠提前演练装出反派范；回答“是反派哦”，拍掌使黑狼复活并擒住风信子。",
+          "refs": [
+            "d57",
+            "d58",
+            "d62",
+            "d63",
+            "d68"
+          ]
+        },
+        {
+          "text": "心中认定黑狼倒下后发动的是强化药A赋予的终极能力，并宣告第二阶段展开（此为苏天晴认知/计划）；随后提议挠痒痒游戏。",
+          "refs": [
+            "d69",
+            "d69a",
+            "d82",
+            "d85"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_bailin_ch4",
+      "entity": "e_bailin",
+      "facet": "白灵",
+      "items": [
+        {
+          "text": "自称白灵的观星者精灵；半年前引导离家出走的南小风获得守护之星，助她成为魔法少女风信子。",
+          "refs": [
+            "d16",
+            "d16a"
+          ]
+        },
+        {
+          "text": "在绿心公园提醒有怪人气息，警告黑狼很厉害；风信子累倒后洒魔力粒子帮她恢复体力。",
+          "refs": [
+            "d12",
+            "d24",
+            "d47",
+            "d48"
+          ]
+        },
+        {
+          "text": "看见小狐狸胸前金色十字星，第一个反应过来并大声惊问“你也是魔法少女”。",
+          "refs": [
+            "d56",
+            "d56a"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_blackwolf_ch4",
+      "entity": "e_blackwolf",
+      "facet": "黑狼怪人",
+      "items": [
+        {
+          "text": "在绿心公园废墟中出现，散发剧烈魔力气息，被白灵称为很厉害的怪人；南小风感觉它比以往遇到的怪人都强。",
+          "refs": [
+            "d22",
+            "d24",
+            "d26"
+          ]
+        },
+        {
+          "text": "被苏天晴灌下怪人强化药A；与风信子战斗一度被压制并被大剑击倒。",
+          "refs": [
+            "d36",
+            "d43"
+          ]
+        },
+        {
+          "text": "倒下后骤然暴起，口喷无数黑影击飞风信子并抓住她；苏天晴认为这是强化药A赋予的倒下后发动能力。",
+          "refs": [
+            "d64",
+            "d65",
+            "d68",
+            "d69"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_book_ch4",
+      "entity": "known:c01:e_book",
+      "facet": "墨丘利秘典",
+      "items": [
+        {
+          "text": "苏天晴下午研究其功能，发现能购物并提供200神典石启动资金；她花50神典石购买怪人强化药A。",
+          "refs": [
+            "d35",
+            "d36"
+          ]
+        },
+        {
+          "text": "苏天晴质问它“你给我的强化药该不会是假的吧”；后翻看强化药A介绍，并认为黑狼倒下后发动的是其终极能力（此为苏天晴认知）。",
+          "refs": [
+            "d34",
+            "d38",
+            "d39",
+            "d40",
+            "d69"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_hero_ch4",
+      "entity": "known:c03:e_hero_assoc",
+      "facet": "英雄协会",
+      "items": [
+        {
+          "text": "发布紧急通讯称蓉城绿心公园出现怪人袭击，要求立刻前往支援。",
+          "refs": [
+            "d5"
+          ]
+        },
+        {
+          "text": "叙述称魔法少女接受英雄协会管辖委派；风信子屡次解决英雄协会无法处理的怪人袭击。",
+          "refs": [
+            "known:c03:D10",
+            "d17"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_rongcheng_ch4",
+      "entity": "known:c02:e_rongcheng",
+      "facet": "蓉城",
+      "items": [
+        {
+          "text": "风信子成为蓉城民众常常谈论的话题。",
+          "refs": [
+            "d17a"
+          ]
+        },
+        {
+          "text": "南小风心想蓉城只有自己一名魔法少女，没有观星者的帮助不可能得到守护之星（此为南小风内心推测，非叙述直接事实）。",
+          "refs": [
+            "d61"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_park_ch4",
+      "entity": "known:c03:e_green_park",
+      "facet": "绿心公园",
+      "items": [
+        {
+          "text": "遭怪人袭击；原本有路灯却一片昏黑，居民已疏散，游乐设施与沙坑化为废墟。",
+          "refs": [
+            "d5",
+            "d9",
+            "d22"
+          ]
+        },
+        {
+          "text": "风信子与黑狼怪人在此交战，黑狼复活后擒住风信子，苏天晴在此提议挠痒痒游戏；章末回荡少女哀鸣。",
+          "refs": [
+            "d43",
+            "d68",
+            "d82",
+            "d86"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_drugA_ch4",
+      "entity": "e_drugA",
+      "facet": "怪人强化药A",
+      "items": [
+        {
+          "text": "苏天晴花50神典石从墨丘利秘典购买，并灌入黑狼怪人嘴里。",
+          "refs": [
+            "d35",
+            "d36"
+          ]
+        },
+        {
+          "text": "苏天晴一度怀疑它是假药，后认为它赋予黑狼倒下后发动黑影攻击的终极能力（此为苏天晴认知/推断，未获独立世界叙述证实）。",
+          "refs": [
+            "d34",
+            "d39",
+            "d69"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_wand_ch4",
+      "entity": "e_wand",
+      "facet": "魔杖/大剑",
+      "items": [
+        {
+          "text": "风信子在绿心公园握紧魔杖并将其化作大剑战斗。",
+          "refs": [
+            "d9",
+            "d23"
+          ]
+        },
+        {
+          "text": "大剑劈砍击倒黑狼怪人；后黑狼复活喷吐黑影，大剑脱手，风信子被砸飞。",
+          "refs": [
+            "d43",
+            "d65"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_guardstar_ch4",
+      "entity": "known:c02:e_guardian_star",
+      "facet": "守护之星",
+      "items": [
+        {
+          "text": "半年前白灵引导南小风获得守护之星。",
+          "refs": [
+            "d16"
+          ]
+        },
+        {
+          "text": "白灵看见小狐狸胸前的金色十字星，惊问“你也是魔法少女”；风信子本人也因数名魔法少女存在而困惑（此为风信子内心推测）。",
+          "refs": [
+            "d56",
+            "d56a",
+            "d61"
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "第4章未给出可定位的绝对时间；t_ch4_day、t_ch4_afternoon、t_ch4_night、t_half_year_ago均为章内相对定位。",
+    "黑狼怪人的真实身份、来源与个体名称未揭示，本候选仅记录为持续个体怪人。",
+    "白灵的来历、观星者精灵的含义以及其与英雄协会/秘典的关系未详述。",
+    "怪人强化药A的完整能力、副作用与获取机制未详述；苏天晴认为其第二阶段能力来自该药，未获独立世界叙述证实。",
+    "风信子与第2章每日任务目标“正牌魔法少女”是否为同一人，本章未明确等同。",
+    "蓉城只有南小风一名魔法少女为其内心推测，未获世界叙述独立确认。",
+    "苏天晴的狐狸身体与原主、意识之间的关系仍未解决；本章未将身体与意识分开指称。",
+    "第4章章末停在挠痒痒游戏，游戏结果与风信子能否脱身未给出，属候选截断。",
+    "白灵看见金色十字星后断定小狐狸为魔法少女的依据未详述；风信子本人是否看见十字星未获叙述确认。",
+    "英雄协会的具体结构、与魔法少女的管辖方式及通讯机制未详述。",
+    "秘典系统的来源、权威性以及“强化药A”介绍文字的可靠性未获独立证实。",
+    "黑狼怪人倒下后暴起是否确为强化药A所致，仅有苏天晴的判断，未获独立世界规则确认。",
+    "第4章中“系统”作为墨丘利秘典的功能入口，其与旧系统声音的关系未确定。",
+    "白灵“观星者精灵”身份及其引导南小风获得守护之星的过程仅由叙述者概述，具体机制未详述。",
+    "风信子的魔法少女天赋“近战压制”由白灵说出，未获其他来源独立证实。",
+    "黑狼怪人喷吐黑影的来源与性质未详述。",
+    "狗尾巴草等临时物品未单独建实体。"
+  ]
+}

@@ -1,0 +1,434 @@
+{
+  "snapshot": "formal-003/ch03/dataset-v7.json",
+  "readAt": "1:7",
+  "cases": [
+    {
+      "command": "node --import tsx ../t09-v7-query-cli/cli.ts --data evidences/formal-003/ch03/dataset-v7.json get c01:t_now --at 1:7",
+      "exitCode": 0,
+      "response": {
+        "schema": "neurobook.memory.query.v1",
+        "ok": true,
+        "command": "get",
+        "snapshot": {
+          "id": "llm-through-3",
+          "sourceManifest": "manifest:3f091b41fd6009c9",
+          "knowledgeRevision": 3,
+          "readAt": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+        },
+        "scope": {
+          "readAt": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        "items": [
+          {
+            "type": "record",
+            "record": {
+              "id": "c01:t_now",
+              "revision": 3,
+              "label": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+              "availableAt": {
+                "chapter": 1,
+                "paragraph": 7
+              },
+              "scope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "spans": [
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                }
+              ],
+              "dependencies": [],
+              "readiness": "ready",
+              "kind": "time",
+              "data": {
+                "description": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+                "precision": "interval",
+                "constraints": []
+              }
+            },
+            "assessment": null,
+            "assessmentStatus": "not-in-scope-or-not-applicable",
+            "provenance": {
+              "references": [],
+              "dependencies": [],
+              "arguments": [],
+              "excerpts": [
+                {
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 55
+                  },
+                  "chapter": 1,
+                  "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+                }
+              ]
+            }
+          }
+        ],
+        "coverage": {
+          "through": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "chapters": [
+            1
+          ],
+          "material": "complete",
+          "semantic": "partial",
+          "gaps": [
+            "未提供当前阅读范围与视角专属的语义缺口说明。"
+          ],
+          "recordsExhausted": true,
+          "corpusClosed": false
+        },
+        "completeness": {
+          "recordsExhausted": true,
+          "corpusClosed": false,
+          "matchingRecords": 1,
+          "returned": 1
+        },
+        "truncation": {
+          "page": false,
+          "depth": false,
+          "unavailableReferences": 0
+        },
+        "nextCursor": null
+      }
+    },
+    {
+      "command": "node --import tsx ../t09-v7-query-cli/cli.ts --data evidences/formal-003/ch03/dataset-v7.json get argument:c01:i2 --at 1:7",
+      "exitCode": 0,
+      "response": {
+        "schema": "neurobook.memory.query.v1",
+        "ok": true,
+        "command": "get",
+        "snapshot": {
+          "id": "llm-through-3",
+          "sourceManifest": "manifest:3f091b41fd6009c9",
+          "knowledgeRevision": 3,
+          "readAt": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+        },
+        "scope": {
+          "readAt": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        "items": [
+          {
+            "type": "record",
+            "record": {
+              "id": "argument:c01:i2",
+              "revision": 3,
+              "label": "依据：局部指称归属：黑色古书",
+              "availableAt": {
+                "chapter": 1,
+                "paragraph": 7
+              },
+              "scope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "spans": [],
+              "dependencies": [
+                {
+                  "id": "c01:r2:mention:1",
+                  "revision": 3
+                },
+                {
+                  "id": "c01:d4",
+                  "revision": 3
+                }
+              ],
+              "readiness": "ready",
+              "kind": "argument",
+              "data": {
+                "conclusion": {
+                  "id": "c01:i2",
+                  "revision": 3
+                },
+                "polarity": "supports",
+                "method": "identity",
+                "premises": [
+                  {
+                    "ref": {
+                      "id": "c01:r2:mention:1",
+                      "revision": 3
+                    },
+                    "role": "evidence",
+                    "required": true
+                  },
+                  {
+                    "ref": {
+                      "id": "c01:d4",
+                      "revision": 3
+                    },
+                    "role": "evidence",
+                    "required": true
+                  }
+                ],
+                "assumptions": [],
+                "rationale": "第7段黑色古书作为漂浮对象出现，后续自称墨丘利秘典；r2映射为魔法古书/artifact实体。",
+                "sourceRoots": [
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  },
+                  {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 55
+                  }
+                ],
+                "applicability": "satisfied",
+                "bindings": [],
+                "jointScope": {
+                  "world": "original",
+                  "perspective": "reader"
+                },
+                "jointTime": {
+                  "kind": "unspecified"
+                },
+                "review": {
+                  "verdict": "passed",
+                  "reviewer": "deepseek-flash-independent-review",
+                  "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。"
+                },
+                "status": "usable"
+              }
+            },
+            "assessment": null,
+            "assessmentStatus": "not-in-scope-or-not-applicable",
+            "provenance": {
+              "references": [
+                {
+                  "id": "c01:i2",
+                  "revision": 3,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:r2:mention:1",
+                  "revision": 3,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:d4",
+                  "revision": 3,
+                  "status": "visible"
+                }
+              ],
+              "dependencies": [
+                {
+                  "id": "c01:r2:mention:1",
+                  "revision": 3,
+                  "status": "visible"
+                },
+                {
+                  "id": "c01:d4",
+                  "revision": 3,
+                  "status": "visible"
+                }
+              ],
+              "arguments": [],
+              "excerpts": [
+                {
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 24,
+                    "end": 28
+                  },
+                  "chapter": 1,
+                  "text": "黑色古书"
+                },
+                {
+                  "span": {
+                    "sourceId": "source-c01",
+                    "sourceRevision": 1,
+                    "paragraph": 7,
+                    "start": 0,
+                    "end": 55
+                  },
+                  "chapter": 1,
+                  "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+                }
+              ]
+            }
+          }
+        ],
+        "coverage": {
+          "through": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "chapters": [
+            1
+          ],
+          "material": "complete",
+          "semantic": "partial",
+          "gaps": [
+            "未提供当前阅读范围与视角专属的语义缺口说明。"
+          ],
+          "recordsExhausted": true,
+          "corpusClosed": false
+        },
+        "completeness": {
+          "recordsExhausted": true,
+          "corpusClosed": false,
+          "matchingRecords": 1,
+          "returned": 1
+        },
+        "truncation": {
+          "page": false,
+          "depth": false,
+          "unavailableReferences": 0
+        },
+        "nextCursor": null
+      }
+    },
+    {
+      "command": "node --import tsx ../t09-v7-query-cli/cli.ts --data evidences/formal-003/ch03/dataset-v7.json get assessment:c01:i2:at:1:7 --at 1:7",
+      "exitCode": 0,
+      "response": {
+        "schema": "neurobook.memory.query.v1",
+        "ok": true,
+        "command": "get",
+        "snapshot": {
+          "id": "llm-through-3",
+          "sourceManifest": "manifest:3f091b41fd6009c9",
+          "knowledgeRevision": 3,
+          "readAt": {
+            "chapter": 3,
+            "paragraph": 87
+          },
+          "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+        },
+        "scope": {
+          "readAt": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "perspective": "reader",
+          "world": "original"
+        },
+        "items": [
+          {
+            "type": "record",
+            "record": {
+              "id": "assessment:c01:i2:at:1:7",
+              "revision": 3,
+              "label": "评估：局部指称归属：黑色古书",
+              "availableAt": {
+                "chapter": 1,
+                "paragraph": 7
+              },
+              "scope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "spans": [],
+              "dependencies": [],
+              "readiness": "ready",
+              "kind": "assessment",
+              "data": {
+                "target": {
+                  "id": "c01:i2",
+                  "revision": 3
+                },
+                "arguments": [
+                  {
+                    "id": "argument:c01:i2",
+                    "revision": 3
+                  }
+                ],
+                "epistemic": "accepted",
+                "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。",
+                "unresolved": [],
+                "evaluatedAt": {
+                  "chapter": 1,
+                  "paragraph": 7
+                }
+              }
+            },
+            "assessment": null,
+            "assessmentStatus": "not-in-scope-or-not-applicable",
+            "provenance": {
+              "references": [
+                {
+                  "id": "c01:i2",
+                  "revision": 3,
+                  "status": "visible"
+                },
+                {
+                  "id": "argument:c01:i2",
+                  "revision": 3,
+                  "status": "visible"
+                }
+              ],
+              "dependencies": [],
+              "arguments": [],
+              "excerpts": []
+            }
+          }
+        ],
+        "coverage": {
+          "through": {
+            "chapter": 1,
+            "paragraph": 7
+          },
+          "chapters": [
+            1
+          ],
+          "material": "complete",
+          "semantic": "partial",
+          "gaps": [
+            "未提供当前阅读范围与视角专属的语义缺口说明。"
+          ],
+          "recordsExhausted": true,
+          "corpusClosed": false
+        },
+        "completeness": {
+          "recordsExhausted": true,
+          "corpusClosed": false,
+          "matchingRecords": 1,
+          "returned": 1
+        },
+        "truncation": {
+          "page": false,
+          "depth": false,
+          "unavailableReferences": 0
+        },
+        "nextCursor": null
+      }
+    }
+  ]
+}

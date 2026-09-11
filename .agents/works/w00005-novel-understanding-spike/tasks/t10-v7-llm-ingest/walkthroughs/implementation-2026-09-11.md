@@ -62,8 +62,18 @@ formal-002 第 2 轮 B attempt 2 使用了与谓词 role 不匹配的 referent �
 
 独立 CLI Reviewer 已完成，窄范围无阻断，结论见 [分层漏项复核](reviewer-2026-09-11-classified-gaps.md)。按其非阻断建议新增组合回归：上一轮语义漏项后，C出现逐项覆盖错误，修复响应落盘后中断，再恢复；实际fake调用A1/B2/C3，共6次，恢复未重发，生产有效3次/修复3次。runner当前17项通过、typecheck通过；仅测试文件变化，不改变活动策略哈希。
 
+formal-003 已发布首章346条记录，C第一次通过；第二章已开始。首章真实CLI确认 `c01:e_su` 对 `c01:e_creator` 在1:65为空、1:66返回 `c01:a7 -> c01:f17` 的heard且保持古书speech。C接受firstMention=10、identity.at=11且依据在11可用的合法候选，没有重复旧时间误判。详情见 [新策略查询检查](leader-formal-003-query.md)。实现与已结束实验检查点已提交为 `60cff3f7`；活动formal-003未包含于该提交，尚未推送。
+
 12:01 第 4 轮 A 通过；B attempt 1 达到 64000 输出上限（其中推理 57650），完整响应和 length 失败已保存，下一次容量升到 128000。随后 PID 26100 退出，attempt 2 只有 request.json，服务端结果仍未知，不能记作未计费。query_cli 初见进程退出后尝试隐藏后台 Node 恢复（PID 64636）；版本保护检测到策略变化，立即拒绝且没有调用模型、没有写入该 pending attempt 的 failed 状态，64636 也已退出。日志为 `evidences/formal-002/resume-003.stdout.log` 和 `resume-003.stderr.log`。
 
 随后读取最新 README，确认 Leader 已接管 draft/prompts/runner 的漏项分层与时间审查修复，并要求暂停 formal-002。旧源码与 `policy-source.json` 对比显示这三个文件已切换至 version 3；query_cli 没有覆盖其修改，不再尝试旧目录恢复。当前无活动 ingest，head=2，待 Leader 写明修复完成及新启动身份后继续 20 章。此前“意外退出”的初判已由此协调状态更新，pending attempt 2 仍按未知服务端结果保留。
 
 12:06 从主线独立审查请求和实际进程确认 Leader 已启动 `formal-003 --through 20`，PID 58704，policyHash=`9ab683a523cfad3f0e1618a50f9c0bf3a1e192a43c6f302b5c1d4f85c87ec569`、version 3。query_cli 只接续只读监测，不重复启动或修改主线。已由当前源码、policy 和实际 JSON schemas 重新算 hash 并确认相同；Leader 已同步保存 `policy-source.json` 的源码快照，query_cli 的另一种封套写入被 immutable 保护拒绝，未覆盖该文件。formal-002 的暂停报告已写为 `evidences/formal-002-paused-report.json`：已发布两章 19 调用，已知估价 $0.684891852；未发布章另列 13 调用，其中 1 次未知服务端结果，不能记零。
+
+formal-003 于 12:13 发布第1章：A 两次、B 三次、C 首次通过，共 6 次调用，346 条记录（35 Fact、21 Access、7 Entity）。实际 t09 CLI：`knowledge --holder c01:e_su --about c01:e_creator --at 1:66` 返回 a7→f17、heard，Fact 保持 speech/holder=e_book/opaque；`entities --query 墨丘利秘典 --at 1:7` 返回空且 coverage.gaps 为通用无剧情说明。Su 摘要 s1 保留“据其记忆”“苏天晴认为”“古书称”“系统提示”等来源限定。当前进入第二章，未据首章结果宣称整个 20 章完成。
+
+query_cli 12:33 验证两章通过：163段/4234字符/688节点，新增 `experiments/verify-published.ts` 对归一化原文、连续发布、逐章 schema/哈希/复核与确定性重编译进行验证，typecheck退出0。两份JSON证据为 `evidences/formal-003-verification-ch02.json`、`evidences/formal-003-queries-ch02.json`；详情和后续更新集中在 `walkthroughs/query-cli-formal-003.md`。发现原主人category仍为unresolved导致person过滤漏检，完整读者coverage.gaps保留已过时的“原主人姓名未知”及首章allowedIds说明；同名发现、2:17/2:18姓名边界和1:65/1:66听闻边界正常。未改冻结源码或候选，运行恢复由主Agent唯一控制。
+
+query_cli 12:58 报告已发布第三章的实质身份缺口：风信子 `c03:e_fengxinzi` 与第二章任务目标 `c02:e_official_magical_girl` 没有归并或显式关联，旧主体摘要还复用“姓名与身份未揭示”。原文3:11、13、14、16有连续对手线索；第1轮C曾拒绝此缺口，第2轮B修过，但重提取A后的第3轮又新建主体且C漏判。结构重编译通过（250段/6906字符/1089节点），不能据此把此项语义质量判通过。命令、原文和审查过程见 `walkthroughs/query-cli-formal-003.md` 的三章小节。未动冻结策略或已发布数据。
+
+query_cli 追加实测：`search --query 墨丘利秘典 --at 1:7 --limit 100` 在formal-003/ch03快照返回3条未来名称泄漏。Argument rationale、C review.note、Assessment.note及Time.label/description含后文名称，却被赋予1:7或更早的可见时间；Entity.names投影为空并不足以阻止原记录文本泄漏。完整证据为 `evidences/formal-003-text-scope-ch03.json`，分析见逐章复查同名小节。请Leader在新策略准备及最终范围结论中纳入；query_cli未修改t07/t09、候选或当前主线。

@@ -1,0 +1,92 @@
+[
+  {
+    "args": [
+      "knowledge",
+      "--holder",
+      "c01:e_su",
+      "--about",
+      "c01:e_book",
+      "--at",
+      "1:10",
+      "--limit",
+      "100"
+    ],
+    "exitCode": 0,
+    "result": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "knowledge",
+      "snapshot": {
+        "id": "llm-through-3",
+        "sourceManifest": "manifest:3f091b41fd6009c9",
+        "knowledgeRevision": 3,
+        "readAt": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 10
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 10
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 0,
+        "returned": 0
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  {
+    "args": [
+      "knowledge",
+      "--holder",
+      "c01:e_su",
+      "--about",
+      "c01:e_book",
+      "--at",
+      "1:10",
+      "--perspective",
+      "c01:e_su",
+      "--limit",
+      "100"
+    ],
+    "exitCode": 2,
+    "result": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": false,
+      "error": {
+        "code": "INVALID_ARGUMENT",
+        "message": "Expected a visible entity ID"
+      }
+    }
+  }
+]

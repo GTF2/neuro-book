@@ -9,6 +9,7 @@ import {materialOrigin, reuseMaterial, type MaterialOrigin} from "./material-reu
 import {integrationSchema, materialSchema, reviewSchema, validateMaterial, validateReview, validateReviewCoverage, type AcceptedChapter, type IntegrationDraft, type MaterialDraft} from "./draft.ts";
 import {makeRequest, policy, priorContext, validateKnownReferences, type PriorContext, type Stage} from "./prompts.ts";
 import {ProviderError, type ModelProvider, type ModelResponse} from "./provider.ts";
+import {applyRecordPatch, canPatchCandidate, repairResponseSchema, responseModeSchema, type ResponseMode} from "./record-patch.ts";
 import {optionalJson, readJson, withRunLock, writeJson} from "./storage.ts";
 
 export const manifestSchema = z.strictObject({schema: z.literal("neurobook.memory.ingest.run.v1"), inputHash: z.string(), policyHash: z.string(), head: z.number().int().nonnegative(), publications: z.array(z.strictObject({chapter: z.number().int().positive(), dataset: z.string(), sha256: z.string(), accepted: z.string(), acceptedHash: z.string()}))});
@@ -31,7 +32,7 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
     if (!Number.isInteger(options.through) || options.through < 1 || options.through > options.sources.length) throw new Error("Invalid through chapter");
     return withRunLock(options.root, async () => {
         const inputHash = hash(JSON.stringify({book: options.book, sources: options.sources, sourceIdentity: options.sourceIdentity}));
-        const policySources = await Promise.all(["draft.ts", "compiler.ts", "prompts.ts", "runner.ts", "provider.ts", "material-reuse.ts"].map(path => readFile(new URL(path, import.meta.url), "utf8")));
+        const policySources = await Promise.all(["draft.ts", "compiler.ts", "prompts.ts", "runner.ts", "provider.ts", "material-reuse.ts", "record-patch.ts"].map(path => readFile(new URL(path, import.meta.url), "utf8")));
         const policyHash = hash(JSON.stringify({policy, sources: policySources, schemas: [materialSchema, integrationSchema, reviewSchema].map(schema => z.toJSONSchema(schema))}));
         const manifestPath = join(options.root, "manifest.json");
         const stored = await optionalJson(manifestPath);
@@ -115,6 +116,7 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
 
 export class SimulatedInterruption extends Error {}
 class StageAttemptsExhausted extends Error {}
+class RegenerateCandidate extends Error {}
 
 interface RepairSeed {material: MaterialDraft; integration?: IntegrationDraft; origin?: MaterialOrigin}
 async function repairSeed(chapterRoot: string, round: number): Promise<RepairSeed | undefined> {
@@ -136,14 +138,16 @@ async function stageValue<T>(stage: Stage, roundRoot: string, source: Source, co
     if (successful !== null) return schema.parse(successful);
     let localFeedback = feedback;
     let priorCandidate: unknown = initialCandidate;
+    let responseMode: ResponseMode = "complete";
     let maxTokens = policy.stages[stage].maxTokens;
     let attempts = 0;
     for (let attempt = 1; ; attempt++) {
         const attemptRoot = join(root, `attempt-${attempt}`);
         const failed = await optionalJson(join(attemptRoot, "failed.json"));
         if (failed !== null) {
-            const failure = z.object({message: z.string(), nextMaxTokens: z.number().optional()}).parse(failed);
+            const failure = z.object({message: z.string(), nextMaxTokens: z.number().optional(), nextResponseMode: responseModeSchema}).parse(failed);
             localFeedback = failure.message;
+            responseMode = failure.nextResponseMode;
             if (failure.nextMaxTokens !== undefined) maxTokens = failure.nextMaxTokens;
             const candidate = await optionalJson(join(attemptRoot, "candidate.json"));
             const parsed = candidate === null ? await optionalJson(join(attemptRoot, "parsed.json")) : null;
@@ -152,14 +156,15 @@ async function stageValue<T>(stage: Stage, roundRoot: string, source: Source, co
             continue;
         }
         if (++attempts > policy.attemptsPerStage) throw new StageAttemptsExhausted(`${stage} exceeded automatic attempts; resume to continue this stage. Last error: ${localFeedback ?? "unknown"}`);
-        const request = {...makeRequest(stage, source, context, material, integration, localFeedback, priorCandidate), maxTokens, timeoutMs: Math.max(policy.timeoutMs, Math.ceil(maxTokens / policy.timeoutTokensPerSecond) * 1000 + 60000)};
+        const request = {...makeRequest(stage, source, context, material, integration, localFeedback, priorCandidate, responseMode), maxTokens, timeoutMs: Math.max(policy.timeoutMs, Math.ceil(maxTokens / policy.timeoutTokensPerSecond) * 1000 + 60000)};
         const pending = await optionalJson(join(attemptRoot, "request.json"));
         const storedResponse = await optionalJson(join(attemptRoot, "response.json"));
         const startedAt = new Date().toISOString();
         let response: ModelResponse | null = null;
+        let candidateUpdated = false;
         if (pending !== null && storedResponse === null) {
             localFeedback = "Request persisted but response absent on recovery";
-            await writeJson(join(attemptRoot, "failed.json"), {stage, chapter: source.chapterOrder, attempt, startedAt, category: "unknown-provider-outcome", message: localFeedback, cost: estimateCost(null, startedAt)}, true);
+            await writeJson(join(attemptRoot, "failed.json"), {stage, chapter: source.chapterOrder, attempt, startedAt, category: "unknown-provider-outcome", message: localFeedback, nextResponseMode: responseMode, nextMaxTokens: maxTokens, cost: estimateCost(null, startedAt)}, true);
             continue;
         }
         try {
@@ -176,7 +181,14 @@ async function stageValue<T>(stage: Stage, roundRoot: string, source: Source, co
                 await options.afterResponse?.(stage);
             }
             if (response.finishReason !== "stop" || !response.text.trim()) throw new Error("Provider response incomplete");
-            priorCandidate = JSON.parse(response.text);
+            const output: unknown = JSON.parse(response.text);
+            if (responseMode === "record-patch" && stage !== "review") {
+                await writeJson(join(attemptRoot, "repair.json"), output, true);
+                const repair = repairResponseSchema(stage).parse(output);
+                if ("regenerate" in repair) throw new RegenerateCandidate(repair.regenerate);
+                priorCandidate = applyRecordPatch(stage, priorCandidate, repair).candidate;
+            } else priorCandidate = output;
+            candidateUpdated = true;
             await writeJson(join(attemptRoot, "candidate.json"), {value: priorCandidate}, true);
             const value = schema.parse(priorCandidate);
             await writeJson(join(attemptRoot, "parsed.json"), value, true);
@@ -193,8 +205,10 @@ async function stageValue<T>(stage: Stage, roundRoot: string, source: Source, co
                 await writeJson(join(attemptRoot, "response.json"), response, true);
             }
             const message = errorText(error);
+            if (error instanceof RegenerateCandidate) responseMode = "complete";
+            else if (candidateUpdated) responseMode = stage !== "review" && canPatchCandidate(stage, priorCandidate) ? "record-patch" : "complete";
             if (response?.finishReason === "length") maxTokens = Math.min(policy.maxRepairTokens, maxTokens * 2);
-            await writeJson(join(attemptRoot, "failed.json"), {stage, chapter: source.chapterOrder, attempt, startedAt, category: error instanceof ProviderError ? error.category : response?.finishReason === "length" ? "capacity" : "validation", message, nextMaxTokens: maxTokens, cost: estimateCost(response, response?.startedAt ?? startedAt), ...(error instanceof ProviderError ? {status: error.status, retryable: error.retryable, raw: error.raw, durationMs: error.durationMs} : {})}, true);
+            await writeJson(join(attemptRoot, "failed.json"), {stage, chapter: source.chapterOrder, attempt, startedAt, category: error instanceof ProviderError ? error.category : error instanceof RegenerateCandidate ? "regenerate" : response?.finishReason === "length" ? "capacity" : "validation", message, nextMaxTokens: maxTokens, nextResponseMode: responseMode, cost: estimateCost(response, response?.startedAt ?? startedAt), ...(error instanceof ProviderError ? {status: error.status, retryable: error.retryable, raw: error.raw, durationMs: error.durationMs} : {})}, true);
             if (error instanceof ProviderError && !error.retryable) throw error;
             localFeedback = message;
             options.progress?.({chapter: source.chapterOrder, stage, attempt, status: "retry", error: message});

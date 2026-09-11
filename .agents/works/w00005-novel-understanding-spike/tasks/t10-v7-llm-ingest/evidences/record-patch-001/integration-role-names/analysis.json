@@ -1,0 +1,80 @@
+{
+  "id": "integration-role-names",
+  "source": "ch04/round-5/integration/attempt-4",
+  "stage": "integration",
+  "requestHash": "2679b6d464fb606fb08861fb2b4e168e74b6479216a447d61fb010d5432c7e55",
+  "baseline": {
+    "usage": {
+      "inputTokens": 64746,
+      "outputTokens": 25026,
+      "cacheHitTokens": 50944,
+      "cacheMissTokens": 13802
+    },
+    "durationMs": 78694,
+    "reasoningTokens": 8690,
+    "cost": {
+      "estimatedUsd": 0.017238731999999996,
+      "minimumUsd": 0.017238731999999996,
+      "maximumUsd": 0.017238731999999996,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeakAllMissUsd": 0.0247275,
+    "validation": {
+      "passed": false,
+      "error": "Integration references invalid:\nf_003_true_name.fact dependencies at 4:4 references t_ch4_day, available only at 4:5"
+    }
+  },
+  "patch": {
+    "usage": {
+      "inputTokens": 64990,
+      "outputTokens": 2119,
+      "cacheHitTokens": 0,
+      "cacheMissTokens": 64990
+    },
+    "durationMs": 10402,
+    "reasoningTokens": 1833,
+    "cost": {
+      "estimatedUsd": 0.0110199,
+      "minimumUsd": 0.0110199,
+      "maximumUsd": 0.0110199,
+      "unknownOutcome": false,
+      "unknownUsage": false,
+      "supportedModel": true,
+      "cacheSplitKnown": true,
+      "cacheSplitValid": true,
+      "pricePeriod": "offpeak",
+      "ratesPerMillion": {
+        "hit": 0.003,
+        "miss": 0.15,
+        "output": 0.6
+      },
+      "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+      "priceDate": "2026-09-10",
+      "billingExact": false
+    },
+    "offpeakAllMissUsd": 0.0110199,
+    "validation": {
+      "passed": true,
+      "error": null
+    },
+    "changed": [
+      "predicates/p_meets",
+      "facts/f_007_meets_bailin"
+    ],
+    "unchangedRecordsVerified": 93
+  },
+  "semanticReview": "not-performed"
+}

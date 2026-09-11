@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 4,
+  "attempt": 1,
+  "startedAt": "2026-09-11T05:38:50.378Z",
+  "category": "validation",
+  "message": "Integration references invalid:\ni_sutianqing.identity/evidence at 4:41 references d31, available only at 4:44\ni_blackwolf.identity/evidence at 4:29 references d23, available only at 4:31\ni_blackwolf.identity/evidence at 4:29 references d36, available only at 4:50\ni_secretbook.identity/evidence at 4:47 references d34, available only at 4:48\ni_drugA.identity/evidence at 4:50 references d50, available only at 4:70\ni_heroassociation.identity/evidence at 4:5 references d5, available only at 4:6\ni_wand.identity/evidence at 4:11 references d9, available only at 4:12\ni_wand.identity/evidence at 4:11 references d10, available only at 4:13\nt_ch4_night.time constraints at 4:2 references t_ch4_afternoon, available only at 4:49\nf_002_wind_announce.fact dependencies at 4:2 references t_ch4_day, available only at 4:4\nf_012_wind_slow.fact dependencies at 4:25 references d21, available only at 4:26\nf_014_wind_fights.fact dependencies at 4:37 references d37, available only at 4:51\nf_015_su_evals_wind.fact dependencies at 4:42 references d31, available only at 4:44\nf_016_su_questions_drug.fact dependencies at 4:47 references i_drugA, available only at 4:50\nf_016_su_questions_drug.fact dependencies at 4:47 references d34, available only at 4:48\nf_016_su_questions_drug.identities lacks explicit identity for arguments.about=e_drugA at 4:47; provided=[\"known:c03:i_stq\",\"i_drugA\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf_026_wolf_revives.fact dependencies at 4:93 references d64, available only at 4:96\nf_027_wolf_emits.fact dependencies at 4:93 references d64, available only at 4:96\nf_027_wolf_emits.fact dependencies at 4:93 references d65, available only at 4:97\nf_031_su_proposes_game.fact dependencies at 4:121 references d82, available only at 4:122\nf_032_wind_pleads.fact dependencies at 4:114 references d77, available only at 4:115\nf_034_game_condition.fact dependencies at 4:127 references d85, available only at 4:128\na_002_wind_unaware_plan.access target/evidence: reference d103 is missing or has no valid local identity\na_002_wind_unaware_plan.access target/evidence: reference d108 is missing or has no valid local identity\nep_ch4_su_prep.episode dependencies at 4:56 references ep_ch4_park_battle, available only at 4:129",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.025909746,
+    "minimumUsd": 0.025909746,
+    "maximumUsd": 0.025909746,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "offpeak",
+    "ratesPerMillion": {
+      "hit": 0.003,
+      "miss": 0.15,
+      "output": 0.6
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

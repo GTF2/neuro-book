@@ -47,3 +47,11 @@ Leader 在真实 `smoke-006/ch02` CLI `knowledge --holder c01:e_su --about c01:f
 2026-09-11 Leader 决定在当前 formal-002 调用返回并保存后尽快结束本次运行，先完成 Spec/plan 中已登记但尚未实现的漏项分层及可用时间审查，再以新策略身份运行正式 20 章。query_cli 负责受控停止与恢复身份，不修改旧模型产物、不在旧目录运行新代码。新 C missing 每项用明确 stage=material/integration 与具体说明，整合漏项保留已全通过 A，未知归属保守记 material；新增回归验证定向修复、重启与来源计费。时间提示按证据最晚边界审查，不能要求每条身份判断与首次提及同段。思考模式对照初步发现关闭思考会引入结构错误及漏判，暂不据此关闭生产阶段思考；等待独立实验结论后选择有证据的模式，不能只按 token 更低采用。
 
 交接补充：当前主 Agent 暂接 t10 Tasker 的窄范围修复职责，拥有 `draft.ts`、`prompts.ts`、`runner.ts` 及对应回归；query_cli 暂停 formal-002，不自行恢复或覆盖这些文件。修复完成后主 Agent 将在本文件和 walkthrough 写明新策略及启动身份，再交回主线运行。正式前两章和当前请求/响应保持原样。
+
+策略 -3 已在 `60cff3f7` 提交，新正式运行 `evidences/formal-003` 于 2026-09-11 12:04 启动。主 Agent 唯一控制该运行及同策略恢复；六份策略源码冻结。query_cli 继续只读验证已发布前缀，拥有 `experiments/verify-published.ts`、逐章查询与验证证据及对应 walkthrough。主 Agent 维护 `query-guide.md`、成本说明和最终交接；formal-002 保留停止状态，不再续跑。20 章完成状态以新运行 manifest 为准，不能沿用旧运行或 smoke 的完成数字。
+
+主 Agent 追加独立结构修复实验 `experiments/record-patch/` 与 `evidences/record-patch-001/`：消费formal-003已保存的第4章修复请求，比较完整重写与按ID替换相关记录。仅允许替换已有记录，不新增、删除或自动推断语义；合成完整候选后仍执行原有全部校验。保留真实请求/响应、变更集合、未变记录检查、用量与失败。思考模式保持enabled，四个样本覆盖枚举、身份ID、角色重名与可用时间，不引入金标。先落实实验合同与边界测试，再运行已授权真实API；结果不能冒充端到端质量，不修改冻结主线或正式候选。
+
+4次对照已完成：三个B补丁均通过原确定性校验，输出合计由73231降到12013 tokens；A补丁修正枚举后仍被剩余原文定位错误拦住。正式formal-003在第4章第6轮B attempt-3自然退出，head=3，全部响应落盘。Leader决定将按记录替换纳入A/B的结构错误重试，保留完整候选生成与完整C审查。主 Agent 接续Tasker，拥有运行期 `record-patch.ts`、`prompts.ts`、`runner.ts`、对应测试与文档；先完成恢复/计费回归和独立复核，再以新策略/新目录做真实smoke及20章。旧运行停止，不能按新源码恢复。query_cli继续只读审查，禁止自行恢复formal-003。
+
+策略 -4 已通过71项测试、typecheck、独立恢复/计费复核和真实 `smoke-007` 首章。首章76段、277记录、172个复核单元，重放哈希一致，重复运行0次API调用；早1:7全文搜索未来名称为空。2026-09-11 14:30启动新的 `evidences/formal-004` 连续1..20，终端session29575，policyHash `db2d3861ac85b2f062c3cf2fdd8e1550105c55fb4d0f72560fb312bd35f2a0cc`，七份策略源码冻结。主 Agent 唯一控制运行与恢复；query_cli只读验证新发布前缀，旧formal-003停止。完整20章以formal-004 manifest.head为准。

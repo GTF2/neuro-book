@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 4,
+  "attempt": 1,
+  "startedAt": "2026-09-11T05:21:07.289Z",
+  "category": "validation",
+  "message": "Integration references invalid:\nf_bailing_asks_su_magical_girl.fact dependencies: reference i_bailing is missing or has no valid local identity\nf_bailing_asks_su_magical_girl.identities lacks explicit identity for arguments.speaker=e_bailing at 4:84; provided=[\"i_bailing\",\"i_su\"]; local eligible IDs=[\"i_bailin\"]. Include the holder identity as well as every entity argument identity.\nf_bailing_asks_su_magical_girl.identities lacks explicit identity for assertion.holder=e_bailing at 4:84; provided=[\"i_bailing\",\"i_su\"]; local eligible IDs=[\"i_bailin\"]. Include the holder identity as well as every entity argument identity.",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.016840662,
+    "minimumUsd": 0.016840662,
+    "maximumUsd": 0.016840662,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "offpeak",
+    "ratesPerMillion": {
+      "hit": 0.003,
+      "miss": 0.15,
+      "output": 0.6
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

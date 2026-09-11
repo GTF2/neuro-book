@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 3,
+  "attempt": 1,
+  "startedAt": "2026-09-11T04:45:04.303Z",
+  "category": "validation",
+  "message": "Integration references invalid:\ni_mg.identity/evidence at 3:9 references D10, available only at 3:10\ni_monster.identity/evidence at 3:9 references D10, available only at 3:10\ni_villain_concept.identity/evidence at 3:4 references D3, available only at 3:5\ni_villain_role.identity/evidence at 3:14 references D49, available only at 3:84\ni_task.identity/evidence at 3:24 references D21, available only at 3:25\ni_task.identity/evidence at 3:24 references D22, available only at 3:26\nt_ch3_morning.time constraints at 3:5 references t_ch3_afternoon, available only at 3:44\nt_ch3_afternoon.time constraints at 3:44 references t_ch3_night, available only at 3:73\nf_fx_video_fight.fact dependencies at 3:15 references i_fx, available only at 3:16\nf_fx_video_fight.fact dependencies at 3:15 references D14, available only at 3:16\nf_fx_video_fight.identities lacks explicit identity for arguments.agent=e_fengxinzi at 3:15; provided=[\"i_fx\",\"i_monster\"]; local eligible IDs=[]. Include the holder identity as well as every entity argument identity.\nf_monster_attack.fact dependencies at 3:83 references B12, available only at 3:87\ns_orig_ch3.summary evidence: reference D63 is missing or has no valid local identity",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.034509894,
+    "minimumUsd": 0.034509894,
+    "maximumUsd": 0.034509894,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "offpeak",
+    "ratesPerMillion": {
+      "hit": 0.003,
+      "miss": 0.15,
+      "output": 0.6
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

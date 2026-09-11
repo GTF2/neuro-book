@@ -1,0 +1,3077 @@
+{
+  "referentAdditions": [],
+  "entities": [
+    {
+      "id": "e_fengxinzi",
+      "category": "person"
+    },
+    {
+      "id": "e_magical_girl_class",
+      "category": "class"
+    },
+    {
+      "id": "e_monster",
+      "category": "class"
+    },
+    {
+      "id": "e_hero_assoc",
+      "category": "organization"
+    },
+    {
+      "id": "e_green_park",
+      "category": "place"
+    },
+    {
+      "id": "e_world",
+      "category": "world"
+    },
+    {
+      "id": "e_villain_concept",
+      "category": "concept"
+    },
+    {
+      "id": "e_villain_org",
+      "category": "organization"
+    },
+    {
+      "id": "e_task_suyuan",
+      "category": "task"
+    },
+    {
+      "id": "e_beast_aid",
+      "category": "organization"
+    },
+    {
+      "id": "e_rongcheng_college",
+      "category": "organization"
+    }
+  ],
+  "identities": [
+    {
+      "id": "i_stq",
+      "at": 5,
+      "referent": "R_STQ",
+      "entity": "known:c01:e_su",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第5段苏天晴为本章行动与意识主体，继续沿用旧持续人物苏天晴，未与原主人归并。",
+      "evidence": [
+        "D4",
+        "known:c02:i_su_current",
+        "known:c01:i1"
+      ]
+    },
+    {
+      "id": "i_orig",
+      "at": 5,
+      "referent": "R_ORIG",
+      "entity": "known:c01:e_originalOwner",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第5段“原主人”指这副身体的原主，映射旧未解原主实体，与当前苏天晴区分。",
+      "evidence": [
+        "D4",
+        "known:c02:i_su_original"
+      ]
+    },
+    {
+      "id": "i_body",
+      "at": 18,
+      "referent": "R_BODY",
+      "entity": "known:c01:e_body",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第18段“细皮嫩肉的萝莉造型”及后文毛茸茸耳朵、尾巴均指苏天晴所在狐狐身体。",
+      "evidence": [
+        "D16",
+        "known:c02:i_fox_body",
+        "known:c01:i3"
+      ]
+    },
+    {
+      "id": "i_book",
+      "at": 21,
+      "referent": "R_BOOK",
+      "entity": "known:c01:e_book",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第21段古书自我介绍为“墨丘利秘典”，继续映射旧墨丘利秘典artifact。",
+      "evidence": [
+        "D18",
+        "known:c02:i_ancient_book"
+      ]
+    },
+    {
+      "id": "i_fx",
+      "at": 16,
+      "referent": "R_FX",
+      "entity": "e_fengxinzi",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第15段视频中天蓝色少女由第16段念出代号“风信子”，作为持续魔法少女主体。",
+      "evidence": [
+        "D13",
+        "D14"
+      ]
+    },
+    {
+      "id": "i_mg",
+      "at": 9,
+      "referent": "R_MG",
+      "entity": "e_magical_girl_class",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第9至10段“魔法少女”作为客观存在的群体类别，创建class实体。",
+      "evidence": [
+        "D9",
+        "D10"
+      ]
+    },
+    {
+      "id": "i_monster",
+      "at": 9,
+      "referent": "R_MONSTER",
+      "entity": "e_monster",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第9至10段“怪人怪兽/怪人”作为与魔法少女对立的类别，创建class实体。",
+      "evidence": [
+        "D9",
+        "D10"
+      ]
+    },
+    {
+      "id": "i_hero",
+      "at": 10,
+      "referent": "R_HERO_ASSOC",
+      "entity": "e_hero_assoc",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第10段英雄协会作为管辖魔法少女的组织，创建organization实体。",
+      "evidence": [
+        "D10"
+      ]
+    },
+    {
+      "id": "i_rongcheng",
+      "at": 11,
+      "referent": "R_RONGCHENG",
+      "entity": "known:c02:e_rongcheng",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第11段蓉城为苏天晴所在城市，继续映射旧蓉城地区。",
+      "evidence": [
+        "D11",
+        "known:c02:i_rongcheng"
+      ]
+    },
+    {
+      "id": "i_park",
+      "at": 33,
+      "referent": "R_GREEN_PARK",
+      "entity": "e_green_park",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第33段绿心公园为秘典预测怪人出现的地点，创建place实体。",
+      "evidence": [
+        "D27"
+      ]
+    },
+    {
+      "id": "i_world",
+      "at": 7,
+      "referent": "R_WORLD",
+      "entity": "e_world",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第7段“这个世界”指苏天晴所在的异世界，创建world实体。",
+      "evidence": [
+        "D7"
+      ]
+    },
+    {
+      "id": "i_villain_concept",
+      "at": 4,
+      "referent": "R_VILLAIN",
+      "entity": "e_villain_concept",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第4段“反派”作一般概念（反派为何找茬魔法少女），创concept实体，不并入第2章具体反派角色。",
+      "evidence": [
+        "D3"
+      ]
+    },
+    {
+      "id": "i_villain_org",
+      "at": 7,
+      "referent": "R_VILLAIN_ORG",
+      "entity": "e_villain_org",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第7段“反派组织”指世界上并不正式存在的组织，创建organization实体。",
+      "evidence": [
+        "D7"
+      ]
+    },
+    {
+      "id": "i_villain_role",
+      "at": 14,
+      "referent": "R_VILLAIN_ROLE",
+      "entity": "known:c02:e_villain_role",
+      "decision": "same",
+      "certainty": "tentative",
+      "rationale": "第14、84段苏天晴以“反派”自指其扮演的角色，映射第2章反派魔法少女角色实体；仅限此处，不含第4/7段一般概念。",
+      "evidence": [
+        "D12",
+        "D49",
+        "known:c02:e_villain_role"
+      ]
+    },
+    {
+      "id": "i_task",
+      "at": 24,
+      "referent": "R_TASK",
+      "entity": "e_task_suyuan",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第24段“任务：夙愿”与第67段“原身的夙愿”，作为持续task实体。",
+      "evidence": [
+        "D20",
+        "D21",
+        "D22"
+      ]
+    },
+    {
+      "id": "i_cross",
+      "at": 44,
+      "referent": "R_CROSS_STAR",
+      "entity": "known:c02:e_guardian_star",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第44段“十字星”被塞进挎包，映射旧守护之星artifact。",
+      "evidence": [
+        "D33",
+        "known:c02:i_guardian_star"
+      ]
+    },
+    {
+      "id": "i_beastfolk",
+      "at": 45,
+      "referent": "R_BEASTFOLK",
+      "entity": "known:c02:e_beastkin",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第45段“兽人”为世界类别，映射旧兽人类别实体。",
+      "evidence": [
+        "D34",
+        "known:c02:i_beastkin"
+      ]
+    },
+    {
+      "id": "i_beastaid",
+      "at": 60,
+      "referent": "R_BEAST_AID",
+      "entity": "e_beast_aid",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第60段“兽人互助会”为资助原主的组织，创建organization实体。",
+      "evidence": [
+        "D39"
+      ]
+    },
+    {
+      "id": "i_college",
+      "at": 37,
+      "referent": "R_COLLEGE",
+      "entity": "e_rongcheng_college",
+      "decision": "same",
+      "certainty": "accepted",
+      "rationale": "第37段“蓉城医学院”为苏天晴报名就读的学校，创建organization实体。",
+      "evidence": [
+        "D30"
+      ]
+    }
+  ],
+  "predicates": [
+    {
+      "id": "p_exists",
+      "name": "exists",
+      "definition": "某对象或类别在特定范围或世界中客观存在。",
+      "roles": [
+        {
+          "name": "object",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "scope",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "existence"
+    },
+    {
+      "id": "p_governs",
+      "name": "governs",
+      "definition": "某组织管辖或指派某群体。",
+      "roles": [
+        {
+          "name": "organization",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "group",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "organization"
+    },
+    {
+      "id": "p_fights",
+      "name": "fights",
+      "definition": "某方与另一方交战。",
+      "roles": [
+        {
+          "name": "agent",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "patient",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_public_figure",
+      "name": "public-figure",
+      "definition": "某主体在公众面前以特定方式活动或公开特定信息。",
+      "roles": [
+        {
+          "name": "subject",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "detail",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "reputation"
+    },
+    {
+      "id": "p_active_at",
+      "name": "active-at",
+      "definition": "某人物在某地活跃活动。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "location"
+    },
+    {
+      "id": "p_intends",
+      "name": "intends",
+      "definition": "某人意图达成某目标。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "goal",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "intent"
+    },
+    {
+      "id": "p_provides_intel",
+      "name": "provides-intel",
+      "definition": "情报源提供关于某主体的信息。",
+      "roles": [
+        {
+          "name": "source",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "subject",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "information"
+    },
+    {
+      "id": "p_predicts",
+      "name": "predicts",
+      "definition": "某来源预测未来事件。",
+      "roles": [
+        {
+          "name": "source",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "subject",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "prediction"
+    },
+    {
+      "id": "p_plans",
+      "name": "plans",
+      "definition": "某人计划做某事。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "plan"
+    },
+    {
+      "id": "p_resides",
+      "name": "resides",
+      "definition": "某人居住在特定地区。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "detail",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "location"
+    },
+    {
+      "id": "p_has_codename",
+      "name": "has-codename",
+      "definition": "某人物拥有特定代号。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "codename",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "identity"
+    },
+    {
+      "id": "p_specializes",
+      "name": "specializes",
+      "definition": "某人擅长某种能力或战斗方式。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "ability",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "ability"
+    },
+    {
+      "id": "p_promises",
+      "name": "promises",
+      "definition": "某人承诺或立誓某事。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "speech"
+    },
+    {
+      "id": "p_attacks",
+      "name": "attacks",
+      "definition": "怪人或某方袭击某地。",
+      "roles": [
+        {
+          "name": "monster",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "place",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "conflict"
+    },
+    {
+      "id": "p_livelihood",
+      "name": "livelihood",
+      "definition": "某人的谋生方式与经济状况。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "description",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "status"
+    },
+    {
+      "id": "p_supports",
+      "name": "supports",
+      "definition": "某组织资助或支持某人。",
+      "roles": [
+        {
+          "name": "organization",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "support"
+    },
+    {
+      "id": "p_enrolled",
+      "name": "enrolled",
+      "definition": "某人在某学校就读或被录取。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "organization",
+          "valueKinds": [
+            "entity"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "education"
+    },
+    {
+      "id": "p_speaks",
+      "name": "speaks",
+      "definition": "某人向某对象说出某内容。",
+      "roles": [
+        {
+          "name": "speaker",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "addressee",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "content",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "speech"
+    },
+    {
+      "id": "p_broken",
+      "name": "broken",
+      "definition": "某物损坏。",
+      "roles": [
+        {
+          "name": "object",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "state"
+    },
+    {
+      "id": "p_personality",
+      "name": "personality",
+      "definition": "某人的性格或行为特征。",
+      "roles": [
+        {
+          "name": "person",
+          "valueKinds": [
+            "entity"
+          ]
+        },
+        {
+          "name": "description",
+          "valueKinds": [
+            "text"
+          ]
+        }
+      ],
+      "symmetric": false,
+      "family": "trait"
+    }
+  ],
+  "times": [
+    {
+      "id": "t_ch3_morning",
+      "at": 5,
+      "description": "第3章上午：苏天晴在家吃早餐、看风信子视频与墨丘利秘典并制定蹲点计划。",
+      "precision": "interval",
+      "before": [
+        "t_ch3_afternoon"
+      ],
+      "after": [
+        "known:c02:t_ch2_now"
+      ]
+    },
+    {
+      "id": "t_ch3_afternoon",
+      "at": 44,
+      "description": "第3章午后：苏天晴乘地铁前往市中心并在绿心公园看书等待。",
+      "precision": "interval",
+      "before": [
+        "t_ch3_night"
+      ],
+      "after": [
+        "t_ch3_morning"
+      ]
+    },
+    {
+      "id": "t_ch3_night",
+      "at": 73,
+      "description": "第3章傍晚至夜间：夜幕笼罩绿心公园，怪人出现。",
+      "precision": "interval",
+      "before": [],
+      "after": [
+        "t_ch3_afternoon"
+      ]
+    }
+  ],
+  "facts": [
+    {
+      "id": "f_stq_question",
+      "at": 5,
+      "text": "苏天晴脑中思考“反派为什么要去找茬魔法少女”。",
+      "predicate": "known:c02:p_wonders",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "反派为什么要去找茬魔法少女"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D3"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第4段问题由第5段明确是苏天晴脑子里思考的永恒问题，归属苏天晴；D3归属正确。"
+      }
+    },
+    {
+      "id": "f_stq_no_ambition",
+      "at": 7,
+      "text": "苏天晴没有毁灭世界或统治人类这类想法。",
+      "predicate": "p_intends",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "goal",
+          "value": {
+            "type": "text",
+            "text": "毁灭世界或统治人类"
+          }
+        }
+      ],
+      "polarity": "negative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D7"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第7段叙述其没有任何此类想法。"
+      }
+    },
+    {
+      "id": "f_villain_org_absent",
+      "at": 7,
+      "text": "这个世界没有什么正式的反派组织。",
+      "predicate": "p_exists",
+      "arguments": [
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_villain_org"
+          }
+        },
+        {
+          "role": "scope",
+          "value": {
+            "type": "ref",
+            "id": "e_world"
+          }
+        }
+      ],
+      "polarity": "negative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_villain_org",
+        "i_world"
+      ],
+      "proof": {
+        "premises": [
+          "D7"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第7段叙述世界没有正式反派组织。"
+      }
+    },
+    {
+      "id": "f_mg_exists",
+      "at": 9,
+      "text": "魔法少女是客观存在的。",
+      "predicate": "p_exists",
+      "arguments": [
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_magical_girl_class"
+          }
+        },
+        {
+          "role": "scope",
+          "value": {
+            "type": "ref",
+            "id": "e_world"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_mg",
+        "i_world"
+      ],
+      "proof": {
+        "premises": [
+          "D9"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第9段叙述魔法少女客观存在。"
+      }
+    },
+    {
+      "id": "f_monster_exists",
+      "at": 9,
+      "text": "怪人怪兽是客观存在的。",
+      "predicate": "p_exists",
+      "arguments": [
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_monster"
+          }
+        },
+        {
+          "role": "scope",
+          "value": {
+            "type": "ref",
+            "id": "e_world"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_monster",
+        "i_world"
+      ],
+      "proof": {
+        "premises": [
+          "D9"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第9段叙述怪人怪兽客观存在。"
+      }
+    },
+    {
+      "id": "f_mg_hero_assoc",
+      "at": 10,
+      "text": "魔法少女们接受英雄协会的管辖委派。",
+      "predicate": "p_governs",
+      "arguments": [
+        {
+          "role": "organization",
+          "value": {
+            "type": "ref",
+            "id": "e_hero_assoc"
+          }
+        },
+        {
+          "role": "group",
+          "value": {
+            "type": "ref",
+            "id": "e_magical_girl_class"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "usually",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_hero",
+        "i_mg"
+      ],
+      "proof": {
+        "premises": [
+          "D10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第10段叙述魔法少女受英雄协会管辖。"
+      }
+    },
+    {
+      "id": "f_mg_public",
+      "at": 10,
+      "text": "魔法少女一边与怪人战斗一边作为偶像出镜，真实身份保密，但变身形象广为人知，战斗成为另类宣传。",
+      "predicate": "p_public_figure",
+      "arguments": [
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "e_magical_girl_class"
+          }
+        },
+        {
+          "role": "detail",
+          "value": {
+            "type": "text",
+            "text": "一边与怪人战斗一边作为偶像出镜，真实身份保密，变身魔法少女后的样子广为人知，与怪人的战斗成为另类宣传方式"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "usually",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_mg"
+      ],
+      "proof": {
+        "premises": [
+          "D10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第10段叙述魔法少女的公众形象。"
+      }
+    },
+    {
+      "id": "f_mg_fight_monster",
+      "at": 10,
+      "text": "魔法少女与怪人怪兽交战。",
+      "predicate": "p_fights",
+      "arguments": [
+        {
+          "role": "agent",
+          "value": {
+            "type": "ref",
+            "id": "e_magical_girl_class"
+          }
+        },
+        {
+          "role": "patient",
+          "value": {
+            "type": "ref",
+            "id": "e_monster"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "usually",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_mg",
+        "i_monster"
+      ],
+      "proof": {
+        "premises": [
+          "D10"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第10段叙述魔法少女与怪人战斗。"
+      }
+    },
+    {
+      "id": "f_rongcheng_active_mg",
+      "at": 16,
+      "text": "苏天晴所在的蓉城目前有一名活跃的魔法少女，即风信子。",
+      "predicate": "p_active_at",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_rongcheng"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_fx",
+        "i_rongcheng"
+      ],
+      "proof": {
+        "premises": [
+          "D11",
+          "D13",
+          "D14"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第11段蓉城有一名活跃魔法少女，第13段苏天晴点开“这名魔法少女”的介绍视频，第16段念出其代号风信子。"
+      }
+    },
+    {
+      "id": "f_fx_codename",
+      "at": 16,
+      "text": "视频中魔法少女的代号是风信子。",
+      "predicate": "p_has_codename",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "codename",
+          "value": {
+            "type": "text",
+            "text": "风信子"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "D14"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第16段苏天晴念出她的代号“风信子”。"
+      }
+    },
+    {
+      "id": "f_fx_video_fight",
+      "at": 15,
+      "text": "视频画面中，风信子（天蓝色少女）与一只凶猛怪兽在街心交战，招招到肉。",
+      "predicate": "p_fights",
+      "arguments": [
+        {
+          "role": "agent",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "patient",
+          "value": {
+            "type": "ref",
+            "id": "e_monster"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_fx",
+        "i_monster"
+      ],
+      "proof": {
+        "premises": [
+          "D13",
+          "D14"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第15段视频画面中天蓝色少女与怪兽街心交战，第16段确认其为风信子。"
+      }
+    },
+    {
+      "id": "f_fx_greatsword",
+      "at": 17,
+      "text": "风信子能变出大剑砍掉怪兽的脑袋。",
+      "predicate": "p_specializes",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "ability",
+          "value": {
+            "type": "text",
+            "text": "能变出大剑砍掉怪兽的脑袋"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_fx",
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D15"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第17段为苏天晴内心判断，归属苏天晴。"
+      }
+    },
+    {
+      "id": "f_stq_doubts_fx",
+      "at": 17,
+      "text": "苏天晴怀疑自己是否真的能去跟这种肉搏型魔法少女找茬。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "怀疑自己是否真的能去跟这种肉搏型魔法少女找茬"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "D15"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第17段苏天晴的怀疑。"
+      }
+    },
+    {
+      "id": "f_stq_self_assess",
+      "at": 18,
+      "text": "苏天晴看自己细皮嫩肉的萝莉造型，认为自己绝不是能跟人贴身肉搏的模样。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_body"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "细皮嫩肉的萝莉造型，绝对不是能跟人贴身肉搏的模样"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_body"
+      ],
+      "proof": {
+        "premises": [
+          "D16"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第18段苏天晴对自己身体战力的评估。"
+      }
+    },
+    {
+      "id": "f_stq_no_clue",
+      "at": 19,
+      "text": "苏天晴对如何应对风信子没有丁点头绪。",
+      "predicate": "known:c02:p_wonders",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "没有丁点头绪啊！"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D17"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第19段苏天晴的内心感叹。"
+      }
+    },
+    {
+      "id": "f_task_suyuan",
+      "at": 27,
+      "text": "墨丘利秘典第二页发布任务：夙愿——获得200名关注者；成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去；奖励500神典石。",
+      "predicate": "known:c02:p_publishes-task",
+      "arguments": [
+        {
+          "role": "issuer",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        },
+        {
+          "role": "task",
+          "value": {
+            "type": "ref",
+            "id": "e_task_suyuan"
+          }
+        },
+        {
+          "role": "target",
+          "value": {
+            "type": "unknown",
+            "reason": "任务未指定具体目标对象"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "unknown",
+            "reason": "任务未指定地点"
+          }
+        },
+        {
+          "role": "reward",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_divine_stone"
+          }
+        },
+        {
+          "role": "amount",
+          "value": {
+            "type": "number",
+            "number": 500,
+            "unit": "神典石"
+          }
+        },
+        {
+          "role": "description",
+          "value": {
+            "type": "text",
+            "text": "获得200名关注者；成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_book",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_book",
+        "i_task",
+        "known:c02:i_divine_stone"
+      ],
+      "proof": {
+        "premises": [
+          "D20",
+          "D21",
+          "D22",
+          "D23"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第24至27段秘典第二页显示任务夙愿与奖励。"
+      }
+    },
+    {
+      "id": "f_stq_feels_heavy",
+      "at": 28,
+      "text": "苏天晴觉得这任务沉重得像隔壁mygo片场来的。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_task_suyuan"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "这比黑洞还沉重的任务说明"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_task"
+      ],
+      "proof": {
+        "premises": [
+          "D24"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第28段苏天晴对任务的评价。"
+      }
+    },
+    {
+      "id": "f_book_fx_intel",
+      "at": 32,
+      "text": "秘典第三页记载风信子是新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练。",
+      "predicate": "p_provides_intel",
+      "arguments": [
+        {
+          "role": "source",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        },
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_book",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_book",
+        "i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "D25",
+          "D26"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第31至32段秘典第三页给出风信子情报。"
+      }
+    },
+    {
+      "id": "f_book_prediction_monster",
+      "at": 33,
+      "text": "秘典预测今晚蓉城市绿心公园将出现怪人。",
+      "predicate": "p_predicts",
+      "arguments": [
+        {
+          "role": "source",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        },
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "e_monster"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "e_green_park"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "今晚蓉城市绿心公园将出现怪人"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_book",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "possible",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_book",
+        "i_monster",
+        "i_park"
+      ],
+      "proof": {
+        "premises": [
+          "D27"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第33段秘典预测今晚绿心公园将出现怪人。"
+      }
+    },
+    {
+      "id": "f_book_prediction_fx",
+      "at": 33,
+      "text": "秘典预测风信子将前往绿心公园迎击怪人。",
+      "predicate": "p_predicts",
+      "arguments": [
+        {
+          "role": "source",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        },
+        {
+          "role": "subject",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "e_green_park"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "预测风信子将前往迎击"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_book",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "possible",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_book",
+        "i_fx",
+        "i_park"
+      ],
+      "proof": {
+        "premises": [
+          "D27"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第33段秘典预测风信子将前往迎击。"
+      }
+    },
+    {
+      "id": "f_stq_resides",
+      "at": 36,
+      "text": "苏天晴住在蓉城东部，绿心公园在中心城区，坐地铁需约两小时。",
+      "predicate": "p_resides",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "known:c02:e_rongcheng"
+          }
+        },
+        {
+          "role": "detail",
+          "value": {
+            "type": "text",
+            "text": "住蓉城东部；绿心公园位于中心城区，坐地铁需约两小时"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_rongcheng"
+      ],
+      "proof": {
+        "premises": [
+          "D29"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第36段苏天晴对自己住处与公园位置、路程的认知。"
+      }
+    },
+    {
+      "id": "f_stq_plan_stakeout",
+      "at": 37,
+      "text": "苏天晴计划提前坐两小时地铁去绿心公园蹲点守候风信子。",
+      "predicate": "p_plans",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "提前去绿心公园蹲点守候风信子"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D29",
+          "D30"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第36至37段苏天晴决定提前两小时坐地铁去蹲点。"
+      }
+    },
+    {
+      "id": "f_stq_college",
+      "at": 37,
+      "text": "苏天晴报名就读的蓉城医学院后天才开学。",
+      "predicate": "p_enrolled",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "organization",
+          "value": {
+            "type": "ref",
+            "id": "e_rongcheng_college"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_college"
+      ],
+      "proof": {
+        "premises": [
+          "D30"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第37段苏天晴想到自己就读的医学院后天才开学。"
+      }
+    },
+    {
+      "id": "f_orig_livelihood",
+      "at": 39,
+      "text": "叙述披露：原本的苏天晴不是有钱人家，一介狐狐没什么打工挣钱的本事，平时在网上写写小说挣点饭钱，衣柜单薄。",
+      "predicate": "p_livelihood",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_originalOwner"
+          }
+        },
+        {
+          "role": "description",
+          "value": {
+            "type": "text",
+            "text": "不是有钱人家，没什么打工挣钱的本事，平时在网上写写小说挣点饭钱，衣柜单薄"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_morning",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_orig"
+      ],
+      "proof": {
+        "premises": [
+          "D31"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第39段为叙述者披露，主体为原主，非当前苏天晴的认知。"
+      }
+    },
+    {
+      "id": "f_orig_social",
+      "at": 59,
+      "text": "叙述披露：曾经的苏天晴小姐虽长得可爱，但社恐孤僻、极少出门；坐两小时地铁到市中心已算她半年最远的远门。",
+      "predicate": "p_personality",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_originalOwner"
+          }
+        },
+        {
+          "role": "description",
+          "value": {
+            "type": "text",
+            "text": "长得可爱但社恐孤僻，极少出门；坐两小时地铁到市中心已算是半年以来出过最远的一次远门"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_orig"
+      ],
+      "proof": {
+        "premises": [
+          "D38"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第59段叙述披露原主的社恐与出行经历。"
+      }
+    },
+    {
+      "id": "f_beast_aid_support",
+      "at": 60,
+      "text": "兽人互助会资助原主苏天晴。",
+      "predicate": "p_supports",
+      "arguments": [
+        {
+          "role": "organization",
+          "value": {
+            "type": "ref",
+            "id": "e_beast_aid"
+          }
+        },
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_originalOwner"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_beastaid",
+        "i_orig"
+      ],
+      "proof": {
+        "premises": [
+          "D39"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第60段叙述兽人互助会资助有限。"
+      }
+    },
+    {
+      "id": "f_orig_writing_poor",
+      "at": 60,
+      "text": "叙述披露：原主写小说功力不怎么样，只靠全勤勉强混饭吃，成绩一塌糊涂。",
+      "predicate": "p_livelihood",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_originalOwner"
+          }
+        },
+        {
+          "role": "description",
+          "value": {
+            "type": "text",
+            "text": "写小说功力不怎么样，只靠全勤勉强混饭吃，成绩一塌糊涂"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_orig"
+      ],
+      "proof": {
+        "premises": [
+          "D39"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第60段叙述披露原主写作收入惨况。"
+      }
+    },
+    {
+      "id": "f_stq_promise",
+      "at": 63,
+      "text": "苏天晴在心中立誓：既然已经成为了原主，就一定会让她过上更美好的生活。",
+      "predicate": "p_promises",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "放心吧苏天晴小姐，既然我已经成为了你，那我就一定会让你过上更美好的生活！"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_orig"
+      ],
+      "proof": {
+        "premises": [
+          "D42"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第63段苏天晴心中对原主的承诺。"
+      }
+    },
+    {
+      "id": "f_stq_followers_question",
+      "at": 67,
+      "text": "苏天晴思考“关注者”是什么意思，是否是粉丝；如果这是原身的夙愿，实现起来未免太简单。",
+      "predicate": "known:c02:p_wonders",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "关注者是什么意思呢，粉丝？如果这就是原身的夙愿，那实现起来未免有点太简单了"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_task"
+      ],
+      "proof": {
+        "premises": [
+          "D43"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第67段苏天晴对关注者与夙愿的思考。"
+      }
+    },
+    {
+      "id": "f_stq_selfie_plan",
+      "at": 68,
+      "text": "苏天晴认为凭这个颜值随便自拍几张发到小蓝书上就能混个千八百关注。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_task_suyuan"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "以这个颜值，随便自拍几张发到小蓝书上就能随随便便混个千八百关注"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "possible",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_task"
+      ],
+      "proof": {
+        "premises": [
+          "D44"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第68段苏天晴的设想。"
+      }
+    },
+    {
+      "id": "f_camera_broken",
+      "at": 71,
+      "text": "原主人手机的前置摄像头被摔坏了，苏天晴自拍的想法暂时打消。",
+      "predicate": "p_broken",
+      "arguments": [
+        {
+          "role": "object",
+          "value": {
+            "type": "text",
+            "text": "原主人手机的前置摄像头"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_afternoon",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D45"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第69至71段苏天晴自拍后发现前摄已坏。"
+      }
+    },
+    {
+      "id": "f_stq_alone",
+      "at": 77,
+      "text": "苏天晴感慨无论前世还是现在，自己仍是孤身一人。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "无论前世还是现在，自己仍是孤身一人啊"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D46"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第77段苏天晴的感慨。"
+      }
+    },
+    {
+      "id": "f_stq_focus",
+      "at": 79,
+      "text": "苏天晴觉得刷了一天视频有点累，该把注意力放到正事上。",
+      "predicate": "p_plans",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "把注意力放到正事上"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq"
+      ],
+      "proof": {
+        "premises": [
+          "D47"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第79段苏天晴准备关注正事。"
+      }
+    },
+    {
+      "id": "f_monster_attack",
+      "at": 83,
+      "text": "今晚有怪人袭击蓉城绿心公园。",
+      "predicate": "p_attacks",
+      "arguments": [
+        {
+          "role": "monster",
+          "value": {
+            "type": "ref",
+            "id": "e_monster"
+          }
+        },
+        {
+          "role": "place",
+          "value": {
+            "type": "ref",
+            "id": "e_green_park"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "world",
+        "holder": null,
+        "opaque": false
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_monster",
+        "i_park"
+      ],
+      "proof": {
+        "premises": [
+          "D48",
+          "B12"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第80至83段怪人吼叫传来、人群逃散，苏天晴确认今晚确有怪人袭击绿心公园。"
+      }
+    },
+    {
+      "id": "f_stq_confirms_prediction",
+      "at": 83,
+      "text": "苏天晴确认秘典说的没错，今晚的确有怪人袭击绿心公园。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_book"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "秘典上说的没错，今晚的确有怪人袭击绿心公园"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_book"
+      ],
+      "proof": {
+        "premises": [
+          "D48"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第83段苏天晴确认秘典预测。"
+      }
+    },
+    {
+      "id": "f_stq_villain_bravado",
+      "at": 84,
+      "text": "苏天晴想自己不是反派吗，该紧张的是马上要到来的风信子。",
+      "predicate": "known:c02:p_evaluates",
+      "arguments": [
+        {
+          "role": "person",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "object",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "evaluation",
+          "value": {
+            "type": "text",
+            "text": "我不是反派吗，该紧张的应该是马上要到这边来的风信子"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "belief",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "actual",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "D49"
+        ],
+        "method": "direct",
+        "certainty": "accepted",
+        "rationale": "第84段苏天晴以反派自居的内心独白。"
+      }
+    },
+    {
+      "id": "f_stq_greeting",
+      "at": 87,
+      "text": "苏天晴向风信子喊话：快来吧，风信子；我可是给你准备了一份——美妙的见面礼哦。",
+      "predicate": "p_speaks",
+      "arguments": [
+        {
+          "role": "speaker",
+          "value": {
+            "type": "ref",
+            "id": "known:c01:e_su"
+          }
+        },
+        {
+          "role": "addressee",
+          "value": {
+            "type": "ref",
+            "id": "e_fengxinzi"
+          }
+        },
+        {
+          "role": "content",
+          "value": {
+            "type": "text",
+            "text": "快来吧，风信子。我可是给你准备了一份——美妙的见面礼哦。"
+          }
+        }
+      ],
+      "polarity": "affirmative",
+      "assertion": {
+        "kind": "speech",
+        "holder": "known:c01:e_su",
+        "opaque": true
+      },
+      "time": "t_ch3_night",
+      "quantifier": "particular",
+      "modality": "intended",
+      "conditions": [],
+      "textualConditions": [],
+      "exceptions": [],
+      "identities": [
+        "i_stq",
+        "i_fx"
+      ],
+      "proof": {
+        "premises": [
+          "D50",
+          "D51"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第86至87段苏天晴向风信子喊话准备见面礼。"
+      }
+    }
+  ],
+  "arguments": [],
+  "access": [
+    {
+      "id": "a_su_known_mg_exist",
+      "at": 9,
+      "holder": "known:c01:e_su",
+      "target": "f_mg_exists",
+      "mode": "known",
+      "evidence": [
+        "D8",
+        "D9"
+      ]
+    },
+    {
+      "id": "a_su_known_hero_assoc",
+      "at": 10,
+      "holder": "known:c01:e_su",
+      "target": "f_mg_hero_assoc",
+      "mode": "known",
+      "evidence": [
+        "D8",
+        "D10"
+      ]
+    },
+    {
+      "id": "a_su_known_mg_public",
+      "at": 10,
+      "holder": "known:c01:e_su",
+      "target": "f_mg_public",
+      "mode": "known",
+      "evidence": [
+        "D8",
+        "D10"
+      ]
+    },
+    {
+      "id": "a_su_known_rongcheng_mg",
+      "at": 16,
+      "holder": "known:c01:e_su",
+      "target": "f_rongcheng_active_mg",
+      "mode": "known",
+      "evidence": [
+        "D8",
+        "D11",
+        "D14"
+      ]
+    },
+    {
+      "id": "a_su_read_task_suyuan",
+      "at": 27,
+      "holder": "known:c01:e_su",
+      "target": "f_task_suyuan",
+      "mode": "read",
+      "evidence": [
+        "D20",
+        "D21",
+        "D22",
+        "D23"
+      ]
+    },
+    {
+      "id": "a_su_read_fx_intel",
+      "at": 32,
+      "holder": "known:c01:e_su",
+      "target": "f_book_fx_intel",
+      "mode": "read",
+      "evidence": [
+        "D25",
+        "D26"
+      ]
+    },
+    {
+      "id": "a_su_read_pred_monster",
+      "at": 33,
+      "holder": "known:c01:e_su",
+      "target": "f_book_prediction_monster",
+      "mode": "read",
+      "evidence": [
+        "D27"
+      ]
+    },
+    {
+      "id": "a_su_read_pred_fx",
+      "at": 33,
+      "holder": "known:c01:e_su",
+      "target": "f_book_prediction_fx",
+      "mode": "read",
+      "evidence": [
+        "D27"
+      ]
+    }
+  ],
+  "episodes": [
+    {
+      "id": "ep_ch3_plan",
+      "at": 37,
+      "title": "晨间获取情报与制定蹲点计划",
+      "summary": "苏天晴在家吃早餐，脑中思考反派为何找茬魔法少女；她观看风信子介绍视频，又翻阅墨丘利秘典。秘典第二页发布任务“夙愿”（获得200名关注者，奖励500神典石），第三页给出风信子情报与今晚绿心公园怪人袭击、风信子前往迎击的预测。她据此决定提前坐两小时地铁去蹲点。",
+      "scale": "sequence",
+      "participants": [
+        "known:c01:e_su",
+        "known:c01:e_book",
+        "e_fengxinzi",
+        "e_task_suyuan",
+        "e_green_park",
+        "e_monster"
+      ],
+      "materials": [
+        "D3",
+        "D13",
+        "D14",
+        "D20",
+        "D27",
+        "D30"
+      ],
+      "children": [],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "known:c02:ep_ch2_daily_task",
+          "evidence": [
+            "D20"
+          ]
+        }
+      ],
+      "time": "t_ch3_morning",
+      "proof": {
+        "premises": [
+          "D3",
+          "D13",
+          "D20",
+          "D27",
+          "D30"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第4至37段苏天晴晨间获取情报并制定计划。"
+      }
+    },
+    {
+      "id": "ep_ch3_stakeout",
+      "at": 87,
+      "title": "前往绿心公园蹲点风信子",
+      "summary": "苏天晴换装后乘地铁两小时抵达蓉城中心城区的绿心公园，把十字星与古书放进挎包；在公园边看书边了解原主社恐、经济拮据与写作惨况，并在心中立誓让原主过上更好的生活；日暮夜幕降临，她压下孤身一人的感慨专注正事，随后遭遇怪人出现。",
+      "scale": "sequence",
+      "participants": [
+        "known:c01:e_su",
+        "known:c02:e_guardian_star",
+        "known:c01:e_book",
+        "e_green_park",
+        "e_fengxinzi",
+        "e_monster"
+      ],
+      "materials": [
+        "D29",
+        "D33",
+        "D36",
+        "D42",
+        "D48"
+      ],
+      "children": [
+        "ep_ch3_monster"
+      ],
+      "relations": [
+        {
+          "relation": "continues",
+          "target": "ep_ch3_plan",
+          "evidence": [
+            "D33"
+          ]
+        }
+      ],
+      "time": "t_ch3_afternoon",
+      "proof": {
+        "premises": [
+          "D29",
+          "D33",
+          "D36",
+          "D42",
+          "D48"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第38至87段苏天晴前往绿心公园蹲点等待风信子。"
+      }
+    },
+    {
+      "id": "ep_ch3_monster",
+      "at": 87,
+      "title": "怪人袭击绿心公园",
+      "summary": "怪人尖锐吼叫从树林后传来，绿心公园人群慌乱逃散；苏天晴确认秘典预测无误，意识到该紧张的是即将到来的风信子，露出反派笑容并喊话准备“见面礼”。",
+      "scale": "event",
+      "participants": [
+        "e_monster",
+        "known:c01:e_su",
+        "e_green_park",
+        "e_fengxinzi"
+      ],
+      "materials": [
+        "D48",
+        "D49",
+        "D50",
+        "D51"
+      ],
+      "children": [],
+      "relations": [],
+      "time": "t_ch3_night",
+      "proof": {
+        "premises": [
+          "D48",
+          "D49",
+          "D50",
+          "D51"
+        ],
+        "method": "aggregation",
+        "certainty": "accepted",
+        "rationale": "第80至87段怪人出现，苏天晴准备迎击风信子。"
+      }
+    }
+  ],
+  "summaries": [
+    {
+      "id": "s_su_ch3",
+      "entity": "known:c01:e_su",
+      "facet": "第3章",
+      "items": [
+        {
+          "text": "借网络与身体原主记忆了解世界：魔法少女与怪人怪兽客观存在，魔法少女受英雄协会管辖、以偶像身份活动，蓉城有活跃魔法少女风信子。",
+          "refs": [
+            "D8",
+            "D9",
+            "D10",
+            "D11"
+          ]
+        },
+        {
+          "text": "观看风信子视频后震惊于其肉搏战力，怀疑自己细皮嫩肉的萝莉身体能否与肉搏型魔法少女找茬，一度毫无头绪。",
+          "refs": [
+            "D13",
+            "D15",
+            "D16",
+            "D17"
+          ]
+        },
+        {
+          "text": "从墨丘利秘典读到任务“夙愿”（获得200名关注者，奖励500神典石）、风信子情报，以及今晚绿心公园将出现怪人、风信子将前往迎击的预测。",
+          "refs": [
+            "D20",
+            "D21",
+            "D22",
+            "D23",
+            "D26",
+            "D27"
+          ]
+        },
+        {
+          "text": "计划提前坐两小时地铁到绿心公园蹲点守候风信子，并把十字星与古书放进挎包。",
+          "refs": [
+            "D29",
+            "D30",
+            "D33"
+          ]
+        },
+        {
+          "text": "得知原主社恐孤僻、经济拮据、写小说成绩差、受兽人互助会资助；在心中立誓既已成为她就让她过上更美好的生活。",
+          "refs": [
+            "D31",
+            "D38",
+            "D39",
+            "D42"
+          ]
+        },
+        {
+          "text": "自赏可爱，思考“关注者”含义并设想靠自拍涨粉，但发现原主手机前摄已坏而作罢。",
+          "refs": [
+            "D32",
+            "D43",
+            "D44",
+            "D45"
+          ]
+        },
+        {
+          "text": "傍晚在公园感慨无论前世今生都孤身一人，随后压下情绪专注正事。",
+          "refs": [
+            "D46",
+            "D47"
+          ]
+        },
+        {
+          "text": "怪人吼叫出现，她确认秘典预测无误，露出反派笑容，向风信子喊话准备“见面礼”。",
+          "refs": [
+            "D48",
+            "D49",
+            "D50",
+            "D51"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_fx_ch3",
+      "entity": "e_fengxinzi",
+      "facet": "风信子",
+      "items": [
+        {
+          "text": "秘典情报记载：风信子是蓉城新近活跃的魔法少女，擅长近战压制与肉搏，对魔法尚不熟练。",
+          "refs": [
+            "D25",
+            "D26"
+          ]
+        },
+        {
+          "text": "视频中她与凶猛怪兽在街心交战、招招到肉，能变出大剑砍掉怪兽脑袋；苏天晴由此评估自己难以与她肉搏。",
+          "refs": [
+            "D13",
+            "D15"
+          ]
+        },
+        {
+          "text": "秘典预测她今晚将前往蓉城绿心公园迎击出现的怪人。",
+          "refs": [
+            "D27"
+          ]
+        },
+        {
+          "text": "苏天晴在公园准备给她的“见面礼”。",
+          "refs": [
+            "D50",
+            "D51"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_book_ch3",
+      "entity": "known:c01:e_book",
+      "facet": "墨丘利秘典",
+      "items": [
+        {
+          "text": "苏天晴不知道它为何突然不说话，猜测里面或许有需要的情报。",
+          "refs": [
+            "D19"
+          ]
+        },
+        {
+          "text": "第二页显示任务“夙愿”：获得200名关注者，成为闪耀的魔法少女，带着“她的那份”一起活下去；奖励500神典石。",
+          "refs": [
+            "D20",
+            "D21",
+            "D22",
+            "D23"
+          ]
+        },
+        {
+          "text": "第三页提供风信子情报，并预测今晚绿心公园将出现怪人、风信子将前往迎击。",
+          "refs": [
+            "D25",
+            "D26",
+            "D27"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_task_ch3",
+      "entity": "e_task_suyuan",
+      "facet": "任务：夙愿",
+      "items": [
+        {
+          "text": "秘典发布任务“夙愿”：获得200名关注者；成为闪耀的魔法少女，让所有人记住你的名字，带着她的那份一起活下去；奖励500神典石。",
+          "refs": [
+            "D20",
+            "D21",
+            "D22",
+            "D23"
+          ]
+        },
+        {
+          "text": "苏天晴觉得任务沉重，疑惑“关注者”含义，认为凭颜值涨粉应很简单（但前摄坏了）。",
+          "refs": [
+            "D24",
+            "D43",
+            "D44",
+            "D45"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_orig_ch3",
+      "entity": "known:c01:e_originalOwner",
+      "facet": "苏天晴（原主）",
+      "items": [
+        {
+          "text": "叙述披露：原主不是有钱人家，一介狐狐没什么打工挣钱本事，平时在网上写小说挣饭钱，衣柜单薄。",
+          "refs": [
+            "D31"
+          ]
+        },
+        {
+          "text": "叙述披露：原主虽长得可爱但社恐孤僻、极少出门；坐两小时地铁到市中心已算她半年最远的远门。",
+          "refs": [
+            "D38"
+          ]
+        },
+        {
+          "text": "叙述披露：兽人互助会资助有限，她写小说功力不怎么样，只靠全勤勉强混饭，成绩一塌糊涂。",
+          "refs": [
+            "D39"
+          ]
+        },
+        {
+          "text": "叙述披露：她有一部屏幕摔出裂纹的手机，且前置摄像头已损坏。",
+          "refs": [
+            "D4",
+            "D45"
+          ]
+        },
+        {
+          "text": "苏天晴在心中承诺既已成为她，就会让她过上更美好的生活。",
+          "refs": [
+            "D42",
+            "D63"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s_park_ch3",
+      "entity": "e_green_park",
+      "facet": "绿心公园",
+      "items": [
+        {
+          "text": "绿心公园是蓉城最大的湿地公园，人气很旺，是蓉城的地标公园。",
+          "refs": [
+            "D36"
+          ]
+        },
+        {
+          "text": "位于蓉城中心城区，苏天晴从东部住处坐地铁约两小时抵达。",
+          "refs": [
+            "D29"
+          ]
+        },
+        {
+          "text": "秘典预测今晚将出现怪人；傍晚确有怪人吼叫与袭击。",
+          "refs": [
+            "D27",
+            "D48"
+          ]
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    "第2段作者关于角色均满18岁的声明属于paratext，不自动等同为世界内事实。",
+    "任务“夙愿”文本中“带着她的那份一起活下去”的“她”指向未明，可能关联原主或其他人，本章未揭示。",
+    "风信子与第2章每日任务目标“正牌魔法少女”是否为同一人，本章仅可推测（蓉城活跃魔法少女仅风信子），未明确等同。",
+    "风信子的真实姓名、所属与更多背景未揭示。",
+    "魔法少女变身形象与真实身份的公开机制、英雄协会的具体结构未详述。",
+    "怪人怪兽的来源、种类与袭击规律未详述；第80段吼叫与第83段袭击之间无独立披露段。",
+    "墨丘利秘典“突然不会说话”的原因未揭示。",
+    "原主苏天晴与当前苏天晴（穿越者）的关系、原主是否真正死亡仍主要来自记忆与叙述，未获独立世界规则确认。",
+    "苏天晴与风信子在绿心公园的正面交锋结果未在本章给出（章末停在喊话），属候选截断。",
+    "兽人互助会、蓉城医学院的具体性质与苏天晴后续入读情况未详述。",
+    "本章未给出可定位的绝对时间；t_ch3_morning/afternoon/night仅作章内相对区间定位。",
+    "D31、D38、D39为叙述者披露，非苏天晴内心认知；本候选已按其来源归属为世界叙述。"
+  ]
+}

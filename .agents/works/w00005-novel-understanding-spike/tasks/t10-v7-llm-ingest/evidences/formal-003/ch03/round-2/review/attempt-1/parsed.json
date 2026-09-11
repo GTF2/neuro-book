@@ -1,0 +1,870 @@
+{
+  "judgments": [
+    {
+      "id": "material:R_STQ",
+      "verdict": "passed",
+      "note": "第5、7、13、23、41、50、55等段苏天晴/狐狐/小狐狸均指当前意识主体，词面指称汇总无误。"
+    },
+    {
+      "id": "material:R_ORIG",
+      "verdict": "passed",
+      "note": "第5段原主人、第8/39/59/63/67段原主或曾经的苏天晴小姐均指身体原主，与当前苏天晴区分。"
+    },
+    {
+      "id": "material:R_BODY",
+      "verdict": "passed",
+      "note": "第18段细皮嫩肉萝莉造型及第38/57/81/82段耳朵、尾巴、金色毛发均指狐狐身体。"
+    },
+    {
+      "id": "material:R_BOOK",
+      "verdict": "passed",
+      "note": "第20/21/23/44/55/58/83段古书、墨丘利秘典、秘典均指同一 artifact。"
+    },
+    {
+      "id": "material:R_FX",
+      "verdict": "passed",
+      "note": "第15/16/31/33/44/84/86段天蓝色少女与风信子均指同一魔法少女。"
+    },
+    {
+      "id": "material:R_MG",
+      "verdict": "passed",
+      "note": "第4/9/10/11/17/26/32段魔法少女含类别、风信子及任务目标，词面汇总可，实体归并另审。"
+    },
+    {
+      "id": "material:R_MONSTER",
+      "verdict": "passed",
+      "note": "第9/10/15/17/33/83段怪人、怪兽均指客观存在的敌对类别。"
+    },
+    {
+      "id": "material:R_HERO_ASSOC",
+      "verdict": "passed",
+      "note": "第10段英雄协会为管辖魔法少女的组织，指称明确。"
+    },
+    {
+      "id": "material:R_RONGCHENG",
+      "verdict": "passed",
+      "note": "第11/33/36/45/51段蓉城、蓉城市均指同一地点。"
+    },
+    {
+      "id": "material:R_GREEN_PARK",
+      "verdict": "passed",
+      "note": "第33/36/50/83段绿心公园均指同一公园地点。"
+    },
+    {
+      "id": "material:R_WORLD",
+      "verdict": "passed",
+      "note": "第7/8/58段这个世界均指苏天晴所在世界。"
+    },
+    {
+      "id": "material:R_VILLAIN",
+      "verdict": "passed",
+      "note": "第4/7/14/84段反派词面提及集中，具体实体归并问题在 semantic:i_villain_role 审查。"
+    },
+    {
+      "id": "material:R_TASK",
+      "verdict": "passed",
+      "note": "第24/67段任务、夙愿均指秘典发布的夙愿任务。"
+    },
+    {
+      "id": "material:R_CROSS_STAR",
+      "verdict": "passed",
+      "note": "第44段十字星承接旧守护之星道具。"
+    },
+    {
+      "id": "material:R_BEASTFOLK",
+      "verdict": "passed",
+      "note": "第45段兽人承接旧兽人类别实体。"
+    },
+    {
+      "id": "material:R_BEAST_AID",
+      "verdict": "passed",
+      "note": "第60段兽人互助会为资助原主的组织。"
+    },
+    {
+      "id": "material:R_COLLEGE",
+      "verdict": "passed",
+      "note": "第37段蓉城医学院为苏天晴报名就读的学校。"
+    },
+    {
+      "id": "material:D1",
+      "verdict": "passed",
+      "note": "第1段为标题，归作者断言，标题内容准确。"
+    },
+    {
+      "id": "material:D2",
+      "verdict": "passed",
+      "note": "第2段为作者式免责声明，非世界内事实，归属正确。"
+    },
+    {
+      "id": "material:D3",
+      "verdict": "rejected",
+      "note": "第4段问题由第5段明确是苏天晴脑子里思考的永恒问题，holder 不应为 null，应归属苏天晴。"
+    },
+    {
+      "id": "material:D4",
+      "verdict": "passed",
+      "note": "第5段叙述苏天晴早餐、刷原主手机并思考问题，主体与对象正确。"
+    },
+    {
+      "id": "material:D6",
+      "verdict": "passed",
+      "note": "第6段毁灭世界/统治人类等是苏天晴内心疑问，holder R_STQ 正确。"
+    },
+    {
+      "id": "material:D7",
+      "verdict": "passed",
+      "note": "第7段叙述苏天晴无这些想法且世界无正式反派组织，narrator 断言可。"
+    },
+    {
+      "id": "material:D8",
+      "verdict": "passed",
+      "note": "第8段苏天晴通过网络与身体原主记忆了解世界状况，归属与对象正确。"
+    },
+    {
+      "id": "material:D9",
+      "verdict": "passed",
+      "note": "第9段魔法少女与怪人怪兽客观存在，world 断言正确。"
+    },
+    {
+      "id": "material:D10",
+      "verdict": "passed",
+      "note": "第10段魔法少女受英雄协会管辖并作为偶像活动，world 规则正确。"
+    },
+    {
+      "id": "material:D11",
+      "verdict": "passed",
+      "note": "第11段蓉城目前有一名活跃魔法少女，地点与类别正确。"
+    },
+    {
+      "id": "material:D12",
+      "verdict": "passed",
+      "note": "第14段苏天晴认为当反派必须提前了解对手，thought 归属正确。"
+    },
+    {
+      "id": "material:D13",
+      "verdict": "passed",
+      "note": "第15段视频画面及苏天晴反应由 narrator 描述，主体对象正确。"
+    },
+    {
+      "id": "material:D14",
+      "verdict": "passed",
+      "note": "第16段苏天晴呢喃念出风信子代号，speech 归属正确。"
+    },
+    {
+      "id": "material:D15",
+      "verdict": "passed",
+      "note": "第17段苏天晴对风信子肉搏战力及找茬的疑问，thought 归属正确。"
+    },
+    {
+      "id": "material:D16",
+      "verdict": "passed",
+      "note": "第18段苏天晴判断自己萝莉造型无法贴身肉搏，thought 归属正确。"
+    },
+    {
+      "id": "material:D17",
+      "verdict": "passed",
+      "note": "第19段没有丁点头绪是苏天晴内心，归属正确。"
+    },
+    {
+      "id": "material:D18",
+      "verdict": "passed",
+      "note": "第21段叙述者说明此书自我介绍为墨丘利秘典，归属正确。"
+    },
+    {
+      "id": "material:D19",
+      "verdict": "passed",
+      "note": "第22段苏天晴不知书为何不说话但期待情报，thought 归属正确。"
+    },
+    {
+      "id": "material:D20",
+      "verdict": "passed",
+      "note": "第24段任务夙愿为书页 document，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D21",
+      "verdict": "passed",
+      "note": "第25段获得200名关注者为书页内容，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D22",
+      "verdict": "passed",
+      "note": "第26段成为闪耀魔法少女等为书页内容，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D23",
+      "verdict": "passed",
+      "note": "第27段奖励500神典石为书页内容，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D24",
+      "verdict": "passed",
+      "note": "第28段苏天晴觉得任务沉重，thought 归属正确。"
+    },
+    {
+      "id": "material:D25",
+      "verdict": "passed",
+      "note": "第31段魔法少女风信子为书页标题，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D26",
+      "verdict": "passed",
+      "note": "第32段风信子资料为书页内容，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D27",
+      "verdict": "passed",
+      "note": "第33段怪人出现与风信子迎击为书页预测，holder R_BOOK 正确。"
+    },
+    {
+      "id": "material:D28",
+      "verdict": "passed",
+      "note": "第34段你瞧这不就来了吗是苏天晴内心，归属正确。"
+    },
+    {
+      "id": "material:D29",
+      "verdict": "passed",
+      "note": "第36段苏天晴计划提前去绿心公园蹲点，thought plan 归属正确。"
+    },
+    {
+      "id": "material:D30",
+      "verdict": "passed",
+      "note": "第37段蓉城医学院后天才开学及有时间耗，thought plan 归属正确。"
+    },
+    {
+      "id": "material:D31",
+      "verdict": "rejected",
+      "note": "第39段原本的苏天晴、一介狐狐及写小说生活均指原主，about 不应包含当前苏天晴 R_STQ 而混淆对象。"
+    },
+    {
+      "id": "material:D32",
+      "verdict": "passed",
+      "note": "第40段爷真是世界第一可爱为苏天晴内心自夸，归属正确。"
+    },
+    {
+      "id": "material:D33",
+      "verdict": "passed",
+      "note": "第44段苏天晴将十字星与古书塞包、坐地铁查消息，narrator 描述正确。"
+    },
+    {
+      "id": "material:D34",
+      "verdict": "passed",
+      "note": "第45段兽人在蓉城并不少见，world 描述正确。"
+    },
+    {
+      "id": "material:D35",
+      "verdict": "passed",
+      "note": "第47段天府广场到站广播为 voice 无 holder，归属正确。"
+    },
+    {
+      "id": "material:D36",
+      "verdict": "passed",
+      "note": "第51段绿心公园为蓉城最大湿地公园地标，描述正确。"
+    },
+    {
+      "id": "material:D37",
+      "verdict": "passed",
+      "note": "第58段苏天晴结合翻书与搜索获得新认识，聚焦主体苏天晴正确。"
+    },
+    {
+      "id": "material:D38",
+      "verdict": "passed",
+      "note": "第59段原主社恐孤僻、极少出门，narrator 披露正确。"
+    },
+    {
+      "id": "material:D39",
+      "verdict": "passed",
+      "note": "第60段兽人互助会资助有限及写作成绩差，narrator 披露正确。"
+    },
+    {
+      "id": "material:D40",
+      "verdict": "passed",
+      "note": "第61段写小说死路一条为苏天晴内心吐槽，归属正确。"
+    },
+    {
+      "id": "material:D41",
+      "verdict": "passed",
+      "note": "第62段狐狐看账户存款与贷款并痛心，归属当前苏天晴正确。"
+    },
+    {
+      "id": "material:D42",
+      "verdict": "passed",
+      "note": "第63段苏天晴心中承诺让原主过上更好生活，thought promise 正确。"
+    },
+    {
+      "id": "material:D43",
+      "verdict": "passed",
+      "note": "第67段苏天晴思考关注者与夙愿难度，thought 归属正确。"
+    },
+    {
+      "id": "material:D44",
+      "verdict": "passed",
+      "note": "第68段苏天晴猜想自拍可涨粉，thought conjecture 正确。"
+    },
+    {
+      "id": "material:D45",
+      "verdict": "passed",
+      "note": "第71段前摄损坏并暂时打消自拍想法，thought 归属正确。"
+    },
+    {
+      "id": "material:D46",
+      "verdict": "passed",
+      "note": "第77段苏天晴感慨无论前世今生孤身一人，thought 归属正确。"
+    },
+    {
+      "id": "material:D47",
+      "verdict": "passed",
+      "note": "第79段刷视频累了该办正事，thought plan 归属正确。"
+    },
+    {
+      "id": "material:D48",
+      "verdict": "passed",
+      "note": "第83段苏天晴确认秘典预测的怪人袭击，thought 归属正确。"
+    },
+    {
+      "id": "material:D49",
+      "verdict": "passed",
+      "note": "第84段苏天晴自称不是反派并认为风信子该紧张，thought 归属正确。"
+    },
+    {
+      "id": "material:D50",
+      "verdict": "passed",
+      "note": "第86段快来吧风信子为苏天晴喊话，speech request 正确。"
+    },
+    {
+      "id": "material:D51",
+      "verdict": "passed",
+      "note": "第87段准备见面礼为苏天晴喊话，speech promise 正确。"
+    },
+    {
+      "id": "material:B1",
+      "verdict": "passed",
+      "note": "第1至3段标题、作者声明与分隔符归 paratext 正确。"
+    },
+    {
+      "id": "material:B2",
+      "verdict": "passed",
+      "note": "第4至8段早餐、思考反派问题及了解世界，gist 正确。"
+    },
+    {
+      "id": "material:B3",
+      "verdict": "passed",
+      "note": "第9至11段魔法少女、怪人、英雄协会与蓉城活跃魔法少女，exposition 正确。"
+    },
+    {
+      "id": "material:B4",
+      "verdict": "passed",
+      "note": "第12至19段看风信子视频并怀疑自己能否找茬，gist 正确。"
+    },
+    {
+      "id": "material:B5",
+      "verdict": "passed",
+      "note": "第20至29段翻秘典读到夙愿任务与奖励，gist 正确。"
+    },
+    {
+      "id": "material:B6",
+      "verdict": "passed",
+      "note": "第30至37段秘典给出风信子情报与怪人预测并筹划蹲点，gist 正确。"
+    },
+    {
+      "id": "material:B7",
+      "verdict": "passed",
+      "note": "第38至42段换装照镜、整理耳朵尾巴并自赏，gist 正确。"
+    },
+    {
+      "id": "material:B8",
+      "verdict": "passed",
+      "note": "第43至50段乘地铁前往市中心并走向绿心公园，gist 正确。"
+    },
+    {
+      "id": "material:B9",
+      "verdict": "passed",
+      "note": "第51至63段公园看书、了解原主并承诺，gist 正确。"
+    },
+    {
+      "id": "material:B10",
+      "verdict": "passed",
+      "note": "第64至72段再看任务、思考关注者并自拍失败，gist 正确。"
+    },
+    {
+      "id": "material:B11",
+      "verdict": "passed",
+      "note": "第73至79段日暮等待、感慨孤身并准备正事，gist 正确。"
+    },
+    {
+      "id": "material:B12",
+      "verdict": "passed",
+      "note": "第80至87段怪人吼叫、人群慌乱、苏天晴准备见面礼，gist 正确。"
+    },
+    {
+      "id": "semantic:e_mg_class",
+      "verdict": "passed",
+      "note": "第9段魔法少女作为客观存在类别，class 实体成立。"
+    },
+    {
+      "id": "semantic:e_monster",
+      "verdict": "passed",
+      "note": "第9段怪人怪兽作为客观存在类别，class 实体成立。"
+    },
+    {
+      "id": "semantic:e_hero_assoc",
+      "verdict": "passed",
+      "note": "第10段英雄协会管辖魔法少女，organization 实体成立。"
+    },
+    {
+      "id": "semantic:e_green_park",
+      "verdict": "passed",
+      "note": "第33/51段绿心公园为具体地点，place 实体成立。"
+    },
+    {
+      "id": "semantic:e_world",
+      "verdict": "passed",
+      "note": "第7/8段这个世界指苏天晴所在世界，world 实体成立。"
+    },
+    {
+      "id": "semantic:e_task_wish",
+      "verdict": "passed",
+      "note": "第24段任务夙愿为秘典发布的持续任务对象，task 实体成立。"
+    },
+    {
+      "id": "semantic:e_beast_aid",
+      "verdict": "passed",
+      "note": "第60段兽人互助会为资助原主的组织，organization 实体成立。"
+    },
+    {
+      "id": "semantic:e_college",
+      "verdict": "passed",
+      "note": "第37段蓉城医学院为苏天晴报名就读的学校，organization 实体成立。"
+    },
+    {
+      "id": "semantic:i_stq",
+      "verdict": "passed",
+      "note": "第5段苏天晴为本章行动与意识主体，承接旧苏天晴且未与原主归并。"
+    },
+    {
+      "id": "semantic:i_orig",
+      "verdict": "passed",
+      "note": "第5段原主人承接旧原主实体，与当前苏天晴区分。"
+    },
+    {
+      "id": "semantic:i_body",
+      "verdict": "passed",
+      "note": "第18段萝莉造型及后文耳朵尾巴指旧狐狐身体，映射正确。"
+    },
+    {
+      "id": "semantic:i_book",
+      "verdict": "passed",
+      "note": "第21段古书自我介绍为墨丘利秘典，承接旧秘典 artifact。"
+    },
+    {
+      "id": "semantic:i_fx",
+      "verdict": "passed",
+      "note": "第11/13-16段蓉城唯一活跃魔法少女风信子与第2章正牌魔法少女任务目标吻合，归并合理。"
+    },
+    {
+      "id": "semantic:i_mg_class",
+      "verdict": "passed",
+      "note": "第9段魔法少女类别映射正确。"
+    },
+    {
+      "id": "semantic:i_monster",
+      "verdict": "passed",
+      "note": "第9段怪人怪兽类别映射正确。"
+    },
+    {
+      "id": "semantic:i_hero_assoc",
+      "verdict": "passed",
+      "note": "第10段英雄协会组织映射正确。"
+    },
+    {
+      "id": "semantic:i_rongcheng",
+      "verdict": "passed",
+      "note": "第11段蓉城承接旧蓉城地点，映射正确。"
+    },
+    {
+      "id": "semantic:i_green_park",
+      "verdict": "passed",
+      "note": "第33段绿心公园作为怪人预测地点，映射正确。"
+    },
+    {
+      "id": "semantic:i_world",
+      "verdict": "passed",
+      "note": "第7段这个世界创建 world 实体，映射正确。"
+    },
+    {
+      "id": "semantic:i_villain_role",
+      "verdict": "rejected",
+      "note": "第4/7段反派为一般概念或反派组织，第14/84段才是苏天晴自认的反派角色，不应全部归并到第2章具体反派魔法少女角色实体。"
+    },
+    {
+      "id": "semantic:i_task_wish",
+      "verdict": "passed",
+      "note": "第24段任务夙愿映射为 e_task_wish 正确。"
+    },
+    {
+      "id": "semantic:i_cross_star",
+      "verdict": "passed",
+      "note": "第44段十字星承接旧守护之星，映射正确。"
+    },
+    {
+      "id": "semantic:i_beastfolk",
+      "verdict": "passed",
+      "note": "第45段兽人承接旧兽人类别实体。"
+    },
+    {
+      "id": "semantic:i_beast_aid",
+      "verdict": "passed",
+      "note": "第60段兽人互助会映射为组织实体正确。"
+    },
+    {
+      "id": "semantic:i_college",
+      "verdict": "passed",
+      "note": "第37段蓉城医学院映射为组织实体正确。"
+    },
+    {
+      "id": "semantic:p_exists",
+      "verdict": "passed",
+      "note": "exists 谓词用于客观存在类别，定义与角色合理。"
+    },
+    {
+      "id": "semantic:p_has_property",
+      "verdict": "passed",
+      "note": "has-property 谓词用于属性/状态描述，定义合理。"
+    },
+    {
+      "id": "semantic:p_operates_under",
+      "verdict": "passed",
+      "note": "operates-under 谓词用于受英雄协会管辖，角色合理。"
+    },
+    {
+      "id": "semantic:p_states",
+      "verdict": "passed",
+      "note": "states 谓词用于来源陈述主体信息，保留 source/subject/content 角色。"
+    },
+    {
+      "id": "semantic:p_predicts",
+      "verdict": "passed",
+      "note": "predicts 谓词用于秘典预测怪人与风信子行动，角色合理。"
+    },
+    {
+      "id": "semantic:p_plans",
+      "verdict": "passed",
+      "note": "plans 谓词用于苏天晴计划蹲点，角色合理。"
+    },
+    {
+      "id": "semantic:p_travels_to",
+      "verdict": "passed",
+      "note": "travels-to 谓词用于乘地铁前往绿心公园，角色合理。"
+    },
+    {
+      "id": "semantic:p_reflects",
+      "verdict": "passed",
+      "note": "reflects 谓词用于苏天晴思考/认识世界与原主，角色合理。"
+    },
+    {
+      "id": "semantic:p_has_financial_state",
+      "verdict": "passed",
+      "note": "has-financial-state 谓词用于经济状况描述，虽有混合内容但可承载文本。"
+    },
+    {
+      "id": "semantic:p_promises",
+      "verdict": "passed",
+      "note": "promises 谓词用于苏天晴对原主的承诺，角色合理。"
+    },
+    {
+      "id": "semantic:p_attempts",
+      "verdict": "passed",
+      "note": "attempts 谓词用于自拍尝试及前摄损坏障碍，角色合理。"
+    },
+    {
+      "id": "semantic:p_confirms",
+      "verdict": "passed",
+      "note": "confirms 谓词用于苏天晴确认秘典预测，角色合理。"
+    },
+    {
+      "id": "semantic:p_speaks",
+      "verdict": "passed",
+      "note": "speaks 谓词用于苏天晴对风信子喊话，角色合理。"
+    },
+    {
+      "id": "semantic:p_emits_sound",
+      "verdict": "passed",
+      "note": "emits-sound 谓词用于怪人吼叫，角色合理。"
+    },
+    {
+      "id": "semantic:p_publishes_quest",
+      "verdict": "passed",
+      "note": "publishes-quest 谓词用于秘典发布夙愿任务，角色包含 issuer/task/target/reward 等。"
+    },
+    {
+      "id": "semantic:t_ch3_morning",
+      "verdict": "passed",
+      "note": "第5段早餐与筹划为章内上午区间，相对定位合理。"
+    },
+    {
+      "id": "semantic:t_ch3_subway",
+      "verdict": "passed",
+      "note": "第43段乘地铁为上午至中午区间，相对定位合理。"
+    },
+    {
+      "id": "semantic:t_ch3_park_afternoon",
+      "verdict": "passed",
+      "note": "第51段公园看书为下午区间，相对定位合理。"
+    },
+    {
+      "id": "semantic:t_ch3_evening",
+      "verdict": "passed",
+      "note": "第73段日暮夜幕为傍晚至夜晚区间，相对定位合理。"
+    },
+    {
+      "id": "semantic:f_stq_question_villain",
+      "verdict": "passed",
+      "note": "第4/6段问题归属苏天晴思考，belief opaque 正确，依赖 D3 需修 holder。"
+    },
+    {
+      "id": "semantic:f_world_no_villain_org",
+      "verdict": "passed",
+      "note": "第7段叙述世界无正式反派组织，world 断言正确。"
+    },
+    {
+      "id": "semantic:f_stq_knows_world",
+      "verdict": "passed",
+      "note": "第8段苏天晴通过原主记忆与网络了解世界状况，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_mg_exist",
+      "verdict": "passed",
+      "note": "第9段魔法少女客观存在，world 断言正确。"
+    },
+    {
+      "id": "semantic:f_monster_exist",
+      "verdict": "passed",
+      "note": "第9段怪人怪兽客观存在，world 断言正确。"
+    },
+    {
+      "id": "semantic:f_mg_under_hero_assoc",
+      "verdict": "passed",
+      "note": "第10段魔法少女受英雄协会管辖委派，world 规则正确。"
+    },
+    {
+      "id": "semantic:f_mg_public_info",
+      "verdict": "passed",
+      "note": "第10段魔法少女偶像活动、真实身份保密等规则，world 断言正确。"
+    },
+    {
+      "id": "semantic:f_rongcheng_active_mg",
+      "verdict": "passed",
+      "note": "第11段蓉城有一名活跃魔法少女，world 断言正确。"
+    },
+    {
+      "id": "semantic:f_fx_codename",
+      "verdict": "passed",
+      "note": "第16段叙述确认其代号为风信子，world 属性可。"
+    },
+    {
+      "id": "semantic:f_fx_video",
+      "verdict": "passed",
+      "note": "第15/17段描述介绍视频中天蓝色少女与怪兽交战及能变大剑，限定视频显示，未过度升级。"
+    },
+    {
+      "id": "semantic:f_task_wish",
+      "verdict": "passed",
+      "note": "第24-27段夙愿任务保留为书页 speech、holder book、opaque，来源正确。"
+    },
+    {
+      "id": "semantic:f_stq_task_heavy",
+      "verdict": "passed",
+      "note": "第28段苏天晴觉得任务沉重，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_fx_book_profile",
+      "verdict": "passed",
+      "note": "第31-32段风信子资料保留为秘典 speech、opaque，来源正确。"
+    },
+    {
+      "id": "semantic:f_fx_prediction",
+      "verdict": "passed",
+      "note": "第33段怪人预测保留为秘典 speech、holder book、modality possible，来源正确。"
+    },
+    {
+      "id": "semantic:f_stq_plan_park",
+      "verdict": "passed",
+      "note": "第36-37段苏天晴计划提前去绿心公园蹲点，intended belief 正确。"
+    },
+    {
+      "id": "semantic:f_stq_college",
+      "verdict": "passed",
+      "note": "第37段蓉城医学院后天才开学，相关认知归属苏天晴正确。"
+    },
+    {
+      "id": "semantic:f_stq_travel_park",
+      "verdict": "passed",
+      "note": "第43-50段苏天晴乘地铁到市中心并走向绿心公园，world 行动正确。"
+    },
+    {
+      "id": "semantic:f_stq_reflects_original",
+      "verdict": "passed",
+      "note": "第59段苏天晴结合搜索认识到原主社恐与远门情况，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_original_financial",
+      "verdict": "passed",
+      "note": "第60段叙述原主受资助有限、写作成绩差，world 披露可。"
+    },
+    {
+      "id": "semantic:f_stq_financial",
+      "verdict": "passed",
+      "note": "第62段苏天晴看账户存款与贷款并痛心，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_stq_promise",
+      "verdict": "passed",
+      "note": "第63段苏天晴心中承诺让原主过上更好生活，promise 归属正确。"
+    },
+    {
+      "id": "semantic:f_stq_questions_followers",
+      "verdict": "passed",
+      "note": "第67段苏天晴思考关注者与夙愿难度，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_stq_selfie_attempt",
+      "verdict": "passed",
+      "note": "第68-71段自拍尝试及前摄损坏，行动与障碍建模正确。"
+    },
+    {
+      "id": "semantic:f_stq_evening_lonely",
+      "verdict": "passed",
+      "note": "第77段苏天晴感慨无论前世今生孤身一人，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_stq_confirms_prediction",
+      "verdict": "passed",
+      "note": "第83段苏天晴确认怪人袭击绿心公园与秘典预测一致，belief 归属正确。"
+    },
+    {
+      "id": "semantic:f_monster_roar",
+      "verdict": "passed",
+      "note": "第80-81段怪人吼叫从树林后传来，声音事件建模可。"
+    },
+    {
+      "id": "semantic:f_stq_speaks_fx",
+      "verdict": "passed",
+      "note": "第86-87段苏天晴对风信子喊话并称准备见面礼，speech 归属正确。"
+    },
+    {
+      "id": "semantic:a_stq_watch_fx_video",
+      "verdict": "passed",
+      "note": "第13-17段苏天晴点开并观看介绍视频，read 获取内容关联 f_fx_video。"
+    },
+    {
+      "id": "semantic:a_stq_read_wish_task",
+      "verdict": "passed",
+      "note": "第24-27段苏天晴阅读书页夙愿任务，read 关联 f_task_wish。"
+    },
+    {
+      "id": "semantic:a_stq_read_fx_profile",
+      "verdict": "passed",
+      "note": "第31-32段苏天晴阅读书页风信子资料，read 关联 f_fx_book_profile。"
+    },
+    {
+      "id": "semantic:a_stq_read_fx_prediction",
+      "verdict": "passed",
+      "note": "第33段苏天晴阅读书页怪人预测，read 关联 f_fx_prediction。"
+    },
+    {
+      "id": "semantic:a_stq_hear_monster_roar",
+      "verdict": "passed",
+      "note": "第80-81段苏天晴听到怪人吼叫，heard 关联 f_monster_roar。"
+    },
+    {
+      "id": "semantic:ep_ch3_recon",
+      "verdict": "passed",
+      "note": "第4-37段了解世界、读取秘典任务与风信子情报并规划蹲点，summary 忠于 materials。"
+    },
+    {
+      "id": "semantic:ep_ch3_journey",
+      "verdict": "passed",
+      "note": "第43-50段塞包、乘地铁到市中心并走向绿心公园，summary 忠于 materials。"
+    },
+    {
+      "id": "semantic:ep_ch3_park_wait",
+      "verdict": "passed",
+      "note": "第51-72段公园看书等待、了解原主并承诺、自拍失败，summary 忠于 materials。"
+    },
+    {
+      "id": "semantic:ep_ch3_monster_arrival",
+      "verdict": "passed",
+      "note": "第73-87段夜幕怪人吼叫、人群慌乱及苏天晴准备见面礼，summary 忠于 materials。"
+    },
+    {
+      "id": "semantic:s_stq_ch3",
+      "verdict": "passed",
+      "note": "苏天晴第3章动态摘要覆盖世界认知、秘典任务、蹲点、原主承诺与夜晚迎接，忠于 refs。"
+    },
+    {
+      "id": "semantic:s_orig_ch3",
+      "verdict": "rejected",
+      "note": "item 4 将 D31 的叙述者披露写成“苏天晴认知”，来源归属不忠于 refs，且 D31 about 混淆原主与当前苏天晴。"
+    },
+    {
+      "id": "semantic:s_fx_ch3",
+      "verdict": "passed",
+      "note": "风信子第3章情报摘要区分视频、秘典称述与苏天晴计划，来源归属正确。"
+    },
+    {
+      "id": "semantic:s_book_ch3",
+      "verdict": "passed",
+      "note": "秘典第3章动态摘要保留书页任务与预测来源，基本忠于 refs。"
+    },
+    {
+      "id": "semantic:s_green_park_ch3",
+      "verdict": "passed",
+      "note": "绿心公园第3章地点摘要包含地标、预测与夜晚怪人事件，忠于 refs。"
+    },
+    {
+      "id": "semantic:s_task_wish_ch3",
+      "verdict": "passed",
+      "note": "夙愿任务摘要保留秘典来源及苏天晴评价，忠于 refs。"
+    },
+    {
+      "id": "semantic:s_beast_aid_ch3",
+      "verdict": "passed",
+      "note": "兽人互助会第3章仅提资助有限，摘要正确。"
+    },
+    {
+      "id": "semantic:s_college_ch3",
+      "verdict": "passed",
+      "note": "蓉城医学院第3章提及报名就读与后天才开学，摘要正确。"
+    },
+    {
+      "id": "semantic:s_mg_class_ch3",
+      "verdict": "passed",
+      "note": "魔法少女类别摘要保留叙述规则与秘典称述来源，正确。"
+    }
+  ],
+  "missing": [
+    {
+      "stage": "material",
+      "note": "第4段“反派为什么要去找茬魔法少女”由第5段明确是苏天晴脑子里思考的永恒问题，material 的 D3 却 holder=null，应归属苏天晴后重做相关来源链。"
+    },
+    {
+      "stage": "material",
+      "note": "第39段“原本的苏天晴/一介狐狐”所述经济、写作与生活均指身体原主，material 的 D31 却 about 包含当前苏天晴 R_STQ，需拆分或移除 R_STQ 以避免原主与当前苏天晴混淆。"
+    },
+    {
+      "stage": "integration",
+      "note": "第4/7段“反派”是一般概念或反派组织，第14/84段才是苏天晴自认的反派魔法少女角色；i_villain_role 不应把第4/7段一并归到第2章具体反派角色实体，应限定映射或拆分概念。"
+    },
+    {
+      "stage": "integration",
+      "note": "第8段明确苏天晴通过网络与身体原主记忆已大致了解世界状况，但仅建了笼统 f_stq_knows_world；应对第9-11段关键规则如 f_mg_under_hero_assoc、f_mg_public_info、f_rongcheng_active_mg 建立苏天晴的 known 访问关系。"
+    },
+    {
+      "stage": "integration",
+      "note": "第15-19段苏天晴观看风信子视频后对其肉搏战力的震惊、对自己变身后力量无法肉搏的评估以及“没有丁点头绪”的犹豫未在 facts 或苏天晴摘要中整合；material 已有 D15-D17、B4 支持，应保留 A 补 B。"
+    },
+    {
+      "stage": "integration",
+      "note": "s_orig_ch3 的 item 4 将 D31 的叙述者披露写成“苏天晴认知”；第39段并未明确是苏天晴内心认知，应改为叙述披露或原主经历，避免把 narrator 归属升级为人物 beliefs。"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "stage": "integration",
+  "chapter": 1,
+  "attempt": 1,
+  "startedAt": "2026-09-11T04:06:17.418Z",
+  "category": "validation",
+  "message": "Integration references invalid:\ni3.identity/evidence at 1:10 references d5, available only at 1:11\nf29.fact dependencies at 1:5 references t_now, available only at 1:7\nf3.fact dependencies at 1:10 references d5, available only at 1:11\nf31.fact dependencies at 1:16 references d10, available only at 1:18\nf26.fact dependencies: reference d75 is missing or has no valid local identity\na1.access target/evidence at 1:5 references e_book, available only at 1:7\na11.access target/evidence: reference d75 is missing or has no valid local identity\nep1.episode dependencies at 1:15 references d16, available only at 1:24\nep1.episode dependencies at 1:15 references d17, available only at 1:25\nep1.episode dependencies at 1:15 references d16, available only at 1:24\nep1.episode dependencies at 1:15 references d17, available only at 1:25\nep2.episode dependencies at 1:45 references d58, available only at 1:68\nep2.episode dependencies at 1:45 references d59, available only at 1:69\nep2.episode dependencies at 1:45 references d63, available only at 1:73\nep2.episode dependencies at 1:45 references d65, available only at 1:75\nep2.episode dependencies: reference d75 is missing or has no valid local identity\nep2.episode dependencies at 1:45 references d58, available only at 1:68\nep2.episode dependencies at 1:45 references d59, available only at 1:69\nep2.episode dependencies at 1:45 references d65, available only at 1:75\nep2.episode dependencies: reference d75 is missing or has no valid local identity\nep3.episode dependencies at 1:66 references d63, available only at 1:73\nep3.episode dependencies at 1:66 references d65, available only at 1:75\nep3.episode dependencies at 1:66 references d66, available only at 1:76\nep3.episode dependencies at 1:66 references d63, available only at 1:73\nep3.episode dependencies at 1:66 references d65, available only at 1:75\nep3.episode dependencies at 1:66 references d66, available only at 1:76",
+  "nextMaxTokens": 64000,
+  "cost": {
+    "estimatedUsd": 0.023830517999999995,
+    "minimumUsd": 0.023830517999999995,
+    "maximumUsd": 0.023830517999999995,
+    "unknownOutcome": false,
+    "unknownUsage": false,
+    "supportedModel": true,
+    "cacheSplitKnown": true,
+    "cacheSplitValid": true,
+    "pricePeriod": "offpeak",
+    "ratesPerMillion": {
+      "hit": 0.003,
+      "miss": 0.15,
+      "output": 0.6
+    },
+    "priceSource": "https://api-docs.deepseek.com/quick_start/pricing",
+    "priceDate": "2026-09-10",
+    "billingExact": false
+  }
+}

@@ -227,6 +227,8 @@ describe("durable chapter execution", () => {
                 }
                 expect(input.priorCandidate.facts[0].identities).toEqual([]);
                 expect(input.priorAttemptProblems).toMatch(/identity/i);
+                expect(input.responseMode).toBe("record-patch");
+                return {...response, text: JSON.stringify({replacements: [{collection: "facts", record: fixtureChapter().integration.facts[0]}]})};
             }
             return response;
         };
@@ -256,9 +258,11 @@ describe("durable chapter execution", () => {
         const provider: ModelProvider = async request => {
             const input = JSON.parse(request.user);
             const response = await fake.provider(request);
-            if (input.material && !input.reviewUnits && ++integrationCalls <= 3) {
-                const invalid = JSON.parse(response.text); invalid.facts[0].identities = [];
-                return {...response, text: JSON.stringify(invalid)};
+            if (input.material && !input.reviewUnits) {
+                const candidate = JSON.parse(response.text);
+                if (++integrationCalls <= 3) candidate.facts[0].identities = [];
+                const output = input.responseMode === "record-patch" ? {replacements: [{collection: "facts", record: candidate.facts[0]}]} : candidate;
+                return {...response, text: JSON.stringify(output)};
             }
             return response;
         };
@@ -298,6 +302,7 @@ describe("durable chapter execution", () => {
                 }
                 expect(input.priorCandidate.episodes[0].scale).toBe("invalid-scale");
                 expect(input.priorAttemptProblems).toContain("scale");
+                return {...response, text: JSON.stringify({replacements: [{collection: "episodes", record: fixtureChapter().integration.episodes[0]}]})};
             }
             return response;
         };

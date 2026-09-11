@@ -1,0 +1,747 @@
+[
+  {
+    "args": [
+      "search",
+      "--query",
+      "墨丘利秘典",
+      "--at",
+      "1:7",
+      "--limit",
+      "100"
+    ],
+    "exitCode": 0,
+    "result": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "search",
+      "snapshot": {
+        "id": "llm-through-3",
+        "sourceManifest": "manifest:3f091b41fd6009c9",
+        "knowledgeRevision": 3,
+        "readAt": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 7
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "argument:c01:i2",
+            "revision": 3,
+            "label": "依据：局部指称归属：黑色古书",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3
+              }
+            ],
+            "readiness": "ready",
+            "kind": "argument",
+            "data": {
+              "conclusion": {
+                "id": "c01:i2",
+                "revision": 3
+              },
+              "polarity": "supports",
+              "method": "identity",
+              "premises": [
+                {
+                  "ref": {
+                    "id": "c01:r2:mention:1",
+                    "revision": 3
+                  },
+                  "role": "evidence",
+                  "required": true
+                },
+                {
+                  "ref": {
+                    "id": "c01:d4",
+                    "revision": 3
+                  },
+                  "role": "evidence",
+                  "required": true
+                }
+              ],
+              "assumptions": [],
+              "rationale": "第7段黑色古书作为漂浮对象出现，后续自称墨丘利秘典；r2映射为魔法古书/artifact实体。",
+              "sourceRoots": [
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                }
+              ],
+              "applicability": "satisfied",
+              "bindings": [],
+              "jointScope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "jointTime": {
+                "kind": "unspecified"
+              },
+              "review": {
+                "verdict": "passed",
+                "reviewer": "deepseek-flash-independent-review",
+                "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。"
+              },
+              "status": "usable"
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:i2",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                "chapter": 1,
+                "text": "黑色古书"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                "chapter": 1,
+                "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+              }
+            ]
+          }
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "assessment:c01:i2:at:1:7",
+            "revision": 3,
+            "label": "评估：局部指称归属：黑色古书",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "assessment",
+            "data": {
+              "target": {
+                "id": "c01:i2",
+                "revision": 3
+              },
+              "arguments": [
+                {
+                  "id": "argument:c01:i2",
+                  "revision": 3
+                }
+              ],
+              "epistemic": "accepted",
+              "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。",
+              "unresolved": [],
+              "evaluatedAt": {
+                "chapter": 1,
+                "paragraph": 7
+              }
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:i2",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "argument:c01:i2",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": []
+          }
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:t_now",
+            "revision": 3,
+            "label": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 7,
+                "start": 0,
+                "end": 55
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "time",
+            "data": {
+              "description": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+              "precision": "interval",
+              "constraints": []
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                "chapter": 1,
+                "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+              }
+            ]
+          }
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 7
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 3,
+        "returned": 3
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  {
+    "args": [
+      "search",
+      "--query",
+      "墨丘利秘典",
+      "--at",
+      "1:10",
+      "--limit",
+      "100"
+    ],
+    "exitCode": 0,
+    "result": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "search",
+      "snapshot": {
+        "id": "llm-through-3",
+        "sourceManifest": "manifest:3f091b41fd6009c9",
+        "knowledgeRevision": 3,
+        "readAt": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 1,
+          "paragraph": 10
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [
+        {
+          "type": "record",
+          "record": {
+            "id": "argument:c01:i2",
+            "revision": 3,
+            "label": "依据：局部指称归属：黑色古书",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3
+              }
+            ],
+            "readiness": "ready",
+            "kind": "argument",
+            "data": {
+              "conclusion": {
+                "id": "c01:i2",
+                "revision": 3
+              },
+              "polarity": "supports",
+              "method": "identity",
+              "premises": [
+                {
+                  "ref": {
+                    "id": "c01:r2:mention:1",
+                    "revision": 3
+                  },
+                  "role": "evidence",
+                  "required": true
+                },
+                {
+                  "ref": {
+                    "id": "c01:d4",
+                    "revision": 3
+                  },
+                  "role": "evidence",
+                  "required": true
+                }
+              ],
+              "assumptions": [],
+              "rationale": "第7段黑色古书作为漂浮对象出现，后续自称墨丘利秘典；r2映射为魔法古书/artifact实体。",
+              "sourceRoots": [
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                }
+              ],
+              "applicability": "satisfied",
+              "bindings": [],
+              "jointScope": {
+                "world": "original",
+                "perspective": "reader"
+              },
+              "jointTime": {
+                "kind": "unspecified"
+              },
+              "review": {
+                "verdict": "passed",
+                "reviewer": "deepseek-flash-independent-review",
+                "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。"
+              },
+              "status": "usable"
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:i2",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [
+              {
+                "id": "c01:r2:mention:1",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "c01:d4",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 24,
+                  "end": 28
+                },
+                "chapter": 1,
+                "text": "黑色古书"
+              },
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                "chapter": 1,
+                "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+              }
+            ]
+          }
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "assessment:c01:i2:at:1:7",
+            "revision": 3,
+            "label": "评估：局部指称归属：黑色古书",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "assessment",
+            "data": {
+              "target": {
+                "id": "c01:i2",
+                "revision": 3
+              },
+              "arguments": [
+                {
+                  "id": "argument:c01:i2",
+                  "revision": 3
+                }
+              ],
+              "epistemic": "accepted",
+              "note": "第7段黑色古书与后文自称墨丘利秘典对应同一artifact。",
+              "unresolved": [],
+              "evaluatedAt": {
+                "chapter": 1,
+                "paragraph": 7
+              }
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [
+              {
+                "id": "c01:i2",
+                "revision": 3,
+                "status": "visible"
+              },
+              {
+                "id": "argument:c01:i2",
+                "revision": 3,
+                "status": "visible"
+              }
+            ],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": []
+          }
+        },
+        {
+          "type": "record",
+          "record": {
+            "id": "c01:t_now",
+            "revision": 3,
+            "label": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+            "availableAt": {
+              "chapter": 1,
+              "paragraph": 7
+            },
+            "scope": {
+              "world": "original",
+              "perspective": "reader"
+            },
+            "spans": [
+              {
+                "sourceId": "source-c01",
+                "sourceRevision": 1,
+                "paragraph": 7,
+                "start": 0,
+                "end": 55
+              }
+            ],
+            "dependencies": [],
+            "readiness": "ready",
+            "kind": "time",
+            "data": {
+              "description": "第1章当前场景：苏天晴在昏暗房间与墨丘利秘典对话。",
+              "precision": "interval",
+              "constraints": []
+            }
+          },
+          "assessment": null,
+          "assessmentStatus": "not-in-scope-or-not-applicable",
+          "provenance": {
+            "references": [],
+            "dependencies": [],
+            "arguments": [],
+            "excerpts": [
+              {
+                "span": {
+                  "sourceId": "source-c01",
+                  "sourceRevision": 1,
+                  "paragraph": 7,
+                  "start": 0,
+                  "end": 55
+                },
+                "chapter": 1,
+                "text": "苏天晴坐在床头，呆滞地看着眼前这本飘浮在半空中的黑色古书，余光从床边的落地镜中扫过，瞥见一道陌生的娇小身影——"
+              }
+            ]
+          }
+        }
+      ],
+      "coverage": {
+        "through": {
+          "chapter": 1,
+          "paragraph": 10
+        },
+        "chapters": [
+          1
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "未提供当前阅读范围与视角专属的语义缺口说明。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 3,
+        "returned": 3
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  },
+  {
+    "args": [
+      "search",
+      "--query",
+      "南小风",
+      "--at",
+      "3",
+      "--limit",
+      "100"
+    ],
+    "exitCode": 0,
+    "result": {
+      "schema": "neurobook.memory.query.v1",
+      "ok": true,
+      "command": "search",
+      "snapshot": {
+        "id": "llm-through-3",
+        "sourceManifest": "manifest:3f091b41fd6009c9",
+        "knowledgeRevision": 3,
+        "readAt": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "contentHash": "08989bddffc5f1c6c2353c833c11fa2389ce88843f2786401fa8aad368ce253f"
+      },
+      "scope": {
+        "readAt": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "perspective": "reader",
+        "world": "original"
+      },
+      "items": [],
+      "coverage": {
+        "through": {
+          "chapter": 3,
+          "paragraph": 87
+        },
+        "chapters": [
+          1,
+          2,
+          3
+        ],
+        "material": "complete",
+        "semantic": "partial",
+        "gaps": [
+          "LLM 提取与独立复核不保证语义穷尽。",
+          "苏天晴是否真正死亡与重生，主要来自其记忆和内心判断，未被独立世界叙述确认。",
+          "这副身体原主人的姓名、身份、去向，以及其与苏天晴意识的关系未知。",
+          "造物主的真实身份、姓名、动机与所处位置未知。",
+          "墨丘利秘典的本质、来源细节、是否具有性别或人格，“星空彼岸”与“星界使者”等自称未获外部证实。",
+          "契约的具体条款、任务内容、绑定机制、能否反悔未知。",
+          "系统提示“墨丘利秘典绑定成功”与“契约成立”的权威性及其是否等同于世界事实，未由叙述独立确认。",
+          "魔法少女与反派魔法少女体系及“死亡率高达90%”的说法仅有苏天晴的质问，未获证实。",
+          "太奶在苏天晴死前出现是真实事件、幻觉还是超自然现象未知。",
+          "第1章未给出可定位的绝对时间；t_now与t_past仅为章内相对定位。",
+          "上下文未提供已发布前文记录，allowedIds为空，无法复用旧实体或已知身份。",
+          "系统声音来源、真实身份及其与墨丘利秘典的关系未确定；本候选仅记为未解系统发言者。",
+          "守护之星与墨丘利秘典、契约及反派魔法少女体系之间的具体关系未确定。",
+          "正牌魔法少女的姓名、身份、能力与所在未揭示。",
+          "神典石的用途、获取与消耗方式未知。",
+          "每日任务1“找茬”的具体完成方式、时限与失败惩罚未知。",
+          "苏天晴穿越/重生与原主人死亡之间的关系仍主要来自记忆与叙述，未获独立世界规则确认。",
+          "作者关于角色均满18岁的声明属于paratext，不自动等同为世界内事实。",
+          "书页显示的身份与任务文字被记录为书页/系统呈现，未独立证明其绝对权威。",
+          "本章未给出可定位的绝对时间；t_ch2_now仅作章内区间定位。",
+          "第2段作者关于角色均满18岁的声明属于paratext，不自动等同为世界内事实。",
+          "任务“夙愿”文本中“带着她的那份一起活下去”的“她”指向未明，可能关联原主或其他人，本章未揭示。",
+          "风信子与第2章每日任务目标“正牌魔法少女”是否为同一人，本章仅可推测（蓉城活跃魔法少女为风信子），未明确等同。",
+          "风信子的真实姓名、所属、与英雄协会关系及更多背景未揭示。",
+          "魔法少女变身形象与真实身份的公开机制、英雄协会的具体结构未详述。",
+          "怪人怪兽的来源、种类与袭击规律未详述；怪人袭击作为世界事实的聚合依据到B12才完整可用。",
+          "墨丘利秘典“突然不会说话”的原因未揭示。",
+          "原主苏天晴与当前苏天晴（穿越者）的关系、原主是否真正死亡仍主要来自记忆与叙述，未获独立世界规则确认。",
+          "苏天晴与风信子在绿心公园的正面交锋结果未在本章给出（章末停在喊话），属候选截断。",
+          "兽人互助会、蓉城医学院的具体性质与苏天晴后续入读情况未详述。",
+          "本章未给出可定位的绝对时间；t_ch3_morning/afternoon/night仅作章内相对区间定位。",
+          "D31、D38、D39为叙述者披露，非苏天晴内心认知；已按世界叙述归属。",
+          "第80段怪人吼叫与第83段苏天晴确认之间的因果/时间细节未详述。",
+          "小蓝书平台、手机损坏的具体细节与后续影响未详述。",
+          "第4/7段“反派”一般概念与第2章“魔法少女（反派）”角色可能相关但未合并；第4/7段“反派”不自动等同具体角色。",
+          "任务“夙愿”无明确的目标对象与地点，故发布事件使用本地谓词p_issues_task（issuer/task/reward/amount/description），未复用需要target/place实体角色的旧谓词c02:p_publishes-task。"
+        ],
+        "recordsExhausted": true,
+        "corpusClosed": false
+      },
+      "completeness": {
+        "recordsExhausted": true,
+        "corpusClosed": false,
+        "matchingRecords": 0,
+        "returned": 0
+      },
+      "truncation": {
+        "page": false,
+        "depth": false,
+        "unavailableReferences": 0
+      },
+      "nextCursor": null
+    }
+  }
+]

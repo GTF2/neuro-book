@@ -1,0 +1,3 @@
+{
+  "regenerate": "整合候选中的 entities 使用了与 material.referents 相同的本地 ID（su、originalOwner、greatGrandma、creator），触发 Duplicate local IDs 校验失败。修复需要将这些持续实体重新分配不与 A 材料重复的新 ID（例如 ent_su、ent_originalOwner、ent_greatGrandma、ent_creator；book/bodyFox 等同理需要唯一化），并同步更新 identities、facts、access、episodes、summaries、arguments 中所有对应的 referent/entity/holder 引用及 facts.identities 映射。由于这涉及修改记录自身的 id 或删除/重建实体数组，无法用“保留 id 的整条替换”表达，请求下一次完整重建。"
+}
