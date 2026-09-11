@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import {readFile, readdir} from "node:fs/promises";
 import {join, resolve} from "node:path";
 import {parseArgs} from "node:util";
-import {parseDataset} from "../../t07-v7-schema-gold/index.ts";
+import {createQueryIndex, parseDataset, querySnapshot} from "../../t07-v7-schema-gold/index.ts";
 import {compileSnapshot, hash} from "../compiler.ts";
-import {validateMaterial, validateReview} from "../draft.ts";
+import {validateMaterial, validateReviewCoverage} from "../draft.ts";
 import {manifestSchema, parseAccepted, runIngest} from "../runner.ts";
 import {captureSources} from "../source.ts";
 
@@ -23,6 +23,7 @@ assert.equal(hash(JSON.stringify({book: capture.book, sources: capture.sources, 
 const accepted = [];
 const snapshots = [];
 const immutableHashes = new Map<string, string>();
+const rejectedIds = new Set<string>();
 for (const publication of manifest.publications) {
     assert.equal(publication.chapter, accepted.length + 1);
     const datasetPath = join(root, publication.dataset);
@@ -35,11 +36,28 @@ for (const publication of manifest.publications) {
     assert.equal(dataset.snapshot.readAt.chapter, publication.chapter);
     assert.deepEqual(dataset.sources, capture.sources.slice(0, publication.chapter));
     validateMaterial(candidate.material, capture.sources[publication.chapter - 1]!);
-    validateReview(candidate.material, candidate.integration, candidate.review);
+    validateReviewCoverage(candidate.material, candidate.integration, candidate.review);
+    for (const judgment of candidate.review.judgments) if (judgment.verdict === "rejected") {
+        rejectedIds.add(`c${String(candidate.chapter).padStart(2, "0")}:${judgment.id.slice(judgment.id.indexOf(":") + 1)}`);
+    }
+    const queryIndex = createQueryIndex(dataset);
+    const reader = querySnapshot(queryIndex, {readAt: dataset.snapshot.readAt, perspective: "reader", world: "original"});
+    const visibleIds = new Set(reader.nodes.map(node => node.id));
+    for (const id of rejectedIds) {
+        assert.equal(queryIndex.byId.get(id)?.readiness, "pending", `Rejected review unit must remain pending: ${id}`);
+        assert(!visibleIds.has(id), `Rejected review unit must not be queryable: ${id}`);
+    }
     accepted.push(candidate);
     snapshots.push({chapter: publication.chapter, records: dataset.nodes.length,
         paragraphs: dataset.sources.reduce((n, source) => n + source.paragraphs.length, 0),
-        reviewedUnits: candidate.review.judgments.length, sha256: publication.sha256});
+        reviewedUnits: candidate.review.judgments.length,
+        rejectedUnits: candidate.review.judgments.filter(judgment => judgment.verdict === "rejected").length,
+        reportedMissing: candidate.review.missing.length,
+        cumulativeRejectedUnits: rejectedIds.size,
+        pendingRecords: dataset.nodes.filter(node => node.readiness === "pending").length,
+        readerVisibleRecords: reader.nodes.length,
+        readerUnavailableRecords: dataset.nodes.length - reader.nodes.length,
+        sha256: publication.sha256});
     for (const path of [datasetPath, acceptedPath]) immutableHashes.set(path, hash(await readFile(path, "utf8")));
 }
 const replay = compileSnapshot(capture.book, capture.sources, accepted);
@@ -68,4 +86,5 @@ console.log(JSON.stringify({schema: "neurobook.memory.ingest-verification.v1", o
     sourceParagraphs: replay.sources.reduce((n, source) => n + source.paragraphs.length, 0),
     sourceCharacters: replay.sources.reduce((n, source) => n + source.paragraphs.reduce((sum, p) => sum + [...p].length, 0), 0),
     snapshots, deterministicReplay: true, latestMatches: true, rerun,
-    limitations: ["Complete Beat coverage and model review do not establish exhaustive semantic extraction"]}));
+    limitations: ["Complete Beat coverage and model review do not establish exhaustive semantic extraction",
+        "Unavailable record counts also include dependency, summary freshness and scope rules; they are not all caused by pending review"]}));

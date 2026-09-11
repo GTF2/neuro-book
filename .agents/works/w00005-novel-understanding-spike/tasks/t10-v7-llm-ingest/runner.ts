@@ -32,12 +32,14 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
     if (!Number.isInteger(options.through) || options.through < 1 || options.through > options.sources.length) throw new Error("Invalid through chapter");
     return withRunLock(options.root, async () => {
         const inputHash = hash(JSON.stringify({book: options.book, sources: options.sources, sourceIdentity: options.sourceIdentity}));
-        const policySources = await Promise.all(["draft.ts", "compiler.ts", "prompts.ts", "runner.ts", "provider.ts", "material-reuse.ts", "record-patch.ts"].map(path => readFile(new URL(path, import.meta.url), "utf8")));
+        const policyPaths = ["draft.ts", "compiler.ts", "prompts.ts", "runner.ts", "provider.ts", "material-reuse.ts", "record-patch.ts", "review-publication.ts"];
+        const policySources = await Promise.all(policyPaths.map(path => readFile(new URL(path, import.meta.url), "utf8")));
         const policyHash = hash(JSON.stringify({policy, sources: policySources, schemas: [materialSchema, integrationSchema, reviewSchema].map(schema => z.toJSONSchema(schema))}));
         const manifestPath = join(options.root, "manifest.json");
         const stored = await optionalJson(manifestPath);
         let manifest: Manifest = stored === null ? {schema: "neurobook.memory.ingest.run.v1", inputHash, policyHash, head: 0, publications: []} : manifestSchema.parse(stored);
         if (manifest.inputHash !== inputHash || manifest.policyHash !== policyHash) throw new Error("Run input or policy changed; select a new run directory");
+        await writeJson(join(options.root, "policy-source.json"), {schema: "neurobook.memory.policy-source.v1", policyHash, version: policy.version, sources: policyPaths.map((path, index) => ({path, content: policySources[index]}))}, true);
         const chapters: AcceptedChapter[] = [];
         let dataset: MemoryDataset | null = null;
         for (const publication of manifest.publications) {
@@ -62,7 +64,6 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
             if (savedAccepted !== null) accepted = parseAccepted(savedAccepted);
             let feedback: string | undefined;
             let repair: RepairSeed | undefined;
-            let rounds = 0;
             for (let round = 1; accepted === null; round++) {
                 const roundRoot = join(chapterRoot, `round-${round}`);
                 const failed = await optionalJson(join(roundRoot, "failed.json"));
@@ -71,7 +72,7 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
                     repair = await repairSeed(chapterRoot, round);
                     continue;
                 }
-                if (++rounds > policy.roundsPerInvocation) throw new Error(`Chapter ${chapter} exceeded automatic semantic repair rounds; inspect failures and resume`);
+                if (round > policy.semanticRounds) throw new Error(`Chapter ${chapter} exceeded the persisted semantic round limit; inspect structural publication failure`);
                 try {
                     const material = repair?.origin
                         ? await reuseMaterial(chapterRoot, round, repair.origin)
@@ -81,7 +82,7 @@ export async function runIngest(options: RunOptions): Promise<{manifest: Manifes
                         compileSnapshot(options.book, options.sources, [...chapters, {chapter, material, integration: value, review: {judgments: [], missing: []}}], "candidate-validation");
                     }, repair?.origin ? repair.integration : undefined);
                     const review = await stageValue("review", roundRoot, source, context, options, reviewSchema, material, integration, undefined, value => validateReviewCoverage(material, integration, value));
-                    validateReview(material, integration, review);
+                    if (round < policy.semanticRounds) validateReview(material, integration, review);
                     const candidate = {chapter, material, integration, review};
                     compileSnapshot(options.book, options.sources, [...chapters, candidate]);
                     accepted = candidate;

@@ -6,6 +6,18 @@ role: tasker
 
 # V7 LLM Ingest 与 20 章实验
 
+## 当前执行状态：按修订计划继续（2026-09-11）
+
+开发者已审阅方向并明确“可以继续执行”。恢复修订计划步骤1，先固定查询评价，再比较精简建模。主Agent拥有运行控制、实验提示词与主线收敛；query_cli负责前6章评价题目和只读查询执行入口，cost_scale负责7..20章独立验证题目与现有阶段开销核查，ingest_review独立核验评价合同和实验隔离。这些既有Agent在本Task内并行，不互相覆盖文件；评价答案仅用于查询结果核验，不进入ingest输入。旧smoke-008继续保持停止，新运行使用独立目录。
+
+## 方向修订时的停止记录
+
+开发者最新要求先停下来分析，修正方向并制定计划。本轮只完成分析与计划，不启动新的真实调用或20章运行。`smoke-008` 已停止，head=0；首轮C请求无已保存响应，结果及费用未知，见 [停止记录](evidences/smoke-008/stop.json)。此前“smoke后直接启动20章”的安排已被 [修订计划](plan.md) 替代；已有源码与尝试保留，不把中断算作模型失败。
+
+目标改为以可追溯查询回答衡量正确率、覆盖、费用与理解维护成本；逐项C通过率和记录数量不作为质量目标。现有策略-5的三阶段管线作为已实现的实验基线，尚未证明是性价比最好的方案。下一步先缩小默认建模范围，再比较阶段合并，选择依据和实验边界见 [质量与复杂度分析](quality-policy.md)。候选方案尚未实现，不修改t07 schema、EntitySummary或t08，不把尚未比较的方案写成已生效产品合同。开发真实API不限量授权保持有效；本次暂停来自开发者的最新指令。
+
+## 已授权范围与实施记录
+
 2026-09-10 开发者明确跳过两章 CLI 人工体验门槛，要求先提交 CLI，再落实文档与计划，推进真实 LLM ingest，完成审查、优化和验证后处理样书前 20 章。CLI 检查点为 `37ef4bf1`；V7 schema/金标/查看器检查点为 `7bfdb19e`。开发者授权使用 DeepSeek 最新模型 ID `deepseek-flash`，真实 API smoke、调试与 20 章调用不限量、无需再次审批。
 
 在既有 Work `w00005-novel-understanding-spike`、worktree `.worktree/w00005-novel-understanding-spike`、分支 `feat/w00005-v6-ingest-viewer` 实施。当前先完成设计和计划，再开始业务代码；Leader 维护 Spec、计划与 Work，Tasker 实现本目录代码、测试、提示词及实际运行。独立 Reviewer 按相同合同复核。无 push、发布或生产接入。
@@ -55,3 +67,5 @@ Leader 在真实 `smoke-006/ch02` CLI `knowledge --holder c01:e_su --about c01:f
 4次对照已完成：三个B补丁均通过原确定性校验，输出合计由73231降到12013 tokens；A补丁修正枚举后仍被剩余原文定位错误拦住。正式formal-003在第4章第6轮B attempt-3自然退出，head=3，全部响应落盘。Leader决定将按记录替换纳入A/B的结构错误重试，保留完整候选生成与完整C审查。主 Agent 接续Tasker，拥有运行期 `record-patch.ts`、`prompts.ts`、`runner.ts`、对应测试与文档；先完成恢复/计费回归和独立复核，再以新策略/新目录做真实smoke及20章。旧运行停止，不能按新源码恢复。query_cli继续只读审查，禁止自行恢复formal-003。
 
 策略 -4 已通过71项测试、typecheck、独立恢复/计费复核和真实 `smoke-007` 首章。首章76段、277记录、172个复核单元，重放哈希一致，重复运行0次API调用；早1:7全文搜索未来名称为空。2026-09-11 14:30启动新的 `evidences/formal-004` 连续1..20，终端session29575，policyHash `db2d3861ac85b2f062c3cf2fdd8e1550105c55fb4d0f72560fb312bd35f2a0cc`，七份策略源码冻结。主 Agent 唯一控制运行与恢复；query_cli只读验证新发布前缀，旧formal-003停止。完整20章以formal-004 manifest.head为准。
+
+formal-004首章更细范围检查在1:28复现4条未来名称泄漏，第29段才出现“墨丘利秘典”，但较早的Fact正文和identity rationale已使用该词。主 Agent已停止PID54960/session29575，head=1；尚未落盘的请求按未知结果计费，不再恢复该目录。开发者随后明确：追求正确率、价格及模型理解维护成本的权衡，不追求100%正确，不为小幅表达力增加大量复杂度。下一切片采用 [质量策略](quality-policy.md)，替代未完成的名称词面硬门禁；结构保持严格，语义最多一次返工，其余用V7已有pending隔离并报告缺口。主 Agent拥有实现和文档；ingest_review独立复核，cost_scale对已有真实逐轮候选作成本质量对照，query_cli只读核查查询和真实产物。t07/t08保持只读。

@@ -28,10 +28,9 @@ describe("candidate to immutable V7 snapshot", () => {
         expect(createQueryService(first)({command: "summaries", entity: "c01:person"}).completeness.summaryStatus).toBe("ready");
     });
 
-    it("rejects review omissions, rejection, fake mentions, future proof and Beat gaps", () => {
+    it("rejects review omissions, fake mentions, future proof and Beat gaps", () => {
         const mutations = [
             (chapter: ReturnType<typeof fixtureChapter>) => {chapter.review.judgments.pop();},
-            (chapter: ReturnType<typeof fixtureChapter>) => {chapter.review.judgments[0]!.verdict = "rejected";},
             (chapter: ReturnType<typeof fixtureChapter>) => {chapter.material.referents[0]!.mentions[0]!.text = "不存在";},
             (chapter: ReturnType<typeof fixtureChapter>) => {chapter.integration.facts[0]!.at = 1;},
             (chapter: ReturnType<typeof fixtureChapter>) => {chapter.material.beats[0]!.from = 2;},

@@ -114,7 +114,7 @@ describe("durable chapter execution", () => {
         expect(report.costs.projection?.byClassification["production-repair"]?.calls).toBe(3);
     });
 
-    it("flattens repeated A reuse and rejects changed or circular provenance", async () => {
+    it("retains A reuse under bounded publication and rejects changed or circular provenance", async () => {
         const path = await root(), fake = fakeProvider();
         let reviews = 0;
         const provider: ModelProvider = async request => {
@@ -127,16 +127,47 @@ describe("durable chapter execution", () => {
             return response;
         };
         await runIngest({root: path, book: fixtureBook, sources: fixtureSources, through: 1, provider});
-        expect(fake.calls()).toBe(7);
-        const chapterRoot = join(path, "ch01"), receiptPath = join(chapterRoot, "round-3/material/reuse.json");
-        expect(await materialOrigin(chapterRoot, 3)).toMatchObject({sourceRound: 1});
+        expect(fake.calls()).toBe(5);
+        const chapterRoot = join(path, "ch01"), receiptPath = join(chapterRoot, "round-2/material/reuse.json");
+        expect(await materialOrigin(chapterRoot, 2)).toMatchObject({sourceRound: 1});
         const receipt = await readJson(receiptPath) as Record<string, unknown>;
-        await writeJson(receiptPath, {...receipt, sourceRound: 3});
-        await expect(materialOrigin(chapterRoot, 3)).rejects.toThrow("origin or hash");
+        await writeJson(receiptPath, {...receipt, sourceRound: 2});
+        await expect(materialOrigin(chapterRoot, 2)).rejects.toThrow("origin or hash");
         await writeJson(receiptPath, receipt);
         const changed = fixtureChapter().material; changed.beats[0]!.gist = "Changed source";
         await writeJson(join(chapterRoot, "round-1/material/accepted.json"), changed);
-        await expect(materialOrigin(chapterRoot, 3)).rejects.toThrow("source hash mismatch");
+        await expect(materialOrigin(chapterRoot, 2)).rejects.toThrow("source hash mismatch");
+    });
+
+    it("publishes residual semantic rejection after one repair across restarts without a third round", async () => {
+        const path = await root(), fake = fakeProvider();
+        let reviews = 0;
+        const provider: ModelProvider = async request => {
+            const input = JSON.parse(request.user), response = await fake.provider(request);
+            if (input.reviewUnits) {
+                reviews++;
+                const review = JSON.parse(response.text);
+                Object.assign(review.judgments.find((item: {id: string}) => item.id === "semantic:event"), {verdict: "rejected", note: "事件概括不忠于原文"});
+                review.missing = [{stage: "integration", note: "另有关键关系待补充"}];
+                return {...response, text: JSON.stringify(review)};
+            }
+            return response;
+        };
+        const options = {root: path, book: fixtureBook, sources: fixtureSources, through: 1, provider};
+        await expect(runIngest({...options, afterResponse: async stage => {
+            if (stage === "review" && reviews === 2) throw new SimulatedInterruption("Final review saved");
+        }})).rejects.toThrow("Final review saved");
+        expect((await runIngest(options)).manifest.head).toBe(1);
+        expect(fake.calls()).toBe(5);
+        const snapshot = await readJson(join(path, "dataset-v7.json"));
+        await runIngest(options);
+        expect(fake.calls()).toBe(5);
+        expect(await readJson(join(path, "dataset-v7.json"))).toEqual(snapshot);
+        const report = await reportIngest(path);
+        expect(report.quality.chapters).toEqual([{chapter: 1, reviewedUnits: fixtureChapter().review.judgments.length, rejectedUnits: 1, missingItems: 1}]);
+        expect(report.quality.pendingRecords).toBe(3);
+        expect(report.quality.unavailableRecords).toBeGreaterThan(3);
+        expect(report.costs.projection?.production.calls).toBe(5);
     });
 
     it("publishes a consecutive two-chapter prefix and repeating it makes zero calls", async () => {

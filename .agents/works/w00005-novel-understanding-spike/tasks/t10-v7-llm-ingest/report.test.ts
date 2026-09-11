@@ -50,15 +50,15 @@ describe("read-only ingest report", () => {
         };
         await runIngest({root, book: fixtureBook, sources: fixtureSources, through: 1, provider});
         const report = await reportIngest(root);
-        expect(report.calls).toHaveLength(7);
+        expect(report.calls).toHaveLength(5);
         expect(report.calls.filter(call => call.stage === "material")).toEqual([expect.objectContaining({round: 1, classification: "production-accepted"})]);
         expect(report.calls.filter(call => call.classification === "production-accepted")).toHaveLength(3);
-        expect(report.costs.projection?.production.calls).toBe(7);
-        expect(report.costs.projection?.byClassification["production-repair"]?.calls).toBe(4);
-        const receiptPath = join(root, "ch01/round-3/material/reuse.json");
+        expect(report.costs.projection?.production.calls).toBe(5);
+        expect(report.costs.projection?.byClassification["production-repair"]?.calls).toBe(2);
+        const receiptPath = join(root, "ch01/round-2/material/reuse.json");
         const receipt = await readJson(receiptPath) as Record<string, unknown>;
         await writeJson(receiptPath, {...receipt, sourceRound: 2});
-        await expect(reportIngest(root)).rejects.toThrow("original model stage");
+        await expect(reportIngest(root)).rejects.toThrow("origin or hash");
     });
 
     it("verifies the published prefix and reports accepted calls without writing or calling a model", async () => {

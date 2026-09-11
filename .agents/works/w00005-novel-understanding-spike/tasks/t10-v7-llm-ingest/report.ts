@@ -1,7 +1,7 @@
 import { readFile, readdir } from "node:fs/promises";
 import { isAbsolute, join, relative, resolve } from "node:path";
 import { z } from "zod";
-import { parseDataset, type MemoryDataset } from "../t07-v7-schema-gold/index.ts";
+import { createQueryIndex, parseDataset, querySnapshot, type MemoryDataset } from "../t07-v7-schema-gold/index.ts";
 import { hash } from "./compiler.ts";
 import { estimateCost, summarizeCallCosts, summarizeCosts, type CostCall } from "./cost.ts";
 import { integrationSchema, materialSchema, reviewSchema, type AcceptedChapter } from "./draft.ts";
@@ -174,6 +174,7 @@ export async function reportIngest(runRoot: string, classification: "production"
     const chapters = dataset?.sources.map(source => ({ chapter: source.chapterOrder, characters: source.paragraphs.reduce((count, paragraph) => count + [...paragraph].length, 0) })) ?? [];
     const unpublishedCalls = calls.filter(call => call.chapter > manifest.head);
     const models = [...new Set(calls.flatMap(call => call.response ? [call.response.model] : []))].sort();
+    const projection = dataset ? querySnapshot(createQueryIndex(dataset), {readAt: dataset.snapshot.readAt, perspective: "reader", world: "original"}) : null;
     return {
         schema: "neurobook.memory.ingest-report.v1", observedAt: new Date().toISOString(), runRoot: root, classification,
         inputHash: manifest.inputHash, policyHash: manifest.policyHash, publishedChapters: manifest.head,
@@ -181,6 +182,14 @@ export async function reportIngest(runRoot: string, classification: "production"
         sources: { chapters, paragraphs: dataset?.sources.reduce((sum, source) => sum + source.paragraphs.length, 0) ?? 0 },
         records: dataset ? Object.fromEntries([...new Set(dataset.nodes.map(node => node.kind))].sort().map(kind => [kind, dataset.nodes.filter(node => node.kind === kind).length])) : {},
         coverage: dataset?.coverage ?? null,
+        quality: {
+            chapters: [...accepted.values()].map(chapter => ({chapter: chapter.chapter, reviewedUnits: chapter.review.judgments.length, rejectedUnits: chapter.review.judgments.filter(item => item.verdict === "rejected").length, missingItems: chapter.review.missing.length})),
+            pendingRecords: dataset?.nodes.filter(node => node.readiness === "pending").length ?? 0,
+            visibleRecords: projection?.nodes.length ?? 0,
+            unavailableRecords: projection?.unavailable.length ?? 0,
+            unavailableByReason: projection ? Object.fromEntries([...new Set(projection.unavailable.map(item => item.reason))].map(reason => [reason, projection.unavailable.filter(item => item.reason === reason).length])) : {},
+            interpretation: "Review judgments are not gold accuracy; unavailable also includes stale historical summaries and dependency exclusions.",
+        },
         models,
         calls: calls.map(call => ({ ...call, response: undefined, model: call.response?.model ?? null, responseId: call.response?.responseId ?? null, durationMs: call.response?.durationMs ?? null, usage: call.response?.usage ?? null, ...outputSplit(call), cost: estimateCost(call.response, call.startedAt) })),
         tokensByStage: Object.fromEntries(stages.map(stage => [stage, stageOutputTokens(calls.filter(call => call.stage === stage))])),

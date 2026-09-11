@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
 import {aggregateAssessment, collectReferences, comparePosition, createQueryIndex, nodeSchema, parseDataset, querySnapshot, type MemoryDataset, type MemoryNode, type NodeKind, type NodeOf, type Position, type RecordRef, type Source, type Span} from "../t07-v7-schema-gold/index.ts";
-import {combinedMaterial, integrationSchema, materialSchema, reviewSchema, validateMaterial, validateReview, type AcceptedChapter, type Proof} from "./draft.ts";
+import {combinedMaterial, integrationSchema, materialSchema, reviewSchema, validateMaterial, validateReviewCoverage, type AcceptedChapter, type Proof} from "./draft.ts";
+import {applyPublicationReview} from "./review-publication.ts";
 
 const scope = {world: "original", perspective: "reader"};
 const unspecified = {kind: "unspecified"} as const;
@@ -46,7 +47,7 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
         }
         const duplicates = [...locations].filter(([, origins]) => origins.length > 1).map(([id, origins]) => ({id, origins}));
         if (duplicates.length) throw new Error(`Duplicate local IDs: ${JSON.stringify(duplicates)}. integration.referentAdditions must only contain additions absent from material; do not repeat A records.`);
-        if (purpose === "publish") validateReview(originalMaterial, integration, review);
+        if (purpose === "publish") validateReviewCoverage(originalMaterial, integration, review);
         const material = combinedMaterial(originalMaterial, integration);
         const source = selectedSources.find(source => source.chapterOrder === accepted.chapter)!;
         validateMaterial(material, source);
@@ -70,7 +71,7 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
             return prefix + value;
         };
         const references = (ids: string[]) => ids.map(value => ref(resolve(value)));
-        const note = (id: string, materialUnit = false) => purpose === "candidate-validation" ? "Candidate validation only; independent review not yet applied" : review.judgments.find(item => item.id === `${materialUnit ? "material" : "semantic"}:${id}`)!.note;
+        const candidateReviewNote = "结构候选；语义复核在完整编译后应用。";
 
         const positions = new Map<string, Position>([
             ...material.referents.map(item => [item.id, at(Math.min(...item.mentions.map(mention => mention.paragraph)))] as const),
@@ -157,7 +158,7 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
             if (!mentions.length) throw new Error(`Identity lacks visible mentions ${item.id}`);
             const evidence = [...new Map([...mentions, ...references(item.evidence)].map(ref => [ref.id, ref])).values()];
             const resolution = add("resolution", resolve(item.id), `局部指称归属：${local.label}`, at(item.at), spans(item.at, item.at), evidence, {referent: ref(local.id), entity: ref(entity.id), decision: item.decision, replaces: []});
-            support(resolution, `argument:${resolution.id}`, evidence, {premises: [], method: "identity", certainty: item.certainty, rationale: item.rationale}, note(item.id));
+            support(resolution, `argument:${resolution.id}`, evidence, {premises: [], method: "identity", certainty: item.certainty, rationale: item.rationale}, candidateReviewNote);
             if (item.decision === "same" && item.certainty === "accepted") for (const mentionRef of local.data.mentions) {
                 const mention = requireNode(mentionRef.id);
                 if (mention.kind !== "mention") throw new Error("Invalid mention kind");
@@ -201,15 +202,15 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
                 }
                 const evidence = references(item.proof.premises);
                 const node = add("fact", resolve(item.id), item.text, at(item.at), [], [], {proposition: item.text, predicate: ref(resolve(item.predicate)), arguments: values, polarity: item.polarity, assertion: {...item.assertion, holder: item.assertion.holder ? ref(resolve(item.assertion.holder)) : null}, time: item.time ? {kind: "point", point: ref(resolve(item.time))} : unspecified, qualifiers: {quantifier: item.quantifier, modality: item.modality, conditions: references(item.conditions), textualConditions: item.textualConditions, exceptions: references(item.exceptions)}, interpretationDependencies: interpretationFor(entityIds, item.identities, at(item.at))});
-                support(node, `argument:${node.id}`, evidence, item.proof, note(item.id));
+                support(node, `argument:${node.id}`, evidence, item.proof, candidateReviewNote);
             } else if (record.kind === "argument") {
                 const item = record.item;
-                support(requireNode(resolve(item.target)), resolve(item.id), references(item.proof.premises), item.proof, note(item.id), item.polarity, at(item.at));
+                support(requireNode(resolve(item.target)), resolve(item.id), references(item.proof.premises), item.proof, candidateReviewNote, item.polarity, at(item.at));
             } else if (record.kind === "episode") {
                 const item = record.item;
                 const materials = references(item.materials);
                 const node = add("episode", resolve(item.id), item.title, at(item.at), [], materials, {summary: item.summary, scale: item.scale, participants: item.participants.map(id => ({role: "participant", value: {type: "ref", ref: ref(resolve(id))}, anchor: null})), materials, components: [{role: "title", text: item.title, dependencies: materials}, {role: "step", text: item.summary, dependencies: materials}], children: references(item.children), relations: item.relations.map(relation => ({relation: relation.relation, target: ref(resolve(relation.target)), dependencies: references(relation.evidence)})), time: item.time ? {kind: "point", point: ref(resolve(item.time))} : unspecified});
-                support(node, `argument:${node.id}`, references(item.proof.premises), item.proof, note(item.id));
+                support(node, `argument:${node.id}`, references(item.proof.premises), item.proof, candidateReviewNote);
             } else {
                 const item = record.item;
                 const evidence = references(item.evidence), target = requireNode(resolve(item.target)), holder = requireNode(resolve(item.holder));
@@ -249,11 +250,15 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
         const changedEntities = new Set(integration.identities.map(identity => resolve(identity.entity)));
         for (const fact of integration.facts) for (const argument of fact.arguments) if (argument.value.type === "ref" && byId.get(resolve(argument.value.id))?.kind === "entity") changedEntities.add(resolve(argument.value.id));
         const priorSummaries = nodes.filter((node): node is NodeOf<"entitySummary"> => node.kind === "entitySummary" && node.availableAt.chapter < accepted.chapter).sort((a, b) => comparePosition(b.availableAt, a.availableAt));
+        const rejectedSummaries = new Set(chapters.flatMap(chapter => chapter.integration.summaries
+            .filter(summary => chapter.review.judgments.some(judgment => judgment.id === `semantic:${summary.id}` && judgment.verdict === "rejected"))
+            .map(summary => `c${String(chapter.chapter).padStart(2, "0")}:${summary.id}`)));
         const visibleIds = new Set(evaluated.nodes.map(node => node.id));
         for (const prior of priorSummaries) {
             const key = `${prior.data.subject.id}\0${prior.data.facet}`;
             if (updatedFacets.has(key) || changedEntities.has(prior.data.subject.id)) continue;
             updatedFacets.add(key);
+            if (rejectedSummaries.has(prior.id)) continue;
             const unchanged = prior.data.items.every(item => item.dependencies.every(dependency => visibleIds.has(dependency.id)) && item.assessmentBasis.every(basis => currentAssessments.get(basis.target.id)?.data.epistemic === basis.epistemic));
             if (!unchanged) continue;
             add("entitySummary", `${prefix}summary-reuse-${hash(key).slice(0, 16)}`, prior.label, readAt, [], prior.dependencies, {...prior.data, readAt, coverage, builtFrom: {sourceManifest, knowledgeRevision: accepted.chapter, partitionWatermarks: {material: accepted.chapter, identity: accepted.chapter, interpretation: accepted.chapter}}});
@@ -280,5 +285,5 @@ export function compileSnapshot(book: MemoryDataset["book"], sources: Source[], 
     const hidden = [...currentIds].filter(id => !visible.has(id));
     if (hidden.length) throw new Error(`Compiled current records unexpectedly unavailable: ${hidden.join(", ")}`);
     for (const node of dataset.nodes) for (const target of collectReferences(node.data)) if (!byId.has(target.id)) throw new Error(`Unknown compiled reference ${target.id}`);
-    return dataset;
+    return purpose === "publish" ? applyPublicationReview(dataset, chapters) : dataset;
 }
