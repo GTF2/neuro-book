@@ -309,14 +309,14 @@ watch(() => props.projectRoot, () => {
                     <span class="i-lucide-brain-circuit h-4 w-4"></span>
                 </span>
                 <span class="text-[16px] font-semibold text-[var(--text-main)]">RAG 检查器</span>
-                <span class="hidden text-[13px] text-[var(--text-muted)] md:inline">Project</span>
+                <span class="hidden text-[13px] text-[var(--text-muted)] md:inline">项目</span>
                 <span class="hidden text-[13px] text-[var(--text-muted)] md:inline">›</span>
-                <span class="hidden max-w-[260px] truncate text-[13px] text-[var(--text-secondary)] md:inline">{{ props.projectRoot || "未选择 Project" }}</span>
+                <span class="hidden max-w-[260px] truncate text-[13px] text-[var(--text-secondary)] md:inline">{{ props.projectRoot || "未选择项目" }}</span>
                 <span class="hidden text-[13px] text-[var(--text-muted)] lg:inline">›</span>
-                <span class="hidden max-w-[220px] truncate text-[13px] text-[var(--text-secondary)] lg:inline">{{ selectedSubject?.subjectId ?? "未选择 subject" }}</span>
+                <span class="hidden max-w-[220px] truncate text-[13px] text-[var(--text-secondary)] lg:inline">{{ selectedSubject?.subjectId ?? "未选择主体" }}</span>
 
                 <span class="ml-auto hidden items-center gap-3 text-[11px] text-[var(--text-muted)] md:flex">
-                    <span>{{ subjects.length }} 个 subject</span>
+                    <span>{{ subjects.length }} 个主体</span>
                     <span>{{ totalEvents }} 条经历</span>
                     <span>{{ totalMemories }} 条认知</span>
                     <span>{{ inspector?.index.chunkCount ?? 0 }} 个 chunk</span>

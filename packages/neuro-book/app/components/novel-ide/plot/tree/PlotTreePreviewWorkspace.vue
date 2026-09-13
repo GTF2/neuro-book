@@ -94,7 +94,7 @@ function resetWorkspace(): void {
         <div class="space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3 rounded-[24px] border border-[var(--border-color)] bg-[var(--bg-panel)] px-4 py-3">
                 <div>
-                    <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Tree Preview Controls</div>
+                    <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">树预览控制</div>
                     <div class="mt-1 text-sm text-[var(--text-secondary)]">当前测试数据覆盖主线推进、跨线程入口 fork、游离 Scene，以及 toolbar 手动布局。</div>
                 </div>
 
@@ -121,7 +121,7 @@ function resetWorkspace(): void {
         <!-- 右侧检查器 -->
         <aside class="space-y-4">
             <section class="rounded-[24px] border border-[var(--border-color)] bg-[var(--bg-panel)] px-4 py-4 shadow-[0_18px_50px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
-                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Inspector</div>
+                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">检查器</div>
                 <div class="mt-3 text-lg font-semibold text-[var(--text-main)]">
                     {{ selectedScene?.title ?? selectedThread?.title ?? "未选中节点" }}
                 </div>

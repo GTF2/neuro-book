@@ -84,7 +84,7 @@ const refEntries = computed<Array<{key: string; label: string; value: string}>>(
         if (entries.length > 0) return entries;
     }
     if (raw === null || raw === undefined) return [];
-    return [{key: "ref", label: "ref", value: JSON.stringify(raw)}];
+    return [{key: "ref", label: "引用", value: JSON.stringify(raw)}];
 });
 
 function formatDuration(ms: number): string {

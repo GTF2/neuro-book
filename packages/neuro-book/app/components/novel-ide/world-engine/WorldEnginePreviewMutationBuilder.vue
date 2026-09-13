@@ -59,7 +59,7 @@ function attrPath(name: string): string {
         <fieldset class="m-0 border-0 p-0 disabled:opacity-70" :disabled="props.disabled">
         <div class="mb-2 flex flex-col gap-2">
             <div class="flex items-center justify-between gap-2">
-                <div class="text-xs font-semibold text-[var(--text-secondary)]">Mutation Builder</div>
+                <div class="text-xs font-semibold text-[var(--text-secondary)]">变更构建器</div>
                 <span class="shrink-0 rounded border border-[var(--border-color)] px-1.5 py-0.5 font-mono">{{ valueHint }}</span>
             </div>
             <WorldEngineMutationListControls
@@ -80,7 +80,7 @@ function attrPath(name: string): string {
             <select :value="builder.path" class="h-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-xs outline-none focus:border-[var(--accent-main)]" @change="emit('update-builder-field', 'path', inputValue($event))">
                 <option v-for="attr in builderAttrs" :key="`builder-attr:${attr.name}`" :value="attrPath(attr.name)">{{ attr.name }}</option>
             </select>
-            <input :value="builder.path" list="world-engine-preview-builder-attrs" class="col-span-2 h-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 font-mono text-xs outline-none focus:border-[var(--accent-main)]" placeholder="JSON Pointer path, e.g. /memory/师门" @input="emit('update-builder-field', 'path', inputValue($event))">
+            <input :value="builder.path" list="world-engine-preview-builder-attrs" class="col-span-2 h-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 font-mono text-xs outline-none focus:border-[var(--accent-main)]" placeholder="JSON Pointer 路径，如 /memory/师门" @input="emit('update-builder-field', 'path', inputValue($event))">
             <datalist id="world-engine-preview-builder-attrs">
                 <option v-for="attr in builderAttrs" :key="`builder-attr-option:${attr.name}`" :value="attrPath(attr.name)"></option>
             </datalist>
@@ -88,7 +88,7 @@ function attrPath(name: string): string {
                 <option v-for="op in builderOpOptions" :key="op" :value="op">{{ op }}</option>
             </select>
             <textarea v-if="valueRequiresJsonObject" :value="builder.value" rows="4" class="col-span-2 min-h-[92px] resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5 font-mono text-xs leading-5 outline-none focus:border-[var(--accent-main)]" placeholder="{&quot;key&quot;: &quot;value&quot;}" title="当前 value 必须是 JSON object" @input="emit('update-builder-field', 'value', inputValue($event))"></textarea>
-            <input v-else :value="builder.value" class="h-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-xs outline-none focus:border-[var(--accent-main)] disabled:opacity-50" :disabled="builder.op === 'remove'" placeholder="value" @input="emit('update-builder-field', 'value', inputValue($event))">
+            <input v-else :value="builder.value" class="h-8 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-xs outline-none focus:border-[var(--accent-main)] disabled:opacity-50" :disabled="builder.op === 'remove'" placeholder="值" @input="emit('update-builder-field', 'value', inputValue($event))">
         </div>
         <WorldEngineMutationActionButtons
             :disabled="props.disabled"

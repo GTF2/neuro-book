@@ -180,18 +180,33 @@ function basename(filePath: string): string {
 }
 
 /**
+ * 返回 lorebook 目录类型的中文徽标文案。
+ */
+function lorebookTypeLabel(name: string): string {
+    const keys: Record<string, string> = {
+        location: "ide.workspace.filePanel.lorebookLocation",
+        character: "ide.workspace.filePanel.lorebookCharacter",
+        item: "ide.workspace.filePanel.lorebookItem",
+        rule: "ide.workspace.filePanel.lorebookRule",
+        note: "ide.workspace.filePanel.lorebookNote",
+    };
+    const key = keys[name];
+    return key ? t(key) : name;
+}
+
+/**
  * 返回约定目录的视觉元数据。
  */
 function resolveDirectoryMeta(name: string): {icon: string; colorClass: string; label: string} | null {
     if (name === "lorebook") {
-        return {icon: "i-lucide-library", colorClass: "text-[var(--accent-text)]", label: "lore"};
+        return {icon: "i-lucide-library", colorClass: "text-[var(--accent-text)]", label: "设定"};
     }
     if (name === "manuscript" || name === "chapter" || name === "chapters") {
-        return {icon: "i-lucide-book-open-text", colorClass: "text-[var(--status-info)]", label: "chapter"};
+        return {icon: "i-lucide-book-open-text", colorClass: "text-[var(--status-info)]", label: "章节"};
     }
     if (name === "location" || name === "character" || name === "item" || name === "rule" || name === "note") {
         const meta = getWorkspaceLorebookTypeMeta(name);
-        return {icon: meta.icon, colorClass: meta.iconClass.split(" ")[0] ?? "text-[var(--text-main)]", label: name};
+        return {icon: meta.icon, colorClass: meta.iconClass.split(" ")[0] ?? "text-[var(--text-main)]", label: lorebookTypeLabel(name)};
     }
     return null;
 }
@@ -304,10 +319,10 @@ onUnmounted(() => {
                     {{ directoryMeta.label }}
                 </span>
                 <span v-else-if="isContentIndexFile" class="shrink-0 text-[10px] text-[var(--text-muted)] opacity-45">
-                    node
+                    节点
                 </span>
                 <span v-if="isLorebookEntry" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="statusIndicatorClass" :title="statusLabel"></span>
-                <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="node.status"></span>
+                <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="t(`ide.workspace.common.status${capitalizeStatus(readWorkspaceLorebookStatus(node.status))}`)"></span>
             </div>
         </div>
 

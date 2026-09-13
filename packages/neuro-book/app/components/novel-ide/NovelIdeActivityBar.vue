@@ -248,7 +248,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <aside ref="activityBarRef" class="workbench-activity-bar flex w-12 shrink-0 flex-col items-center border-r border-[var(--border-color)] bg-[var(--bg-sidebar)] py-2" aria-label="Workbench navigation">
+    <aside ref="activityBarRef" class="workbench-activity-bar flex w-12 shrink-0 flex-col items-center border-r border-[var(--border-color)] bg-[var(--bg-sidebar)] py-2" aria-label="工作台导航">
         <div class="flex min-h-0 w-full flex-1 flex-col items-center">
             <div ref="primaryGroupRef" class="flex w-full shrink-0 flex-col items-center">
                 <Tooltip

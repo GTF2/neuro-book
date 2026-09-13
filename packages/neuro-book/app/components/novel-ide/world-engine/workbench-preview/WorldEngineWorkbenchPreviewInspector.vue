@@ -398,17 +398,17 @@ const {isResizing, panelStyle} = useResizablePanel(resizeHandleRef, {
                     <span class="rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-2 py-1 text-[11px] text-[var(--we-text-secondary)]">{{ draft.kind }}</span>
                 </div>
                 <div class="grid grid-cols-[minmax(0,1fr)_112px] gap-2">
-                    <FormField label="time">
+                    <FormField label="时间">
                         <FormInput v-model="draft.time" :disabled="props.busy" />
                     </FormField>
-                    <FormField label="kind">
+                    <FormField label="类型">
                         <FormSelect v-model="draft.kind" :options="kindOptions" :disabled="props.busy" />
                     </FormField>
                 </div>
-                <FormField label="title">
+                <FormField label="标题">
                     <FormInput v-model="draft.title" :disabled="props.busy" />
                 </FormField>
-                <FormField label="summary">
+                <FormField label="摘要">
                     <FormTextarea v-model="draft.summary" :rows="4" :disabled="props.busy" />
                 </FormField>
                 <div class="mt-3 flex items-center justify-between gap-2">
@@ -432,15 +432,15 @@ const {isResizing, panelStyle} = useResizablePanel(resizeHandleRef, {
             <section v-if="subjectFileProposals.length" ref="subjectFileProposalsRef" data-testid="subject-file-proposals" class="order-6 rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] p-3">
                 <div class="mb-2 flex items-center justify-between gap-2">
                     <div>
-                        <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--we-text-muted)]">Subject file proposals</div>
-                        <div class="mt-0.5 text-[11px] text-[var(--we-text-muted)]">仅生成建议，不会自动写入 simulation/subjects</div>
+                        <div class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--we-text-muted)]">主体文件建议</div>
+                        <div class="mt-0.5 text-[11px] text-[var(--we-text-muted)]">仅生成建议，不会自动写入</div>
                     </div>
                     <div class="flex shrink-0 items-center gap-1.5">
                         <button type="button" class="inline-flex h-7 items-center gap-1.5 rounded border border-[var(--we-border)] bg-[var(--we-bg-subtle)] px-2 text-[11px] text-[var(--we-text-secondary)] transition-colors hover:bg-[var(--we-bg-hover)] hover:text-[var(--we-text-main)]" title="复制全部主体文件建议" @click="void copyAllSubjectFileProposals()">
                             <span class="i-lucide-copy-check h-3.5 w-3.5"></span>
                             复制全部
                         </button>
-                        <span class="rounded-full border border-[var(--we-border)] bg-[var(--we-bg-subtle)] px-2 py-0.5 text-[10px] text-[var(--we-text-muted)]">review</span>
+                        <span class="rounded-full border border-[var(--we-border)] bg-[var(--we-bg-subtle)] px-2 py-0.5 text-[10px] text-[var(--we-text-muted)]">评审</span>
                     </div>
                 </div>
                 <div class="space-y-2">
@@ -463,7 +463,7 @@ const {isResizing, panelStyle} = useResizablePanel(resizeHandleRef, {
                                 <div class="mb-1 flex items-center justify-between gap-2">
                                     <div class="flex min-w-0 items-center gap-1.5 font-semibold text-[var(--we-text-secondary)]">
                                         <span class="i-lucide-list-plus h-3.5 w-3.5 shrink-0"></span>
-                                        <span class="truncate">events.jsonl draft</span>
+                                        <span class="truncate">events.jsonl 草稿</span>
                                     </div>
                                     <div class="flex shrink-0 items-center gap-1">
                                         <button type="button" class="inline-flex h-6 items-center gap-1 rounded border border-[var(--we-accent-border)] bg-[var(--we-accent-soft)] px-1.5 text-[10px] font-medium text-[var(--we-accent-strong)] transition-colors hover:bg-[var(--we-bg-active)] disabled:opacity-45" :disabled="props.busy || committedSubjectEventKeySet.has(worldWorkbenchSubjectEventProposalKey(proposal))" :title="committedSubjectEventKeySet.has(worldWorkbenchSubjectEventProposalKey(proposal)) ? '这条 events.jsonl 经历已在当前会话处理' : '确认后追加到 events.jsonl'" @click="commitSubjectEventProposal(proposal)">
@@ -494,7 +494,7 @@ const {isResizing, panelStyle} = useResizablePanel(resizeHandleRef, {
                                 <div class="mb-1 flex items-center justify-between gap-2">
                                     <div class="flex min-w-0 items-center gap-1.5 font-semibold text-[var(--we-text-secondary)]">
                                         <span class="i-lucide-brain h-3.5 w-3.5 shrink-0"></span>
-                                        <span class="truncate">memory facts</span>
+                                        <span class="truncate">记忆事实</span>
                                     </div>
                                     <div class="flex shrink-0 items-center gap-1">
                                         <button type="button" class="inline-flex h-6 items-center gap-1 rounded border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-1.5 text-[10px] text-[var(--we-text-secondary)] transition-colors hover:bg-[var(--we-bg-hover)] hover:text-[var(--we-text-main)]" title="复制 memory.jsonl 候选行" @click="void copySubjectFileProposalText(proposal.memoryJsonLines.join('\n'), 'memory.jsonl 候选行已复制。')">

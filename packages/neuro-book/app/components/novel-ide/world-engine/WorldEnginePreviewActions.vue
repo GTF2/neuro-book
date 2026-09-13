@@ -93,29 +93,29 @@ const canQueryState = computed(() => props.projectReady && !props.loadingWorld &
     <!-- Preview Actions -->
     <section class="min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)]">
         <div class="border-b border-[var(--border-color)] px-4 py-3">
-            <h2 class="text-sm font-semibold">Actions</h2>
+            <h2 class="text-sm font-semibold">操作</h2>
         </div>
 
         <div class="space-y-5 p-4">
             <!-- 创建 subject -->
             <div class="space-y-2">
-                <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">Create Subject</div>
+                <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">创建主体</div>
                 <fieldset class="space-y-2 disabled:opacity-60" :disabled="loadingWorld || actionBusy">
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="subjectForm.id" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="id">
+                        <input v-model="subjectForm.id" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="ID">
                         <select v-model="subjectForm.type" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]">
                             <option v-for="type in schemaTypes" :key="type.type" :value="type.type">{{ type.type }}</option>
                         </select>
                     </div>
-                    <input v-model="subjectForm.name" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="name">
-                    <input v-model="subjectForm.time" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="time">
+                    <input v-model="subjectForm.name" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="名称">
+                    <input v-model="subjectForm.time" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="时间">
                     <div class="flex flex-wrap gap-1">
                         <button v-for="attr in selectedTypeAttrs.slice(0, 8)" :key="attr.name" type="button" class="rounded border border-[var(--border-color)] px-2 py-1 text-[11px] text-[var(--text-muted)]" disabled>{{ attr.name }}</button>
                     </div>
-                    <div v-if="subjectIdAlreadyExists" class="rounded-md border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">该 subject 已存在。点击左侧 subject 会载入查询上下文；新建 subject 请填写新的 id。</div>
+                    <div v-if="subjectIdAlreadyExists" class="rounded-md border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">该主体已存在。点击左侧主体会载入查询上下文；新建主体请填写新的 ID。</div>
                     <button type="button" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-[var(--border-color)] px-3 text-sm hover:bg-[var(--bg-hover)] disabled:opacity-50" :disabled="!canCreateSubject" @click="emit('create-subject')">
                         <span class="i-lucide-circle-plus h-4 w-4"></span>
-                        创建 Subject
+                        创建主体
                     </button>
                 </fieldset>
             </div>
@@ -124,7 +124,7 @@ const canQueryState = computed(() => props.projectReady && !props.loadingWorld &
             <div class="space-y-2 border-t border-[var(--border-color)] pt-5">
                 <fieldset class="space-y-2 disabled:opacity-60" :disabled="loadingWorld || actionBusy">
                     <div class="flex items-center justify-between gap-2">
-                        <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">{{ editingSliceId ? "Edit Slice" : "Write Slice" }}</div>
+                        <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">{{ editingSliceId ? "编辑切片" : "写入切片" }}</div>
                         <button v-if="editingSliceId" type="button" class="rounded px-2 py-1 text-xs text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" @click="emit('clear-slice-edit-mode')">
                             取消编辑
                         </button>
@@ -132,12 +132,12 @@ const canQueryState = computed(() => props.projectReady && !props.loadingWorld &
                     <div v-if="editingSliceId" class="rounded-md border border-[var(--accent-main)]/30 bg-[var(--accent-bg)] px-3 py-2 text-xs text-[var(--text-secondary)]">
                         当前整块替换 slice：{{ editingSliceId }}
                     </div>
-                    <input v-model="sliceForm.time" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="time">
+                    <input v-model="sliceForm.time" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="时间">
                     <div class="grid grid-cols-[minmax(0,1fr)_96px] gap-2">
-                        <input v-model="sliceForm.title" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="title">
-                        <input v-model="sliceForm.kind" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="kind">
+                        <input v-model="sliceForm.title" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="标题">
+                        <input v-model="sliceForm.kind" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="类型">
                     </div>
-                    <textarea v-model="sliceForm.summary" class="min-h-16 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="summary"></textarea>
+                    <textarea v-model="sliceForm.summary" class="min-h-16 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="摘要"></textarea>
                     <WorldEnginePreviewMutationBuilder
                         :disabled="loadingWorld || actionBusy"
                         :builder="mutationBuilder"
@@ -173,15 +173,15 @@ const canQueryState = computed(() => props.projectReady && !props.loadingWorld &
 
             <!-- 查询 -->
             <div class="space-y-2 border-t border-[var(--border-color)] pt-5">
-                <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">Query</div>
+                <div class="text-xs font-semibold uppercase text-[var(--text-secondary)]">查询</div>
                 <fieldset class="space-y-2 disabled:opacity-60" :disabled="loadingWorld || actionBusy">
-                    <input v-model="queryForm.subjectIds" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="subjectIds">
+                    <input v-model="queryForm.subjectIds" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="主体 ID 列表">
                     <div class="grid grid-cols-2 gap-2">
-                        <input v-model="queryForm.type" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="type">
-                        <input v-model.number="queryForm.listLimit" type="number" min="1" max="100" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="listLimit">
+                        <input v-model="queryForm.type" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="类型">
+                        <input v-model.number="queryForm.listLimit" type="number" min="1" max="100" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="列表上限">
                     </div>
-                    <input v-model="queryForm.attrs" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="attrs">
-                    <input v-model="queryForm.at" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="at">
+                    <input v-model="queryForm.attrs" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="属性">
+                    <input v-model="queryForm.at" class="h-9 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-sm outline-none focus:border-[var(--accent-main)]" placeholder="时刻">
                     <button type="button" class="inline-flex h-9 w-full items-center justify-center gap-2 rounded-md border border-[var(--border-color)] px-3 text-sm hover:bg-[var(--bg-hover)] disabled:opacity-50" :disabled="!canQueryState" @click="emit('query-state')">
                         <span class="i-lucide-search h-4 w-4"></span>
                         查询状态

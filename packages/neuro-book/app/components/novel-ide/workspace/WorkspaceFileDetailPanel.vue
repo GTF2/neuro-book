@@ -347,7 +347,7 @@ function basename(filePath: string): string {
             <!-- 文件详情基础信息 -->
             <div class="min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5">
                 <div class="flex min-w-0 items-center justify-between gap-2">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ props.node.isDirectory ? "Directory" : "File" }}</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ props.node.isDirectory ? t("ide.workspace.fileDetail.directoryKind") : t("ide.workspace.fileDetail.fileKind") }}</div>
                     <div class="shrink-0 text-[10px] text-[var(--text-muted)]">{{ props.node.editable ? t("ide.workspace.fileDetail.editable") : t("ide.workspace.fileDetail.readonly") }}</div>
                 </div>
                 <div class="mt-1 max-w-full truncate font-mono text-[11px] text-[var(--text-main)]" :title="props.node.path">{{ props.node.path }}</div>
@@ -367,7 +367,7 @@ function basename(filePath: string): string {
             <!-- frontmatter 详情 -->
             <div v-if="isManuscriptIndexFile" class="min-w-0 space-y-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-2">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Manuscript</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.manuscriptSection") }}</div>
                     <div class="flex shrink-0 items-center gap-2">
                         <span v-if="manuscriptStats.updatedAt" class="text-[10px] text-[var(--text-muted)]">{{ manuscriptStats.updatedAt }}</span>
                         <span v-if="isFrontmatterDirty" class="text-[10px] text-[var(--status-warning)]">{{ t("ide.workspace.common.unsaved") }}</span>
@@ -418,7 +418,7 @@ function basename(filePath: string): string {
 
             <div v-else-if="isContentIndexFile || props.node.contentNode" class="space-y-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-2">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Frontmatter</div>
+                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.frontmatterSection") }}</div>
                     <span v-if="isContentIndexFile && isFrontmatterDirty" class="text-[10px] text-[var(--status-warning)]">{{ t("ide.workspace.common.unsaved") }}</span>
                 </div>
                 <div v-if="isContentIndexFile" class="flex items-center justify-between gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">

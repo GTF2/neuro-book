@@ -55,11 +55,11 @@ const canDelete = computed(() => {
 
             <div class="grid shrink-0 grid-cols-2 gap-2">
                 <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-right">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Scene</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">场景</div>
                     <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">{{ props.data.metrics.sceneCount }}</div>
                 </div>
                 <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-right">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Main</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">主线</div>
                     <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">{{ props.data.metrics.mainBranchSceneCount }}</div>
                 </div>
             </div>
@@ -75,7 +75,7 @@ const canDelete = computed(() => {
                 class="rounded-xl border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1.5 text-xs text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
                 @click.stop="props.data.actions.addScene(props.data.thread.id)"
             >
-                新增 Scene
+                新增场景
             </button>
             <button
                 type="button"
@@ -86,14 +86,14 @@ const canDelete = computed(() => {
                 :disabled="!canDelete"
                 @click.stop="props.data.actions.deleteThread(props.data.thread.id)"
             >
-                删除空 Thread
+                删除空线索
             </button>
         </div>
 
         <!-- Thread 内部说明 -->
         <div class="pointer-events-none mt-4 flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-[var(--text-muted)]">
             <span class="h-px flex-1 bg-[var(--border-color)]"></span>
-            <span>Scene Group</span>
+            <span>场景组</span>
             <span class="h-px flex-1 bg-[var(--border-color)]"></span>
         </div>
     </div>

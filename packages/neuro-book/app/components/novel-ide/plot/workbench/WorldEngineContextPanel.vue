@@ -110,7 +110,7 @@ function formatValue(value: unknown): string {
                 <div class="break-all font-mono">{{ unresolvedSubjectIds.join("，") }}</div>
             </div>
             <section class="space-y-1.5">
-                <div class="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-muted)]">Slices</div>
+                <div class="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-muted)]">切片</div>
                 <div v-if="context?.slices.length" class="space-y-1.5">
                     <div v-for="slice in context.slices" :key="slice.id" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="flex items-center gap-2 text-[11px]">
@@ -125,7 +125,7 @@ function formatValue(value: unknown): string {
             </section>
 
             <section class="space-y-1.5">
-                <div class="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-muted)]">Subject States</div>
+                <div class="text-[10px] font-medium uppercase tracking-[0.12em] text-[var(--text-muted)]">主体状态</div>
                 <div v-if="context?.subjectStates.length" class="space-y-1.5">
                     <div v-for="subject in context.subjectStates" :key="subject.subjectId" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="flex items-center gap-2 text-[11px]">

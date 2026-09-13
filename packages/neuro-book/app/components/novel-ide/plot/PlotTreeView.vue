@@ -59,7 +59,7 @@ function handleGraphUpdate(graph: PlotTreeGraph): void {
         <section class="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-panel)] px-5 py-5 shadow-[0_18px_60px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
             <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div class="max-w-[880px]">
-                    <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">Plot Tree</div>
+                    <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">情节树</div>
                     <div class="mt-2 text-2xl font-semibold text-[var(--text-main)]">{{ localGraph.story.title }}</div>
                     <div class="mt-3 text-sm leading-7 text-[var(--text-secondary)]">
                         {{ localGraph.story.summary }}
@@ -68,15 +68,15 @@ function handleGraphUpdate(graph: PlotTreeGraph): void {
 
                 <div class="grid gap-3 sm:grid-cols-3">
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Thread</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">线索</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ localGraph.threads.length }}</div>
                     </div>
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Main Thread</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">主线</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ mainThreadCount }}</div>
                     </div>
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Main Scene</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">主场景</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ mainSceneCount }}</div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@ function handleGraphUpdate(graph: PlotTreeGraph): void {
                 <span class="rounded-full border border-[var(--border-accent)] bg-[var(--accent-bg)] px-3 py-1 text-[var(--accent-text)]">主线节点 / 主线连线</span>
                 <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1 text-[var(--text-muted)]">支线节点 / 支线连线</span>
                 <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1">默认从左向右延伸</span>
-                <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1">Thread 为 Group</span>
+                <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1">剧情线即分组</span>
                 <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1">Thread 内 Scene 单链</span>
                 <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-1">游离 Scene 可无连线</span>
             </div>

@@ -617,7 +617,7 @@ function handleKeyDown(e: KeyboardEvent): void {
                         <div class="flex min-w-0 items-center gap-2">
                             <span :class="nodeIcon(selectedNode)" class="h-4 w-4 shrink-0 text-[var(--accent-text)]"></span>
                             <span class="min-w-0 truncate rounded border px-2 py-1 text-xs font-medium" :class="roleToneClass(selectedNode)" :title="roleTitle(selectedNode)">{{ roleLabel(selectedNode) }}</span>
-                            <span v-if="selectedNode.id === props.activeLeafId" class="rounded bg-[var(--accent-bg)] px-2 py-1 text-[10px] font-medium text-[var(--accent-text)]">LEAF</span>
+                            <span v-if="selectedNode.id === props.activeLeafId" class="rounded bg-[var(--accent-bg)] px-2 py-1 text-[10px] font-medium text-[var(--accent-text)]">当前叶</span>
                         </div>
                         <div class="mt-3 min-w-0 truncate text-sm font-medium text-[var(--text-main)]">{{ nodePreview(selectedNode) }}</div>
                         <div class="mt-1 text-xs text-[var(--text-muted)]">{{ detailStatusLabel(selectedNode) }}</div>
@@ -630,23 +630,23 @@ function handleKeyDown(e: KeyboardEvent): void {
 
                     <div class="mt-4 space-y-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-main)] p-3 text-xs">
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-[var(--text-muted)]">Entry ID</span>
+                            <span class="text-[var(--text-muted)]">条目 ID</span>
                             <button class="min-w-0 truncate font-mono text-[var(--accent-text)]" :title="selectedNode.id" @click="void copyId(selectedNode.id)">{{ shortEntryId(selectedNode.id) }}</button>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-[var(--text-muted)]">Parent</span>
+                            <span class="text-[var(--text-muted)]">父节点</span>
                             <button class="min-w-0 truncate font-mono text-[var(--text-secondary)]" :title="selectedNode.parentId ?? '-'" @click="void copyId(selectedNode.parentId)">{{ selectedNode.parentId ? shortEntryId(selectedNode.parentId) : "-" }}</button>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-[var(--text-muted)]">Type</span>
+                            <span class="text-[var(--text-muted)]">类型</span>
                             <span class="font-mono text-[var(--text-secondary)]">{{ selectedNode.type }}</span>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-[var(--text-muted)]">Children</span>
+                            <span class="text-[var(--text-muted)]">子节点</span>
                             <span class="font-mono text-[var(--text-secondary)]">{{ selectedNode.childCount }}</span>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-[var(--text-muted)]">Status</span>
+                            <span class="text-[var(--text-muted)]">状态</span>
                             <span class="text-[var(--text-secondary)]">{{ detailStatusLabel(selectedNode) }}</span>
                         </div>
                     </div>

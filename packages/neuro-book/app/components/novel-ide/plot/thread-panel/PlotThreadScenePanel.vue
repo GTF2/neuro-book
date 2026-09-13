@@ -194,12 +194,12 @@ watch(() => [props.selectedThreadId, props.scenes], () => {
         <div class="shrink-0 border-b border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-2">
             <div class="space-y-1.5">
                 <div class="flex items-center justify-between gap-2">
-                    <span class="text-[10px] font-medium tracking-[0.18em] text-[var(--text-secondary)]">THREAD</span>
+                    <span class="text-[10px] font-medium tracking-[0.18em] text-[var(--text-secondary)]">线索</span>
                     <div class="flex items-center gap-1">
                         <button
                             type="button"
                             class="inline-flex h-6 w-6 items-center justify-center rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
-                            title="新增 Scene"
+                            title="新增场景"
                             @click="emit('createScene')"
                         >
                             <span class="i-lucide-plus h-3.5 w-3.5"></span>

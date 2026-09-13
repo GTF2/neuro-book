@@ -282,7 +282,7 @@ onMounted(() => {
                 </div>
                 <label class="block">
                     <div class="mb-2 text-[var(--text-secondary)]">{{ t("admin.username") }}</div>
-                    <FormInput v-model="createForm.username" placeholder="username" />
+                    <FormInput v-model="createForm.username" :placeholder="t('admin.username')" />
                 </label>
                 <label class="block">
                     <div class="mb-2 text-[var(--text-secondary)]">{{ t("admin.displayName") }}</div>
@@ -300,7 +300,7 @@ onMounted(() => {
                 </label>
                 <label class="block">
                     <div class="mb-2 text-[var(--text-secondary)]">{{ t("admin.role") }}</div>
-                    <FormSelect v-model="createForm.role" :options="[{label: 'user', value: 'user'}, {label: 'admin', value: 'admin'}]" />
+                    <FormSelect v-model="createForm.role" :options="[{label: '用户', value: 'user'}, {label: '管理员', value: 'admin'}]" />
                 </label>
             </div>
         </Dialog>
@@ -316,11 +316,11 @@ onMounted(() => {
                 </label>
                 <label class="block">
                     <div class="mb-2 text-[var(--text-secondary)]">{{ t("admin.role") }}</div>
-                    <FormSelect v-model="editForm.role" :options="[{label: 'user', value: 'user'}, {label: 'admin', value: 'admin'}]" />
+                    <FormSelect v-model="editForm.role" :options="[{label: '用户', value: 'user'}, {label: '管理员', value: 'admin'}]" />
                 </label>
                 <label class="block">
                     <div class="mb-2 text-[var(--text-secondary)]">{{ t("admin.status") }}</div>
-                    <FormSelect v-model="editForm.status" :options="[{label: 'active', value: 'active'}, {label: 'disabled', value: 'disabled'}]" />
+                    <FormSelect v-model="editForm.status" :options="[{label: '启用', value: 'active'}, {label: '禁用', value: 'disabled'}]" />
                 </label>
             </div>
         </Dialog>

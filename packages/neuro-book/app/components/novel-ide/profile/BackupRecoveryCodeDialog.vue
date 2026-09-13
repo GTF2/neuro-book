@@ -247,7 +247,7 @@ watch(() => props.modelValue, (visible) => {
             </div>
             <div v-if="recoveryCode" class="space-y-3">
                 <div class="space-y-1">
-                    <span class="text-xs text-[var(--text-muted)]">keyId</span>
+                    <span class="text-xs text-[var(--text-muted)]">密钥 ID</span>
                     <p class="font-mono text-xs text-[var(--text-secondary)]">{{ shownKeyId }}</p>
                 </div>
                 <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-3 font-mono text-sm leading-relaxed text-[var(--text-main)] [overflow-wrap:anywhere]">{{ recoveryCode }}</div>

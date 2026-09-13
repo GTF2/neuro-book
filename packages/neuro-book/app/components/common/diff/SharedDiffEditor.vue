@@ -16,8 +16,8 @@ const props = withDefaults(defineProps<{
     modelKey?: string;
     showWhitespace?: boolean;
 }>(), {
-    originalLabel: "Original",
-    modifiedLabel: "Modified",
+    originalLabel: "原始",
+    modifiedLabel: "修改后",
     language: "markdown",
     theme: "sepia",
     readonly: true,

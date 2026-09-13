@@ -19,14 +19,14 @@ const props = withDefaults(defineProps<{
 }>(), {
     currentContent: "",
     incomingContent: "",
-    currentLabel: "Current",
-    incomingLabel: "Incoming",
+    currentLabel: "当前",
+    incomingLabel: "传入",
     language: "markdown",
     theme: "sepia",
     readonly: false,
     modelKey: "merge",
     showWhitespace: false,
-    resultLabel: "Result",
+    resultLabel: "合并结果",
 });
 
 const emit = defineEmits<{

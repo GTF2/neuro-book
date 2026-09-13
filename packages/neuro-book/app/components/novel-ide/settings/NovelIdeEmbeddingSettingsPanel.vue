@@ -352,7 +352,7 @@ defineExpose({
 
                 <div class="grid gap-3 md:grid-cols-2">
                     <label class="space-y-1.5">
-                        <span class="text-xs font-medium text-[var(--text-secondary)]">Provider</span>
+                        <span class="text-xs font-medium text-[var(--text-secondary)]">提供商</span>
                         <FormSelect v-model="globalDraft.provider" :options="providerOptions" />
                     </label>
                     <label class="space-y-1.5">
@@ -364,7 +364,7 @@ defineExpose({
                         <FormInput v-model="globalDraft.dimensions" type="number" min="1" step="1" :placeholder="String(DEFAULT_GLOBAL_EMBEDDING_DIMENSIONS)" />
                     </label>
                     <label class="space-y-1.5">
-                        <span class="text-xs font-medium text-[var(--text-secondary)]">Timeout ms</span>
+                        <span class="text-xs font-medium text-[var(--text-secondary)]">超时（毫秒）</span>
                         <FormInput v-model="globalDraft.timeoutMs" type="number" min="1000" step="1000" :placeholder="String(DEFAULT_GLOBAL_EMBEDDING_TIMEOUT_MS)" />
                     </label>
                     <label class="space-y-1.5 md:col-span-2">

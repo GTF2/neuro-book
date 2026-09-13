@@ -53,20 +53,20 @@ const resultText = computed(() => props.toolCall.result?.trim() ?? "");
                 <span class="i-lucide-file-edit h-3 w-3 mr-1 inline-block align-text-bottom"></span>
                 {{ filePathText || t("agent.tool.resolvingPath") }}
             </span>
-            <span v-if="(parsedArgs.edits?.length ?? 0) > 1" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">{{ parsedArgs.edits?.length }} edits</span>
+            <span v-if="(parsedArgs.edits?.length ?? 0) > 1" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">{{ parsedArgs.edits?.length }} 处编辑</span>
         </div>
         
         <!-- Diff 预览：old/new 都允许在半截 JSON 阶段逐步增长 -->
         <div class="grid grid-cols-2 gap-2 mt-2">
             <div class="rounded border border-[var(--border-color)] bg-[var(--status-danger-bg)]">
-                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-danger)]">Old String</div>
+                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-danger)]">旧文本</div>
                 <div class="max-h-40 overflow-y-auto whitespace-pre-wrap p-2 font-mono text-xs text-[var(--status-danger)] line-through opacity-80">
                     {{ oldStringText || "..." }}
                 </div>
             </div>
             
             <div class="rounded border border-[var(--border-color)] bg-[var(--status-success-bg)]">
-                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-success)]">New String</div>
+                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-success)]">新文本</div>
                 <div class="max-h-40 overflow-y-auto whitespace-pre-wrap p-2 font-mono text-xs text-[var(--status-success)]">
                     {{ newStringText || "..." }}
                 </div>
@@ -75,7 +75,7 @@ const resultText = computed(() => props.toolCall.result?.trim() ?? "");
         <div v-if="previewNotice" class="text-[11px] text-[var(--status-info)]">{{ previewNotice }}</div>
 
         <div v-if="diffDetails?.diffPreview" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)]">
-            <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--text-muted)]">Diff Preview</div>
+            <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--text-muted)]">差异预览</div>
             <pre class="max-h-48 overflow-y-auto whitespace-pre-wrap break-all p-2 font-mono text-xs text-[var(--text-secondary)]">{{ diffDetails.diffPreview }}</pre>
             <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">仅显示预览 · 原 diff {{ formatByteCount(diffDetails.diffBytes) }}</div>
         </div>

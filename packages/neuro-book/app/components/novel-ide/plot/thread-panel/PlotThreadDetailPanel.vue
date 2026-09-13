@@ -342,7 +342,7 @@ watch(() => props.detail, () => {
                 <div class="grid grid-cols-2 gap-2 text-[10px] text-[var(--text-muted)]">
                     <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">{{ chapterLabel }}</span>
                     <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-right">#{{ props.detail.scene.threadSortOrder + 1 }}</span>
-                    <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">Scene</span>
+                    <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">场景</span>
                     <span class="rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-right">R {{ refCount }}</span>
                     <!-- 节奏字段只读 chip:有值才显示 -->
                     <span v-if="outcomeTypeLabel" class="truncate rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1" :title="outcomeTypeLabel">{{ outcomeTypeLabel }}</span>

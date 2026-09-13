@@ -124,7 +124,7 @@ watch(() => props.modelValue, (visible) => {
                 </section>
 
                 <section class="rounded-xl border border-[var(--border-color)] bg-[var(--bg-input)]/20 p-3">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">YAML Working Draft</div>
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">YAML 工作草案</div>
                     <pre class="mt-2 max-h-[320px] overflow-auto rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-3 text-[11px] leading-5 text-[var(--text-main)]">{{ response.workingDraftYaml }}</pre>
                 </section>
             </div>

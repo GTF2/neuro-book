@@ -88,7 +88,7 @@ function statusDotClass(status: ProfileLoadStatus): string {
 
         <!-- Profile 列表 -->
         <div class="px-3 pb-1.5 pt-3">
-            <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">Agent Profiles</div>
+            <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">Agent 配置</div>
             <div class="mt-1 text-[11px] leading-4 text-[var(--text-secondary)] opacity-80">{{ t("settings.panels.profileModels.nav.profilesHint") }}</div>
         </div>
 

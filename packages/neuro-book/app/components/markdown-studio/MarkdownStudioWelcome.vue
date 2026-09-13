@@ -126,9 +126,9 @@ function tabIconClass(tab: WorkspaceEditorTab): string {
             <div class="rounded-lg border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3 text-xs text-[var(--text-secondary)]">
                 <div class="truncate font-mono text-[var(--text-main)]" :title="props.node?.path">{{ props.node?.path }}</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">editable: false</span>
-                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">type: {{ props.node?.entryType || "-" }}</span>
-                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">{{ props.node?.isDirectory ? "directory" : "file" }}</span>
+                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">可编辑：否</span>
+                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">类型：{{ props.node?.entryType || "-" }}</span>
+                    <span class="rounded-md border border-[var(--border-color)] px-2 py-1">{{ props.node?.isDirectory ? "目录" : "文件" }}</span>
                 </div>
             </div>
 

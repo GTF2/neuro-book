@@ -1462,9 +1462,9 @@ watch(() => props.selectedSubjectIds.length, (count) => {
                 <div class="mb-2 flex items-center justify-between gap-2">
                     <div class="flex items-center gap-2">
                         <span class="i-lucide-git-compare-arrows h-4 w-4 text-[var(--we-warning)]"></span>
-                        <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--we-text-muted)]">Mutation Context</span>
+                        <span class="text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--we-text-muted)]">变更上下文</span>
                     </div>
-                    <span class="rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-2 py-0.5 text-[10px] text-[var(--we-text-muted)]">same subject + attr path</span>
+                    <span class="rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-2 py-0.5 text-[10px] text-[var(--we-text-muted)]">同一主体 + 属性路径</span>
                 </div>
                 <div class="grid gap-2 xl:grid-cols-3">
                     <div
@@ -1495,7 +1495,7 @@ watch(() => props.selectedSubjectIds.length, (count) => {
                                 <span class="justify-self-end rounded bg-[var(--we-bg-subtle)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--we-accent-strong)]">{{ contextItem.item.mutation.op }}</span>
                             </div>
                             <div class="rounded-md border border-[var(--we-border)] bg-[var(--we-bg-data)] px-2 py-1.5">
-                                <div class="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--we-text-muted)]">value</div>
+                                <div class="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--we-text-muted)]">值</div>
                                 <div class="mt-0.5 truncate text-[11px] text-[var(--we-text-main)]" :title="buildMutationContextExplanation(contextItem.item, reviewFocusContext).valueLabel">{{ buildMutationContextExplanation(contextItem.item, reviewFocusContext).valueLabel }}</div>
                             </div>
                             <div class="grid gap-1.5 text-[11px]">
@@ -1632,10 +1632,10 @@ watch(() => props.selectedSubjectIds.length, (count) => {
             <div v-else class="min-h-0 flex-1 overflow-auto rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] custom-scrollbar">
                 <div class="grid grid-cols-[42px_150px_minmax(0,1fr)_92px_58px] gap-2 border-b border-[var(--we-border)] bg-[var(--we-bg-subtle)] px-2.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--we-text-muted)]">
                     <span>#</span>
-                    <span>subject</span>
-                    <span>attr / value</span>
-                    <span>op</span>
-                    <span class="text-right">edit</span>
+                    <span>主体</span>
+                    <span>属性 / 值</span>
+                    <span>操作</span>
+                    <span class="text-right">编辑</span>
                 </div>
                 <div
                     v-for="row in allMutationRows"
@@ -1651,8 +1651,8 @@ watch(() => props.selectedSubjectIds.length, (count) => {
                         <label class="grid min-w-0 grid-cols-[minmax(72px,0.5fr)_minmax(0,1fr)] items-center gap-2">
                             <span class="min-w-0">
                                 <span class="block truncate font-mono text-[var(--we-code-text)]">{{ row.mutation.path }}</span>
-                                <span v-if="isValueDraftDirty(row.index, row.mutation)" class="mt-1 inline-flex rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--we-warning)]">dirty</span>
-                                <span v-if="isHighlightedMutation(row.mutation)" class="mt-1 inline-flex rounded border border-[var(--we-warning-border)] bg-[var(--we-bg-panel)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--we-warning)]">issue target</span>
+                                <span v-if="isValueDraftDirty(row.index, row.mutation)" class="mt-1 inline-flex rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--we-warning)]">未保存</span>
+                                <span v-if="isHighlightedMutation(row.mutation)" class="mt-1 inline-flex rounded border border-[var(--we-warning-border)] bg-[var(--we-bg-panel)] px-1.5 py-0.5 text-[10px] font-semibold text-[var(--we-warning)]">问题目标</span>
                             </span>
                             <span class="min-w-0">
                                 <WorldEngineWorkbenchPreviewValueInput

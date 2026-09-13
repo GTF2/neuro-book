@@ -347,15 +347,15 @@ const currentFocus = computed<PlotPreviewFocus | null>(() => {
 
             <div class="grid gap-2 sm:grid-cols-3">
                 <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3 text-center">
-                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Phase</div>
+                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">阶段</div>
                     <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ phases.length }}</div>
                 </div>
                 <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3 text-center">
-                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Thread</div>
+                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">线索</div>
                     <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ threads.length }}</div>
                 </div>
                 <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3 text-center">
-                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Scene</div>
+                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">场景</div>
                     <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ scenes.length }}</div>
                 </div>
             </div>

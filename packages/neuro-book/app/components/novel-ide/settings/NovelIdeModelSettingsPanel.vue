@@ -457,7 +457,7 @@ defineExpose({dirty, loading, saving, saveSettings, restoreSettings});
             <!-- 左侧 Provider 列表 -->
             <aside class="flex flex-col xl:sticky xl:top-4 xl:h-fit rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 shadow-sm">
                 <div class="px-3 pb-3 pt-2">
-                    <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">Providers</div>
+                    <div class="text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)]">提供商</div>
                     <div class="mt-1 text-xs text-[var(--text-secondary)] opacity-80">{{ t("settings.panels.models.providersHint") }}</div>
                 </div>
 

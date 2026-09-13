@@ -50,8 +50,8 @@ const isDiffable = computed(() => props.document.diffable !== false);
 const allowedModes = computed(() => new Set(props.availableModes ?? ["diff", "merge", "current-base", "incoming-base"]));
 
 const tabs = computed<Array<{id: DiffWorkbenchMode; label: string; enabled: boolean}>>(() => [
-    {id: "diff", label: "Diff", enabled: isDiffable.value && allowedModes.value.has("diff")},
-    {id: "merge", label: "Merge", enabled: isDiffable.value && allowedModes.value.has("merge")},
+    {id: "diff", label: "差异", enabled: isDiffable.value && allowedModes.value.has("diff")},
+    {id: "merge", label: "合并", enabled: isDiffable.value && allowedModes.value.has("merge")},
     {id: "current-base", label: `${currentLabel.value} vs ${baseLabel.value}`, enabled: isDiffable.value && allowedModes.value.has("current-base") && hasBase.value},
     {id: "incoming-base", label: `${incomingLabel.value} vs ${baseLabel.value}`, enabled: isDiffable.value && allowedModes.value.has("incoming-base") && hasBase.value},
 ]);

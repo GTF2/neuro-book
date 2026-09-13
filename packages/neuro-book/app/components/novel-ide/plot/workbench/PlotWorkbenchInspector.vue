@@ -171,8 +171,8 @@ const refsByKind = computed(() => {
 });
 const visibleRefGroups = computed(() => [
     {kind: "content" as const, label: "内容节点", items: refsByKind.value.content},
-    {kind: "thread" as const, label: "Thread", items: refsByKind.value.thread},
-    {kind: "scene" as const, label: "Scene", items: refsByKind.value.scene},
+    {kind: "thread" as const, label: "线索", items: refsByKind.value.thread},
+    {kind: "scene" as const, label: "场景", items: refsByKind.value.scene},
 ].filter((group) => group.items.length > 0));
 const showRefs = computed(() => props.mode === "scene" && Boolean(props.scene));
 
@@ -508,7 +508,7 @@ function updateWorldAnchor(patch: Partial<PlotThreadPanelScene["worldAnchor"]>):
                                         <span class="mt-0.5 shrink-0 text-[14px] text-[var(--accent-main)]" :class="getTargetIcon(refItem.target)"></span>
                                         <div class="min-w-0 flex-1">
                                             <div class="flex items-center gap-1.5">
-                                                <span class="rounded-[4px] bg-[var(--accent-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-text)]">inline</span>
+                                                <span class="rounded-[4px] bg-[var(--accent-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--accent-text)]">内联</span>
                                                 <span class="truncate text-[12px] font-semibold text-[var(--text-main)]">{{ getTargetLabel(refItem.target) }}</span>
                                             </div>
                                             <div class="mt-0.5 truncate font-mono text-[9px] text-[var(--text-muted)] opacity-60">{{ refItem.target }}</div>

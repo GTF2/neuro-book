@@ -89,7 +89,7 @@ const parsedResult = computed<unknown | null>(() => {
                 <div class="mt-2 space-y-2 overflow-y-auto max-h-[500px] pr-1">
                     <!-- Arguments：优先用 JsonViewer，fallback 到纯文本 -->
                     <div>
-                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Arguments</div>
+                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">参数</div>
                         <JsonViewer v-if="parsedArgs !== null" :value="parsedArgs" :max-height="300" />
                         <div v-else class="break-all whitespace-pre-wrap rounded border border-[var(--border-color)] bg-[var(--bg-main)] p-2 font-mono text-xs text-[var(--text-secondary)]">
                             {{ props.toolCall.argsJson ?? props.toolCall.argsText }}
@@ -97,14 +97,14 @@ const parsedResult = computed<unknown | null>(() => {
                     </div>
                     <!-- Result：优先用 JsonViewer，fallback 到纯文本 -->
                     <div v-if="props.toolCall.result">
-                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Result</div>
+                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">结果</div>
                         <JsonViewer v-if="parsedResult !== null" :value="parsedResult" :max-height="300" />
                         <div v-else class="break-all whitespace-pre-wrap rounded border border-[var(--border-color)] bg-[var(--bg-main)] p-2 font-mono text-xs text-[var(--text-secondary)]">
                             {{ props.toolCall.result }}
                         </div>
                     </div>
                     <div v-if="props.toolCall.error">
-                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Error</div>
+                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">错误</div>
                         <div class="break-all whitespace-pre-wrap rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
                             {{ props.toolCall.error }}
                         </div>

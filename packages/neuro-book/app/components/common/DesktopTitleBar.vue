@@ -30,6 +30,7 @@ type ProjectMenuItem = Readonly<{
 
 const bridge = computed(() => import.meta.client ? window.neuroBookDesktop : undefined);
 const chrome = useWorkbenchChrome();
+const {t} = useI18n();
 const status = ref<DesktopStatus | null>(null);
 const openMenu = ref<string | null>(null);
 const presentation = ref<TitleBarMenuPresentation>("full");
@@ -41,43 +42,43 @@ const controlsRef = ref<HTMLElement | null>(null);
 const windowControlsRef = ref<HTMLElement | null>(null);
 let resizeObserver: ResizeObserver | null = null;
 
-const menus: readonly MenuGroup[] = [
+const menus = computed<readonly MenuGroup[]>(() => [
     {
-        label: "File",
+        label: t("desktop.menu.file"),
         items: [
-            {label: "Open", command: "file.open"},
-            {label: "Settings", command: "file.settings"},
-            {label: "Quit", command: "file.quit"},
+            {label: t("desktop.menu.open"), command: "file.open"},
+            {label: t("desktop.menu.settings"), command: "file.settings"},
+            {label: t("desktop.menu.quit"), command: "file.quit"},
         ],
     },
     {
-        label: "Edit",
+        label: t("desktop.menu.edit"),
         items: [
-            {label: "Undo", command: "edit.undo"},
-            {label: "Redo", command: "edit.redo"},
-            {label: "Cut", command: "edit.cut"},
-            {label: "Copy", command: "edit.copy"},
-            {label: "Paste", command: "edit.paste"},
-            {label: "Select All", command: "edit.select-all"},
+            {label: t("desktop.menu.undo"), command: "edit.undo"},
+            {label: t("desktop.menu.redo"), command: "edit.redo"},
+            {label: t("desktop.menu.cut"), command: "edit.cut"},
+            {label: t("desktop.menu.copy"), command: "edit.copy"},
+            {label: t("desktop.menu.paste"), command: "edit.paste"},
+            {label: t("desktop.menu.selectAll"), command: "edit.select-all"},
         ],
     },
     {
-        label: "View",
+        label: t("desktop.menu.view"),
         items: [
-            {label: "Reload", command: "view.reload"},
-            {label: "Zoom In", command: "view.zoom-in"},
-            {label: "Zoom Out", command: "view.zoom-out"},
-            {label: "Reset Zoom", command: "view.zoom-reset"},
+            {label: t("desktop.menu.reload"), command: "view.reload"},
+            {label: t("desktop.menu.zoomIn"), command: "view.zoom-in"},
+            {label: t("desktop.menu.zoomOut"), command: "view.zoom-out"},
+            {label: t("desktop.menu.resetZoom"), command: "view.zoom-reset"},
         ],
     },
     {
-        label: "Help",
+        label: t("desktop.menu.help"),
         items: [
-            {label: "Documentation", command: "help.documentation"},
-            {label: "About NeuroBook", command: "help.about"},
+            {label: t("desktop.menu.documentation"), command: "help.documentation"},
+            {label: t("desktop.menu.about"), command: "help.about"},
         ],
     },
-];
+]);
 
 const registration = computed(() => chrome.current.value);
 const title = computed(() => registration.value?.title() || "NeuroBook");
@@ -89,7 +90,7 @@ const projectLabel = computed(() => currentProject.value?.title ?? "书架");
 const agentPanelOpen = computed(() => registration.value?.agentPanelOpen() ?? false);
 const rendererMenus = computed(() => status.value?.menuPresentation !== "native");
 const customWindowControls = computed(() => status.value?.windowControls === "custom");
-const compactItems = computed(() => menus.flatMap((group) => group.items));
+const compactItems = computed(() => menus.value.flatMap((group) => group.items));
 const projectMenuItems = computed<ProjectMenuItem[]>(() => [
     {
         projectRoot: null,
@@ -334,7 +335,7 @@ onBeforeUnmount(() => resizeObserver?.disconnect());
                         type="button"
                         class="desktop-title-bar__compact-menu"
                         data-menu-button="compact"
-                        aria-label="Application menu"
+                        :aria-label="t('desktop.appMenu')"
                         :aria-expanded="openMenu === 'compact'"
                         @click="toggleMenu('compact')"
                         @keydown="compactMenuButtonKeydown"
@@ -414,7 +415,7 @@ onBeforeUnmount(() => resizeObserver?.disconnect());
                     :class="agentPanelOpen ? 'desktop-title-bar__agent--active' : ''"
                     :disabled="!surfaceActive"
                     :aria-pressed="agentPanelOpen"
-                    :title="surfaceActive ? agentPanelOpen ? '关闭 Agent 面板' : '打开 Agent 面板' : '请先打开一个 Project'"
+                    :title="surfaceActive ? agentPanelOpen ? '关闭 Agent 面板' : '打开 Agent 面板' : '请先打开一个项目'"
                     data-titlebar-action="toggle-agent-panel"
                     @click="void toggleAgentPanel()"
                 >
@@ -433,9 +434,9 @@ onBeforeUnmount(() => resizeObserver?.disconnect());
             </div>
 
             <div v-if="customWindowControls" ref="windowControlsRef" class="desktop-title-bar__window-controls">
-                <button type="button" aria-label="Minimize" @click="windowCommand('minimize')"><span class="i-lucide-minus h-4 w-4"></span></button>
-                <button type="button" aria-label="Maximize" @click="windowCommand('toggle-maximize')"><span class="i-lucide-square h-3.5 w-3.5"></span></button>
-                <button type="button" class="desktop-title-bar__close" aria-label="Close" @click="windowCommand('close')"><span class="i-lucide-x h-4 w-4"></span></button>
+                <button type="button" :aria-label="t('desktop.minimize')" @click="windowCommand('minimize')"><span class="i-lucide-minus h-4 w-4"></span></button>
+                <button type="button" :aria-label="t('desktop.maximize')" @click="windowCommand('toggle-maximize')"><span class="i-lucide-square h-3.5 w-3.5"></span></button>
+                <button type="button" class="desktop-title-bar__close" :aria-label="t('desktop.close')" @click="windowCommand('close')"><span class="i-lucide-x h-4 w-4"></span></button>
             </div>
         </div>
     </div>

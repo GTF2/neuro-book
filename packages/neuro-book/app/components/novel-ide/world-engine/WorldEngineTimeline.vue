@@ -59,14 +59,14 @@ function timelineSliceSearchText(slice: WorldSliceDto): string {
     <section class="p-5">
         <div class="mb-4 flex items-center justify-between gap-3">
             <div>
-                <h2 class="m-0 text-[18px] font-semibold text-[var(--text-main)]">Timeline</h2>
-                <p class="m-0 mt-1 text-[12px] text-[var(--text-muted)]">{{ visibleSlices.length }} / {{ slices.length }} slices · {{ visibleMutationCount }} / {{ totalMutationCount }} mutations · {{ totalIssueCount }} issues</p>
+                <h2 class="m-0 text-[18px] font-semibold text-[var(--text-main)]">时间线</h2>
+                <p class="m-0 mt-1 text-[12px] text-[var(--text-muted)]">{{ visibleSlices.length }} / {{ slices.length }} 切片 · {{ visibleMutationCount }} / {{ totalMutationCount }} 变更 · {{ totalIssueCount }} 问题</p>
             </div>
             <div class="flex items-center gap-2">
                 <label class="inline-flex h-9 items-center gap-2 rounded-md border border-[var(--border-color)] px-3 text-[12px] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]">
                     <input v-model="timelineOnlySelectedSubject" type="checkbox" class="h-4 w-4 accent-[var(--accent-main)]" :disabled="!selectedSubjectId">
                     <span class="i-lucide-filter h-4 w-4"></span>
-                    当前 subject
+                    当前主体
                 </label>
             </div>
         </div>

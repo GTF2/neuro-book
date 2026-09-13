@@ -280,7 +280,7 @@ function updateOpen(value: boolean): void {
                                 <p class="text-[11px] leading-5 text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.contextWindowDescription") }}</p>
                             </div>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">Max Tokens</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: props.modelMaxTokensDefaultLabel(props.editingModel)}) }}</span></div>
+                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">最大 Token 数</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: props.modelMaxTokensDefaultLabel(props.editingModel)}) }}</span></div>
                                 <FormInput v-model="props.editingModel.maxTokens" type="number" :placeholder="props.modelMaxTokensDefaultLabel(props.editingModel)" />
                                 <p class="text-[11px] leading-5 text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.maxTokensDescription") }}</p>
                             </div>
@@ -339,7 +339,7 @@ function updateOpen(value: boolean): void {
                     </div>
                     <template v-else>
                         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            <div v-for="field in costFields" :key="field.key" class="space-y-1.5"><label class="text-xs font-medium text-[var(--text-secondary)]">{{ field.label }}</label><FormInput v-model="props.editingModel.cost[field.key]" type="number" min="0" step="0.000001" :placeholder="field.placeholder" /><span class="text-[10px] text-[var(--text-muted)]">USD / 1M tokens</span></div>
+                            <div v-for="field in costFields" :key="field.key" class="space-y-1.5"><label class="text-xs font-medium text-[var(--text-secondary)]">{{ field.label }}</label><FormInput v-model="props.editingModel.cost[field.key]" type="number" min="0" step="0.000001" :placeholder="field.placeholder" /><span class="text-[10px] text-[var(--text-muted)]">美元 / 百万 tokens</span></div>
                         </div>
                         <div class="space-y-3 border-t border-[var(--border-color)] pt-5">
                             <div class="flex items-center justify-between gap-3"><h4 class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.costTiers") }}</h4><button type="button" class="inline-flex h-8 items-center gap-1.5 rounded-md border border-[var(--border-color)] px-2.5 text-[11px] text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-hover)]" @click="addCostTier(props.editingModel)"><span class="i-lucide-plus h-3.5 w-3.5"></span>{{ t("settings.panels.modelEdit.addCostTier") }}</button></div>

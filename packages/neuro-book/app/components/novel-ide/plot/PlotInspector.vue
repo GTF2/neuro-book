@@ -10,7 +10,7 @@ const props = defineProps<{
     <!-- 当前选中对象检查器 -->
     <aside class="flex min-h-0 flex-col overflow-hidden rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-[0_18px_50px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
         <div class="border-b border-[var(--border-color)] px-4 py-3">
-            <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Inspector</div>
+            <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">检查器</div>
             <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">当前对象详情</div>
         </div>
 
@@ -22,7 +22,7 @@ const props = defineProps<{
             </div>
 
             <div v-if="focus.meta.length > 0" class="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-4">
-                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Meta</div>
+                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">元信息</div>
                 <div class="mt-3 flex flex-wrap gap-2">
                     <span
                         v-for="meta in focus.meta"
@@ -35,13 +35,13 @@ const props = defineProps<{
             </div>
 
             <div v-if="focus.writingTip" class="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-4">
-                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Writing Tip</div>
+                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">写作提示</div>
                 <div class="mt-3 text-sm leading-7 text-[var(--text-secondary)]">{{ focus.writingTip }}</div>
             </div>
 
             <div v-if="focus.refs.length > 0" class="mt-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-4">
                 <div class="flex items-center justify-between gap-3">
-                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Refs</div>
+                    <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">引用</div>
                     <div class="text-[11px] text-[var(--text-muted)]">{{ focus.refs.length }} 条</div>
                 </div>
                 <div class="mt-3 space-y-2">
