@@ -148,6 +148,8 @@ export class PlotDtoAssembler {
             opening: chapter.briefOpening,
             ending: chapter.briefEnding,
             doNotWrite: chapter.briefDoNotWrite,
+            constraintNegative: chapter.briefConstraintNegative,
+            stateShift: chapter.briefStateShift,
         };
     }
 
@@ -163,6 +165,7 @@ export class PlotDtoAssembler {
             name: chapter.name,
             title: chapter.title,
             note: chapter.note,
+            authorOnly: chapter.authorOnly,
             brief: this.toChapterBriefDto(chapter),
             createdAt: chapter.createdAt.toISOString(),
             updatedAt: chapter.updatedAt.toISOString(),

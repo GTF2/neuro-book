@@ -100,6 +100,7 @@ export type ChapterBriefColumns = Pick<
     "briefGoal" | "briefPov" | "briefTone" | "briefPacing"
     | "briefReaderKnows" | "briefProtagonistKnows" | "briefMustHide" | "briefHintOnly"
     | "briefOpening" | "briefEnding" | "briefDoNotWrite"
+    | "briefConstraintNegative" | "briefStateShift"
 >;
 
 /**

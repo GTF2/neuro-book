@@ -143,7 +143,7 @@ export class PrismaChapterRepository implements ChapterRepository {
     /**
      * 创建章;ChapterBrief 列可在创建时一并写入。
      */
-    async createChapter(input: {storyId: number; actId: number | null; sortOrder: number; name: string; title: string; note: string | null} & Partial<ChapterBriefColumns>): Promise<StoryChapter> {
+    async createChapter(input: {storyId: number; actId: number | null; sortOrder: number; name: string; title: string; note: string | null} & Partial<ChapterBriefColumns> & Partial<Pick<StoryChapter, "authorOnly">>): Promise<StoryChapter> {
         return this.prisma.storyChapter.create({
             data: input,
         });
@@ -152,7 +152,7 @@ export class PrismaChapterRepository implements ChapterRepository {
     /**
      * 更新章;ChapterBrief 列按传入键更新,undefined 键保持不变。
      */
-    async updateChapter(chapterId: number, data: Partial<Pick<StoryChapter, "actId" | "sortOrder" | "name" | "title" | "note">> & Partial<ChapterBriefColumns>): Promise<StoryChapter> {
+    async updateChapter(chapterId: number, data: Partial<Pick<StoryChapter, "actId" | "sortOrder" | "name" | "title" | "note">> & Partial<ChapterBriefColumns> & Partial<Pick<StoryChapter, "authorOnly">>): Promise<StoryChapter> {
         return this.prisma.storyChapter.update({
             where: {id: chapterId},
             data,

@@ -59,6 +59,9 @@ export type StoryChapterMinAggregateOutputType = {
   briefOpening: string | null
   briefEnding: string | null
   briefDoNotWrite: string | null
+  briefConstraintNegative: string | null
+  briefStateShift: string | null
+  authorOnly: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -82,6 +85,9 @@ export type StoryChapterMaxAggregateOutputType = {
   briefOpening: string | null
   briefEnding: string | null
   briefDoNotWrite: string | null
+  briefConstraintNegative: string | null
+  briefStateShift: string | null
+  authorOnly: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -105,6 +111,9 @@ export type StoryChapterCountAggregateOutputType = {
   briefOpening: number
   briefEnding: number
   briefDoNotWrite: number
+  briefConstraintNegative: number
+  briefStateShift: number
+  authorOnly: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -144,6 +153,9 @@ export type StoryChapterMinAggregateInputType = {
   briefOpening?: true
   briefEnding?: true
   briefDoNotWrite?: true
+  briefConstraintNegative?: true
+  briefStateShift?: true
+  authorOnly?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -167,6 +179,9 @@ export type StoryChapterMaxAggregateInputType = {
   briefOpening?: true
   briefEnding?: true
   briefDoNotWrite?: true
+  briefConstraintNegative?: true
+  briefStateShift?: true
+  authorOnly?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -190,6 +205,9 @@ export type StoryChapterCountAggregateInputType = {
   briefOpening?: true
   briefEnding?: true
   briefDoNotWrite?: true
+  briefConstraintNegative?: true
+  briefStateShift?: true
+  authorOnly?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -300,6 +318,9 @@ export type StoryChapterGroupByOutputType = {
   briefOpening: string | null
   briefEnding: string | null
   briefDoNotWrite: string | null
+  briefConstraintNegative: string | null
+  briefStateShift: string | null
+  authorOnly: boolean | null
   createdAt: Date
   updatedAt: Date
   _count: StoryChapterCountAggregateOutputType | null
@@ -346,6 +367,9 @@ export type StoryChapterWhereInput = {
   briefOpening?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefEnding?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefDoNotWrite?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefConstraintNegative?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefStateShift?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  authorOnly?: Prisma.BoolNullableFilter<"StoryChapter"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
   story?: Prisma.XOR<Prisma.StoryScalarRelationFilter, Prisma.StoryWhereInput>
@@ -374,6 +398,9 @@ export type StoryChapterOrderByWithRelationInput = {
   briefOpening?: Prisma.SortOrderInput | Prisma.SortOrder
   briefEnding?: Prisma.SortOrderInput | Prisma.SortOrder
   briefDoNotWrite?: Prisma.SortOrderInput | Prisma.SortOrder
+  briefConstraintNegative?: Prisma.SortOrderInput | Prisma.SortOrder
+  briefStateShift?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorOnly?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   story?: Prisma.StoryOrderByWithRelationInput
@@ -406,6 +433,9 @@ export type StoryChapterWhereUniqueInput = Prisma.AtLeast<{
   briefOpening?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefEnding?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefDoNotWrite?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefConstraintNegative?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefStateShift?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  authorOnly?: Prisma.BoolNullableFilter<"StoryChapter"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
   story?: Prisma.XOR<Prisma.StoryScalarRelationFilter, Prisma.StoryWhereInput>
@@ -434,6 +464,9 @@ export type StoryChapterOrderByWithAggregationInput = {
   briefOpening?: Prisma.SortOrderInput | Prisma.SortOrder
   briefEnding?: Prisma.SortOrderInput | Prisma.SortOrder
   briefDoNotWrite?: Prisma.SortOrderInput | Prisma.SortOrder
+  briefConstraintNegative?: Prisma.SortOrderInput | Prisma.SortOrder
+  briefStateShift?: Prisma.SortOrderInput | Prisma.SortOrder
+  authorOnly?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.StoryChapterCountOrderByAggregateInput
@@ -465,6 +498,9 @@ export type StoryChapterScalarWhereWithAggregatesInput = {
   briefOpening?: Prisma.StringNullableWithAggregatesFilter<"StoryChapter"> | string | null
   briefEnding?: Prisma.StringNullableWithAggregatesFilter<"StoryChapter"> | string | null
   briefDoNotWrite?: Prisma.StringNullableWithAggregatesFilter<"StoryChapter"> | string | null
+  briefConstraintNegative?: Prisma.StringNullableWithAggregatesFilter<"StoryChapter"> | string | null
+  briefStateShift?: Prisma.StringNullableWithAggregatesFilter<"StoryChapter"> | string | null
+  authorOnly?: Prisma.BoolNullableWithAggregatesFilter<"StoryChapter"> | boolean | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"StoryChapter"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"StoryChapter"> | Date | string
 }
@@ -485,6 +521,9 @@ export type StoryChapterCreateInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   story: Prisma.StoryCreateNestedOneWithoutChaptersInput
@@ -513,6 +552,9 @@ export type StoryChapterUncheckedCreateInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutChapterInput
@@ -536,6 +578,9 @@ export type StoryChapterUpdateInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   story?: Prisma.StoryUpdateOneRequiredWithoutChaptersNestedInput
@@ -564,6 +609,9 @@ export type StoryChapterUncheckedUpdateInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutChapterNestedInput
@@ -590,6 +638,9 @@ export type StoryChapterCreateManyInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -610,6 +661,9 @@ export type StoryChapterUpdateManyMutationInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -633,6 +687,9 @@ export type StoryChapterUncheckedUpdateManyInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -671,6 +728,9 @@ export type StoryChapterCountOrderByAggregateInput = {
   briefOpening?: Prisma.SortOrder
   briefEnding?: Prisma.SortOrder
   briefDoNotWrite?: Prisma.SortOrder
+  briefConstraintNegative?: Prisma.SortOrder
+  briefStateShift?: Prisma.SortOrder
+  authorOnly?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -701,6 +761,9 @@ export type StoryChapterMaxOrderByAggregateInput = {
   briefOpening?: Prisma.SortOrder
   briefEnding?: Prisma.SortOrder
   briefDoNotWrite?: Prisma.SortOrder
+  briefConstraintNegative?: Prisma.SortOrder
+  briefStateShift?: Prisma.SortOrder
+  authorOnly?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -724,6 +787,9 @@ export type StoryChapterMinOrderByAggregateInput = {
   briefOpening?: Prisma.SortOrder
   briefEnding?: Prisma.SortOrder
   briefDoNotWrite?: Prisma.SortOrder
+  briefConstraintNegative?: Prisma.SortOrder
+  briefStateShift?: Prisma.SortOrder
+  authorOnly?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -824,6 +890,10 @@ export type StoryChapterUncheckedUpdateManyWithoutActNestedInput = {
   deleteMany?: Prisma.StoryChapterScalarWhereInput | Prisma.StoryChapterScalarWhereInput[]
 }
 
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
+}
+
 export type NullableIntFieldUpdateOperationsInput = {
   set?: number | null
   increment?: number
@@ -896,6 +966,9 @@ export type StoryChapterCreateWithoutStoryInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   act?: Prisma.StoryActCreateNestedOneWithoutChaptersInput
@@ -922,6 +995,9 @@ export type StoryChapterUncheckedCreateWithoutStoryInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutChapterInput
@@ -976,6 +1052,9 @@ export type StoryChapterScalarWhereInput = {
   briefOpening?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefEnding?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
   briefDoNotWrite?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefConstraintNegative?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  briefStateShift?: Prisma.StringNullableFilter<"StoryChapter"> | string | null
+  authorOnly?: Prisma.BoolNullableFilter<"StoryChapter"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"StoryChapter"> | Date | string
 }
@@ -996,6 +1075,9 @@ export type StoryChapterCreateWithoutActInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   story: Prisma.StoryCreateNestedOneWithoutChaptersInput
@@ -1022,6 +1104,9 @@ export type StoryChapterUncheckedCreateWithoutActInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutChapterInput
@@ -1070,6 +1155,9 @@ export type StoryChapterCreateWithoutScenesInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   story: Prisma.StoryCreateNestedOneWithoutChaptersInput
@@ -1097,6 +1185,9 @@ export type StoryChapterUncheckedCreateWithoutScenesInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   promiseDeadlines?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutDeadlineChapterInput
@@ -1135,6 +1226,9 @@ export type StoryChapterUpdateWithoutScenesInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   story?: Prisma.StoryUpdateOneRequiredWithoutChaptersNestedInput
@@ -1162,6 +1256,9 @@ export type StoryChapterUncheckedUpdateWithoutScenesInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   promiseDeadlines?: Prisma.StoryPromiseUncheckedUpdateManyWithoutDeadlineChapterNestedInput
@@ -1184,6 +1281,9 @@ export type StoryChapterCreateWithoutPromiseDeadlinesInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   story: Prisma.StoryCreateNestedOneWithoutChaptersInput
@@ -1211,6 +1311,9 @@ export type StoryChapterUncheckedCreateWithoutPromiseDeadlinesInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutChapterInput
@@ -1249,6 +1352,9 @@ export type StoryChapterUpdateWithoutPromiseDeadlinesInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   story?: Prisma.StoryUpdateOneRequiredWithoutChaptersNestedInput
@@ -1276,6 +1382,9 @@ export type StoryChapterUncheckedUpdateWithoutPromiseDeadlinesInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutChapterNestedInput
@@ -1298,6 +1407,9 @@ export type StoryChapterCreateWithoutAnchoredDecisionsInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   story: Prisma.StoryCreateNestedOneWithoutChaptersInput
@@ -1325,6 +1437,9 @@ export type StoryChapterUncheckedCreateWithoutAnchoredDecisionsInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutChapterInput
@@ -1363,6 +1478,9 @@ export type StoryChapterUpdateWithoutAnchoredDecisionsInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   story?: Prisma.StoryUpdateOneRequiredWithoutChaptersNestedInput
@@ -1390,6 +1508,9 @@ export type StoryChapterUncheckedUpdateWithoutAnchoredDecisionsInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutChapterNestedInput
@@ -1414,6 +1535,9 @@ export type StoryChapterCreateManyStoryInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1434,6 +1558,9 @@ export type StoryChapterUpdateWithoutStoryInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   act?: Prisma.StoryActUpdateOneWithoutChaptersNestedInput
@@ -1460,6 +1587,9 @@ export type StoryChapterUncheckedUpdateWithoutStoryInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutChapterNestedInput
@@ -1485,6 +1615,9 @@ export type StoryChapterUncheckedUpdateManyWithoutStoryInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1507,6 +1640,9 @@ export type StoryChapterCreateManyActInput = {
   briefOpening?: string | null
   briefEnding?: string | null
   briefDoNotWrite?: string | null
+  briefConstraintNegative?: string | null
+  briefStateShift?: string | null
+  authorOnly?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -1527,6 +1663,9 @@ export type StoryChapterUpdateWithoutActInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   story?: Prisma.StoryUpdateOneRequiredWithoutChaptersNestedInput
@@ -1553,6 +1692,9 @@ export type StoryChapterUncheckedUpdateWithoutActInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutChapterNestedInput
@@ -1578,6 +1720,9 @@ export type StoryChapterUncheckedUpdateManyWithoutActInput = {
   briefOpening?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefEnding?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   briefDoNotWrite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefConstraintNegative?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  briefStateShift?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  authorOnly?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -1650,6 +1795,9 @@ export type StoryChapterSelect<ExtArgs extends runtime.Types.Extensions.Internal
   briefOpening?: boolean
   briefEnding?: boolean
   briefDoNotWrite?: boolean
+  briefConstraintNegative?: boolean
+  briefStateShift?: boolean
+  authorOnly?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   story?: boolean | Prisma.StoryDefaultArgs<ExtArgs>
@@ -1679,6 +1827,9 @@ export type StoryChapterSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   briefOpening?: boolean
   briefEnding?: boolean
   briefDoNotWrite?: boolean
+  briefConstraintNegative?: boolean
+  briefStateShift?: boolean
+  authorOnly?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   story?: boolean | Prisma.StoryDefaultArgs<ExtArgs>
@@ -1704,6 +1855,9 @@ export type StoryChapterSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   briefOpening?: boolean
   briefEnding?: boolean
   briefDoNotWrite?: boolean
+  briefConstraintNegative?: boolean
+  briefStateShift?: boolean
+  authorOnly?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   story?: boolean | Prisma.StoryDefaultArgs<ExtArgs>
@@ -1729,11 +1883,14 @@ export type StoryChapterSelectScalar = {
   briefOpening?: boolean
   briefEnding?: boolean
   briefDoNotWrite?: boolean
+  briefConstraintNegative?: boolean
+  briefStateShift?: boolean
+  authorOnly?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type StoryChapterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "storyId" | "actId" | "sortOrder" | "name" | "title" | "note" | "briefGoal" | "briefPov" | "briefTone" | "briefPacing" | "briefReaderKnows" | "briefProtagonistKnows" | "briefMustHide" | "briefHintOnly" | "briefOpening" | "briefEnding" | "briefDoNotWrite" | "createdAt" | "updatedAt", ExtArgs["result"]["storyChapter"]>
+export type StoryChapterOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "storyId" | "actId" | "sortOrder" | "name" | "title" | "note" | "briefGoal" | "briefPov" | "briefTone" | "briefPacing" | "briefReaderKnows" | "briefProtagonistKnows" | "briefMustHide" | "briefHintOnly" | "briefOpening" | "briefEnding" | "briefDoNotWrite" | "briefConstraintNegative" | "briefStateShift" | "authorOnly" | "createdAt" | "updatedAt", ExtArgs["result"]["storyChapter"]>
 export type StoryChapterInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   story?: boolean | Prisma.StoryDefaultArgs<ExtArgs>
   act?: boolean | Prisma.StoryChapter$actArgs<ExtArgs>
@@ -1779,6 +1936,9 @@ export type $StoryChapterPayload<ExtArgs extends runtime.Types.Extensions.Intern
     briefOpening: string | null
     briefEnding: string | null
     briefDoNotWrite: string | null
+    briefConstraintNegative: string | null
+    briefStateShift: string | null
+    authorOnly: boolean | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["storyChapter"]>
@@ -2227,6 +2387,9 @@ export interface StoryChapterFieldRefs {
   readonly briefOpening: Prisma.FieldRef<"StoryChapter", 'String'>
   readonly briefEnding: Prisma.FieldRef<"StoryChapter", 'String'>
   readonly briefDoNotWrite: Prisma.FieldRef<"StoryChapter", 'String'>
+  readonly briefConstraintNegative: Prisma.FieldRef<"StoryChapter", 'String'>
+  readonly briefStateShift: Prisma.FieldRef<"StoryChapter", 'String'>
+  readonly authorOnly: Prisma.FieldRef<"StoryChapter", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"StoryChapter", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"StoryChapter", 'DateTime'>
 }
