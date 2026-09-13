@@ -1451,6 +1451,7 @@ const zhCN = {
             sending: "正在发送给 Inline AI...",
             started: "Inline AI 已开始处理",
             sendFailed: "Inline AI 发送失败",
+            sendSuperseded: "本次发送已被项目状态变化取代，未发送到后台。请重试。",
             stopRequested: "已请求停止 Inline AI",
             boundSession: "已绑定 Inline AI Session",
             bindFailed: "绑定 Inline AI Session 失败",

@@ -237,6 +237,12 @@ novelIdeStore.registerActiveEditorFlush(() => studio.flushActiveEditor());
 const {alert, choose, chooseCards, prompt} = useDialog();
 const notification = useNotification();
 const {t} = useI18n();
+
+/** PromptBar 的用户动作拿不到 Surface owner 时必须给出可见反馈，不能静默失败。 */
+function notifyInlinePromptUnavailable(): void {
+    notification.error(t("ide.inlineAi.agentNotReady"), {title: "Inline AI"});
+}
+
 const inlineEditorAgent = useInlineEditorAgentController({
     active: projectSurfaceActive,
     projectReadyRevision: agentProjectReadyRevision,
@@ -1084,7 +1090,14 @@ async function sendInlineEditorPrompt(): Promise<void> {
             buildInlineVisibleMessage(payload),
             owner.operationKey,
         );
-        if (!acceptsInlinePromptOwner(owner) || result.status === "superseded") return;
+        if (!acceptsInlinePromptOwner(owner)) return;
+        if (result.status === "superseded") {
+            // 用户点击了发送，被取代时必须有反馈：否则界面只是"闪一下"消失，
+            // 无法区分"已发出但没有输出"和"根本没发出去"。
+            inlinePromptStatusText.value = t("ide.inlineAi.sendSuperseded");
+            notification.warning(inlinePromptStatusText.value, {title: "Inline AI"});
+            return;
+        }
         inlinePromptInstruction.value = "";
         inlinePromptReferences.value = [];
         inlinePromptHoveredReference.value = null;
@@ -1105,7 +1118,10 @@ async function sendInlineEditorPrompt(): Promise<void> {
  */
 async function stopInlineEditorPrompt(): Promise<void> {
     const owner = captureInlinePromptOwner();
-    if (!owner) return;
+    if (!owner) {
+        notifyInlinePromptUnavailable();
+        return;
+    }
     const result = await inlineEditorAgent.stopPrompt();
     if (!acceptsInlinePromptOwner(owner) || result.status === "superseded") return;
     inlinePromptRunning.value = false;
@@ -1117,7 +1133,10 @@ async function stopInlineEditorPrompt(): Promise<void> {
  */
 async function selectInlineEditorSession(sessionId: number): Promise<void> {
     const owner = captureInlinePromptOwner();
-    if (!owner) return;
+    if (!owner) {
+        notifyInlinePromptUnavailable();
+        return;
+    }
     try {
         const result = await inlineEditorAgent.selectSession(sessionId);
         if (!acceptsInlinePromptOwner(owner) || result.status === "superseded") return;
@@ -1135,7 +1154,10 @@ async function selectInlineEditorSession(sessionId: number): Promise<void> {
  */
 async function createInlineEditorSession(): Promise<void> {
     const owner = captureInlinePromptOwner();
-    if (!owner) return;
+    if (!owner) {
+        notifyInlinePromptUnavailable();
+        return;
+    }
     try {
         const result = await inlineEditorAgent.createSession();
         if (!acceptsInlinePromptOwner(owner) || result.status === "superseded") return;
@@ -1152,7 +1174,10 @@ async function createInlineEditorSession(): Promise<void> {
  */
 async function openInlineEditorSessionChat(): Promise<void> {
     const owner = captureInlinePromptOwner();
-    if (!owner) return;
+    if (!owner) {
+        notifyInlinePromptUnavailable();
+        return;
+    }
     try {
         agentSessionPanelOpen.value = true;
         await nextTick();

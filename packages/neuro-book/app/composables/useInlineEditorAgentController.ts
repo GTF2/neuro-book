@@ -5,6 +5,7 @@ import type {AgentMessage, AgentToolCall} from "nbook/app/components/novel-ide/a
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import {
     AgentSurfaceOperationController,
+    inlineOperationScopeOf,
     type AgentSurfaceActivationAttempt,
     type AgentSurfaceOperationResult,
 } from "nbook/app/components/novel-ide/agent/agent-chat-surface-state";
@@ -222,7 +223,12 @@ export function useInlineEditorAgentController(
     }
 
     function captureOperation(expectedOperationKey?: string): AgentSurfaceActivationAttempt | null {
-        if (expectedOperationKey !== undefined && expectedOperationKey !== operationScopeKey.value) {
+        // expectedOperationKey 由页面从 AgentChatSurface 的 inlineOperationScopeKey 铸造，
+        // 其 `@inline:<n>` 尾段来自 Surface 自己的计数器，与本控制器的 operationRevision
+        // 不同源。比较整个 key 会把正常的用户发送误判成 scope 已变化并静默丢弃，
+        // 所以这里只比较两侧共享的 Project scope 段。
+        if (expectedOperationKey !== undefined
+            && inlineOperationScopeOf(expectedOperationKey) !== scopeKey.value) {
             return null;
         }
         return operationController.capture(scopeKey.value);

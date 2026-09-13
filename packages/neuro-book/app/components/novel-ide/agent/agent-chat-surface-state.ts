@@ -580,6 +580,19 @@ export type AgentSurfaceOperationResult<TResult> =
     | {status: "current"; value: TResult}
     | {status: "superseded"};
 
+/**
+ * 取出 Inline PromptBar operation key 中跨实例稳定的 Project scope 段。
+ *
+ * key 形如 `${scopeKey}@inline:${revision}`，其中 revision 由铸造方（AgentChatSurface）
+ * 自己的操作计数器产生。持有另一个独立计数器的消费者不能比较整个 key：两边的 revision
+ * 没有任何同步机制，跨实例比较会把正常的用户操作误判成 scope 已变化。需要跨实例判断
+ * "这个 owner 还属于当前 Project 吗"时只比较这里返回的 scope 段；同代次语义由铸造方
+ * 自己负责。
+ */
+export function inlineOperationScopeOf(operationKey: string): string {
+    return operationKey.replace(/@inline:\d+$/u, "");
+}
+
 /** 打开主 Agent 面板时，真实失败不能伪装成 superseded。 */
 export type AgentSessionOpenResult<TResult> = AgentSurfaceOperationResult<TResult>
     | {status: "failed"; message: string};

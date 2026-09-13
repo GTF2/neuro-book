@@ -1453,6 +1453,7 @@ const enUS = {
             sending: "Sending to Inline AI...",
             started: "Inline AI has started",
             sendFailed: "Failed to send Inline AI request",
+            sendSuperseded: "This request was superseded by a project state change and was not sent. Please retry.",
             stopRequested: "Requested Inline AI stop",
             boundSession: "Inline AI Session bound",
             bindFailed: "Failed to bind Inline AI Session",
