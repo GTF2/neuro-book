@@ -134,6 +134,11 @@ const canRestoreSession = (session: AgentSessionSummaryDto): boolean => session.
 const canRenameSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canChangeRuntime === true;
 
 /**
+ * 当前打开中的会话；已归档的会话不再显示选中高亮和"活跃"徽标，避免与归档状态视觉冲突。
+ */
+const isActiveSession = (session: AgentSessionSummaryDto): boolean => session.sessionId === props.activeSessionId && session.status !== "archived";
+
+/**
  * 归档会话：本地标记为已归档状态原地展示，同时通知父组件执行归档。
  */
 function markArchived(session: AgentSessionSummaryDto): void {
@@ -369,7 +374,7 @@ onClickOutside(filterPanelRef, () => {
                     v-for="session in listedSessions"
                     :key="session.sessionId"
                     class="group flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200"
-                    :class="session.sessionId === activeSessionId ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] shadow-sm' : 'border-[var(--border-color)] bg-transparent hover:bg-[var(--bg-hover)]'"
+                    :class="isActiveSession(session) ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] shadow-sm' : 'border-[var(--border-color)] bg-transparent hover:bg-[var(--bg-hover)]'"
                     @click="emit('select', session.sessionId)"
                 >
                     <div class="min-w-0 flex-1">
@@ -378,7 +383,7 @@ onClickOutside(filterPanelRef, () => {
                                 <span :class="session.parentSessionId ? 'i-lucide-bot' : 'i-lucide-crown'" class="h-4.5 w-4.5"></span>
                             </div>
                             <span class="truncate text-sm font-semibold text-[var(--text-main)] transition-colors group-hover:text-[var(--accent-main)]">{{ sessionTitle(session) }}</span>
-                            <span v-if="session.sessionId === activeSessionId" class="rounded bg-[var(--accent-main)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--text-inverse)] shadow-sm">{{ t("agent.session.active") }}</span>
+                            <span v-if="isActiveSession(session)" class="rounded bg-[var(--accent-main)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--text-inverse)] shadow-sm">{{ t("agent.session.active") }}</span>
                             <span class="rounded px-1.5 py-0.5 text-[10px] font-medium" :class="statusClass(session.status)">{{ statusLabel(session.status) }}</span>
                             <span v-if="profileAvailabilityLabel(session)" class="inline-flex shrink-0 items-center gap-1 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--status-warning)]" :title="profileAvailabilityTitle(session)">
                                 <span class="i-lucide-lock h-3 w-3"></span>
