@@ -68,6 +68,11 @@ export type AgentToolCall = {
     status: ToolCallStatus;
     error?: string;
     result?: string;
+    /**
+     * 运行中断导致结果永远没到达：状态被兜底判成 error，但工具实际有没有生效是未知的。
+     * 写文件类卡片据此把「文件未写入」换成「结果未知」，避免把中断说成没写进去。
+     */
+    interrupted?: boolean;
     /** 公开工具参数投影；只包含有界预览与展示元数据。 */
     publicArgs?: PublicToolArgsDto;
     /** 公开工具结果投影；图片正文和超长文本不会进入前端状态。 */
@@ -309,6 +314,12 @@ export const toolStatusClass = (toolCall: AgentToolCall): string => {
             return "bg-[var(--bg-input)] text-[var(--text-muted)]";
     }
 };
+
+/**
+ * 写文件类工具：失败只意味着文件没被改动，而不是「什么都没发生」。
+ * 这类卡片的正文会展示 old/new 或新内容预览，若沿用裸 ✕ 会被读成「没做编辑 / 没写入」。
+ */
+export const FILE_EDIT_TOOL_NAMES: ReadonlySet<string> = new Set(["edit", "write", "apply_patch"]);
 
 /**
  * 获取 ToolCall 的状态图标。
@@ -1174,6 +1185,7 @@ const markInterruptedToolCalls = (
                 status: "error",
                 error: toolCall.error ?? interruptedToolCallError(),
                 result: toolCall.result ?? interruptedToolCallError(),
+                interrupted: true,
             };
         });
     }
@@ -1320,6 +1332,34 @@ const publicToolResultDetails = (result: PublicToolResultDto): JsonValue | undef
             files: details.files,
             filesOmitted: details.filesOmitted,
             ...(details.firstChangedLine === undefined ? {} : {firstChangedLine: details.firstChangedLine}),
+        };
+    }
+    if (details.kind === "edit_failure") {
+        return {
+            ...(details.path ? {path: details.path} : {}),
+            totalEdits: details.totalEdits,
+            matches: details.matches.map((match) => ({
+                index: match.index,
+                startLine: match.startLine,
+                endLine: match.endLine,
+            })),
+            failures: details.failures.map((failure) => ({
+                index: failure.index,
+                reasonCode: failure.reasonCode,
+                ...(failure.matchedLines ? {matchedLines: failure.matchedLines} : {}),
+                ...(failure.conflictIndex === undefined ? {} : {conflictIndex: failure.conflictIndex}),
+                ...(failure.nearest
+                    ? {
+                        nearest: {
+                            line: failure.nearest.line,
+                            ...(failure.nearest.text === undefined ? {} : {text: failure.nearest.text}),
+                            ...(failure.nearest.textOmitted ? {textOmitted: true} : {}),
+                        },
+                    }
+                    : {}),
+            })),
+            omittedMatches: details.omittedMatches,
+            omittedFailures: details.omittedFailures,
         };
     }
     if (details.kind === "read") {

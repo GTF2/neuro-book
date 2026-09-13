@@ -43,6 +43,12 @@ const isPendingQuestion = computed(() => {
 });
 
 /**
+ * request_user_input 走 block 模式，正文由本组件接管，默认分支的报错渲染不会兜底，
+ * 因此失败必须自己显式呈现，否则错误只在头部图标上体现一点点。
+ */
+const isFailedCall = computed(() => props.toolCall.status === "error" || props.toolCall.status === "invalid");
+
+/**
  * 当前问题文本。
  */
 const questionText = computed(() => {
@@ -107,7 +113,7 @@ const toolArgsText = computed(() => {
 
         <div
             class="rounded-lg p-3"
-            :class="isPendingQuestion ? 'border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)]' : answerViews.length > 0 ? 'border border-[var(--status-success-border)] bg-[var(--status-success-bg)]' : 'border border-[var(--border-color)] bg-[var(--bg-main)]'"
+            :class="isFailedCall ? 'border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]' : isPendingQuestion ? 'border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)]' : answerViews.length > 0 ? 'border border-[var(--status-success-border)] bg-[var(--status-success-bg)]' : 'border border-[var(--border-color)] bg-[var(--bg-main)]'"
         >
             <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{{ isToolApproval ? "Decision" : "Answer" }}</div>
 
@@ -128,9 +134,14 @@ const toolArgsText = computed(() => {
                 </div>
             </div>
 
-            <div v-else class="text-xs whitespace-pre-wrap break-all text-[var(--text-secondary)]">
+            <!-- 错误态下 result 与 error 同值，交给下面的红色块统一呈现，避免渲染两遍 -->
+            <div v-else-if="!props.toolCall.error" class="text-xs whitespace-pre-wrap break-all text-[var(--text-secondary)]">
                 {{ props.toolCall.result }}
             </div>
+        </div>
+
+        <div v-if="props.toolCall.error" class="break-all whitespace-pre-wrap rounded-lg border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
+            {{ props.toolCall.error }}
         </div>
     </div>
 </template>

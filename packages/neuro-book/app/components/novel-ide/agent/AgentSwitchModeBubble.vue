@@ -157,7 +157,24 @@ const planSummary = computed(() => {
         .join(" / ");
 });
 
+/**
+ * switch_mode 是 message 模式，不经过 AgentToolNode 的头部，
+ * 因此失败态必须自己给出图标与原因，否则界面上只会剩一个绿色 ✓。
+ */
+const isFailedCall = computed(() => props.toolCall.status === "error" || props.toolCall.status === "invalid");
+const statusIconClass = computed(() => {
+    if (isPendingQuestion.value) {
+        return "i-lucide-clock text-[var(--status-warning)]";
+    }
+    return isFailedCall.value
+        ? "i-lucide-triangle-alert text-[var(--status-danger)]"
+        : "i-lucide-file-check-2 text-[var(--status-success)]";
+});
+
 const statusLabel = computed(() => {
+    if (isFailedCall.value) {
+        return t("agent.modeSwitch.failed");
+    }
     if (isPendingQuestion.value) {
         if (!isExitToNormal.value) {
             return t("agent.modeSwitch.pending", {mode: targetModeLabel.value});
@@ -197,7 +214,7 @@ const statusLabel = computed(() => {
     <div class="min-w-0 w-full">
         <div class="min-w-0 w-full rounded-xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] px-3 py-2.5 shadow-sm">
             <div class="mb-1.5 flex min-w-0 items-center gap-2 text-[11px] leading-5 text-[var(--text-muted)]">
-                <span :class="isPendingQuestion ? 'i-lucide-clock text-[var(--status-warning)]' : 'i-lucide-file-check-2 text-[var(--status-success)]'" class="h-3.5 w-3.5 shrink-0"></span>
+                <span :class="statusIconClass" class="h-3.5 w-3.5 shrink-0"></span>
                 <span class="shrink-0 font-medium text-[var(--text-main)]">{{ statusLabel }}</span>
                 <span v-if="planFilePath" class="min-w-0 truncate font-mono text-[11px] text-[var(--text-muted)]">{{ planFilePath }}</span>
                 <button
@@ -229,6 +246,9 @@ const statusLabel = computed(() => {
             <div v-else-if="parsedAnswer" class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] leading-5 text-[var(--text-muted)]">
                 <span>{{ t("agent.planApproval.choice", {label: selectedLabel}) }}</span>
                 <span v-if="parsedAnswer.note">{{ t("agent.planApproval.note", {note: parsedAnswer.note}) }}</span>
+            </div>
+            <div v-if="props.toolCall.error" class="mt-2 break-all whitespace-pre-wrap rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
+                {{ props.toolCall.error }}
             </div>
         </div>
     </div>

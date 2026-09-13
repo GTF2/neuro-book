@@ -100,7 +100,8 @@ const stepSummary = computed(() => taskList.value
             </div>
         </div>
 
-        <div v-else-if="!isCollapsed" class="mt-2 min-w-0 break-words rounded-md border border-[var(--border-color)]/70 bg-[var(--bg-input)] px-2 py-1.5 text-[11px] leading-5 text-[var(--text-muted)]">
+        <!-- 错误态下 result 与 error 同值，这里跳过回退块，否则同一段报错会渲染两遍 -->
+        <div v-else-if="!isCollapsed && toolCall.result !== toolCall.error" class="mt-2 min-w-0 break-words rounded-md border border-[var(--border-color)]/70 bg-[var(--bg-input)] px-2 py-1.5 text-[11px] leading-5 text-[var(--text-muted)]">
             {{ toolCall.result?.trim() || t("agent.tasks.parsing") }}
         </div>
 

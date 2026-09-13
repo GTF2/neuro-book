@@ -390,6 +390,63 @@ function projectResultDetails(toolName: string, value: unknown, budget: ValuePre
             value: valuePreviewInternal(value, budget, 0, new WeakSet<object>()),
         };
     }
+    if (toolName === "edit" && details?.kind === "edit_preflight_failure") {
+        const rawMatches = Array.isArray(details.matches) ? details.matches : [];
+        const rawFailures = Array.isArray(details.failures) ? details.failures : [];
+        const matches = rawMatches.slice(0, PUBLIC_EDIT_MAX_ITEMS).flatMap((item) => {
+            const record = objectValue(item);
+            const index = finiteInteger(record?.index);
+            const startLine = finiteInteger(record?.startLine);
+            const endLine = finiteInteger(record?.endLine);
+            return index === undefined || startLine === undefined || endLine === undefined
+                ? []
+                : [{index, startLine, endLine}];
+        });
+        const failures = rawFailures.slice(0, PUBLIC_EDIT_MAX_ITEMS).flatMap((item) => {
+            const record = objectValue(item);
+            const index = finiteInteger(record?.index);
+            const reasonCode = editFailureReasonCode(record?.reasonCode);
+            if (index === undefined || !reasonCode) {
+                return [];
+            }
+            const matchedLines = Array.isArray(record?.matchedLines)
+                ? record.matchedLines.flatMap((line) => {
+                    const value = finiteInteger(line);
+                    return value === undefined ? [] : [value];
+                })
+                : [];
+            const conflictIndex = finiteInteger(record?.conflictIndex);
+            const nearestRecord = objectValue(record?.nearest);
+            const nearestLine = finiteInteger(nearestRecord?.line);
+            const nearestText = typeof nearestRecord?.text === "string"
+                ? budgetText(nearestRecord.text, budget)
+                : undefined;
+            return [{
+                index,
+                reasonCode,
+                ...(matchedLines.length ? {matchedLines} : {}),
+                ...(conflictIndex === undefined ? {} : {conflictIndex}),
+                ...(nearestLine === undefined
+                    ? {}
+                    : {
+                        nearest: {
+                            line: nearestLine,
+                            ...(nearestText ? {text: nearestText.preview, ...(nearestText.omitted ? {textOmitted: true} : {})} : {}),
+                        },
+                    }),
+            }];
+        });
+        const path = typeof details.path === "string" ? budgetText(details.path, budget, PUBLIC_PATH_MAX_BYTES) : undefined;
+        return {
+            kind: "edit_failure",
+            ...(path ? {path: path.preview} : {}),
+            totalEdits: finiteInteger(details.totalEdits) ?? matches.length + failures.length,
+            matches,
+            failures,
+            omittedMatches: Math.max(0, rawMatches.length - matches.length),
+            omittedFailures: Math.max(0, rawFailures.length - failures.length),
+        };
+    }
     if ((toolName === "edit" || toolName === "apply_patch") && typeof details?.diff === "string") {
         const rawFiles = Array.isArray(details.files) ? details.files : [];
         const files = rawFiles.slice(0, PUBLIC_PATCH_MAX_FILES).flatMap((item) => {
@@ -464,6 +521,13 @@ export function budgetText(value: string, budget: PublicProjectionBudget, maxByt
 
 function finiteInteger(value: unknown): number | undefined {
     return typeof value === "number" && Number.isSafeInteger(value) ? value : undefined;
+}
+
+/** edit 预检失败原因码是封闭集合，未知值一律丢弃而不是透传。 */
+function editFailureReasonCode(value: unknown): "empty_old_text" | "not_found" | "ambiguous" | "overlap" | undefined {
+    return value === "empty_old_text" || value === "not_found" || value === "ambiguous" || value === "overlap"
+        ? value
+        : undefined;
 }
 
 /**

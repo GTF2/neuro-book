@@ -48,6 +48,16 @@ const previewNotice = computed(() => publicArgs.value?.patchOmitted
 const diffDetails = computed(() => props.toolCall.publicResult?.details?.kind === "file_change"
     ? props.toolCall.publicResult.details
     : null);
+
+/** 补丁失败：下面的 patch 只是「打算打的内容」，必须先声明没有应用。 */
+const patchFailed = computed(() => props.toolCall.status === "error" || props.toolCall.status === "invalid");
+/** 中断导致的 error 不能断言「未应用」：结果其实未知。 */
+const patchFailureBannerHead = computed(() => props.toolCall.interrupted
+    ? t("agent.tool.outcomeUnknownTitle")
+    : t("agent.tool.fileNotWrittenBanner"));
+const patchFailureBannerBody = computed(() => props.toolCall.interrupted
+    ? t("agent.tool.outcomeUnknownBannerBody")
+    : t("agent.tool.patchFailureBanner"));
 </script>
 
 <template>
@@ -59,6 +69,12 @@ const diffDetails = computed(() => props.toolCall.publicResult?.details?.kind ==
                 {{ filePath }}
             </span>
             <span v-if="touchedFiles.length === 0" class="rounded border border-[var(--accent-main)]/30 bg-[var(--bg-main)] px-2 py-1 font-mono text-[11px] text-[var(--accent-main)]">{{ t("agent.tool.resolvingPath") }}</span>
+        </div>
+
+        <!-- 补丁失败：先声明未应用，避免下面的 patch 预览被读成已经打进去了 -->
+        <div v-if="patchFailed" class="rounded-lg border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-[12.5px] text-[var(--status-warning)]">
+            <span class="i-lucide-triangle-alert mr-1 inline-block h-3.5 w-3.5 align-text-bottom"></span>
+            <b class="font-semibold">{{ patchFailureBannerHead }}</b>：{{ patchFailureBannerBody }}
         </div>
 
         <!-- Patch Preview -->
@@ -74,7 +90,12 @@ const diffDetails = computed(() => props.toolCall.publicResult?.details?.kind ==
             <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">仅显示预览 · 原 diff {{ formatByteCount(diffDetails.diffBytes) }}</div>
         </div>
 
-        <div v-if="props.toolCall.error" class="mt-2 break-all whitespace-pre-wrap rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
+        <!-- 失败态把原始报错降级为技术详情，避免与琥珀警告条重复 -->
+        <details v-if="patchFailed && props.toolCall.error" class="rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)]">
+            <summary class="cursor-pointer px-3 py-2 text-xs text-[var(--text-secondary)]">{{ t("agent.tool.editTechDetails") }}</summary>
+            <pre class="overflow-x-auto whitespace-pre-wrap break-all border-t border-[var(--border-color)]/60 p-2.5 font-mono text-[11.5px] text-[var(--text-secondary)]">{{ props.toolCall.error }}</pre>
+        </details>
+        <div v-else-if="props.toolCall.error" class="mt-2 break-all whitespace-pre-wrap rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
             {{ props.toolCall.error }}
         </div>
 

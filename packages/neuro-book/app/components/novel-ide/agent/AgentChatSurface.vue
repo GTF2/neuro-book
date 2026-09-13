@@ -3280,6 +3280,22 @@ const refreshMessage = async (message: AgentMessage): Promise<void> => {
 };
 
 /**
+ * 写文件类工具失败卡片上的「跳过此次编辑」。
+ * 这里不代发消息：失败原因各不相同，误发一条指令的代价高于让用户多点一次发送，
+ * 因此只把指令填进 Composer 并聚焦，由用户确认或修改后再发送。
+ */
+const skipFailedEdit = async (): Promise<void> => {
+    const instruction = t("agent.tool.editSkipPrefill");
+    if (inputText.value && inputText.value !== instruction) {
+        notification.warning(t("agent.chatSurface.skipEditDraftBlocked"), {title: t("agent.chatSurface.skipEditTitle")});
+        return;
+    }
+    inputText.value = instruction;
+    await nextTick();
+    inputRef.value?.focus();
+};
+
+/**
  * 从这条消息新开一条分支：只把 active leaf 移到该消息，不删除任何历史。
  * 原来的后续内容留在原地成为一条非活动分支，可通过气泡上的分支切换器切回。
  */
@@ -4345,6 +4361,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
                 @load-previous="void loadPreviousHistory()"
                 @attachment-registered="registerSessionAttachment"
+                @skip-edit="void skipFailedEdit()"
             />
 
             <AgentWorkflowPendingPanel :session-id="activeSessionId" />

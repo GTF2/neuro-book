@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AgentMessage, AgentMessageSwitcherState, AgentToolCall, ChatNode } from "nbook/app/components/novel-ide/agent/agent-message";
-import { toChatNodes } from "nbook/app/components/novel-ide/agent/agent-message";
+import { FILE_EDIT_TOOL_NAMES, toChatNodes } from "nbook/app/components/novel-ide/agent/agent-message";
 import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubble.vue";
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
@@ -80,6 +80,8 @@ const emit = defineEmits<{
     (e: "attachment-registered", item: AgentSessionAttachmentItemDto): void;
     (e: "resend-unknown", message: AgentMessage): void;
     (e: "dismiss-unknown", message: AgentMessage): void;
+    /** 写文件类工具失败卡片上的「跳过此次编辑」：由上层把指令填进输入框。 */
+    (e: "skip-edit", message: AgentMessage): void;
 }>();
 
 const scrollRef = ref<HTMLDivElement | null>(null);
@@ -120,6 +122,26 @@ const getNodeKey = (node: ReturnType<typeof toChatNodes>[0]) => {
     if (node.kind === 'tool') return `${node.message.id}-${node.toolCall.id}`;
     return `${node.message.id}-text`;
 };
+
+/**
+ * 写文件类失败默认只展开最后一个。
+ * 全展开的初衷是「失败不折叠」，但老长对话里失败卡片可能很多，一起撑开会淹没上下文；
+ * 最新那次失败才是用户当下要处理的，更早的收拢成一行，需要时自己点开。
+ */
+const lastFileEditFailureKey = computed(() => {
+    const nodes = chatNodes.value;
+    for (let index = nodes.length - 1; index >= 0; index -= 1) {
+        const node = nodes[index];
+        if (node?.kind !== "tool") {
+            continue;
+        }
+        const call = node.toolCall;
+        if (FILE_EDIT_TOOL_NAMES.has(call.name) && (call.status === "error" || call.status === "invalid")) {
+            return getNodeKey(node);
+        }
+    }
+    return "";
+});
 
 /** 判断文本节点是否包含正文。 */
 const hasTextBubbleContent = (node: ChatNode): boolean => {
@@ -385,7 +407,12 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     v-else-if="node.kind === 'tool'"
                     :tool-call="node.toolCall"
                     :session-id="props.sessionId"
+                    :action-disabled="props.messageActionDisabled"
+                    :run-action-disabled="props.runActionDisabled"
+                    :auto-expand="getNodeKey(node) === lastFileEditFailureKey"
                     @copy="emit('copy-tool', $event)"
+                    @retry="emit('retry', node.message)"
+                    @skip-edit="emit('skip-edit', node.message)"
                 />
             </div>
         </template>

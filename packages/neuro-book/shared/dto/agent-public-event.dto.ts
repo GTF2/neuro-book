@@ -186,6 +186,39 @@ export type PublicToolResultDetailsDto =
         value: PublicValuePreviewDto;
     }
     | {
+        /**
+         * edit 批量预检失败导致整体回滚（文件未写入）。失败原因码与命中行号
+         * 让编辑失败卡片无需解析错误文案即可渲染清单与排查提示。
+         */
+        kind: "edit_failure";
+        path?: string;
+        /** 本次 edits 请求的条目总数。 */
+        totalEdits: number;
+        /** 预检通过、但因整体回滚而未写入的编辑。 */
+        matches: Array<{
+            index: number;
+            startLine: number;
+            endLine: number;
+        }>;
+        failures: Array<{
+            index: number;
+            reasonCode: "empty_old_text" | "not_found" | "ambiguous" | "overlap";
+            /** ambiguous：全部命中行号；overlap：冲突编辑所在行区间。 */
+            matchedLines?: number[];
+            /** overlap：与之冲突的 edits 索引。 */
+            conflictIndex?: number;
+            /** not_found：近似定位到的文件行。 */
+            nearest?: {
+                line: number;
+                /** 文件该行原文；未完整公开时为 undefined。 */
+                text?: string;
+                textOmitted?: boolean;
+            };
+        }>;
+        omittedMatches: number;
+        omittedFailures: number;
+    }
+    | {
         kind: "generic";
         value: PublicValuePreviewDto;
     };

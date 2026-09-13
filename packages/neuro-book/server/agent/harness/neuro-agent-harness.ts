@@ -79,6 +79,7 @@ import {
 import {createBuiltinTools, createReportResultTool} from "nbook/server/agent";
 import {AgentToolRegistry} from "nbook/server/agent/tools/tool-registry";
 import {isAgentToolDefinition} from "nbook/server/agent/tools/types";
+import {isToolResultError} from "nbook/server/agent/tools/tool-result-error";
 import type {AgentResolution, NeuroAgentTool, NeuroToolResult, ToolExecutionContext, ToolExecutionMode, UserInputFormSpec} from "nbook/server/agent/tools/types";
 import {projectRuntimeEvent} from "nbook/server/agent/events/public-event-projection";
 import {projectAgentChatEntry} from "nbook/server/agent/events/public-chat-entry-projection";
@@ -6177,7 +6178,10 @@ export class NeuroAgentHarness {
             };
         } catch (error) {
             return {
-                result: this.errorToolResult(error instanceof Error ? error.message : String(error)),
+                result: this.errorToolResult(
+                    error instanceof Error ? error.message : String(error),
+                    isToolResultError(error) ? error.details : undefined,
+                ),
                 isError: true,
             };
         }
@@ -7903,10 +7907,10 @@ export class NeuroAgentHarness {
         };
     }
 
-    private errorToolResult(message: string): NeuroToolResult {
+    private errorToolResult(message: string, details?: JsonValue): NeuroToolResult {
         return {
             content: [{type: "text", text: message}],
-            details: {},
+            details: details ?? {},
         };
     }
 

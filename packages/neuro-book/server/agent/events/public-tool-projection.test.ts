@@ -297,3 +297,71 @@ describe("projectPublicToolResult", () => {
         expect(JSON.stringify(projected)).not.toContain(large);
     });
 });
+
+describe("projectPublicToolResult edit 预检失败", () => {
+    it("把失败原因码与命中行号投影为编辑失败卡片可消费的 details", () => {
+        const projected = projectPublicToolResult("edit", {
+            content: [{type: "text", text: "Edit preflight failed for manuscript/chapter-1.md. No changes were written."}],
+            details: {
+                kind: "edit_preflight_failure",
+                path: "manuscript/chapter-1.md",
+                totalEdits: 5,
+                matches: [
+                    {index: 2, startLine: 55, endLine: 55},
+                    {index: 3, startLine: 104, endLine: 105},
+                ],
+                failures: [
+                    {index: 0, reasonCode: "not_found", nearest: {line: 55, text: "  const title = '头盖骨';"}},
+                    {index: 1, reasonCode: "ambiguous", matchedLines: [55, 104]},
+                    {index: 4, reasonCode: "overlap", conflictIndex: 3, matchedLines: [104, 105]},
+                ],
+            },
+        });
+
+        expect(projected.details).toEqual({
+            kind: "edit_failure",
+            path: "manuscript/chapter-1.md",
+            totalEdits: 5,
+            matches: [
+                {index: 2, startLine: 55, endLine: 55},
+                {index: 3, startLine: 104, endLine: 105},
+            ],
+            failures: [
+                {index: 0, reasonCode: "not_found", nearest: {line: 55, text: "  const title = '头盖骨';"}},
+                {index: 1, reasonCode: "ambiguous", matchedLines: [55, 104]},
+                {index: 4, reasonCode: "overlap", conflictIndex: 3, matchedLines: [104, 105]},
+            ],
+            omittedMatches: 0,
+            omittedFailures: 0,
+        });
+    });
+
+    it("未知 reasonCode 与超量条目一律丢弃并计数，原始 payload 不透传", () => {
+        const projected = projectPublicToolResult("edit", {
+            content: [{type: "text", text: "failed"}],
+            details: {
+                kind: "edit_preflight_failure",
+                totalEdits: 40,
+                matches: Array.from({length: 40}, (_, index) => ({index, startLine: index + 1, endLine: index + 1})),
+                failures: [
+                    {index: 0, reasonCode: "不存在的枚举", secret: "不能公开"},
+                    ...Array.from({length: 40}, (_, index) => ({index: index + 1, reasonCode: "not_found"})),
+                ],
+                secret: "不能公开",
+            },
+        });
+
+        const details = projected.details;
+        if (details?.kind !== "edit_failure") {
+            throw new Error(`unexpected details kind: ${details?.kind ?? "none"}`);
+        }
+        expect(details.totalEdits).toBe(40);
+        expect(details.matches).toHaveLength(32);
+        expect(details.omittedMatches).toBe(8);
+        // 首条 reasonCode 非法被丢弃，其余 31 条在 32 条上限内保留。
+        expect(details.failures).toHaveLength(31);
+        expect(details.failures.every((failure) => failure.reasonCode === "not_found")).toBe(true);
+        expect(details.omittedFailures).toBe(10);
+        expect(JSON.stringify(projected)).not.toContain("不能公开");
+    });
+});

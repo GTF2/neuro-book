@@ -32,6 +32,7 @@ import {AttachmentError} from "nbook/server/agent/attachments/types";
 import {AGENT_IMAGE_POLICY} from "nbook/server/agent/attachments/agent-attachment-policy";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 import type {JsonValue} from "nbook/shared/dto/agent-job.dto";
+import {ToolResultError} from "nbook/server/agent/tools/tool-result-error";
 
 const ReadSchema = Type.Object({
     path: Type.String({description: "Path to the file to read (relative or absolute)."}),
@@ -498,9 +499,24 @@ type ExactEditMatch = {
     newText: string;
 };
 
+type ExactEditFailureReason = "empty_old_text" | "not_found" | "ambiguous" | "overlap";
+
+/** not_found 失败时近似定位到的文件行，用于渲染排查提示。 */
+type ExactEditNearestLine = {
+    line: number;
+    text: string;
+};
+
 type ExactEditFailure = {
     index: number;
     reason: string;
+    reasonCode: ExactEditFailureReason;
+    /** ambiguous：全部命中行号；overlap：冲突编辑所在行区间。 */
+    matchedLines?: number[];
+    /** overlap：与之冲突的 edits 索引。 */
+    conflictIndex?: number;
+    /** not_found：近似定位结果；定位失败时省略。 */
+    nearest?: ExactEditNearestLine;
 };
 
 function applyExactEdits(content: string, edits: EditInput["edits"], filePath: string): string {
@@ -520,18 +536,27 @@ function preflightExactEdits(content: string, edits: EditInput["edits"], filePat
     const failures: ExactEditFailure[] = [];
     const matches = edits.flatMap((edit, index): ExactEditMatch[] => {
         if (!edit.oldText) {
-            failures.push({index, reason: "oldText must not be empty."});
+            failures.push({index, reason: "oldText must not be empty.", reasonCode: "empty_old_text"});
             return [];
         }
         const occurrences = findOccurrences(content, edit.oldText);
         if (occurrences.length === 0) {
-            failures.push({index, reason: "oldText was not found. It must match exactly."});
+            const nearest = findNearestLine(content, edit.oldText);
+            failures.push({
+                index,
+                reason: "oldText was not found. It must match exactly.",
+                reasonCode: "not_found",
+                ...(nearest ? {nearest} : {}),
+            });
             return [];
         }
         if (occurrences.length > 1) {
+            const matchedLines = occurrences.map((start) => lineNumberAt(content, start));
             failures.push({
                 index,
-                reason: `oldText matched ${occurrences.length} locations at lines ${occurrences.map((start) => lineNumberAt(content, start)).join(", ")}. It must be unique.`,
+                reason: `oldText matched ${occurrences.length} locations at lines ${matchedLines.join(", ")}. It must be unique.`,
+                reasonCode: "ambiguous",
+                matchedLines,
             });
             return [];
         }
@@ -556,12 +581,33 @@ function preflightExactEdits(content: string, edits: EditInput["edits"], filePat
             failures.push({
                 index: current.index,
                 reason: `overlaps edits[${previous.index}] at lines ${previous.startLine}-${previous.endLine}.`,
+                reasonCode: "overlap",
+                conflictIndex: previous.index,
+                matchedLines: [previous.startLine, previous.endLine],
             });
         }
     }
 
     if (failures.length) {
-        throw new Error(formatEditPreflightError(filePath, matches, failures));
+        throw new ToolResultError(formatEditPreflightError(filePath, matches, failures), {
+            kind: "edit_preflight_failure",
+            path: filePath,
+            totalEdits: edits.length,
+            matches: matches.map((match) => ({
+                index: match.index,
+                startLine: match.startLine,
+                endLine: match.endLine,
+            })),
+            failures: [...failures]
+                .sort((left, right) => left.index - right.index)
+                .map((failure) => ({
+                    index: failure.index,
+                    reasonCode: failure.reasonCode,
+                    ...(failure.matchedLines ? {matchedLines: failure.matchedLines} : {}),
+                    ...(failure.conflictIndex === undefined ? {} : {conflictIndex: failure.conflictIndex}),
+                    ...(failure.nearest ? {nearest: failure.nearest} : {}),
+                })),
+        });
     }
     return matches;
 }
@@ -572,7 +618,7 @@ function formatEditPreflightError(filePath: string, matches: ExactEditMatch[], f
             .map((match) => `- edits[${match.index}] matched lines ${match.startLine}-${match.endLine}.`)
             .join("\n")
         : "- none";
-    const failedText = failures
+    const failedText = [...failures]
         .sort((left, right) => left.index - right.index)
         .map((failure) => `- edits[${failure.index}] failed: ${failure.reason}`)
         .join("\n");
@@ -601,6 +647,27 @@ function findOccurrences(content: string, needle: string): number[] {
 
 function lineNumberAt(content: string, index: number): number {
     return content.slice(0, Math.max(0, index)).split("\n").length;
+}
+
+/**
+ * not_found 时尝试近似定位：取 oldText 中最长的若干非空行，在文件中做整行匹配。
+ * 命中即返回行号与原文，供编辑失败卡片渲染排查提示；定位失败返回 null。
+ */
+function findNearestLine(content: string, oldText: string): ExactEditNearestLine | null {
+    const lines = content.split("\n");
+    const candidates = oldText
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+        .sort((left, right) => right.length - left.length)
+        .slice(0, 8);
+    for (const candidate of candidates) {
+        const found = lines.findIndex((line) => line.trim() === candidate);
+        if (found >= 0) {
+            return {line: found + 1, text: lines[found] ?? ""};
+        }
+    }
+    return null;
 }
 
 function resolveBashPath(): string {
