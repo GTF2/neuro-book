@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed, ref} from "vue";
-import {onClickOutside, useDebounceFn} from "@vueuse/core";
+import {useDebounceFn} from "@vueuse/core";
 import Dialog from "nbook/app/components/common/Dialog.vue";
 import Dropdown from "nbook/app/components/common/Dropdown.vue";
 import type {DropdownItem} from "nbook/app/components/common/dropdown.types";
@@ -43,9 +43,6 @@ const sessionSearch = ref("");
 const profileFilter = ref<SessionProfileFilter>("leader");
 const statusFilter = ref<AgentSessionStatusFilter>("active");
 const relationFilter = ref<AgentSessionRelationFilter>("all");
-const filterPanelOpen = ref(false);
-const filterPanelRef = ref<HTMLElement | null>(null);
-const filterButtonRef = ref<HTMLButtonElement | null>(null);
 const {t} = useI18n();
 
 const profileItems = computed<Array<{value: SessionProfileFilter; label: string}>>(() => [
@@ -289,9 +286,6 @@ watch(() => props.modelValue, (open) => {
         refresh();
     }
 });
-onClickOutside(filterPanelRef, () => {
-    filterPanelOpen.value = false;
-}, {ignore: [filterButtonRef]});
 </script>
 
 <template>
@@ -309,13 +303,10 @@ onClickOutside(filterPanelRef, () => {
 
         <div class="flex min-h-0 flex-1 flex-col space-y-4 pt-4">
             <!-- Session 搜索和操作 -->
-            <div class="relative flex items-center gap-2">
+            <div class="flex items-center gap-2">
                 <div class="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-input)] px-3">
                     <span class="i-lucide-search h-4 w-4 shrink-0 text-[var(--text-muted)]"></span>
                     <input v-model="sessionSearch" type="text" :placeholder="t('agent.session.dialogSearchPlaceholder')" class="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-main)] outline-none placeholder:text-[var(--text-muted)]">
-                    <button ref="filterButtonRef" type="button" class="inline-flex h-7 w-7 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('agent.session.filter')" @click="filterPanelOpen = !filterPanelOpen">
-                        <span class="i-lucide-list-filter h-4 w-4"></span>
-                    </button>
                 </div>
                 <Dropdown v-if="props.canChooseCreateProfile" :items="createDropdownItems" root-class="relative inline-block" menu-class="right-0 top-full mt-1.5 w-44" @select="emit('create', $event)">
                     <button class="inline-flex h-11 items-center justify-center gap-1.5 rounded-lg bg-[var(--accent-bg)] px-4 text-sm text-[var(--accent-text)] transition-opacity hover:opacity-80 disabled:opacity-40" :disabled="loading || !!actionId">
@@ -327,45 +318,26 @@ onClickOutside(filterPanelRef, () => {
                     <span class="i-lucide-plus h-4 w-4"></span>
                     {{ t("agent.session.create") }}
                 </button>
+            </div>
 
-                <transition name="fade">
-                    <div v-if="filterPanelOpen" ref="filterPanelRef" class="absolute left-0 top-[calc(100%+8px)] z-40 w-[240px] rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-2.5 shadow-2xl">
-                        <div class="flex items-center justify-between">
-                            <div class="text-[12px] font-semibold text-[var(--text-main)]">{{ t("agent.session.filter") }}</div>
-                            <button type="button" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)]" @click="filterPanelOpen = false">
-                                <span class="i-lucide-x h-3.5 w-3.5"></span>
-                            </button>
-                        </div>
-
-                        <div class="mt-2.5 space-y-2.5">
-                            <section>
-                                <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.profile") }}</div>
-                                <div class="grid grid-cols-2 gap-1.5">
-                                    <button v-for="item in profileItems" :key="item.value" type="button" class="rounded-md border px-2 py-1.5 text-[11px] transition-colors" :class="profileFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="profileFilter = item.value">{{ item.label }}</button>
-                                </div>
-                            </section>
-
-                            <section>
-                                <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.status") }}</div>
-                                <div class="grid grid-cols-2 gap-1.5">
-                                    <button v-for="item in statusItems" :key="item.value" type="button" class="rounded-md border px-2 py-1.5 text-[11px] transition-colors" :class="statusFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="statusFilter = item.value">{{ item.label }}</button>
-                                </div>
-                            </section>
-
-                            <section>
-                                <div class="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.relation") }}</div>
-                                <div class="grid grid-cols-3 gap-1.5">
-                                    <button v-for="item in relationItems" :key="item.value" type="button" class="rounded-md border px-2 py-1.5 text-[11px] transition-colors" :class="relationFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="relationFilter = item.value">{{ item.label }}</button>
-                                </div>
-                            </section>
-
-                            <div class="grid grid-cols-2 gap-2 text-[11px] text-[var(--text-secondary)]">
-                                <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 hover:bg-[var(--bg-hover)]" @click="resetFilters">{{ t("agent.session.resetFilters") }}</button>
-                                <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 hover:bg-[var(--bg-hover)]" @click="sessionSearch = ''">{{ t("agent.session.clearSearch") }}</button>
-                            </div>
-                        </div>
-                    </div>
-                </transition>
+            <!-- 筛选：选项直接平铺，不再收进下拉 -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.status") }}</span>
+                    <button v-for="item in statusItems" :key="`status-${item.value}`" type="button" class="rounded-md border px-2 py-1 text-[11px] transition-colors" :class="statusFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="statusFilter = item.value">{{ item.label }}</button>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.profile") }}</span>
+                    <button v-for="item in profileItems" :key="`profile-${item.value}`" type="button" class="rounded-md border px-2 py-1 text-[11px] transition-colors" :class="profileFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="profileFilter = item.value">{{ item.label }}</button>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">{{ t("agent.session.relation") }}</span>
+                    <button v-for="item in relationItems" :key="`relation-${item.value}`" type="button" class="rounded-md border px-2 py-1 text-[11px] transition-colors" :class="relationFilter === item.value ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]'" @click="relationFilter = item.value">{{ item.label }}</button>
+                </div>
+                <button type="button" class="ml-auto inline-flex h-7 items-center gap-1 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 text-[11px] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="resetFilters">
+                    <span class="i-lucide-rotate-ccw h-3 w-3"></span>
+                    {{ t("agent.session.resetFilters") }}
+                </button>
             </div>
 
             <!-- 近期 Session 列表 -->
