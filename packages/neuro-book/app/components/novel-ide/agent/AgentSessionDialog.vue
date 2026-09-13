@@ -35,6 +35,7 @@ const emit = defineEmits<{
     (e: "archive", session: AgentSessionSummaryDto): void;
     (e: "restore", session: AgentSessionSummaryDto): void;
     (e: "rename", session: AgentSessionSummaryDto): void;
+    (e: "delete", session: AgentSessionSummaryDto): void;
     (e: "refresh", query: AgentSessionListQueryDto): void;
     (e: "loadMore", query: AgentSessionListQueryDto): void;
 }>();
@@ -158,6 +159,17 @@ function restoreSession(session: AgentSessionSummaryDto): void {
  */
 function viewArchived(): void {
     statusFilter.value = "archived";
+}
+
+/**
+ * 请求删除会话：同步清除本地保留的刚归档快照，删除后不再以幽灵条目出现。
+ */
+function requestDelete(session: AgentSessionSummaryDto): void {
+    if (justArchived.value.has(session.sessionId)) {
+        justArchived.value.delete(session.sessionId);
+        justArchived.value = new Map(justArchived.value);
+    }
+    emit("delete", session);
 }
 
 /**
@@ -382,6 +394,9 @@ watch(() => props.modelValue, (open) => {
                         <button v-else class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canArchiveSession(session)" :title="t('agent.session.archive')" @click.stop="markArchived(session)">
                             <span v-if="actionId === session.sessionId" class="i-lucide-loader-circle h-4 w-4 animate-spin"></span>
                             <span v-else class="i-lucide-archive h-4 w-4"></span>
+                        </button>
+                        <button class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.delete')" @click.stop="requestDelete(session)">
+                            <span class="i-lucide-trash-2 h-4 w-4"></span>
                         </button>
                     </div>
                 </div>

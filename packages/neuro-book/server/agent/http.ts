@@ -9,6 +9,7 @@ import {isAgentAbortDurabilityError} from "nbook/server/agent/session/abort-dura
 import {isSessionCurrentProjectError} from "nbook/server/agent/session/current-project-error";
 import {isAgentSessionNotFoundError} from "nbook/server/agent/session/session-not-found-error";
 import {requireReadyAgentSessionStore} from "nbook/server/agent/session/agent-session-store-runtime";
+import {AgentComposerDraftStore} from "nbook/server/agent/drafts/agent-composer-draft-store";
 import {projectPublicInvocationResult} from "nbook/server/agent/events/public-invocation-result-projection";
 import type {InvokeAgentInput} from "nbook/server/agent/harness/types";
 import type {ServerTimingSink} from "nbook/server/utils/server-timing-sink";
@@ -262,6 +263,22 @@ export async function moveAgentSessionTree(sessionId: number, body: AgentTreeReq
  */
 export async function abortAgentSession(sessionId: number, body: AgentAbortRequestDto, harness = useAgentHarness()) {
     return withAgentSessionHttpError(sessionId, () => harness.abortInvocation(sessionId, body));
+}
+
+/**
+ * 永久删除一个 Session（不可恢复）：先终止活跃调用，再删除日志文件与 Composer 草稿。
+ * 附件与请求 trace 保留在工作区，供诊断与历史追溯。
+ */
+export async function deleteAgentSession(sessionId: number, harness = useAgentHarness()) {
+    return withAgentSessionHttpError(sessionId, async () => {
+        const liveState = await harness.getSessionLiveState(sessionId);
+        if (liveState.activeInvocation) {
+            await harness.abortInvocation(sessionId, {reason: "session deleted"});
+        }
+        await harness.repo.deleteSession(sessionId);
+        await new AgentComposerDraftStore(runtimePathsFromEnv().userNbookRoot).clearBySessionId(sessionId);
+        return {deleted: true};
+    });
 }
 
 /**

@@ -161,6 +161,13 @@ export function useAgentSessionApi() {
         });
     };
 
+    /** 永久删除一个 Session（不可恢复）。 */
+    const deleteSession = (sessionId: number) => {
+        return $fetch<{deleted: boolean}>(`/api/agent/sessions/${sessionId}`, {
+            method: "DELETE",
+        });
+    };
+
     const moveTree = (sessionId: number, body: AgentTreeRequestDto) => {
         return $fetch<AgentTreeResult>(`/api/agent/sessions/${sessionId}/tree`, {
             method: "POST",
@@ -220,6 +227,7 @@ export function useAgentSessionApi() {
         migrateComposerDrafts,
         moveTree,
         runCommand,
+        deleteSession,
         resolveSessionAttachments,
         saveComposerDraft,
         snapshotSessionAttachment,
