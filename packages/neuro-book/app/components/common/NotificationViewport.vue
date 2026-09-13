@@ -102,7 +102,9 @@ function groupStyle(group: NotificationGroup): Record<string, string> {
     const style: Record<string, string> = {};
 
     if (group.position.startsWith("top")) {
-        style.marginTop = `${String(group.offsetY)}px`;
+        // 顶部通知默认下移，避开右侧面板头部操作区；桌面版在标题栏（36px）基础上再下移。
+        const baseTop = props.desktop ? 36 : 48;
+        style.marginTop = `${String(baseTop + group.offsetY)}px`;
     } else {
         style.marginBottom = `${String(group.offsetY)}px`;
     }
@@ -119,7 +121,7 @@ function groupStyle(group: NotificationGroup): Record<string, string> {
 
 <template>
     <ClientOnly>
-        <div class="pointer-events-none fixed inset-0 z-[9800]" :class="{'notification-viewport--desktop': props.desktop}">
+        <div class="pointer-events-none fixed inset-0 z-[9800]">
             <div
                 v-for="group in groupedNotifications"
                 :key="group.key"
@@ -188,8 +190,4 @@ function groupStyle(group: NotificationGroup): Record<string, string> {
 }
 </style>
 
-<style>
-.notification-viewport--desktop {
-    top: 36px;
-}
-</style>
+
