@@ -2,6 +2,7 @@ import {Prisma, PrismaClient} from "nbook/server/generated/project-prisma/client
 import {PlotDtoAssembler} from "nbook/server/plot/assemblers/plot-dto.assembler";
 import {PrismaChapterRepository} from "nbook/server/plot/repositories/prisma-chapter.repository";
 import {PrismaDecisionRepository} from "nbook/server/plot/repositories/prisma-decision.repository";
+import {PrismaKeyframeRepository} from "nbook/server/plot/repositories/prisma-keyframe.repository";
 import {PrismaPromiseRepository} from "nbook/server/plot/repositories/prisma-promise.repository";
 import {PrismaSceneRepository} from "nbook/server/plot/repositories/prisma-scene.repository";
 import {PrismaStoryRepository} from "nbook/server/plot/repositories/prisma-story.repository";
@@ -17,6 +18,7 @@ import {OrderService} from "nbook/server/plot/services/order.service";
 import {ChapterWriterBriefService} from "nbook/server/plot/services/chapter-writer-brief.service";
 import {PlotScopeGuard} from "nbook/server/plot/services/plot-scope.guard";
 import {DecisionService} from "nbook/server/plot/services/decision.service";
+import {KeyframeService} from "nbook/server/plot/services/keyframe.service";
 import {PromiseService} from "nbook/server/plot/services/promise.service";
 import {RefResolverService} from "nbook/server/plot/services/ref-resolver.service";
 import {SceneService} from "nbook/server/plot/services/scene.service";
@@ -49,6 +51,7 @@ import type {
     CreateStoryActRequestDto,
     CreateStoryChapterRequestDto,
     CreateStoryDecisionRequestDto,
+    CreateStoryKeyframeRequestDto,
     CreateStoryPhaseRequestDto,
     CreateStoryPromiseRequestDto,
     CreateStorySceneRequestDto,
@@ -63,6 +66,7 @@ import type {
     StoryChapterDto,
     StoryDecisionDto,
     StoryDto,
+    StoryKeyframeDto,
     StoryPhaseDto,
     StoryPromiseDetailDto,
     StoryPromiseDto,
@@ -73,6 +77,7 @@ import type {
     UpdateStoryActRequestDto,
     UpdateStoryChapterRequestDto,
     UpdateStoryDecisionRequestDto,
+    UpdateStoryKeyframeRequestDto,
     UpdateStoryPhaseRequestDto,
     UpdateStoryPromiseRequestDto,
     UpdateStoryRequestDto,
@@ -94,6 +99,7 @@ type PlotModule = {
     refResolverService: RefResolverService;
     promiseService: PromiseService;
     decisionService: DecisionService;
+    keyframeService: KeyframeService;
 };
 
 type PlotClientEntry = {
@@ -639,6 +645,50 @@ export class PlotFacade {
     }
 
     /**
+     * 查询 Keyframe 列表(按 instant 升序,即故事时间顺序)。
+     */
+    async listStoryKeyframes(): Promise<StoryKeyframeDto[]> {
+        return (await this.createModule()).keyframeService.listStoryKeyframes();
+    }
+
+    /**
+     * 查询 Keyframe 详情。
+     */
+    async getStoryKeyframeDto(keyframeId: number): Promise<StoryKeyframeDto> {
+        return (await this.createModule()).keyframeService.getStoryKeyframeDto(keyframeId);
+    }
+
+    /**
+     * 创建 Keyframe(恒 pending 态)。
+     */
+    async createStoryKeyframe(input: CreateStoryKeyframeRequestDto): Promise<StoryKeyframeDto> {
+        const processedInput = processTextFieldsWithResults(input, ["title", "note"]);
+        return this.runInTransaction((module) => module.keyframeService.createStoryKeyframe(processedInput.values));
+    }
+
+    /**
+     * 更新 Keyframe。状态流转:回撞置 violated/confirmed;裁决置 overthrown(需 decisionRefId 留痕)/confirmed。
+     */
+    async updateStoryKeyframe(keyframeId: number, patch: UpdateStoryKeyframeRequestDto): Promise<StoryKeyframeDto> {
+        const processedPatch = processTextFieldsWithResults(patch, ["title", "note"]);
+        return this.runInTransaction((module) => module.keyframeService.updateStoryKeyframe(keyframeId, processedPatch.values));
+    }
+
+    /**
+     * 删除 Keyframe。
+     */
+    async deleteStoryKeyframe(keyframeId: number): Promise<void> {
+        await this.runInTransaction((module) => module.keyframeService.deleteStoryKeyframe(keyframeId));
+    }
+
+    /**
+     * 补间区间查询(写作宪法第三条):返回 (fromKeyframe, toKeyframe] 时间窗内的帧。
+     */
+    async findTweenKeyframes(fromKeyframeId: number, toKeyframeId: number): Promise<StoryKeyframeDto[]> {
+        return (await this.createModule()).keyframeService.findTweenKeyframes(fromKeyframeId, toKeyframeId);
+    }
+
+    /**
      * 将 HTTP DTO 的日历字符串解析为服务层 World Anchor。
      */
     private async parseWorldAnchorDto(dto?: StorySceneWorldAnchorInputDto): Promise<SceneWorldAnchor> {
@@ -821,6 +871,7 @@ export class PlotFacade {
         const chapterRepository = new PrismaChapterRepository(executor);
         const promiseRepository = new PrismaPromiseRepository(executor);
         const decisionRepository = new PrismaDecisionRepository(executor);
+        const keyframeRepository = new PrismaKeyframeRepository(executor);
         const orderService = new OrderService(storyRepository, threadRepository, sceneRepository);
         const scopeGuard = new PlotScopeGuard(
             storyRepository,
@@ -829,6 +880,7 @@ export class PlotFacade {
             chapterRepository,
             promiseRepository,
             decisionRepository,
+            keyframeRepository,
         );
         const storyService = new StoryService(
             this.project,
@@ -852,6 +904,12 @@ export class PlotFacade {
         const decisionService = new DecisionService(
             decisionRepository,
             chapterRepository,
+            storyService,
+            scopeGuard,
+            assembler,
+        );
+        const keyframeService = new KeyframeService(
+            keyframeRepository,
             storyService,
             scopeGuard,
             assembler,
@@ -915,6 +973,7 @@ export class PlotFacade {
             refResolverService,
             promiseService,
             decisionService,
+            keyframeService,
         };
     }
 }

@@ -298,6 +298,34 @@ describe("ChapterWriterBriefService", () => {
         expect(brief.suggestedBriefMarkdown).not.toContain("未决决策警告");
     });
 
+    it("slice-only：纯事实切片——展开状态截面,剔除信息控制与禁写,信息控制全空不降级 status", async () => {
+        const {service} = createService([createRecord()], {}, chapterEntity({
+            briefReaderKnows: null,
+            briefProtagonistKnows: null,
+            briefMustHide: null,
+            briefHintOnly: null,
+            briefDoNotWrite: "不许出现解释性独白",
+        }));
+
+        const brief = await service.getChapterWriterBrief(chapterId, "slice-only");
+
+        expect(brief.status).toBe("ready");
+        expect(brief.mode).toBe("slice-only");
+        // 事实截面进入动笔前上下文。
+        const md = brief.suggestedBriefMarkdown;
+        expect(md).toContain("Slice-only");
+        expect(md).toContain("World slices");
+        expect(md).toContain("Subject states");
+        expect(md).toContain("时间:");
+        // 意义指令不进动笔前上下文(模式说明与 warning 提到「信息控制」字样,断言段标题与字段行)。
+        expect(md).not.toContain("## 信息控制");
+        expect(md).not.toContain("必须隐藏");
+        expect(md).not.toContain("## 禁写");
+        expect(md).not.toContain("不许出现解释性独白");
+        expect(md).not.toContain("needs_chapter_brief");
+        expect(brief.warnings.some((warning) => warning.includes("slice-only 模式"))).toBe(true);
+    });
+
     it("curated 模式：规划层两段与现有 World 展开段共存,互不破坏", async () => {
         const beatsByScene = new Map<number, StoryPromiseBeatWithPromise[]>([[10, [createBeat()]]]);
         const decisions = [createDecisionDto({anchorKind: "chapter", anchorTargetId: "7"})];

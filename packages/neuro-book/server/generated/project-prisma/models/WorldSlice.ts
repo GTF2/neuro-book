@@ -383,14 +383,6 @@ export type WorldSliceScalarRelationFilter = {
   isNot?: Prisma.WorldSliceWhereInput
 }
 
-export type BigIntFieldUpdateOperationsInput = {
-  set?: bigint | number
-  increment?: bigint | number
-  decrement?: bigint | number
-  multiply?: bigint | number
-  divide?: bigint | number
-}
-
 export type WorldSliceCreateNestedOneWithoutPatchesInput = {
   create?: Prisma.XOR<Prisma.WorldSliceCreateWithoutPatchesInput, Prisma.WorldSliceUncheckedCreateWithoutPatchesInput>
   connectOrCreate?: Prisma.WorldSliceCreateOrConnectWithoutPatchesInput

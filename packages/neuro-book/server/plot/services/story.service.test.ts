@@ -1,6 +1,7 @@
 import type {
     ChapterRepository,
     DecisionRepository,
+    KeyframeRepository,
     PromiseRepository,
     SceneRepository,
     StoryRepository,
@@ -76,6 +77,7 @@ describe("StoryService", () => {
             chapterRepository,
             promiseRepository,
             decisionRepository,
+            {} as KeyframeRepository,
         );
         scopeGuard.assertPhase = vi.fn(async (_storyId: number, phaseId: number) => {
             const phase = phases.find((item) => item.id === phaseId);

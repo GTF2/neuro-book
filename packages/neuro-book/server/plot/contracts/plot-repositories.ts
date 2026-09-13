@@ -3,6 +3,7 @@ import type {
     StoryAct,
     StoryChapter,
     StoryDecision,
+    StoryKeyframe,
     StoryPhase,
     StoryPromise,
     StoryPromiseBeat,
@@ -19,6 +20,7 @@ import type {
     StoryDecisionEntity,
     StoryDecisionOption,
     StoryDecisionRejectedAlternative,
+    StoryKeyframeEntity,
     StoryPromiseBeatWithPromise,
     StoryPromiseBeatWithScene,
     StoryPromiseEntity,
@@ -219,4 +221,31 @@ export interface DecisionRepository {
         threadIds: Set<number>;
         sceneIds: Set<number>;
     }>;
+}
+
+/**
+ * Keyframe(关键帧)仓储接口(写作宪法第三条)。
+ * irreversibleChanges 的 JSON 归一化在仓储层完成,service 只见结构化数组。
+ */
+export interface KeyframeRepository {
+    findKeyframeById(keyframeId: number): Promise<StoryKeyframeEntity | null>;
+    findKeyframesByStory(storyId: number): Promise<StoryKeyframeEntity[]>;
+    /** 补间区间查询:返回 (fromInstant, toInstant] 内的帧,按 instant 升序(补间演化的输入)。 */
+    findKeyframesBetween(storyId: number, fromInstant: bigint, toInstant: bigint): Promise<StoryKeyframeEntity[]>;
+    findKeyframeByName(storyId: number, name: string, excludeKeyframeId?: number): Promise<StoryKeyframeEntity | null>;
+    createKeyframe(input: {
+        storyId: number;
+        sceneId: number | null;
+        name: string;
+        title: string;
+        instant: bigint;
+        irreversibleChanges: string[];
+        source: StoryKeyframe["source"];
+        note: string | null;
+    }): Promise<StoryKeyframeEntity>;
+    updateKeyframe(keyframeId: number, data: Partial<Pick<
+        StoryKeyframe,
+        "sceneId" | "name" | "title" | "instant" | "status" | "decisionRefId" | "note"
+    >> & {irreversibleChanges?: string[]}): Promise<StoryKeyframeEntity>;
+    deleteKeyframe(keyframeId: number): Promise<void>;
 }

@@ -3,6 +3,7 @@ import type {
     StoryAct,
     StoryChapter,
     StoryDecision,
+    StoryKeyframe,
     StoryPhase,
     StoryPromise,
     StoryPromiseBeat,
@@ -45,8 +46,17 @@ export type PrismaExecutor = Prisma.TransactionClient | {
     storyPromise: Prisma.TransactionClient["storyPromise"];
     storyPromiseBeat: Prisma.TransactionClient["storyPromiseBeat"];
     storyDecision: Prisma.TransactionClient["storyDecision"];
+    storyKeyframe: Prisma.TransactionClient["storyKeyframe"];
     $executeRaw: Prisma.TransactionClient["$executeRaw"];
     $executeRawUnsafe: Prisma.TransactionClient["$executeRawUnsafe"];
+};
+
+/**
+ * Plot 层使用的 Keyframe 实体。
+ * `irreversibleChanges` 在数据库中是 JSON 文本；进入 service 后归一化为 string[]。
+ */
+export type StoryKeyframeEntity = Omit<StoryKeyframe, "irreversibleChanges"> & {
+    irreversibleChanges: string[];
 };
 
 /**

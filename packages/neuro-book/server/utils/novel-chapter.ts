@@ -13,6 +13,10 @@ type EntityIdLabel =
     | "chapterId"
     | "promiseId"
     | "decisionId"
+    | "keyframeId"
+    | "fromKeyframeId"
+    | "toKeyframeId"
+    | "decisionRefId"
     | "entryId"
     | "parentId";
 

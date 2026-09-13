@@ -132,3 +132,21 @@ export const StoryDecisionAnchorKind = {
 } as const
 
 export type StoryDecisionAnchorKind = (typeof StoryDecisionAnchorKind)[keyof typeof StoryDecisionAnchorKind]
+
+
+export const StoryKeyframeSource = {
+  author: 'author',
+  derived: 'derived'
+} as const
+
+export type StoryKeyframeSource = (typeof StoryKeyframeSource)[keyof typeof StoryKeyframeSource]
+
+
+export const StoryKeyframeStatus = {
+  pending: 'pending',
+  confirmed: 'confirmed',
+  violated: 'violated',
+  overthrown: 'overthrown'
+} as const
+
+export type StoryKeyframeStatus = (typeof StoryKeyframeStatus)[keyof typeof StoryKeyframeStatus]

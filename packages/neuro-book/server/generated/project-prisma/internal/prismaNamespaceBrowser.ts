@@ -63,6 +63,7 @@ export const ModelName = {
   StoryPromise: 'StoryPromise',
   StoryPromiseBeat: 'StoryPromiseBeat',
   StoryDecision: 'StoryDecision',
+  StoryKeyframe: 'StoryKeyframe',
   WorldSubject: 'WorldSubject',
   WorldSlice: 'WorldSlice',
   WorldPatch: 'WorldPatch'
@@ -293,6 +294,25 @@ export const StoryDecisionScalarFieldEnum = {
 } as const
 
 export type StoryDecisionScalarFieldEnum = (typeof StoryDecisionScalarFieldEnum)[keyof typeof StoryDecisionScalarFieldEnum]
+
+
+export const StoryKeyframeScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  sceneId: 'sceneId',
+  name: 'name',
+  title: 'title',
+  instant: 'instant',
+  irreversibleChanges: 'irreversibleChanges',
+  source: 'source',
+  status: 'status',
+  decisionRefId: 'decisionRefId',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StoryKeyframeScalarFieldEnum = (typeof StoryKeyframeScalarFieldEnum)[keyof typeof StoryKeyframeScalarFieldEnum]
 
 
 export const WorldSubjectScalarFieldEnum = {

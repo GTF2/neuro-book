@@ -194,6 +194,13 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
         expect((curated as {mode: string}).mode).toBe("curated");
         expect((curated as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).toContain("神殿灯火");
         expect((curated as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("\"hp\"");
+
+        // slice-only:展开事实截面,但不渲染信息控制与禁写段。
+        const sliceOnly = await callApi(handler, projectRootName, "GET", "chapter-writer-brief", undefined, {chapterId: readId(chapter), mode: "slice-only"});
+        expect((sliceOnly as {mode: string}).mode).toBe("slice-only");
+        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).toContain("神殿灯火");
+        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("## 信息控制");
+        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("## 禁写");
     });
 
     it("缺 projectRoot query 时返回 400", async () => {
@@ -394,6 +401,53 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
         await updateSceneRawInstants(projectRootName, readId(scene), 100n, 200n);
 
         await expect(callApi(handler, projectRootName, "GET", "tree")).rejects.toThrow("calendar.ts 加载失败");
+    });
+
+    it("Keyframe CRUD + 补间区间 + 裁决留痕(写作宪法第三条/第六条)", async () => {
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        const projectRootName = await createProject();
+
+        // 创建两帧(恒 pending)。
+        const first = await callApi(handler, projectRootName, "POST", "keyframes", {
+            name: "k-necklace-lost",
+            title: "薇洛丝失去项链",
+            instant: "100",
+            irreversibleChanges: ["薇洛丝失去项链"],
+        });
+        expect(first).toMatchObject({status: "pending", instant: "100", source: "author"});
+        const second = await callApi(handler, projectRootName, "POST", "keyframes", {
+            name: "k-grisha-dead",
+            title: "格里沙之死",
+            instant: "300",
+            irreversibleChanges: ["格里沙死亡"],
+        });
+
+        // 列表按 instant 升序。
+        const list = await callApi(handler, projectRootName, "GET", "keyframes") as Array<{name: string}>;
+        expect(list.map((keyframe) => keyframe.name)).toEqual(["k-necklace-lost", "k-grisha-dead"]);
+
+        // 补间区间 (起点, 终点]。
+        const tween = await callApi(handler, projectRootName, "GET", "keyframes/tween", undefined, {
+            fromKeyframeId: readId(first),
+            toKeyframeId: readId(second),
+        }) as Array<{name: string}>;
+        expect(tween.map((keyframe) => keyframe.name)).toEqual(["k-grisha-dead"]);
+
+        // 裁决推翻必须挂 decisionRefId(宪法第六条推翻留痕)。
+        await expect(callApi(handler, projectRootName, "PATCH", `keyframes/${readId(first)}`, {status: "overthrown"}))
+            .rejects.toThrow("decisionRefId");
+
+        const decision = await callApi(handler, projectRootName, "POST", "decisions", {
+            name: "d-necklace-ruling",
+            title: "项链去向裁决",
+            question: "薇洛丝是否真的失去项链?",
+        });
+        const ruled = await callApi(handler, projectRootName, "PATCH", `keyframes/${readId(first)}`, {
+            status: "overthrown",
+            decisionRefId: readId(decision),
+        });
+        expect(ruled).toMatchObject({status: "overthrown"});
+        expect((ruled as {decisionRefId: string}).decisionRefId).toBe(readId(decision));
     });
 });
 

@@ -142,8 +142,8 @@ const GetStoryChapterSchema = Type.Object({...ProjectScopedSchema.properties, ch
 const GetChapterWriterBriefSchema = Type.Object({
     ...ProjectScopedSchema.properties,
     chapterId: NonEmptyString("StoryChapter ID. Use get_story_tree to list chapters."),
-    mode: Type.Optional(Type.Union([Type.Literal("autonomous"), Type.Literal("curated")], {
-        description: "Anti-omniscience mode. autonomous (default): writer self-queries World Engine/lorebook, brief gives only query hints. curated: writer can't read sources, brief expands filtered state summaries for the leader to feed.",
+    mode: Type.Optional(Type.Union([Type.Literal("autonomous"), Type.Literal("curated"), Type.Literal("slice-only")], {
+        description: "Anti-omniscience mode. autonomous (default): writer self-queries World Engine/lorebook, brief gives only query hints. curated: writer can't read sources, brief expands filtered state summaries for the leader to feed. slice-only: pure fact slice per writing doctrine — only time/location/subjects/world state/query hints, no info-control or do-not-write meaning instructions; info-control fields become a post-hoc review checklist.",
     })),
 });
 

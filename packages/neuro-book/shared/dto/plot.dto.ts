@@ -68,6 +68,10 @@ export const StoryPromiseBeatStateSchema = z.enum(["planned", "factual", "archiv
 export const StoryDecisionStatusSchema = z.enum(["open", "decided", "superseded", "dropped"]);
 // Decision 主锚点类型(D12):story=锚在全书层(无更窄载体),content 用 anchorPath 存内容节点路径。
 export const StoryDecisionAnchorKindSchema = z.enum(["story", "act", "chapter", "thread", "scene", "promise", "content"]);
+// 关键帧来源(写作宪法第三条/第六条):author=人手写的不可逆状态变化帧;derived=从正文反推的帧。
+export const StoryKeyframeSourceSchema = z.enum(["author", "derived"]);
+// 关键帧校验状态:pending=已声明未回撞;confirmed=回撞通过或裁决维持;violated=回撞发现冲突待裁决;overthrown=裁决推翻(留痕 decisionRef)。
+export const StoryKeyframeStatusSchema = z.enum(["pending", "confirmed", "violated", "overthrown"]);
 export const StoryRefTargetKindSchema = StoryStructuredReferenceKindSchema;
 export const StoryRefVisibilitySchema = ReferenceVisibilitySchema;
 
@@ -425,6 +429,28 @@ export const StoryDecisionDtoSchema = z.object({
     updatedAt: z.string(),
 });
 
+// 关键帧(写作宪法第三条「关键帧写作」):人只写不可逆的状态变化帧,帧间补间交给 writer 演化。
+// instant 锚定 World Engine 时刻;irreversibleChanges 是回撞校验的标的。
+export const StoryKeyframeDtoSchema = z.object({
+    id: z.string(),
+    storyId: z.string(),
+    // `sceneId` 为空表示帧未挂在场景上。
+    sceneId: z.string().nullable(),
+    name: z.string(),
+    title: z.string(),
+    // World Engine 锚点时刻(字符串形式的 bigint,与 Scene worldAnchor.instant 同形)。
+    instant: z.string(),
+    irreversibleChanges: z.array(z.string()),
+    source: StoryKeyframeSourceSchema,
+    status: StoryKeyframeStatusSchema,
+    // `decisionRefId` 为空表示无裁决留痕;overthrown/violated 裁决时挂创作决策记录(宪法第六条推翻留痕)。
+    decisionRefId: z.string().nullable(),
+    // `note` 为空表示没有额外备注。
+    note: z.string().nullable(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+});
+
 // Scene 视角的 promise beat:「这场戏服务哪些线」(get_story_scene_context 透出)。
 export const StoryScenePromiseBeatDtoSchema = z.object({
     id: z.string(),
@@ -470,7 +496,10 @@ export const ChapterPlotDetailDtoSchema = z.object({
 
 // Writer 防全知模式:autonomous=writer 自查 World Engine/lorebook,brief 只给查询提示;
 // curated=writer 读不到设定源,brief 需带上过滤后的状态摘要,由 leader 投喂。
-export const ChapterWriterBriefModeSchema = z.enum(["autonomous", "curated"]);
+// slice-only=纯事实切片(写作宪法第五条「事后校验,不事前告知」):brief 只含时间/地点/在场角色/
+// 世界状态截面/查询提示等事实,剔除信息控制四字段与禁写类意义指令;信息控制全空不再降级 status,
+// 四字段改由 review workflow 事后核对。
+export const ChapterWriterBriefModeSchema = z.enum(["autonomous", "curated", "slice-only"]);
 
 export const ChapterWriterBriefStatusSchema = z.enum([
     "ready",
@@ -955,6 +984,39 @@ export const UpdateStoryDecisionRequestDtoSchema = z.object({
     message: "至少提供一个更新字段",
 });
 
+// Keyframe 创建(写作宪法第三条)。创建恒为 pending 态;confirmed/violated/overthrown 由回撞与裁决流转。
+export const CreateStoryKeyframeRequestDtoSchema = z.object({
+    // `sceneId` 为空表示帧未挂在场景上。
+    sceneId: z.string().trim().min(1, "sceneId 不能为空").nullable().optional().describe("StoryScene ID this keyframe anchors to. Null or omitted for a scene-less keyframe."),
+    name: StoryNameSchema.describe("Machine-friendly keyframe name (lowercase letters, digits, hyphens), unique per story; e.g. k-necklace-lost."),
+    title: NonEmptyStringSchema.max(MAX_STORY_TITLE_LENGTH, "title 过长").describe("Human-readable keyframe title."),
+    // World Engine 锚点时刻(非负整数字符串,与 Scene worldAnchor.startInstant 同形)。
+    instant: z.string().trim().regex(/^\d+$/, "instant 必须是非负整数字符串").describe("World Engine instant (non-negative integer string) this keyframe anchors to."),
+    irreversibleChanges: z.array(z.string().trim().min(1, "不可逆变化不能为空")).max(50, "irreversibleChanges 过多")
+        .describe("Declarative irreversible state changes (who dies, sword changes hands, oath breaks) — the targets of tween 回撞校验."),
+    source: StoryKeyframeSourceSchema.optional().describe("author (default, human-written) or derived (reverse-inferred from prose, 写作宪法第六条)."),
+    // `note` 为空表示无备注。
+    note: StoryNoteSchema.nullable().optional().describe("Optional note. Null clears it."),
+});
+
+export const UpdateStoryKeyframeRequestDtoSchema = z.object({
+    // `sceneId` 为空表示显式取消场景锚定。
+    sceneId: z.string().trim().min(1, "sceneId 不能为空").nullable().optional().describe("StoryScene ID this keyframe anchors to. Null detaches from scene."),
+    name: StoryNameSchema.optional().describe("Machine-friendly keyframe name. Renaming breaks existing cross references."),
+    title: NonEmptyStringSchema.max(MAX_STORY_TITLE_LENGTH, "title 过长").optional().describe("Human-readable keyframe title."),
+    instant: z.string().trim().regex(/^\d+$/, "instant 必须是非负整数字符串").optional().describe("World Engine instant (non-negative integer string)."),
+    irreversibleChanges: z.array(z.string().trim().min(1, "不可逆变化不能为空")).max(50, "irreversibleChanges 过多").optional()
+        .describe("Declarative irreversible state changes, replaced as a whole."),
+    // 状态流转:回撞 workflow 置 violated/confirmed;裁决置 overthrown(需 decisionRefId 留痕)或 confirmed。
+    status: StoryKeyframeStatusSchema.optional().describe("Lifecycle status (pending/confirmed/violated/overthrown)."),
+    // `decisionRefId` 为空表示显式清空裁决留痕。
+    decisionRefId: z.string().trim().min(1, "decisionRefId 不能为空").nullable().optional().describe("StoryDecision ID recording the adjudication (宪法第六条推翻留痕). Null clears it."),
+    // `note` 为空表示显式清空备注。
+    note: StoryNoteSchema.nullable().optional().describe("Optional note. Null clears it."),
+}).refine((value) => Object.values(value).some((item) => item !== undefined), {
+    message: "至少提供一个更新字段",
+});
+
 export type StoryThreadStatusDto = z.infer<typeof StoryThreadStatusSchema>;
 export type StorySceneStatusDto = z.infer<typeof StorySceneStatusSchema>;
 export type StoryThreadMiceTypeDto = z.infer<typeof StoryThreadMiceTypeSchema>;
@@ -1035,3 +1097,8 @@ export type StoryDecisionAnchorInputDto = z.infer<typeof StoryDecisionAnchorInpu
 export type StoryDecisionDto = z.infer<typeof StoryDecisionDtoSchema>;
 export type CreateStoryDecisionRequestDto = z.infer<typeof CreateStoryDecisionRequestDtoSchema>;
 export type UpdateStoryDecisionRequestDto = z.infer<typeof UpdateStoryDecisionRequestDtoSchema>;
+export type StoryKeyframeSourceDto = z.infer<typeof StoryKeyframeSourceSchema>;
+export type StoryKeyframeStatusDto = z.infer<typeof StoryKeyframeStatusSchema>;
+export type StoryKeyframeDto = z.infer<typeof StoryKeyframeDtoSchema>;
+export type CreateStoryKeyframeRequestDto = z.infer<typeof CreateStoryKeyframeRequestDtoSchema>;
+export type UpdateStoryKeyframeRequestDto = z.infer<typeof UpdateStoryKeyframeRequestDtoSchema>;

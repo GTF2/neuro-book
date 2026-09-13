@@ -4,10 +4,11 @@ import type {
     StoryPhase,
     StoryScene,
 } from "nbook/server/generated/project-prisma/client";
-import type {StoryDecisionEntity, StoryPromiseEntity, StoryThreadEntity} from "nbook/server/plot/core/types";
+import type {StoryDecisionEntity, StoryKeyframeEntity, StoryPromiseEntity, StoryThreadEntity} from "nbook/server/plot/core/types";
 import type {
     ChapterRepository,
     DecisionRepository,
+    KeyframeRepository,
     PromiseRepository,
     SceneRepository,
     StoryRepository,
@@ -27,6 +28,7 @@ export class PlotScopeGuard {
         private readonly chapterRepository: ChapterRepository,
         private readonly promiseRepository: PromiseRepository,
         private readonly decisionRepository: DecisionRepository,
+        private readonly keyframeRepository: KeyframeRepository,
     ) {}
 
     /**
@@ -125,6 +127,27 @@ export class PlotScopeGuard {
         const decision = await this.decisionRepository.findDecisionByName(storyId, name, excludeDecisionId);
         if (decision) {
             throwPlotBadRequest(`Decision name 已存在：${name}`);
+        }
+    }
+
+    /**
+     * 校验 Keyframe 属于当前 Story(写作宪法第三条)。
+     */
+    async assertKeyframe(storyId: number, keyframeId: number): Promise<StoryKeyframeEntity> {
+        const keyframe = await this.keyframeRepository.findKeyframeById(keyframeId);
+        if (!keyframe || keyframe.storyId !== storyId) {
+            throwPlotNotFound("Keyframe 不存在;keyframeId 必须指向当前 Story 下的 StoryKeyframe");
+        }
+        return keyframe;
+    }
+
+    /**
+     * 校验 Keyframe name 唯一。name 是互指引用的 slug(如 k-necklace-lost),冲突会破坏引用解析。
+     */
+    async assertKeyframeNameUnique(storyId: number, name: string, excludeKeyframeId?: number): Promise<void> {
+        const keyframe = await this.keyframeRepository.findKeyframeByName(storyId, name, excludeKeyframeId);
+        if (keyframe) {
+            throwPlotBadRequest(`Keyframe name 已存在：${name}`);
         }
     }
 

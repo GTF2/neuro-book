@@ -2,6 +2,7 @@ import {
     CreateStoryActRequestDtoSchema,
     CreateStoryChapterRequestDtoSchema,
     CreateStoryDecisionRequestDtoSchema,
+    CreateStoryKeyframeRequestDtoSchema,
     CreateStoryPhaseRequestDtoSchema,
     CreateStoryPromiseRequestDtoSchema,
     CreateStorySceneRequestDtoSchema,
@@ -13,6 +14,7 @@ import {
     UpdateStoryActRequestDtoSchema,
     UpdateStoryChapterRequestDtoSchema,
     UpdateStoryDecisionRequestDtoSchema,
+    UpdateStoryKeyframeRequestDtoSchema,
     UpdateStoryPhaseRequestDtoSchema,
     UpdateStoryPromiseRequestDtoSchema,
     UpdateStoryRequestDtoSchema,
@@ -21,6 +23,7 @@ import {
     type CreateStoryActRequestDto,
     type CreateStoryChapterRequestDto,
     type CreateStoryDecisionRequestDto,
+    type CreateStoryKeyframeRequestDto,
     type CreateStoryPhaseRequestDto,
     type CreateStoryPromiseRequestDto,
     type CreateStorySceneRequestDto,
@@ -32,6 +35,7 @@ import {
     type UpdateStoryActRequestDto,
     type UpdateStoryChapterRequestDto,
     type UpdateStoryDecisionRequestDto,
+    type UpdateStoryKeyframeRequestDto,
     type UpdateStoryPhaseRequestDto,
     type UpdateStoryPromiseRequestDto,
     type UpdateStoryRequestDto,
@@ -268,6 +272,9 @@ async function handleProjectPlotApi(event: H3Event): Promise<unknown> {
         if (segments[0] === "decisions") {
             return handleDecisions(plotFacade, event, method, segments);
         }
+        if (segments[0] === "keyframes") {
+            return handleKeyframes(plotFacade, event, method, segments);
+        }
 
         throw createError({statusCode: 404, message: "未知 Project Plot API"});
     });
@@ -435,6 +442,34 @@ async function handleDecisions(plotFacade: PlotFacade, event: H3Event, method: s
     throw createError({statusCode: 404, message: "未知 Project Decision API"});
 }
 
+/** 关键帧(写作宪法第三条)CRUD + 补间区间查询。回撞状态流转与裁决不变式在服务层。 */
+async function handleKeyframes(plotFacade: PlotFacade, event: H3Event, method: string, segments: string[]): Promise<unknown> {
+    if (method === "GET" && matchSegments(segments, ["keyframes"])) {
+        return plotFacade.listStoryKeyframes();
+    }
+    if (method === "POST" && matchSegments(segments, ["keyframes"])) {
+        const body = await validateBody<CreateStoryKeyframeRequestDto>(event, CreateStoryKeyframeRequestDtoSchema);
+        return plotFacade.createStoryKeyframe(body);
+    }
+    if (method === "GET" && matchSegments(segments, ["keyframes", "tween"])) {
+        const query = getQuery(event);
+        return plotFacade.findTweenKeyframes(
+            parseEntityId("fromKeyframeId", typeof query.fromKeyframeId === "string" ? query.fromKeyframeId : ""),
+            parseEntityId("toKeyframeId", typeof query.toKeyframeId === "string" ? query.toKeyframeId : ""),
+        );
+    }
+    if (segments.length === 2) {
+        const keyframeId = parseEntityId("keyframeId", segments[1] ?? "");
+        if (method === "GET") return plotFacade.getStoryKeyframeDto(keyframeId);
+        if (method === "PATCH") {
+            const body = await validateBody<UpdateStoryKeyframeRequestDto>(event, UpdateStoryKeyframeRequestDtoSchema);
+            return plotFacade.updateStoryKeyframe(keyframeId, body);
+        }
+        if (method === "DELETE") return plotFacade.deleteStoryKeyframe(keyframeId);
+    }
+    throw createError({statusCode: 404, message: "未知 Project Keyframe API"});
+}
+
 function readSegments(event: H3Event): string[] {
     const rawSegments = event.context.params?.segments;
     const segments = Array.isArray(rawSegments) ? rawSegments : typeof rawSegments === "string" ? rawSegments.split("/") : [];
@@ -455,6 +490,7 @@ function requireChapterIdQuery(event: H3Event): number {
 }
 
 /** 读取 brief 防全知模式 query;缺省或非法一律回落 autonomous。 */
-function readBriefModeQuery(event: H3Event): "autonomous" | "curated" {
-    return getQuery(event).mode === "curated" ? "curated" : "autonomous";
+function readBriefModeQuery(event: H3Event): "autonomous" | "curated" | "slice-only" {
+    const mode = getQuery(event).mode;
+    return mode === "curated" ? "curated" : mode === "slice-only" ? "slice-only" : "autonomous";
 }

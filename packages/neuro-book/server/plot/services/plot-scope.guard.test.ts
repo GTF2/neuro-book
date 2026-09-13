@@ -1,6 +1,7 @@
 import type {
     ChapterRepository,
     DecisionRepository,
+    KeyframeRepository,
     PromiseRepository,
     SceneRepository,
     StoryRepository,
@@ -20,6 +21,7 @@ function createGuard(overrides: {chapter?: Partial<ChapterRepository>; promise?:
         (overrides.chapter ?? {}) as ChapterRepository,
         (overrides.promise ?? {}) as PromiseRepository,
         (overrides.decision ?? {}) as DecisionRepository,
+        {} as KeyframeRepository,
     );
 }
 

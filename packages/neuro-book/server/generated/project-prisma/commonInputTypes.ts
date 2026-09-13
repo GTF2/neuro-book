@@ -415,6 +415,20 @@ export type BigIntFilter<$PrismaModel = never> = {
   not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
 }
 
+export type EnumStoryKeyframeSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeSource | Prisma.EnumStoryKeyframeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeSource[]
+  notIn?: $Enums.StoryKeyframeSource[]
+  not?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel> | $Enums.StoryKeyframeSource
+}
+
+export type EnumStoryKeyframeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeStatus | Prisma.EnumStoryKeyframeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeStatus[]
+  notIn?: $Enums.StoryKeyframeStatus[]
+  not?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel> | $Enums.StoryKeyframeStatus
+}
+
 export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
   in?: bigint[] | number[]
@@ -429,6 +443,26 @@ export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
   _min?: Prisma.NestedBigIntFilter<$PrismaModel>
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
+export type EnumStoryKeyframeSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeSource | Prisma.EnumStoryKeyframeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeSource[]
+  notIn?: $Enums.StoryKeyframeSource[]
+  not?: Prisma.NestedEnumStoryKeyframeSourceWithAggregatesFilter<$PrismaModel> | $Enums.StoryKeyframeSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel>
+}
+
+export type EnumStoryKeyframeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeStatus | Prisma.EnumStoryKeyframeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeStatus[]
+  notIn?: $Enums.StoryKeyframeStatus[]
+  not?: Prisma.NestedEnumStoryKeyframeStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoryKeyframeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel>
 }
 
 export type BytesNullableFilter<$PrismaModel = never> = {
@@ -866,6 +900,20 @@ export type NestedBigIntFilter<$PrismaModel = never> = {
   not?: Prisma.NestedBigIntFilter<$PrismaModel> | bigint | number
 }
 
+export type NestedEnumStoryKeyframeSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeSource | Prisma.EnumStoryKeyframeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeSource[]
+  notIn?: $Enums.StoryKeyframeSource[]
+  not?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel> | $Enums.StoryKeyframeSource
+}
+
+export type NestedEnumStoryKeyframeStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeStatus | Prisma.EnumStoryKeyframeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeStatus[]
+  notIn?: $Enums.StoryKeyframeStatus[]
+  not?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel> | $Enums.StoryKeyframeStatus
+}
+
 export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
   equals?: bigint | number | Prisma.BigIntFieldRefInput<$PrismaModel>
   in?: bigint[] | number[]
@@ -880,6 +928,26 @@ export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedBigIntFilter<$PrismaModel>
   _min?: Prisma.NestedBigIntFilter<$PrismaModel>
   _max?: Prisma.NestedBigIntFilter<$PrismaModel>
+}
+
+export type NestedEnumStoryKeyframeSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeSource | Prisma.EnumStoryKeyframeSourceFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeSource[]
+  notIn?: $Enums.StoryKeyframeSource[]
+  not?: Prisma.NestedEnumStoryKeyframeSourceWithAggregatesFilter<$PrismaModel> | $Enums.StoryKeyframeSource
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStoryKeyframeSourceFilter<$PrismaModel>
+}
+
+export type NestedEnumStoryKeyframeStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StoryKeyframeStatus | Prisma.EnumStoryKeyframeStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.StoryKeyframeStatus[]
+  notIn?: $Enums.StoryKeyframeStatus[]
+  not?: Prisma.NestedEnumStoryKeyframeStatusWithAggregatesFilter<$PrismaModel> | $Enums.StoryKeyframeStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumStoryKeyframeStatusFilter<$PrismaModel>
 }
 
 export type NestedBytesNullableFilter<$PrismaModel = never> = {

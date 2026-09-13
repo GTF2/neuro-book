@@ -260,6 +260,27 @@ CREATE UNIQUE INDEX IF NOT EXISTS "StoryPromiseBeat_promiseId_sceneId_key" ON "S
 CREATE INDEX IF NOT EXISTS "StoryPromiseBeat_sceneId_idx" ON "StoryPromiseBeat"("sceneId");
 CREATE UNIQUE INDEX IF NOT EXISTS "StoryDecision_storyId_name_key" ON "StoryDecision"("storyId", "name");
 CREATE INDEX IF NOT EXISTS "StoryDecision_storyId_status_idx" ON "StoryDecision"("storyId", "status");
+CREATE TABLE IF NOT EXISTS "StoryKeyframe" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "storyId" INTEGER NOT NULL,
+    "sceneId" INTEGER,
+    "name" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "instant" BIGINT NOT NULL,
+    "irreversibleChanges" TEXT NOT NULL DEFAULT '[]',
+    "source" TEXT NOT NULL DEFAULT 'author',
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "decisionRefId" INTEGER,
+    "note" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "StoryKeyframe_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "StoryKeyframe_sceneId_fkey" FOREIGN KEY ("sceneId") REFERENCES "StoryScene" ("id") ON DELETE SET NULL ON UPDATE CASCADE,
+    CONSTRAINT "StoryKeyframe_decisionRefId_fkey" FOREIGN KEY ("decisionRefId") REFERENCES "StoryDecision" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+CREATE UNIQUE INDEX IF NOT EXISTS "StoryKeyframe_storyId_name_key" ON "StoryKeyframe"("storyId", "name");
+CREATE INDEX IF NOT EXISTS "StoryKeyframe_storyId_instant_idx" ON "StoryKeyframe"("storyId", "instant");
+CREATE INDEX IF NOT EXISTS "StoryKeyframe_storyId_status_idx" ON "StoryKeyframe"("storyId", "status");
 CREATE UNIQUE INDEX IF NOT EXISTS "WorldSlice_instant_key" ON "WorldSlice"("instant");
 CREATE INDEX IF NOT EXISTS "WorldSlice_instant_idx" ON "WorldSlice"("instant");
 CREATE INDEX IF NOT EXISTS "WorldSubject_type_idx" ON "WorldSubject"("type");

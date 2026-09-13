@@ -155,7 +155,7 @@ const ProjectPlotChapterQuerySchema = ProjectPlotProjectQuerySchema.extend({
 });
 
 const ProjectPlotChapterWriterBriefQuerySchema = ProjectPlotChapterQuerySchema.extend({
-    mode: z_.union([z_.literal("autonomous"), z_.literal("curated")]).optional().describe("Anti-omniscience mode. Defaults to autonomous (writer self-queries); curated expands filtered state."),
+    mode: z_.union([z_.literal("autonomous"), z_.literal("curated"), z_.literal("slice-only")]).optional().describe("Anti-omniscience mode. Defaults to autonomous (writer self-queries); curated expands filtered state; slice-only is pure fact slice (no info-control/do-not-write instructions, post-hoc review instead)."),
 });
 
 const ProjectRagSubjectQuerySchema = ProjectRagProjectQuerySchema.extend({

@@ -55,8 +55,9 @@ export default {
     whenToUse: "本章剧情事实已确认、World Engine 已推进，需要把某个章节 index.md 写成正文并做多维评审修订时使用；剧情事实未确认、目标章节节点还不存在、或只是打磨简介/文案等不落文件的短文（应使用 write-review-loop）时不要使用。",
     argsHint: [
         {name: "chapterPath", label: "章节 index.md 路径（Project Workspace 相对路径，必填）", defaultValue: ""},
-        {name: "brief", label: "本章写作任务（目标/关键剧情点/信息控制/World Engine 查询提示）", defaultValue: ""},
+        {name: "brief", label: "本章写作任务（目标/关键剧情点/World Engine 查询提示；slice-only 模式下不含信息控制）", defaultValue: ""},
         {name: "chapterId", label: "StoryChapter id（可选，writer 会自取本章 brief）", defaultValue: ""},
+        {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；可选，仅注入一致性评审做事后校验，不下发 writer）", defaultValue: ""},
         {name: "lorebookEntries", label: "建议读取的内容节点路径（逗号或换行分隔，可选）", defaultValue: ""},
         {name: "reviewRounds", label: "评审轮数（1-3）", defaultValue: "2"},
         {name: "revise", label: "是否按评审修订（false 时只写+评审一轮）", defaultValue: "true"},
@@ -75,6 +76,9 @@ export default {
         }
         const brief = typeof args?.brief === "string" ? args.brief.trim() : "";
         const chapterId = typeof args?.chapterId === "string" ? args.chapterId.trim() : "";
+        // 信息控制事后核对清单（写作宪法第五条）：slice-only 模式下 brief 不含信息控制，
+        // leader 应把 ChapterBrief 的四字段编译成清单传入；仅注入一致性评审，绝不下发 writer。
+        const infoControl = typeof args?.infoControl === "string" ? args.infoControl.trim() : "";
         if (!brief && !chapterId) {
             throw new Error("缺少写作任务：brief 与 chapterId 至少传一个（brief 传本章写作任务正文，或传 chapterId 让 writer 用 get_chapter_writer_brief 自取）");
         }
@@ -155,8 +159,11 @@ export default {
                     message: [
                         `${dimension.messagePrefix}评审第 ${round} 轮章节正文，按已声明 schema 汇报。`,
                         brief ? `【写作任务】\n${brief}` : `【写作任务】\n本章按 StoryChapter ${chapterId} 的 brief 写作。`,
+                        infoControl && dimension.key === "consistency"
+                            ? `【信息控制事后核对】\n以下是本章信息边界清单，仅用于事后校验，不是写作任务的一部分：\n${infoControl}\n逐条核对正文：角色是否知道了他不该知道的信息？「必须隐藏」项是否被直接或变相泄露？「可暗示」项是否被明说？只报告有正文证据的越界，无越界则不报告。`
+                            : "",
                         `【章节正文】\n${body.slice(0, BODY_SLICE)}`,
-                    ].join("\n\n"),
+                    ].filter(Boolean).join("\n\n"),
                 });
                 if (reviewRun.status !== "completed") {
                     throw new Error(`评审（${dimension.title}）未完成第 ${round} 轮：${reviewRun.result.message}`);

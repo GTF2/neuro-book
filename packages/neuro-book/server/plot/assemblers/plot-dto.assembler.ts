@@ -8,6 +8,7 @@ import type {
 import type {
     ChapterPlotSceneWithThread,
     StoryActWithChapters,
+    StoryKeyframeEntity,
     StoryPromiseBeatWithPromise,
     StoryPromiseBeatWithScene,
     StoryPromiseWithBeats,
@@ -40,6 +41,7 @@ import type {
     StoryPromiseDetailDto,
     StoryPromiseDto,
     StoryDecisionDto,
+    StoryKeyframeDto,
     StoryRefDto,
     StorySceneDetailDto,
     StoryScenePromiseBeatDto,
@@ -435,6 +437,28 @@ export class PlotDtoAssembler {
             note: decision.note,
             createdAt: decision.createdAt.toISOString(),
             updatedAt: decision.updatedAt.toISOString(),
+        };
+    }
+
+    /**
+     * 映射 Keyframe DTO(写作宪法第三条「关键帧写作」)。
+     * instant(bigint)以字符串透出,与 Scene worldAnchor.instant 同形;不可逆变化清单已由仓储归一化。
+     */
+    toStoryKeyframeDto(keyframe: StoryKeyframeEntity): StoryKeyframeDto {
+        return {
+            id: stringifyEntityId(keyframe.id),
+            storyId: stringifyEntityId(keyframe.storyId),
+            sceneId: keyframe.sceneId === null ? null : stringifyEntityId(keyframe.sceneId),
+            name: keyframe.name,
+            title: keyframe.title,
+            instant: keyframe.instant.toString(),
+            irreversibleChanges: keyframe.irreversibleChanges,
+            source: keyframe.source,
+            status: keyframe.status,
+            decisionRefId: keyframe.decisionRefId === null ? null : stringifyEntityId(keyframe.decisionRefId),
+            note: keyframe.note,
+            createdAt: keyframe.createdAt.toISOString(),
+            updatedAt: keyframe.updatedAt.toISOString(),
         };
     }
 

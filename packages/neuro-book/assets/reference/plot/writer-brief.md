@@ -8,14 +8,17 @@
 
 brief = **框架 + 信息控制 + 规划任务/警告 + 查询指引**,不是正文草稿,也不复述 lorebook。设定指向 lorebook、状态指向 World Engine、文风归 writer profile;brief 只留「本章特有」的东西。
 
-## 两种防全知模式
+## 三种防全知模式
 
 | 模式 | writer 能力 | brief 里的世界状态 |
 | --- | --- | --- |
 | **autonomous(自主全知,默认)** | Plot 只读 + World Engine 只读 + lorebook 读 | **只给查询提示**(查哪些 subject、哪个时间窗),不展开状态;writer 自查 |
 | **curated(受控投喂,当前 leader 手动使用)** | 读不到设定源 | **展开过滤后的状态摘要**;leader 投喂前按「必须隐藏」删减 |
+| **slice-only(纯事实切片,事后校验)** | Plot 只读 + World Engine 只读 + lorebook 读 | **展开状态摘要**(同 curated 的事实截面);但**剔除信息控制四字段与禁写段**——意义指令不进动笔前上下文,信息边界改由 review workflow 事后核对(写作宪法第五条) |
 
 调用:`get_chapter_writer_brief({projectPath, chapterId, mode})`,`mode` 默认 `autonomous`。
+
+slice-only 的段落差异:骨架第 3 段「信息控制(必填)」与第 5 段「禁写」**不出现**;信息控制四项全空**不降级** status(不阻断 handoff),改为在 Warnings 追加「本章将依赖事后评审核对信息边界」。
 
 ## brief 段落骨架(编译器产出顺序)
 
@@ -45,7 +48,7 @@ beat.note 也会出现「只写到发烫,不许发光」这类推进幅度指示
 
 ## status 阶梯
 
-`needs_plot`(无 Scene)→ `needs_world_anchor`(Scene 缺时间范围)→ `needs_world_context`(subject 未接入 World Engine)→ `needs_chapter_brief`(信息控制四项全空)→ `ready`。非 `ready` 时 leader 应先补齐再交接。规划层两段(本章 Promise 任务 / 未决决策警告)只追加内容,**不参与 status 阶梯**(是否升级 `needs_decision` 档待观察实际使用,Task 93 TODO)。
+`needs_plot`(无 Scene)→ `needs_world_anchor`(Scene 缺时间范围)→ `needs_world_context`(subject 未接入 World Engine)→ `needs_chapter_brief`(信息控制四项全空;**slice-only 模式跳过此档**)→ `ready`。非 `ready` 时 leader 应先补齐再交接。规划层两段(本章 Promise 任务 / 未决决策警告)只追加内容,**不参与 status 阶梯**(是否升级 `needs_decision` 档待观察实际使用,Task 93 TODO)。
 
 ## 不进 brief 的东西
 

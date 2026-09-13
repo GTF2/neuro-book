@@ -105,6 +105,22 @@ enum StoryDecisionAnchorKind {
   content
 }
 
+// 关键帧来源(写作宪法第三条/第六条):author=人手写的不可逆状态变化帧;
+// derived=从正文反推的帧(执行层判断力,正文反向推翻设定时产生)。
+enum StoryKeyframeSource {
+  author
+  derived
+}
+
+// 关键帧校验状态:pending=已声明未回撞;confirmed=回撞通过或裁决维持;
+// violated=回撞发现正文与世界引擎/帧声明冲突,待裁决;overthrown=裁决推翻(留痕在 decisionRef)。
+enum StoryKeyframeStatus {
+  pending
+  confirmed
+  violated
+  overthrown
+}
+
 model ProjectMetadata {
   key       String   @id
   value     String
@@ -131,6 +147,7 @@ model Story {
   scenes    StoryScene[]
   promises  StoryPromise[]
   decisions StoryDecision[]
+  keyframes StoryKeyframe[]
 }
 
 // 承载树:Act(卷)。语义对应 manuscript 的 volume 层,但与文件系统切割;排序权威在 sortOrder,目录名前缀只是装饰。
@@ -259,6 +276,7 @@ model StoryScene {
   incomingSceneRefs  StorySceneRef[]        @relation("StorySceneRefTargetScene")
   promiseBeats       StoryPromiseBeat[]
   anchoredDecisions  StoryDecision[]        @relation("StoryDecisionAnchorScene")
+  keyframes          StoryKeyframe[]
 
   @@unique([threadId, threadSortOrder])
   @@index([threadId, threadSortOrder])
@@ -370,8 +388,34 @@ model StoryDecision {
   anchorPromise        StoryPromise?           @relation("StoryDecisionAnchorPromise", fields: [anchorPromiseId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   supersededBy         StoryDecision?          @relation("StoryDecisionSupersededBy", fields: [supersededById], references: [id], onDelete: SetNull, onUpdate: Cascade)
   supersedes           StoryDecision[]         @relation("StoryDecisionSupersededBy")
+  referencedKeyframes  StoryKeyframe[]         @relation("StoryKeyframeDecisionRef")
 
   @@unique([storyId, name])
+  @@index([storyId, status])
+}
+
+// 关键帧(写作宪法第三条「关键帧写作」):人只写不可逆的状态变化帧,帧间补间交给 writer 演化。
+// instant 锚定 World Engine 时刻;irreversibleChanges 是声明式变化清单(谁死/剑易主/誓破),回撞校验的标的。
+model StoryKeyframe {
+  id                  Int               @id @default(autoincrement())
+  storyId             Int
+  sceneId             Int?              // 锚定 Scene(可空:帧不强制挂在场景上)
+  name                String            // per-story 唯一 slug
+  title               String
+  instant             BigInt            // World Engine 锚点时刻
+  irreversibleChanges String            @default("[]") // ["薇洛丝失去项链","格里沙违背誓言"]
+  source              StoryKeyframeSource @default(author)
+  status              StoryKeyframeStatus @default(pending)
+  decisionRefId       Int?              // 推翻/裁决留痕(挂创作决策记录,宪法第六条)
+  note                String?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  story               Story             @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  scene               StoryScene?       @relation(fields: [sceneId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  decisionRef         StoryDecision?    @relation("StoryKeyframeDecisionRef", fields: [decisionRefId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([storyId, name])
+  @@index([storyId, instant])
   @@index([storyId, status])
 }
 

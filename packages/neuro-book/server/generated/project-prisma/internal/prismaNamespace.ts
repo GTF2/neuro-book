@@ -396,6 +396,7 @@ export const ModelName = {
   StoryPromise: 'StoryPromise',
   StoryPromiseBeat: 'StoryPromiseBeat',
   StoryDecision: 'StoryDecision',
+  StoryKeyframe: 'StoryKeyframe',
   WorldSubject: 'WorldSubject',
   WorldSlice: 'WorldSlice',
   WorldPatch: 'WorldPatch'
@@ -414,7 +415,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "projectMetadata" | "databaseLock" | "story" | "storyAct" | "storyChapter" | "storyPhase" | "storyThread" | "storyScene" | "storySceneRef" | "storyPromise" | "storyPromiseBeat" | "storyDecision" | "worldSubject" | "worldSlice" | "worldPatch"
+    modelProps: "projectMetadata" | "databaseLock" | "story" | "storyAct" | "storyChapter" | "storyPhase" | "storyThread" | "storyScene" | "storySceneRef" | "storyPromise" | "storyPromiseBeat" | "storyDecision" | "storyKeyframe" | "worldSubject" | "worldSlice" | "worldPatch"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1306,6 +1307,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    StoryKeyframe: {
+      payload: Prisma.$StoryKeyframePayload<ExtArgs>
+      fields: Prisma.StoryKeyframeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.StoryKeyframeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.StoryKeyframeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        findFirst: {
+          args: Prisma.StoryKeyframeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.StoryKeyframeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        findMany: {
+          args: Prisma.StoryKeyframeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>[]
+        }
+        create: {
+          args: Prisma.StoryKeyframeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        createMany: {
+          args: Prisma.StoryKeyframeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.StoryKeyframeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>[]
+        }
+        delete: {
+          args: Prisma.StoryKeyframeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        update: {
+          args: Prisma.StoryKeyframeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        deleteMany: {
+          args: Prisma.StoryKeyframeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.StoryKeyframeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.StoryKeyframeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>[]
+        }
+        upsert: {
+          args: Prisma.StoryKeyframeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$StoryKeyframePayload>
+        }
+        aggregate: {
+          args: Prisma.StoryKeyframeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateStoryKeyframe>
+        }
+        groupBy: {
+          args: Prisma.StoryKeyframeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StoryKeyframeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.StoryKeyframeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.StoryKeyframeCountAggregateOutputType> | number
+        }
+      }
+    }
     WorldSubject: {
       payload: Prisma.$WorldSubjectPayload<ExtArgs>
       fields: Prisma.WorldSubjectFieldRefs
@@ -1778,6 +1853,25 @@ export const StoryDecisionScalarFieldEnum = {
 export type StoryDecisionScalarFieldEnum = (typeof StoryDecisionScalarFieldEnum)[keyof typeof StoryDecisionScalarFieldEnum]
 
 
+export const StoryKeyframeScalarFieldEnum = {
+  id: 'id',
+  storyId: 'storyId',
+  sceneId: 'sceneId',
+  name: 'name',
+  title: 'title',
+  instant: 'instant',
+  irreversibleChanges: 'irreversibleChanges',
+  source: 'source',
+  status: 'status',
+  decisionRefId: 'decisionRefId',
+  note: 'note',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type StoryKeyframeScalarFieldEnum = (typeof StoryKeyframeScalarFieldEnum)[keyof typeof StoryKeyframeScalarFieldEnum]
+
+
 export const WorldSubjectScalarFieldEnum = {
   id: 'id',
   type: 'type',
@@ -1960,6 +2054,20 @@ export type EnumStoryDecisionAnchorKindFieldRefInput<$PrismaModel> = FieldRefInp
 
 
 /**
+ * Reference to a field of type 'StoryKeyframeSource'
+ */
+export type EnumStoryKeyframeSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoryKeyframeSource'>
+    
+
+
+/**
+ * Reference to a field of type 'StoryKeyframeStatus'
+ */
+export type EnumStoryKeyframeStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StoryKeyframeStatus'>
+    
+
+
+/**
  * Reference to a field of type 'Bytes'
  */
 export type BytesFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Bytes'>
@@ -2094,6 +2202,7 @@ export type GlobalOmitConfig = {
   storyPromise?: Prisma.StoryPromiseOmit
   storyPromiseBeat?: Prisma.StoryPromiseBeatOmit
   storyDecision?: Prisma.StoryDecisionOmit
+  storyKeyframe?: Prisma.StoryKeyframeOmit
   worldSubject?: Prisma.WorldSubjectOmit
   worldSlice?: Prisma.WorldSliceOmit
   worldPatch?: Prisma.WorldPatchOmit

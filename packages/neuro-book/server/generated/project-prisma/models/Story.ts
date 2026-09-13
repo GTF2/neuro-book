@@ -231,6 +231,7 @@ export type StoryWhereInput = {
   scenes?: Prisma.StorySceneListRelationFilter
   promises?: Prisma.StoryPromiseListRelationFilter
   decisions?: Prisma.StoryDecisionListRelationFilter
+  keyframes?: Prisma.StoryKeyframeListRelationFilter
 }
 
 export type StoryOrderByWithRelationInput = {
@@ -247,6 +248,7 @@ export type StoryOrderByWithRelationInput = {
   scenes?: Prisma.StorySceneOrderByRelationAggregateInput
   promises?: Prisma.StoryPromiseOrderByRelationAggregateInput
   decisions?: Prisma.StoryDecisionOrderByRelationAggregateInput
+  keyframes?: Prisma.StoryKeyframeOrderByRelationAggregateInput
 }
 
 export type StoryWhereUniqueInput = Prisma.AtLeast<{
@@ -266,6 +268,7 @@ export type StoryWhereUniqueInput = Prisma.AtLeast<{
   scenes?: Prisma.StorySceneListRelationFilter
   promises?: Prisma.StoryPromiseListRelationFilter
   decisions?: Prisma.StoryDecisionListRelationFilter
+  keyframes?: Prisma.StoryKeyframeListRelationFilter
 }, "id">
 
 export type StoryOrderByWithAggregationInput = {
@@ -307,6 +310,7 @@ export type StoryCreateInput = {
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateInput = {
@@ -323,6 +327,7 @@ export type StoryUncheckedCreateInput = {
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUpdateInput = {
@@ -338,6 +343,7 @@ export type StoryUpdateInput = {
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateInput = {
@@ -354,6 +360,7 @@ export type StoryUncheckedUpdateInput = {
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateManyInput = {
@@ -524,6 +531,20 @@ export type StoryUpdateOneRequiredWithoutDecisionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StoryUpdateToOneWithWhereWithoutDecisionsInput, Prisma.StoryUpdateWithoutDecisionsInput>, Prisma.StoryUncheckedUpdateWithoutDecisionsInput>
 }
 
+export type StoryCreateNestedOneWithoutKeyframesInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutKeyframesInput, Prisma.StoryUncheckedCreateWithoutKeyframesInput>
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutKeyframesInput
+  connect?: Prisma.StoryWhereUniqueInput
+}
+
+export type StoryUpdateOneRequiredWithoutKeyframesNestedInput = {
+  create?: Prisma.XOR<Prisma.StoryCreateWithoutKeyframesInput, Prisma.StoryUncheckedCreateWithoutKeyframesInput>
+  connectOrCreate?: Prisma.StoryCreateOrConnectWithoutKeyframesInput
+  upsert?: Prisma.StoryUpsertWithoutKeyframesInput
+  connect?: Prisma.StoryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StoryUpdateToOneWithWhereWithoutKeyframesInput, Prisma.StoryUpdateWithoutKeyframesInput>, Prisma.StoryUncheckedUpdateWithoutKeyframesInput>
+}
+
 export type StoryCreateWithoutActsInput = {
   title: string
   summary?: string
@@ -536,6 +557,7 @@ export type StoryCreateWithoutActsInput = {
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutActsInput = {
@@ -551,6 +573,7 @@ export type StoryUncheckedCreateWithoutActsInput = {
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutActsInput = {
@@ -581,6 +604,7 @@ export type StoryUpdateWithoutActsInput = {
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutActsInput = {
@@ -596,6 +620,7 @@ export type StoryUncheckedUpdateWithoutActsInput = {
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutChaptersInput = {
@@ -610,6 +635,7 @@ export type StoryCreateWithoutChaptersInput = {
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutChaptersInput = {
@@ -625,6 +651,7 @@ export type StoryUncheckedCreateWithoutChaptersInput = {
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutChaptersInput = {
@@ -655,6 +682,7 @@ export type StoryUpdateWithoutChaptersInput = {
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutChaptersInput = {
@@ -670,6 +698,7 @@ export type StoryUncheckedUpdateWithoutChaptersInput = {
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutPhasesInput = {
@@ -684,6 +713,7 @@ export type StoryCreateWithoutPhasesInput = {
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutPhasesInput = {
@@ -699,6 +729,7 @@ export type StoryUncheckedCreateWithoutPhasesInput = {
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutPhasesInput = {
@@ -729,6 +760,7 @@ export type StoryUpdateWithoutPhasesInput = {
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutPhasesInput = {
@@ -744,6 +776,7 @@ export type StoryUncheckedUpdateWithoutPhasesInput = {
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutThreadsInput = {
@@ -758,6 +791,7 @@ export type StoryCreateWithoutThreadsInput = {
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutThreadsInput = {
@@ -773,6 +807,7 @@ export type StoryUncheckedCreateWithoutThreadsInput = {
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutThreadsInput = {
@@ -803,6 +838,7 @@ export type StoryUpdateWithoutThreadsInput = {
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutThreadsInput = {
@@ -818,6 +854,7 @@ export type StoryUncheckedUpdateWithoutThreadsInput = {
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutScenesInput = {
@@ -832,6 +869,7 @@ export type StoryCreateWithoutScenesInput = {
   threads?: Prisma.StoryThreadCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutScenesInput = {
@@ -847,6 +885,7 @@ export type StoryUncheckedCreateWithoutScenesInput = {
   threads?: Prisma.StoryThreadUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutScenesInput = {
@@ -877,6 +916,7 @@ export type StoryUpdateWithoutScenesInput = {
   threads?: Prisma.StoryThreadUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutScenesInput = {
@@ -892,6 +932,7 @@ export type StoryUncheckedUpdateWithoutScenesInput = {
   threads?: Prisma.StoryThreadUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutPromisesInput = {
@@ -906,6 +947,7 @@ export type StoryCreateWithoutPromisesInput = {
   threads?: Prisma.StoryThreadCreateNestedManyWithoutStoryInput
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutPromisesInput = {
@@ -921,6 +963,7 @@ export type StoryUncheckedCreateWithoutPromisesInput = {
   threads?: Prisma.StoryThreadUncheckedCreateNestedManyWithoutStoryInput
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutPromisesInput = {
@@ -951,6 +994,7 @@ export type StoryUpdateWithoutPromisesInput = {
   threads?: Prisma.StoryThreadUpdateManyWithoutStoryNestedInput
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutPromisesInput = {
@@ -966,6 +1010,7 @@ export type StoryUncheckedUpdateWithoutPromisesInput = {
   threads?: Prisma.StoryThreadUncheckedUpdateManyWithoutStoryNestedInput
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryCreateWithoutDecisionsInput = {
@@ -980,6 +1025,7 @@ export type StoryCreateWithoutDecisionsInput = {
   threads?: Prisma.StoryThreadCreateNestedManyWithoutStoryInput
   scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutStoryInput
 }
 
 export type StoryUncheckedCreateWithoutDecisionsInput = {
@@ -995,6 +1041,7 @@ export type StoryUncheckedCreateWithoutDecisionsInput = {
   threads?: Prisma.StoryThreadUncheckedCreateNestedManyWithoutStoryInput
   scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
   promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
+  keyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutStoryInput
 }
 
 export type StoryCreateOrConnectWithoutDecisionsInput = {
@@ -1025,6 +1072,7 @@ export type StoryUpdateWithoutDecisionsInput = {
   threads?: Prisma.StoryThreadUpdateManyWithoutStoryNestedInput
   scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUpdateManyWithoutStoryNestedInput
 }
 
 export type StoryUncheckedUpdateWithoutDecisionsInput = {
@@ -1040,6 +1088,85 @@ export type StoryUncheckedUpdateWithoutDecisionsInput = {
   threads?: Prisma.StoryThreadUncheckedUpdateManyWithoutStoryNestedInput
   scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
   promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
+  keyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutStoryNestedInput
+}
+
+export type StoryCreateWithoutKeyframesInput = {
+  title: string
+  summary?: string
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  acts?: Prisma.StoryActCreateNestedManyWithoutStoryInput
+  chapters?: Prisma.StoryChapterCreateNestedManyWithoutStoryInput
+  phases?: Prisma.StoryPhaseCreateNestedManyWithoutStoryInput
+  threads?: Prisma.StoryThreadCreateNestedManyWithoutStoryInput
+  scenes?: Prisma.StorySceneCreateNestedManyWithoutStoryInput
+  promises?: Prisma.StoryPromiseCreateNestedManyWithoutStoryInput
+  decisions?: Prisma.StoryDecisionCreateNestedManyWithoutStoryInput
+}
+
+export type StoryUncheckedCreateWithoutKeyframesInput = {
+  id?: number
+  title: string
+  summary?: string
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  acts?: Prisma.StoryActUncheckedCreateNestedManyWithoutStoryInput
+  chapters?: Prisma.StoryChapterUncheckedCreateNestedManyWithoutStoryInput
+  phases?: Prisma.StoryPhaseUncheckedCreateNestedManyWithoutStoryInput
+  threads?: Prisma.StoryThreadUncheckedCreateNestedManyWithoutStoryInput
+  scenes?: Prisma.StorySceneUncheckedCreateNestedManyWithoutStoryInput
+  promises?: Prisma.StoryPromiseUncheckedCreateNestedManyWithoutStoryInput
+  decisions?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutStoryInput
+}
+
+export type StoryCreateOrConnectWithoutKeyframesInput = {
+  where: Prisma.StoryWhereUniqueInput
+  create: Prisma.XOR<Prisma.StoryCreateWithoutKeyframesInput, Prisma.StoryUncheckedCreateWithoutKeyframesInput>
+}
+
+export type StoryUpsertWithoutKeyframesInput = {
+  update: Prisma.XOR<Prisma.StoryUpdateWithoutKeyframesInput, Prisma.StoryUncheckedUpdateWithoutKeyframesInput>
+  create: Prisma.XOR<Prisma.StoryCreateWithoutKeyframesInput, Prisma.StoryUncheckedCreateWithoutKeyframesInput>
+  where?: Prisma.StoryWhereInput
+}
+
+export type StoryUpdateToOneWithWhereWithoutKeyframesInput = {
+  where?: Prisma.StoryWhereInput
+  data: Prisma.XOR<Prisma.StoryUpdateWithoutKeyframesInput, Prisma.StoryUncheckedUpdateWithoutKeyframesInput>
+}
+
+export type StoryUpdateWithoutKeyframesInput = {
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  acts?: Prisma.StoryActUpdateManyWithoutStoryNestedInput
+  chapters?: Prisma.StoryChapterUpdateManyWithoutStoryNestedInput
+  phases?: Prisma.StoryPhaseUpdateManyWithoutStoryNestedInput
+  threads?: Prisma.StoryThreadUpdateManyWithoutStoryNestedInput
+  scenes?: Prisma.StorySceneUpdateManyWithoutStoryNestedInput
+  promises?: Prisma.StoryPromiseUpdateManyWithoutStoryNestedInput
+  decisions?: Prisma.StoryDecisionUpdateManyWithoutStoryNestedInput
+}
+
+export type StoryUncheckedUpdateWithoutKeyframesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  summary?: Prisma.StringFieldUpdateOperationsInput | string
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  acts?: Prisma.StoryActUncheckedUpdateManyWithoutStoryNestedInput
+  chapters?: Prisma.StoryChapterUncheckedUpdateManyWithoutStoryNestedInput
+  phases?: Prisma.StoryPhaseUncheckedUpdateManyWithoutStoryNestedInput
+  threads?: Prisma.StoryThreadUncheckedUpdateManyWithoutStoryNestedInput
+  scenes?: Prisma.StorySceneUncheckedUpdateManyWithoutStoryNestedInput
+  promises?: Prisma.StoryPromiseUncheckedUpdateManyWithoutStoryNestedInput
+  decisions?: Prisma.StoryDecisionUncheckedUpdateManyWithoutStoryNestedInput
 }
 
 
@@ -1055,6 +1182,7 @@ export type StoryCountOutputType = {
   scenes: number
   promises: number
   decisions: number
+  keyframes: number
 }
 
 export type StoryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1065,6 +1193,7 @@ export type StoryCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   scenes?: boolean | StoryCountOutputTypeCountScenesArgs
   promises?: boolean | StoryCountOutputTypeCountPromisesArgs
   decisions?: boolean | StoryCountOutputTypeCountDecisionsArgs
+  keyframes?: boolean | StoryCountOutputTypeCountKeyframesArgs
 }
 
 /**
@@ -1126,6 +1255,13 @@ export type StoryCountOutputTypeCountDecisionsArgs<ExtArgs extends runtime.Types
   where?: Prisma.StoryDecisionWhereInput
 }
 
+/**
+ * StoryCountOutputType without action
+ */
+export type StoryCountOutputTypeCountKeyframesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StoryKeyframeWhereInput
+}
+
 
 export type StorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1141,6 +1277,7 @@ export type StorySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   scenes?: boolean | Prisma.Story$scenesArgs<ExtArgs>
   promises?: boolean | Prisma.Story$promisesArgs<ExtArgs>
   decisions?: boolean | Prisma.Story$decisionsArgs<ExtArgs>
+  keyframes?: boolean | Prisma.Story$keyframesArgs<ExtArgs>
   _count?: boolean | Prisma.StoryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["story"]>
 
@@ -1180,6 +1317,7 @@ export type StoryInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   scenes?: boolean | Prisma.Story$scenesArgs<ExtArgs>
   promises?: boolean | Prisma.Story$promisesArgs<ExtArgs>
   decisions?: boolean | Prisma.Story$decisionsArgs<ExtArgs>
+  keyframes?: boolean | Prisma.Story$keyframesArgs<ExtArgs>
   _count?: boolean | Prisma.StoryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StoryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1195,6 +1333,7 @@ export type $StoryPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     scenes: Prisma.$StoryScenePayload<ExtArgs>[]
     promises: Prisma.$StoryPromisePayload<ExtArgs>[]
     decisions: Prisma.$StoryDecisionPayload<ExtArgs>[]
+    keyframes: Prisma.$StoryKeyframePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1604,6 +1743,7 @@ export interface Prisma__StoryClient<T, Null = never, ExtArgs extends runtime.Ty
   scenes<T extends Prisma.Story$scenesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$scenesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryScenePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   promises<T extends Prisma.Story$promisesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$promisesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryPromisePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   decisions<T extends Prisma.Story$decisionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$decisionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  keyframes<T extends Prisma.Story$keyframesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Story$keyframesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryKeyframePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2195,6 +2335,30 @@ export type Story$decisionsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.StoryDecisionScalarFieldEnum | Prisma.StoryDecisionScalarFieldEnum[]
+}
+
+/**
+ * Story.keyframes
+ */
+export type Story$keyframesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StoryKeyframe
+   */
+  select?: Prisma.StoryKeyframeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StoryKeyframe
+   */
+  omit?: Prisma.StoryKeyframeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoryKeyframeInclude<ExtArgs> | null
+  where?: Prisma.StoryKeyframeWhereInput
+  orderBy?: Prisma.StoryKeyframeOrderByWithRelationInput | Prisma.StoryKeyframeOrderByWithRelationInput[]
+  cursor?: Prisma.StoryKeyframeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StoryKeyframeScalarFieldEnum | Prisma.StoryKeyframeScalarFieldEnum[]
 }
 
 /**

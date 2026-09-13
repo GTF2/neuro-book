@@ -102,6 +102,11 @@ export type StoryPromiseBeat = Prisma.StoryPromiseBeatModel
  */
 export type StoryDecision = Prisma.StoryDecisionModel
 /**
+ * Model StoryKeyframe
+ * 
+ */
+export type StoryKeyframe = Prisma.StoryKeyframeModel
+/**
  * Model WorldSubject
  * 
  */

@@ -416,6 +416,7 @@ export type StoryDecisionWhereInput = {
   anchorPromise?: Prisma.XOR<Prisma.StoryPromiseNullableScalarRelationFilter, Prisma.StoryPromiseWhereInput> | null
   supersededBy?: Prisma.XOR<Prisma.StoryDecisionNullableScalarRelationFilter, Prisma.StoryDecisionWhereInput> | null
   supersedes?: Prisma.StoryDecisionListRelationFilter
+  referencedKeyframes?: Prisma.StoryKeyframeListRelationFilter
 }
 
 export type StoryDecisionOrderByWithRelationInput = {
@@ -452,6 +453,7 @@ export type StoryDecisionOrderByWithRelationInput = {
   anchorPromise?: Prisma.StoryPromiseOrderByWithRelationInput
   supersededBy?: Prisma.StoryDecisionOrderByWithRelationInput
   supersedes?: Prisma.StoryDecisionOrderByRelationAggregateInput
+  referencedKeyframes?: Prisma.StoryKeyframeOrderByRelationAggregateInput
 }
 
 export type StoryDecisionWhereUniqueInput = Prisma.AtLeast<{
@@ -492,6 +494,7 @@ export type StoryDecisionWhereUniqueInput = Prisma.AtLeast<{
   anchorPromise?: Prisma.XOR<Prisma.StoryPromiseNullableScalarRelationFilter, Prisma.StoryPromiseWhereInput> | null
   supersededBy?: Prisma.XOR<Prisma.StoryDecisionNullableScalarRelationFilter, Prisma.StoryDecisionWhereInput> | null
   supersedes?: Prisma.StoryDecisionListRelationFilter
+  referencedKeyframes?: Prisma.StoryKeyframeListRelationFilter
 }, "id" | "storyId_name">
 
 export type StoryDecisionOrderByWithAggregationInput = {
@@ -584,6 +587,7 @@ export type StoryDecisionCreateInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateInput = {
@@ -613,6 +617,7 @@ export type StoryDecisionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUpdateInput = {
@@ -641,6 +646,7 @@ export type StoryDecisionUpdateInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateInput = {
@@ -670,6 +676,7 @@ export type StoryDecisionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionCreateManyInput = {
@@ -1194,6 +1201,22 @@ export type StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput = {
   deleteMany?: Prisma.StoryDecisionScalarWhereInput | Prisma.StoryDecisionScalarWhereInput[]
 }
 
+export type StoryDecisionCreateNestedOneWithoutReferencedKeyframesInput = {
+  create?: Prisma.XOR<Prisma.StoryDecisionCreateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedCreateWithoutReferencedKeyframesInput>
+  connectOrCreate?: Prisma.StoryDecisionCreateOrConnectWithoutReferencedKeyframesInput
+  connect?: Prisma.StoryDecisionWhereUniqueInput
+}
+
+export type StoryDecisionUpdateOneWithoutReferencedKeyframesNestedInput = {
+  create?: Prisma.XOR<Prisma.StoryDecisionCreateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedCreateWithoutReferencedKeyframesInput>
+  connectOrCreate?: Prisma.StoryDecisionCreateOrConnectWithoutReferencedKeyframesInput
+  upsert?: Prisma.StoryDecisionUpsertWithoutReferencedKeyframesInput
+  disconnect?: Prisma.StoryDecisionWhereInput | boolean
+  delete?: Prisma.StoryDecisionWhereInput | boolean
+  connect?: Prisma.StoryDecisionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StoryDecisionUpdateToOneWithWhereWithoutReferencedKeyframesInput, Prisma.StoryDecisionUpdateWithoutReferencedKeyframesInput>, Prisma.StoryDecisionUncheckedUpdateWithoutReferencedKeyframesInput>
+}
+
 export type StoryDecisionCreateWithoutStoryInput = {
   name: string
   title: string
@@ -1219,6 +1242,7 @@ export type StoryDecisionCreateWithoutStoryInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutStoryInput = {
@@ -1247,6 +1271,7 @@ export type StoryDecisionUncheckedCreateWithoutStoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutStoryInput = {
@@ -1330,6 +1355,7 @@ export type StoryDecisionCreateWithoutAnchorActInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutAnchorActInput = {
@@ -1358,6 +1384,7 @@ export type StoryDecisionUncheckedCreateWithoutAnchorActInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutAnchorActInput = {
@@ -1410,6 +1437,7 @@ export type StoryDecisionCreateWithoutAnchorChapterInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutAnchorChapterInput = {
@@ -1438,6 +1466,7 @@ export type StoryDecisionUncheckedCreateWithoutAnchorChapterInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutAnchorChapterInput = {
@@ -1490,6 +1519,7 @@ export type StoryDecisionCreateWithoutAnchorThreadInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutAnchorThreadInput = {
@@ -1518,6 +1548,7 @@ export type StoryDecisionUncheckedCreateWithoutAnchorThreadInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutAnchorThreadInput = {
@@ -1570,6 +1601,7 @@ export type StoryDecisionCreateWithoutAnchorSceneInput = {
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutAnchorSceneInput = {
@@ -1598,6 +1630,7 @@ export type StoryDecisionUncheckedCreateWithoutAnchorSceneInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutAnchorSceneInput = {
@@ -1650,6 +1683,7 @@ export type StoryDecisionCreateWithoutAnchorPromiseInput = {
   anchorScene?: Prisma.StorySceneCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutAnchorPromiseInput = {
@@ -1678,6 +1712,7 @@ export type StoryDecisionUncheckedCreateWithoutAnchorPromiseInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutAnchorPromiseInput = {
@@ -1730,6 +1765,7 @@ export type StoryDecisionCreateWithoutSupersedesInput = {
   anchorScene?: Prisma.StorySceneCreateNestedOneWithoutAnchoredDecisionsInput
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutSupersedesInput = {
@@ -1758,6 +1794,7 @@ export type StoryDecisionUncheckedCreateWithoutSupersedesInput = {
   note?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutSupersedesInput = {
@@ -1790,6 +1827,7 @@ export type StoryDecisionCreateWithoutSupersededByInput = {
   anchorScene?: Prisma.StorySceneCreateNestedOneWithoutAnchoredDecisionsInput
   anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
   supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionUncheckedCreateWithoutSupersededByInput = {
@@ -1818,6 +1856,7 @@ export type StoryDecisionUncheckedCreateWithoutSupersededByInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedCreateNestedManyWithoutDecisionRefInput
 }
 
 export type StoryDecisionCreateOrConnectWithoutSupersededByInput = {
@@ -1865,6 +1904,7 @@ export type StoryDecisionUpdateWithoutSupersedesInput = {
   anchorScene?: Prisma.StorySceneUpdateOneWithoutAnchoredDecisionsNestedInput
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutSupersedesInput = {
@@ -1893,6 +1933,7 @@ export type StoryDecisionUncheckedUpdateWithoutSupersedesInput = {
   note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUpsertWithWhereUniqueWithoutSupersededByInput = {
@@ -1909,6 +1950,136 @@ export type StoryDecisionUpdateWithWhereUniqueWithoutSupersededByInput = {
 export type StoryDecisionUpdateManyWithWhereWithoutSupersededByInput = {
   where: Prisma.StoryDecisionScalarWhereInput
   data: Prisma.XOR<Prisma.StoryDecisionUpdateManyMutationInput, Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByInput>
+}
+
+export type StoryDecisionCreateWithoutReferencedKeyframesInput = {
+  name: string
+  title: string
+  status?: $Enums.StoryDecisionStatus
+  question: string
+  options?: string
+  deadlineChapterId?: number | null
+  decision?: string | null
+  motivation?: string | null
+  rejectedAlternatives?: string
+  risk?: string | null
+  serves?: string
+  dependsOn?: string
+  anchorKind?: $Enums.StoryDecisionAnchorKind
+  anchorPath?: string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  story: Prisma.StoryCreateNestedOneWithoutDecisionsInput
+  anchorAct?: Prisma.StoryActCreateNestedOneWithoutAnchoredDecisionsInput
+  anchorChapter?: Prisma.StoryChapterCreateNestedOneWithoutAnchoredDecisionsInput
+  anchorThread?: Prisma.StoryThreadCreateNestedOneWithoutAnchoredDecisionsInput
+  anchorScene?: Prisma.StorySceneCreateNestedOneWithoutAnchoredDecisionsInput
+  anchorPromise?: Prisma.StoryPromiseCreateNestedOneWithoutAnchoredDecisionsInput
+  supersededBy?: Prisma.StoryDecisionCreateNestedOneWithoutSupersedesInput
+  supersedes?: Prisma.StoryDecisionCreateNestedManyWithoutSupersededByInput
+}
+
+export type StoryDecisionUncheckedCreateWithoutReferencedKeyframesInput = {
+  id?: number
+  storyId: number
+  name: string
+  title: string
+  status?: $Enums.StoryDecisionStatus
+  question: string
+  options?: string
+  deadlineChapterId?: number | null
+  decision?: string | null
+  motivation?: string | null
+  rejectedAlternatives?: string
+  risk?: string | null
+  serves?: string
+  dependsOn?: string
+  supersededById?: number | null
+  anchorKind?: $Enums.StoryDecisionAnchorKind
+  anchorActId?: number | null
+  anchorChapterId?: number | null
+  anchorThreadId?: number | null
+  anchorSceneId?: number | null
+  anchorPromiseId?: number | null
+  anchorPath?: string | null
+  note?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  supersedes?: Prisma.StoryDecisionUncheckedCreateNestedManyWithoutSupersededByInput
+}
+
+export type StoryDecisionCreateOrConnectWithoutReferencedKeyframesInput = {
+  where: Prisma.StoryDecisionWhereUniqueInput
+  create: Prisma.XOR<Prisma.StoryDecisionCreateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedCreateWithoutReferencedKeyframesInput>
+}
+
+export type StoryDecisionUpsertWithoutReferencedKeyframesInput = {
+  update: Prisma.XOR<Prisma.StoryDecisionUpdateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedUpdateWithoutReferencedKeyframesInput>
+  create: Prisma.XOR<Prisma.StoryDecisionCreateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedCreateWithoutReferencedKeyframesInput>
+  where?: Prisma.StoryDecisionWhereInput
+}
+
+export type StoryDecisionUpdateToOneWithWhereWithoutReferencedKeyframesInput = {
+  where?: Prisma.StoryDecisionWhereInput
+  data: Prisma.XOR<Prisma.StoryDecisionUpdateWithoutReferencedKeyframesInput, Prisma.StoryDecisionUncheckedUpdateWithoutReferencedKeyframesInput>
+}
+
+export type StoryDecisionUpdateWithoutReferencedKeyframesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStoryDecisionStatusFieldUpdateOperationsInput | $Enums.StoryDecisionStatus
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  options?: Prisma.StringFieldUpdateOperationsInput | string
+  deadlineChapterId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  decision?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  motivation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAlternatives?: Prisma.StringFieldUpdateOperationsInput | string
+  risk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serves?: Prisma.StringFieldUpdateOperationsInput | string
+  dependsOn?: Prisma.StringFieldUpdateOperationsInput | string
+  anchorKind?: Prisma.EnumStoryDecisionAnchorKindFieldUpdateOperationsInput | $Enums.StoryDecisionAnchorKind
+  anchorPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  story?: Prisma.StoryUpdateOneRequiredWithoutDecisionsNestedInput
+  anchorAct?: Prisma.StoryActUpdateOneWithoutAnchoredDecisionsNestedInput
+  anchorChapter?: Prisma.StoryChapterUpdateOneWithoutAnchoredDecisionsNestedInput
+  anchorThread?: Prisma.StoryThreadUpdateOneWithoutAnchoredDecisionsNestedInput
+  anchorScene?: Prisma.StorySceneUpdateOneWithoutAnchoredDecisionsNestedInput
+  anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
+  supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
+  supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+}
+
+export type StoryDecisionUncheckedUpdateWithoutReferencedKeyframesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  storyId?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumStoryDecisionStatusFieldUpdateOperationsInput | $Enums.StoryDecisionStatus
+  question?: Prisma.StringFieldUpdateOperationsInput | string
+  options?: Prisma.StringFieldUpdateOperationsInput | string
+  deadlineChapterId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  decision?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  motivation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  rejectedAlternatives?: Prisma.StringFieldUpdateOperationsInput | string
+  risk?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  serves?: Prisma.StringFieldUpdateOperationsInput | string
+  dependsOn?: Prisma.StringFieldUpdateOperationsInput | string
+  supersededById?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorKind?: Prisma.EnumStoryDecisionAnchorKindFieldUpdateOperationsInput | $Enums.StoryDecisionAnchorKind
+  anchorActId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorChapterId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorThreadId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorSceneId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorPromiseId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  anchorPath?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
 }
 
 export type StoryDecisionCreateManyStoryInput = {
@@ -1963,6 +2134,7 @@ export type StoryDecisionUpdateWithoutStoryInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutStoryInput = {
@@ -1991,6 +2163,7 @@ export type StoryDecisionUncheckedUpdateWithoutStoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutStoryInput = {
@@ -2072,6 +2245,7 @@ export type StoryDecisionUpdateWithoutAnchorActInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutAnchorActInput = {
@@ -2100,6 +2274,7 @@ export type StoryDecisionUncheckedUpdateWithoutAnchorActInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutAnchorActInput = {
@@ -2181,6 +2356,7 @@ export type StoryDecisionUpdateWithoutAnchorChapterInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutAnchorChapterInput = {
@@ -2209,6 +2385,7 @@ export type StoryDecisionUncheckedUpdateWithoutAnchorChapterInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutAnchorChapterInput = {
@@ -2290,6 +2467,7 @@ export type StoryDecisionUpdateWithoutAnchorThreadInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutAnchorThreadInput = {
@@ -2318,6 +2496,7 @@ export type StoryDecisionUncheckedUpdateWithoutAnchorThreadInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutAnchorThreadInput = {
@@ -2399,6 +2578,7 @@ export type StoryDecisionUpdateWithoutAnchorSceneInput = {
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutAnchorSceneInput = {
@@ -2427,6 +2607,7 @@ export type StoryDecisionUncheckedUpdateWithoutAnchorSceneInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutAnchorSceneInput = {
@@ -2508,6 +2689,7 @@ export type StoryDecisionUpdateWithoutAnchorPromiseInput = {
   anchorScene?: Prisma.StorySceneUpdateOneWithoutAnchoredDecisionsNestedInput
   supersededBy?: Prisma.StoryDecisionUpdateOneWithoutSupersedesNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutAnchorPromiseInput = {
@@ -2536,6 +2718,7 @@ export type StoryDecisionUncheckedUpdateWithoutAnchorPromiseInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutAnchorPromiseInput = {
@@ -2617,6 +2800,7 @@ export type StoryDecisionUpdateWithoutSupersededByInput = {
   anchorScene?: Prisma.StorySceneUpdateOneWithoutAnchoredDecisionsNestedInput
   anchorPromise?: Prisma.StoryPromiseUpdateOneWithoutAnchoredDecisionsNestedInput
   supersedes?: Prisma.StoryDecisionUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateWithoutSupersededByInput = {
@@ -2645,6 +2829,7 @@ export type StoryDecisionUncheckedUpdateWithoutSupersededByInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   supersedes?: Prisma.StoryDecisionUncheckedUpdateManyWithoutSupersededByNestedInput
+  referencedKeyframes?: Prisma.StoryKeyframeUncheckedUpdateManyWithoutDecisionRefNestedInput
 }
 
 export type StoryDecisionUncheckedUpdateManyWithoutSupersededByInput = {
@@ -2681,10 +2866,12 @@ export type StoryDecisionUncheckedUpdateManyWithoutSupersededByInput = {
 
 export type StoryDecisionCountOutputType = {
   supersedes: number
+  referencedKeyframes: number
 }
 
 export type StoryDecisionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   supersedes?: boolean | StoryDecisionCountOutputTypeCountSupersedesArgs
+  referencedKeyframes?: boolean | StoryDecisionCountOutputTypeCountReferencedKeyframesArgs
 }
 
 /**
@@ -2702,6 +2889,13 @@ export type StoryDecisionCountOutputTypeDefaultArgs<ExtArgs extends runtime.Type
  */
 export type StoryDecisionCountOutputTypeCountSupersedesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.StoryDecisionWhereInput
+}
+
+/**
+ * StoryDecisionCountOutputType without action
+ */
+export type StoryDecisionCountOutputTypeCountReferencedKeyframesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StoryKeyframeWhereInput
 }
 
 
@@ -2739,6 +2933,7 @@ export type StoryDecisionSelect<ExtArgs extends runtime.Types.Extensions.Interna
   anchorPromise?: boolean | Prisma.StoryDecision$anchorPromiseArgs<ExtArgs>
   supersededBy?: boolean | Prisma.StoryDecision$supersededByArgs<ExtArgs>
   supersedes?: boolean | Prisma.StoryDecision$supersedesArgs<ExtArgs>
+  referencedKeyframes?: boolean | Prisma.StoryDecision$referencedKeyframesArgs<ExtArgs>
   _count?: boolean | Prisma.StoryDecisionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["storyDecision"]>
 
@@ -2850,6 +3045,7 @@ export type StoryDecisionInclude<ExtArgs extends runtime.Types.Extensions.Intern
   anchorPromise?: boolean | Prisma.StoryDecision$anchorPromiseArgs<ExtArgs>
   supersededBy?: boolean | Prisma.StoryDecision$supersededByArgs<ExtArgs>
   supersedes?: boolean | Prisma.StoryDecision$supersedesArgs<ExtArgs>
+  referencedKeyframes?: boolean | Prisma.StoryDecision$referencedKeyframesArgs<ExtArgs>
   _count?: boolean | Prisma.StoryDecisionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type StoryDecisionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2882,6 +3078,7 @@ export type $StoryDecisionPayload<ExtArgs extends runtime.Types.Extensions.Inter
     anchorPromise: Prisma.$StoryPromisePayload<ExtArgs> | null
     supersededBy: Prisma.$StoryDecisionPayload<ExtArgs> | null
     supersedes: Prisma.$StoryDecisionPayload<ExtArgs>[]
+    referencedKeyframes: Prisma.$StoryKeyframePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -3311,6 +3508,7 @@ export interface Prisma__StoryDecisionClient<T, Null = never, ExtArgs extends ru
   anchorPromise<T extends Prisma.StoryDecision$anchorPromiseArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoryDecision$anchorPromiseArgs<ExtArgs>>): Prisma.Prisma__StoryPromiseClient<runtime.Types.Result.GetResult<Prisma.$StoryPromisePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   supersededBy<T extends Prisma.StoryDecision$supersededByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoryDecision$supersededByArgs<ExtArgs>>): Prisma.Prisma__StoryDecisionClient<runtime.Types.Result.GetResult<Prisma.$StoryDecisionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   supersedes<T extends Prisma.StoryDecision$supersedesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoryDecision$supersedesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryDecisionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  referencedKeyframes<T extends Prisma.StoryDecision$referencedKeyframesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoryDecision$referencedKeyframesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StoryKeyframePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3899,6 +4097,30 @@ export type StoryDecision$supersedesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.StoryDecisionScalarFieldEnum | Prisma.StoryDecisionScalarFieldEnum[]
+}
+
+/**
+ * StoryDecision.referencedKeyframes
+ */
+export type StoryDecision$referencedKeyframesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StoryKeyframe
+   */
+  select?: Prisma.StoryKeyframeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StoryKeyframe
+   */
+  omit?: Prisma.StoryKeyframeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StoryKeyframeInclude<ExtArgs> | null
+  where?: Prisma.StoryKeyframeWhereInput
+  orderBy?: Prisma.StoryKeyframeOrderByWithRelationInput | Prisma.StoryKeyframeOrderByWithRelationInput[]
+  cursor?: Prisma.StoryKeyframeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StoryKeyframeScalarFieldEnum | Prisma.StoryKeyframeScalarFieldEnum[]
 }
 
 /**

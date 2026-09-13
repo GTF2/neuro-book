@@ -168,6 +168,45 @@ describe("chapter-write-review-revise workflow", () => {
         expect(writerInvokes).toBe(1);
     });
 
+    test("infoControl 事后核对：注入一致性评审，不下发 writer", async () => {
+        const sessions = new MemorySessionStore();
+        const agents = new MockAgentPort(sessions);
+        const writerMessages: string[] = [];
+        const consistencyMessages: string[] = [];
+        agents.register("writer", (turn): {message: string; data: JsonValue} => {
+            writerMessages.push(turn.message ?? "");
+            return {message: "章节写作完成", data: {summary: "首轮即达标", outputPath: chapterPath}};
+        });
+        agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
+            if (turn.message?.includes("一致性")) {
+                consistencyMessages.push(turn.message ?? "");
+            }
+            return {message: "评审完成", data: {overall: "没有必须修订的问题", issues: []}};
+        });
+        const runner = new WorkflowRunner({sessions, agents}, {
+            workspace: createMemoryWorkspace({[chapterPath]: chapterBody}),
+        });
+        const infoControl = "读者已知：项链存在\n主角已知：项链发烫\n必须隐藏：项链是前作遗物\n可暗示：遗物来历";
+
+        const view = await runner.start(await workflow("chapter-write-review-revise"), {
+            chapterPath,
+            brief: "本章目标：解开封印。",
+            infoControl,
+            reviewRounds: "1",
+        });
+
+        expect(view.status).toBe("completed");
+        // 一致性评审拿到事后核对清单。
+        expect(consistencyMessages).toHaveLength(1);
+        expect(consistencyMessages[0]).toContain("【信息控制事后核对】");
+        expect(consistencyMessages[0]).toContain("必须隐藏：项链是前作遗物");
+        // writer 的动笔前上下文绝不包含信息控制清单（宪法第五条）。
+        for (const message of writerMessages) {
+            expect(message).not.toContain("必须隐藏");
+            expect(message).not.toContain("信息控制事后核对");
+        }
+    });
+
     test("chapterPath 缺失：在创建任何 agent 前失败", async () => {
         const sessions = new MemorySessionStore();
         const agents = new MockAgentPort(sessions);
