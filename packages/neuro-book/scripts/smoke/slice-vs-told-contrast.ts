@@ -31,7 +31,8 @@ import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity
 
 const BASE_URL = process.env.AGENT_HTTP_BASE_URL ?? "http://localhost:3000";
 const POLL_INTERVAL_MS = 2_000;
-const POLL_TIMEOUT_MS = 10 * 60 * 1_000;
+/** 真实模型写正文+三维评审一轮实测 13 分钟+;给足 20 分钟。 */
+const POLL_TIMEOUT_MS = 20 * 60 * 1_000;
 
 type CliOptions = {
     projectRoot: string;
@@ -68,6 +69,7 @@ await main();
 async function main(): Promise<void> {
     const options = parseArgs(process.argv.slice(2));
     await assertDevServerAlive();
+    await ensureProjectOpen(options.projectRoot);
     const projectDir = resolveProjectDir(options.projectRoot);
 
     // 1) 编译两种 brief:told=autonomous(含信息控制),slice=slice-only(纯事实)。
@@ -123,7 +125,7 @@ async function runScenario(
     }
     const started = await startWorkflowRun(options.projectRoot, "chapter-write-review-revise", args);
     const startedAt = Date.now();
-    const job = await pollJob(started.jobId);
+    const job = await pollJob(started.jobId, options.projectRoot);
     const outputPath = path.join(projectDir, chapterPath);
     const prose = existsSync(outputPath) ? await readFile(outputPath, "utf-8") : "";
     const result = job.result && typeof job.result === "object" ? job.result as {rounds?: JsonValue} : {};
@@ -182,11 +184,33 @@ function renderReport(outcomes: RunOutcome[]): string {
 // ── HTTP + 轮询 ──
 
 async function fetchWriterBrief(options: CliOptions, mode: "autonomous" | "slice-only"): Promise<WriterBriefResponse> {
-    const response = await requestJson(
-        `/api/projects/plot/chapter-writer-brief?projectRoot=${encodeURIComponent(options.projectRoot)}&chapterId=${encodeURIComponent(options.chapterId)}&mode=${mode}`,
-        {method: "GET"},
-    );
-    return response as WriterBriefResponse;
+    const pathname = `/api/projects/plot/chapter-writer-brief?projectRoot=${encodeURIComponent(options.projectRoot)}&chapterId=${encodeURIComponent(options.chapterId)}&mode=${mode}`;
+    // 项目会话可能被 UI 关闭;409 PROJECT_NOT_OPEN 时重新打开后重试一次。
+    try {
+        return await requestJson(pathname, {method: "GET"}) as WriterBriefResponse;
+    } catch (error) {
+        if (!isProjectNotOpen(error)) throw error;
+        await ensureProjectOpen(options.projectRoot);
+        return await requestJson(pathname, {method: "GET"}) as WriterBriefResponse;
+    }
+}
+
+/** 项目会话被关闭(409 PROJECT_NOT_OPEN)时重新打开;自身失败则原样抛出。 */
+async function ensureProjectOpen(projectRoot: string): Promise<void> {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+            await requestJson("/api/projects/open", {method: "POST", body: {projectRoot}});
+            console.log(`项目 ${projectRoot} 已重新打开`);
+            return;
+        } catch (error) {
+            if (attempt === 3) throw error;
+            await sleep(1_000);
+        }
+    }
+}
+
+function isProjectNotOpen(error: unknown): boolean {
+    return error instanceof Error && error.message.includes("PROJECT_NOT_OPEN");
 }
 
 type StartRunResponse = {jobId: string; runId: string};
@@ -210,10 +234,20 @@ type JobDetail = {
     result?: JsonValue;
 };
 
-async function pollJob(jobId: string): Promise<JobDetail> {
+async function pollJob(jobId: string, projectRoot: string): Promise<JobDetail> {
     const deadline = Date.now() + POLL_TIMEOUT_MS;
+    let reopened = false;
     for (;;) {
-        const job = await requestJson(`/api/agent/jobs/${encodeURIComponent(jobId)}`, {method: "GET"}) as JobDetail;
+        let job: JobDetail;
+        try {
+            job = await requestJson(`/api/agent/jobs/${encodeURIComponent(jobId)}`, {method: "GET"}) as JobDetail;
+        } catch (error) {
+            // 长轮询期间项目会话可能掉线:重开一次后继续等 job(写盘 workflow 以 Project 模块运行)。
+            if (!isProjectNotOpen(error) || reopened) throw error;
+            await ensureProjectOpen(projectRoot);
+            reopened = true;
+            continue;
+        }
         if (job.status === "completed") {
             return job;
         }
