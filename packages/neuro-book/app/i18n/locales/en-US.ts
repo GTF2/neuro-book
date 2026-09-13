@@ -1986,6 +1986,8 @@ const enUS = {
             active: "Active",
             archive: "Archive",
             restore: "Restore",
+            viewArchived: "View archived chats",
+            emptyActiveHint: "No active conversations yet. Archived conversations won't show up here, but you can always find them back.",
             rename: "Rename",
             renamePrompt: "Enter a new session title; auto summary will stop changing it.",
             searchPlaceholder: "Search sessions...",

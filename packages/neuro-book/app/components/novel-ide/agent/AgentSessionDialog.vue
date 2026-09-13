@@ -81,12 +81,82 @@ const query = computed<AgentSessionListQueryDto>(() => ({
     offset: 0,
     limit: 50,
 }));
-const listedSessions = computed(() => props.sessions);
+/**
+ * 刚归档的会话快照：归档后原地保留显示，切换筛选、搜索或关闭弹窗后清除。
+ */
+const justArchived = ref(new Map<number, AgentSessionSummaryDto>());
+
+/**
+ * 把刚归档的会话快照覆盖为归档态展示，与真实归档状态的交互能力保持一致。
+ */
+function archivedSnapshot(session: AgentSessionSummaryDto): AgentSessionSummaryDto {
+    return {
+        ...session,
+        status: "archived",
+        archived: true,
+        interaction: {
+            canInvoke: false,
+            canResolveUserInput: false,
+            canRegisterAttachment: false,
+            canInsertAttachment: false,
+            canMutateHistory: false,
+            canChangeRuntime: false,
+            canArchive: false,
+            canRestore: true,
+            canAbort: false,
+        },
+    };
+}
+
+/**
+ * 列表渲染数据：真实列表 + 本地保留的刚归档会话。
+ * 父组件收到 archive 后会刷新列表，props.sessions 里该会话会消失，由本地快照补齐。
+ */
+const listedSessions = computed(() => {
+    if (justArchived.value.size === 0) {
+        return props.sessions;
+    }
+    const merged = new Map<number, AgentSessionSummaryDto>();
+    for (const session of props.sessions) {
+        merged.set(session.sessionId, session);
+    }
+    for (const [sessionId, snapshot] of justArchived.value) {
+        if (!merged.has(sessionId)) {
+            merged.set(sessionId, archivedSnapshot(snapshot));
+        }
+    }
+    return [...merged.values()];
+});
 const sessionTitle = (session: AgentSessionSummaryDto) => session.title || `Session #${String(session.sessionId)}`;
 const sessionPreview = (session: AgentSessionSummaryDto) => session.summary || session.lastMessagePreview || t("agent.session.noRecentMessages");
 const canArchiveSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canArchive === true;
 const canRestoreSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canRestore === true;
 const canRenameSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canChangeRuntime === true;
+
+/**
+ * 归档会话：本地标记为已归档状态原地展示，同时通知父组件执行归档。
+ */
+function markArchived(session: AgentSessionSummaryDto): void {
+    justArchived.value.set(session.sessionId, session);
+    justArchived.value = new Map(justArchived.value);
+    emit("archive", session);
+}
+
+/**
+ * 恢复会话：清除本地标记，同时通知父组件执行恢复。
+ */
+function restoreSession(session: AgentSessionSummaryDto): void {
+    justArchived.value.delete(session.sessionId);
+    justArchived.value = new Map(justArchived.value);
+    emit("restore", session);
+}
+
+/**
+ * 空状态引导：直接切到归档筛选。
+ */
+function viewArchived(): void {
+    statusFilter.value = "archived";
+}
 
 /**
  * 关闭弹窗。
@@ -96,9 +166,20 @@ function close(): void {
 }
 
 /**
+ * 清除本地保留的刚归档会话。
+ */
+function clearJustArchived(): void {
+    if (justArchived.value.size === 0) {
+        return;
+    }
+    justArchived.value = new Map();
+}
+
+/**
  * 通知父组件用当前筛选条件刷新 session 列表。
  */
 function refresh(): void {
+    clearJustArchived();
     emit("refresh", query.value);
 }
 
@@ -198,6 +279,7 @@ watch(query, () => {
     debouncedRefresh();
 }, {deep: true});
 watch(() => props.modelValue, (open) => {
+    clearJustArchived();
     if (open) {
         refresh();
     }
@@ -316,11 +398,11 @@ onClickOutside(filterPanelRef, () => {
                         <button class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--bg-input)] hover:text-[var(--accent-text)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canRenameSession(session)" :title="t('agent.session.rename')" @click.stop="emit('rename', session)">
                             <span class="i-lucide-pencil-line h-4 w-4"></span>
                         </button>
-                        <button v-if="canRestoreSession(session)" class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-success-bg)] hover:text-[var(--status-success)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.restore')" @click.stop="emit('restore', session)">
+                        <button v-if="canRestoreSession(session)" class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-success-bg)] hover:text-[var(--status-success)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.restore')" @click.stop="restoreSession(session)">
                             <span v-if="actionId === session.sessionId" class="i-lucide-loader-circle h-4 w-4 animate-spin"></span>
                             <span v-else class="i-lucide-archive-restore h-4 w-4"></span>
                         </button>
-                        <button v-else class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canArchiveSession(session)" :title="t('agent.session.archive')" @click.stop="emit('archive', session)">
+                        <button v-else class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canArchiveSession(session)" :title="t('agent.session.archive')" @click.stop="markArchived(session)">
                             <span v-if="actionId === session.sessionId" class="i-lucide-loader-circle h-4 w-4 animate-spin"></span>
                             <span v-else class="i-lucide-archive h-4 w-4"></span>
                         </button>
@@ -336,10 +418,11 @@ onClickOutside(filterPanelRef, () => {
                 </div>
 
                 <div v-if="listedSessions.length === 0" class="rounded-lg border border-dashed border-[var(--border-color)] bg-[var(--bg-sidebar)] px-4 py-10 text-center text-sm text-[var(--text-muted)]">
-                    {{ t("agent.session.noMatching") }}
+                    {{ statusFilter === "active" && !sessionSearch.trim() ? t("agent.session.emptyActiveHint") : t("agent.session.noMatching") }}
                     <div class="mt-3 flex justify-center gap-2">
                         <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="resetFilters">{{ t("agent.session.resetFilters") }}</button>
                         <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="sessionSearch = ''">{{ t("agent.session.clearSearch") }}</button>
+                        <button v-if="statusFilter !== 'archived'" type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="viewArchived">{{ t("agent.session.viewArchived") }}</button>
                     </div>
                 </div>
             </div>
@@ -347,7 +430,7 @@ onClickOutside(filterPanelRef, () => {
 
         <template #footer>
             <div class="flex w-full items-center justify-between">
-                <div class="text-[11px] text-[var(--text-muted)]">{{ t("agent.session.recentCount", {filtered: listedSessions.length, total: props.total}) }}</div>
+                <div class="text-[11px] text-[var(--text-muted)]">{{ t("agent.session.recentCount", {filtered: props.sessions.length, total: props.total}) }}</div>
                 <button class="inline-flex h-8 cursor-pointer items-center justify-center rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-4 text-[13px] font-medium text-[var(--text-main)] transition-colors duration-200 hover:bg-[var(--bg-hover)] active:scale-95" @click="close">{{ t("agent.session.close") }}</button>
             </div>
         </template>

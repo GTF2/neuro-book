@@ -1984,6 +1984,8 @@ const zhCN = {
             active: "活跃",
             archive: "归档",
             restore: "恢复",
+            viewArchived: "查看已归档对话",
+            emptyActiveHint: "没有进行中的对话。已归档的对话不会出现在这里，可以随时找回。",
             rename: "重命名",
             renamePrompt: "输入新的会话标题；改名后自动摘要不再覆盖标题。",
             searchPlaceholder: "搜索会话...",
