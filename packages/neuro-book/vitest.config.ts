@@ -1,5 +1,5 @@
 import {fileURLToPath} from "node:url";
-import {defineConfig} from "vitest/config";
+import {configDefaults, defineConfig} from "vitest/config";
 
 const rootDir = fileURLToPath(new URL("./", import.meta.url));
 
@@ -47,6 +47,11 @@ export default defineConfig({
             "shared/**/*.test.ts",
             "scripts/**/*.test.ts",
             "scripts/**/*.test.tsx",
+        ],
+        exclude: [
+            // 真实模型 smoke 需要真实凭据与外部服务，只在 `bun run test:real-model` 中运行。
+            ...configDefaults.exclude,
+            "scripts/smoke/real-model/**",
         ],
         coverage: {
             provider: "v8",

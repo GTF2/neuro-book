@@ -1,13 +1,14 @@
 import {randomBytes} from "node:crypto";
-import {mkdtemp, rm} from "node:fs/promises";
+import {rm} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
-import {dirname, join, resolve} from "node:path";
+import {dirname, resolve} from "node:path";
 import {
     createSharedSystemAssetsSnapshot,
     removeFixtureTree,
     TEST_SYSTEM_ASSETS_SNAPSHOT_ENV,
 } from "nbook/server/workspace-files/test-workspace-fixture";
 import {
+    createTestTmpRoot,
     sweepStaleFixtureRoots,
     sweepStaleTmpRoots,
     TEST_RUN_ID_ENV,
@@ -28,11 +29,14 @@ let testCacheRoot: string | null = null;
  * 先保守回收上一次运行留下的 fixture 残留与测试临时残留，再建立一份
  * run 级共享只读 system assets snapshot，通过环境变量传给各测试 fork。这样单次 run
  * 只投影一份 system 模板，而不是每个用例复制一份完整 `.nbook`。
+ *
+ * State/Cache Root 走 `createTestTmpRoot`：写入 owner marker 并落在受控临时根内，
+ * 进程被强杀时由下一次 run 的 `sweepStaleTmpRoots` 按 dead owner 兜底回收（其中可能含明文 Provider 副本）。
  */
 export async function setup(): Promise<void> {
     process.env[TEST_RUN_ID_ENV] = randomBytes(4).toString("hex");
-    testStateRoot = await mkdtemp(join(process.env.TEMP ?? process.env.TMP ?? ".", "nbook-app-state-"));
-    testCacheRoot = await mkdtemp(join(process.env.TEMP ?? process.env.TMP ?? ".", "nbook-app-cache-"));
+    testStateRoot = await createTestTmpRoot("app-state", "application-state-root");
+    testCacheRoot = await createTestTmpRoot("app-cache", "application-cache-root");
     process.env.NEURO_BOOK_APPLICATION_ROOT = APPLICATION_ROOT;
     process.env.NEURO_BOOK_STATE_ROOT = testStateRoot;
     process.env.NEURO_BOOK_CACHE_ROOT = testCacheRoot;
