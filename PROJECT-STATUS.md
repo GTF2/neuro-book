@@ -19,6 +19,20 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 
 已知未收口（改动前先建规范归属）：
 
+0. **【P0】brief 双视图改造（宪法第二条精确化后的最大缺口，2026-09-14 审计）**：
+   `chapter-writer-brief.service.ts` 渲染的 `suggestedBriefMarkdown` 是 writer 唯一交付通道，但其中含
+   **13 项意图级内容**（本章目标与落点、本场目的、写作提示、线索脉络 summary、节奏/开场钩子、
+   Promise 推进指令 + beat.note + payoffExpectation、未决决策警告"不得擅自写死"）；`slice-only`
+   目前只剔除了信息控制与禁写两段——**其余 11 项在各模式（含 slice-only）全部泄漏**。
+   另有一批上游资产与文档在"要求 leader 把意图编进 brief"侧背书：
+   `assets/reference/plot/writer-brief.md`、`plot/agent-spec.md`、`plot/system.md`、
+   `agent/leader-default.md`、`agent/novel-writing-workflow.md`、`world-engine/workflow.md`(§6.2/§13)、
+   `vitepress/{zh-Hans,en-US}/core/plot-workbench.md`（"写作时会强制生效"）、
+   `profile/writer.md`、`tutorials/04`、skill `phases/02|03`、`novel-writer-execution/SKILL.md`。
+   **推荐方案**：把 brief 拆成两个视图——`factualBrief`（事实级：时间/地点/在场/世界状态截面/建议读取，
+   唯一进 writer 上下文）与 `reviewChecklist`（意图级：目标/落点/目的/信息控制/禁写/Promise 指令/未决决策，
+   只进评审）；`slice-only` 从"特例模式"升为唯一合法形态，信息控制 status 门槛随之废止。
+   审计明细见 `docs/doctrine/prior-art-2026-09-14.md` 与本文件同批的调研记录。
 1. **关键帧工具面缺失**：`plot-tools.ts` 无 keyframe 工具、`assets/reference/` 无关键帧正文 → agent 目前无法读写帧，skill phase 05 是空头支票。
 2. **主循环未接入帧**：`novel-writing/phases/03-chapter-loop.md` 不提帧；帧仍是旁路而非人的主要产出物。
 3. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。
