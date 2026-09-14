@@ -218,7 +218,10 @@ describe("assets builtin v3 profiles", () => {
         expect(visiblePrompt).toContain("优先复用已有同 profile 且同创建 initial 语义的 agent");
         expect(visiblePrompt).toContain("`metadata.initial`");
         expect(visiblePrompt).toContain("`invoke_agent.input.path` 是本轮唯一写入或修改目标");
-        expect(visiblePrompt).toContain("`invoke_agent.message` 必须写清");
+        // 写作宪法第二条/第五条接线后，leader 消息的口径已反转：旧口径「必须写清重点与禁忌」会把意图级内容
+        // 灌进 writer 的动笔前上下文，故断言改为锁住反转后的合同（意图不下发 writer）。
+        expect(visiblePrompt).toContain("`invoke_agent.message` 只写交付要求");
+        expect(visiblePrompt).toContain("意图级内容不下发 writer");
         expect(visiblePrompt).toContain("input.context.lorebookEntries");
         expect(visiblePrompt).toContain("创建 retrieval 时只传自然语言 `prompt`");
         expect(visiblePrompt).toContain("{ entries, note? }");
