@@ -12,7 +12,7 @@ role: tasker
 
 ## 修改范围
 
-已落地（分支 `fix/w00014-inline-ai-send-owner`，实现提交 `818ea39e`；迁移前的临时状态与编排顺序见缺口 1 的记录）：
+已落地（分支 `fix/w00014-inline-ai-send-owner` 的实现提交；迁移前的临时状态与编排顺序见缺口 1 的记录）：
 
 1. `app/pages/index.vue` — `InlinePromptOwner` 去掉 `surface` 字段；`captureInlinePromptOwner()`/`acceptsInlinePromptOwner()` 改用 `inlineEditorAgent.operationScopeKey.value`（约 207-224）。
 2. `app/pages/index.vue` — `sendInlineEditorPrompt()` 发送调用恢复两实参（约 1080-1082），不再传 `owner.operationKey`。
@@ -32,7 +32,7 @@ role: tasker
 
 ## 未完成与缺口
 
-1. **治理顺序：登记与迁移已完成，分支尚未 push / PR / 合并**——登记提交 `5c4fccfc` 已推送 `origin/master`；实现 worktree `.worktree/w00014-issue-227-inline-ai-send-owner` 与分支 `fix/w00014-inline-ai-send-owner` 已建；原主工作区未提交的 3 个源码文件与 `walkthroughs/`、`evidences/` 已在分支提交 `263ff6d3`，主工作区副本已删除。**当前遗留**：该分支尚未 push、未开 PR、未合并（需单独授权）；Task 缺口 8（Spec）与 9（组件文档）仍阻塞 Task 关闭。以下两段是该链路的编排顺序与历史取证（**均已解决**，保留以便回溯）。
+1. **治理顺序：登记与迁移已完成，分支尚未 push / PR / 合并**——登记提交 `5c4fccfc` 已推送 `origin/master`；实现 worktree `.worktree/w00014-issue-227-inline-ai-send-owner` 与分支 `fix/w00014-inline-ai-send-owner` 已建；原主工作区未提交的 3 个源码文件与 `walkthroughs/`、`evidences/` 已在分支提交，主工作区副本已删除。**当前遗留**：该分支尚未 push、未开 PR、未合并（需单独授权）；Task 缺口 8（Spec）与 9（组件文档）仍阻塞 Task 关闭。以下两段是该链路的编排顺序与历史取证（**均已解决**，保留以便回溯）。
    迁移顺序（**已按此执行**）：① 仅暂存 `.agents/works/w00014-issue-227-inline-ai-send-owner/**` 的登记文件提交；② 推送该提交进入远端 `master`；③ 从该基线创建 `.worktree/w00014-issue-227-inline-ai-send-owner` + `fix/w00014-inline-ai-send-owner`；④ 把源码改动与 `walkthroughs/`、`evidences/` 移入该分支提交，并从主工作区删除副本。**注意**：正式分支名是 `fix/w00014-inline-ai-send-owner`（按根规则 `{type}/{refs}-{slug}`，refs 用 Work 编号），早期计划里写的 `fix/i227-…` 是笔误。
    **已完成（2026-09-14）**：开发者指示把主工作区 `master` 与 `origin/master` 对齐后，本条链路已执行完毕——① 主工作区 `master` 从 `0dba865f` 对齐到 `origin/master`（`26244cf1`；本地原为 PR 合并前的同题副本历史，对齐前本地历史保存在 `refs/backup/i227-local-master`）；11 个"纯分叉"文件取上游内容，全部未提交改动（他人 WIP 与本次修复）逐一保留，2 个同时带他人改动的 w00009 文件未动；② 登记提交 `5c4fccfc`（仅 Work + Task 正文，86 行）已推送 `origin/master`；③ 实现 worktree `.worktree/w00014-issue-227-inline-ai-send-owner` + 分支 `fix/w00014-inline-ai-send-owner` 已从该基线创建；④ 3 个源码文件与 `walkthroughs/`、`evidences/` 已迁入该分支，主工作区副本已删除。**遗留**：该分支尚未 push / 开 PR / 合并（需单独授权），Task 缺口 8（Spec）与 9（组件文档）仍阻塞 Task 关闭。
    **历史取证（2026-09-14 `git fetch` 后，已解决）**：`git rev-list --left-right --count origin/master...HEAD` = `12  8`——本地 `master` 与 `origin/master` 已分叉：远端经 PR #230/#231 合并了同题的另一套历史（远端 `dbfb17ff` ↔ 本地 `10358f2b`、远端 `26244cf1` ↔ 本地 `0dba865f`），且 `git diff --stat origin/master HEAD` 有 13 个文件的内容差异（`git diff --name-status` 全名单：`.agents/works/w00009|w00013` 的记录/证据 3 个、`packages/neuro-book/server/{app-logs,plugins,runtime}` 6 个、`scripts/{build,deploy,release}` 4 个，+116/−292；**`packages/neuro-book/app/**` 与 `shared/**` 两侧完全一致**——本次改动的 3 个文件及其前端依赖同内容，差异属 Issue 228/229 的 server/脚本工作；不得把该 diff 概括为"内容等价"，也不得在未核对依赖的情况下默认两侧可互换）。因此登记提交**无法 fast-forward 推送**；按仓库规则不得强推、不得在主工作区（含他人未提交改动）rebase 或合并。**状态：该阻塞已解决**——开发者指示把主工作区 `master` 与 `origin/master` 对齐，随后按上述顺序执行完毕（对齐前的本地历史保存在 `refs/backup/i227-local-master`）。

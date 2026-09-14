@@ -1,6 +1,6 @@
 # t01 证据：Inline AI 发送 owner 修复验证（2026-09-14）
 
-> 记录位置：已在实现分支 `fix/w00014-inline-ai-send-owner` 提交（`263ff6d3`）；登记提交 `5c4fccfc` 已在 `origin/master`。
+> 记录位置：已在实现分支 `fix/w00014-inline-ai-send-owner` 提交；登记提交 `5c4fccfc` 已在 `origin/master`。
 
 代码版本：验证在 `0dba865f` 工作树上完成（该树 `packages/neuro-book/app/**`、`shared/**` 与 `origin/master` 的 `26244cf1` 完全一致）；修复现位于分支 `fix/w00014-inline-ai-send-owner`，文件内容与验证时字节一致。
 环境：隔离状态根 `<repo>/.local/temp/issue227-state`（demo 项目副本，无启用模型）、`NEURO_BOOK_STATE_ROOT=<state> NUXT_PORT=3010 PORT=3010 bun run dev`（cwd `packages/neuro-book`）、playwright-cli 0.1.17 + headless Chrome 152。
