@@ -1313,6 +1313,11 @@ const upsertPublicToolResult = (
         publicResult: toolResult.result,
         resultData: publicToolResultDetails(toolResult.result),
         resultEntryId: toolResult.id,
+        // 服务端已标明这条结果是中断产物：status 虽为 error，但工具到底生效没有是未知的，
+        // 写文件类卡片据此把「未写入」换成「结果未知」。
+        // 下方 markInterruptedToolCalls 的兜底只管「结果从未落盘」（服务重启），
+        // 覆盖不到这种「落了盘、但结果是中断补的」。
+        ...(toolResult.interrupted ? {interrupted: true} : {}),
     };
     if (index >= 0) {
         toolCalls[index] = nextToolCall;

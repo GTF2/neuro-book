@@ -219,6 +219,32 @@ describe("projectAgentChatEntry", () => {
         expect(projected.toolName).not.toContain(toolName);
     });
 
+    it("toolResult 的 interrupted 标记透传，未标注时不产出该字段", () => {
+        const entry = (interrupted: boolean): SessionEntry => ({
+            id: "e-result",
+            parentId: null,
+            timestamp: 1,
+            type: "message",
+            origin: "ingest",
+            message: {
+                role: "toolResult",
+                toolCallId: "call-1",
+                toolName: "edit",
+                content: [{type: "text", text: "Aborted."}],
+                isError: true,
+                ...(interrupted ? {interrupted: true} : {}),
+                timestamp: 1,
+            },
+        } as unknown as SessionEntry);
+
+        const marked = projectAgentChatEntry(entry(true));
+        expect(marked?.type === "tool_result" ? marked.interrupted : undefined).toBe(true);
+
+        // 老记录没有该字段：不能凭空造一个，否则真实失败会被降级成「结果未知」。
+        const plain = projectAgentChatEntry(entry(false));
+        expect(plain?.type === "tool_result" ? "interrupted" in plain : true).toBe(false);
+    });
+
     it("durable assistant 与 tool result 遇到非法 toolCallId 时 fail closed", () => {
         const invalidId = "工".repeat(200);
         expect(() => projectAgentChatEntry({

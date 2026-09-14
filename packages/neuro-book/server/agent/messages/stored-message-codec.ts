@@ -14,7 +14,7 @@ const ATTACHMENT_ID_PATTERN = /^sha256:[0-9a-f]{64}$/;
 const ASSISTANT_STOP_REASONS = new Set(["stop", "length", "toolUse", "error", "aborted"]);
 const FOLLOW_UP_PAUSE_REASONS = new Set(["error", "aborted", "interrupted", "admission_error"]);
 const USER_MESSAGE_KEYS = new Set(["role", "content", "timestamp"]);
-const TOOL_RESULT_MESSAGE_KEYS = new Set(["role", "toolCallId", "toolName", "content", "details", "isError", "timestamp"]);
+const TOOL_RESULT_MESSAGE_KEYS = new Set(["role", "toolCallId", "toolName", "content", "details", "isError", "interrupted", "timestamp"]);
 const ASSISTANT_MESSAGE_KEYS = new Set(["role", "content", "api", "provider", "model", "responseModel", "responseId", "diagnostics", "usage", "stopReason", "errorMessage", "timestamp"]);
 const TEXT_CONTENT_KEYS = new Set(["type", "text", "textSignature"]);
 const THINKING_CONTENT_KEYS = new Set(["type", "thinking", "thinkingSignature", "redacted"]);
@@ -54,6 +54,10 @@ export function parseStoredMessage(value: unknown): StoredAgentMessage {
         parseStoredContentArray(message.content, "toolResult");
         if (typeof message.isError !== "boolean") {
             corrupt("Stored toolResult 缺少 isError。");
+        }
+        // 可选：老记录没有这个字段，表示「不是中断产物」。
+        if (message.interrupted !== undefined && typeof message.interrupted !== "boolean") {
+            corrupt("Stored toolResult interrupted 必须是布尔值。");
         }
         requireFiniteNumber(message.timestamp, "Stored toolResult 缺少合法 timestamp。");
         if (message.details !== undefined && !isJsonValue(message.details)) {

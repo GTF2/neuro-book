@@ -148,6 +148,8 @@ export function createStoredTextToolResult(input: {
     toolName: string;
     text: string;
     isError?: boolean;
+    /** 结果是中断补出来的，而非工具正常产出；见 StoredToolResultMessage.interrupted。 */
+    interrupted?: boolean;
     details?: unknown;
     timestamp?: number;
 }): StoredToolResultMessage {
@@ -158,6 +160,7 @@ export function createStoredTextToolResult(input: {
         content: [{type: "text", text: input.text}],
         ...(input.details === undefined ? {} : {details: normalizeToolResultDetails(input.details)}),
         isError: input.isError ?? false,
+        ...(input.interrupted ? {interrupted: true} : {}),
         timestamp: input.timestamp ?? now(),
     };
 }
@@ -168,6 +171,8 @@ export function createStoredToolResultFromResult(input: {
     toolName: string;
     result: NeuroToolResult;
     isError?: boolean;
+    /** 结果是中断补出来的，而非工具正常产出；见 StoredToolResultMessage.interrupted。 */
+    interrupted?: boolean;
     timestamp?: number;
 }): StoredToolResultMessage {
     return {
@@ -177,6 +182,7 @@ export function createStoredToolResultFromResult(input: {
         content: input.result.content,
         ...(input.result.details === undefined ? {} : {details: normalizeToolResultDetails(input.result.details)}),
         isError: input.isError ?? false,
+        ...(input.interrupted ? {interrupted: true} : {}),
         timestamp: input.timestamp ?? now(),
     };
 }

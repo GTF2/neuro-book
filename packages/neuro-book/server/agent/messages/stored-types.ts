@@ -29,6 +29,13 @@ export type StoredToolResultMessage = {
     /** 工具没有结构化 details 时为空。 */
     details?: JsonValue;
     isError: boolean;
+    /**
+     * 这条结果不是工具正常产出的，而是 invocation 被取消/中断时补出来的。
+     *
+     * 必须显式记下来，因为中断和真实失败的 isError 都是 true：光看 isError，
+     * 写文件类卡片只能把「不知道到底写没写进去」说成「没写入」，这是把未知当结论。
+     */
+    interrupted?: boolean;
     timestamp: number;
 };
 

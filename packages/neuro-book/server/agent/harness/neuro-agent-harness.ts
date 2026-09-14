@@ -3857,6 +3857,8 @@ export class NeuroAgentHarness {
                         toolName: pending.toolName,
                         text: reason ? `Aborted: ${reason}` : "Aborted.",
                         isError: true,
+                        // 工具停在这一步：它根本没执行，不是执行失败。
+                        interrupted: true,
                     }),
                     origin: "harness",
                 },
@@ -5707,6 +5709,7 @@ export class NeuroAgentHarness {
                     toolName: executed.toolCall.name,
                     result: executed.result,
                     isError: executed.isError,
+                    interrupted: executed.interrupted,
                     timestamp,
                 });
             parseStoredMessage(stored);
@@ -5766,12 +5769,14 @@ export class NeuroAgentHarness {
         index: number;
         result: NeuroToolResult;
         isError: boolean;
+        interrupted?: boolean;
     }>> {
         const executions: Array<{
             toolCall: AgentToolCall;
             index: number;
             result: NeuroToolResult;
             isError: boolean;
+            interrupted?: boolean;
         }> = [];
         for (const toolCall of input.toolCalls) {
             executions.push(await this.executeToolWithEvents({...input, ...toolCall}));
@@ -5798,6 +5803,7 @@ export class NeuroAgentHarness {
         index: number;
         result: NeuroToolResult;
         isError: boolean;
+        interrupted?: boolean;
     }> {
         const {toolCall} = input;
         await input.emit({
@@ -5832,6 +5838,7 @@ export class NeuroAgentHarness {
             index: input.index,
             result: executed.result,
             isError: executed.isError,
+            ...(executed.interrupted ? {interrupted: true} : {}),
         };
     }
 
@@ -6045,6 +6052,7 @@ export class NeuroAgentHarness {
             toolName: pending.toolName,
             result: executed.result,
             isError: executed.isError,
+            interrupted: executed.interrupted,
         });
         parseStoredMessage(stored);
         return stored;
@@ -6102,6 +6110,7 @@ export class NeuroAgentHarness {
             toolName: pending.toolName,
             result: executed.result,
             isError: executed.isError,
+            interrupted: executed.interrupted,
         });
         parseStoredMessage(stored);
         return stored;
@@ -6123,6 +6132,8 @@ export class NeuroAgentHarness {
     }): Promise<{
         result: NeuroToolResult;
         isError: boolean;
+        /** 工具被中止信号打断，而不是自己失败；见 StoredToolResultMessage.interrupted。 */
+        interrupted?: boolean;
     }> {
         const tool = input.toolOverrides[input.toolCall.name] ?? this.tools.get(input.toolCall.name);
         if (!tool) {
@@ -6213,6 +6224,9 @@ export class NeuroAgentHarness {
                     isToolResultError(error) ? error.details : undefined,
                 ),
                 isError: true,
+                // 取消时工具多半以 AbortError 收场，此刻文件到底改没改是未知的。
+                // 标出来，写文件类卡片才不会把「未知」当成「没写入」。
+                ...(input.abortSignal?.aborted ? {interrupted: true} : {}),
             };
         }
     }

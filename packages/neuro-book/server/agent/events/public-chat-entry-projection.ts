@@ -235,6 +235,8 @@ function projectToolResultEntry(
     timestamp: number,
     message: ToolResultMessage | Extract<StoredAgentMessage, {role: "toolResult"}>,
 ): AgentChatEntryDto {
+    // Pi 的 ToolResultMessage 没这个字段，用 in 收窄；老记录也不会带上它。
+    const interrupted = "interrupted" in message && message.interrupted === true;
     return {
         id,
         timestamp,
@@ -246,6 +248,7 @@ function projectToolResultEntry(
             details: message.details,
         }),
         isError: message.isError,
+        ...(interrupted ? {interrupted: true} : {}),
     };
 }
 

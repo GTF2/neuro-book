@@ -275,6 +275,13 @@ export type AgentChatToolResultEntryDto = {
     toolName: string;
     result: PublicToolResultDto;
     isError: boolean;
+    /**
+     * 这条结果是中断补出来的（工具没跑完，或根本没跑），工具实际有没有生效是未知的。
+     *
+     * 必须与 isError 分开：中断和真实失败的 isError 都是 true，只看 isError 无法区分，
+     * 写文件类卡片会把「不知道写没写进去」直接说成「没写入」，把未知当成了结论。
+     */
+    interrupted?: boolean;
 };
 
 export type AgentChatSystemEntryDto = {

@@ -125,6 +125,24 @@ describe("stored message codec", () => {
         }
     });
 
+    it("toolResult 的 interrupted 是可选中断标记，且只能是布尔", () => {
+        const base = {
+            role: "toolResult",
+            toolCallId: "call-1",
+            toolName: "edit",
+            content: [{type: "text", text: "Aborted."}],
+            isError: true,
+            timestamp: 1,
+        };
+
+        // 老记录没有该字段（不是中断产物），新记录带上它，两种都必须能读。
+        expect(() => parseStoredMessage(base)).not.toThrow();
+        expect(() => parseStoredMessage({...base, interrupted: true})).not.toThrow();
+        // 只能是布尔：否则前端会误判成「这条是中断产物」，把真实失败降级成未知。
+        expect(() => parseStoredMessage({...base, interrupted: "yes"}))
+            .toThrowError(expect.objectContaining<Partial<StoredMessageInvariantError>>({code: "corrupt"}));
+    });
+
     it("details、diagnostics和tool arguments继续接受合法JsonValue", () => {
         expect(() => parseStoredMessage({
             role: "toolResult",

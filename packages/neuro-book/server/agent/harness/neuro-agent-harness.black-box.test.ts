@@ -1221,6 +1221,9 @@ describe("NeuroAgentHarness black-box contract", () => {
                 role: "toolResult",
                 toolCallId: "abort-waiting",
                 isError: true,
+                // 中断补写的结果必须打标记：否则前端只能当作真实失败，
+                // 写文件类卡片就会把「工具没跑」说成「没写入」。
+                interrupted: true,
             }));
             expect(abortToolResult ? messageText(abortToolResult) : "").toContain("Aborted: user stop");
             expect(eventTypes(observer.events)).toEqual(expect.arrayContaining([
