@@ -118,8 +118,12 @@ export async function runSourceDev(options: SourceDevOptions = {}): Promise<numb
      * 等应用真正可服务后再打开浏览器（`nuxt dev --open` 会在 Nitro 就绪前抢跑）。
      * 只在直接执行本 CLI 时生效：被 import 时（launcher 测试、Manager 内部入口）不打扰调用方。
      * `NEURO_BOOK_DEV_NO_OPEN=1` 关闭该行为。
+     *
+     * 读 `inherited`（即 process.env）而不是上面的 `env`：`env` 是展开构造出来的对象，
+     * TypeScript 会因此丢掉 NodeJS.ProcessEnv 的索引签名，读 `env.NEURO_BOOK_DEV_NO_OPEN` 编译不过。
+     * 语义上也该读 inherited —— 这是本进程的行为开关，不是要传给子进程的配置。
      */
-    if (import.meta.main && env.NEURO_BOOK_DEV_NO_OPEN?.trim() !== "1") {
+    if (import.meta.main && inherited.NEURO_BOOK_DEV_NO_OPEN?.trim() !== "1") {
         void waitForApplicationReady(configuredHost ?? "127.0.0.1", port, 300_000)
             .then((ready) => {
                 if (!ready) return;
