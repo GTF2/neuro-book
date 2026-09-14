@@ -71,12 +71,13 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 优先级 | 任务 | 说明 |
 |---|---|---|
 | **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑对话 / 脚本路径。**等 UI 执行者回一句**：帧的 `instant` 显示走 (a) 原始数字，还是 (b) 我补「instant ↔ 项目日历时间」转换接口；选 (b) 我做后端那半 |
-| **P1** | StoryForge 机制一：未来影响分析 | 正文采纳后列出受影响的下游 Promise / Scene / 帧并标记待处理（prior-art 第五节 2）。下一步：出 Proposal + 拆 Task（不碰运行中的应用） |
+| **P1** | StoryForge 机制一：未来影响分析 | **Proposal 已出**：[`future-impact-analysis.md`](packages/neuro-book/docs/proposals/future-impact-analysis.md)（`draft`）。待开发者接受后落 `planned` Spec（capability `plot.future-impact-analysis`）并建 Work/Task；实现形态 = 资产层 `impact-scan` workflow + skill 阶段 + Reference 清单格式，**不新增实体 / 字段 / 工具** |
 | **P1** | `infoControl` 真自动编译 | 漏传已必定显形（Work w00016）；真自动编译要宿主接线 `wf.query` / `wf.callAction`（已登记 P1 规范缺口）。下一步：出 Proposal |
 | P1 | StoryForge 机制二 / 三：回读验证+回执、写回校验注册表 | prior-art 第五节 3/4 |
 | P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
 | P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
 | P2 | 合并上游（例行） | 现状：领先上游 60 提交 / 落后 0（2026-09-14 实测）；并行执行者有未提交改动，现在合并风险高，等其落定再做 |
+| P2 | 补 proposals 注册表行 | `docs/proposals/README.md` 里本轮加的未来影响分析登记行仍留在工作区未提交（该文件同时有并行执行者的未提交行，不替他提交）；等该文件空闲后补一个单行提交 |
 
 ---
 
