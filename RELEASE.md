@@ -2,6 +2,26 @@
 
 这里只放当前版本。更早的版本见 [中文 changelog](vitepress/locales/zh-Hans/changelog/) 与 [English changelog](vitepress/locales/en-US/changelog/)。
 
+## 0.10.3-canary（限量 canary） - 2026-09-14
+
+这一轮修复 Inline AI 发送失效，并补齐 Product Runtime 输出管道与 Manager 打包链在真实环境下的回归。
+
+### 修复
+
+- 修复 Inline AI Prompt Bar 点「发送给 Inline AI」后按钮转圈复位、任务不运行的问题：页面把操作所有权绑在右侧面板组件实例上，与 session 的实际所有者计数不一致，导致面板挂载时静默失败、未挂载时只提示「Agent 面板尚未准备好。」；现在发送不再依赖面板是否打开，「打开 Session 聊天」也能把会话载入右侧面板 (#227)。
+- 修复 Product Runtime 在父 shell 或 supervisor 关闭 stdout/stderr 后因 EPIPE 退出的问题：日志写入失败不再让业务进程退出，Product 继续提供 API (#230)。
+- 修复 Manager 干净构建产物在 Node/Mock 环境导入时报 `TypeError: Q9 is not a function` 的问题，并让 packed installation smoke 在跨平台下真实校验 (#231、#232)。
+
+### 内部维护
+
+- 新增独立真实模型 smoke 命令 `test:real-model`，并修复 smoke CLI 的既有缺陷（26244cf1）。
+- 修复 `governance:check` 的应用跨根 `#scripts` 导入违规：Source Dev 注入仓库根，内部入口缺失时 fail closed（392faaa3）。
+
+### 升级须知
+
+- 这是限量 canary。请使用本版本替代 `0.10.2-canary` 的资产；升级前备份完整 State Root 和重要 Project Workspace 的 `.nbook/`、`project.yaml`，先在可丢弃的 Project 上测试。
+- Inline AI 修复在隔离状态根 + 真实页面上验证了发送与打开会话两条路径；真实 Provider/Model 下的成功运行与窄屏 390×844 布局仍属后续验收项。
+
 ## 0.10.2-canary（限量 canary） - 2026-09-08
 
 这一轮修复 0.10.1-canary Windows Portable 发行包在无构建机 `node_modules` 环境首轮启动失败的问题，并继续覆盖 Windows Product/Portable 运行边界。
