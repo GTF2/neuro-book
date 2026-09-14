@@ -1,12 +1,16 @@
 #!/usr/bin/env bun
 import {spawn} from "node:child_process";
 import {resolve} from "node:path";
-import {findRepositoryRoot} from "#scripts/utils/workspace-roots";
 import {seedSystemAssets} from "nbook/server/workspace-files/system-asset-installation";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 
 const packageRoot = resolve(import.meta.dirname, "../..");
-const repositoryRoot = findRepositoryRoot(packageRoot);
+// 仓库根由唯一允许跨根读取的入口 scripts/cli/source-dev.ts 注入（应用内不得直接 import 根 #scripts）。
+// 缺少时必须 fail closed：否则 Agent Profile Import 会在路径阶段拿到 undefined。
+const repositoryRoot = process.env.NEURO_BOOK_REPOSITORY_ROOT?.trim();
+if (!repositoryRoot) {
+    throw new Error("缺少 NEURO_BOOK_REPOSITORY_ROOT：请经 scripts/cli/source-dev.ts 启动 Source Dev（该入口负责注入仓库根）。");
+}
 process.env.NEURO_BOOK_REPOSITORY_ROOT = repositoryRoot;
 process.env.NEURO_BOOK_RUNTIME_ASSET_MODE = "install";
 delete process.env.NEURO_BOOK_PRODUCT_IMAGE_ROOT;
