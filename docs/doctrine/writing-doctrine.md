@@ -92,3 +92,14 @@
 | 二、五 | `server/world-engine/`、`server/plot/services/chapter-writer-brief.service.ts`、`chapter-write-review-revise` workflow |
 | 三、六 | 关键帧模型（见 keyframe Spec）、`phases/02-canon-commit.md`、创作决策记录 |
 | 四 | `.agents/` 治理、skill/workflow 资产 |
+
+## 附：实验证据
+
+否决权条款第 2 条的终审实验记录（作者判词为准）：
+
+| 日期 | 实验 | 判定 |
+|---|---|---|
+| 2026-09-14 | [事前告知 vs 事后校验](contrast-experiment-2026-09-14.md)：同章同任务，brief 含信息控制（TOLD）vs 纯事实切片+评审核对单（SLICE） | SLICE 优于 TOLD（第五条方向成立）；但两份产出都"读不下去"——切片里没有戏 |
+| 2026-09-14 | [关键帧补间](keyframe-experiment-2026-09-14.md)：带欲望/阻力/代价的前后关键帧驱动 `keyframe-tween-review` | 可读性确实变强，关键帧变化全部兑现——**第三条首次实测通过** |
+
+仍待验证：帧驱动在整章/整卷尺度的表现；裁决闭环（改正文 vs 推翻帧 + decisionRefId）实操；"欲望/阻力/代价"是否应成为写作入口的硬门槛。
