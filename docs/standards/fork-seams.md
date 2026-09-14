@@ -9,7 +9,7 @@
 
 ## 一、改动面总览（2026-09-14 实测）
 
-`git diff --stat upstream/master...HEAD`：**189 文件，+10268 / -1175**。
+`git diff --stat upstream/master...HEAD`：**194 文件**（2026-09-14 实测，含本轮 S13/S14/S15 新增的 3 个接缝文件；上一轮基线为 189 文件 / +10268 -1175）。
 
 | 类别 | 文件数 | 性质 | 冲突风险 |
 |---|---|---|---|
@@ -21,6 +21,7 @@
 | `assets/reference/plot/writer-brief.md` | 1 | **改写上游资产正文**（加 slice-only 段） | 中（上游改同文件即冲突） |
 | `shared/dto/plot.dto.ts`、`api/projects/plot/**`、`openapi/route-map.ts`、`prisma/project.schema.prisma`、`workspace-files/project-workspace.ts`、`utils/novel-chapter.ts` | 7 | 加法式小切口 | 中低 |
 | `docs/`（doctrine、standards、specs 注册表、testing）、`AGENTS.md`、`README`、`CONTRIBUTING`、`PROJECT-STATUS.md` | ~12 | fork 治理 + 外科手术式改写 | 低 |
+| `packages/neuro-book/{nuxt.config.ts,app/spa-loading-template.html,scripts/cli/source-dev.ts,scripts/cli/source-runtime.ts}`（启动体验补丁：首屏加载占位 + 就绪后打开浏览器） | 4 | 加法式小切口（新增占位文件 + 少量配置/启动逻辑） | 低 |
 
 ## 二、核心接缝逐条登记（改上游文件的地方）
 
@@ -38,6 +39,9 @@
 | S10 | `packages/neuro-book/package.json`、`docs/testing/README.md`、`AGENTS.md`、`docs/README.md`、`docs/specs/README.md`、`CONTRIBUTING*.md`、`PROJECT-STATUS.md` | 外科手术式单点（脚本项/优先级行/表格行/段落） | 各 1-3 行 | 部分可（治理类可另建文件） |
 | S11 | `scripts/smoke/slice-vs-told-contrast.ts` | **新增文件**（对照实验脚本） | 新文件 | 不适用（加法） |
 | S12 | `.agents/works/w00003-...`、`.gitignore` | 继承的 fork 治理改动 | 小 | 不适用 |
+| S13 | `packages/neuro-book/scripts/cli/source-runtime.ts` | **原有（此前漏登）**：`repositoryRoot` 改为经 `NEURO_BOOK_REPOSITORY_ROOT` 注入、按包位上溯回退，不再 import 根 workspace 工具 | 改 1 段，约 4 行 | 不易（launcher 行为） |
+| S14 | `packages/neuro-book/app/spa-loading-template.html`（新增）+ `packages/neuro-book/nuxt.config.ts`（`spaLoadingTemplate` + 存在性断言） | SPA 首屏加载占位。上游 `ssr: false` 且未配 `spaLoadingTemplate`，首屏 HTML 只有空的 `<div id="__nuxt"></div>`，JS 下载并执行前完全白屏（dev 模式按需编译可达数秒）。**坑**：该配置项传字符串时 Nuxt 走 `resolve(srcDir, value)`，`~` 别名**不展开**（`"~/x.html"` → `<srcDir>/~/x.html`）；文件不存在则报 `NUXT_B7016` 并 `return ""`，加载界面**静默消失**。故此处传构建时解析的绝对路径，并加断言使其缺文件即启动报错。同文件另加 `vite.ssr.external: ["node:sqlite", "bun:ffi"]`，消除 Rollup 对这两个宿主内置模块反复报的解析告警（两者均以 `await import()` 惰性加载） | 新增 1 文件 + 上游改约 18 行 | **可**（上游若自行引入加载占位则本项归零） |
+| S15 | `packages/neuro-book/scripts/cli/source-dev.ts` | 直接执行 CLI 时，先 HTTP 探测到应用真正可服务，再打开系统浏览器（跨平台：`start` / `open` / `xdg-open`）。不用 `nuxt dev --open`，因其在 Vite 监听时即抢跑、早于 Nitro 编译完成十余秒。`import.meta.main` 守卫保证被 import 时（launcher 测试、Manager 内部入口）不生效；`NEURO_BOOK_DEV_NO_OPEN=1` 亦可关闭。另注入 `NODE_OPTIONS=--disable-warning=ExperimentalWarning`（保留用户既有 NODE_OPTIONS），静音 `node:sqlite` 的实验性 API 警告（需 Node 21.3+，本机 v22.22.2） | 新增 2 个辅助函数 + 1 段调用 + 1 项环境变量，约 58 行 | 不易（launcher 行为） |
 
 ## 三、继承的定制（非本 fork 写作宪法工作，需要所有者决策）
 
