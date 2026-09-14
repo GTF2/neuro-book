@@ -18,6 +18,11 @@
 
 1. **开工前**：`git fetch upstream && git merge upstream/master`（在功能分支）。落后太多再合并会让冲突面扩大。
 2. **合并后**：至少跑 `bun run docs:check`；改动过治理文件再跑 `bun run governance:check`。
+3. **逐分支同步**：本 fork 有多个长期分支（`feat/*`、`fix/*`）。GitHub 的 "Sync fork" 按钮只处理默认分支，
+   不会替其它分支追上游；每个在用的分支都要单独 `git fetch upstream && git merge upstream/master`。
+4. **启用 rerere**：`git config --local rerere.enabled true` 与 `git config --local rerere.autoUpdate true`。
+   上游会反复改动同一区域（尤其 `app/components/novel-ide/**` 的继承定制，已决定保留），
+   rerere 会记录并复用我们解决过的同一冲突，减少重复劳动。冲突块内容变动频繁时仍需人工复核自动复用结果。
 3. **合并验证基准**（2026-09-14 实测）：当时落后 1 个提交、领先 31 个；双方同时改过
    `docs/testing/README.md` 与 `packages/neuro-book/package.json`，合并**零冲突**——
    证明下述"外科手术式改动"策略有效。
