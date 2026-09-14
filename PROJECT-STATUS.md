@@ -16,6 +16,8 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 | 事后校验（第五条） | 已实现：`chapter-write-review-revise` 新增 `infoControl` 入参，四字段只注入一致性评审 | workflow 与其回归测试 |
 | 关键帧写作（第三条/第六条） | 已实现：`StoryKeyframe` 实体（instant 锚 + 不可逆变化声明 + `source: author/derived` + 裁决留痕）、补间区间 API、`keyframe-tween-review` workflow、skill `phases/05-keyframe-tween.md`；agent 工具面与主链接线已补齐（`get_story_keyframe` / `get_tween_keyframes` / `save_story_keyframe` + Reference `plot/keyframe.md` + 正文循环前置检查与完成标准接帧） | `keyframe.service.ts`、prisma `project.schema.prisma`、`server/agent/tools/plot-tools.ts`、`assets/reference/plot/keyframe.md`、`docs/specs/plot/keyframe.md` |
 | 未来影响分析（第六条） | 已实现：正文采纳后由 leader 扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），产出只标记、不改动的受影响清单交作者逐项裁决；与反向核对（三维评审、`consistency-audit`）分工互补。形态为 skill 阶段 + Reference（**不新增 workflow**——workflow 内 `adhoc` 工具面读不到 Plot 数据，与 `infoControl` 同源约束） | `assets/reference/plot/future-impact-analysis.md`、`phases/03-chapter-loop.md`（第六步）、`docs/specs/plot/future-impact-analysis.md` |
+| canon 回读验证（第六条） | 已实现：拍板落库写入后立刻回读 slice / Plot 实体 / lorebook，与确认意图逐条比对，产出验收回执（已落地 / 偏离 / 未落地 + 证据 + 建议动作）；与事后校验、未来影响分析三者分工互补 | `assets/reference/world-engine/canon-read-back.md`、`phases/02-canon-commit.md`（回读验证）、`docs/specs/plot/canon-read-back.md` |
+| 写回校验清单（第五条 / 第七条） | 已实现：把散落在四处以上的写回校验项收敛成声明式清单（项名 / 判据 / 失败动作 block·warn·record / 消费方），成为各消费方的单一索引入口；文档级，不引入运行时引擎 | `assets/reference/plot/write-back-checks.md`、`docs/specs/plot/write-back-checks.md` |
 | 实验验证（否决权条款第 2 条） | 两轮终审已留痕：事前告知 vs 事后校验（SLICE 优于 TOLD，但都"读不下去"）；关键帧补间（**可读性变强，判定通过**） | `docs/doctrine/contrast-experiment-2026-09-14.md`、`keyframe-experiment-2026-09-14.md` |
 
 已知未收口（改动前先建规范归属）：
@@ -26,7 +28,7 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 
 2026-09-14 收口（不再列为未收口）：用户文档（`agent/tools.md` 补关键帧工具与写工具计数、`core/world-engine.md` 补「帧驱动」小节，中英对等；`tutorials/03` 复核后无需改动）；fork 杂项（`CONTRIBUTING{,.en}.md` 命令改为 monorepo 用法、版本行对齐 `RELEASE.md` 的 `0.10.2-canary`）。
 
-规范归属状态：Writer brief 双视图（[`docs/specs/plot/chapter-writer-brief.md`](docs/specs/plot/chapter-writer-brief.md)）、关键帧写作（[`docs/specs/plot/keyframe.md`](docs/specs/plot/keyframe.md)）与未来影响分析（[`docs/specs/plot/future-impact-analysis.md`](docs/specs/plot/future-impact-analysis.md)）均已晋升 `implemented`，`docs/specs/README.md` 的原 P0 关键帧缺口已闭合。
+规范归属状态：Writer brief 双视图（[`docs/specs/plot/chapter-writer-brief.md`](docs/specs/plot/chapter-writer-brief.md)）、关键帧写作（[`docs/specs/plot/keyframe.md`](docs/specs/plot/keyframe.md)）、未来影响分析（[`docs/specs/plot/future-impact-analysis.md`](docs/specs/plot/future-impact-analysis.md)）、canon 回读验证（[`docs/specs/plot/canon-read-back.md`](docs/specs/plot/canon-read-back.md)）与写回校验清单（[`docs/specs/plot/write-back-checks.md`](docs/specs/plot/write-back-checks.md)）均已晋升 `implemented`，`docs/specs/README.md` 的原 P0 关键帧缺口已闭合。
 
 遗留清理状态：实验夹具（场景/剧情线/关键帧/brief 字段）已从 Project 数据中删除还原；`.contrast/` 临时目录已清；实验正文全文归档在 `docs/doctrine/` 的两份实验记录中。2026-09-14 复核（w00015）：`xin-xiao-shuo` 现有 224 章、294 个场景、9 条线索，213 章填了 `briefGoal`；`StoryKeyframe` 与 `StoryDecision` 仍为 0 条——作品自身的场景与章简报在库，帧属实验夹具、已清理，关键帧链路的实测材料需另行准备。
 
