@@ -1,3 +1,4 @@
+import {spawnSync} from "node:child_process";
 import {access, chmod, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile} from "node:fs/promises";
 import {basename, dirname, join, resolve} from "node:path";
 import {createHash} from "node:crypto";
@@ -22,6 +23,9 @@ import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
 import {createRasterTestFixtures, jpegWithDimensions} from "nbook/server/agent/test-utils/raster-fixtures";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
+
+/** retrieval 基线断言依赖真实 bash 内的 ripgrep；宿主未安装 rg 时跳过该用例。 */
+const hasRipgrep = (): boolean => spawnSync("rg", ["--version"], {stdio: "ignore"}).status === 0;
 
 describe("v3 file tools", () => {
     let root: string;
@@ -896,7 +900,7 @@ describe("v3 file tools", () => {
         expect(firstPath).toContain(".nbook/agent/bin");
     });
 
-    it("retrieval 的 index.md 清单命令可在真实 bash 中执行", async () => {
+    it.skipIf(!hasRipgrep())("retrieval 的 index.md 清单命令可在真实 bash 中执行", async () => {
         await writeFile(join(workspaceRoot, "workspace.yaml"), "schemaVersion: 1\nslug: test\ndisplayName: Test\nnovelId: \"1\"\ncreatedAt: \"2026-05-24T00:00:00.000Z\"\nupdatedAt: \"2026-05-24T00:00:00.000Z\"\n", "utf-8");
         await mkdir(join(workspaceRoot, "lorebook", "character", "hero"), {recursive: true});
         await writeFile(join(workspaceRoot, "lorebook", "character", "hero", "index.md"), "---\ntitle: Hero\ntype: character\nstatus: active\nrefs: []\n---\n\n正文。", "utf-8");
