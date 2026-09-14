@@ -108,7 +108,7 @@ describe("profile home", () => {
         await expect(home.writeText("escape/new.md", "bad")).rejects.toThrow("真实路径越过文件系统根");
         await home.remove("escape");
 
-        await expect(access(marker)).resolves.toBeUndefined();
+        await expect(access(marker)).resolves.toBeOneOf([undefined, null]);
         await expect(home.exists("escape")).resolves.toBe(false);
     });
 

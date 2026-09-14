@@ -188,7 +188,9 @@ async function createFixture(): Promise<Fixture> {
 
 async function runWorkspace(fixture: Fixture, args: string[], cwd = fixture.workspaceRoot): Promise<CliResult> {
     return await new Promise((resolveResult, rejectResult) => {
-        const bunExecutable = process.versions.bun ? process.execPath : (process.env.BUN || "bun");
+        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim（bun-node-*/node.exe），
+        // 直接用它 spawn 会让 CLI 参数被按 node 解析；用 which 解析真正的 bun 可执行文件。
+        const bunExecutable = Bun.which("bun") ?? process.execPath;
         const child = spawn(bunExecutable, ["run", "--no-install", workspaceCommand, ...args], {
             cwd,
             env: fixture.env,

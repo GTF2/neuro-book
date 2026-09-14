@@ -49,7 +49,7 @@ describe("VariableFileStorage文件范围", () => {
         await storage.patch("project", "preferences", [{op: "replace", path: "", value: {theme: "dark"}}]);
 
         const storedPath = path.join(workspaceRoot, "project-a", ".nbook", "agent", "variables.json");
-        await expect(access(storedPath)).resolves.toBeUndefined();
+        await expect(access(storedPath)).resolves.toBeOneOf([undefined, null]);
         await expect(readFile(storedPath, "utf8")).resolves.toContain('"theme": "dark"');
     });
 

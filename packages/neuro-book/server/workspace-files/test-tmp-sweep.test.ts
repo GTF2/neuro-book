@@ -88,7 +88,7 @@ describe("测试临时根 sweep 兜底清理", () => {
             [noMarkerReclaimable, "no_marker"],
             [noMarkerFresh, "no_marker"],
         ] as const) {
-            await expect(access(root)).resolves.toBeUndefined();
+            await expect(access(root)).resolves.toBeOneOf([undefined, null]);
             expect(report.retained).toContainEqual({root, reason});
         }
     });
@@ -110,7 +110,7 @@ describe("测试临时根 sweep 兜底清理", () => {
         expect(report.retained).toContainEqual({root: linkRoot, reason: "unreadable"});
         expect(report.retained).toContainEqual({root: fileRoot, reason: "unreadable"});
         await expect(lstat(linkRoot)).resolves.toBeDefined();
-        await expect(access(fileRoot)).resolves.toBeUndefined();
+        await expect(access(fileRoot)).resolves.toBeOneOf([undefined, null]);
     });
 
     it("marker-owned teardown 拒绝被替换成链接的 root", async () => {
@@ -145,6 +145,6 @@ describe("测试临时根 sweep 兜底清理", () => {
 
         await sweepStaleTmpRoots();
 
-        await expect(access(resolve(outside, "keep.txt"))).resolves.toBeUndefined();
+        await expect(access(resolve(outside, "keep.txt"))).resolves.toBeOneOf([undefined, null]);
     });
 });

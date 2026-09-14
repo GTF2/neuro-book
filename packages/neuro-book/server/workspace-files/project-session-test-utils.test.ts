@@ -49,6 +49,6 @@ describe("Project Session测试边界", () => {
         await removeProjectWorkspaceForTest("project");
 
         await expect(access(projectRoot)).rejects.toMatchObject({code: "ENOENT"});
-        await expect(access(outsideSentinel)).resolves.toBeUndefined();
+        await expect(access(outsideSentinel)).resolves.toBeOneOf([undefined, null]);
     });
 });

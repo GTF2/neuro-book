@@ -23,10 +23,24 @@ describe("Plot/World ProjectModule", () => {
             await handle.close().catch(() => undefined);
         }
         for (const tempRoot of tempRoots.splice(0).reverse()) {
-            await rm(tempRoot, {recursive: true, force: true});
+            await removeTmpRootWithRetry(tempRoot);
         }
         vi.restoreAllMocks();
     });
+
+    /** Windows 下 Prisma/SQLite 句柄释放有延迟，rm 可能抛 EBUSY；重试到句柄释放为止。 */
+    async function removeTmpRootWithRetry(target: string): Promise<void> {
+        for (let attempt = 0; attempt < 60; attempt += 1) {
+            try {
+                await rm(target, {recursive: true, force: true});
+                return;
+            } catch (error) {
+                const busy = error instanceof Error && "code" in error && error.code === "EBUSY";
+                if (!busy || attempt === 59) throw error;
+                await new Promise((resolvePromise) => setTimeout(resolvePromise, 100));
+            }
+        }
+    }
 
     it("以lazy token注册且最低ready不打开Project数据库", async () => {
         const prepared = await createPreparedProject("minimum-ready");

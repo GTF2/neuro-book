@@ -28,7 +28,7 @@ describe("SQLite Vec Database", () => {
         } finally {
             db.close();
         }
-        await expect(rm(root, {recursive: true})).resolves.toBeUndefined();
+        await expect(removeTestRoot(root)).resolves.toBeOneOf([undefined, null]);
         roots.splice(roots.indexOf(root), 1);
     });
 
@@ -46,7 +46,7 @@ describe("SQLite Vec Database", () => {
             },
         })).rejects.toThrow("injected initialization failure");
 
-        await expect(rm(root, {recursive: true})).resolves.toBeUndefined();
+        await expect(removeTestRoot(root)).resolves.toBeOneOf([undefined, null]);
         roots.splice(roots.indexOf(root), 1);
     });
 

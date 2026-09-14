@@ -29,7 +29,7 @@ describe("NovelRagPanel contract", () => {
     it("保留基础空状态和真实 RAG API 入口", async () => {
         const panel = await readFile(ragPanelPath, "utf-8");
         expect(panel).toContain("当前没有 Project Workspace。");
-        expect(panel).toContain("当前 Project 暂无 subject RAG 数据。");
+        expect(panel).toContain("当前项目暂无主体 RAG 数据。");
         expect(panel).toContain("/api/projects/rag/overview");
         expect(panel).toContain("/api/projects/rag/subject");
         expect(panel).toContain("/api/projects/rag/search");

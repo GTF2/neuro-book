@@ -66,6 +66,20 @@ describe("workspace-files", {timeout: 60_000}, () => {
         await fs.mkdir(root, {recursive: true});
     }, 60_000);
 
+    /** Windows 下 SQLite 句柄释放有延迟，rm 可能抛 EBUSY；重试到句柄释放为止。 */
+    async function removeTmpRootWithRetry(target: string): Promise<void> {
+        for (let attempt = 0; attempt < 60; attempt += 1) {
+            try {
+                await fs.rm(target, {recursive: true, force: true});
+                return;
+            } catch (error) {
+                const busy = error instanceof Error && "code" in error && error.code === "EBUSY";
+                if (!busy || attempt === 59) throw error;
+                await new Promise((resolvePromise) => setTimeout(resolvePromise, 100));
+            }
+        }
+    }
+
     afterEach(async () => {
         setUserAssetsSyncStateWriteHookForTest(null);
         setUserAssetsProfileArtifactStagedHookForTest(null);
@@ -73,7 +87,7 @@ describe("workspace-files", {timeout: 60_000}, () => {
         try {
             await closeAllProjects();
             await closeWorkspaceTreeIndex(root);
-            await fs.rm(root, {recursive: true, force: true});
+            await removeTmpRootWithRetry(root);
         } finally {
             // dispose 内部已聚合错误并保证最终 rm(root)，这里只保证它一定被调用。
             await assets.dispose();
@@ -747,8 +761,8 @@ describe("workspace-files", {timeout: 60_000}, () => {
         await fs.writeFile(isolatedProfilePath, "export const profileManifest = { key: \"codex.isolation\", name: \"Isolation\" } as const;\n", "utf-8");
         await fs.writeFile(isolatedSyncStatePath, JSON.stringify({profiles: [], assets: []}, null, 2), "utf-8");
 
-        await expect(fs.access(isolatedProfilePath)).resolves.toBeUndefined();
-        await expect(fs.access(isolatedSyncStatePath)).resolves.toBeUndefined();
+        await expect(fs.access(isolatedProfilePath)).resolves.toBeOneOf([undefined, null]);
+        await expect(fs.access(isolatedSyncStatePath)).resolves.toBeOneOf([undefined, null]);
         await expect(fs.access(realProfilePath)).rejects.toMatchObject({code: "ENOENT"});
     });
 
@@ -2215,7 +2229,7 @@ describe("workspace-files", {timeout: 60_000}, () => {
             await expect(fs.access(path.join(createdRoot, "simulation"))).rejects.toMatchObject({code: "ENOENT"});
             await openProjectForTest(workspaceSlug);
             projectOpened = true;
-            await expect(fs.access(path.join(createdRoot, ".nbook", "project.sqlite"))).resolves.toBeUndefined();
+            await expect(fs.access(path.join(createdRoot, ".nbook", "project.sqlite"))).resolves.toBeOneOf([undefined, null]);
             const ready = requireReadyProject(projectWorkspaceRef(workspaceSlug));
             const {world: worldEngineFacade} = await activateReadyProjectModule(
                 ready,

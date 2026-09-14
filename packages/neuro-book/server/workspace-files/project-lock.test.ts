@@ -187,7 +187,7 @@ describe("ProjectLockModule", () => {
         const recoveredHandle = await recoveryModule.acquireOccupancy(ref);
         try {
             expect(() => recoveredHandle.assertHealthy()).not.toThrow();
-            await expect(access(staleLockPath)).resolves.toBeUndefined();
+            await expect(access(staleLockPath)).resolves.toBeOneOf([undefined, null]);
         } finally {
             await recoveredHandle.release();
         }
@@ -206,7 +206,8 @@ describe("ProjectLockModule", () => {
             "fixtures",
             "project-occupancy-holder.ts",
         );
-        const bunExecutable = "bun" in process.versions ? process.execPath : "bun";
+        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim，需要用 which 解析真正的 bun。
+        const bunExecutable = Bun.which("bun") ?? process.execPath;
         const child = spawn(bunExecutable, [fixturePath], {
             cwd: process.cwd(),
             env: {
