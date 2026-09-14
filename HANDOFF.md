@@ -66,18 +66,17 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 10. **信息控制漏传必定显形（2026-09-14）**：`chapter-write-review-revise` 在 `infoControl` 缺失时给一致性评审显式的「信息边界未核对」标注段、运行日志记警告、返回值新增 `infoControlChecked=false`；主链 skill 把 `infoControl` 改为每次必传并写清编译来源；Spec 与 `writer-brief.md` 契约同步；真自动编译登记为 P1 规范缺口。Work 记录在 `.agents/works/w00016-info-control-non-silent/`；接缝 S9 更新。
 11. **文档杂项收口（2026-09-14）**：Swain 词汇统一（帧 / 场景张力槽位改用 `Goal/Conflict/Disaster`、`Reaction/Dilemma/Decision`，与 `outcomeType` 对齐；宪法与实验记录不动）；`agent/tools.md` 与 `core/world-engine.md` 中英补关键帧内容；`CONTRIBUTING{,.en}.md` 命令修正为 monorepo 用法；`PROJECT-STATUS` 版本行对齐 `RELEASE.md`。
 
-### 进行中 / 待办（按优先级）
+### 进行中 / 待办（2026-09-14 重排：只留未完成项，按优先级；已完成见上）
 
 | 优先级 | 任务 | 说明 |
 |---|---|---|
-| ~~P0~~ | ~~**brief 双视图改造**~~ **已完成 2026-09-14** | writer 视图只含事实、评审视图收纳全部意图级内容；三模式统一只给事实；`needs_chapter_brief` 废止；工具对 writer 调用收口 `details`；workflow 意图只进评审。Spec：`docs/specs/plot/chapter-writer-brief.md`（implemented）。**下一个 P0 是关键帧工具面** |
-| ~~P0~~ | ~~**关键帧工具面**~~ **已完成 2026-09-14（w00015）** | 新增 3 个工具（读帧 / 读补间路标 / 声明与更新帧）+ Reference `plot/keyframe.md` + `phases/03|05` 接真实工具名与主链；Spec `docs/specs/plot/keyframe.md`（implemented） |
-| **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑 CLI/脚本路径，UI 由并行执行者按既有分工推进 |
-| P1 | `infoControl` 真自动编译 | 漏传已必定显形（评审标注 + 日志 + 返回值 `infoControlChecked`，Work w00016）；真自动编译要宿主接线 `wf.query` / `wf.callAction`，让 workflow 能确定性读项目数据（已登记 P1 规范缺口） |
-| ~~P1~~ | ~~**Swain 词汇统一（文档级）**~~ **已完成 2026-09-14** | 帧 / 场景张力槽位改用 `Goal/Conflict/Disaster`、`Reaction/Dilemma/Decision`，与 `outcomeType` 对齐（`assets/reference/plot/keyframe.md`、`agent-spec.md`），不新增 schema 字段；宪法与两份实验记录保留原用词（历史证据 / 需所有者批准） |
-| P1 | 未来影响分析 / 回读验证+回执 / 写回校验注册表 | 采纳 StoryForge 的三个成熟机制（见 prior-art 第五节 2/3/4） |
-| ~~P2~~ | ~~**用户文档剩余**~~ **已完成 2026-09-14** | `agent/tools.md`（中英）补 3 个关键帧工具与写工具计数；`core/world-engine.md`（中英）补「帧驱动」小节并如实说明暂无面板；`tutorials/03` 复核后无需改动。UI 面板本身仍待做（见上一行） |
-| ~~P2~~ | ~~**fork 杂项**~~ **已完成 2026-09-14** | `CONTRIBUTING{,.en}.md` 命令改为 monorepo 实际用法（`bun run --cwd packages/neuro-book …`）；`PROJECT-STATUS` 版本行对齐 `RELEASE.md`（`0.10.2-canary`） |
+| **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑对话 / 脚本路径。**等 UI 执行者回一句**：帧的 `instant` 显示走 (a) 原始数字，还是 (b) 我补「instant ↔ 项目日历时间」转换接口；选 (b) 我做后端那半 |
+| **P1** | StoryForge 机制一：未来影响分析 | 正文采纳后列出受影响的下游 Promise / Scene / 帧并标记待处理（prior-art 第五节 2）。下一步：出 Proposal + 拆 Task（不碰运行中的应用） |
+| **P1** | `infoControl` 真自动编译 | 漏传已必定显形（Work w00016）；真自动编译要宿主接线 `wf.query` / `wf.callAction`（已登记 P1 规范缺口）。下一步：出 Proposal |
+| P1 | StoryForge 机制二 / 三：回读验证+回执、写回校验注册表 | prior-art 第五节 3/4 |
+| P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
+| P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
+| P2 | 合并上游（例行） | 现状：领先上游 60 提交 / 落后 0（2026-09-14 实测）；并行执行者有未提交改动，现在合并风险高，等其落定再做 |
 
 ---
 
