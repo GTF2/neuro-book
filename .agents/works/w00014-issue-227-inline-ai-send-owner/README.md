@@ -22,4 +22,4 @@ issueId: i227
 - 不处理浏览器记忆中旧 surface schema-2 JSON 与 controller 纯数字的格式兼容。
 - 本次不新建或迁移 `docs/specs/` 正文（**不是规范豁免**：`docs/specs/README.md` 的 Bug 流仍要求同一 Task 补齐 `implemented` 行为合同）；按 Task 缺口 8 跟踪，待该域迁移或开发者指定 capability/owner 后补齐。
 - 本次不为改动的组件补同名 `*.md` 与能力标签（**不是规范豁免**：`docs/standards/code/components.md` 把组件同名文档列为「不可缺省」）；按 Task 缺口 9 跟踪，后续 Task 或文档迁移必须补齐。
-- 不调用真实 Provider/Model；不执行远端 Issue/Project/PR 写入、push、合并、发布或部署。
+- 不调用真实 Provider/Model；不执行远端 Issue/Project/PR 写入、push、合并、发布或部署。**（上一行是范围边界，不是执行日志**：本次实际执行的受限动作只有「登记提交 push」与「Issue #227 回帖」，均经开发者本会话明确授权；其余远端动作仍未授权，留痕见 Task README 的「已执行的远端写入」。）
