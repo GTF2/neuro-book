@@ -39,7 +39,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 3 | `docs/standards/fork-upstream-sync.md` | 我们是 fork（上游 notnotype/neuro-book），这是同步与防冲突规则 |
 | 4 | `docs/standards/fork-seams.md` | **接缝登记表 S1–S16**：改上游文件前先查这里 |
 | 5 | `docs/doctrine/prior-art-2026-09-14.md` | 外部调研：哪些轮子已有（别重复造）、采纳清单 |
-| 6 | `AGENTS.md` 顶部「与开发者的硬性约定（7 条）」 | 协作铁律：先计划后代码、一次一个功能、不通测试不提交、不改无关文件、冲突问不许猜、只推 origin、大白话 |
+| 6 | `AGENTS.md` 顶部「与开发者的硬性约定（7 条）」 | 协作铁律：先说一句然后直接做（约 5 成把握即推进）、一次一个功能、不通测试不提交、不改无关文件、能判断就别老问、只推 origin、大白话 |
 
 ---
 
