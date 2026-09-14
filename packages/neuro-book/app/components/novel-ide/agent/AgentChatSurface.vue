@@ -1144,10 +1144,10 @@ const createSession = async (profileKey?: string): Promise<AgentSessionOpenResul
         replayDeferred = activeSessionId.value !== null
             && session.recoveryShell.value?.summary.sessionId === activeSessionId.value;
         const message = loaded.status === "dependency_missing"
-            ? resolveApiErrorMessage(loaded.error, "关联对话不可用，无法打开新对话")
+            ? resolveApiErrorMessage(loaded.error, t("agent.chatSurface.relatedSessionUnavailableCreate"))
             : loaded.status === "failed"
                 ? resolveApiErrorMessage(loaded.error, t("agent.chatSurface.createSessionFailed"))
-                : "当前没有可用对话";
+                : t("agent.chatSurface.noAvailableSession");
         return {status: "failed", message};
     } catch (error) {
         if (!acceptsActivation(attempt) || isAgentSurfaceSupersededError(error)) {
@@ -1560,8 +1560,8 @@ const loadSession = async (
             }
             if (error instanceof AgentComposerDraftBlockedError) {
                 const discard = await confirm(
-                    "当前草稿无法安全保存。返回编辑会保留正文；放弃草稿后才继续切换对话。",
-                    "草稿未保存",
+                    t("agent.chatSurface.draftSaveBlocked"),
+                    t("agent.chatSurface.draftUnsaved"),
                 );
                 if (!discard || !acceptsLoad()) {
                     const hasStableSession = previousSessionId !== null
@@ -1604,7 +1604,7 @@ const loadSession = async (
                 }
                 if (options.expectedIdentity !== undefined
                     && recovery.summary.sessionIdentity !== options.expectedIdentity) {
-                    throw new Error("加载的对话身份与浏览器记忆不一致。请从当前对话列表重新选择。");
+                    throw new Error(t("agent.chatSurface.sessionIdentityMismatch"));
                 }
                 const preparedDraft = await prepareComposerDraftContext(sessionId);
                 if (!acceptsLoad()) {
@@ -2404,7 +2404,7 @@ const sendInlineEditorPrompt = async (
     const targetResult = await ensureInlineEditorSession(owner);
     if (targetResult.status === "superseded") return targetResult;
     if (targetResult.status === "empty" || targetResult.status === "failed") {
-        throw new Error(targetResult.status === "empty" ? "当前没有可用 Inline AI 对话，请先创建。" : targetResult.message);
+        throw new Error(targetResult.status === "empty" ? t("agent.chatSurface.inlineEmptyCreateFirst") : targetResult.message);
     }
     const targetSession = targetResult.value;
     if (targetSession.status === "running" || targetSession.status === "waiting") {
@@ -2462,7 +2462,7 @@ const openInlineEditorSession = async (): Promise<AgentSessionOpenResult<AgentSe
     const targetResult = await ensureInlineEditorSession(owner);
     if (targetResult.status === "superseded") return targetResult;
     if (targetResult.status === "empty" || targetResult.status === "failed") {
-        return {status: "failed", message: targetResult.status === "empty" ? "当前没有可用 Inline AI 对话，请先创建。" : targetResult.message};
+        return {status: "failed", message: targetResult.status === "empty" ? t("agent.chatSurface.inlineEmptyCreateFirst") : targetResult.message};
     }
     const targetSession = targetResult.value;
     if (!acceptsInlineSurfaceOperation(owner, targetSession.sessionId)) {
@@ -2501,11 +2501,11 @@ const openInlineEditorSession = async (): Promise<AgentSessionOpenResult<AgentSe
             return {status: "superseded"};
         }
         const message = loaded.status === "dependency_missing"
-            ? resolveApiErrorMessage(loaded.error, "关联对话不可用，无法打开当前对话")
+            ? resolveApiErrorMessage(loaded.error, t("agent.chatSurface.relatedSessionUnavailableCurrent"))
             : loaded.status === "failed"
                 ? resolveApiErrorMessage(loaded.error, t("agent.chatSurface.loadSessionFailed"))
                 : loaded.status === "empty"
-                    ? "当前没有可用对话"
+                    ? t("agent.chatSurface.noAvailableSession")
                     : t("agent.chatSurface.loadSessionFailed");
         return {status: "failed", message};
     } finally {
@@ -3531,8 +3531,8 @@ const resendUnknownMessage = async (message: AgentMessage): Promise<void> => {
         return;
     }
     const accepted = await confirm(
-        "服务器可能已经接受原消息。重新发送会生成新的 clientMessageId，并可能产生重复内容。",
-        "确认重新发送",
+        t("agent.chatSurface.resendUnknownConfirm"),
+        t("agent.chatSurface.resendUnknownTitle"),
     );
     if (!accepted) {
         return;
@@ -3947,7 +3947,7 @@ async function ensureInlineEditorSession(
     }
     return list.length === 0
         ? {status: "empty"}
-        : {status: "failed", message: "请选择一个 Inline AI 对话后继续。"};
+        : {status: "failed", message: t("agent.chatSurface.inlineSelectFirst")};
 }
 
 /**
@@ -4146,7 +4146,7 @@ async function recoverMissingInlineEditorSession(
         notification.warning(t("agent.chatSurface.inlineSessionExpiredReselectMessage"), {title: t("agent.chatSurface.sessionExpiredTitle")});
         return {
             status: "failed",
-            message: "Inline AI 对话已失效，请从列表重新选择。",
+            message: t("agent.chatSurface.inlineSessionExpired"),
             requestId: inlineEditorSessionRequestId,
         };
     } catch (error) {
@@ -4201,7 +4201,7 @@ async function loadInlineEditorSession(
                 }
                 if (options.expectedIdentity !== undefined
                     && recovery.summary.sessionIdentity !== options.expectedIdentity) {
-                    throw new Error("Inline 对话身份与浏览器记忆不一致。请从当前列表重新选择。");
+                    throw new Error(t("agent.chatSurface.inlineIdentityMismatch"));
                 }
                 if (recovery.summary.profileKey !== INLINE_EDITOR_PROFILE_KEY) {
                     throw new Error(t("agent.chatSurface.inlineLoadFailed"));
@@ -4362,7 +4362,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     <button v-else class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.session.newChat')" :disabled="loadingSession" @click="void createSessionFromHeader()">
                         <span class="i-lucide-plus h-4 w-4"></span>
                     </button>
-                    <button class="flex items-center gap-1 rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :class="{'bg-[var(--bg-hover)] text-[var(--accent-main)]': attachmentPanelOpen}" title="查看当前 Session 的全部附件" :disabled="!activeSessionId" @click="toggleAttachmentPanel">
+                    <button class="flex items-center gap-1 rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :class="{'bg-[var(--bg-hover)] text-[var(--accent-main)]': attachmentPanelOpen}" :title="t('agent.chatSurface.attachmentPanelTitle')" :disabled="!activeSessionId" @click="toggleAttachmentPanel">
                         <span class="i-lucide-paperclip h-4 w-4"></span>
                         <span v-if="sessionAttachmentUniqueTotal" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ sessionAttachmentUniqueTotal }}</span>
                     </button>

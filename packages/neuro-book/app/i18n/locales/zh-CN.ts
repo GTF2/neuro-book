@@ -2269,6 +2269,21 @@ const zhCN = {
             skipEditTitle: "跳过此次编辑",
             skipEditDraftBlocked: "输入框里已有其它草稿，请先处理当前草稿。",
             regenerated: "已重新生成",
+            // 会话加载/切换：身份与依赖校验的可见文案
+            relatedSessionUnavailableCreate: "关联对话不可用，无法打开新对话",
+            relatedSessionUnavailableCurrent: "关联对话不可用，无法打开当前对话",
+            noAvailableSession: "当前没有可用对话",
+            sessionIdentityMismatch: "加载的对话身份与浏览器记忆不一致。请从当前对话列表重新选择。",
+            draftSaveBlocked: "当前草稿无法安全保存。返回编辑会保留正文；放弃草稿后才继续切换对话。",
+            draftUnsaved: "草稿未保存",
+            resendUnknownConfirm: "服务器可能已经接受原消息。重新发送会生成新的 clientMessageId，并可能产生重复内容。",
+            resendUnknownTitle: "确认重新发送",
+            // Inline AI 对话：选择与失效提示
+            inlineEmptyCreateFirst: "当前没有可用 Inline AI 对话，请先创建。",
+            inlineSelectFirst: "请选择一个 Inline AI 对话后继续。",
+            inlineSessionExpired: "Inline AI 对话已失效，请从列表重新选择。",
+            inlineIdentityMismatch: "Inline 对话身份与浏览器记忆不一致。请从当前列表重新选择。",
+            attachmentPanelTitle: "查看当前 Session 的全部附件",
             // Composer 草稿
             draftTooLargeMessage: "Composer 草稿超过 256 KiB，已停止保存该草稿。",
             draftTooLargeTitle: "草稿过大",

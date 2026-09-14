@@ -2271,6 +2271,21 @@ const enUS = {
             skipEditTitle: "Skip This Edit",
             skipEditDraftBlocked: "The composer already has another draft — handle it first.",
             regenerated: "Regenerated",
+            // Session load/switch: identity and dependency messages
+            relatedSessionUnavailableCreate: "The linked conversation is unavailable, so a new one cannot be opened.",
+            relatedSessionUnavailableCurrent: "The linked conversation is unavailable, so the current one cannot be opened.",
+            noAvailableSession: "No conversation available",
+            sessionIdentityMismatch: "The loaded conversation identity does not match what this browser remembers. Pick one again from the conversation list.",
+            draftSaveBlocked: "The current draft cannot be saved safely. Going back keeps the text; discard the draft to switch conversations.",
+            draftUnsaved: "Draft not saved",
+            resendUnknownConfirm: "The server may have already accepted the original message. Resending creates a new clientMessageId and may duplicate content.",
+            resendUnknownTitle: "Confirm resend",
+            // Inline AI conversation: selection and expiry
+            inlineEmptyCreateFirst: "No Inline AI conversation is available yet; create one first.",
+            inlineSelectFirst: "Select an Inline AI conversation to continue.",
+            inlineSessionExpired: "This Inline AI conversation is no longer valid; pick another from the list.",
+            inlineIdentityMismatch: "The Inline conversation identity does not match what this browser remembers. Pick one again from the current list.",
+            attachmentPanelTitle: "View all attachments in this session",
             // Composer draft
             draftTooLargeMessage: "The composer draft exceeds 256 KiB, so saving it was stopped.",
             draftTooLargeTitle: "Draft too large",
