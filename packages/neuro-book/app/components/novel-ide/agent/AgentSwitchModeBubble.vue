@@ -230,7 +230,7 @@ const statusLabel = computed(() => {
 
             <div v-if="shouldShowPlanPreview && hasPlanFilePreview" class="max-h-[320px] min-w-0 overflow-y-auto pr-2 text-xs leading-relaxed text-[var(--text-main)]">
                 <AgentMarkdownContent :content="planContent" />
-                <div class="mt-2 text-[11px] text-[var(--text-muted)]">完整计划文件 · {{ formatByteCount(planContentBytes) }}</div>
+                <div class="mt-2 text-[11px] text-[var(--text-muted)]">{{ t("agent.tool.planFileSize", {size: formatByteCount(planContentBytes)}) }}</div>
             </div>
             <div v-else-if="planSummary" class="line-clamp-2 break-words text-xs leading-5 text-[var(--text-secondary)]">
                 {{ planSummary || t("agent.planApproval.collapsed") }}

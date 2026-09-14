@@ -225,7 +225,7 @@ const hintNote = computed(() => {
             <span v-if="editFailure" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">
                 {{ t("agent.tool.editsCount", {count: editFailure.totalEdits}) }}
             </span>
-            <span v-else-if="(parsedArgs.edits?.length ?? 0) > 1" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">{{ parsedArgs.edits?.length }} 处编辑</span>
+            <span v-else-if="(parsedArgs.edits?.length ?? 0) > 1" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">{{ t("agent.tool.editsCount", {count: parsedArgs.edits?.length ?? 0}) }}</span>
             <span v-if="editFailure && editFailure.omittedFailures > 0" class="text-[10px] text-[var(--text-muted)]">
                 {{ t("agent.tool.editOmittedItems", {count: editFailure.omittedFailures}) }}
             </span>
@@ -313,14 +313,14 @@ const hintNote = computed(() => {
             <!-- Diff 预览：old/new 都允许在半截 JSON 阶段逐步增长 -->
             <div class="grid grid-cols-2 gap-2 mt-2">
                 <div class="rounded border border-[var(--border-color)] bg-[var(--status-danger-bg)]">
-                    <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-danger)]">旧文本</div>
+                    <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-danger)]">{{ t("agent.tool.editOldString") }}</div>
                     <div class="max-h-40 overflow-y-auto whitespace-pre-wrap p-2 font-mono text-xs text-[var(--status-danger)] line-through opacity-80">
                         {{ oldStringText || "..." }}
                     </div>
                 </div>
 
                 <div class="rounded border border-[var(--border-color)] bg-[var(--status-success-bg)]">
-                    <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-success)]">新文本</div>
+                    <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--status-success)]">{{ t("agent.tool.editNewString") }}</div>
                     <div class="max-h-40 overflow-y-auto whitespace-pre-wrap p-2 font-mono text-xs text-[var(--status-success)]">
                         {{ newStringText || "..." }}
                     </div>
@@ -329,9 +329,9 @@ const hintNote = computed(() => {
             <div v-if="previewNotice" class="text-[11px] text-[var(--status-info)]">{{ previewNotice }}</div>
 
             <div v-if="diffDetails?.diffPreview" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)]">
-                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--text-muted)]">差异预览</div>
+                <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--text-muted)]">{{ t("agent.tool.diffPreview") }}</div>
                 <pre class="max-h-48 overflow-y-auto whitespace-pre-wrap break-all p-2 font-mono text-xs text-[var(--text-secondary)]">{{ diffDetails.diffPreview }}</pre>
-                <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">仅显示预览 · 原 diff {{ formatByteCount(diffDetails.diffBytes) }}</div>
+                <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">{{ t("agent.tool.diffOmitted", {size: formatByteCount(diffDetails.diffBytes)}) }}</div>
             </div>
 
             <!-- 失败态把原始报错降级为技术详情，与结构化失败卡片保持一致，避免与琥珀警告条重复 -->

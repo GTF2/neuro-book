@@ -99,15 +99,15 @@ const status = computed<WorkflowBubbleStatus>(() => {
 });
 
 const statusLabel = computed(() => ({
-    approval: "等待审批",
-    starting: "正在启动",
-    running: "运行中",
-    waiting: "等待应答",
-    completed: "已完成",
-    failed: "失败",
-    cancelled: "已取消",
-    interrupted: "已中断",
-    not_started: "未执行",
+    approval: t("ide.agentJobs.statusApproval"),
+    starting: t("ide.agentJobs.statusStarting"),
+    running: t("ide.agentJobs.statusRunning"),
+    waiting: t("ide.agentJobs.statusWaiting"),
+    completed: t("ide.agentJobs.statusCompleted"),
+    failed: t("ide.agentJobs.statusFailed"),
+    cancelled: t("ide.agentJobs.statusCancelled"),
+    interrupted: t("ide.agentJobs.statusInterrupted"),
+    not_started: t("ide.agentJobs.statusNotStarted"),
 })[status.value]);
 
 const statusToneClass = computed(() => {
@@ -276,9 +276,9 @@ async function pollRun(revision: number, expectedRunId: string): Promise<void> {
             runUnavailable.value = true;
             pollError.value = matchingJob.value?.status === "completed"
                 ? t("ide.agentJobs.runDetailsUnavailable")
-                : "该 workflow run 已不可查询，可能因服务重启而中断";
+                : t("ide.agentJobs.runUnavailableAfterRestart");
         } else {
-            pollError.value = resolveApiErrorMessage(error, "读取 workflow 状态失败");
+            pollError.value = resolveApiErrorMessage(error, t("ide.agentJobs.readRunStatusFailed"));
         }
     } finally {
         if (runPollInFlightRevision === revision) {
@@ -331,7 +331,7 @@ onBeforeUnmount(() => {
                         <span class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">{{ parsedArgs.script ? "Inline" : "Catalog" }}</span>
                         <span v-if="parsedArgs.model" class="rounded border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--status-info)]">{{ parsedArgs.model }}</span>
                         <span v-if="parsedArgs.wait" class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5 font-mono text-[10px] text-[var(--text-muted)]">wait:true</span>
-                        <span v-else-if="jobId" class="rounded border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-1.5 py-0.5 text-[10px] text-[var(--status-info)]">后台任务</span>
+                        <span v-else-if="jobId" class="rounded border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-1.5 py-0.5 text-[10px] text-[var(--status-info)]">{{ t("ide.agentJobs.bubbleBackgroundJob") }}</span>
                     </div>
                     <p v-if="catalogDescription" class="mt-1 text-xs leading-5 text-[var(--text-secondary)]">{{ catalogDescription }}</p>
                     <div v-if="jobId" class="mt-1 break-all font-mono text-[10px] text-[var(--text-muted)]">job {{ jobId }}</div>
@@ -346,14 +346,14 @@ onBeforeUnmount(() => {
             <!-- 运行参数 / 内联脚本：按钮式折叠卡片（与可视化区折叠样式统一，Task 137）。 -->
             <div v-if="parsedArgs.args !== undefined" class="mt-3 overflow-hidden rounded-lg border border-[var(--border-color)]">
                 <button type="button" class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left hover:bg-[var(--bg-hover)]" @click="argsExpanded = !argsExpanded">
-                    <span class="text-xs font-medium text-[var(--text-main)]">运行参数</span>
+                    <span class="text-xs font-medium text-[var(--text-main)]">{{ t("ide.agentJobs.bubbleRunArgs") }}</span>
                     <span :class="argsExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="h-3.5 w-3.5 text-[var(--text-muted)]"></span>
                 </button>
                 <div v-if="argsExpanded" class="border-t border-[var(--border-color)] p-2"><JsonViewer :value="parsedArgs.args" :max-height="220" /></div>
             </div>
             <div v-if="parsedArgs.script" class="mt-3 overflow-hidden rounded-lg border border-[var(--border-color)]">
                 <button type="button" class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left hover:bg-[var(--bg-hover)]" @click="scriptExpanded = !scriptExpanded">
-                    <span class="text-xs font-medium text-[var(--text-main)]">内联 workflow 脚本</span>
+                    <span class="text-xs font-medium text-[var(--text-main)]">{{ t("ide.agentJobs.bubbleInlineScript") }}</span>
                     <span :class="scriptExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="h-3.5 w-3.5 text-[var(--text-muted)]"></span>
                 </button>
                 <pre v-if="scriptExpanded" class="max-h-64 overflow-auto whitespace-pre-wrap break-all border-t border-[var(--border-color)] bg-[var(--bg-input)] p-2 font-mono text-[11px] leading-5 text-[var(--text-secondary)]">{{ parsedArgs.script }}</pre>
@@ -364,7 +364,7 @@ onBeforeUnmount(() => {
         <div v-if="pendingApproval" class="rounded-lg border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] p-3 text-xs leading-5 text-[var(--status-warning)]">
             <div class="flex items-start gap-2">
                 <span class="i-lucide-shield-question mt-0.5 h-4 w-4 shrink-0"></span>
-                <span>该 workflow 会创建或调用 Agent session。请使用当前会话输入区的审批按钮批准或拒绝；批准后才会真正执行。</span>
+                <span>{{ t("ide.agentJobs.bubbleApprovalNotice") }}</span>
             </div>
         </div>
 
@@ -377,21 +377,21 @@ onBeforeUnmount(() => {
                     <span v-if="matchingJob" class="text-[11px] text-[var(--text-muted)]">{{ matchingJob.title }}</span>
                 </div>
                 <button v-if="canCancelJob || cancelRequested" type="button" class="rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-2.5 py-1 text-[11px] text-[var(--status-danger)] disabled:cursor-wait disabled:opacity-50" :disabled="cancelSubmitting || cancelRequested" @click="cancelJob">
-                    {{ cancelSubmitting ? "请求中…" : cancelRequested ? "等待停止…" : "取消任务" }}
+                    {{ cancelSubmitting ? t("ide.agentJobs.bubbleCancelRequesting") : cancelRequested ? t("ide.agentJobs.bubbleCancelWaiting") : t("ide.agentJobs.bubbleCancelJob") }}
                 </button>
             </div>
             <div v-if="matchingJob?.preview" class="mt-2 whitespace-pre-wrap break-all text-xs leading-5 text-[var(--text-secondary)]">{{ matchingJob.preview }}</div>
-            <div v-else-if="!jobUnavailable" class="mt-2 text-xs text-[var(--text-muted)]">正在连接后台任务管理器…</div>
-            <div v-if="matchingJob?.error" class="mt-2 whitespace-pre-wrap break-all text-xs leading-5 text-[var(--status-danger)]"><span class="font-medium">后台任务错误：</span>{{ matchingJob.error }}</div>
+            <div v-else-if="!jobUnavailable" class="mt-2 text-xs text-[var(--text-muted)]">{{ t("ide.agentJobs.bubbleConnecting") }}</div>
+            <div v-if="matchingJob?.error" class="mt-2 whitespace-pre-wrap break-all text-xs leading-5 text-[var(--status-danger)]"><span class="font-medium">{{ t("ide.agentJobs.bubbleJobError") }}</span>{{ matchingJob.error }}</div>
             <div v-if="matchingJob" class="mt-2 flex flex-wrap gap-3 text-[10px] text-[var(--text-muted)]">
-                <span>启动 {{ formatJobTime(matchingJob.createdAt) }}</span>
-                <span v-if="matchingJob.endedAt">结束 {{ formatJobTime(matchingJob.endedAt) }}</span>
+                <span>{{ t("ide.agentJobs.bubbleStartedAt", {time: formatJobTime(matchingJob.createdAt)}) }}</span>
+                <span v-if="matchingJob.endedAt">{{ t("ide.agentJobs.bubbleEndedAt", {time: formatJobTime(matchingJob.endedAt)}) }}</span>
             </div>
         </div>
 
         <!-- 运行中的 activity：状态图之外保留一行当前动作。 -->
         <div v-if="runningNow.length" class="flex flex-wrap items-center gap-2">
-            <span class="text-xs text-[var(--text-muted)]">正在运行</span>
+            <span class="text-xs text-[var(--text-muted)]">{{ t("ide.agentJobs.statusRunning") }}</span>
             <span v-for="activity in runningNow" :key="activity.key" class="workflow-running-chip rounded-full border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-2.5 py-1 text-xs text-[var(--status-info)]">
                 {{ activity.label }} · {{ elapsed(activity.startedAt) }}
             </span>
@@ -437,7 +437,7 @@ onBeforeUnmount(() => {
                     可选：{{ (ask.spec.options ?? []).map((option) => option.label).join("、") }}
                 </div>
                 <div v-else class="mt-2 text-xs text-[var(--text-secondary)]">
-                    {{ ask.spec.kind === "approve" ? "等待批准或拒绝" : "等待文字回答" }}
+                    {{ ask.spec.kind === "approve" ? t("ide.agentJobs.awaitingApproval") : t("ide.agentJobs.awaitingTextAnswer") }}
                 </div>
             </div>
             <div v-if="pendingAsks.length === 0 && pendingAskTitles.length" class="rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">
@@ -450,20 +450,20 @@ onBeforeUnmount(() => {
 
         <div v-if="workflowError" class="whitespace-pre-wrap break-all rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">{{ workflowError }}</div>
         <div v-if="jobFeedError" class="rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">{{ jobFeedError }}</div>
-        <div v-if="pollError" class="rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">{{ pollError }}；仍保留最近一次可用的 run 状态。</div>
+        <div v-if="pollError" class="rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2 text-xs text-[var(--status-warning)]">{{ t("ide.agentJobs.bubblePollErrorSuffix", {error: pollError}) }}</div>
 
         <!-- 执行元数据（Session 与 usage）：按钮式折叠卡片，默认收起避免终态卡片过长。 -->
         <div v-if="hasMetadata" class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-main)]">
             <button type="button" class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left hover:bg-[var(--bg-hover)]" @click="metaExpanded = !metaExpanded">
                 <span class="text-xs font-medium text-[var(--text-main)]">
-                    执行元数据 · {{ sessionRows.length }} sessions<span v-if="usage"> · {{ totalTokens.toLocaleString() }} tokens</span>
+                    {{ t("ide.agentJobs.metaTitle", {sessions: sessionRows.length}) }}<span v-if="usage"> · {{ totalTokens.toLocaleString() }} tokens</span>
                 </span>
                 <span :class="metaExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="h-3.5 w-3.5 shrink-0 text-[var(--text-muted)]"></span>
             </button>
             <div v-if="metaExpanded" class="border-t border-[var(--border-color)] px-3 py-2">
                 <div v-if="usage" class="flex flex-wrap gap-2 text-[11px] text-[var(--text-muted)]">
-                    <span class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">输入 {{ usage.inputTokens.toLocaleString() }}</span>
-                    <span class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">输出 {{ usage.outputTokens.toLocaleString() }}</span>
+                    <span class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">{{ t("ide.agentJobs.usageInput", {count: usage.inputTokens.toLocaleString()}) }}</span>
+                    <span class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1">{{ t("ide.agentJobs.usageOutput", {count: usage.outputTokens.toLocaleString()}) }}</span>
                 </div>
                 <div v-if="sessionRows.length" class="mt-2 space-y-1.5">
                     <div v-for="session in sessionRows" :key="session.sessionId" class="flex flex-wrap items-center gap-2 rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-[11px]">
@@ -479,7 +479,7 @@ onBeforeUnmount(() => {
         <!-- Workflow 自定义返回值：按钮式折叠卡片。 -->
         <div v-if="effectiveResult !== undefined" class="overflow-hidden rounded-lg border border-[var(--border-color)] bg-[var(--bg-main)]">
             <button type="button" class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left hover:bg-[var(--bg-hover)]" @click="resultExpanded = !resultExpanded">
-                <span class="text-xs font-medium text-[var(--text-main)]">Workflow 返回值</span>
+                <span class="text-xs font-medium text-[var(--text-main)]">{{ t("ide.agentJobs.bubbleResultValue") }}</span>
                 <span :class="resultExpanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="h-3.5 w-3.5 text-[var(--text-muted)]"></span>
             </button>
             <div v-if="resultExpanded" class="border-t border-[var(--border-color)] p-2"><JsonViewer :value="effectiveResult" :max-height="260" /></div>

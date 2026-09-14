@@ -16,6 +16,8 @@ const props = defineProps<{
 type AskDraftValue = string | string[] | boolean;
 type RunRef = {runId: string; workflowKey: string};
 
+const {t} = useI18n();
+
 const feed = useAgentJobsFeed(() => props.sessionId !== null);
 const runStates = shallowRef<Record<string, WorkflowDemoRunState>>({});
 const runErrors = ref<Record<string, string>>({});
@@ -114,8 +116,8 @@ async function pollRun(runId: string): Promise<void> {
         runErrors.value = {
             ...runErrors.value,
             [runId]: resolveApiErrorStatus(error) === 404
-                ? "该 workflow run 暂时不可查询"
-                : resolveApiErrorMessage(error, "读取 workflow 问题失败"),
+                ? t("ide.agentJobs.runTemporarilyUnavailable")
+                : resolveApiErrorMessage(error, t("ide.agentJobs.readQuestionsFailed")),
         };
         nextPollDelay = 3000;
     } finally {
@@ -225,7 +227,7 @@ async function submitRun(runId: string): Promise<void> {
         scheduleRunPoll(runId, 0);
     } catch (error) {
         if (disposed || observationAtStart !== observationRevision || revision !== (pollRevisions.get(runId) ?? 0)) return;
-        runErrors.value = {...runErrors.value, [runId]: resolveApiErrorMessage(error, "继续 workflow 失败")};
+        runErrors.value = {...runErrors.value, [runId]: resolveApiErrorMessage(error, t("ide.agentJobs.resumeWorkflowFailed"))};
     } finally {
         if (disposed || observationAtStart !== observationRevision || revision !== (pollRevisions.get(runId) ?? 0)) return;
         const next = new Set(submittingRuns.value);
@@ -245,10 +247,10 @@ onBeforeUnmount(() => {
         <div class="flex items-center justify-between gap-2">
             <div class="flex min-w-0 items-center gap-2 text-sm font-semibold text-[var(--text-main)]">
                 <span class="i-lucide-inbox h-4 w-4 shrink-0 text-[var(--status-warning)]"></span>
-                <span>Workflow 待处理</span>
+                <span>{{ t("ide.agentJobs.pendingTitle") }}</span>
                 <span v-if="waitingCount" class="rounded-full bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[10px] text-[var(--status-warning)]">{{ waitingCount }}</span>
             </div>
-            <span class="text-[10px] text-[var(--text-muted)]">每个流程分别应答</span>
+            <span class="text-[10px] text-[var(--text-muted)]">{{ t("ide.agentJobs.pendingPerRun") }}</span>
         </div>
 
         <div v-for="job in waitingJobs" :key="job.jobId" class="mt-3 border-t border-[var(--border-color)] pt-3 first:mt-2 first:border-t-0 first:pt-0">
@@ -258,7 +260,7 @@ onBeforeUnmount(() => {
                     <span class="truncate text-xs font-medium text-[var(--text-main)]">{{ job.title }}</span>
                     <span class="font-mono text-[10px] text-[var(--text-muted)]">{{ readRunRef(job)?.runId }}</span>
                 </div>
-                <span class="text-[10px] text-[var(--status-warning)]">等待应答</span>
+                <span class="text-[10px] text-[var(--status-warning)]">{{ t("ide.agentJobs.pendingWaiting") }}</span>
             </div>
 
             <template v-if="readRunRef(job) && stateFor(readRunRef(job)!.runId)">
@@ -276,29 +278,29 @@ onBeforeUnmount(() => {
                     <input v-else-if="ask.spec.kind === 'text'" type="text" class="mt-2 w-full rounded border border-[var(--border-color)] bg-[var(--bg-main)] px-2 py-1.5 text-sm text-[var(--text-main)]"
                         :value="runDrafts[readRunRef(job)!.runId]?.[ask.key] as string | undefined"
                         :disabled="submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)"
-                        placeholder="输入应答…"
+                        :placeholder="t('ide.agentJobs.pendingAnswerPlaceholder')"
                         @input="setDraft(readRunRef(job)!.runId, ask.key, ($event.target as HTMLInputElement).value)">
                     <div v-else class="mt-2 flex flex-wrap items-center gap-2">
                         <button type="button" class="rounded border border-[var(--status-success-border)] bg-[var(--status-success-bg)] px-3 py-1 text-xs text-[var(--status-success)]"
-                            :disabled="submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)" @click="setDraft(readRunRef(job)!.runId, ask.key, true)">同意</button>
+                            :disabled="submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)" @click="setDraft(readRunRef(job)!.runId, ask.key, true)">{{ t("ide.agentJobs.pendingApprove") }}</button>
                         <button type="button" class="rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-1 text-xs text-[var(--status-danger)]"
-                            :disabled="submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)" @click="setDraft(readRunRef(job)!.runId, ask.key, false)">否决</button>
-                        <span class="text-xs text-[var(--text-muted)]">{{ typeof runDrafts[readRunRef(job)!.runId]?.[ask.key] === "boolean" ? (runDrafts[readRunRef(job)!.runId]?.[ask.key] ? "已选择同意" : "已选择否决") : "尚未选择" }}</span>
+                            :disabled="submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)" @click="setDraft(readRunRef(job)!.runId, ask.key, false)">{{ t("ide.agentJobs.pendingReject") }}</button>
+                        <span class="text-xs text-[var(--text-muted)]">{{ typeof runDrafts[readRunRef(job)!.runId]?.[ask.key] === "boolean" ? (runDrafts[readRunRef(job)!.runId]?.[ask.key] ? t("ide.agentJobs.pendingChosenApprove") : t("ide.agentJobs.pendingChosenReject")) : t("ide.agentJobs.pendingNotChosen") }}</span>
                     </div>
                 </div>
-                <div v-if="asksFor(readRunRef(job)!.runId).length === 0" class="mt-2 text-xs text-[var(--text-muted)]">正在读取待应答项…</div>
+                <div v-if="asksFor(readRunRef(job)!.runId).length === 0" class="mt-2 text-xs text-[var(--text-muted)]">{{ t("ide.agentJobs.pendingLoadingAsks") }}</div>
                 <div class="mt-2 flex flex-wrap items-center justify-between gap-2">
                     <span v-if="runErrors[readRunRef(job)!.runId]" class="text-xs text-[var(--status-danger)]">{{ runErrors[readRunRef(job)!.runId] }}</span>
-                    <span v-else-if="submittedRuns.has(readRunRef(job)!.runId)" class="text-xs text-[var(--status-info)]">已提交，正在继续…</span>
-                    <span v-else class="text-xs text-[var(--text-muted)]">完成全部问题后继续</span>
+                    <span v-else-if="submittedRuns.has(readRunRef(job)!.runId)" class="text-xs text-[var(--status-info)]">{{ t("ide.agentJobs.pendingSubmitted") }}</span>
+                    <span v-else class="text-xs text-[var(--text-muted)]">{{ t("ide.agentJobs.pendingAnswerAll") }}</span>
                     <button type="button" class="rounded bg-[var(--accent-main)] px-3 py-1.5 text-xs font-medium text-[var(--text-inverse)] disabled:cursor-not-allowed disabled:opacity-50"
                         :disabled="!canSubmit(readRunRef(job)!.runId) || submittingRuns.has(readRunRef(job)!.runId) || submittedRuns.has(readRunRef(job)!.runId)"
                         @click="submitRun(readRunRef(job)!.runId)">
-                        {{ submittingRuns.has(readRunRef(job)!.runId) ? "提交中…" : submittedRuns.has(readRunRef(job)!.runId) ? "已提交" : "应答并继续" }}
+                        {{ submittingRuns.has(readRunRef(job)!.runId) ? t("ide.agentJobs.pendingSubmitting") : submittedRuns.has(readRunRef(job)!.runId) ? t("ide.agentJobs.pendingSubmittedLabel") : t("ide.agentJobs.pendingSubmitAndContinue") }}
                     </button>
                 </div>
             </template>
-            <div v-else class="mt-2 text-xs text-[var(--text-muted)]">正在读取 workflow 问题…</div>
+            <div v-else class="mt-2 text-xs text-[var(--text-muted)]">{{ t("ide.agentJobs.pendingLoadingQuestions") }}</div>
         </div>
         <div v-if="feed.error" class="mt-2 text-xs text-[var(--status-danger)]">{{ feed.error }}</div>
     </section>

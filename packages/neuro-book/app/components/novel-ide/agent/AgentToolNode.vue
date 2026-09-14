@@ -205,7 +205,7 @@ const parsedResult = computed<unknown | null>(() => {
                     </details>
 
                     <div v-if="props.toolCall.error">
-                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Error</div>
+                        <div class="mb-1 text-[9px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{{ t("agent.tool.errorLabel") }}</div>
                         <div class="break-all whitespace-pre-wrap rounded border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 font-mono text-xs text-[var(--status-danger)]">
                             {{ props.toolCall.error }}
                         </div>

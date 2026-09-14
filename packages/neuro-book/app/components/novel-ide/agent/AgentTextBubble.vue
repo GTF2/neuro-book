@@ -456,10 +456,10 @@ const endSwipe = (event: PointerEvent): void => {
             <div class="flex-1"></div>
 
             <div class="mr-4 flex items-center gap-1 text-[var(--text-muted)]">
-                <button v-if="isUnknownDelivery" class="rounded p-1 text-[var(--status-warning)] transition-colors hover:bg-[var(--bg-hover)]" title="确认可能重复后重新发送" @click="emit('resend-unknown', props.node.message)">
+                <button v-if="isUnknownDelivery" class="rounded p-1 text-[var(--status-warning)] transition-colors hover:bg-[var(--bg-hover)]" :title="t('agent.textBubble.resendUnknown')" @click="emit('resend-unknown', props.node.message)">
                     <span class="i-lucide-send h-3.5 w-3.5"></span>
                 </button>
-                <button v-if="isUnknownDelivery" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--status-danger)]" title="移除本地未知占位" @click="emit('dismiss-unknown', props.node.message)">
+                <button v-if="isUnknownDelivery" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--status-danger)]" :title="t('agent.textBubble.dismissUnknown')" @click="emit('dismiss-unknown', props.node.message)">
                     <span class="i-lucide-x h-3.5 w-3.5"></span>
                 </button>
                 <AgentBranchSwitcher
@@ -573,7 +573,7 @@ const endSwipe = (event: PointerEvent): void => {
                         <span class="i-lucide-square h-3.5 w-3.5 shrink-0"></span>
                         <span>{{ t("agent.textBubble.interrupted") }}</span>
                     </div>
-                    <div v-if="(props.node.message.omittedToolCalls ?? 0) > 0" class="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--status-info)]"><span class="i-lucide-info h-3.5 w-3.5 shrink-0"></span><span>另有 {{ props.node.message.omittedToolCalls }} 个工具调用未在历史预览中显示</span></div>
+                    <div v-if="(props.node.message.omittedToolCalls ?? 0) > 0" class="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--status-info)]"><span class="i-lucide-info h-3.5 w-3.5 shrink-0"></span><span>{{ t("agent.textBubble.omittedToolCalls", {count: props.node.message.omittedToolCalls ?? 0}) }}</span></div>
                 </div>
             </div>
         </div>

@@ -3,6 +3,8 @@ import type { AgentMessage, AgentMessageSwitcherState, AgentToolCall, ChatNode }
 import { FILE_EDIT_TOOL_NAMES, toChatNodes } from "nbook/app/components/novel-ide/agent/agent-message";
 import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubble.vue";
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
+import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
+import { groupChatNodesIntoBlocks, type ChatFlowItem } from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -143,6 +145,16 @@ const lastFileEditFailureKey = computed(() => {
     return "";
 });
 
+/**
+ * 主时间线的渲染单元：连续同类的工具步骤先聚成工作块。
+ * 「用户一句话 → Agent 干几十步」时，整屏卡片会让人无法定位，收拢成一行才有全局感。
+ */
+const flowItems = computed(() => groupChatNodesIntoBlocks(chatNodes.value));
+
+const getItemKey = (item: ChatFlowItem): string => {
+    return item.kind === "block" ? `block-${item.id}` : getNodeKey(item.node);
+};
+
 /** 判断文本节点是否包含正文。 */
 const hasTextBubbleContent = (node: ChatNode): boolean => {
     if (node.kind !== "text") {
@@ -151,36 +163,35 @@ const hasTextBubbleContent = (node: ChatNode): boolean => {
     return Boolean(node.message.content.trim() || node.message.contentBlocks?.length || node.message.attachments?.length);
 };
 
-/** 计算节点间距，避免“仅思维链 + tool”之间出现过大空白。 */
-const nodeSpacingClass = (index: number): string => {
+/**
+ * 计算渲染单元间距。
+ * 块化之后不能再按「前后是否同一个 message 的工具」判断，改为按单元类型：
+ * 块与独立步骤收紧，文本气泡之间保持段落间距。
+ */
+const itemSpacingClass = (index: number): string => {
     if (index === 0) {
         return "";
     }
-
-    const previousNode = chatNodes.value[index - 1];
-    const currentNode = chatNodes.value[index];
-    if (!previousNode || !currentNode) {
+    const item = flowItems.value[index];
+    const previousItem = flowItems.value[index - 1];
+    if (!item || !previousItem) {
         return "mt-6";
     }
-
+    // 无内容的思维链气泡后面紧跟步骤时收紧，避免出现一段空白。
     if (
-        previousNode.kind === "text"
-        && currentNode.kind === "tool"
-        && previousNode.message.id === currentNode.message.id
-        && !hasTextBubbleContent(previousNode)
+        item.kind === "node"
+        && item.node.kind === "tool"
+        && previousItem.kind === "node"
+        && previousItem.node.kind === "text"
+        && previousItem.node.message.id === item.node.message.id
+        && !hasTextBubbleContent(previousItem.node)
     ) {
         return "mt-1";
     }
-
-    if (
-        previousNode.kind === "tool"
-        && currentNode.kind === "tool"
-        && previousNode.message.id === currentNode.message.id
-    ) {
-        return "mt-2";
+    if (item.kind === "node" && item.node.kind === "text") {
+        return "mt-6";
     }
-
-    return "mt-6";
+    return "mt-2";
 };
 
 /** 是否接近底部。 */
@@ -366,13 +377,13 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
         </div>
         <template v-if="props.messages.length > 0">
             <div
-                v-for="(node, index) in chatNodes"
-                :key="getNodeKey(node)"
-                :class="nodeSpacingClass(index)"
+                v-for="(item, index) in flowItems"
+                :key="getItemKey(item)"
+                :class="itemSpacingClass(index)"
             >
                 <AgentTextBubble
-                    v-if="node.kind === 'text'"
-                    :node="node"
+                    v-if="item.kind === 'node' && item.node.kind === 'text'"
+                    :node="item.node"
                     :session-id="props.sessionId"
                     :editing-message-id="props.editingMessageId"
                     :editing-content="props.editingMessageText"
@@ -385,7 +396,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     :project-root="props.projectRoot"
                     :model-supports-images="props.modelSupportsImages"
                     :attachment-insert-request="props.attachmentInsertRequest"
-                    :branch-switcher="props.branchSwitcherStateByMessageId?.[node.message.id]"
+                    :branch-switcher="props.branchSwitcherStateByMessageId?.[item.node.message.id]"
                     :menu-refresh-key="props.menuRefreshKey"
                     :resolve-menu="props.resolveEditorMenu"
                     :on-skill-trigger-start="props.onEditorSkillTriggerStart"
@@ -403,16 +414,26 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     @resend-unknown="emit('resend-unknown', $event)"
                     @dismiss-unknown="emit('dismiss-unknown', $event)"
                 />
-                <AgentToolBubble
-                    v-else-if="node.kind === 'tool'"
-                    :tool-call="node.toolCall"
+                <AgentWorkBlock
+                    v-else-if="item.kind === 'block'"
+                    :block="item"
                     :session-id="props.sessionId"
                     :action-disabled="props.messageActionDisabled"
                     :run-action-disabled="props.runActionDisabled"
-                    :auto-expand="getNodeKey(node) === lastFileEditFailureKey"
                     @copy="emit('copy-tool', $event)"
-                    @retry="emit('retry', node.message)"
-                    @skip-edit="emit('skip-edit', node.message)"
+                    @retry="emit('retry', $event)"
+                    @skip-edit="emit('skip-edit', $event)"
+                />
+                <AgentToolBubble
+                    v-else-if="item.kind === 'node' && item.node.kind === 'tool'"
+                    :tool-call="item.node.toolCall"
+                    :session-id="props.sessionId"
+                    :action-disabled="props.messageActionDisabled"
+                    :run-action-disabled="props.runActionDisabled"
+                    :auto-expand="getNodeKey(item.node) === lastFileEditFailureKey"
+                    @copy="emit('copy-tool', $event)"
+                    @retry="emit('retry', item.node.message)"
+                    @skip-edit="emit('skip-edit', item.node.message)"
                 />
             </div>
         </template>
@@ -425,8 +446,8 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     <span class="i-lucide-messages-square h-6 w-6 text-[var(--status-warning)]"></span>
                 </div>
                 <div class="space-y-2">
-                    <h3 class="text-base font-medium text-[var(--text-main)]">请选择一个对话</h3>
-                    <p class="text-sm leading-relaxed text-[var(--text-muted)]">当前实例还有可用对话，但没有可靠的上次选择。请从对话列表中选择。</p>
+                    <h3 class="text-base font-medium text-[var(--text-main)]">{{ t("agent.chat.selectSessionTitle") }}</h3>
+                    <p class="text-sm leading-relaxed text-[var(--text-muted)]">{{ t("agent.chat.selectSessionBody") }}</p>
                 </div>
             </template>
             <!-- main 模式空状态 -->

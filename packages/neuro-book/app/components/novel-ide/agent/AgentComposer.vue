@@ -127,11 +127,11 @@ const availabilityView = computed<ComposerAvailabilityView | null>(() => {
         case "unselected":
             return {
                 icon: "i-lucide-messages-square",
-                message: "请选择一个对话后继续。",
+                message: t("agent.composer.selectSessionFirst"),
                 tone: "warning",
                 action: "choose-session",
                 actionIcon: "i-lucide-list",
-                actionLabel: "选择对话",
+                actionLabel: t("agent.composer.chooseSession"),
             };
         case "empty":
             return {
@@ -229,7 +229,7 @@ const images = useComposerImageTransaction({
     canRegister: () => props.canRegisterAttachments && !composerReadonly.value && !hasPendingUserInput.value,
     canInsert: () => props.canInsertAttachments && !composerReadonly.value && !hasPendingUserInput.value,
     blockedReason: () => hasPendingUserInput.value
-        ? "等待用户回答期间不能上传或插入图片。"
+        ? t("agent.composer.imageBlockedWhileWaiting")
         : availabilityView.value?.message || t("agent.composer.readonly"),
     unsupportedAttachmentMessage: () => t("agent.attachments.imageInsertUnsupported"),
     projectRoot: () => props.projectRoot,
@@ -330,11 +330,11 @@ const sendButtonTitle = computed(() => {
     }
     if (pendingImageCount.value > 0) {
         return failedPendingImage.value
-            ? "请重试或移除上传失败的图片"
-            : "图片上传完成后才能发送";
+            ? t("agent.composer.imageRetryOrRemove")
+            : t("agent.composer.imageWaitUpload");
     }
     if (imageUsage.value.unresolvedStable > 0) {
-        return "正在校验 Session 图片附件";
+        return t("agent.composer.imageValidating");
     }
     if (images.metadataError.value) {
         return images.metadataError.value;
@@ -577,7 +577,7 @@ defineExpose({focus, insertAttachment});
                 <div v-for="(image, index) in composerImages" :key="`${image.target}:${String(index)}`" class="group relative h-12 w-16 shrink-0 overflow-hidden rounded border border-[var(--border-color)] bg-[var(--bg-panel)]">
                     <img v-if="composerImageUrl(image.target)" :src="composerImageUrl(image.target) || undefined" :alt="image.label" class="h-full w-full object-cover" />
                     <div v-else class="flex h-full w-full items-center justify-center text-[var(--text-muted)]"><span class="i-lucide-image h-4 w-4"></span></div>
-                    <button type="button" class="absolute right-0.5 top-0.5 rounded bg-[var(--bg-panel)]/90 p-0.5 text-[var(--text-muted)] opacity-0 shadow-sm transition-opacity hover:text-[var(--status-danger)] group-hover:opacity-100 disabled:hidden" :disabled="composerReadonly" title="从正文移除图片" @click="removeComposerImage(index)">
+                    <button type="button" class="absolute right-0.5 top-0.5 rounded bg-[var(--bg-panel)]/90 p-0.5 text-[var(--text-muted)] opacity-0 shadow-sm transition-opacity hover:text-[var(--status-danger)] group-hover:opacity-100 disabled:hidden" :disabled="composerReadonly" :title="t('agent.composer.removeImage')" @click="removeComposerImage(index)">
                         <span class="i-lucide-x h-3 w-3"></span>
                     </button>
                     <div class="absolute inset-x-0 bottom-0 truncate bg-[var(--bg-panel)]/85 px-1 text-[8px] text-[var(--text-secondary)]" :title="image.label">{{ image.label }}</div>
@@ -586,13 +586,13 @@ defineExpose({focus, insertAttachment});
 
             <div v-if="imageCapabilityWarning" class="flex items-center gap-1.5 border-b border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-2 py-1 text-[10px] text-[var(--status-warning)]">
                 <span class="i-lucide-triangle-alert h-3.5 w-3.5 shrink-0"></span>
-                <span>当前模型未声明图片输入能力；仍可发送，后端会使用文本占位。</span>
+                <span>{{ t("agent.composer.imageUnsupportedSendable") }}</span>
             </div>
 
             <div v-if="images.metadataError.value" class="flex items-center gap-1.5 border-b border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-2 py-1 text-[10px] text-[var(--status-danger)]">
                 <span class="i-lucide-image-off h-3.5 w-3.5 shrink-0"></span>
                 <span class="min-w-0 flex-1 truncate" :title="images.metadataError.value">{{ images.metadataError.value }}</span>
-                <button type="button" class="rounded p-1 hover:bg-[var(--bg-hover)]" title="重新校验图片附件" @click="images.retryMetadata">
+                <button type="button" class="rounded p-1 hover:bg-[var(--bg-hover)]" :title="t('agent.composer.recheckImage')" @click="images.retryMetadata">
                     <span class="i-lucide-refresh-cw h-3 w-3"></span>
                 </button>
             </div>
@@ -663,7 +663,7 @@ defineExpose({focus, insertAttachment});
                         type="button"
                         class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="!canRegisterImages"
-                        title="选择图片（可多选，也可拖拽或粘贴）"
+                        :title="t('agent.composer.chooseImage')"
                         @click="selectImageFiles"
                     >
                         <span class="i-lucide-image-plus h-3.5 w-3.5"></span>

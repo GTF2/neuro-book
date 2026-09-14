@@ -43,7 +43,7 @@ const images = useComposerImageTransaction({
     sessionAttachments: () => props.sessionAttachments,
     canRegister: () => props.canRegisterAttachments,
     canInsert: () => props.canInsertAttachments,
-    blockedReason: () => "当前 Session 状态不允许在历史消息中上传或插入图片。",
+    blockedReason: () => t("agent.composer.imageBlockedInHistory"),
     unsupportedAttachmentMessage: () => t("agent.attachments.imageInsertUnsupported"),
     projectRoot: () => props.projectRoot,
     onAttachmentRegistered: (item) => emit("attachment-registered", item),
@@ -108,13 +108,13 @@ watch(() => props.readonly, (readonly) => {
                 <span class="i-lucide-image-plus h-3.5 w-3.5"></span>
                 添加图片
             </button>
-            <span v-if="images.pendingImages.value.length" class="text-[10px] text-[var(--status-warning)]">{{ images.failed.value ? "存在上传失败图片，请重试或移除" : "图片上传中" }}</span>
+            <span v-if="images.pendingImages.value.length" class="text-[10px] text-[var(--status-warning)]">{{ images.failed.value ? t("agent.composer.imageUploadFailed") : t("agent.composer.imageUploading") }}</span>
             <span v-else-if="images.metadataError.value" class="inline-flex items-center gap-1 text-[10px] text-[var(--status-danger)]">
                 {{ images.metadataError.value }}
-                <button type="button" class="rounded p-1 hover:bg-[var(--bg-hover)]" title="重新校验图片附件" @click="images.retryMetadata"><span class="i-lucide-refresh-cw h-3 w-3"></span></button>
+                <button type="button" class="rounded p-1 hover:bg-[var(--bg-hover)]" :title="t('agent.composer.recheckImage')" @click="images.retryMetadata"><span class="i-lucide-refresh-cw h-3 w-3"></span></button>
             </span>
             <span v-else-if="images.budgetError.value" class="text-[10px] text-[var(--status-danger)]">{{ images.budgetError.value }}</span>
-            <span v-else-if="imageWarning" class="text-[10px] text-[var(--status-warning)]">当前模型未声明图片输入能力；发送时将保留原位置文本占位。</span>
+            <span v-else-if="imageWarning" class="text-[10px] text-[var(--status-warning)]">{{ t("agent.composer.imageUnsupportedPlaceholder") }}</span>
         </div>
 
         <ReferencePlainTextEditor

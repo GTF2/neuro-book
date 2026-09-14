@@ -793,7 +793,9 @@ export const deriveMessagesFromChatEntries = (
     }
     markInterruptedToolCalls(messages, {
         hasActiveInvocation: Boolean(options.activeInvocation),
-        pendingToolCallId: options.pendingUserInputs?.[0]?.toolCallId ?? null,
+        pendingToolCallIds: new Set((options.pendingUserInputs ?? []).flatMap((input) => {
+            return input.toolCallId ? [input.toolCallId] : [];
+        })),
     });
     return messages.map((message) => ({...message, projectionSource: "durable"}));
 };
@@ -1166,7 +1168,12 @@ const markInterruptedToolCalls = (
     messages: AgentMessage[],
     input: {
         hasActiveInvocation: boolean;
-        pendingToolCallId: string | null;
+        /**
+         * 所有正在等用户回答的工具调用。这里必须是集合而不是单个：
+         * 同一轮里可能有多个 request_user_input，只豁免第一个会把其余未完成的
+         * 工具调用误判成「运行中断」，让用户看到假的「结果未知」。
+         */
+        pendingToolCallIds: ReadonlySet<string>;
     },
 ): void => {
     if (input.hasActiveInvocation) {
@@ -1177,7 +1184,7 @@ const markInterruptedToolCalls = (
             continue;
         }
         message.toolCalls = message.toolCalls.map((toolCall) => {
-            if (toolCall.id === input.pendingToolCallId || toolCall.status === "success" || toolCall.status === "error" || toolCall.status === "invalid") {
+            if (input.pendingToolCallIds.has(toolCall.id) || toolCall.status === "success" || toolCall.status === "error" || toolCall.status === "invalid") {
                 return toolCall;
             }
             return {

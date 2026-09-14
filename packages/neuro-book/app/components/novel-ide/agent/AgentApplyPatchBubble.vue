@@ -87,7 +87,7 @@ const patchFailureBannerBody = computed(() => props.toolCall.interrupted
         <div v-if="diffDetails?.diffPreview" class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)]">
             <div class="border-b border-[var(--border-color)]/50 px-2 py-1 text-[10px] uppercase text-[var(--text-muted)]">Applied Diff</div>
             <pre class="max-h-48 overflow-y-auto whitespace-pre-wrap break-all p-2 font-mono text-xs text-[var(--text-secondary)]">{{ diffDetails.diffPreview }}</pre>
-            <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">仅显示预览 · 原 diff {{ formatByteCount(diffDetails.diffBytes) }}</div>
+            <div v-if="diffDetails.diffOmitted" class="px-2 pb-2 text-[11px] text-[var(--status-info)]">{{ t("agent.tool.diffOmitted", {size: formatByteCount(diffDetails.diffBytes)}) }}</div>
         </div>
 
         <!-- 失败态把原始报错降级为技术详情，避免与琥珀警告条重复 -->
