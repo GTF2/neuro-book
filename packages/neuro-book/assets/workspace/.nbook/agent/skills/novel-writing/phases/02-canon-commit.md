@@ -98,13 +98,25 @@ await world.slice.write({
 - 重大剧情取舍（选了 A 弃了 B）记 Decision，写明 chosenOption 与 risk。
 - 准备写章节时，Chapter 的剧情点、信息控制先补齐，供 `get_chapter_writer_brief` 编译（信息控制编译进**评审视图**，只用于写完事后核对，不事前下发 writer）。
 
+## 回读验证
+
+写入之后**不要直接回报**——先把刚写的那一版读回来核对。三类偏差只有回读才看得见：**写了没生效**（patch 落错 subject / path 或被覆盖）、**写成了另一件事**（op 选错）、**该写的没写**（拆事件时漏掉）。完整合同、各真相源的回读手段与回执格式见 `reference/world-engine/canon-read-back.md`。
+
+要点：
+
+- **时机**：写入与回读之间不要插入其它写入，否则读到的不是"我刚写的那一版"。
+- **回读手段**（全部只读，不新增工具）：World Engine 用 `execute_world` 的 `world.slice.get(sliceId)` / `world.slice.list({subjectIds, withPatches:true})`；Plot 用 `get_story_chapter` / `get_story_scene_context` / `get_story_promise` / `get_story_keyframe`；lorebook 按节点 path 读回。
+- **产出一份验收回执**：每条 = 意图事实 + 回读到的实际内容 + 结果（`已落地` / `偏离` / `未落地`）+ 证据（sliceId / 实体 id / path）+ 建议动作（保持 / 修正 / 重写）。
+- **偏差交作者裁决**；修正走既有写入路径（`execute_world` / `save_*`），**不要自动改**。
+- **失败语义**：某源读不回来时，显式标注"该源未完成回读"，绝不把"没读到"说成"已核对"。
+
 ## 回报当前状态
 
-写完后只回报人读摘要：
+在回读验证（上一步）之后回报，以**验收回执**为基础：
 
-- 新增了哪几段时间线。
-- 当前角色、地点、势力或物品状态。
-- 新增或更新了哪些 subject / Plot 实体。
+- 本批 canon 的回执结论：全部落地，还是有几条偏离 / 未落地（有则逐条给出）。
+- 各真相源新增 / 更新的实体摘要：World Engine 时间线、Plot 实体、lorebook 节点。
+- 偏差的处理结果（已修正 / 待作者裁决）。
 - 是否有未定问题。
 - 是否可以进入环节三（`03-chapter-loop.md`）写正文。
 

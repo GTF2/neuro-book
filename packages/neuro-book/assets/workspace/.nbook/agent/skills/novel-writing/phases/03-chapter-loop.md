@@ -14,6 +14,7 @@
 - 目标章节内容节点存在，例如 `manuscript/001-volume/001-chapter/`，其中 `index.md` 是写入目标。**若目标章节节点还不存在（新用户写第一章时常如此），先用 `workspace node new manuscript/NNN-volume --type volume` 建卷，再用 `workspace node new manuscript/NNN-volume/NNN-chapter --type chapter` 建章节，再继续。**
 - World Engine 已初始化（有 calendar、纪元锚点、需追踪的角色 subject）。**若未初始化，先走 `novel-setup` 阶段四，再回来写章节。**
 - 本章剧情事实已经确认，且已在环节二落入 World Engine。若还没有确认，不要在本环节里替用户临时定稿。
+- 本章相关 canon 已通过环节二的**回读验证**（`phases/02-canon-commit.md` 的「回读验证」步骤）：没有悬空的偏离 / 未落地条目（见 `reference/world-engine/canon-read-back.md`）。
 - 需要设定上下文时，已确定要建议 writer 读取的 lorebook 内容节点 path。
 - 本章若落在一对已声明关键帧之间：先用 `get_story_keyframe` / `get_tween_keyframes` 读出帧与补间路标。帧声明（`irreversibleChanges`）是事实级内容，可以进 writer 的动笔前上下文；但它仍是事实声明，不要改写成"必须写到 / 必须隐瞒"一类指令（宪法第二条、第五条）。
 

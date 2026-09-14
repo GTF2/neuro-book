@@ -22,6 +22,7 @@ Product 发布时，`world-engine/schema/index.ts` 与 `world-engine/calendar.ts
 - [schema-system.md](schema-system.md)：schema 定位、kind（scalar/list/collection/object）、4-op patch 全集、ref 规则、JSON Pointer path、default、校验宽松度、稳定 key 约束、典型奇幻 schema 示例。
 - [subject-lifecycle.md](subject-lifecycle.md)：subject 定义、init slice、切面增量模型、reduce 语义、状态演化形态、回退能力、issues 反馈、`execute_world` 契约、writer 只读边界。
 - [issues.md](issues.md)：World Engine issue taxonomy、`WorldIssue` wire shape、E/A catalog、error vs issue 通道、作者可见解释规则。
+- [canon-read-back.md](canon-read-back.md)：canon 写入后的回读验证与验收回执——写完立刻读回，与确认意图逐条比对（已落地 / 偏离 / 未落地），只核对、不自动修复。
 - [calendar-system.md](calendar-system.md)：唯一时间真相源 Instant、零点与纪元锚点（公元日）、Calendar 独立显示模块、calendar.ts 配置（支持 Simple / Gregorian / Custom 三种类型）、Agent/HTTP 时间入参边界。
 - [api-migration-zod.md](api-migration-zod.md)：Zod schema + 当前 Agent 工具协议速查，说明旧 `schema.yaml` / `create_world_subject` / `mutations` 的替代写法。
 

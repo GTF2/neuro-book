@@ -96,6 +96,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Plot Writer Brief 双视图 | [`plot/chapter-writer-brief.md`](plot/chapter-writer-brief.md) | brief 拆事实视图（进 writer）与意图视图（只进评审）；信息控制降级为事后核对、不参与 status 门槛 |
 | Plot 关键帧写作 | [`plot/keyframe.md`](plot/keyframe.md) | 帧声明不可逆变化、补间区间查询、回撞与裁决留痕（推翻必须挂创作决策记录）；agent 工具面读帧对 writer 只给事实字段 |
 | Plot 未来影响分析 | [`plot/future-impact-analysis.md`](plot/future-impact-analysis.md) | 正文采纳后扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），只标记不改动；不新增实体 / 字段 / 工具，由 leader 在工具面内执行 |
+| Plot canon 回读验证 | [`plot/canon-read-back.md`](plot/canon-read-back.md) | canon 写入后回读刚写入的 slice / Plot 实体 / lorebook，与确认意图逐条比对（已落地 / 偏离 / 未落地），只核对不自动修复；不新增实体 / 字段 / 工具 |
 | 内容与 Project Workspace | [Reference: Content](../../packages/neuro-book/assets/reference/content/README.md) | 内容节点、正文、素材、检索、引用与 Workspace 术语 |
 | World Engine | [Reference: World Engine](../../packages/neuro-book/assets/reference/world-engine/README.md) | 时间线、slice、subject、schema、calendar 与写作协作 |
 | Plot | [Reference: Plot](../../packages/neuro-book/assets/reference/plot/README.md) | Story、Thread、Scene、Writer Brief、Agent 与前端合同 |

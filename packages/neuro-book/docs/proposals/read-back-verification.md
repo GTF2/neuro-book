@@ -1,6 +1,6 @@
 # 回读验证与验收回执：canon 写入后回读核对
 
-状态：draft
+状态：accepted
 
 ## 问题
 
@@ -88,4 +88,5 @@
 
 ## 决策记录
 
-- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #3（StoryForge adopt 四段式的「回读验证 + 验收回执」）。等待开发者决定 `accepted` / `rejected`。
+- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #3（StoryForge adopt 四段式的「回读验证 + 验收回执」）。
+- 2026-09-14｜接受｜决策者：开发者（概括授权"你先按你的来吧"）。接受方案 A（skill 阶段 + 回执格式 Reference，回读在 leader 工具面内完成，不做 workflow）；回执格式落点定为 `assets/reference/world-engine/canon-read-back.md`。接受后创建 Spec `docs/specs/plot/canon-read-back.md`（capability `plot.canon-read-back`）与 Work `w00018-canon-read-back`。
