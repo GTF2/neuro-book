@@ -1918,6 +1918,14 @@ const zhCN = {
             stepCount: "{count} 步",
             failedCount: "{count} 处失败",
         },
+        // 右侧大纲：类文档目录，用于在长对话里定位
+        outline: {
+            title: "大纲",
+            expandAll: "全部展开",
+            collapseAll: "全部收起",
+            emptyPrompt: "（无文字内容）",
+            empty: "暂无可定位的内容",
+        },
         chat: {
             startTitle: "开始与 AI 协作",
             startDescription: "你可以让我帮你设计角色、规划大纲，或者直接讨论接下来的剧情走向。",

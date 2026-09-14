@@ -5,6 +5,13 @@ import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubbl
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
 import { groupChatNodesIntoBlocks, type ChatFlowItem } from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {
+    buildChatOutline,
+    chatBlockAnchorId,
+    chatNodeAnchorId,
+    resolveActiveOutlineId,
+    type ChatOutlineItem,
+} from "nbook/app/components/novel-ide/agent/chat-outline";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -84,6 +91,12 @@ const emit = defineEmits<{
     (e: "dismiss-unknown", message: AgentMessage): void;
     /** 写文件类工具失败卡片上的「跳过此次编辑」：由上层把指令填进输入框。 */
     (e: "skip-edit", message: AgentMessage): void;
+    /** 大纲内容变化；面板由外层渲染，这里只负责投影数据。 */
+    (e: "outline-change", items: ChatOutlineItem[]): void;
+    /** 当前滚动位置对应的大纲行。 */
+    (e: "active-anchor-change", anchorId: string): void;
+    /** 「全部展开 / 收起」的状态变化。 */
+    (e: "all-expanded-change", expanded: boolean): void;
 }>();
 
 const scrollRef = ref<HTMLDivElement | null>(null);
@@ -154,6 +167,66 @@ const flowItems = computed(() => groupChatNodesIntoBlocks(chatNodes.value));
 const getItemKey = (item: ChatFlowItem): string => {
     return item.kind === "block" ? `block-${item.id}` : getNodeKey(item.node);
 };
+
+/** 右侧大纲：用户提问为锚点，工作块为内容行。 */
+const outlineItems = computed(() => buildChatOutline(flowItems.value, getNodeKey));
+
+const activeOutlineAnchor = ref("");
+/** 「全部展开 / 收起」是全局指令，块组件收到变化后覆盖自身折叠状态。 */
+const allBlocksExpanded = ref(false);
+
+/** 渲染单元对应的 DOM 锚点；跳转与滚动联动都靠它定位。 */
+const itemAnchorId = (item: ChatFlowItem): string => item.kind === "block"
+    ? chatBlockAnchorId(item.id)
+    : chatNodeAnchorId(getNodeKey(item.node));
+
+/** 锚点顶部越过容器顶部这条线就算「当前行」；留一点余量，避免贴边时不切换。 */
+const OUTLINE_ACTIVATION_LINE_PX = 8;
+
+const syncActiveOutline = (): void => {
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    const containerTop = container.getBoundingClientRect().top;
+    const offsets: Array<{id: string; top: number}> = [];
+    for (const item of outlineItems.value) {
+        const element = container.querySelector<HTMLElement>(`[data-anchor="${CSS.escape(item.anchorId)}"]`);
+        if (!element) {
+            continue;
+        }
+        offsets.push({id: item.anchorId, top: element.getBoundingClientRect().top - containerTop});
+    }
+    activeOutlineAnchor.value = resolveActiveOutlineId(offsets, OUTLINE_ACTIVATION_LINE_PX);
+};
+
+/**
+ * 跳到指定锚点。
+ * 平滑滚动后目标会短暂闪烁：否则用户点完不知道到底跳到哪了。
+ */
+const scrollToAnchor = (anchorId: string): void => {
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    const target = container.querySelector<HTMLElement>(`[data-anchor="${CSS.escape(anchorId)}"]`);
+    if (!target) {
+        return;
+    }
+    // 跳转是用户的显式定位，不能被「自动贴底」抢回去。
+    shouldStickToBottom.value = false;
+    target.scrollIntoView({behavior: "smooth", block: "start"});
+    target.classList.add("chat-anchor-flash");
+    window.setTimeout(() => target.classList.remove("chat-anchor-flash"), 900);
+};
+
+const toggleAllBlocks = (): void => {
+    allBlocksExpanded.value = !allBlocksExpanded.value;
+};
+
+watch(outlineItems, (items) => emit("outline-change", items), {immediate: true});
+watch(activeOutlineAnchor, (anchorId) => emit("active-anchor-change", anchorId), {immediate: true});
+watch(allBlocksExpanded, (expanded) => emit("all-expanded-change", expanded), {immediate: true});
 
 /** 判断文本节点是否包含正文。 */
 const hasTextBubbleContent = (node: ChatNode): boolean => {
@@ -261,6 +334,8 @@ const requestPreviousHistory = (): void => {
 
 /** 滚动事件处理。 */
 const onScroll = (): void => {
+    // 先同步大纲高亮：下面的分支里有提前 return，放在后面会漏掉贴底场景。
+    syncActiveOutline();
     if (!scrollRef.value) return;
     const currentScrollTop = scrollRef.value.scrollTop;
     const userScrolledUp = currentScrollTop < lastScrollTop.value;
@@ -354,8 +429,21 @@ onUnmounted(() => {
     cancelScheduledScrollToBottom();
 });
 
-defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
+defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, toggleAllBlocks, scrollRef });
 </script>
+
+<style scoped>
+/* 跳转目标短暂闪烁：否则用户点完大纲不知道到底跳到哪了。 */
+.chat-anchor-flash {
+    border-radius: 12px;
+    animation: chat-anchor-flash 0.9s ease-out;
+}
+
+@keyframes chat-anchor-flash {
+    0%, 100% { background-color: transparent; }
+    30% { background-color: var(--accent-bg); }
+}
+</style>
 
 <template>
     <!-- 通用对话流容器 -->
@@ -379,6 +467,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
             <div
                 v-for="(item, index) in flowItems"
                 :key="getItemKey(item)"
+                :data-anchor="itemAnchorId(item)"
                 :class="itemSpacingClass(index)"
             >
                 <AgentTextBubble
@@ -420,6 +509,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     :session-id="props.sessionId"
                     :action-disabled="props.messageActionDisabled"
                     :run-action-disabled="props.runActionDisabled"
+                    :force-expanded="allBlocksExpanded"
                     @copy="emit('copy-tool', $event)"
                     @retry="emit('retry', $event)"
                     @skip-edit="emit('skip-edit', $event)"

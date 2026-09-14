@@ -18,6 +18,8 @@ import AgentChatFlow from "nbook/app/components/novel-ide/agent/AgentChatFlow.vu
 import AgentSystemPromptPanel from "nbook/app/components/novel-ide/agent/AgentSystemPromptPanel.vue";
 import AgentComposer from "nbook/app/components/novel-ide/agent/AgentComposer.vue";
 import AgentWorkflowPendingPanel from "nbook/app/components/novel-ide/agent/AgentWorkflowPendingPanel.vue";
+import AgentChatOutline from "nbook/app/components/novel-ide/agent/AgentChatOutline.vue";
+import type {ChatOutlineItem} from "nbook/app/components/novel-ide/agent/chat-outline";
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import AgentLinkedAgentPanel from "nbook/app/components/novel-ide/agent/AgentLinkedAgentPanel.vue";
 import AgentSessionDialog from "nbook/app/components/novel-ide/agent/AgentSessionDialog.vue";
@@ -137,6 +139,19 @@ const emit = defineEmits<{
 
 const inputText = ref("");
 const chatFlowRef = ref<InstanceType<typeof AgentChatFlow> | null>(null);
+/** 右侧大纲由对话流投影，会话层只做转发，避免两处各算一份。 */
+const outlineItems = ref<ChatOutlineItem[]>([]);
+const activeOutlineAnchor = ref("");
+const allBlocksExpanded = ref(false);
+
+/** 跳转与「全部展开 / 收起」都委托给对话流：锚点与块的折叠状态都在那边。 */
+const jumpToOutlineAnchor = (anchorId: string): void => {
+    chatFlowRef.value?.scrollToAnchor(anchorId);
+};
+
+const toggleAllBlocks = (): void => {
+    chatFlowRef.value?.toggleAllBlocks();
+};
 const inputRef = ref<InstanceType<typeof AgentComposer> | null>(null);
 
 const sessions = ref<AgentSessionSummaryDto[]>([]);
@@ -4322,47 +4337,61 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @refresh="void loadActiveSystemPrompt(true)"
             />
 
-            <!-- 消息序列 -->
-            <AgentChatFlow
-                ref="chatFlowRef"
-                :messages="renderNodes"
-                :session-id="activeSessionId"
-                :unselected="surfaceActivation.state.value.status === 'unselected'"
-                :running="running"
-                mode="main"
-                :editing-message-id="editingMessageId"
-                :editing-message-text="editingMessageText"
-                :message-action-disabled="messageActionsDisabled"
-                :run-action-disabled="historyMutationDisabled"
-                :saving-edit="Boolean(messageActionId)"
-                :session-attachments="knownSessionAttachments"
-                :can-register-attachments="activeInteraction.canRegisterAttachment"
-                :can-insert-attachments="activeInteraction.canInsertAttachment"
-                :project-root="props.novelId || null"
-                :model-supports-images="activeModelSupportsImages"
-                :attachment-insert-request="historyAttachmentInsertRequest"
-                :branch-switcher-state-by-message-id="branchSwitcherStateByMessageId"
-                :menu-refresh-key="agentMenuRefreshKey"
-                :resolve-editor-menu="resolveInputMenu"
-                :on-editor-skill-trigger-start="refreshSkillCatalog"
-                :open-reference="openMessageReference"
-                :cost-display-options="costDisplayOptions"
-                :cost-exchange-rate-suffix="costExchangeRateSuffix"
-                :history-has-previous="session.hasPrevious.value"
-                :history-loading="session.historyLoading.value"
-                :history-error="session.historyError.value"
-                @copy="void copyMessage($event)"
-                @copy-tool="void copyToolCall($event)"
-                @start-edit="void startEditingMessage($event)"
-                @cancel-edit="cancelEditingMessage"
-                @save-edit="void saveEditedMessage($event)"
-                @retry="void refreshMessage($event)"
-                @branch-from-here="void branchFromMessage($event)"
-                @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
-                @load-previous="void loadPreviousHistory()"
-                @attachment-registered="registerSessionAttachment"
-                @skip-edit="void skipFailedEdit()"
-            />
+            <!-- 消息序列 + 右侧大纲 -->
+            <div class="flex min-h-0 flex-1">
+                <AgentChatFlow
+                    ref="chatFlowRef"
+                    :messages="renderNodes"
+                    :session-id="activeSessionId"
+                    :unselected="surfaceActivation.state.value.status === 'unselected'"
+                    :running="running"
+                    mode="main"
+                    :editing-message-id="editingMessageId"
+                    :editing-message-text="editingMessageText"
+                    :message-action-disabled="messageActionsDisabled"
+                    :run-action-disabled="historyMutationDisabled"
+                    :saving-edit="Boolean(messageActionId)"
+                    :session-attachments="knownSessionAttachments"
+                    :can-register-attachments="activeInteraction.canRegisterAttachment"
+                    :can-insert-attachments="activeInteraction.canInsertAttachment"
+                    :project-root="props.novelId || null"
+                    :model-supports-images="activeModelSupportsImages"
+                    :attachment-insert-request="historyAttachmentInsertRequest"
+                    :branch-switcher-state-by-message-id="branchSwitcherStateByMessageId"
+                    :menu-refresh-key="agentMenuRefreshKey"
+                    :resolve-editor-menu="resolveInputMenu"
+                    :on-editor-skill-trigger-start="refreshSkillCatalog"
+                    :open-reference="openMessageReference"
+                    :cost-display-options="costDisplayOptions"
+                    :cost-exchange-rate-suffix="costExchangeRateSuffix"
+                    :history-has-previous="session.hasPrevious.value"
+                    :history-loading="session.historyLoading.value"
+                    :history-error="session.historyError.value"
+                    @copy="void copyMessage($event)"
+                    @copy-tool="void copyToolCall($event)"
+                    @start-edit="void startEditingMessage($event)"
+                    @cancel-edit="cancelEditingMessage"
+                    @save-edit="void saveEditedMessage($event)"
+                    @retry="void refreshMessage($event)"
+                    @branch-from-here="void branchFromMessage($event)"
+                    @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
+                    @load-previous="void loadPreviousHistory()"
+                    @attachment-registered="registerSessionAttachment"
+                    @skip-edit="void skipFailedEdit()"
+                    @outline-change="outlineItems = $event"
+                    @active-anchor-change="activeOutlineAnchor = $event"
+                    @all-expanded-change="allBlocksExpanded = $event"
+                />
+                <!-- 大纲没有任何可定位内容时整体隐藏，不占掉本就紧张的面板宽度 -->
+                <AgentChatOutline
+                    :items="outlineItems"
+                    :active-anchor-id="activeOutlineAnchor"
+                    :all-expanded="allBlocksExpanded"
+                    :hidden="outlineItems.length === 0"
+                    @jump="jumpToOutlineAnchor($event)"
+                    @toggle-all="toggleAllBlocks()"
+                />
+            </div>
 
             <AgentWorkflowPendingPanel :session-id="activeSessionId" />
 

@@ -1920,6 +1920,14 @@ const enUS = {
             stepCount: "{count} steps",
             failedCount: "{count} failed",
         },
+        // Right-side outline: a document-like table of contents for long conversations.
+        outline: {
+            title: "Outline",
+            expandAll: "Expand all",
+            collapseAll: "Collapse all",
+            emptyPrompt: "(no text)",
+            empty: "Nothing to navigate yet",
+        },
         chat: {
             startTitle: "Start Collaborating With AI",
             startDescription: "Ask me to design characters, plan outlines, or discuss where the story should go next.",
