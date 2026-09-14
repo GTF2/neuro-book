@@ -332,8 +332,6 @@ watch(() => props.modelValue, (open) => {
                 </button>
             </div>
 
-            </div>
-
             <!-- 筛选：选项直接平铺并分组，不再收进下拉 -->
             <div class="flex flex-wrap items-center gap-2">
                 <div class="flex flex-wrap items-center gap-1 rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] py-1 pl-1.5 pr-1">
