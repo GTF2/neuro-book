@@ -3,8 +3,11 @@ import type {AgentToolCall, ChatNode} from "nbook/app/components/novel-ide/agent
 /**
  * 工作块类别：决定图标与人话标题。
  * 只用工具元数据分类，不依赖 AI 生成——准确、零延迟、零成本。
+ *
+ * `other` 不参与折叠（未登记的工具不聚块），但大纲需要给「独立的一步操作」一个类别，
+ * 否则 task_set_status 这类永不进块的工具会在大纲里彻底消失。
  */
-export type ChatWorkBlockKind = "explore" | "edit" | "command" | "database" | "web";
+export type ChatWorkBlockKind = "explore" | "edit" | "command" | "database" | "web" | "other";
 
 /** 折叠节点：块内一定是工具节点，文本节点永远不进块。 */
 export type ChatWorkBlockNode = Extract<ChatNode, {kind: "tool"}>;
@@ -77,7 +80,7 @@ const isRunningToolCall = (toolCall: AgentToolCall): boolean => {
 };
 
 /** 从公开参数投影里取该次调用涉及的文件路径；非文件类工具返回空串。 */
-const resolveToolFilePath = (toolCall: AgentToolCall): string => {
+export const resolveToolFilePath = (toolCall: AgentToolCall): string => {
     const args = toolCall.publicArgs;
     if (args?.kind === "write" || args?.kind === "edit") {
         return args.path ?? "";
@@ -163,4 +166,5 @@ export const CHAT_WORK_BLOCK_META: Record<ChatWorkBlockKind, {icon: string; labe
     command: {icon: "i-lucide-terminal", labelKey: "agent.workBlock.command"},
     database: {icon: "i-lucide-database", labelKey: "agent.workBlock.database"},
     web: {icon: "i-lucide-globe", labelKey: "agent.workBlock.web"},
+    other: {icon: "i-lucide-wrench", labelKey: "agent.workBlock.other"},
 };

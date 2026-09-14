@@ -95,8 +95,6 @@ const emit = defineEmits<{
     (e: "outline-change", items: ChatOutlineItem[]): void;
     /** 当前滚动位置对应的大纲行。 */
     (e: "active-anchor-change", anchorId: string): void;
-    /** 「全部展开 / 收起」的状态变化。 */
-    (e: "all-expanded-change", expanded: boolean): void;
 }>();
 
 const scrollRef = ref<HTMLDivElement | null>(null);
@@ -172,8 +170,6 @@ const getItemKey = (item: ChatFlowItem): string => {
 const outlineItems = computed(() => buildChatOutline(flowItems.value, getNodeKey));
 
 const activeOutlineAnchor = ref("");
-/** 「全部展开 / 收起」是全局指令，块组件收到变化后覆盖自身折叠状态。 */
-const allBlocksExpanded = ref(false);
 
 /** 渲染单元对应的 DOM 锚点；跳转与滚动联动都靠它定位。 */
 const itemAnchorId = (item: ChatFlowItem): string => item.kind === "block"
@@ -220,13 +216,8 @@ const scrollToAnchor = (anchorId: string): void => {
     window.setTimeout(() => target.classList.remove("chat-anchor-flash"), 900);
 };
 
-const toggleAllBlocks = (): void => {
-    allBlocksExpanded.value = !allBlocksExpanded.value;
-};
-
 watch(outlineItems, (items) => emit("outline-change", items), {immediate: true});
 watch(activeOutlineAnchor, (anchorId) => emit("active-anchor-change", anchorId), {immediate: true});
-watch(allBlocksExpanded, (expanded) => emit("all-expanded-change", expanded), {immediate: true});
 
 /** 判断文本节点是否包含正文。 */
 const hasTextBubbleContent = (node: ChatNode): boolean => {
@@ -429,7 +420,7 @@ onUnmounted(() => {
     cancelScheduledScrollToBottom();
 });
 
-defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, toggleAllBlocks, scrollRef });
+defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, scrollRef });
 </script>
 
 <style scoped>
@@ -509,7 +500,6 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, toggleAllBlo
                     :session-id="props.sessionId"
                     :action-disabled="props.messageActionDisabled"
                     :run-action-disabled="props.runActionDisabled"
-                    :force-expanded="allBlocksExpanded"
                     @copy="emit('copy-tool', $event)"
                     @retry="emit('retry', $event)"
                     @skip-edit="emit('skip-edit', $event)"

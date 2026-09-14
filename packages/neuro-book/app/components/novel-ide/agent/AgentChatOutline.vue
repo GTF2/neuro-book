@@ -7,15 +7,12 @@ const props = defineProps<{
     items: ChatOutlineItem[];
     /** 当前高亮行的锚点 id；空串表示还没定位。 */
     activeAnchorId: string;
-    /** 主时间线是否处于「全部展开」，只用于决定按钮的方向与文案。 */
-    allExpanded: boolean;
     /** 没有可定位内容时整体隐藏，连指示条也不占位。 */
     hidden?: boolean;
 }>();
 
 const emit = defineEmits<{
     (e: "jump", anchorId: string): void;
-    (e: "toggle-all"): void;
 }>();
 
 const { t } = useI18n();
@@ -62,9 +59,14 @@ const rowLabel = (item: ChatOutlineItem): string => {
         return item.preview || t("agent.outline.emptyAnswer");
     }
     const parts = [t(CHAT_WORK_BLOCK_META[item.blockKind].labelKey)];
-    parts.push(item.fileCount > 0
-        ? t("agent.workBlock.fileCount", {count: item.fileCount})
-        : t("agent.workBlock.stepCount", {count: item.count}));
+    // 单步操作已经由类别本身说明「做了什么」，只有多个文件时才值得再报数量。
+    if (item.count > 1) {
+        parts.push(item.fileCount > 0
+            ? t("agent.workBlock.fileCount", {count: item.fileCount})
+            : t("agent.workBlock.stepCount", {count: item.count}));
+    } else if (item.fileCount > 0) {
+        parts.push(t("agent.workBlock.fileCount", {count: item.fileCount}));
+    }
     if (item.failedCount > 0) {
         parts.push(t("agent.workBlock.failedCount", {count: item.failedCount}));
     }
@@ -107,7 +109,10 @@ const indicatorClass = (item: ChatOutlineItem): string => {
         @mouseenter="expanded = true"
         @mouseleave="expanded = false"
     >
-        <!-- 完整目录：悬停才浮出，压在正文之上而不是把正文挤窄 -->
+        <!--
+            完整目录：悬停才浮出，并且相对整个对话区垂直居中，
+            这样它出现的位置稳定，不会随滚动位置在看不懂的地方冒出来。
+        -->
         <transition
             enter-active-class="transition duration-150 ease-out"
             enter-from-class="opacity-0 translate-x-2"
@@ -116,42 +121,33 @@ const indicatorClass = (item: ChatOutlineItem): string => {
         >
             <div
                 v-if="expanded"
-                class="absolute right-full top-2 z-30 mr-2 max-h-[70%] w-[300px] overflow-y-auto rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] py-1.5 shadow-2xl custom-scrollbar"
+                class="absolute right-full top-1/2 z-30 mr-2 flex max-h-[70%] w-[300px] -translate-y-1/2 flex-col overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] py-1.5 shadow-2xl"
             >
-                <button
-                    v-for="item in props.items"
-                    :key="item.anchorId"
-                    type="button"
-                    class="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left transition-colors"
-                    :class="isActive(item) ? 'bg-[var(--accent-bg)]' : 'hover:bg-[var(--bg-hover)]'"
-                    :title="rowTooltip(item)"
-                    @click="emit('jump', item.anchorId)"
-                >
-                    <span
-                        :class="[rowIcon(item), iconTone(item), item.kind === 'answer' && item.running ? 'animate-spin' : '']"
-                        class="h-3 w-3 shrink-0"
-                    ></span>
-                    <span
-                        class="min-w-0 flex-1 truncate text-[11.5px]"
-                        :class="[
-                            item.kind === 'prompt' ? 'font-semibold' : '',
-                            isActive(item) ? 'text-[var(--accent-main)]' : 'text-[var(--text-secondary)]',
-                        ]"
-                    >{{ rowLabel(item) }}</span>
-                    <span
-                        class="h-[3px] shrink-0 rounded-full transition-all"
-                        :class="isActive(item) ? 'w-4 bg-[var(--accent-main)]' : 'w-2.5 bg-[var(--border-color)]'"
-                    ></span>
-                </button>
-
-                <div class="mt-1 border-t border-[var(--border-color)] px-2.5 pt-1.5">
+                <div class="min-h-0 flex-1 overflow-y-auto px-1 custom-scrollbar">
                     <button
+                        v-for="item in props.items"
+                        :key="item.anchorId"
                         type="button"
-                        class="inline-flex items-center gap-1.5 rounded px-1 py-1 text-[10.5px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-main)]"
-                        @click="emit('toggle-all')"
+                        class="flex w-full items-center gap-2 rounded-md px-2.5 py-1.5 text-left transition-colors"
+                        :class="isActive(item) ? 'bg-[var(--accent-bg)]' : 'hover:bg-[var(--bg-hover)]'"
+                        :title="rowTooltip(item)"
+                        @click="emit('jump', item.anchorId)"
                     >
-                        <span :class="props.allExpanded ? 'i-lucide-fold-vertical' : 'i-lucide-unfold-vertical'" class="h-3 w-3"></span>
-                        {{ props.allExpanded ? t("agent.outline.collapseAll") : t("agent.outline.expandAll") }}
+                        <span
+                            :class="[rowIcon(item), iconTone(item), item.kind === 'answer' && item.running ? 'animate-spin' : '']"
+                            class="h-3 w-3 shrink-0"
+                        ></span>
+                        <span
+                            class="min-w-0 flex-1 truncate text-[11.5px]"
+                            :class="[
+                                item.kind === 'prompt' ? 'font-semibold' : '',
+                                isActive(item) ? 'text-[var(--accent-main)]' : 'text-[var(--text-secondary)]',
+                            ]"
+                        >{{ rowLabel(item) }}</span>
+                        <span
+                            class="h-[3px] shrink-0 rounded-full transition-all"
+                            :class="isActive(item) ? 'w-4 bg-[var(--accent-main)]' : 'w-2.5 bg-[var(--border-color)]'"
+                        ></span>
                     </button>
                 </div>
             </div>

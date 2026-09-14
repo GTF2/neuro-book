@@ -15,11 +15,6 @@ const props = defineProps<{
     runActionDisabled?: boolean;
     /** 上层指定的强制展开（例如全对话最后一个失败块）。 */
     autoExpand?: boolean;
-    /**
-     * 大纲的「全部展开 / 收起」指令。
-     * 它和 autoExpand 不同：这是全局命令，值一变就无条件覆盖本块的折叠状态。
-     */
-    forceExpanded?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -60,12 +55,6 @@ watch(startsExpanded, (value) => {
     if (value && !userToggled) {
         expanded.value = true;
     }
-});
-
-// 全局指令优先于一切本地状态：用户点了「全部展开 / 收起」就照做。
-watch(() => props.forceExpanded, (value) => {
-    expanded.value = Boolean(value);
-    userToggled = false;
 });
 
 const toggle = (): void => {

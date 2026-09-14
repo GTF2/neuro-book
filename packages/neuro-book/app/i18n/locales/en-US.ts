@@ -1948,6 +1948,7 @@ const enUS = {
             command: "Ran commands",
             database: "Database",
             web: "Web",
+            other: "Action",
             fileCount: "{count} files",
             stepCount: "{count} steps",
             failedCount: "{count} failed",
@@ -1955,8 +1956,6 @@ const enUS = {
         // Right-side outline: a document-like table of contents for long conversations.
         outline: {
             title: "Outline",
-            expandAll: "Expand all",
-            collapseAll: "Collapse all",
             emptyPrompt: "(no text)",
             emptyAnswer: "(no preview)",
             empty: "Nothing to navigate yet",

@@ -77,6 +77,67 @@ describe("chat-outline", () => {
         expect(outline).toHaveLength(0);
     });
 
+    it("不成块的单步操作也进大纲，否则 task_set_status 这类工具会从目录里消失", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: toolNode("t1", "task_set_status", "success")},
+        ], resolveNodeKey);
+
+        expect(outline).toHaveLength(1);
+        expect(outline[0]).toEqual(expect.objectContaining({
+            kind: "block",
+            blockKind: "other",
+            count: 1,
+            failedCount: 0,
+        }));
+    });
+
+    it("已登记类别的单步操作保留自己的类别，并带上文件数", () => {
+        const editNode: ChatNode = {
+            kind: "tool",
+            message: {id: "assistant-1", type: "ai", content: ""} as AgentMessage,
+            toolCall: {
+                id: "t1",
+                index: 0,
+                name: "edit",
+                argsText: "{}",
+                status: "success",
+                publicArgs: {kind: "edit", path: "a.md", edits: [], omittedEdits: 0},
+            },
+        };
+
+        const outline = buildChatOutline([{kind: "node", node: editNode}], resolveNodeKey);
+
+        expect(outline[0]).toEqual(expect.objectContaining({blockKind: "edit", fileCount: 1, count: 1}));
+    });
+
+    it("单步操作失败时也标记 failed", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: toolNode("t1", "task_set_status", "error")},
+        ], resolveNodeKey);
+
+        expect(outline[0]).toEqual(expect.objectContaining({status: "failed", failedCount: 1}));
+    });
+
+    it("摘要剥掉 Markdown 标记，只留内容", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: userNode("u1", "## 进度更新：**193/224** —— 第 1、3、4、5 章")},
+        ], resolveNodeKey);
+        const preview = outline[0]?.kind === "prompt" ? outline[0].preview : "";
+
+        expect(preview).toBe("进度更新：193/224 —— 第 1、3、4、5 章");
+        expect(preview).not.toContain("*");
+        expect(preview).not.toContain("#");
+    });
+
+    it("列表、引用与行内代码符号也从摘要里去掉", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: userNode("u1", "- 第一项\n- `第二项`\n> 引用")},
+        ], resolveNodeKey);
+        const preview = outline[0]?.kind === "prompt" ? outline[0].preview : "";
+
+        expect(preview).toBe("第一项 第二项 引用");
+    });
+
     it("回答仍在生成时标记 running", () => {
         const outline = buildChatOutline([
             {kind: "node", node: aiTextNode("a1", "正在回答", "streaming")},

@@ -1946,6 +1946,7 @@ const zhCN = {
             command: "执行命令",
             database: "数据库",
             web: "联网",
+            other: "操作",
             fileCount: "{count} 个文件",
             stepCount: "{count} 步",
             failedCount: "{count} 处失败",
@@ -1953,8 +1954,6 @@ const zhCN = {
         // 右侧大纲：类文档目录，用于在长对话里定位
         outline: {
             title: "大纲",
-            expandAll: "全部展开",
-            collapseAll: "全部收起",
             emptyPrompt: "（无文字内容）",
             emptyAnswer: "（暂无摘要）",
             empty: "暂无可定位的内容",

@@ -1,6 +1,10 @@
-import type {ChatNode} from "nbook/app/components/novel-ide/agent/agent-message";
+import type {AgentToolCall, ChatNode} from "nbook/app/components/novel-ide/agent/agent-message";
 import type {ChatFlowItem, ChatWorkBlockKind} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
-import {isFailedToolCall} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {
+    isFailedToolCall,
+    resolveToolFilePath,
+    resolveToolWorkKind,
+} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 
 /** 大纲行的状态标记：成功绿、失败红、运行中蓝。 */
 export type ChatOutlineStatus = "success" | "failed" | "running";
@@ -58,8 +62,29 @@ export const chatNodeAnchorId = (nodeKey: string): string => `chat-anchor-n-${sa
 /** 工作块对应的锚点 id。 */
 export const chatBlockAnchorId = (blockId: string): string => `chat-anchor-b-${sanitizeAnchor(blockId)}`;
 
+/**
+ * 大纲只显示内容本身，不显示 Markdown 标记。
+ * 直接把 `**粗体**`、`##` 这类语法摆进目录，整列会变成一堆星号和井号。
+ */
+const stripMarkdown = (text: string): string => text
+    // 代码围栏与行内代码：留内容去标记
+    .replace(/```[^\n]*\n?/gu, "")
+    .replace(/`([^`]*)`/gu, "$1")
+    // 图片与链接：只留可读文本
+    .replace(/!\[([^\]]*)\]\([^)]*\)/gu, "$1")
+    .replace(/\[([^\]]*)\]\([^)]*\)/gu, "$1")
+    // 强调标记
+    .replace(/\*\*([^*]*)\*\*/gu, "$1")
+    .replace(/__([^_]*)__/gu, "$1")
+    .replace(/(^|[^*])\*([^*\n]+)\*/gu, "$1$2")
+    // 行首的标题、列表、引用、有序列表符号
+    .replace(/^[ \t]{0,3}#{1,6}[ \t]+/gmu, "")
+    .replace(/^[ \t]{0,3}[-*+][ \t]+/gmu, "")
+    .replace(/^[ \t]{0,3}>[ \t]?/gmu, "")
+    .replace(/^[ \t]{0,3}\d+[.)][ \t]+/gmu, "");
+
 const toPreview = (text: string): string => {
-    const normalized = text.replace(/\s+/gu, " ").trim();
+    const normalized = stripMarkdown(text).replace(/\s+/gu, " ").trim();
     return normalized.length > PREVIEW_MAX
         ? `${normalized.slice(0, PREVIEW_MAX)}…`
         : normalized;
@@ -98,27 +123,31 @@ export const buildChatOutline = (
     for (const item of items) {
         if (item.kind === "node") {
             const textKind = resolveTextOutlineKind(item.node);
-            if (!textKind) {
+            if (textKind) {
+                const message = item.node.message;
+                const anchorId = chatNodeAnchorId(resolveNodeKey(item.node));
+                if (textKind === "prompt") {
+                    outline.push({
+                        kind: "prompt",
+                        anchorId,
+                        messageId: message.id,
+                        preview: toPreview(message.content ?? ""),
+                        timestamp: message.timestamp ?? "",
+                    });
+                } else {
+                    outline.push({
+                        kind: "answer",
+                        anchorId,
+                        messageId: message.id,
+                        preview: toPreview(message.content ?? ""),
+                        running: message.status === "streaming",
+                    });
+                }
                 continue;
             }
-            const message = item.node.message;
-            const anchorId = chatNodeAnchorId(resolveNodeKey(item.node));
-            if (textKind === "prompt") {
-                outline.push({
-                    kind: "prompt",
-                    anchorId,
-                    messageId: message.id,
-                    preview: toPreview(message.content ?? ""),
-                    timestamp: message.timestamp ?? "",
-                });
-            } else {
-                outline.push({
-                    kind: "answer",
-                    anchorId,
-                    messageId: message.id,
-                    preview: toPreview(message.content ?? ""),
-                    running: message.status === "streaming",
-                });
+            // 不成块的单步操作也占一行：否则 task_set_status 这类永不进块的工具会从目录里彻底消失。
+            if (item.node.kind === "tool") {
+                outline.push(buildActionOutlineItem(item.node.toolCall, resolveNodeKey(item.node)));
             }
             continue;
         }
@@ -146,6 +175,28 @@ const resolveBlockStatus = (block: Extract<ChatFlowItem, {kind: "block"}>): Chat
     }
     return "success";
 };
+
+/**
+ * 单个工具调用的大纲行。
+ *
+ * 复用了 block 的形状（计数恒为 1），这样列表侧不需要为「单步操作」写第二套渲染；
+ * 未登记类别的工具归到 other，保证「操作」这一类在目录里不会缺项。
+ */
+const buildActionOutlineItem = (toolCall: AgentToolCall, nodeKey: string): ChatOutlineItem => {
+    const failed = isFailedToolCall(toolCall);
+    const running = toolCall.status === "running" || toolCall.status === "streaming";
+    return {
+        kind: "block",
+        anchorId: chatNodeAnchorId(nodeKey),
+        blockId: nodeKey,
+        blockKind: resolveToolWorkKind(toolCall.name) ?? "other",
+        status: running ? "running" : failed ? "failed" : "success",
+        fileCount: resolveToolFilePath(toolCall) ? 1 : 0,
+        count: 1,
+        failedCount: failed ? 1 : 0,
+    };
+};
+
 
 /**
  * 找出当前应高亮的大纲行：以「最后一个已越过顶部的锚点」为准。

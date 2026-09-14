@@ -142,15 +142,10 @@ const chatFlowRef = ref<InstanceType<typeof AgentChatFlow> | null>(null);
 /** 右侧大纲由对话流投影，会话层只做转发，避免两处各算一份。 */
 const outlineItems = ref<ChatOutlineItem[]>([]);
 const activeOutlineAnchor = ref("");
-const allBlocksExpanded = ref(false);
 
-/** 跳转与「全部展开 / 收起」都委托给对话流：锚点与块的折叠状态都在那边。 */
+/** 跳转委托给对话流：锚点与节点的对应关系在那边。 */
 const jumpToOutlineAnchor = (anchorId: string): void => {
     chatFlowRef.value?.scrollToAnchor(anchorId);
-};
-
-const toggleAllBlocks = (): void => {
-    chatFlowRef.value?.toggleAllBlocks();
 };
 const inputRef = ref<InstanceType<typeof AgentComposer> | null>(null);
 
@@ -4412,16 +4407,13 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     @skip-edit="void skipFailedEdit()"
                     @outline-change="outlineItems = $event"
                     @active-anchor-change="activeOutlineAnchor = $event"
-                    @all-expanded-change="allBlocksExpanded = $event"
                 />
                 <!-- 大纲没有任何可定位内容时整体隐藏，不占掉本就紧张的面板宽度 -->
                 <AgentChatOutline
                     :items="outlineItems"
                     :active-anchor-id="activeOutlineAnchor"
-                    :all-expanded="allBlocksExpanded"
                     :hidden="outlineItems.length === 0"
                     @jump="jumpToOutlineAnchor($event)"
-                    @toggle-all="toggleAllBlocks()"
                 />
             </div>
 
