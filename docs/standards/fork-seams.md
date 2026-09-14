@@ -18,7 +18,7 @@
 | `server/plot/**`（写作宪法核心接缝） | ~13 | 加法式小切口 | 中 |
 | `server/agent/**`（tools/workflow/events/harness） | ~11 | 混合：fork 的 plot/keyframe 工具 + 继承的工具投影改造 | 中 |
 | `assets/workspace/.nbook/agent/**` | 5 | 新增 workflow（`keyframe-tween-review`、`contrast-write-review`）+ 新增 skill phase + 既有 workflow 加参数 + 既有 skill 正文同步；`phases/03` 接真实工具名、主链接帧与「未来影响分析」步骤，`phases/05` 接真实工具名 | 低（加法） |
-| `assets/reference/plot/**`（writer-brief 改写 + 新增 keyframe.md + 新增 future-impact-analysis.md + README 索引同步） | 4 | **改写上游资产正文** + 新增 fork 正文 | 中（上游改同文件即冲突） |
+| `assets/reference/plot/**`（writer-brief 改写 + 新增 keyframe / future-impact-analysis / write-back-checks + README 索引同步） | 5 | **改写上游资产正文** + 新增 fork 正文 | 中（上游改同文件即冲突） |
 | `assets/reference/world-engine/**`（README 索引补行 + 新增 canon-read-back.md） | 2 | 新增 fork 正文 + 上游索引补一行 | 低（加法为主） |
 | `shared/dto/plot.dto.ts`、`api/projects/plot/**`、`openapi/route-map.ts`、`prisma/project.schema.prisma`、`workspace-files/project-workspace.ts`、`utils/novel-chapter.ts` | 7 | 加法式小切口 | 中低 |
 | `docs/`（doctrine、standards、specs 注册表、testing）、`AGENTS.md`、`README`、`CONTRIBUTING`、`PROJECT-STATUS.md` | ~12 | fork 治理 + 外科手术式改写 | 低 |
@@ -53,6 +53,8 @@
 | S19 | `assets/reference/plot/future-impact-analysis.md`（**新增**）、`assets/reference/plot/README.md`（索引补行）、`assets/workspace/.nbook/agent/skills/novel-writing/phases/03-chapter-loop.md`（**新增「第六步：未来影响分析」**，与 S16/S18 同文件） | 未来影响分析：正文采纳后由 leader 扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），产出只标记、不改动的受影响清单，交作者逐项裁决。形态约束：**不做 workflow**——workflow 内 `adhoc` 工具面固定为 `read` + `report_result`，读不到 Plot 数据，故由持有 Plot 工具面的 leader 在 skill 阶段执行；复用既有只读工具，不新增实体 / 字段 / 工具 / 路由 | 新增 reference 1 文件；skill 约 +20 行 | 不适用（新增 reference 属资产层）；skill 改动并入既有接缝 |
 
 | S20 | `assets/reference/world-engine/canon-read-back.md`（**新增**）、`assets/reference/world-engine/README.md`（索引补行）、`assets/workspace/.nbook/agent/skills/novel-writing/phases/{02-canon-commit,03-chapter-loop}.md`（**新增「回读验证」步骤**） | canon 回读验证：拍板落库写入之后，立刻回读刚写入的 slice / Plot 实体 / lorebook，与确认意图逐条比对，产出验收回执（已落地 / 偏离 / 未落地 + 证据 + 建议动作）；与事后校验（正文 vs 声明）、未来影响分析（新事实 → 下游）三者分工互补。形态约束同 S19：**不做 workflow**——`adhoc` 工具面读不到 World Engine / Plot 数据，由持有 `execute_world` 与 plot 工具的 leader 执行；复用既有只读入口，不新增实体 / 字段 / 工具 / 路由 | 新增 reference 1 文件；skill 02 约 +14 行、03 约 +1 行 | 不适用（新增 reference 属资产层）；skill 改动并入既有接缝 |
+
+| S21 | `assets/reference/plot/write-back-checks.md`（**新增**）、`assets/reference/plot/README.md`（索引补行）、`assets/reference/plot/writer-brief.md`（分工表后加指向，与 S8 同文件）、`phases/{02-canon-commit,03-chapter-loop}.md`（各加一句指向） | 写回校验清单：把散落在四处以上的写回校验项（目标覆盖 / 信息边界 / 禁写 / 字 AI 味 / 节奏 / 正文 vs 声明 / 承诺兑现 / 关键帧回撞 / canon 回读 / 下游失效 / World Engine issues / 未决决策）收敛成**声明式清单**（项名 / 标的 / 判据 / 失败动作 block·warn·record / 消费方），成为各消费方的单一索引入口。**文档级**：不改 workflow 语义与返回、不改 `reviewChecklistMarkdown` 结构、不新增实体 / 字段 / 工具 / 路由 | 新增 reference 1 文件；其它各 1-2 行指向 | 不适用（新增 reference 属资产层）；指向改动并入既有接缝 |
 
 ## 三、继承的定制（非本 fork 写作宪法工作，需要所有者决策）
 

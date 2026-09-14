@@ -61,6 +61,8 @@ writer 调 `get_chapter_writer_brief` 时,工具的结构化结果也会收口�
 | 6 本章 Promise 任务 | **防欠债**:规划期打的计划 beat,本章该推进的债务线推进到位、幅度按 note 收住 | PromiseBeat 派生,自动编译;有任务才出现 |
 | 7 未决决策警告 | **防写死**:未拍板的问题保持开放,不替 leader 做决定 | open Decision 派生,自动编译;触及本章才出现 |
 
+上表说明**评审视图**各段防什么、从哪来。**完整的写回校验项清单（项名、判据、失败动作、消费方）见 [`write-back-checks.md`](write-back-checks.md)**——本表不重复其判据。
+
 ## status 阶梯
 
 `needs_plot`(无 Scene)→ `needs_world_anchor`(Scene 缺时间范围)→ `needs_world_context`(subject 未接入 World Engine)→ `ready`。

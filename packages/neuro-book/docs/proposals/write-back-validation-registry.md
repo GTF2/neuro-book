@@ -1,6 +1,6 @@
 # 写回校验注册表：把"写完核对什么"收敛成声明式清单
 
-状态：draft
+状态：accepted
 
 ## 问题
 
@@ -89,4 +89,5 @@ StoryForge 的做法是把写回校验收敛成**声明式注册表**（`FIELD_R
 
 ## 决策记录
 
-- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #4（StoryForge `FIELD_REGISTRY` / `AdoptionSchema` 形状）。等待开发者决定 `accepted` / `rejected`。
+- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #4（StoryForge `FIELD_REGISTRY` / `AdoptionSchema` 形状）。
+- 2026-09-14｜接受｜决策者：开发者（概括授权"你先按你的来吧"）。接受方案 A（运行期 Reference 声明式清单，文档级，先统一描述现有校验项，不引入运行时引擎）；清单落点 `assets/reference/plot/write-back-checks.md`。**第一版保守实现**：清单作为单一索引入口，消费方（`writer-brief.md` / `03-chapter-loop.md`）只加"完整清单见 X"的指向，不改 workflow 语义与 brief 结构。接受后创建 Spec `docs/specs/plot/write-back-checks.md`（capability `plot.write-back-checks`）与 Work `w00019-write-back-checks`。

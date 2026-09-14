@@ -100,6 +100,8 @@ await world.slice.write({
 
 ## 回读验证
 
+（本步骤是写回校验清单里的一项，项名 `canon-read-back`，见 `reference/plot/write-back-checks.md`。）
+
 写入之后**不要直接回报**——先把刚写的那一版读回来核对。三类偏差只有回读才看得见：**写了没生效**（patch 落错 subject / path 或被覆盖）、**写成了另一件事**（op 选错）、**该写的没写**（拆事件时漏掉）。完整合同、各真相源的回读手段与回执格式见 `reference/world-engine/canon-read-back.md`。
 
 要点：
