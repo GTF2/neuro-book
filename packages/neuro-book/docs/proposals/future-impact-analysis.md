@@ -1,6 +1,6 @@
 # 未来影响分析：正文采纳后标记受影响的下游规划
 
-状态：draft
+状态：accepted
 
 ## 问题
 
@@ -40,18 +40,21 @@
 
 ## 方案、备选方案与取舍
 
-### 方案 A（推荐）：资产层 workflow + skill 阶段，只读扫描 + 结构化清单
+### 方案 A（推荐）：skill 阶段 + Reference 清单格式，扫描在 leader 工具面内完成
 
-1. 入口：新增资产层 workflow `impact-scan`（或作为 `03-chapter-loop` 的一个阶段），输入 `chapterPath`、`chapterId`、`confirmedChanges`（本轮确认的新事实）、可选 `worldFacts`。
-2. 三个只读扫描，全部复用既有工具，**不新增工具**：
+1. **形态约束（本轮核实的技术事实）**：workflow 内的 `adhoc` profile 工具面固定为 `read` + `report_result`，**读不到 Plot 数据**（`assets/reference/agent/workflow/README.md`：「adhoc 工具固定为 `read` + `report_result`。V1 没有 `initial.tools` 字段」）；`consistency-audit` 之所以要求 leader 预先整理 `worldFacts` 传入，正是同一约束。因此**扫描不能放进 workflow 内部执行**，只能由持有 Plot 工具面的 leader 完成。
+2. 入口：在 `phases/03-chapter-loop.md` 新增「未来影响分析」步骤（置于修订之后、完成标准之前），输入 = 本章落点（`chapterPath` / `chapterId`）与本轮已确认的新事实（修改型：改结果 / 物品状态 / 角色位置 / 伤势 / 信息披露时产生）。
+3. 三个只读扫描，全部由 leader 用既有工具完成，**不新增工具**：
    - **Promise 面**：`get_story_promise` —— 本章 Scene 上的 beats、未兑现且期限/节奏已过或临近的 Promise；
    - **Scene 面**：`get_story_thread` / `get_story_scene_context` —— 本章之后同 Thread 的 Scene、相邻章的 Scene 是否与新事实冲突；
    - **帧面**：`get_story_keyframe` / `get_tween_keyframes` —— 本章是否落在补间区间内、帧声明的不可逆变化是否被正文推翻。
-3. 输出：结构化数组（`target` / `impactType` / `evidence` / `suggestedAction`）+ 一份人读 markdown 清单。
-4. 人逐项确认；确认"改"的项走既有写入路径（`save_story_scene` / `save_story_promise` / `save_story_keyframe` + `save_story_decision`）。
-5. 清单格式写进运行期 Reference，主链接入写进 `phases/03-chapter-loop.md` 的完成标准。
+4. 输出：结构化清单（`target` / `impactType` / `evidence` / `suggestedAction`）+ 一份人读 markdown 清单。
+5. 人逐项确认；确认"改"的项走既有写入路径（`save_story_scene` / `save_story_promise` / `save_story_keyframe` + `save_story_decision`）。
+6. 清单格式写进运行期 Reference（`assets/reference/plot/future-impact-analysis.md`），主链接入写进 `phases/03-chapter-loop.md` 的完成标准。
 
-成本：一个 workflow 资产 + 一段 skill 说明 + Reference 一节；判断仍由人 / leader 做。
+成本：一段 skill 步骤 + 一节 Reference；**不新增 workflow、不新增实体 / 字段 / 工具**。判断仍由人 / leader 做。
+
+演进（非本轮）：当 `workflow-project-data-queries` 提案落地（workflow 能确定性读项目数据）后，可把扫描编排成 `impact-scan` workflow；本方案不依赖它，先以 skill 形态交付。
 
 ### 方案 B：写进 brief 编译
 
@@ -71,7 +74,7 @@
 - **接口**：不新增 HTTP 路由，不改既有 agent 工具签名；若后续需要 UI 呈现，按 UI 侧单独提案处理。
 - **安全**：只读扫描；清单内容属小说规划数据，按根 `AGENTS.md`「真实模型调用与样本数据」一节属可入库内容，不含密钥或个人数据。
 - **成本**：一次只读查询 +（可选）一次 adhoc 归纳；不影响 writer 的 token 预算结构。
-- **回滚**：删除 workflow / 资产与 skill 段落即回到现状，无数据遗留。
+- **回滚**：删除 Reference 与 skill 段落即回到现状，无数据遗留。
 
 ## 对 Spec 的预期改动
 
@@ -83,9 +86,10 @@
 ## 验收
 
 1. Proposal 状态与决策记录完整，且未声称任何能力已实现。
-2. 方案 A 的落点（workflow / skill / Reference）与现有资产不冲突，无新增实体或字段。
+2. 方案 A 的落点（skill / Reference）与现有资产不冲突，无新增实体或字段。
 3. 与写作宪法逐条对照：不违反第二条（不触碰 writer 动笔前上下文）、第五条（仍是事后校验）、第六条（只标记、不裁决）、第七条（不承诺"更自由"）。
 
 ## 决策记录
 
-- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #2（StoryForge「章后整理 → 未来影响分析」）。等待开发者决定 `accepted` / `rejected`；未接受前不得据此创建 `planned` Spec 或开始实现。
+- 2026-09-14｜初稿｜来源 `docs/doctrine/prior-art-2026-09-14.md` 第五节采纳清单 #2（StoryForge「章后整理 → 未来影响分析」）。
+- 2026-09-14｜接受｜决策者：开发者（概括授权"你要做的你就做，需要我同意的我一概同意"）。接受时**修正方案 A 的落地形态**：扫描必须由持有 Plot 工具面的 leader 执行（workflow 内 `adhoc` 工具面固定为 `read` + `report_result`），因此以 **skill 阶段 + Reference** 交付，不新增 workflow；`impact-scan` workflow 形态待 `workflow-project-data-queries` 能力落地后作为可选演进。接受后创建 `planned` Spec `docs/specs/plot/future-impact-analysis.md` 与 Work `w00017-future-impact-analysis`。

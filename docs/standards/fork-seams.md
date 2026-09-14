@@ -17,8 +17,8 @@
 | `server/generated/project-prisma/**` | 14 | 机械生成物（schema 变更的产物） | 零（合并后重生成即可） |
 | `server/plot/**`（写作宪法核心接缝） | ~13 | 加法式小切口 | 中 |
 | `server/agent/**`（tools/workflow/events/harness） | ~11 | 混合：fork 的 plot/keyframe 工具 + 继承的工具投影改造 | 中 |
-| `assets/workspace/.nbook/agent/**` | 5 | 新增 workflow（`keyframe-tween-review`、`contrast-write-review`）+ 新增 skill phase + 既有 workflow 加参数 + 既有 skill 正文同步；本轮 `phases/03`、`phases/05` 接真实工具名与主链接帧 | 低（加法） |
-| `assets/reference/plot/**`（writer-brief 改写 + 新增 keyframe.md + README 索引同步） | 3 | **改写上游资产正文** + 新增 fork 正文 | 中（上游改同文件即冲突） |
+| `assets/workspace/.nbook/agent/**` | 5 | 新增 workflow（`keyframe-tween-review`、`contrast-write-review`）+ 新增 skill phase + 既有 workflow 加参数 + 既有 skill 正文同步；`phases/03` 接真实工具名、主链接帧与「未来影响分析」步骤，`phases/05` 接真实工具名 | 低（加法） |
+| `assets/reference/plot/**`（writer-brief 改写 + 新增 keyframe.md + 新增 future-impact-analysis.md + README 索引同步） | 4 | **改写上游资产正文** + 新增 fork 正文 | 中（上游改同文件即冲突） |
 | `shared/dto/plot.dto.ts`、`api/projects/plot/**`、`openapi/route-map.ts`、`prisma/project.schema.prisma`、`workspace-files/project-workspace.ts`、`utils/novel-chapter.ts` | 7 | 加法式小切口 | 中低 |
 | `docs/`（doctrine、standards、specs 注册表、testing）、`AGENTS.md`、`README`、`CONTRIBUTING`、`PROJECT-STATUS.md` | ~12 | fork 治理 + 外科手术式改写 | 低 |
 | `packages/neuro-book/{nuxt.config.ts,app/spa-loading-template.html,scripts/cli/source-dev.ts,scripts/cli/source-runtime.ts}`（启动体验补丁：首屏加载占位 + 就绪后打开浏览器） | 4 | 加法式小切口（新增占位文件 + 少量配置/启动逻辑） | 低 |
@@ -48,6 +48,8 @@
 | S17 | `assets/workspace/.nbook/agent/workflows/contrast-write-review/workflow.ts` + `server/agent/workflow/contrast-write-review.workflow.test.ts` | **新增文件**：实验专用「写 → 三维评审」workflow，把调用方显式给定的 writer 提示原样下发（仅 trim 首尾空白）；不接入普通写作主链 | 新 workflow + 新测试 | 不适用（加法） |
 
 | S18 | `server/agent/tools/plot-tools.ts`（keyframe 三工具，与 S6 同文件）、`assets/reference/plot/keyframe.md`（**新增**）、`assets/reference/plot/README.md`、`assets/workspace/.nbook/agent/skills/novel-writing/phases/{03-chapter-loop,05-keyframe-tween}.md` | keyframe 工具面：新增 `get_story_keyframe` / `get_tween_keyframes` / `save_story_keyframe`（`create` 恒 pending、不接受 status/decisionRefId/keyframeId，`update` 不接受 source；读面按 `profileKey=writer` 白名单剔除 `note`）；新增关键帧 Reference 正文并接入目录索引；主链 skill 把「Plot API keyframes / PATCH keyframes / POST decisions」改为真实工具名，正文循环的前置检查与完成标准补帧收口 | plot-tools 约 +130 行；reference 新增 1 文件；skill 各 1-3 段 | 不易（agent 只能通过工具访问）；新增 reference 文件本身属资产层 |
+
+| S19 | `assets/reference/plot/future-impact-analysis.md`（**新增**）、`assets/reference/plot/README.md`（索引补行）、`assets/workspace/.nbook/agent/skills/novel-writing/phases/03-chapter-loop.md`（**新增「第六步：未来影响分析」**，与 S16/S18 同文件） | 未来影响分析：正文采纳后由 leader 扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），产出只标记、不改动的受影响清单，交作者逐项裁决。形态约束：**不做 workflow**——workflow 内 `adhoc` 工具面固定为 `read` + `report_result`，读不到 Plot 数据，故由持有 Plot 工具面的 leader 在 skill 阶段执行；复用既有只读工具，不新增实体 / 字段 / 工具 / 路由 | 新增 reference 1 文件；skill 约 +20 行 | 不适用（新增 reference 属资产层）；skill 改动并入既有接缝 |
 
 ## 三、继承的定制（非本 fork 写作宪法工作，需要所有者决策）
 
