@@ -15,6 +15,7 @@
 - World Engine 已初始化（有 calendar、纪元锚点、需追踪的角色 subject）。**若未初始化，先走 `novel-setup` 阶段四，再回来写章节。**
 - 本章剧情事实已经确认，且已在环节二落入 World Engine。若还没有确认，不要在本环节里替用户临时定稿。
 - 需要设定上下文时，已确定要建议 writer 读取的 lorebook 内容节点 path。
+- 本章若落在一对已声明关键帧之间：先用 `get_story_keyframe` / `get_tween_keyframes` 读出帧与补间路标。帧声明（`irreversibleChanges`）是事实级内容，可以进 writer 的动笔前上下文；但它仍是事实声明，不要改写成"必须写到 / 必须隐瞒"一类指令（宪法第二条、第五条）。
 
 ## 第一步：写作前先推进 World Engine（关键）
 
@@ -148,3 +149,4 @@ leader 给大致方向 → writer 自由发挥（含剧情细节）→ leader �
 - writer 已通过 `report_result` 报告写入路径与剧情摘要。
 - 评审基础检查全部通过：剧情点覆盖、视角与信息边界无越界、与 World Engine 一致。
 - 修订产生的新事实已落库或显式挂起。
+- 若本章落在一对帧的补间区间内：区间帧没有悬空的 `violated` 状态——要么维持帧并已 `confirmed`，要么被推翻且已 `overthrown` 并挂 `decisionRefId`（宪法第六条）。

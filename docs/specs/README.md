@@ -94,6 +94,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Agent 资产运行期安装与 Catalog 根 | [`agent/asset-install-runtime.md`](agent/asset-install-runtime.md) | State Root Install Root、Runtime Reference Root、Install → Project 覆盖和显式 artifact context 已由代码与合同测试支持 |
 | Agent Session Abort | [`agent/session-abort.md`](agent/session-abort.md) | HTTP abort、合作/forced 收口、唯一 durable lifecycle、写入恢复与 409/503 失败合同已由实现和行为测试支持 |
 | Plot Writer Brief 双视图 | [`plot/chapter-writer-brief.md`](plot/chapter-writer-brief.md) | brief 拆事实视图（进 writer）与意图视图（只进评审）；信息控制降级为事后核对、不参与 status 门槛 |
+| Plot 关键帧写作 | [`plot/keyframe.md`](plot/keyframe.md) | 帧声明不可逆变化、补间区间查询、回撞与裁决留痕（推翻必须挂创作决策记录）；agent 工具面读帧对 writer 只给事实字段 |
 | 内容与 Project Workspace | [Reference: Content](../../packages/neuro-book/assets/reference/content/README.md) | 内容节点、正文、素材、检索、引用与 Workspace 术语 |
 | World Engine | [Reference: World Engine](../../packages/neuro-book/assets/reference/world-engine/README.md) | 时间线、slice、subject、schema、calendar 与写作协作 |
 | Plot | [Reference: Plot](../../packages/neuro-book/assets/reference/plot/README.md) | Story、Thread、Scene、Writer Brief、Agent 与前端合同 |
@@ -114,6 +115,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 |---|---|---|
 | Component Lab | [`ui/component-lab.md`](ui/component-lab.md) | Source Dev-only 确定性 fixture、响应式检视和 Product 排除合同；当前尚未实现 |
 | Agent Session Store 租约 | [`agent/session-store-lease.md`](agent/session-store-lease.md) | proper-lockfile 租约互斥、mtime 心跳、失效与 Windows 文件系统兼容目标；修复验证闭合前保持 `planned` |
+| Agent Session Follow-up 队列投递 | [`agent/session-followup-queue.md`](agent/session-followup-queue.md) | 队列来源可见性、单条与批量处理入口、暂停后的空闲自愈与人工接管；行为合同已定稿，等待实现 |
 
 ## 冻结过渡规范
 
@@ -132,7 +134,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 
 | 优先级 | 功能域 | 现有证据 | 缺口 |
 |---|---|---|---|
-| P0 | 关键帧写作（写作宪法第三条、第六条） | [`doctrine/writing-doctrine.md`](../doctrine/writing-doctrine.md)、[关键帧实验](../doctrine/keyframe-experiment-2026-09-14.md)、`packages/neuro-book/server/plot/services/keyframe.service.ts`、`prisma/project.schema.prisma`（StoryKeyframe）、`assets/workspace/.nbook/agent/workflows/keyframe-tween-review/` | 帧实体、回撞流转、裁决留痕与补间 workflow 已实现且有测试，但无 `implemented` Spec；agent 侧还没有关键帧工具与 Reference 正文 |
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
 | P0 | Agent Session 持久化与历史 | `packages/neuro-book/docs/adr/0003-*`、`0014-agent-job-*`，`packages/neuro-book/server/agent/session/`、`packages/neuro-book/server/workspace-history/` | durable event、Job 历史、附件、租约和文件历史缺少统一状态与恢复规范 |

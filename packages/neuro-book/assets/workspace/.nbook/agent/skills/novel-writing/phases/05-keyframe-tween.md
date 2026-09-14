@@ -6,17 +6,18 @@
 
 ## 前置
 
-- 起点帧与终点帧已声明（Plot API `keyframes`，或作者口头给出后由 leader 代录）。
+- 起点帧与终点帧已声明（用 `get_story_keyframe` 读，或作者口头给出后由 leader 代录）。
 - 帧的 `irreversibleChanges` 是声明式事实（谁死、剑易主、誓破），不是写作提示。
 - 已用 `execute_world` 预查补间区间的世界状态截面（时间窗查询，只读）。
+- 帧状态（pending / violated / confirmed / overthrown）语义与工具面见 `reference/plot/keyframe.md`。
 
 ## 第一步：确认补间输入（事实，不是意义）
 
-向作者确认或从 Plot API 读取：
+向作者确认，或用 `get_story_keyframe` / `get_tween_keyframes` 读取：
 
 - 起点帧：instant 之前的状态事实（此刻横截面，不给因果链）。
 - 终点帧：`name/title/instant/irreversibleChanges` 逐条列出。
-- 区间中间帧（可选）：逐条列出。
+- 区间中间帧（可选）：`get_tween_keyframes` 返回的 `(起点帧, 终点帧]` 路标，逐条列出。
 - 世界状态截面：补间区间内会约束演化的状态事实。
 
 **不要**给 writer：信息控制四字段、禁写项、未决决策警告——这些是意义指令，事后校验才用（宪法第五条）。
@@ -39,14 +40,14 @@ workflow 内部：writer 演化补间正文 → 回撞校验员逐条撞 `irreve
 - **维持帧**：修订正文后重跑回撞，帧置 `confirmed`。
 - **推翻帧**（宪法第六条，正文反向推翻设定）：帧置 `overthrown` 并挂 `decisionRefId` 指向新创作决策记录（决定/动机/风险必填，推翻留痕）。随后回到 `01` 讨论新走向、`02` 落库。
 
-workflow 不替你裁决；裁决与留痕走 Plot API（`PATCH keyframes/:id` + `POST decisions`）。
+workflow 不替你裁决；裁决与留痕走工具：维持帧 → `save_story_keyframe`（`action=update`、`status=confirmed`）；推翻帧 → 先 `save_story_decision`（`action=decide`，决定/动机/风险必填）再 `save_story_keyframe`（`action=update`、`status=overthrown`、`decisionRefId`）。
 
 ## 第四步：从正文反推新帧（derived）
 
 写到正文时才发现的新不可逆变化，补录为 `source=derived` 的帧：
 
 1. 用人话向作者确认这确实是不可逆变化。
-2. `POST keyframes`（source=derived）。
+2. `save_story_keyframe`（`action=create`、`source=derived`）。
 3. 若它推翻了已有设定，同第三步走决策留痕。
 
 ## 完成标准

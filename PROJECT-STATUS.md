@@ -14,20 +14,20 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 | --- | --- | --- |
 | Writer brief 事实/意义分离（第二条/第五条） | 已实现：brief 拆双视图——`suggestedBriefMarkdown` 只含事实（时间 / 地点 / 在场角色 / 世界状态或查询提示 / 本章参数 / 建议读取），`reviewChecklistMarkdown` 收纳全部意图级内容（目标与落点 / 信息控制 / 禁写 / 场景意图 / Promise 任务 / 未决决策 / 节奏）；三个模式统一只给事实，信息控制不再参与 status 门槛（`needs_chapter_brief` 废止）；工具对 writer 调用的 `details` 也按 profileKey 收口 | `chapter-writer-brief.service.ts`、`shared/dto/plot.dto.ts`、`server/agent/tools/plot-tools.ts`、`assets/reference/plot/writer-brief.md`、`docs/specs/plot/chapter-writer-brief.md` |
 | 事后校验（第五条） | 已实现：`chapter-write-review-revise` 新增 `infoControl` 入参，四字段只注入一致性评审 | workflow 与其回归测试 |
-| 关键帧写作（第三条/第六条） | 已实现：`StoryKeyframe` 实体（instant 锚 + 不可逆变化声明 + `source: author/derived` + 裁决留痕）、补间区间 API、`keyframe-tween-review` workflow、skill `phases/05-keyframe-tween.md` | `keyframe.service.ts`、prisma `project.schema.prisma` |
+| 关键帧写作（第三条/第六条） | 已实现：`StoryKeyframe` 实体（instant 锚 + 不可逆变化声明 + `source: author/derived` + 裁决留痕）、补间区间 API、`keyframe-tween-review` workflow、skill `phases/05-keyframe-tween.md`；agent 工具面与主链接线已补齐（`get_story_keyframe` / `get_tween_keyframes` / `save_story_keyframe` + Reference `plot/keyframe.md` + 正文循环前置检查与完成标准接帧） | `keyframe.service.ts`、prisma `project.schema.prisma`、`server/agent/tools/plot-tools.ts`、`assets/reference/plot/keyframe.md`、`docs/specs/plot/keyframe.md` |
 | 实验验证（否决权条款第 2 条） | 两轮终审已留痕：事前告知 vs 事后校验（SLICE 优于 TOLD，但都"读不下去"）；关键帧补间（**可读性变强，判定通过**） | `docs/doctrine/contrast-experiment-2026-09-14.md`、`keyframe-experiment-2026-09-14.md` |
 
 已知未收口（改动前先建规范归属）：
 
-1. **关键帧工具面缺失**：`plot-tools.ts` 无 keyframe 工具、`assets/reference/` 无关键帧正文 → agent 目前无法读写帧，skill phase 05 是空头支票。
-2. **主循环未接入帧**：`novel-writing/phases/03-chapter-loop.md` 不提帧；帧仍是旁路而非人的主要产出物。
-3. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。
-4. **`infoControl` 需手动传参**：漏传即静默失去事后校验，应由 `chapterId` 自动编译。
-5. **用户文档**：`vitepress/{zh-Hans,en-US}/core/plot-workbench.md`、`profile/{writer,leader}.md`、`tutorials/04-first-three-chapters.md` 已按双视图改写（中英对等）；`README.md` / `README.en.md` 的 Plot 段落已核对——只描述字段存在，未声称"写作时强制生效"，无需改动。
-6. Writer brief 双视图已登记 [`docs/specs/plot/chapter-writer-brief.md`](docs/specs/plot/chapter-writer-brief.md)，随本轮实现闭合；StoryKeyframe 仍待写 `implemented` Spec。
-7. 终审实验链路已重建：双视图改造曾使 `scripts/smoke/slice-vs-told-contrast.ts` 的对照条件失效（`autonomous` 不含信息控制、workflow 的 `brief` 不下发 writer）。现改为新增实验专用 workflow `contrast-write-review`（调用方显式给定 writer 提示原样下发 + 三维评审一轮、不修订），脚本改为「同一份事实简报，唯一变量 = 意图清单是否随提示下发」；两组输入不再退化。**待办：真实 Provider 跑一轮由开发者判定**（未验证）。
+1. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。agent 侧工具面已于 2026-09-14 补齐（Work `w00015-keyframe-agent-toolface`），UI 由并行执行者按既有分工推进。
+2. **`infoControl` 需手动传参**：漏传即静默失去事后校验，应由 `chapterId` 自动编译。
+3. **用户文档剩余**：`vitepress/{zh-Hans,en-US}/core/plot-workbench.md`、`profile/{writer,leader}.md`、`tutorials/04-first-three-chapters.md` 已按双视图改写（中英对等）；`README.md` / `README.en.md` 的 Plot 段落已核对，无需改动。剩余 `tutorials/03-*`、`agent/tools.md`、`core/world-engine.md`（与阶段 05 一起做，中英对等）。
+4. **真实模型尺度验证**：两轮终审实验已完成并留痕（事前告知 vs 事后校验、关键帧补间；判词见 `docs/doctrine/`）。仍待验证：帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）的实操，以及"欲望/阻力/代价"是否应成为写作入口的硬门槛。
+5. **fork 杂项**：`CONTRIBUTING` 过时路径；`PROJECT-STATUS` 版本行滞后 `RELEASE.md`。
 
-遗留清理状态：实验夹具（场景/剧情线/关键帧/brief 字段）已从 Project 数据中删除还原；`.contrast/` 临时目录已清；实验正文全文归档在 `docs/doctrine/` 的两份实验记录中。
+规范归属状态：Writer brief 双视图（[`docs/specs/plot/chapter-writer-brief.md`](docs/specs/plot/chapter-writer-brief.md)）与关键帧写作（[`docs/specs/plot/keyframe.md`](docs/specs/plot/keyframe.md)）均已晋升 `implemented`，`docs/specs/README.md` 的原 P0 关键帧缺口已闭合。
+
+遗留清理状态：实验夹具（场景/剧情线/关键帧/brief 字段）已从 Project 数据中删除还原；`.contrast/` 临时目录已清；实验正文全文归档在 `docs/doctrine/` 的两份实验记录中。2026-09-14 复核（w00015）：`xin-xiao-shuo` 现有 224 章、294 个场景、9 条线索，213 章填了 `briefGoal`；`StoryKeyframe` 与 `StoryDecision` 仍为 0 条——作品自身的场景与章简报在库，帧属实验夹具、已清理，关键帧链路的实测材料需另行准备。
 
 ## 产品基线
 

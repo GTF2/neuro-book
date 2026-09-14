@@ -7,7 +7,7 @@ import type {NeuroAgentTool, NeuroToolResult, ToolExecutionContext} from "nbook/
 import {normalizeToolResultDetails} from "nbook/server/agent/messages/message-utils";
 import {PROJECT_PLOT_WORLD_MODULE_TOKEN} from "nbook/server/plot";
 import type {PlotFacade} from "nbook/server/plot/facade/plot.facade";
-import type {ChapterWriterBriefDto} from "nbook/shared/dto/plot.dto";
+import type {ChapterWriterBriefDto, StoryKeyframeDto} from "nbook/shared/dto/plot.dto";
 import {
     activateReadyProjectModule,
     requireActiveReadyProject,
@@ -284,6 +284,53 @@ const SaveStoryDecisionSchema = Type.Object({
     ...DecisionPatchSchema,
 });
 
+// Keyframe(写作宪法第三条「关键帧写作」):人只写不可逆的状态变化帧,帧间补间交给 writer 演化。
+// 帧只声明事实(instant 锚点 + irreversibleChanges);status 是回撞与裁决的流转结果,不是写作指令。
+const KeyframePatchSchema = {
+    sceneId: Type.Optional(NullableString("StoryScene ID this keyframe anchors to. Null detaches it from the scene.")),
+    name: Type.Optional(NonEmptyString("Machine-friendly keyframe name (lowercase letters, digits, hyphens), unique per story. Required when action=create; renaming breaks existing cross references.")),
+    title: Type.Optional(NonEmptyString("Human-readable keyframe title. Required when action=create.")),
+    instant: Type.Optional(Type.String({
+        minLength: 1,
+        pattern: "^\\d+$",
+        description: "World Engine instant (non-negative integer string) this keyframe anchors to. Required when action=create.",
+    })),
+    irreversibleChanges: Type.Optional(Type.Array(
+        NonEmptyString("Declarative irreversible state change (who dies, a sword changes hands, an oath breaks) — the target of tween 回撞校验. Replaced as a whole."),
+        {maxItems: 50},
+    )),
+    // 回撞 workflow 置 violated/confirmed;裁决置 confirmed(维持帧)或 overthrown(正文推翻帧,需 decisionRefId)。单向,不回 pending。
+    status: Type.Optional(Type.Union([
+        Type.Literal("pending"),
+        Type.Literal("confirmed"),
+        Type.Literal("violated"),
+        Type.Literal("overthrown"),
+    ], {description: "回撞/裁决 lifecycle. The tween 回撞 workflow writes violated or confirmed; an adjudication writes confirmed (keep the frame) or overthrown (the prose overrules the frame and decisionRefId records the reversal). The transition never returns to pending."})),
+    decisionRefId: Type.Optional(NullableString("StoryDecision ID recording the adjudication (宪法第六条推翻留痕). Required while status=overthrown. Null clears it.")),
+    note: Type.Optional(NullableString("Optional author note. Null clears it.")),
+};
+
+const GetStoryKeyframeSchema = Type.Object({
+    ...ProjectScopedSchema.properties,
+    keyframeId: Type.Optional(NonEmptyString("Keyframe ID. Omit to list all keyframes of this story in story-time order (instant asc).")),
+});
+const GetTweenKeyframesSchema = Type.Object({
+    ...ProjectScopedSchema.properties,
+    fromKeyframeId: NonEmptyString("Start keyframe ID, exclusive instant bound."),
+    toKeyframeId: NonEmptyString("End keyframe ID, inclusive instant bound; its instant must be later than the start frame's."),
+});
+const SaveStoryKeyframeSchema = Type.Object({
+    ...ProjectScopedSchema.properties,
+    action: Type.Union([Type.Literal("create"), Type.Literal("update")], {
+        description: "Explicit intent. create: declare a human-confirmed keyframe (requires name + title + instant + irreversibleChanges; the new frame is always pending, the tween 回撞 workflow moves it to violated/confirmed). update: patch a frame (requires keyframeId), including the 回撞/裁决 status transitions.",
+    }),
+    keyframeId: Type.Optional(NonEmptyString("Keyframe ID. Required when action=update.")),
+    ...KeyframePatchSchema,
+    source: Type.Optional(Type.Union([Type.Literal("author"), Type.Literal("derived")], {
+        description: "author (default, human-declared) or derived (reverse-inferred from prose, 宪法第六条). Accepted only when action=create.",
+    })),
+});
+
 type PlotSelection = {
     projectRoot?: string;
     threadId?: string;
@@ -362,6 +409,21 @@ export function createPlotTools(): NeuroAgentTool[] {
                 input.decisionId === undefined
                     ? plotResult(await facade.listStoryDecisions())
                     : plotResult(await facade.getStoryDecisionDto(parseEntityId("decisionId", input.decisionId)))
+            ))
+        )),
+        tool("get_story_keyframe", "Read keyframes (写作宪法第三条: 人定帧、模型补间). Without keyframeId: list all keyframes of this story in story-time order with status. With keyframeId: full detail. irreversibleChanges are declared facts (who dies, a sword changes hands, an oath breaks), never writing instructions — evolve the prose between frames instead of narrating the frame list.", GetStoryKeyframeSchema, {mutates: false}, async (context, input) => (
+            runPlotOperation(context, input.projectRoot, async (facade) => (
+                input.keyframeId === undefined
+                    ? plotResult(keyframeDetailsForProfile(context, await facade.listStoryKeyframes()))
+                    : plotResult(keyframeDetailsForProfile(context, await facade.getStoryKeyframeDto(parseEntityId("keyframeId", input.keyframeId))))
+            ))
+        )),
+        tool("get_tween_keyframes", "List the keyframes strictly after the start frame up to and including the end frame — the 补间 road markers between two declared frames. The start frame's state is the known input; the end frame is the 回撞 target. Use it to compile the fromKeyframe / betweenKeyframes / toKeyframe arguments of the keyframe-tween-review workflow.", GetTweenKeyframesSchema, {mutates: false}, async (context, input) => (
+            runPlotOperation(context, input.projectRoot, async (facade) => (
+                plotResult(keyframeDetailsForProfile(context, await facade.findTweenKeyframes(
+                    parseEntityId("fromKeyframeId", input.fromKeyframeId),
+                    parseEntityId("toKeyframeId", input.toKeyframeId),
+                )))
             ))
         )),
         tool("save_story_act", "Create or update a story act (volume) in the carrier tree. action=create requires name + title; action=update requires actId.", SaveStoryActSchema, {mutates: true}, async (context, input) => {
@@ -562,6 +624,42 @@ export function createPlotTools(): NeuroAgentTool[] {
                 return plotResult(await facade.updateStoryDecision(resolvedDecisionId, payload));
             });
         }),
+        tool("save_story_keyframe", "Declare or update a keyframe (写作宪法第三条: 人定帧、模型补间). action=create declares a human-confirmed frame — requires name + title + instant + irreversibleChanges; the new frame is always pending until the tween 回撞 workflow writes violated/confirmed, and source=derived marks a frame reverse-inferred from prose (宪法第六条). action=update patches a frame (requires keyframeId): status=confirmed keeps the frame, status=overthrown means the prose overrules the frame and requires decisionRefId pointing at the new 创作决策 record (推翻留痕). A frame never forces the prose — 正文可以推翻帧, but the reversal must be recorded.", SaveStoryKeyframeSchema, {mutates: true}, async (context, input) => {
+            const {projectRoot, action, keyframeId, source, ...payload} = input;
+            return runPlotOperation(context, projectRoot, async (facade) => {
+                if (action === "create") {
+                    if (keyframeId !== undefined) {
+                        throw new Error("save_story_keyframe 参数校验失败：action=create 不接受 keyframeId；如要修改已有 Keyframe，请改用 action=update。");
+                    }
+                    if (payload.status !== undefined) {
+                        throw new Error("save_story_keyframe 参数校验失败：action=create 不接受 status（新建 Keyframe 恒为 pending）；回撞结论与裁决用 action=update 写入。");
+                    }
+                    if (payload.decisionRefId !== undefined) {
+                        throw new Error("save_story_keyframe 参数校验失败：action=create 不接受 decisionRefId；推翻留痕只发生在裁决（action=update + status=overthrown）。");
+                    }
+                    const {name, title, instant} = payload;
+                    if (!name || !title || !instant || payload.irreversibleChanges === undefined) {
+                        throw new Error("save_story_keyframe 参数校验失败：action=create 必须提供 name、title、instant 和 irreversibleChanges（帧声明的是不可逆变化这一事实，不是写作提示）。");
+                    }
+                    return plotResult(await facade.createStoryKeyframe({
+                        name,
+                        title,
+                        instant,
+                        irreversibleChanges: payload.irreversibleChanges,
+                        sceneId: payload.sceneId,
+                        source,
+                        note: payload.note,
+                    }));
+                }
+                if (!keyframeId) {
+                    throw new Error("save_story_keyframe 参数校验失败：action=update 必须提供 keyframeId；可先用 get_story_keyframe 查看现有帧。");
+                }
+                if (source !== undefined) {
+                    throw new Error("save_story_keyframe 参数校验失败：action=update 不接受 source（author/derived 在创建时确定）；来源写错了请新建帧并在 note 说明。");
+                }
+                return plotResult(await facade.updateStoryKeyframe(parseEntityId("keyframeId", keyframeId), payload));
+            });
+        }),
     ];
 }
 
@@ -701,6 +799,34 @@ function toWriterSafeBriefDetails(result: ChapterWriterBriefDto): JsonValue {
         warnings: result.warnings,
         suggestedBriefMarkdown: result.suggestedBriefMarkdown,
     });
+}
+
+/**
+ * 关键帧读工具的 profile 收口。
+ *
+ * 帧的核心字段(instant 锚点与 irreversibleChanges)是事实声明,writer 需要它当补间路标;
+ * 唯一不保证是事实的字段是 note(自由文本,可能写进作者意图),按最坏情况对 writer 白名单剔除。
+ * leader 与评审调用时保留完整 DTO(含 note 与裁决留痕)。
+ */
+function keyframeDetailsForProfile(context: ToolExecutionContext, result: StoryKeyframeDto | StoryKeyframeDto[]): unknown {
+    if (context.profileKey !== "writer") {
+        return result;
+    }
+    const stripNote = (keyframe: StoryKeyframeDto) => ({
+        id: keyframe.id,
+        storyId: keyframe.storyId,
+        sceneId: keyframe.sceneId,
+        name: keyframe.name,
+        title: keyframe.title,
+        instant: keyframe.instant,
+        irreversibleChanges: keyframe.irreversibleChanges,
+        source: keyframe.source,
+        status: keyframe.status,
+        decisionRefId: keyframe.decisionRefId,
+        createdAt: keyframe.createdAt,
+        updatedAt: keyframe.updatedAt,
+    });
+    return Array.isArray(result) ? result.map(stripNote) : stripNote(result);
 }
 
 /** 在调用方选定的 exact Project generation 内执行一次 Plot 操作。 */

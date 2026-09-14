@@ -35,6 +35,11 @@ const {
         getStoryDecisionDto: vi.fn(),
         createStoryDecision: vi.fn(),
         updateStoryDecision: vi.fn(),
+        listStoryKeyframes: vi.fn(),
+        getStoryKeyframeDto: vi.fn(),
+        createStoryKeyframe: vi.fn(),
+        updateStoryKeyframe: vi.fn(),
+        findTweenKeyframes: vi.fn(),
     };
     const current = {generation: 1, workspace: {ref: {projectRoot: "novel-1"}}} as ReadyProjectSessionRef;
     const override = {generation: 2, workspace: {ref: {projectRoot: "novel-2"}}} as ReadyProjectSessionRef;
@@ -109,7 +114,7 @@ describe("plot tools", () => {
         })).toBe(false);
     });
 
-    it("读写元数据：7 个 save_* 标注 mutatesWorkspace、8 个 get_* 不标（只读模式硬门控依据，Task 97 D8）", () => {
+    it("读写元数据：8 个 save_* 标注 mutatesWorkspace、10 个 get_* 不标（只读模式硬门控依据，Task 97 D8）", () => {
         const tools = createPlotTools();
         const mutating = tools.filter((item) => item.mutatesWorkspace).map((item) => item.key).sort();
         const readonly = tools.filter((item) => !item.mutatesWorkspace).map((item) => item.key).sort();
@@ -119,6 +124,7 @@ describe("plot tools", () => {
             "save_story_act",
             "save_story_chapter",
             "save_story_decision",
+            "save_story_keyframe",
             "save_story_promise",
             "save_story_scene",
             "save_story_thread",
@@ -128,10 +134,12 @@ describe("plot tools", () => {
             "get_scene_world_context",
             "get_story_chapter",
             "get_story_decision",
+            "get_story_keyframe",
             "get_story_promise",
             "get_story_scene_context",
             "get_story_thread",
             "get_story_tree",
+            "get_tween_keyframes",
         ]);
     });
 
@@ -615,6 +623,167 @@ describe("plot tools", () => {
         expect(scenes[0]).not.toHaveProperty("threadSummary");
         expect(scenes[0]).not.toHaveProperty("threadWritingTip");
         expect(JSON.stringify(details)).not.toContain("必须隐藏");
+    });
+
+    it("get_story_keyframe 无 keyframeId 走列表模式,有 keyframeId 走详情", async () => {
+        const plotFacadeMock = plotFacade as {
+            listStoryKeyframes: ReturnType<typeof vi.fn>;
+            getStoryKeyframeDto: ReturnType<typeof vi.fn>;
+        };
+        plotFacadeMock.listStoryKeyframes.mockResolvedValueOnce([{id: "3", status: "pending"}]);
+        plotFacadeMock.getStoryKeyframeDto.mockResolvedValueOnce({id: "3", status: "pending"});
+        const tool = createPlotTools().find((item) => item.key === "get_story_keyframe");
+
+        expect(tool).toBeDefined();
+        const listResult = await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-list", {
+            projectRoot: "novel-1",
+        });
+        expect(plotFacadeMock.listStoryKeyframes).toHaveBeenCalledWith();
+        expect(listResult.details).toMatchObject([{id: "3"}]);
+
+        const detailResult = await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-detail", {
+            projectRoot: "novel-1",
+            keyframeId: "3",
+        });
+        expect(plotFacadeMock.getStoryKeyframeDto).toHaveBeenCalledWith(3);
+        expect(detailResult.details).toMatchObject({id: "3"});
+    });
+
+    it("get_tween_keyframes 用解析后的数值 id 查询补间区间", async () => {
+        const plotFacadeMock = plotFacade as {
+            findTweenKeyframes: ReturnType<typeof vi.fn>;
+        };
+        plotFacadeMock.findTweenKeyframes.mockResolvedValueOnce([{id: "4", name: "k-mid"}]);
+        const tool = createPlotTools().find((item) => item.key === "get_tween_keyframes");
+
+        expect(tool).toBeDefined();
+        expect(Value.Check(tool!.parameters, {fromKeyframeId: "3", toKeyframeId: "5"})).toBe(true);
+        expect(Value.Check(tool!.parameters, {fromKeyframeId: "3"})).toBe(false);
+        const result = await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-tween", {
+            projectRoot: "novel-1",
+            fromKeyframeId: "3",
+            toKeyframeId: "5",
+        });
+
+        expect(plotFacadeMock.findTweenKeyframes).toHaveBeenCalledWith(3, 5);
+        expect(result.details).toMatchObject([{id: "4", name: "k-mid"}]);
+    });
+
+    it("save_story_keyframe action=create 要求 name/title/instant/irreversibleChanges,并拒绝 status/keyframeId", async () => {
+        const tool = createPlotTools().find((item) => item.key === "save_story_keyframe");
+
+        expect(tool).toBeDefined();
+        await expect(tool?.executeWithContext?.(testContext(emptyHarness()), "plot-kf-create-missing", {
+            projectRoot: "novel-1",
+            action: "create",
+            name: "k-tide-wait",
+            title: "堤上守望",
+            instant: "63172942200",
+        })).rejects.toThrow("必须提供 name、title、instant 和 irreversibleChanges");
+
+        await expect(tool?.executeWithContext?.(testContext(emptyHarness()), "plot-kf-create-status", {
+            projectRoot: "novel-1",
+            action: "create",
+            name: "k-tide-wait",
+            title: "堤上守望",
+            instant: "63172942200",
+            irreversibleChanges: ["郭莹立下军令状"],
+            status: "confirmed",
+        })).rejects.toThrow("action=create 不接受 status");
+
+        await expect(tool?.executeWithContext?.(testContext(emptyHarness()), "plot-kf-create-id", {
+            projectRoot: "novel-1",
+            action: "create",
+            keyframeId: "3",
+            name: "k-tide-wait",
+            title: "堤上守望",
+            instant: "63172942200",
+            irreversibleChanges: ["郭莹立下军令状"],
+        })).rejects.toThrow("action=create 不接受 keyframeId");
+    });
+
+    it("save_story_keyframe action=create 透传 sceneId/source/note;action=update 拒绝 source 并透传裁决字段", async () => {
+        const plotFacadeMock = plotFacade as {
+            createStoryKeyframe: ReturnType<typeof vi.fn>;
+            updateStoryKeyframe: ReturnType<typeof vi.fn>;
+        };
+        plotFacadeMock.createStoryKeyframe.mockResolvedValueOnce({id: "3", status: "pending"});
+        plotFacadeMock.updateStoryKeyframe.mockResolvedValueOnce({id: "3", status: "overthrown"});
+        const tool = createPlotTools().find((item) => item.key === "save_story_keyframe");
+
+        await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-create-ok", {
+            projectRoot: "novel-1",
+            action: "create",
+            sceneId: "20",
+            name: "k-list-taken",
+            title: "名单到手",
+            instant: "63172954800",
+            irreversibleChanges: ["郭莹拿到假名单"],
+            source: "derived",
+            note: "从正文反推",
+        });
+        expect(plotFacadeMock.createStoryKeyframe).toHaveBeenCalledWith({
+            name: "k-list-taken",
+            title: "名单到手",
+            instant: "63172954800",
+            irreversibleChanges: ["郭莹拿到假名单"],
+            sceneId: "20",
+            source: "derived",
+            note: "从正文反推",
+        });
+
+        await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-update-ok", {
+            projectRoot: "novel-1",
+            action: "update",
+            keyframeId: "3",
+            status: "overthrown",
+            decisionRefId: "8",
+        });
+        expect(plotFacadeMock.updateStoryKeyframe).toHaveBeenCalledWith(3, {status: "overthrown", decisionRefId: "8"});
+
+        await expect(tool?.executeWithContext?.(testContext(emptyHarness()), "plot-kf-update-source", {
+            projectRoot: "novel-1",
+            action: "update",
+            keyframeId: "3",
+            source: "derived",
+        })).rejects.toThrow("action=update 不接受 source");
+    });
+
+    it("writer 读关键帧:details 白名单剔除 note,leader 保留", async () => {
+        const plotFacadeMock = plotFacade as {
+            getStoryKeyframeDto: ReturnType<typeof vi.fn>;
+        };
+        plotFacadeMock.getStoryKeyframeDto.mockResolvedValue({
+            id: "3",
+            storyId: "1",
+            sceneId: null,
+            name: "k-tide-wait",
+            title: "堤上守望",
+            instant: "63172942200",
+            irreversibleChanges: ["郭莹立下军令状"],
+            source: "author",
+            status: "pending",
+            decisionRefId: null,
+            note: "必须隐瞒芥末在场",
+            createdAt: "2026-09-14T00:00:00.000Z",
+            updatedAt: "2026-09-14T00:00:00.000Z",
+        });
+        const tool = createPlotTools().find((item) => item.key === "get_story_keyframe");
+
+        const writerResult = await tool!.executeWithContext!(testContext(emptyHarness(), "writer"), "plot-kf-writer", {
+            projectRoot: "novel-1",
+            keyframeId: "3",
+        });
+        const writerDetails = writerResult.details as Record<string, unknown>;
+        expect(writerDetails).toMatchObject({id: "3", irreversibleChanges: ["郭莹立下军令状"]});
+        expect(writerDetails).not.toHaveProperty("note");
+        expect(JSON.stringify(writerDetails)).not.toContain("必须隐瞒");
+
+        const leaderResult = await tool!.executeWithContext!(testContext(emptyHarness()), "plot-kf-leader", {
+            projectRoot: "novel-1",
+            keyframeId: "3",
+        });
+        expect((leaderResult.details as Record<string, unknown>).note).toBe("必须隐瞒芥末在场");
     });
 });
 
