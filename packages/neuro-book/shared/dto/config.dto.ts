@@ -19,6 +19,7 @@ import {themeAppearanceValues, themeVarNames} from "nbook/shared/theme/theme-var
 import {
     CompactionKeepRecentSchema,
     CompactionTriggerSchema,
+    ProfileAuxiliaryRuntimePatchSchema,
     ProfileCompactionRuntimePatchSchema,
     ProfileFileChangeNoticeRuntimePatchSchema,
     ProfileRuntimeSettingsPatchSchema,
@@ -310,6 +311,7 @@ export const CompactionKeepRecentDtoSchema = CompactionKeepRecentSchema;
 export const ProfileSummarizerRuntimePatchDtoSchema = ProfileSummarizerRuntimePatchSchema;
 export const ProfileCompactionRuntimePatchDtoSchema = ProfileCompactionRuntimePatchSchema;
 export const ProfileFileChangeNoticeRuntimePatchDtoSchema = ProfileFileChangeNoticeRuntimePatchSchema;
+export const ProfileAuxiliaryRuntimePatchDtoSchema = ProfileAuxiliaryRuntimePatchSchema;
 export const ProfileRuntimeSettingsPatchDtoSchema = ProfileRuntimeSettingsPatchSchema;
 
 export const ProfileRuntimeSettingsDtoSchema = z.object({
@@ -330,6 +332,10 @@ export const ProfileRuntimeSettingsDtoSchema = z.object({
     }),
     fileChangeNotice: z.object({
         diffMaxChars: z.number().int().min(0).max(MAX_AGENT_DIFF_MAX_CHARS),
+    }),
+    auxiliary: z.object({
+        /** null = 跟随所属 Profile 的模型。 */
+        modelKey: z.string().min(1).nullable(),
     }),
 });
 

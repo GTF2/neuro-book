@@ -97,6 +97,7 @@ const isProjectScope = computed(() => props.scope === "project");
                 :inherited="props.runtimeEffective"
                 :sources="props.runtimeSources"
                 :errors="props.runtimeErrors"
+                :enabled-models="props.enabledModels"
                 @update:model-value="emit('update:runtimeDefaults', $event)"
             />
         </section>

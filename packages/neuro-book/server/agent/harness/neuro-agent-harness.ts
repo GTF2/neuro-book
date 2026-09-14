@@ -956,7 +956,10 @@ export class NeuroAgentHarness {
     async explainToolCall(sessionId: number, input: AgentToolExplanationRequestDto): Promise<AgentToolExplanationDto> {
         const snapshot = await this.repo.readSession(sessionId);
         const config = await loadEffectiveConfig(resolveNonInvocationConfigTarget(snapshot.metadata, this.workspaceRoot));
-        const model = this.modelResolver(config, snapshot.metadata.profileKey);
+        const profile = await this.profiles.get(snapshot.metadata.profileKey).catch(() => null);
+        // 辅助任务模型由 Profile 运行策略决定；未配置即跟随该 Profile 的模型。
+        const auxiliaryModelKey = profile ? this.resolveProfileRuntimeSettings(profile, config).auxiliary.modelKey : null;
+        const model = this.resolveAuxiliaryModel(config, snapshot.metadata.profileKey, auxiliaryModelKey);
         const models = this.runtimeResolver(config, model);
         const providerOptions = this.providerOptions(config, model);
         const explanation = await generateToolExplanation({
@@ -7364,6 +7367,31 @@ export class NeuroAgentHarness {
             profile.runtimeDefaults,
             config.agent.profiles[profile.manifest.key]?.runtime ?? config.agent.profileRuntimeDefaults,
         );
+    }
+
+    /**
+     * 解析辅助任务（解释这一步 / 增强提示词）使用的模型。
+     *
+     * 未配置、或配置的模型已经不可用时，都回退到所属 Profile 的模型：这两项是辅助能力，
+     * 不该因为一个失效的模型 key 而整体不可用（回退事实写日志，不进入用户面）。
+     */
+    private resolveAuxiliaryModel(
+        config: Pick<EffectiveConfig, "agent" | "models">,
+        profileKey: string,
+        modelKey: string | null,
+    ): Model<any> {
+        if (modelKey !== null) {
+            try {
+                return this.modelResolver(config, profileKey, {modelKey});
+            } catch (error) {
+                void appLogger.warn("agent.auxiliaryModel.fallback", {
+                    profileKey,
+                    modelKey,
+                    error: error instanceof Error ? error.message : String(error),
+                });
+            }
+        }
+        return this.modelResolver(config, profileKey);
     }
 
     private publishRuntimeEvent(sessionId: number, invocationId: string | undefined, event: AgentRuntimeStreamEventDto): AgentSessionEventDto {

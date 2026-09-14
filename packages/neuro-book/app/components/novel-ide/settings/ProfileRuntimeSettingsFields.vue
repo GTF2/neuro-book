@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import {computed} from "vue";
 import FormInput from "nbook/app/components/common/form/FormInput.vue";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import FormTextarea from "nbook/app/components/common/form/FormTextarea.vue";
+import NovelIdeModelSelect from "nbook/app/components/novel-ide/settings/NovelIdeModelSelect.vue";
 import type {ProfileRuntimeSettingsDraft, ProfileRuntimeSettingsErrors, ProfileRuntimeSettingsField, ProfileRuntimeSettingsSources} from "nbook/app/components/novel-ide/settings/profile-runtime-settings";
+import type {EnabledModelOptionDto} from "nbook/shared/dto/app-settings.dto";
 import type {ProfileRuntimeSettingsDto} from "nbook/shared/dto/config.dto";
 
 const props = defineProps<{
@@ -10,6 +13,8 @@ const props = defineProps<{
     inherited: ProfileRuntimeSettingsDto;
     sources: ProfileRuntimeSettingsSources;
     errors?: ProfileRuntimeSettingsErrors;
+    /** 辅助任务字段的候选模型；与「默认模型」下拉同源，避免两处清单不一致。 */
+    enabledModels: EnabledModelOptionDto[];
 }>();
 
 const emit = defineEmits<{
@@ -54,6 +59,30 @@ function update(patch: Partial<ProfileRuntimeSettingsDraft>): void {
 function booleanValue(value: boolean | null): string {
     return value === null ? "inherit" : String(value);
 }
+
+/** 辅助任务模型的继承基线：工程值为 null 时表示跟随所属 Profile 的模型。 */
+function auxiliaryInheritedLabel(): string {
+    return props.inherited.auxiliary.modelKey ?? t("settings.panels.profileModels.runtime.auxiliaryFollowProfile");
+}
+
+/** 为历史无效 modelKey 合成只在当前字段显示的不可运行选项，处理方式与「默认模型」一致。 */
+const auxiliaryModelOptions = computed<EnabledModelOptionDto[]>(() => {
+    const normalized = props.modelValue.auxiliaryModelKey.trim();
+    if (!normalized || props.enabledModels.some((model) => model.key === normalized)) {
+        return props.enabledModels;
+    }
+    const separatorIndex = normalized.indexOf("/");
+    const providerId = separatorIndex > 0 ? normalized.slice(0, separatorIndex) : "invalid";
+    const modelId = separatorIndex > 0 ? normalized.slice(separatorIndex + 1) : normalized;
+    return [{
+        key: normalized,
+        label: t("settings.panels.profileModels.unrunnableModel", {key: normalized}),
+        providerId,
+        modelId: modelId || "invalid",
+        input: ["text"],
+        contextWindowTokens: null,
+    }, ...props.enabledModels];
+});
 
 function parseBoolean(value: string): boolean | null {
     return value === "inherit" ? null : value === "true";
@@ -147,6 +176,26 @@ function parseBoolean(value: string): boolean | null {
                     <p :class="errorLabel('fileChangeDiffMaxChars') ? 'text-[var(--status-danger)]' : 'text-[var(--text-muted)]'" class="text-[10px]">{{ errorLabel('fileChangeDiffMaxChars') || inheritLabel('fileChangeDiffMaxChars', String(props.inherited.fileChangeNotice.diffMaxChars)) }}</p>
                 </div>
             </div>
+        </section>
+
+        <!-- 辅助任务 -->
+        <section class="border-t border-[var(--border-color)] pt-4">
+            <h6 class="mb-2.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">{{ t("settings.panels.profileModels.runtime.groups.auxiliary") }}</h6>
+            <div class="grid gap-3 md:grid-cols-2">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-medium text-[var(--text-secondary)]">{{ t("settings.panels.profileModels.runtime.auxiliaryModelKey") }}</label>
+                    <NovelIdeModelSelect
+                        :model-value="props.modelValue.auxiliaryModelKey || null"
+                        :models="auxiliaryModelOptions"
+                        allow-default
+                        :default-label="t('settings.panels.profileModels.runtime.auxiliaryFollowProfile')"
+                        :placeholder="t('settings.panels.profileModels.selectDefaultModel')"
+                        @update:model-value="update({auxiliaryModelKey: $event ?? ''})"
+                    />
+                    <p class="text-[10px] text-[var(--text-muted)]">{{ inheritLabel('auxiliaryModelKey', auxiliaryInheritedLabel()) }}</p>
+                </div>
+            </div>
+            <p class="mt-2 text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.profileModels.runtime.auxiliaryHint") }}</p>
         </section>
     </div>
 </template>

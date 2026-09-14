@@ -15,6 +15,7 @@ export type ProfileRuntimeSettingsDraft = {
     compactionPrompt: string;
     compactionSummaryPrefix: string;
     fileChangeDiffMaxChars: string;
+    auxiliaryModelKey: string;
 };
 
 export type ProfileRuntimeSettingsField = keyof ProfileRuntimeSettingsDraft;
@@ -37,6 +38,7 @@ export function resolveProfileRuntimeInheritance(
         "summarizerEnabled", "summarizerProfileKey", "summarizerIntervalKind", "summarizerIntervalValue", "summarizerMaxTokens",
         "compactionEnabled", "compactionTriggerKind", "compactionTriggerValue", "compactionReserveTokens",
         "compactionKeepRecentKind", "compactionKeepRecentValue", "compactionPrompt", "compactionSummaryPrefix", "fileChangeDiffMaxChars",
+        "auxiliaryModelKey",
     ] satisfies ProfileRuntimeSettingsField[]).map((field) => [field, "harness"])) as ProfileRuntimeSettingsSources;
     for (const layer of layers) {
         const patch = layer.patch;
@@ -63,6 +65,7 @@ export function resolveProfileRuntimeInheritance(
         if (patch?.compaction?.prompt !== undefined) { settings.compaction.prompt = patch.compaction.prompt; sources.compactionPrompt = layer.source; }
         if (patch?.compaction?.summaryPrefix !== undefined) { settings.compaction.summaryPrefix = patch.compaction.summaryPrefix; sources.compactionSummaryPrefix = layer.source; }
         if (patch?.fileChangeNotice?.diffMaxChars !== undefined) { settings.fileChangeNotice.diffMaxChars = patch.fileChangeNotice.diffMaxChars; sources.fileChangeDiffMaxChars = layer.source; }
+        if (patch?.auxiliary?.modelKey !== undefined) { settings.auxiliary.modelKey = patch.auxiliary.modelKey; sources.auxiliaryModelKey = layer.source; }
     }
     return {settings, sources};
 }
@@ -85,6 +88,7 @@ export function createProfileRuntimeSettingsDraft(patch: ProfileRuntimeSettingsP
         compactionPrompt: patch?.compaction?.prompt ?? "",
         compactionSummaryPrefix: patch?.compaction?.summaryPrefix ?? "",
         fileChangeDiffMaxChars: numberText(patch?.fileChangeNotice?.diffMaxChars),
+        auxiliaryModelKey: patch?.auxiliary?.modelKey ?? "",
     };
 }
 
@@ -104,7 +108,8 @@ export function countProfileRuntimeOverrides(draft: ProfileRuntimeSettingsDraft)
     const patch = buildProfileRuntimeSettingsPatch(draft);
     return Object.keys(patch.summarizer ?? {}).length
         + Object.keys(patch.compaction ?? {}).length
-        + Object.keys(patch.fileChangeNotice ?? {}).length;
+        + Object.keys(patch.fileChangeNotice ?? {}).length
+        + Object.keys(patch.auxiliary ?? {}).length;
 }
 
 /** 严格解析运行策略草稿；空白表示继承，非空非法值必须返回字段错误。 */
@@ -154,6 +159,7 @@ export function parseProfileRuntimeSettingsDraft(draft: ProfileRuntimeSettingsDr
         ...(Object.keys(summarizer).length > 0 ? {summarizer} : {}),
         ...(Object.keys(compaction).length > 0 ? {compaction} : {}),
         ...(diffMaxChars !== null ? {fileChangeNotice: {diffMaxChars}} : {}),
+        ...(draft.auxiliaryModelKey.trim() ? {auxiliary: {modelKey: draft.auxiliaryModelKey.trim()}} : {}),
     }, errors};
 }
 

@@ -38,10 +38,16 @@ export const ProfileFileChangeNoticeRuntimePatchSchema = z.object({
     diffMaxChars: z.number().int().min(0).max(MAX_AGENT_DIFF_MAX_CHARS).optional(),
 }).strict();
 
+/** 辅助任务（解释这一步 / 增强提示词）的模型覆盖；`null` 表示显式跟随所属 Profile 的模型。 */
+export const ProfileAuxiliaryRuntimePatchSchema = z.object({
+    modelKey: z.string().trim().min(1).nullable().optional(),
+}).strict();
+
 export const ProfileRuntimeSettingsPatchSchema = z.object({
     summarizer: ProfileSummarizerRuntimePatchSchema.optional(),
     compaction: ProfileCompactionRuntimePatchSchema.optional(),
     fileChangeNotice: ProfileFileChangeNoticeRuntimePatchSchema.optional(),
+    auxiliary: ProfileAuxiliaryRuntimePatchSchema.optional(),
 }).strict();
 
 export type SummarizerInterval = {
@@ -79,11 +85,17 @@ export type ProfileFileChangeNoticeRuntimePatch = {
     diffMaxChars?: number;
 };
 
+export type ProfileAuxiliaryRuntimePatch = {
+    /** `null` 与省略的区别只在语义上：前者是「显式跟随 Profile 模型」，后者是「本层不表态」。 */
+    modelKey?: string | null;
+};
+
 /** Profile 通用运行策略 patch；每个子字段独立继承，判别联合对象整体替换。 */
 export type ProfileRuntimeSettingsPatch = {
     summarizer?: ProfileSummarizerRuntimePatch;
     compaction?: ProfileCompactionRuntimePatch;
     fileChangeNotice?: ProfileFileChangeNoticeRuntimePatch;
+    auxiliary?: ProfileAuxiliaryRuntimePatch;
 };
 
 export type ProfileRuntimeSettings = {
@@ -104,6 +116,15 @@ export type ProfileRuntimeSettings = {
     };
     fileChangeNotice: {
         diffMaxChars: number;
+    };
+    auxiliary: {
+        /**
+         * 辅助任务（解释这一步 / 增强提示词）使用的模型 key。
+         *
+         * `null` 表示跟随所属 Profile 的模型，与未配置时的行为完全一致；
+         * 指定值不可用时由调用方回退到 Profile 模型，不允许让辅助功能整体不可用。
+         */
+        modelKey: string | null;
     };
 };
 

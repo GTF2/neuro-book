@@ -138,6 +138,25 @@ describe("config normalizer profile runtime", () => {
         expect(defaults.agent.profileRuntimeDefaults).toEqual({});
     });
 
+    it("保留 auxiliary 辅助任务模型覆盖，非法值不参与遮蔽", () => {
+        const global = normalizeGlobalConfig({
+            agent: {profileRuntimeDefaults: {auxiliary: {modelKey: "deepseek/deepseek-flash"}}},
+        });
+        expect(resolveEffectiveConfig(global, null).agent.profileRuntimeDefaults?.auxiliary?.modelKey).toBe("deepseek/deepseek-flash");
+        expect(resolveEffectiveConfig(global, {agent: {profiles: {writer: {model: {}}}}} as StoredProjectConfig)
+            .agent.profiles.writer?.runtime?.auxiliary?.modelKey).toBe("deepseek/deepseek-flash");
+
+        const following = normalizeGlobalConfig({
+            agent: {profileRuntimeDefaults: {auxiliary: {modelKey: null}}},
+        });
+        expect(resolveEffectiveConfig(following, null).agent.profileRuntimeDefaults?.auxiliary?.modelKey).toBeNull();
+
+        const invalid = normalizeGlobalConfig({
+            agent: {profileRuntimeDefaults: {auxiliary: {modelKey: ""}}},
+        });
+        expect(resolveEffectiveConfig(invalid, null).agent.profileRuntimeDefaults?.auxiliary).toBeUndefined();
+    });
+
     it("接受 0 与 8192，非法或越界值不参与遮蔽", () => {
         const global = normalizeGlobalConfig({
             agent: {profiles: {

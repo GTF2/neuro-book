@@ -30,6 +30,7 @@ import type {
 import type {JsonValue} from "nbook/server/agent/messages/types";
 import {ThinkingLevelSchema} from "nbook/shared/dto/app-settings.dto";
 import {
+    ProfileAuxiliaryRuntimePatchDtoSchema,
     ProfileCompactionRuntimePatchDtoSchema,
     ProfileFileChangeNoticeRuntimePatchDtoSchema,
     ProfileSummarizerRuntimePatchDtoSchema,
@@ -535,10 +536,12 @@ export function normalizeProfileRuntimeSettingsPatch(input: unknown): ProfileRun
     const summarizer = ProfileSummarizerRuntimePatchDtoSchema.safeParse(record.summarizer);
     const compaction = ProfileCompactionRuntimePatchDtoSchema.safeParse(record.compaction);
     const fileChangeNotice = ProfileFileChangeNoticeRuntimePatchDtoSchema.safeParse(record.fileChangeNotice);
+    const auxiliary = ProfileAuxiliaryRuntimePatchDtoSchema.safeParse(record.auxiliary);
     return {
         ...(summarizer.success && Object.keys(summarizer.data).length > 0 ? {summarizer: summarizer.data} : {}),
         ...(compaction.success && Object.keys(compaction.data).length > 0 ? {compaction: compaction.data} : {}),
         ...(fileChangeNotice.success && Object.keys(fileChangeNotice.data).length > 0 ? {fileChangeNotice: fileChangeNotice.data} : {}),
+        ...(auxiliary.success && Object.keys(auxiliary.data).length > 0 ? {auxiliary: auxiliary.data} : {}),
     };
 }
 

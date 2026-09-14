@@ -37,6 +37,9 @@ export const DEFAULT_PROFILE_RUNTIME_SETTINGS: ProfileRuntimeSettings = {
     fileChangeNotice: {
         diffMaxChars: DEFAULT_AGENT_DIFF_MAX_CHARS,
     },
+    auxiliary: {
+        modelKey: null,
+    },
 };
 
 /** 字段级合并运行配置；判别联合对象由上层 patch 整体替换。 */
@@ -55,6 +58,9 @@ export function mergeProfileRuntimePatches(...patches: Array<ProfileRuntimeSetti
         if (patch.fileChangeNotice) {
             result.fileChangeNotice = {...result.fileChangeNotice, ...patch.fileChangeNotice};
         }
+        if (patch.auxiliary) {
+            result.auxiliary = {...result.auxiliary, ...patch.auxiliary};
+        }
     }
     return result;
 }
@@ -68,6 +74,7 @@ export function resolveProfileRuntimeSettings(
     const summarizer = merged.summarizer ?? {};
     const compaction = merged.compaction ?? {};
     const fileChangeNotice = merged.fileChangeNotice ?? {};
+    const auxiliary = merged.auxiliary ?? {};
     return {
         summarizer: {
             enabled: summarizer.enabled ?? DEFAULT_PROFILE_RUNTIME_SETTINGS.summarizer.enabled,
@@ -86,6 +93,9 @@ export function resolveProfileRuntimeSettings(
         },
         fileChangeNotice: {
             diffMaxChars: fileChangeNotice.diffMaxChars ?? DEFAULT_PROFILE_RUNTIME_SETTINGS.fileChangeNotice.diffMaxChars,
+        },
+        auxiliary: {
+            modelKey: auxiliary.modelKey ?? DEFAULT_PROFILE_RUNTIME_SETTINGS.auxiliary.modelKey,
         },
     };
 }

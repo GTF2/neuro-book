@@ -38,6 +38,8 @@ type SettingsSavePanelExpose = {
     readonly dirty: boolean;
     readonly loading: boolean;
     readonly saving: boolean;
+    /** 保存刚成功后的短暂成功态；未实现该态的面板按 false 处理。 */
+    readonly justSaved?: boolean;
     saveSettings: () => Promise<void>;
     restoreSettings: () => Promise<void>;
 };
@@ -330,6 +332,7 @@ const activeSavePanel = computed<SettingsSavePanelExpose | null>(() => {
 const activeSaveDirty = computed(() => activeSavePanel.value?.dirty ?? false);
 const activeSaveLoading = computed(() => activeSavePanel.value?.loading ?? false);
 const activeSaveSaving = computed(() => activeSavePanel.value?.saving ?? false);
+const activeSaveJustSaved = computed(() => activeSavePanel.value?.justSaved ?? false);
 const showHeaderSaveButton = computed(() => activeSavePanel.value !== null);
 const activeSaveDisabled = computed(() => activeSaveLoading.value || activeSaveSaving.value || !activeSaveDirty.value);
 const activeRestoreDisabled = computed(() => activeSaveLoading.value || activeSaveSaving.value || !activeSaveDirty.value);
@@ -818,19 +821,25 @@ function updateDesktopCloseBehavior(value: string): void {
                             <span>{{ t("common.restore") }}</span>
                         </button>
 
+                        <!-- 保存成功只用按钮自身的短暂成功态反馈：不额外占用面板高度。 -->
                         <button
                             v-if="showHeaderSaveButton"
                             type="button"
-                            class="group relative inline-flex h-9 shrink-0 items-center justify-center overflow-hidden rounded-lg px-4 text-xs font-medium transition-all duration-200 active:scale-95 disabled:pointer-events-none disabled:opacity-50"
-                            :class="activeSaveDirty && !activeSaveLoading ? 'bg-[var(--accent-main)] text-[var(--text-inverse)] shadow-md hover:shadow-lg' : 'border border-[var(--border-color)] bg-[var(--bg-panel)] bg-opacity-45 text-[var(--text-muted)]'"
+                            class="group relative inline-flex h-9 shrink-0 items-center justify-center overflow-hidden rounded-lg px-4 text-xs font-medium transition-all duration-200 active:scale-95"
+                            :class="activeSaveJustSaved
+                                ? 'border border-[var(--status-success-border)] bg-[var(--status-success-bg)] text-[var(--status-success)]'
+                                : activeSaveDirty && !activeSaveLoading && !activeSaveSaving
+                                    ? 'bg-[var(--accent-main)] text-[var(--text-inverse)] shadow-md hover:shadow-lg'
+                                    : 'border border-[var(--border-color)] bg-[var(--bg-panel)] bg-opacity-45 text-[var(--text-muted)] disabled:pointer-events-none disabled:opacity-50'"
                             :disabled="activeSaveDisabled"
                             @click="void saveActivePanel()"
                         >
-                            <span v-if="activeSaveDirty && !activeSaveLoading" class="absolute inset-0 translate-y-full bg-white/20 transition-transform duration-300 ease-out group-hover:translate-y-0"></span>
+                            <span v-if="activeSaveDirty && !activeSaveLoading && !activeSaveJustSaved" class="absolute inset-0 translate-y-full bg-white/20 transition-transform duration-300 ease-out group-hover:translate-y-0"></span>
                             <span class="relative flex items-center gap-1.5">
-                                <span v-if="activeSaveLoading || activeSaveSaving" class="i-lucide-loader-2 h-3.5 w-3.5 animate-spin"></span>
+                                <span v-if="activeSaveJustSaved" class="i-lucide-check h-3.5 w-3.5"></span>
+                                <span v-else-if="activeSaveLoading || activeSaveSaving" class="i-lucide-loader-2 h-3.5 w-3.5 animate-spin"></span>
                                 <span v-else class="i-lucide-save h-3.5 w-3.5"></span>
-                                {{ activeSaveLoading ? t("common.loading") : activeSaveSaving ? t("common.saving") : t("common.saveSettings") }}
+                                {{ activeSaveJustSaved ? t("common.saved") : activeSaveLoading ? t("common.loading") : activeSaveSaving ? t("common.saving") : t("common.saveSettings") }}
                             </span>
                         </button>
                     </div>

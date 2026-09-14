@@ -35,6 +35,7 @@ import type {SelectOption} from "nbook/app/components/common/form/FormSelect.vue
 import {cloneLowCodeObject} from "nbook/app/components/common/low-code-form/low-code-form-utils";
 import {useDialog} from "nbook/app/composables/useDialog";
 import {useConfigApi} from "nbook/app/composables/useConfigApi";
+import {useNotification} from "nbook/app/composables/useNotification";
 import {useNovelIdeStore} from "nbook/app/stores/novel-ide";
 import {resolveApiErrorMessage} from "nbook/app/utils/api-error";
 import type {ConfigAgentProfileSettingsDto, ConfigEditorSnapshotDto, ConfigWorkspaceQueryDto, GlobalConfigDto, GlobalConfigUpdateDto, ProjectConfigDto} from "nbook/shared/dto/config.dto";
@@ -52,7 +53,8 @@ const props = withDefaults(defineProps<{
 const loading = ref(false);
 const saving = ref(false);
 const errorText = ref("");
-const successText = ref("");
+/** 保存成功后的短暂成功态；由「保存设定」按钮消费，不再渲染占位横幅。 */
+const justSaved = ref(false);
 const resettingHomeProfileKey = ref("");
 const enabledModels = ref<ConfigAgentProfileSettingsDto["enabledModels"]>([]);
 const validationIssues = ref<ConfigAgentProfileSettingsDto["validationIssues"]>([]);
@@ -77,8 +79,10 @@ const profileSnapshots = ref<Record<string, string>>({});
 const activeNavKey = ref("");
 const navSearch = ref("");
 let buildStatusPollTimer: ReturnType<typeof setTimeout> | null = null;
+let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
 const configApi = useConfigApi();
 const dialog = useDialog();
+const notification = useNotification();
 const novelIdeStore = useNovelIdeStore();
 const {t} = useI18n();
 const editorSnapshot = ref<ConfigEditorSnapshotDto | null>(null);
@@ -270,6 +274,25 @@ function clearBuildStatusPolling(): void {
     buildStatusPollTimer = null;
 }
 
+/** 收起「保存设定」按钮上的成功态。 */
+function clearSavedFlash(): void {
+    if (savedFlashTimer) {
+        clearTimeout(savedFlashTimer);
+        savedFlashTimer = null;
+    }
+    justSaved.value = false;
+}
+
+/** 保存成功后在「保存设定」按钮上闪一下成功态，替代占位的成功横幅。 */
+function flashSaved(): void {
+    clearSavedFlash();
+    justSaved.value = true;
+    savedFlashTimer = setTimeout(() => {
+        savedFlashTimer = null;
+        justSaved.value = false;
+    }, 2400);
+}
+
 function shouldPollBuildStatus(): boolean {
     return profiles.value.some((profile) => profile.loadStatus === "compiling" || profile.buildState.running || profile.buildState.queued);
 }
@@ -363,7 +386,6 @@ function validateRuntimeDrafts(): boolean {
 async function loadSettings(): Promise<void> {
     loading.value = true;
     errorText.value = "";
-    successText.value = "";
 
     try {
         const [snapshot, settings] = await Promise.all([
@@ -404,7 +426,6 @@ async function saveSettings(): Promise<void> {
 
     saving.value = true;
     errorText.value = "";
-    successText.value = "";
 
     try {
         const snapshot = isProjectScope.value
@@ -414,11 +435,10 @@ async function saveSettings(): Promise<void> {
         editorSnapshot.value = snapshot;
         if (isProjectScope.value) {
             applyProjectSettings(settings);
-            successText.value = t("settings.panels.profileModels.projectSaveSuccess");
         } else {
             applySettings(settings);
-            successText.value = t("settings.panels.profileModels.globalSaveSuccess");
         }
+        flashSaved();
     } catch (error) {
         errorText.value = resolveApiErrorMessage(error, t("settings.panels.profileModels.saveFailed"));
     } finally {
@@ -442,13 +462,12 @@ async function resetProfileHome(profile: AgentProfileDraft): Promise<void> {
     }
     resettingHomeProfileKey.value = profile.profileKey;
     errorText.value = "";
-    successText.value = "";
     try {
         const snapshot = await configApi.resetProfileHome(profile.profileKey, props.targetQuery);
         const settings = await configApi.agentProfileSettings(props.targetQuery, "project");
         editorSnapshot.value = snapshot;
         applyProjectSettings(settings);
-        successText.value = t("settings.panels.profileModels.resetHomeSuccess", {profile: profile.profileKey});
+        notification.success(t("settings.panels.profileModels.resetHomeSuccess", {profile: profile.profileKey}));
     } catch (error) {
         errorText.value = resolveApiErrorMessage(error, t("settings.panels.profileModels.resetHomeFailed"));
     } finally {
@@ -572,16 +591,25 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
     clearBuildStatusPolling();
+    clearSavedFlash();
 });
 
 watch(() => [props.scope, props.targetQuery?.workspaceKind, props.targetQuery?.projectRoot] as const, () => {
     void loadSettings();
 });
 
+// 再次改动配置后「已保存」必须立刻失效，否则按钮态与实际状态不符。
+watch(dirty, (isDirty) => {
+    if (isDirty) {
+        clearSavedFlash();
+    }
+});
+
 defineExpose({
     dirty,
     loading,
     saving,
+    justSaved,
     saveSettings,
     restoreSettings,
 });
@@ -599,6 +627,7 @@ defineExpose({
             </div>
         </div>
 
+        <!-- 错误仍内联常驻（需要用户处理）；成功反馈改由「保存设定」按钮的短暂成功态给出，不再占面板高度。 -->
         <TransitionGroup
             tag="div"
             enter-active-class="transition-all duration-300 ease-out"
@@ -612,10 +641,6 @@ defineExpose({
             <div v-if="errorText" key="error" class="flex items-start gap-3 rounded-xl border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-4 py-3 shadow-sm backdrop-blur-md">
                 <span class="i-lucide-alert-circle mt-0.5 h-4 w-4 shrink-0 text-[var(--status-danger)]"></span>
                 <div class="text-sm text-[var(--status-danger)]">{{ errorText }}</div>
-            </div>
-            <div v-if="successText" key="success" class="flex items-start gap-3 rounded-xl border border-[var(--status-success-border)] bg-[var(--status-success-bg)] px-4 py-3 shadow-sm backdrop-blur-md">
-                <span class="i-lucide-check-circle-2 mt-0.5 h-4 w-4 shrink-0 text-[var(--status-success)]"></span>
-                <div class="text-sm text-[var(--status-success)]">{{ successText }}</div>
             </div>
         </TransitionGroup>
 

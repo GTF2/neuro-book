@@ -150,6 +150,7 @@ const settingsExpanded = ref(props.settingsOverrideCount > 0);
                     :inherited="props.profile.runtimeEffective"
                     :sources="props.profile.runtimeSources"
                     :errors="props.profile.runtimeErrors"
+                    :enabled-models="props.enabledModels"
                     @update:model-value="emit('update:runtime', $event)"
                 />
             </div>
