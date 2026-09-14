@@ -1958,6 +1958,7 @@ const enUS = {
             expandAll: "Expand all",
             collapseAll: "Collapse all",
             emptyPrompt: "(no text)",
+            emptyAnswer: "(no preview)",
             empty: "Nothing to navigate yet",
         },
         chat: {

@@ -1956,6 +1956,7 @@ const zhCN = {
             expandAll: "全部展开",
             collapseAll: "全部收起",
             emptyPrompt: "（无文字内容）",
+            emptyAnswer: "（暂无摘要）",
             empty: "暂无可定位的内容",
         },
         chat: {

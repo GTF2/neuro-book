@@ -4,8 +4,8 @@ import {
     buildChatOutline,
     chatBlockAnchorId,
     chatNodeAnchorId,
-    isPromptAnchorNode,
     resolveActiveOutlineId,
+    resolveTextOutlineKind,
 } from "nbook/app/components/novel-ide/agent/chat-outline";
 import {groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 
@@ -18,9 +18,9 @@ const userNode = (id: string, content: string, timestamp = "2026-09-14 10:00"): 
     message: {id, type: "user", content, timestamp},
 });
 
-const aiTextNode = (id: string, content: string): ChatNode => ({
+const aiTextNode = (id: string, content: string, status: AgentMessage["status"] = "done"): ChatNode => ({
     kind: "text",
-    message: {id, type: "ai", content},
+    message: {id, type: "ai", content, status},
 });
 
 const toolNode = (id: string, name: string, status: AgentToolCall["status"]): ChatNode => ({
@@ -41,37 +41,50 @@ const blockItem = (statuses: Array<AgentToolCall["status"]>): Extract<ChatFlowIt
 };
 
 describe("chat-outline", () => {
-    it("只有用户消息进大纲，Agent 正文不占位", () => {
-        const items: ChatFlowItem[] = [
+    it("一条完整对话会同时留下提问、回答与操作三类行", () => {
+        const outline = buildChatOutline([
             {kind: "node", node: userNode("u1", "帮我看看第 3 章")},
-            {kind: "node", node: aiTextNode("a1", "我来看一下")},
-        ];
+            {kind: "node", node: aiTextNode("a1", "我来看一下，先读几个文件")},
+            blockItem(["success", "success"]),
+        ], resolveNodeKey);
 
-        const outline = buildChatOutline(items, resolveNodeKey);
-
-        expect(outline).toHaveLength(1);
-        expect(outline[0]).toEqual(expect.objectContaining({
-            kind: "prompt",
-            messageId: "u1",
-            preview: "帮我看看第 3 章",
-        }));
+        expect(outline.map((item) => item.kind)).toEqual(["prompt", "answer", "block"]);
     });
 
-    it("提问摘要归一空白并截断，避免大纲被长段落撑开", () => {
-        const long = "第一行\n\n第二行   " + "很长".repeat(60);
+    it("摘要归一空白，并给悬停提示保留足够上下文后再截断", () => {
+        const long = "第一行\n\n第二行   " + "很长".repeat(200);
         const outline = buildChatOutline([{kind: "node", node: userNode("u1", long)}], resolveNodeKey);
-        const first = outline[0];
+        const preview = outline[0]?.kind === "prompt" ? outline[0].preview : "";
 
-        expect(first?.kind).toBe("prompt");
-        expect(first?.kind === "prompt" ? first.preview : "").not.toContain("\n");
-        expect(first?.kind === "prompt" ? first.preview.endsWith("…") : false).toBe(true);
-        expect(first?.kind === "prompt" ? first.preview.length : 0).toBeLessThanOrEqual(61);
+        expect(preview).not.toContain("\n");
+        expect(preview.endsWith("…")).toBe(true);
+        // 行内截断交给 CSS，这里只保证不会长到撑爆悬停提示。
+        expect(preview.length).toBeLessThanOrEqual(201);
+        expect(preview.length).toBeGreaterThan(60);
     });
 
     it("正文为空的用户消息仍然生成锚点，摘要留空由上层兜底", () => {
         const outline = buildChatOutline([{kind: "node", node: userNode("u1", "   ")}], resolveNodeKey);
 
         expect(outline[0]).toEqual(expect.objectContaining({kind: "prompt", preview: ""}));
+    });
+
+    it("没有正文的 AI 节点不占大纲行：它只是工具调用的载体", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: aiTextNode("a1", "   ")},
+        ], resolveNodeKey);
+
+        expect(outline).toHaveLength(0);
+    });
+
+    it("回答仍在生成时标记 running", () => {
+        const outline = buildChatOutline([
+            {kind: "node", node: aiTextNode("a1", "正在回答", "streaming")},
+            {kind: "node", node: aiTextNode("a2", "回答完毕")},
+        ], resolveNodeKey);
+
+        expect(outline[0]).toEqual(expect.objectContaining({kind: "answer", running: true}));
+        expect(outline[1]).toEqual(expect.objectContaining({kind: "answer", running: false}));
     });
 
     it("工作块状态：全部成功为 success", () => {
@@ -112,10 +125,11 @@ describe("chat-outline", () => {
         expect(block?.kind === "block" ? block.anchorId : "").toBe(chatBlockAnchorId("t0::t1"));
     });
 
-    it("isPromptAnchorNode 只认用户文本节点", () => {
-        expect(isPromptAnchorNode(userNode("u1", "x"))).toBe(true);
-        expect(isPromptAnchorNode(aiTextNode("a1", "x"))).toBe(false);
-        expect(isPromptAnchorNode(toolNode("t1", "read", "success"))).toBe(false);
+    it("resolveTextOutlineKind 只认用户提问、有正文的 AI 回答", () => {
+        expect(resolveTextOutlineKind(userNode("u1", "x"))).toBe("prompt");
+        expect(resolveTextOutlineKind(aiTextNode("a1", "x"))).toBe("answer");
+        expect(resolveTextOutlineKind(aiTextNode("a2", ""))).toBeNull();
+        expect(resolveTextOutlineKind(toolNode("t1", "read", "success"))).toBeNull();
     });
 
     it("滚动联动取最后一个越过激活线的锚点", () => {

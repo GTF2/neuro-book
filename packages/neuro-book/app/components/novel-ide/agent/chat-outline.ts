@@ -5,7 +5,12 @@ import {isFailedToolCall} from "nbook/app/components/novel-ide/agent/chat-work-b
 /** 大纲行的状态标记：成功绿、失败红、运行中蓝。 */
 export type ChatOutlineStatus = "success" | "failed" | "running";
 
-/** 右侧大纲的一行：用户提问是锚点，工作块是内容。 */
+/**
+ * 右侧大纲的一行。
+ *
+ * 一条完整对话在三类行里各留一条：用户提问（锚点）、Agent 回答、Agent 操作（工作块）。
+ * 只列其中一类都会让大纲失去「目录」的意义——用户想找的是「我问了啥、他答了啥、他动了啥」。
+ */
 export type ChatOutlineItem =
     | {
         kind: "prompt";
@@ -15,6 +20,15 @@ export type ChatOutlineItem =
         /** 提问摘要，已归一空白并按字符数截断；正文为空时是空串。 */
         preview: string;
         timestamp: string;
+    }
+    | {
+        kind: "answer";
+        anchorId: string;
+        messageId: string;
+        /** 回答摘要；调用方负责在为空时兜底展示。 */
+        preview: string;
+        /** 仍在生成的回答：大纲上要能看出这条还没写完。 */
+        running: boolean;
     }
     | {
         kind: "block";
@@ -28,8 +42,12 @@ export type ChatOutlineItem =
         failedCount: number;
     };
 
-/** 提问摘要的最大字符数：大纲只用来定位，不承担阅读全文的职责。 */
-const PROMPT_PREVIEW_MAX = 60;
+/**
+ * 摘要上限。
+ * 行内显示由 CSS 截断，这个上限只为防止超长正文把悬停提示撑成整屏；
+ * 因此取得比「一行能显示的字数」宽松得多。
+ */
+const PREVIEW_MAX = 200;
 
 /** 锚点 id 直接进 DOM，必须先剔除可能出现在消息 id 里的特殊字符。 */
 const sanitizeAnchor = (value: string): string => value.replace(/[^A-Za-z0-9_-]/gu, "-");
@@ -42,17 +60,28 @@ export const chatBlockAnchorId = (blockId: string): string => `chat-anchor-b-${s
 
 const toPreview = (text: string): string => {
     const normalized = text.replace(/\s+/gu, " ").trim();
-    return normalized.length > PROMPT_PREVIEW_MAX
-        ? `${normalized.slice(0, PROMPT_PREVIEW_MAX)}…`
+    return normalized.length > PREVIEW_MAX
+        ? `${normalized.slice(0, PREVIEW_MAX)}…`
         : normalized;
 };
 
 /**
- * 判断一个渲染节点是否是大纲里的「用户提问锚点」。
- * 只有用户消息才成锚点：Agent 的正文气泡太碎，全列进大纲等于没有目录。
+ * 判断一个文本节点在大纲里扮演什么角色。
+ *
+ * 返回 null 的节点不占大纲行：目前只有「没有正文的 AI 节点」会命中，
+ * 它们只是工具调用的载体，真正的信息由工作块那一行承担。
  */
-export const isPromptAnchorNode = (node: ChatNode): boolean => {
-    return node.kind === "text" && node.message.type === "user";
+export const resolveTextOutlineKind = (node: ChatNode): "prompt" | "answer" | null => {
+    if (node.kind !== "text") {
+        return null;
+    }
+    if (node.message.type === "user") {
+        return "prompt";
+    }
+    if (node.message.type === "ai") {
+        return node.message.content?.trim() ? "answer" : null;
+    }
+    return null;
 };
 
 /**
@@ -68,17 +97,29 @@ export const buildChatOutline = (
     const outline: ChatOutlineItem[] = [];
     for (const item of items) {
         if (item.kind === "node") {
-            if (!isPromptAnchorNode(item.node)) {
+            const textKind = resolveTextOutlineKind(item.node);
+            if (!textKind) {
                 continue;
             }
             const message = item.node.message;
-            outline.push({
-                kind: "prompt",
-                anchorId: chatNodeAnchorId(resolveNodeKey(item.node)),
-                messageId: message.id,
-                preview: toPreview(message.content ?? ""),
-                timestamp: message.timestamp ?? "",
-            });
+            const anchorId = chatNodeAnchorId(resolveNodeKey(item.node));
+            if (textKind === "prompt") {
+                outline.push({
+                    kind: "prompt",
+                    anchorId,
+                    messageId: message.id,
+                    preview: toPreview(message.content ?? ""),
+                    timestamp: message.timestamp ?? "",
+                });
+            } else {
+                outline.push({
+                    kind: "answer",
+                    anchorId,
+                    messageId: message.id,
+                    preview: toPreview(message.content ?? ""),
+                    running: message.status === "streaming",
+                });
+            }
             continue;
         }
         outline.push({
