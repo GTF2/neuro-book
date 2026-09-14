@@ -21,6 +21,7 @@ Issue #227（0.10.2 / Windows 免安装包）报告：Inline AI 点发送后转�
 
 - 采用最小修复（A）：owner 回归 controller 单点拥有；「打开 Session 聊天」回到 `openSession()` + `showAgentSession()`（#47 之前的既有形状）。
 - 结构性收敛（B：surface 自带 inline 机制的归属）延后为独立 Task（见 Task README 缺口 5）。
+- Spec 行为合同：由开发者决定（2026-09-14）交给 `docs/specs/README.md`「规范缺口」的 **P1「Markdown Studio 与编辑工作台」迁移**补齐，本 Work 不新建 capability 正文（见 Task README 缺口 8；决策来源为开发者消息「可以交给 P1 迁移」）。
 
 ## 验证
 
