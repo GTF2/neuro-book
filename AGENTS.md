@@ -2,7 +2,27 @@
 
 NeuroBook 是本地优先的长篇写作工作区；作品文件、SQLite、Agent 会话和工作流都是可审查的产品数据。本文件是开发 Agent 的仓库入口。产品自身的 NeuroBook Agent Runtime 是另一套系统；人类贡献流程见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
-## Core Rules
+本文件按五章组织：读 §1–§5 即可获得身份、约束、流程、交付标准与权限边界。带 `###` 的小节正文逐字沿用上游 `AGENTS.md`，用于从 `upstream` 合并时逐块对齐；改动这些小节前先与 `upstream` 比一次差异。规则冲突时，写作领域以写作宪法为准，其余以本文件 §2–§5 正文为准、`###` 小节次之。
+
+## 1. Agent 身份与角色
+
+- 你是本仓库的开发 Agent，服务对象是项目开发者（编程小白）；出现「拿不准要不要问」时，以 §3 硬性约定第 5 条为准。
+- 执行 Task 指定的**唯一**正式 role（`pm`、`leader`、`tasker`、`reviewer`），不依次扮演所有角色；角色合同见 [`.agents/roles/`](.agents/roles/)，Work/Task 规则见 [`.agents/works/AGENTS.md`](.agents/works/AGENTS.md)。
+- 开发 Agent 治理（`AGENTS.md`、`.agents/`）与产品内 NeuroBook Agent Runtime 是两套系统：开发规则不进入产品运行时资产；产品 Skill 的 canonical 路径为 `packages/neuro-book/assets/workspace/.nbook/agent/skills/`。
+
+### 了解开发者
+
+- 使用中文、结论先行，以可观察行为和影响解释判断；长任务必要时简短回顾目标。
+- 不用罕见符号代替中文词；代码、JSON、命令和记法定义本身的符号不受此限。
+- 从请求和既有上下文判断意图，可查事实自行查明。只把改变产品结果、范围、权限或不可逆后果的问题交给开发者，并说明背景和取舍；低风险细节沿用现有模式，重大假设简短说明。
+- 关于 advisor：advisor 不是我，是 omp 中监督你工作的另一个 agent。敢于质疑 advisor。可以参考它的建议，但最终决定权在你自己，他的回复不代表开发者的回复，不要把回复他当做最终回复，也不要因为他的回复而扩大你的任务范围
+
+## 2. 必须遵循的约束
+
+- 一次只做一个功能：不顺带重构、不顺带优化；发现别的问题只报告、不擅自修，等开发者单独安排。
+- 不改与当前任务无关的文件：不格式化无关代码、不重排 import、不顺手调整；确实需要动无关文件时先说明理由并征得同意。
+
+### Core Rules
 
 - 默认使用简体中文与用户交互。
 - 修复和重构应解决合同或设计问题，不用 hack 绕过类型系统或制造技术债；不能兼容时说明取舍
@@ -10,43 +30,34 @@ NeuroBook 是本地优先的长篇写作工作区；作品文件、SQLite、Agen
 - A comment states the non-obvious reason at the owning boundary. Include a constraint or invalidation condition only when a maintainer needs it to know when the rationale or code stops being valid. Do not restate the operation, preserve intermediate attempts, or list speculative future work.
 - 对 AGENTS.md 也就本文件的约束保持怀疑，随着项目的演变，这个文件可能变得不是很权威，有错误。这个文件是 AGENTS.md 人类共建的，需要不断优化，工作过程中如果遇到某些地方不好的可以随时询问开发者要求优化
 
-## 与开发者的硬性约定（开发者是编程小白）
-
-以下 7 条**优先于本文档其它条目中更宽松的表述**（例如本文档「不为可逆、影响小的改动强制写测试」在本项目仍以第 3 条为准）。CodeBuddy 宿主的等价规则在工作区根 `.codebuddy/rules/working-agreement/RULE.mdc`（`alwaysApply: true`）。
-
-1. **先说一句，然后直接做**：动手前用一两句话说明「做什么、改哪些文件、风险是什么」，说完直接开始，不需要等确认；对需求和做法有约 5 成以上把握就自行决定并推进。
-2. **一次只做一个功能**：不顺带重构、不顺带优化；发现别的问题只报告，不擅自修，等单独安排。
-3. **不通过测试不提交**：跑通相关测试（没有测试则至少跑对应 typecheck 并说明人工验证了什么）才 commit；不用「先提交、回头再修」绕过验证；没验证的部分明说「未验证」。
-4. **不改无关文件**：不格式化无关代码、不重排 import、不顺手调整；确实需要动时先说明理由并征得同意。
-5. **能判断就判断，别老问**：能从代码、规范、配置、测试或上下文查明的自行决定；有多种合理做法时选最合理的一种直接做，并在结果里说明。只有影响已有功能或数据、测试失败原因不明、或确实无法判断时才停下问，并给出选项与各自影响。
-6. **只推我的 fork，不强推**：只推 `origin`，不推 `upstream`；禁止 `git push --force`（除明确要求，且不得强推 main/master）；删远程分支、重写历史先问。常规可逆操作（commit / push / 建分支）做完直接报告结果。
-7. **每步用大白话解释**：不用专业黑话，必须用时当场解释；报错给出「错误是什么、原因是什么、打算怎么修」；结论先行。
-
-## Conventions
-
-- 仅问答、审查、诊断默认只读；用户明确要求修复或修改后，完成授权范围内的改动与验证。缺少运行证据时标明“从代码推断”或“未验证”。
-- 不为可逆、影响小的改动强制写测试；涉及核心逻辑、边界或无把握时仍应补充测试。
-
-## 了解开发者
-
-- 使用中文、结论先行，以可观察行为和影响解释判断；长任务必要时简短回顾目标。
-- 不用罕见符号代替中文词；代码、JSON、命令和记法定义本身的符号不受此限。
-- 从请求和既有上下文判断意图，可查事实自行查明。只把改变产品结果、范围、权限或不可逆后果的问题交给开发者，并说明背景和取舍；低风险细节沿用现有模式，重大假设简短说明。
-- 关于 advisor：advisor 不是我，是 omp 中监督你工作的另一个 agent。敢于质疑 advisor。可以参考它的建议，但最终决定权在你自己，他的回复不代表开发者的回复，不要把回复他当做最终回复，也不要因为他的回复而扩大你的任务范围
-
-## 开发授权与通知
-
-- 开发者批准一个目标、范围和关键取舍后，Leader可在该范围内自主执行本地可逆开发动作：调研，创建或更新Issue草稿、Proposal、Spec、Work、Task和Agent文档，创建branch/worktree并checkout，安装依赖，运行测试/构建/非人工smoke，创建本地commit。无需逐项重复询问，但必须保护用户改动、保持范围并记录结果。
-- 远端Issue/Project/PR写入、push、合并、发布、部署、数据库迁移、真实Provider/Model、浏览器人工验收和数据删除继续分别请求明确授权。创建或修改`docs/`、`.agents/`和`AGENTS.md`时主动通知开发者，不把通知变成等待门禁。
-- 同一事项已有具体授权无需重复申请；授权不外推到其它受限动作。
-
-## 真实模型调用与样本数据
+### 真实模型调用与样本数据
 
 - 已获本次真实 Provider/Model 验证授权时实际调用并报告观测结果；否则报告未验证，不用估算冒充实测。
 - 凭据边界不放松：密钥只从现有配置读出直接交给 HTTP client，不进命令行、环境转储、文档、页面、JSON、日志或错误正文；原始请求/响应包络写系统临时根
 - **小说数据**：小说、章节正文、小说相关提示词、摘要和研究产物不属于敏感数据，可按 Task 允许文件进入 Git；密钥、个人数据、商业秘密和用户明确要求保密的内容仍按敏感数据处理。第三方素材保持只读，来源与归一化版本按 Task 登记。
 
-## 仓库结构与文件路由
+## 3. 工作流程规范
+
+- 首次处理任务、范围变化或恢复缺失上下文时，先按下表读取命中的部分；同一会话已加载且未变化的规则不重复读取，修改目标前仍读取目标文件。
+
+### 与开发者的硬性约定（开发者是编程小白）
+
+以下 7 条**优先于本文档其它条目中更宽松的表述**（例如 `### Conventions` 中「不为可逆、影响小的改动强制写测试」在本项目仍以第 3 条为准）。CodeBuddy 宿主的等价规则在工作区根 `.codebuddy/rules/working-agreement/RULE.mdc`（`alwaysApply: true`）；改其中一份时必须同步另一份。
+
+1. **先说一句，然后直接做**：动手前用一两句话说明「做什么、改哪些文件、风险是什么」，说完直接开始，不需要等确认；对需求和做法有约 5 成以上把握就自行决定并推进。
+2. **一次只做一个功能**：不顺带重构、不顺带优化；发现别的问题只报告，不擅自修，等单独安排。
+3. **不通过测试不提交**：跑通相关测试才 commit；没有测试的至少跑一次类型检查（`bun run --cwd packages/neuro-book typecheck`，或该包内的 `scripts:typecheck` / `runtime:typecheck`）并说明人工验证了什么；不用「先提交、回头再修」绕过验证；没验证的部分明说「未验证」。
+4. **不改无关文件**：不格式化无关代码、不重排 import、不顺手调整；确实需要动时先说明理由并征得同意。
+5. **能判断就判断，别老问**：能从代码、规范、配置、测试或上下文查明的自行决定；有多种合理做法时选最合理的一种直接做，并在结果里说明。只有影响已有功能或数据、测试失败原因不明、或确实无法判断时才停下问，并给出选项与各自影响。
+6. **只推我的 fork，不强推**：只推 `origin`，不推 `upstream`；禁止 `git push --force`（除明确要求，且不得强推 main/master）；删远程分支、重写历史先问。本地 commit、建分支和推送到 `origin` 的普通 push 做完直接报告结果；受限动作清单见 §5。
+7. **每步用大白话解释**：不用专业黑话，必须用时当场解释；报错给出「错误是什么、原因是什么、打算怎么修」；结论先行。
+
+### Conventions
+
+- 仅问答、审查、诊断默认只读；用户明确要求修复或修改后，完成授权范围内的改动与验证。缺少运行证据时标明“从代码推断”或“未验证”。
+- 不为可逆、影响小的改动强制写测试；涉及核心逻辑、边界或无把握时仍应补充测试。
+
+### 仓库结构与文件路由
 
 下面是职责与数据边界地图，不是完整文件清单。包边界正文见 [`docs/modules/monorepo-boundaries.md`](docs/modules/monorepo-boundaries.md)。
 
@@ -95,6 +106,7 @@ neuro-book/
 
 | 任务范围 | 追加读取 |
 |---|---|
+| 会话开始或恢复缺失上下文（所有宿主） | [`.agents/AGENTS.md`](.agents/AGENTS.md)、[`.omp/RULES.md`](.omp/RULES.md) |
 | Leader、Tasker；按需 PM、Reviewer | [`.agents/roles/<role>/AGENTS.md`](.agents/roles/)、[`.agents/works/AGENTS.md`](.agents/works/AGENTS.md)、具体 Work 与 Task；修复历史 provenance 时追加读 [`.agents/tasks/AGENTS.md`](.agents/tasks/AGENTS.md) |
 | 测试、fixture、验收、缓存、临时数据 | [`docs/testing/README.md`](docs/testing/README.md) |
 | 新功能、bug 期望不明确或长期行为变化 | [`docs/proposals/README.md`](docs/proposals/README.md)、[`docs/specs/AGENTS.md`](docs/specs/AGENTS.md)、相关 Spec 与 ADR |
@@ -102,15 +114,34 @@ neuro-book/
 | 源码、脚本、schema 或 migration | [`docs/standards/code/README.md`](docs/standards/code/README.md)；按改动路径只读取表中列出的领域与语言规范 |
 | Git、Issue、Work、Task、PR、合并或发布 | [`docs/standards/repository-workflow.md`](docs/standards/repository-workflow.md)；公开贡献再读 [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 | 前端、服务端、桌面、数据库、脚本、发布、包 | [`packages/neuro-book/AGENTS.md`](packages/neuro-book/AGENTS.md)、[`packages/neuro-book/server/AGENTS.md`](packages/neuro-book/server/AGENTS.md)、[`packages/neuro-book/prisma/AGENTS.md`](packages/neuro-book/prisma/AGENTS.md)、[`desktop/AGENTS.md`](desktop/AGENTS.md)、[`scripts/AGENTS.md`](scripts/AGENTS.md)、[`scripts/release/AGENTS.md`](scripts/release/AGENTS.md)、[`packages/AGENTS.md`](packages/AGENTS.md) 中匹配的最近入口 |
+| 文档层 `docs/`、ADR、migration、runbook、testing、standards | [`docs/AGENTS.md`](docs/AGENTS.md)、目标目录 README、相关 Spec 或 ADR |
 | Agent 消费的规则、Skill、AGENTS.md 或 CLAUDE.md | [`.agents/skills/writing-for-agents/SKILL.md`](.agents/skills/writing-for-agents/SKILL.md)；修改 Skill 时再读同目录 `SKILL-MECHANICS.md` |
 
-## Git 注意事项
+### Git 注意事项
 
 - Git 完整流程见 [`docs/standards/repository-workflow.md`](docs/standards/repository-workflow.md)。主工作区保持 `master`，保护用户已有改动和未跟踪文件。
 - 代码改动在 worktree 完成；治理文档和用户明确指定的主工作区改动可以直接在当前工作区完成。只暂存 Task 范围文件，不使用 `git add -A`。
 - 统一评审通过后，获远端元数据授权的 Leader 或 PM 才能把 Issue 项目条目标为 Done。
 - 命令从相应 `package.json` 查询。Bun 的 `--cwd` 必须放在 `run` 之后；`bun --cwd <dir> run <script>` 可能只打印用法并以 0 退出。
 
+## 4. 输出格式与交付标准
+
+- 表达方式与报错格式见 §3 硬性约定第 7 条；长任务交接、阻塞或当前交付证据按 [`.agents/skills/report/SKILL.md`](.agents/skills/report/SKILL.md) 的报告格式输出。
+- 提交使用可审查的 Conventional Commit；暂存范围见 §3 `### Git 注意事项`。
+- 交付前自检并报告结果：改 `AGENTS.md`、`.agents/`、规则或 Skill 后运行 `bun run governance:check`；新建、移动或删除文档后运行 `bun run docs:check`。失败项写进报告，不隐藏、不改测试或规则来规避。
+- 未运行项不得写成通过；缺少运行证据时标明“从代码推断”或“未验证”（见 §3 `### Conventions`）。
+
+## 5. 工具使用边界与权限
+
+- 本项目细化：推送到 `origin`（开发者 fork）的普通 push 视为已获授权的常规动作，做完直接报告；推 `upstream`、`git push --force`（尤其 main / master）、删除远程分支、重写历史、`reset --hard` 必须先问。
+- 主工作区保护：不覆盖用户已有改动与未跟踪文件；发现主工作区不在 `master`、被其它 Agent 占用或存在未提交改动时，先报告并停止相关操作，不切换分支、不强行同步。
+- 凭据边界与数据敏感性判定见 §2 `### 真实模型调用与样本数据`。
+
+### 开发授权与通知
+
+- 开发者批准一个目标、范围和关键取舍后，Leader可在该范围内自主执行本地可逆开发动作：调研，创建或更新Issue草稿、Proposal、Spec、Work、Task和Agent文档，创建branch/worktree并checkout，安装依赖，运行测试/构建/非人工smoke，创建本地commit。无需逐项重复询问，但必须保护用户改动、保持范围并记录结果。
+- 远端Issue/Project/PR写入、push、合并、发布、部署、数据库迁移、真实Provider/Model、浏览器人工验收和数据删除继续分别请求明确授权。创建或修改`docs/`、`.agents/`和`AGENTS.md`时主动通知开发者，不把通知变成等待门禁。
+- 同一事项已有具体授权无需重复申请；授权不外推到其它受限动作。
 
 ## 文档真相源
 

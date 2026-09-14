@@ -31,4 +31,4 @@ bun run test:e2e
 git diff --check
 ```
 
-UI 行为或观感变化还必须在真实 playground 中验收桌面与 390px 窄屏；读取真实元素的计算样式，不能只读变量。阶段 2 结论必须标注“未经 NeuroBook 主仓接入验证”。
+UI 行为或观感变化还必须在真实 playground 中验收桌面与 390px 窄屏；读取真实元素的计算样式，不能只读变量。该 playground 验收由 Agent 自动执行，不属于根规则中需要单独授权的「浏览器人工验收」。阶段 2 结论必须标注“未经 NeuroBook 主仓接入验证”。
