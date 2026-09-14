@@ -18,6 +18,15 @@ export default defineConfig({
     test: {
         environment: "node",
         globals: true,
+        // zod 4 是纯 ESM 包（"type": "module"），但 exports 同时提供 CJS 入口（index.cjs）。
+        // 默认把它当外部依赖交给 Node 加载时，vite 的 module-runner 按 CJS 命名空间校验
+        // `import { z } from "zod"`，判定「does not provide an export named 'z'」并中断整个 run。
+        // 让 vite 自己内联转换 zod，强制走它的 ESM 入口。
+        server: {
+            deps: {
+                inline: ["zod"],
+            },
+        },
         // Product bundle 与隔离 workspace fixture 会显著抬高单 worker 内存；
         // Windows 实测 4 workers 会触发进程池异常退出，2 workers 能保持完整门禁稳定。
         maxWorkers: 2,
@@ -39,9 +48,10 @@ export default defineConfig({
             "app/components/novel-ide/**/*.test.ts",
             "app/components/markdown-studio/**/*.test.ts",
             "app/components/profile-template-editor/**/*.test.ts",
-            "app/utils/theme/**/*.test.ts",
+            // 这里曾经只列了 app/utils/theme/** 和单个 contract 文件，
+            // 导致 app/utils 下另外约 29 个测试（含 agent-message-projection）从未被收集。
+            "app/utils/**/*.test.ts",
             "app/stores/**/*.test.ts",
-            "app/utils/novel-ide-settings-responsive.contract.test.ts",
             "server/**/*.test.ts",
             "server/**/*.test.tsx",
             "shared/**/*.test.ts",
