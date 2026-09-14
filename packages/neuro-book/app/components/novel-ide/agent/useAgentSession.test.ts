@@ -25,6 +25,33 @@ describe("useAgentSession event reducer", () => {
         expect(session.recoveryReasons.value).toContain("seq_gap");
     });
 
+    it("本地登记的长阻塞运行立即点亮 running，释放后回落", () => {
+        const session = useAgentSession();
+        session.applyRecovery(recovery(0));
+        expect(session.running.value).toBe(false);
+
+        const release = session.beginLocalRun();
+        expect(session.running.value).toBe(true);
+
+        // 重复释放不能把计数减成负数，否则后续判断会失真。
+        release();
+        release();
+        expect(session.running.value).toBe(false);
+    });
+
+    it("本地运行计数与 live state 叠加，服务端尚未回流时不会掉回 idle", () => {
+        const session = useAgentSession();
+        session.applyRecovery(recovery(0));
+
+        const release = session.beginLocalRun();
+        // moveTree 跑完但 live state 还没回流，此时服务端报的就是 idle。
+        session.applyLiveState(liveState());
+        expect(session.running.value).toBe(true);
+
+        release();
+        expect(session.running.value).toBe(false);
+    });
+
     it("轻量 live state 立即更新 shell，revision 变化时请求 recovery", () => {
         const session = useAgentSession();
         session.applyRecovery({...recovery(0), activePathRevision: "rev-1"});

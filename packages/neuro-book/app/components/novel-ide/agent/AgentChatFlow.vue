@@ -91,6 +91,11 @@ const emit = defineEmits<{
     (e: "dismiss-unknown", message: AgentMessage): void;
     /** 写文件类工具失败卡片上的「跳过此次编辑」：由上层把指令填进输入框。 */
     (e: "skip-edit", message: AgentMessage): void;
+    /**
+     * 失败卡片上的「重新尝试」：往会话末尾追加一轮新尝试，而不截断重跑。
+     * 与 retry 并存而非复用，是因为两者语义相反 —— retry 原地重生成，这条往后接。
+     */
+    (e: "retry-append", message: AgentMessage): void;
     /** 大纲内容变化；面板由外层渲染，这里只负责投影数据。 */
     (e: "outline-change", items: ChatOutlineItem[]): void;
     /** 当前滚动位置对应的大纲行。 */
@@ -102,6 +107,8 @@ const shouldStickToBottom = ref(true);
 const lastScrollTop = ref(0);
 let pendingImmediateScroll = true;
 let autoScrollFrame: number | null = null;
+/** 大纲高亮同样按帧合并：滚动一帧可能触发多次事件，逐个查全部锚点会拖垮长对话。 */
+let outlineSyncFrame: number | null = null;
 let pendingPrependAnchor: {
     sessionId: number | null;
     firstMessageId: string;
@@ -195,6 +202,41 @@ const syncActiveOutline = (): void => {
     }
     activeOutlineAnchor.value = resolveActiveOutlineId(offsets, OUTLINE_ACTIVATION_LINE_PX);
 };
+
+/**
+ * 把大纲高亮合并到下一帧。
+ *
+ * 与自动吸底同一套理由：滚动事件在一帧里可能来好几次，而这里每次都要遍历全部大纲条目、
+ * 逐个 querySelector + getBoundingClientRect —— 全是强制布局。长对话里同步跑会明显掉帧；
+ * 合并到帧末只算一次，视觉上没有任何差别。
+ */
+const scheduleActiveOutlineSync = (): void => {
+    if (outlineSyncFrame !== null) {
+        return;
+    }
+    if (typeof requestAnimationFrame !== "function") {
+        syncActiveOutline();
+        return;
+    }
+    outlineSyncFrame = requestAnimationFrame(() => {
+        outlineSyncFrame = null;
+        syncActiveOutline();
+    });
+};
+
+/** 取消下一帧的大纲高亮任务。 */
+const cancelScheduledActiveOutlineSync = (): void => {
+    if (outlineSyncFrame !== null) {
+        if (typeof cancelAnimationFrame === "function") {
+            cancelAnimationFrame(outlineSyncFrame);
+        }
+        outlineSyncFrame = null;
+    }
+};
+
+// 内容变化同样会挪动锚点，而且不一定伴随滚动（首屏渲染、流式追加后贴底都不触发 scroll），
+// 所以除了 onScroll，内容变化也要重算一次。flush: "post" 保证读到的 DOM 已经更新。
+watch(outlineItems, scheduleActiveOutlineSync, {flush: "post"});
 
 /**
  * 跳到指定锚点。
@@ -325,8 +367,9 @@ const requestPreviousHistory = (): void => {
 
 /** 滚动事件处理。 */
 const onScroll = (): void => {
-    // 先同步大纲高亮：下面的分支里有提前 return，放在后面会漏掉贴底场景。
-    syncActiveOutline();
+    // 先排队大纲高亮：下面的分支里有提前 return，放在后面会漏掉贴底场景。
+    // 按帧合并而不是同步跑，理由见 scheduleActiveOutlineSync。
+    scheduleActiveOutlineSync();
     if (!scrollRef.value) return;
     const currentScrollTop = scrollRef.value.scrollTop;
     const userScrolledUp = currentScrollTop < lastScrollTop.value;
@@ -406,6 +449,7 @@ watch(() => props.sessionId, () => {
     shouldStickToBottom.value = true;
     lastScrollTop.value = 0;
     cancelScheduledScrollToBottom();
+    cancelScheduledActiveOutlineSync();
 });
 
 /** 外部可调用：强制滚动到底部。 */
@@ -416,11 +460,37 @@ const forceScrollToBottom = (): void => {
     scrollToBottom();
 };
 
+/** 外部可调用：按整段对话的百分比定位（右侧刻度列拖动用）。 */
+const forceScrollToRatio = (ratio: number): void => {
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    const max = Math.max(0, container.scrollHeight - container.clientHeight);
+    container.scrollTop = Math.min(1, Math.max(0, ratio)) * max;
+};
+
+/** 外部可调用：按像素滚动（刻度列把滚轮转过来时用）。 */
+const forceScrollBy = (deltaY: number): void => {
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    container.scrollTop += deltaY;
+};
+
 onUnmounted(() => {
     cancelScheduledScrollToBottom();
+    cancelScheduledActiveOutlineSync();
 });
 
-defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, scrollRef });
+defineExpose({
+    scrollToBottom: forceScrollToBottom,
+    scrollToAnchor,
+    scrollToRatio: forceScrollToRatio,
+    scrollBy: forceScrollBy,
+    scrollRef,
+});
 </script>
 
 <style scoped>
@@ -434,11 +504,44 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, scrollRef })
     0%, 100% { background-color: transparent; }
     30% { background-color: var(--accent-bg); }
 }
+
+/* 滚动条压淡：它右边紧挨着大纲刻度，两者不能被看成一回事。 */
+.chat-scroll::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--text-muted) 42%, transparent);
+}
+
+/* 上下箭头按钮：同上，作用域再收一层，确保对话区这根也没有箭头。 */
+.chat-scroll::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-secondary);
+}
+
+/*
+ * 右侧留出刻度列的位置：刻度列是绝对定位浮在滚动条左侧的（见 AgentChatOutline.vue），
+ * 不再占布局宽度，所以改由这里的内边距把正文挡开，免得被刻度压住。
+ * 42px = 刻度列 36px + 滚动条 6px。刻度列加宽，是为了给「选中那条更长」留出空间。
+ *
+ * 只在刻度列真的渲染时才留：没有可定位内容时大纲整体隐藏（见 AgentChatSurface 的 hidden），
+ * 这条留白就会变成右侧一道凭空的空白。
+ */
+.chat-scroll-gutter {
+    padding-right: 42px;
+}
 </style>
 
 <template>
     <!-- 通用对话流容器 -->
-    <div ref="scrollRef" class="flex flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
+    <div
+        ref="scrollRef"
+        class="chat-scroll flex flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]"
+        :class="{ 'chat-scroll-gutter': outlineItems.length > 0 }"
+        @scroll="onScroll"
+    >
         <!-- 更早历史局部状态；失败不会遮断当前已加载对话。 -->
         <div v-if="props.historyHasPrevious || props.historyLoading || props.historyError" class="mb-4 flex shrink-0 items-center justify-center">
             <button
@@ -512,7 +615,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollToAnchor, scrollRef })
                     :run-action-disabled="props.runActionDisabled"
                     :auto-expand="getNodeKey(item.node) === lastFileEditFailureKey"
                     @copy="emit('copy-tool', $event)"
-                    @retry="emit('retry', item.node.message)"
+                    @retry="emit('retry-append', item.node.message)"
                     @skip-edit="emit('skip-edit', item.node.message)"
                 />
             </div>

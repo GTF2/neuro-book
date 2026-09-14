@@ -147,6 +147,16 @@ const activeOutlineAnchor = ref("");
 const jumpToOutlineAnchor = (anchorId: string): void => {
     chatFlowRef.value?.scrollToAnchor(anchorId);
 };
+
+/** 刻度列拖动：按整段对话的百分比滚动，也让用户挑到一个比滚动条滑块好抓的把手。 */
+const scrubOutline = (ratio: number): void => {
+    chatFlowRef.value?.scrollToRatio(ratio);
+};
+
+/** 刻度列把滚轮转过来：按像素滚对话，鼠标停在最右边也不会滚不动。 */
+const scrollOutlineBy = (deltaY: number): void => {
+    chatFlowRef.value?.scrollBy(deltaY);
+};
 const inputRef = ref<InstanceType<typeof AgentComposer> | null>(null);
 
 const sessions = ref<AgentSessionSummaryDto[]>([]);
@@ -3225,6 +3235,9 @@ const saveEditedMessage = async (payload: {message: AgentMessage; content: strin
         return;
     }
     messageActionId.value = payload.message.id;
+    // moveTree 要等服务端跑完才返回，期间拿不到任何 live state；
+    // 先本地登记运行中，否则用户点完只看到发送键变灰，以为根本没跑。
+    const releaseLocalRun = session.beginLocalRun();
     try {
         await ensureActiveSessionEvents();
         const clientMessageId = crypto.randomUUID();
@@ -3255,6 +3268,7 @@ const saveEditedMessage = async (payload: {message: AgentMessage; content: strin
         console.error("改写消息失败", error);
         notifyAgentError(error, t("agent.chatSurface.rewriteFailed"));
     } finally {
+        releaseLocalRun();
         messageActionId.value = null;
     }
 };
@@ -3264,6 +3278,8 @@ const refreshMessage = async (message: AgentMessage): Promise<void> => {
         return;
     }
     messageActionId.value = message.id;
+    // 同上：moveTree 是长阻塞请求，先本地撑起「运行中」，跑完交回服务端状态裁决。
+    const releaseLocalRun = session.beginLocalRun();
     try {
         await ensureActiveSessionEvents();
         const result = await agentApi.moveTree(activeSessionId.value, {
@@ -3281,10 +3297,52 @@ const refreshMessage = async (message: AgentMessage): Promise<void> => {
         }
         cancelEditingMessage();
         await syncActiveSessionRecovery();
+        // 跑完必须给结论，否则用户不知道这次重试到底成没成。
+        // 若已产生待应答项，界面上的待处理面板是更强的信号，不再叠一条通知。
+        if (!pendingUserInputSession.value) {
+            notification.success(t("agent.chatSurface.regenerated"));
+        }
     } catch (error) {
         console.error("刷新消息失败", error);
         notifyAgentError(error, t("agent.chatSurface.refreshMessageFailed"));
     } finally {
+        releaseLocalRun();
+        messageActionId.value = null;
+    }
+};
+
+/**
+ * 失败卡片上的「重新尝试」：追加而不是重跑。
+ *
+ * 为什么与 refreshMessage 分开：refreshMessage 走 moveTree(position: "before")，
+ * 会把历史截断到失败点再原地重生成 —— 新回合落在会话中部，而用户视线停在底部，
+ * 看上去就是「点了没反应」。这里改成不动树、从 active leaf 直接继续：失败卡片原样保留，
+ * 新的尝试接在时间线末尾，用户马上能看到它在长。
+ */
+const appendRetryMessage = async (message: AgentMessage): Promise<void> => {
+    if (!activeSessionId.value || messageActionId.value || !activeInteraction.value.canMutateHistory) {
+        return;
+    }
+    messageActionId.value = message.id;
+    const releaseLocalRun = session.beginLocalRun();
+    try {
+        await ensureActiveSessionEvents();
+        const result = await agentApi.invokeSession(activeSessionId.value, {
+            mode: "continue",
+            clientState: buildClientState(),
+        });
+        await handleInvokeResult(result);
+        cancelEditingMessage();
+        await syncActiveSessionRecovery();
+        // 与 refreshMessage 一致地给结论；有待应答项时，面板本身是更强的信号。
+        if (!pendingUserInputSession.value) {
+            notification.success(t("agent.chatSurface.regenerated"));
+        }
+    } catch (error) {
+        console.error("追加重试失败", error);
+        notifyAgentError(error, t("agent.chatSurface.refreshMessageFailed"));
+    } finally {
+        releaseLocalRun();
         messageActionId.value = null;
     }
 };
@@ -4364,8 +4422,14 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @refresh="void loadActiveSystemPrompt(true)"
             />
 
-            <!-- 消息序列 + 右侧大纲 -->
-            <div class="flex min-h-0 flex-1">
+            <!--
+                消息序列 + 右侧大纲。
+                大纲用绝对定位浮在对话区之上、贴右 6px（滚动条的宽度），
+                于是顺序变成「正文 | 刻度 | 滚动条」，滚动条落在面板最右边；
+                否则它会被夹在正文和刻度之间，看着像凭空多出来一条。
+                这个 div 负责给绝对定位的大纲当参照，所以必须 relative。
+            -->
+            <div class="relative flex min-h-0 flex-1">
                 <AgentChatFlow
                     ref="chatFlowRef"
                     :messages="renderNodes"
@@ -4400,6 +4464,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     @cancel-edit="cancelEditingMessage"
                     @save-edit="void saveEditedMessage($event)"
                     @retry="void refreshMessage($event)"
+                    @retry-append="void appendRetryMessage($event)"
                     @branch-from-here="void branchFromMessage($event)"
                     @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
                     @load-previous="void loadPreviousHistory()"
@@ -4414,6 +4479,8 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     :active-anchor-id="activeOutlineAnchor"
                     :hidden="outlineItems.length === 0"
                     @jump="jumpToOutlineAnchor($event)"
+                    @scrub="scrubOutline"
+                    @scroll-by="scrollOutlineBy"
                 />
             </div>
 

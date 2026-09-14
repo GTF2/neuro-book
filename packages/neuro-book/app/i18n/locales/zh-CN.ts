@@ -1864,6 +1864,7 @@ const zhCN = {
         },
         composer: {
             followProfile: "跟随 Profile",
+            generating: "正在生成…",
             imageUnsupportedSendable: "当前模型未声明图片输入能力；仍可发送，后端会使用文本占位。",
             imageUnsupportedPlaceholder: "当前模型未声明图片输入能力；发送时将保留原位置文本占位。",
             imageUploadFailed: "存在上传失败图片，请重试或移除",
@@ -2051,7 +2052,7 @@ const zhCN = {
             editFailureBannerLegacy: "本次批量编辑未写入文件。此为较早的记录，未包含结构化失败详情，下方为原始报错。",
             // 失败卡片的操作出口：给「下一步该干嘛」，而不是只把报错摊开
             editRetry: "重新尝试",
-            editRetryHint: "会先重新读取文件，再重新生成改动。",
+            editRetryHint: "会在对话末尾追加一次新尝试，原卡片保留。",
             editSkip: "跳过此次编辑",
             editSkipPrefill: "跳过这次编辑，继续执行后续步骤。",
             // 工具卡片人化标题：typeLabel 从英文术语换成「这步在干嘛」
@@ -2267,6 +2268,7 @@ const zhCN = {
             branchFromHereFailed: "分叉失败",
             skipEditTitle: "跳过此次编辑",
             skipEditDraftBlocked: "输入框里已有其它草稿，请先处理当前草稿。",
+            regenerated: "已重新生成",
             // Composer 草稿
             draftTooLargeMessage: "Composer 草稿超过 256 KiB，已停止保存该草稿。",
             draftTooLargeTitle: "草稿过大",

@@ -112,6 +112,18 @@ type ComposerAvailabilityView = {
 
 /** 将 availability 映射成持续可见的状态说明与唯一可用操作。 */
 const availabilityView = computed<ComposerAvailabilityView | null>(() => {
+    // 运行中优先：否则长阻塞的运行完全没有文字反馈，用户只能靠发送键图标猜。
+    // 仅在 ready 时接管 —— 其他状态（unselected/archived/blocked…）本身信息量更大，不覆盖。
+    if (props.running && props.availability.status === "ready") {
+        return {
+            icon: "i-lucide-loader-circle animate-spin",
+            message: t("agent.composer.generating"),
+            tone: "info",
+            action: null,
+            actionIcon: "",
+            actionLabel: "",
+        };
+    }
     switch (props.availability.status) {
         case "ready":
             return null;

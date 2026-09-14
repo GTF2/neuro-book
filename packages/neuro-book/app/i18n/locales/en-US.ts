@@ -1866,6 +1866,7 @@ const enUS = {
         },
         composer: {
             followProfile: "Follow Profile",
+            generating: "Generating...",
             imageUnsupportedSendable: "The current model does not declare image input support; you can still send, and the backend keeps a text placeholder.",
             imageUnsupportedPlaceholder: "The current model does not declare image input support; a text placeholder is kept in place when sending.",
             imageUploadFailed: "Some images failed to upload — retry or remove them",
@@ -2053,7 +2054,7 @@ const enUS = {
             editFailureBannerLegacy: "All changes were discarded. This is an older entry without structured failure details; the raw error is shown below.",
             // Failure card exit actions: tell the user what to do next instead of only dumping the error.
             editRetry: "Try again",
-            editRetryHint: "The file is re-read first, then the changes are regenerated.",
+            editRetryHint: "Appends a new attempt at the end of the conversation; the original card is kept.",
             editSkip: "Skip this edit",
             editSkipPrefill: "Skip this edit and continue with the remaining steps.",
             // Humanized tool card titles: typeLabel describes what this step does, not an English jargon term.
@@ -2269,6 +2270,7 @@ const enUS = {
             branchFromHereFailed: "Failed to branch",
             skipEditTitle: "Skip This Edit",
             skipEditDraftBlocked: "The composer already has another draft — handle it first.",
+            regenerated: "Regenerated",
             // Composer draft
             draftTooLargeMessage: "The composer draft exceeds 256 KiB, so saving it was stopped.",
             draftTooLargeTitle: "Draft too large",

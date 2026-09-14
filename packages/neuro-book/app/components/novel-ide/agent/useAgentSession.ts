@@ -95,6 +95,12 @@ export function useAgentSession() {
     const liveOverlay = shallowRef<AgentMessage[]>([]);
     const optimisticMessages = shallowRef<AgentMessage[]>([]);
     const liveRunStatus = ref<"idle" | "running" | "waiting" | "aborting">("idle");
+    /**
+     * 本地已受理、但服务端 live state 尚未回流的运行计数。
+     * moveTree 这类「提交后要跑完才返回」的长阻塞请求，期间没有任何 live state 可等，
+     * 只能靠这个计数撑住「运行中」反馈；否则用户点完只看到发送键变灰，以为根本没跑。
+     */
+    const localRunPending = ref(0);
     const runPhase = ref<AgentRunPhase>("idle");
     const connectionStatus = ref<AgentConnectionStatus>("idle");
     const pendingUserInputSessions = shallowRef<AgentPendingUserInputSession[]>([]);
@@ -120,7 +126,10 @@ export function useAgentSession() {
         pendingUserInputs: recoveryShell.value?.pendingUserInputs,
     }));
     const messages = computed(() => mergeMessageLayers(durableMessages.value, liveOverlay.value, optimisticMessages.value));
-    const running = computed(() => Boolean(recoveryShell.value?.activeInvocation) || liveRunStatus.value === "running" || liveRunStatus.value === "aborting");
+    const running = computed(() => Boolean(recoveryShell.value?.activeInvocation)
+        || liveRunStatus.value === "running"
+        || liveRunStatus.value === "aborting"
+        || localRunPending.value > 0);
     const pendingUserInputSession = computed<AgentPendingUserInputSession | null>(() => pendingUserInputSessions.value[0] ?? null);
     const hasPrevious = computed(() => previousCursor.value !== null);
 
@@ -238,6 +247,7 @@ export function useAgentSession() {
         liveOverlay.value = [];
         optimisticMessages.value = [];
         liveRunStatus.value = "idle";
+        localRunPending.value = 0;
         runPhase.value = "idle";
         connectionStatus.value = "idle";
         pendingUserInputSessions.value = [];
@@ -250,6 +260,23 @@ export function useAgentSession() {
         systemPrompt.value = null;
         systemPromptLoading.value = false;
         systemPromptError.value = "";
+    };
+
+    /**
+     * 登记一次「已提交、结果未回」的长阻塞运行，并返回释放函数。
+     * 调用方必须在 finally 中释放。释放后 running 交回服务端 live state 裁决，
+     * 因此提前释放或重复释放都不会把界面永久卡在运行中。
+     */
+    const beginLocalRun = (): (() => void) => {
+        localRunPending.value += 1;
+        let released = false;
+        return () => {
+            if (released) {
+                return;
+            }
+            released = true;
+            localRunPending.value = Math.max(0, localRunPending.value - 1);
+        };
     };
 
     /** 追加与 durable history 分离的保序乐观用户消息，并返回可回滚 ID。 */
@@ -683,6 +710,7 @@ export function useAgentSession() {
         applyLiveState,
         applyRecovery,
         applyRelations,
+        beginLocalRun,
         clearRecoveryRequest,
         connectionStatus,
         durableEntries,
