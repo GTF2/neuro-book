@@ -587,20 +587,23 @@ async function parseLegacySyncState(systemNbookRoot: string): Promise<LegacySync
         throw legacySyncStateNeedsReview(statePath, "不是有效 JSON", error);
     }
     if (typeof value !== "object" || value === null) throw legacySyncStateNeedsReview(statePath, "结构无效");
-    const hasAssets = "assets" in value;
-    const hasProfiles = "profiles" in value;
+    const document = value as Record<string, unknown>;
+    const hasAssets = "assets" in document;
+    const hasProfiles = "profiles" in document;
     // 条目级形状同样严格：旧投影写入的条目恒带字符串键（assetPath/fileName），
     // 缺失即并发改坏或外部污染，无法安全分类时必须 fail closed 而非静默残留。
-    if ((hasAssets && !Array.isArray(value.assets)) || (hasProfiles && !Array.isArray(value.profiles)) || (!hasAssets && !hasProfiles)) {
+    if ((hasAssets && !Array.isArray(document.assets)) || (hasProfiles && !Array.isArray(document.profiles)) || (!hasAssets && !hasProfiles)) {
         throw legacySyncStateNeedsReview(statePath, "结构无效");
     }
-    if (hasAssets && !value.assets.every((item) => typeof item === "object" && item !== null && "assetPath" in item && typeof item.assetPath === "string")) {
+    const assets = (document.assets ?? []) as readonly unknown[];
+    const profiles = (document.profiles ?? []) as readonly unknown[];
+    if (hasAssets && !assets.every((item) => typeof item === "object" && item !== null && "assetPath" in item && typeof item.assetPath === "string")) {
         throw legacySyncStateNeedsReview(statePath, "assets 条目结构无效");
     }
-    if (hasProfiles && !value.profiles.every((item) => typeof item === "object" && item !== null && "fileName" in item && typeof item.fileName === "string")) {
+    if (hasProfiles && !profiles.every((item) => typeof item === "object" && item !== null && "fileName" in item && typeof item.fileName === "string")) {
         throw legacySyncStateNeedsReview(statePath, "profiles 条目结构无效");
     }
-    return value;
+    return document;
 }
 
 /**

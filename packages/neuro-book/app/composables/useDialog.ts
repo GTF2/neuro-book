@@ -380,7 +380,8 @@ function createChooseCardsDialogInstance(options: ChooseCardsDialogOptions, sour
 export function useDialog() {
     const {t} = useI18n();
     const nuxtApp = useNuxtApp();
-    const sourceApp = nuxtApp.vueApp as VueI18nContextApp;
+    // Nuxt 4.5 起 vueApp 的公开类型与 vue-i18n 的 App 扩展类型不再重叠，按语义桥接。
+    const sourceApp = nuxtApp.vueApp as unknown as VueI18nContextApp;
 
     /**
      * 消息提示对话框，替代 window.alert。
