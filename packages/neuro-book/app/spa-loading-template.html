@@ -1,0 +1,180 @@
+<!--
+  SPA 首屏加载占位（`ssr: false` 时由 Nuxt 注入到渲染出的 HTML 中）。
+
+  约束：本文件在应用 JS/CSS 加载完成之前就被浏览器渲染，因此
+  **只能使用内联样式与字面色值**，不得引用 Vue 组件、UnoCSS 类或 `var(--*)` 主题变量。
+
+  取色与字号对齐 app/utils/theme/theme-tokens.ts 与仓库现有界面（正文 13-15px 体系）：
+  - 默认浅色（`light`）：背景 #f6f8fa、卡片 #ffffff、边框 #e5e7eb、标题 #111827、
+    淡化 #6b7280、主色 #3b82f6
+  - 暗色（`dark`）：背景 #18181b、卡片 #252529、边框 #3f3f46、标题 #fafafa、
+    淡化 #a1a1aa、主色 #f59e0b
+
+  默认呈现浅色（与 app/styles/theme-vars.css 的首屏兜底同族，避免闪黑）；
+  系统偏好暗色时切暗色；若能读到用户实际主题外观，则以用户主题为准。
+
+  应用挂载后 Nuxt 会替换 #__nuxt 的内容，本占位随之消失，无需手动清理。
+-->
+<div class="nb-boot">
+    <div class="nb-boot__card">
+        <div class="nb-boot__row">
+            <span class="nb-boot__spinner"></span>
+            <span class="nb-boot__title">正在启动 NeuroBook</span>
+        </div>
+        <p class="nb-boot__hint">正在加载界面资源</p>
+        <div class="nb-boot__bar"></div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --nb-bg: #f6f8fa;
+        --nb-card: #ffffff;
+        --nb-border: #e5e7eb;
+        --nb-title: #111827;
+        --nb-hint: #6b7280;
+        --nb-accent: #3b82f6;
+        --nb-track: #e5e7eb;
+        --nb-shadow: rgba(15, 23, 42, 0.1);
+    }
+
+    /* 系统偏好暗色时切暗色，但用户若已显式选择浅色主题则不覆盖 */
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-nb-appearance="light"]) {
+            --nb-bg: #18181b;
+            --nb-card: #252529;
+            --nb-border: #3f3f46;
+            --nb-title: #fafafa;
+            --nb-hint: #a1a1aa;
+            --nb-accent: #f59e0b;
+            --nb-track: #3f3f46;
+            --nb-shadow: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    :root[data-nb-appearance="dark"] {
+        --nb-bg: #18181b;
+        --nb-card: #252529;
+        --nb-border: #3f3f46;
+        --nb-title: #fafafa;
+        --nb-hint: #a1a1aa;
+        --nb-accent: #f59e0b;
+        --nb-track: #3f3f46;
+        --nb-shadow: rgba(0, 0, 0, 0.5);
+    }
+
+    .nb-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--nb-bg);
+        font: 400 13px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+        user-select: none;
+    }
+
+    .nb-boot__card {
+        box-sizing: border-box;
+        width: 340px;
+        padding: 20px 22px 22px;
+        border: 1px solid var(--nb-border);
+        border-radius: 12px;
+        background: var(--nb-card);
+        box-shadow: 0 10px 30px var(--nb-shadow);
+    }
+
+    .nb-boot__row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .nb-boot__spinner {
+        box-sizing: border-box;
+        flex: none;
+        width: 16px;
+        height: 16px;
+        border: 2px solid var(--nb-track);
+        border-top-color: var(--nb-accent);
+        border-radius: 50%;
+        animation: nb-boot-spin 700ms linear infinite;
+    }
+
+    .nb-boot__title {
+        color: var(--nb-title);
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .nb-boot__hint {
+        margin: 8px 0 14px;
+        color: var(--nb-hint);
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .nb-boot__bar {
+        height: 4px;
+        border-radius: 999px;
+        background: var(--nb-track);
+        overflow: hidden;
+    }
+
+    /* 不确定进度：首屏占位无法得知真实进度，用匀速滑块表达"进行中" */
+    .nb-boot__bar::after {
+        content: "";
+        display: block;
+        width: 38%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--nb-accent);
+        animation: nb-boot-slide 1.1s ease-in-out infinite;
+    }
+
+    @keyframes nb-boot-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes nb-boot-slide {
+        from {
+            transform: translateX(-100%);
+        }
+        to {
+            transform: translateX(264%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .nb-boot__spinner {
+            animation-duration: 2.4s;
+        }
+
+        .nb-boot__bar::after {
+            animation-duration: 3s;
+        }
+    }
+</style>
+
+<script>
+    // 首屏在应用挂载前执行：若会话里已有用户主题外观，直接采用，避免与其主题错位。
+    // 读取失败一律保持默认（浅色 + 跟随系统偏好）。
+    try {
+        var raw = sessionStorage.getItem("novel.ide.session") || localStorage.getItem("novel.ide.session");
+        if (raw) {
+            var parsed = JSON.parse(raw);
+            var appearance = (parsed && parsed.activeThemeAppearance)
+                || (parsed && parsed.state && parsed.state.activeThemeAppearance)
+                || "";
+            if (appearance === "light" || appearance === "dark") {
+                document.documentElement.setAttribute("data-nb-appearance", appearance);
+            }
+        }
+    } catch (error) {
+        /* 静默降级到默认外观 */
+    }
+</script>

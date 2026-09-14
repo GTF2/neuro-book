@@ -1,4 +1,5 @@
 #!/usr/bin/env bun
+import {spawn} from "node:child_process";
 import {randomBytes} from "node:crypto";
 import {existsSync} from "node:fs";
 import {homedir} from "node:os";
@@ -83,6 +84,14 @@ export async function runSourceDev(options: SourceDevOptions = {}): Promise<numb
     const env = {
         ...inherited,
         ...configuredHost ? {} : {HOST: "127.0.0.1", NITRO_HOST: "127.0.0.1"},
+        /**
+         * `node:sqlite` 是 Node 的实验性内置模块，宿主每次启动都会打印
+         * "SQLite is an experimental feature" 警告；这里只静音 ExperimentalWarning
+         * 这一类（Node 21.3+ 起支持），其余警告保持可见。
+         */
+        NODE_OPTIONS: inherited.NODE_OPTIONS?.trim()
+            ? `${inherited.NODE_OPTIONS.trim()} --disable-warning=ExperimentalWarning`
+            : "--disable-warning=ExperimentalWarning",
         NEURO_BOOK_REPOSITORY_ROOT: roots.repositoryRoot,
         NEURO_BOOK_APPLICATION_ROOT: roots.applicationSourceRoot,
         NEURO_BOOK_STATE_ROOT: stateRoot,
@@ -105,6 +114,19 @@ export async function runSourceDev(options: SourceDevOptions = {}): Promise<numb
         hardKillWaitMs: 5_000,
     });
     const completion = lease.completion.then(productExit);
+    /**
+     * 等应用真正可服务后再打开浏览器（`nuxt dev --open` 会在 Nitro 就绪前抢跑）。
+     * 只在直接执行本 CLI 时生效：被 import 时（launcher 测试、Manager 内部入口）不打扰调用方。
+     * `NEURO_BOOK_DEV_NO_OPEN=1` 关闭该行为。
+     */
+    if (import.meta.main && env.NEURO_BOOK_DEV_NO_OPEN?.trim() !== "1") {
+        void waitForApplicationReady(configuredHost ?? "127.0.0.1", port, 300_000)
+            .then((ready) => {
+                if (!ready) return;
+                openSystemBrowser(`http://${sourceDevLoopbackHost(configuredHost)}:${String(port)}/`);
+            })
+            .catch(() => undefined);
+    }
     let signalCount = 0;
     let shutdownPromise: Promise<"graceful" | "forced"> | null = null;
     let forcedShutdownPromise: Promise<"forced"> | null = null;
@@ -160,6 +182,45 @@ function sourceDevLoopbackHost(host: string | undefined): "127.0.0.1" | "localho
     if (normalized === "localhost") return "localhost";
     if (normalized === "::" || normalized === "::1") return "[::1]";
     return "127.0.0.1";
+}
+
+/**
+ * 轮询等待应用真正可服务。
+ *
+ * `nuxt dev` 打印 `Local:` 时 Vite 只是开始监听，Nitro 服务端往往仍在编译
+ * （首次实测 12-17 秒），此刻打开浏览器只会让用户对着还没法服务的页面等待。
+ * 401/403 同样说明服务端已就绪，只有 5xx 与连接失败才继续等待。
+ */
+async function waitForApplicationReady(host: string, port: number, timeoutMs: number): Promise<boolean> {
+    const probe = `http://${sourceDevLoopbackHost(host)}:${String(port)}/api/auth/me`;
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+        try {
+            const response = await fetch(probe, {signal: AbortSignal.timeout(3_000)});
+            if (response.status < 500) return true;
+        } catch {
+            // 端口尚未监听或仍在编译，继续等待。
+        }
+        // 间隔放宽：每次探测都可能触发一条 Nitro 路由的首次编译，不宜过密。
+        await new Promise((resolvePromise) => setTimeout(resolvePromise, 1_500));
+    }
+    return false;
+}
+
+/** 用系统默认浏览器打开 Source Dev 地址；无 GUI / CI 环境下静默失败，不影响启动。 */
+function openSystemBrowser(url: string): void {
+    const command = process.platform === "win32"
+        ? {file: "cmd.exe", args: ["/c", "start", "", url]}
+        : process.platform === "darwin"
+            ? {file: "open", args: [url]}
+            : {file: "xdg-open", args: [url]};
+    try {
+        const child = spawn(command.file, command.args, {stdio: "ignore", detached: true});
+        child.on("error", () => undefined);
+        child.unref();
+    } catch {
+        // 打不开浏览器不是启动失败。
+    }
 }
 
 /** Source Dev 继续沿用 Nuxt 的 NUXT_PORT/PORT/default 解析顺序。 */

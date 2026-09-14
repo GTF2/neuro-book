@@ -1,3 +1,4 @@
+import {existsSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 import {join, resolve} from "node:path";
 import {
@@ -9,6 +10,16 @@ const rootDir = fileURLToPath(new URL("./", import.meta.url));
 const repositoryRoot = resolve(rootDir, "..", "..");
 const serverDir = fileURLToPath(new URL("./server/", import.meta.url));
 const i18nConfigPath = fileURLToPath(new URL("./app/i18n/i18n.config.ts", import.meta.url));
+/**
+ * SPA 首屏加载占位模板。
+ *
+ * 注意：Nuxt 不解析该配置项字符串里的 `~` 别名——传 `"~/spa-loading-template.html"` 会被拼成
+ * `<srcDir>/~/spa-loading-template.html` 并报 NUXT_B7016。这里给出构建时解析的绝对路径。
+ */
+const spaLoadingTemplatePath = fileURLToPath(new URL("./app/spa-loading-template.html", import.meta.url));
+if (!existsSync(spaLoadingTemplatePath)) {
+    throw new Error(`SPA 首屏占位模板缺失：${spaLoadingTemplatePath}`);
+}
 const configuredStateRoot = process.env.NEURO_BOOK_STATE_ROOT?.trim();
 const runtimeWorkspaceRoot = configuredStateRoot ? resolve(configuredStateRoot, "workspace").replace(/\\/g, "/").replace(/\/$/u, "") : "";
 const productImageRoot = process.env.NEURO_BOOK_PRODUCT_IMAGE_ROOT?.trim();
@@ -46,11 +57,24 @@ const runtimeWorkspaceWatchIgnore = [
 
 export default defineNuxtConfig({
     ssr: false,
+    // SPA 模式下浏览器先拿到空壳、再下载并执行 JS，期间是完全白屏；
+    // 开启后由 Nuxt 把 app/spa-loading-template.html 注入到首屏 HTML，挂载即消失。
+    spaLoadingTemplate: spaLoadingTemplatePath,
     buildId: productBuildId,
     alias: {
         nbook: rootDir,
     },
     vite: {
+        /**
+         * `node:sqlite` 与 `bun:ffi` 分别由 Node 与 Bun 宿主在运行时提供，且都以
+         * `await import()` 惰性加载（见 server/rag/sqlite-vec-database.ts、
+         * server/workspace-files/project-root-reparse-windows.ts）。
+         * 显式声明为 SSR external，避免 Rollup 认不出这两个内置模块而反复告警
+         * "could not be resolved – treating it as an external dependency"。
+         */
+        ssr: {
+            external: ["node:sqlite", "bun:ffi"],
+        },
         cacheDir: process.env.NEURO_BOOK_CACHE_ROOT?.trim()
             ? join(process.env.NEURO_BOOK_CACHE_ROOT.trim(), "vite")
             : undefined,
