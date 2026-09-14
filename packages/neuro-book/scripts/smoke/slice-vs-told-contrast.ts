@@ -24,7 +24,7 @@
  *   bun run smoke:contrast -- --project <projectRoot> --chapter-id <storyChapterId> \
  *     --out-dir .contrast
  *
- * 环境变量:AGENT_HTTP_BASE_URL,默认 http://localhost:3000。
+ * 环境变量:AGENT_HTTP_BASE_URL,默认 http://127.0.0.1:3000(不要写 localhost,见下方 BASE_URL 注释)。
  */
 
 import {existsSync, statSync} from "node:fs";
@@ -35,7 +35,9 @@ import type {AgentJobStatus} from "nbook/server/agent/jobs/agent-job-manager";
 import {resolveStateRoot} from "nbook/server/runtime/installation-paths";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 
-const BASE_URL = process.env.AGENT_HTTP_BASE_URL ?? "http://localhost:3000";
+// 默认用 IPv4 回环而不是 localhost：Windows 上 localhost 常先解析到 ::1，
+// 而应用只监听 127.0.0.1:3000，探活会超时并误报"dev server 没起来"。
+const BASE_URL = process.env.AGENT_HTTP_BASE_URL ?? "http://127.0.0.1:3000";
 const POLL_INTERVAL_MS = 2_000;
 /** 真实模型写正文+三维评审一轮实测 13 分钟+;给足 20 分钟。 */
 const POLL_TIMEOUT_MS = 20 * 60 * 1_000;
