@@ -500,11 +500,9 @@ export const ChapterPlotDetailDtoSchema = z.object({
     totalScenes: z.number().int().nonnegative(),
 });
 
-// Writer 防全知模式:autonomous=writer 自查 World Engine/lorebook,brief 只给查询提示;
-// curated=writer 读不到设定源,brief 需带上过滤后的状态摘要,由 leader 投喂。
-// slice-only=纯事实切片(写作宪法第五条「事后校验,不事前告知」):brief 只含时间/地点/在场角色/
-// 世界状态截面/查询提示等事实,剔除信息控制四字段与禁写类意义指令;信息控制全空不再降级 status,
-// 四字段改由 review workflow 事后核对。
+// Writer 防全知模式,只决定「世界状态怎么给」:autonomous=writer 自查 World Engine/lorebook,
+// writer 视图只给查询提示;curated / slice-only=writer 读不到设定源,展开过滤后的状态摘要。
+// 三个模式的 writer 视图都只含事实级细节(写作宪法第二条/第五条),差异不体现在给不给意图上。
 export const ChapterWriterBriefModeSchema = z.enum(["autonomous", "curated", "slice-only"]);
 
 export const ChapterWriterBriefStatusSchema = z.enum([
@@ -512,8 +510,6 @@ export const ChapterWriterBriefStatusSchema = z.enum([
     "needs_plot",
     "needs_world_anchor",
     "needs_world_context",
-    // 信息控制四项(读者已知/主角已知/必须隐藏/可暗示)全空:信息控制是防全知唯一的按章控制面,必填。
-    "needs_chapter_brief",
 ]);
 
 // brief 编译出的建议读取项。来源于 Scene/Thread 的结构化 refs(content 类),替代 leader 手写设定复述。
@@ -592,7 +588,10 @@ export const ChapterWriterBriefDtoSchema = z.object({
     // 触及本章的未决决策警告(D26):writer 不得擅自写死;第一版不做 status 阻断。
     openDecisions: z.array(ChapterWriterBriefOpenDecisionDtoSchema),
     warnings: z.array(z.string()),
+    // writer 视图(事实切片):唯一进入 writer 动笔前上下文的交付物,只含事实级细节。
     suggestedBriefMarkdown: z.string().min(1),
+    // 评审视图(事后核对清单):目标与落点/信息控制/禁写/场景意图/Promise 任务/未决决策等意图级内容,不下发 writer。
+    reviewChecklistMarkdown: z.string().min(1),
 });
 
 export const StoryThreadTreeNodeDtoSchema = StoryThreadSummaryDtoSchema.extend({

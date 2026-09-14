@@ -185,22 +185,34 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
             ],
             suggestedBriefMarkdown: expect.stringContaining("神殿相遇"),
         });
-        // autonomous 默认:只给查询提示,不展开状态切面。
-        expect((brief as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).toContain("World 查询提示");
-        expect((brief as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("神殿灯火");
+        // autonomous 默认:writer 视图只给查询提示,不展开状态切面,也不含任何意图级内容。
+        const autonomousMd = (brief as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown;
+        expect(autonomousMd).toContain("World 查询提示");
+        expect(autonomousMd).not.toContain("神殿灯火");
+        expect(autonomousMd).not.toContain("## 信息控制");
+        expect(autonomousMd).not.toContain("- 本场目的:");
+        expect(autonomousMd).not.toContain("- 线索脉络:");
+        // 意图级内容改由评审清单承载。
+        const autonomousChecklist = (brief as {reviewChecklistMarkdown: string}).reviewChecklistMarkdown;
+        expect(autonomousChecklist).toContain("必须隐藏：薇洛丝不知道项链是前作遗物");
+        expect(autonomousChecklist).toContain("- 本场目的: 建立同盟关系。");
+        expect(autonomousChecklist).toContain("- 线索脉络: 主线推进到神殿。");
 
-        // curated:同一章展开 World Context 状态摘要,供 leader 投喂。
+        // curated:同一章展开 World Context 状态摘要,writer 视图仍只有事实。
         const curated = await callApi(handler, projectRootName, "GET", "chapter-writer-brief", undefined, {chapterId: readId(chapter), mode: "curated"});
         expect((curated as {mode: string}).mode).toBe("curated");
-        expect((curated as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).toContain("神殿灯火");
-        expect((curated as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("\"hp\"");
+        const curatedMd = (curated as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown;
+        expect(curatedMd).toContain("神殿灯火");
+        expect(curatedMd).not.toContain("\"hp\"");
+        expect(curatedMd).not.toContain("## 信息控制");
 
-        // slice-only:展开事实截面,但不渲染信息控制与禁写段。
+        // slice-only:展开事实截面,writer 视图同样只有事实。
         const sliceOnly = await callApi(handler, projectRootName, "GET", "chapter-writer-brief", undefined, {chapterId: readId(chapter), mode: "slice-only"});
         expect((sliceOnly as {mode: string}).mode).toBe("slice-only");
-        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).toContain("神殿灯火");
-        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("## 信息控制");
-        expect((sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown).not.toContain("## 禁写");
+        const sliceOnlyMd = (sliceOnly as {suggestedBriefMarkdown: string}).suggestedBriefMarkdown;
+        expect(sliceOnlyMd).toContain("神殿灯火");
+        expect(sliceOnlyMd).not.toContain("## 信息控制");
+        expect(sliceOnlyMd).not.toContain("## 禁写");
     });
 
     it("缺 projectRoot query 时返回 400", async () => {

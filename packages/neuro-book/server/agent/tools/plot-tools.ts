@@ -7,6 +7,7 @@ import type {NeuroAgentTool, NeuroToolResult, ToolExecutionContext} from "nbook/
 import {normalizeToolResultDetails} from "nbook/server/agent/messages/message-utils";
 import {PROJECT_PLOT_WORLD_MODULE_TOKEN} from "nbook/server/plot";
 import type {PlotFacade} from "nbook/server/plot/facade/plot.facade";
+import type {ChapterWriterBriefDto} from "nbook/shared/dto/plot.dto";
 import {
     activateReadyProjectModule,
     requireActiveReadyProject,
@@ -143,7 +144,7 @@ const GetChapterWriterBriefSchema = Type.Object({
     ...ProjectScopedSchema.properties,
     chapterId: NonEmptyString("StoryChapter ID. Use get_story_tree to list chapters."),
     mode: Type.Optional(Type.Union([Type.Literal("autonomous"), Type.Literal("curated"), Type.Literal("slice-only")], {
-        description: "Anti-omniscience mode. autonomous (default): writer self-queries World Engine/lorebook, brief gives only query hints. curated: writer can't read sources, brief expands filtered state summaries for the leader to feed. slice-only: pure fact slice per writing doctrine — only time/location/subjects/world state/query hints, no info-control or do-not-write meaning instructions; info-control fields become a post-hoc review checklist.",
+        description: "Anti-omniscience mode; it only changes how world state is delivered, never whether meaning instructions are included. autonomous (default): the writer self-queries World Engine/lorebook, so the writer view only carries query hints. curated / slice-only: the writer cannot read sources, so the brief expands filtered state summaries.",
     })),
 });
 
@@ -338,12 +339,14 @@ export function createPlotTools(): NeuroAgentTool[] {
                 plotResult(await facade.getChapterPlotDetailDto(parseEntityId("chapterId", input.chapterId)))
             ))
         )),
-        tool("get_chapter_writer_brief", "Compile a chapter writer brief from ChapterBrief, Plot Scenes and filtered World Engine context. mode=autonomous (default) gives query hints; mode=curated expands state summaries. Returns markdown text for writer handoff and full DTO in details.", GetChapterWriterBriefSchema, {mutates: false}, async (context, input) => (
+        tool("get_chapter_writer_brief", "Compile a chapter writer brief from ChapterBrief, Plot Scenes and filtered World Engine context. Returns the writer view (facts only: time, location, subjects on stage, world state or query hints, suggested reading) as markdown text for writer handoff; the review checklist (goals, info control, do-not-write, promise tasks, open decisions) is post-write review material and is not part of the writer's context. mode only changes how world state is delivered: autonomous (default) gives query hints, curated / slice-only expand state summaries.", GetChapterWriterBriefSchema, {mutates: false}, async (context, input) => (
             runPlotOperation(context, input.projectRoot, async (facade) => {
                 const result = await facade.getChapterWriterBrief(parseEntityId("chapterId", input.chapterId), input.mode ?? "autonomous");
                 return {
                     content: [{type: "text" as const, text: result.suggestedBriefMarkdown}],
-                    details: result as JsonValue,
+                    details: context.profileKey === "writer"
+                        ? toWriterSafeBriefDetails(result)
+                        : normalizeToolResultDetails(result),
                 };
             })
         )),
@@ -667,6 +670,37 @@ function plotResult(details: unknown): NeuroToolResult {
         content: [{type: "text" as const, text: JSON.stringify(details, null, 2)}],
         details: normalizeToolResultDetails(details),
     };
+}
+
+/**
+ * writer 调用 get_chapter_writer_brief 时的 details 收口。
+ *
+ * writer 是唯一拿着这份结果动笔的 profile,它的 tool result 里不允许出现任何意图级数据
+ * (目标/目的/写作提示/线索脉络/Promise 任务/未决决策/评审清单)。details 按最坏情况收口:
+ * writer 只回传事实字段;leader 与评审调用时保留完整 DTO(评审清单在 reviewChecklistMarkdown)。
+ */
+function toWriterSafeBriefDetails(result: ChapterWriterBriefDto): JsonValue {
+    return normalizeToolResultDetails({
+        chapter: result.chapter,
+        mode: result.mode,
+        status: result.status,
+        totalScenes: result.totalScenes,
+        scenes: result.scenes.map((scene) => ({
+            id: scene.id,
+            threadId: scene.threadId,
+            threadTitle: scene.threadTitle,
+            threadIsMain: scene.threadIsMain,
+            title: scene.title,
+            status: scene.status,
+            summary: scene.summary,
+            worldAnchor: scene.worldAnchor,
+            worldContext: scene.worldContext,
+            warnings: scene.warnings,
+        })),
+        suggestedReading: result.suggestedReading,
+        warnings: result.warnings,
+        suggestedBriefMarkdown: result.suggestedBriefMarkdown,
+    });
 }
 
 /** 在调用方选定的 exact Project generation 内执行一次 Plot 操作。 */

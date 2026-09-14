@@ -21,13 +21,14 @@ An ordinary `writer` is a reusable writing station. Create it with an empty init
 }
 ```
 
-Each round states the task in natural language through `invoke_agent.message`, and names the single target file plus the suggested reading list through `invoke_agent.input`:
+Each round names the single target file, the chapter id and the suggested reading list through `invoke_agent.input`, while `invoke_agent.message` only carries the delivery requirement (writing doctrine, articles 2 and 5: meaning instructions are never handed to the writer):
 
 ```json
 {
-  "message": "Continue this chapter. Start from the protagonist pushing open the archive door, and end when she finds a page missing from the ledger and decides to keep it to herself.\n\n[Scene Context]\n- Setting: the archive room in the west annex hall of the imperial palace, early evening\n- Time range: Imperial Era 520, fourth month, day 12, hour of the Monkey to hour of the Rooster\n- Characters on stage: Xiao Yunshu (protagonist, female court official)\n- Prior events: she was sent to audit the accounts, but she suspects it is a trap\n- Key plot point: she finds page 8 torn out of the ledger and realizes someone left that trace on purpose\n- Information control: she knows the page is missing but not who tore it out; the reader knows exactly as much as she does\n- World Engine query hint: query Xiao Yunshu's state, location and state of mind at the hour of the Rooster on Imperial Era 520, fourth month, day 12\n\nWhen the draft is done, polish it once, then report_result with the paths you actually changed and a plot summary of about 100 words.",
+  "message": "Write this chapter's prose into the file named by input.path. Fetch your fact brief with get_chapter_writer_brief using input.chapterId. When the draft is done, polish it once, then report_result with the paths you actually changed and a plot summary of about 100 words.",
   "input": {
     "path": "my-novel/manuscript/001-volume/003-chapter/index.md",
+    "chapterId": "12",
     "context": {
       "lorebookEntries": ["my-novel/lorebook/character/protagonist/"],
       "readablePaths": ["my-novel/manuscript/001-volume/002-chapter/index.md"]
@@ -36,9 +37,9 @@ Each round states the task in natural language through `invoke_agent.message`, a
 }
 ```
 
-`message` must express this round's task on its own: what to write, the scope, the constraints, the stopping condition and what to deliver. `input.context` is only a structured list of references; it cannot stand in for the task description.
+`message` only carries the delivery requirement: which file to write and when the round counts as done. Goals, key plot points and information control are **meaning-level content and do not belong here** — they live in the review view of the same compiled brief. `input.context` is only a structured list of references; it cannot stand in for the task description.
 
-**Note**: the legacy fields `context.threadIds/sceneIds/plotIds` may optionally be kept for backward compatibility, but the writer will not use them to read Plot on its own. When Scene / World Context is needed, the leader must compile the full brief and put it into `message`.
+**Note**: the legacy fields `context.threadIds/sceneIds/plotIds` may optionally be kept for backward compatibility, but the writer will not use them to read Plot on its own. When Scene / World Context is needed, the writer fetches the fact brief itself with `get_chapter_writer_brief` and `input.chapterId`.
 
 ## Profile Presets
 
@@ -72,7 +73,7 @@ The writer prepare stage injects only:
 - The derivable `projectPath`, `projectSlug` and optional `chapterPath`.
 - The `lorebookEntries` and `readablePaths` suggested reading lists.
 
-The writer does not automatically read Plot, the lorebook or the body of ordinary files. **Whatever Scene / World Context this round needs is compiled upstream by the leader through `get_chapter_writer_brief` and written into `invoke_agent.message` in full.**
+The writer does not automatically read Plot, the lorebook or the body of ordinary files. **Whatever Scene / World Context this round needs is fetched by the writer itself through `get_chapter_writer_brief` (keyed by `input.chapterId`), and only the fact view of that brief ever reaches the writer.**
 
 The writer calls tools on its own as needed:
 
@@ -86,14 +87,15 @@ The first version enforces no hard permission limit at the file tool layer. The 
 Before calling the writer, the leader should have as much of this ready as it can:
 
 - `input.path`: the single target Markdown file. It must be a path relative to the current Project Workspace, for example `manuscript/.../index.md`.
-- `message`: this round's prose task, scope, focus, prohibitions and stopping condition.
-- **Scene / World Context**: the chapter brief the leader compiled with `get_chapter_writer_brief`, containing:
-  - key plot points and a Scene summary
+- `input.chapterId`: the id of this chapter's `StoryChapter`; the writer uses it to fetch the fact brief.
+- `message`: only the delivery requirement (which file, when the round counts as done). **Not** the plot focus or prohibitions — those are meaning-level content.
+- **Scene / World Context**: fetched by the writer with `get_chapter_writer_brief`; what it receives is a fact slice (`suggestedBriefMarkdown`):
   - the time range and the subjects on stage
-  - information control requirements (who knows what)
-  - World Engine query hints ("query the protagonist's state at era 12345")
+  - World Engine query hints (autonomous: "query the protagonist's state at era 12345") or expanded state summaries (curated / slice-only)
+  - this chapter's parameters (POV, tone) and the suggested reading list
 - Worldbuilding references: the lorebook entries or readablePaths worth reading.
-- Facts and boundaries that must not be changed.
+
+Meaning-level content — the chapter's goal and landing point, information control requirements (who knows what), things not to write, scene purpose, promise directives, open decisions — **never enters the writer's pre-writing context**: it lives in the review view (`reviewChecklistMarkdown`) of the same compiled brief and is consumed after the draft.
 
 If the plot state has not been settled yet, run the World Engine advance flow first instead of letting the writer decide for itself how the world changes.
 

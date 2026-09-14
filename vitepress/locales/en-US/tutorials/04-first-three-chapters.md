@@ -67,7 +67,7 @@ Once each chapter's goal is clear, run the prose loop of `novel-writing`.
 Use novel-writing to write chapter one. The target chapter is manuscript/001-volume/001-chapter/index.md. Write only the finished prose into that chapter file.
 ```
 
-The ordinary `writer` is the prose agent. It has read-only access to the World Engine, and it should not go rummaging through every file on its own. leader compiles the chapter brief first (goals, information control), writer reads that brief itself and queries the World Engine for current state, and the style constraints come with writer.
+The ordinary `writer` is the prose agent. It has read-only access to the World Engine, and it should not go rummaging through every file on its own. leader compiles the chapter brief first, but that brief has two views: the **fact view** (time, place, characters on stage, world state or query hints) is fetched by the writer itself; the **meaning view** (this chapter's goal, information control, things not to write) is kept for post-write checking — push it in beforehand and the prose turns into a report. writer queries the World Engine for current state itself, and the style constraints come with writer.
 
 Write chapters two and three the same way:
 

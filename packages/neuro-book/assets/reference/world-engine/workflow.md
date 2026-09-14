@@ -264,9 +264,9 @@ World Engine 初始化的完整流程分为 5 个 Phase，每个 Phase 有明确
 **目标**：让 writer 基于已推进的世界状态写出章节正文。
 
 **Leader 的职责**：
-1. 准备简化 brief（见 workflow.md 第 6 节）
+1. 确认本章事实已落 World Engine、ChapterBrief 的意图字段已填（见 workflow.md 第 6 节）
 2. 调用 writer（`invoke_agent`）
-3. 传递 brief + lorebook 路径 + World Engine 查询提示
+3. 传目标 `path`、`chapterId`、建议读取路径；意图清单（目标 / 信息控制 / 禁写）交给写后评审
 
 **Writer 的职责**：
 1. 读取 brief 和 lorebook
@@ -276,8 +276,8 @@ World Engine 初始化的完整流程分为 5 个 Phase，每个 Phase 有明确
 
 **关键原则**：
 - **世界状态先行**：leader 在调用 writer 之前已经把状态推进好
-- **brief 简化**：只传框架，不传可查询的细节（见 workflow.md 第 6.2 节）
-- **信息控制**：明确每个角色知道什么、不知道什么
+- **事实与意义分离**：writer 只拿事实切片，意图级内容进评审清单（见 §6.2）
+- **信息控制**：写进 ChapterBrief，写完由评审核对，不事前告知 writer
 
 **输出**：章节正文写入 `manuscript/.../index.md`。
 
@@ -442,27 +442,29 @@ leader 设计剧情 → leader 推进 World Engine（写作前完成）→ leade
 
 关键原则是**先演化世界 + 设计剧情，然后再调用 writer**。leader 在调用 writer 之前，就把本章涉及的剧情事件按时间顺序写入 World Engine（解封、交流、追入、对峙……）。这样世界状态先行，writer 看到的永远是一致的、已推进到位的状态，而不是滞后于正文的状态。
 
-### 6.2 Brief 简化原则（两条正交的轴）
+### 6.2 Brief 双视图与"简化"原则
 
-brief 的"简化"其实是两条互相独立的轴，别混为一谈：
+`get_chapter_writer_brief` 产出两个视图（写作宪法第二条/第五条）：**writer 视图**只含事实级细节，是唯一进入 writer 动笔前上下文的交付物；**评审视图**收纳全部意图级内容（目标与落点、信息控制、禁写、场景目的、Promise 推进任务、未决决策），只交写完之后的评审。
 
-- **轴 A：可查询状态是否进 brief —— 由防全知模式决定。**
-  - `autonomous`（自主全知，默认）：writer 有 World Engine 只读 + Plot 只读能力，可查询状态（HP / 位置 / 属性 / 关系）**不进 brief**，brief 只给「查哪些 subject、哪个时间窗」的查询提示。塞状态进 brief 既冗余，又让 writer 退化成纯执行者、浪费它的查询能力。
-  - `curated`（受控投喂，当前 leader 手动使用）：writer 读不到设定源，可查询状态**必须由编译器 / leader 展开投喂**，规则相对 autonomous 恰好反转；leader 投喂前按 `mustHide` 删减。
-- **轴 B：剧情精细度 —— 是一个用户可调的档位，与模式无关。**
-  - 默认粗粒度：brief 给章节目标 + 关键剧情点（框架级）。
-  - 精细档：可细到分镜级（用户拨到高精度时）。精细版本本轮不做，但档位属于 brief 内容本身，不受防全知模式影响。
+两件事互相独立，别混为一谈：
 
-两轴的共同不变量（任何模式、任何精细度都成立）：
+- **轴 A：可查询状态是否进 writer 视图 —— 由防全知模式决定。**
+  - `autonomous`（自主查询，默认）：writer 有 World Engine 只读 + Plot 只读能力，可查询状态（HP / 位置 / 属性 / 关系）**不进 writer 视图**，只给「查哪些 subject、哪个时间窗」的查询提示。塞状态进去既冗余，又让 writer 退化成纯执行者、浪费它的查询能力。
+  - `curated` / `slice-only`：writer 读不到设定源，可查询状态**必须由编译器展开进 writer 视图**，规则相对 autonomous 恰好反转（不 dump raw attrs / patch JSON）。
+- **轴 B：意图级内容 —— 一律不进 writer 视图，与模式无关。**
+  - 章节目标与落点、本场目的、写作提示、线索脉络、节奏与开场钩子、Promise 推进指令、未决决策、信息控制、禁写只进评审视图。它们不是"精细度档位"，而是宪法第二条禁止进入动笔前上下文的因果链与意义指令。
 
-| brief 始终传 | brief 始终不传 |
+writer 视图的不变量（任何模式都成立）：
+
+| writer 视图始终给 | writer 视图始终不给 |
 | --- | --- |
-| 章节目标 / 关键剧情点 | 设定复述（角色底设、力量体系、世界规则 → 指向 lorebook） |
-| 信息控制要求（读者已知 / 主角已知 / 必须隐藏 / 可暗示） | 文风约束（文风、避讳词、节奏方言 → 全在 writer profile） |
-| 本章覆盖参数（仅覆盖 writer 默认的项，如 POV） | 完整时间线 / patch 细节 |
-| 建议读取（由 Scene refs 编译，带 relation gloss） | —— |
+| 时间 / 地点 / 在场角色（事实截面） | 设定复述（角色底设、力量体系、世界规则 → 指向 lorebook） |
+| 世界状态（autonomous 给查询提示；curated / slice-only 展开摘要） | 意图级因果链：目标与落点、本场目的、写作提示、节奏与钩子 |
+| 本章参数（pov / tone，只覆盖 writer 默认项） | 信息控制四字段与禁写项 |
+| 建议读取（由 Scene refs 编译，带 relation gloss） | Promise 推进指令、未决决策警告 |
+| | 文风约束（文风、避讳词、节奏方言 → 全在 writer profile） |
 
-可查询状态（HP / 位置等）落在轴 A：autonomous 不传（writer 自查），curated 传（编译器代查代填）。brief 格式契约的逐段定义见 [../plot/writer-brief.md](../plot/writer-brief.md)。
+逐段定义与评审视图骨架见 [../plot/writer-brief.md](../plot/writer-brief.md)。
 
 ### 6.3 Writer 能力边界
 
@@ -474,7 +476,7 @@ writer 当前默认 `autonomous` 模式，能力如下（`curated` 模式会剥�
 | 查询 Plot（只读） | `get_chapter_writer_brief` / `get_story_chapter` / `get_story_scene_context` 等；只读，不创建 / 修改 Thread / Scene / Chapter |
 | 读取 lorebook | 角色设定、地点描述、规则 |
 | 自主查询状态 | 按需查角色 HP、位置、心理等 |
-| 写作自由度 | 可在 brief 框架内发挥细节 |
+| 写作自由度 | 只在事实切片的约束下发挥细节（意图指令不在其上下文中） |
 | 写入 World Engine | **不能**，不可写入切面 |
 | 创建 subject | **不能**，首次写入由 leader 负责 |
 | 主线剧情设计 | **不应承担**，剧情设计权在 leader |
@@ -491,11 +493,11 @@ leader 给大致方向 → writer 自由发挥（含剧情细节）→ leader �
 
 此模式文字生成快、即兴感强，但 writer 承担了部分剧情设计职责、World Engine 滞后于正文、需要更多后处理，因此**默认不推荐**，只在探索性 / 实验性写作且用户明确同意时使用。需要严格控制剧情走向时不要用。
 
-## 13. 信息控制（原 §7）
+## 13. 信息控制（原 §7；已改为事后核对）
 
-leader 在 brief 中必须明确**谁知道什么、谁不知道什么**，writer 严格按角色视角写，不泄露角色不该知道的设定。
+信息控制（读者已知 / 主角已知 / 必须隐藏 / 可暗示）**不再作为写作前置输入下发 writer**：塞进动笔前上下文会让 writer 写得保守、平滑、一股报告味（写作宪法第五条）。它仍是 ChapterBrief 上的资产，但用途改为**写完之后的事后核对清单**——由 `get_chapter_writer_brief` 的评审视图输出，交给章节评审逐条撞正文，只砍真撞错的。它也不再参与 brief 的 status 阶梯，四项全空不阻断交接。
 
-信息控制写进 brief 的形式是按 subject 视角分别说明知识边界，例如：
+核对清单的形式是按 subject 视角分别说明知识边界，例如：
 
 - 薇洛丝视角：不知道莉雅的真实身份、被封印的原因、项链的意义。
 - 莉雅视角：失忆，不知道自己被封印了多久、不知道外面的世界。

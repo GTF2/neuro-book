@@ -96,7 +96,7 @@ await world.slice.write({
 - 本段剧情属于哪条 Thread、哪个 Scene、哪一章，用 plot 写工具更新或创建。
 - 新立的读者承诺（伏笔、期待）记入 Promise；已兑现的标记 fulfilled。
 - 重大剧情取舍（选了 A 弃了 B）记 Decision，写明 chosenOption 与 risk。
-- 准备写章节时，Chapter 的剧情点、信息控制先补齐，供 `get_chapter_writer_brief` 编译。
+- 准备写章节时，Chapter 的剧情点、信息控制先补齐，供 `get_chapter_writer_brief` 编译（信息控制编译进**评审视图**，只用于写完事后核对，不事前下发 writer）。
 
 ## 回报当前状态
 

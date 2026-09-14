@@ -25,7 +25,7 @@ Plot System 是作者视角剧情结构系统，不是 lorebook、正文、subje
 - `motif`：象征/母题。意象重复、累积式/情绪式兑现，不要求单点触发；典型形态 = 无 deadline、有 cadence 提示、advance 累积，payoff 可选。
 - `mirror`：镜像/平行。两条以上线索互相映照、比较式兑现；beats 挂在分属不同 Thread 的 Scene 上即天然表达双线关联，不需要新结构。
 
-**Promise 自由文本三层分工**（互斥，不要互相复述）：`summary` = 向读者许了什么（账本展示）；`payoffExpectation` = 兑现时预期的戏剧效果（只给兑现场的 writer，让它知道这条线「图什么」）；`beat.note` = 单次推进的具体指示（只给该场的 writer，如「本次只写到发烫，不许发光」）。强度阶梯天然分布在各 beat 的 note 上，不要另建线级计划文本；推进史也不要写进 summary——那是 beats 的职责，计划/事实随所在 Scene 的 status 派生（见 [system.md](system.md)）。beat.note 与 payoffExpectation 经 `get_chapter_writer_brief` 的「本章 Promise 任务」段送达目标章 writer（格式见 [writer-brief.md](writer-brief.md)）。
+**Promise 自由文本三层分工**（互斥，不要互相复述）：`summary` = 向读者许了什么（账本展示）；`payoffExpectation` = 兑现时预期的戏剧效果（只给兑现场的 writer，让它知道这条线「图什么」）；`beat.note` = 单次推进的具体指示（只给该场的 writer，如「本次只写到发烫，不许发光」）。强度阶梯天然分布在各 beat 的 note 上，不要另建线级计划文本；推进史也不要写进 summary——那是 beats 的职责，计划/事实随所在 Scene 的 status 派生（见 [system.md](system.md)）。beat.note 与 payoffExpectation 经 `get_chapter_writer_brief` 的评审视图（「本章 Promise 任务」段）送达目标章的写后评审，**不下发 writer**（推进指令属意图级内容，写作宪法第二条；格式见 [writer-brief.md](writer-brief.md)）。
 
 **Promise 维护要点**：规划前先 `get_story_promise` 查账本（open 优先），同一读者期待不重复建线。规划「这场推进哪些线」时用 `save_promise_beat` 登记 beat；只写在 Scene summary / purpose 里、不进账本的推进，brief 看不见、也无法跨会话追踪。打 payoff beat 默认自动置 fulfilled；里程碑式兑现后线仍延续（如感情线「在一起」之后还有后续）时传 `autoFulfill: false`。线因剧情改道不再兑现时显式 action=abandon（abandoned 线的 beats 不再进 brief），不要留假 open。
 

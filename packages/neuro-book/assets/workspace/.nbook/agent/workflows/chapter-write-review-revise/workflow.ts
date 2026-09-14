@@ -55,8 +55,8 @@ export default {
     whenToUse: "本章剧情事实已确认、World Engine 已推进，需要把某个章节 index.md 写成正文并做多维评审修订时使用；剧情事实未确认、目标章节节点还不存在、或只是打磨简介/文案等不落文件的短文（应使用 write-review-loop）时不要使用。",
     argsHint: [
         {name: "chapterPath", label: "章节 index.md 路径（Project Workspace 相对路径，必填）", defaultValue: ""},
-        {name: "brief", label: "本章写作任务（目标/关键剧情点/World Engine 查询提示；slice-only 模式下不含信息控制）", defaultValue: ""},
-        {name: "chapterId", label: "StoryChapter id（可选，writer 会自取本章 brief）", defaultValue: ""},
+        {name: "chapterId", label: "StoryChapter id（必填）：writer 按它用 get_chapter_writer_brief 自取事实简报，leader 不把意图写进 writer 消息", defaultValue: ""},
+        {name: "brief", label: "本章意图清单（可选）：目标/关键剧情点等，**只注入评审**用于覆盖度与信息边界判定，不下发 writer", defaultValue: ""},
         {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；可选，仅注入一致性评审做事后校验，不下发 writer）", defaultValue: ""},
         {name: "lorebookEntries", label: "建议读取的内容节点路径（逗号或换行分隔，可选）", defaultValue: ""},
         {name: "reviewRounds", label: "评审轮数（1-3）", defaultValue: "2"},
@@ -74,13 +74,14 @@ export default {
         if (!chapterPath) {
             throw new Error("缺少 chapterPath：请传章节 index.md 的 Project Workspace 相对路径，例如 manuscript/001-volume/001-chapter/index.md");
         }
+        // 意图清单（写作宪法第二条/第五条）：目标、关键剧情点等意义指令不下发 writer，
+        // 只注入评审用于覆盖度与信息边界判定；writer 的事实上下文由 get_chapter_writer_brief 提供。
         const brief = typeof args?.brief === "string" ? args.brief.trim() : "";
         const chapterId = typeof args?.chapterId === "string" ? args.chapterId.trim() : "";
-        // 信息控制事后核对清单（写作宪法第五条）：slice-only 模式下 brief 不含信息控制，
-        // leader 应把 ChapterBrief 的四字段编译成清单传入；仅注入一致性评审，绝不下发 writer。
+        // 信息控制事后核对清单：leader 把 ChapterBrief 的四字段编译成清单传入；仅注入一致性评审。
         const infoControl = typeof args?.infoControl === "string" ? args.infoControl.trim() : "";
-        if (!brief && !chapterId) {
-            throw new Error("缺少写作任务：brief 与 chapterId 至少传一个（brief 传本章写作任务正文，或传 chapterId 让 writer 用 get_chapter_writer_brief 自取）");
+        if (!chapterId) {
+            throw new Error("缺少 chapterId：writer 的事实简报由 input.chapterId 经 get_chapter_writer_brief 自取；意图清单（brief/infoControl）只进评审，不能替代它");
         }
         const rawEntries = Array.isArray(args?.lorebookEntries)
             ? args.lorebookEntries
@@ -105,14 +106,12 @@ export default {
         wf.chart.node("write", "写作正文");
         wf.chart.enter("write", {sessionId: writer.id});
 
-        // writer 的 invoke 合同：message 承载 brief，input 承载 {path, chapterId?, context?}。
-        const writerInput = {path: chapterPath};
-        if (chapterId) writerInput.chapterId = chapterId;
+        // writer 的 invoke 合同：input 承载 {path, chapterId, context?}，message 只写任务与交付要求。
+        // 事实简报由 writer 自己按 chapterId 取，避免 leader 转述时把意图夹带进动笔前上下文。
+        const writerInput = {path: chapterPath, chapterId};
         if (lorebookEntries.length > 0) writerInput.context = {lorebookEntries};
         const writeRun = await writer.invoke({
-            message: brief
-                ? `请完成章节写作任务，正文写入 input.path 指定的章节文件。\n\n${brief}`
-                : "请完成章节写作任务，正文写入 input.path 指定的章节文件。本章 brief 请用 get_chapter_writer_brief 按 input.chapterId 自取。",
+            message: "请完成章节写作任务，正文写入 input.path 指定的章节文件。本章事实简报请用 get_chapter_writer_brief 按 input.chapterId 自取。",
             input: writerInput,
         });
         if (writeRun.status !== "completed") throw new Error(`writer 未完成章节写作：${writeRun.result.message}`);

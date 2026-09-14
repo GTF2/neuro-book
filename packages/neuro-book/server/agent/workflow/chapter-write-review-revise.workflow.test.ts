@@ -42,10 +42,12 @@ describe("chapter-write-review-revise workflow", () => {
         const sessions = new MemorySessionStore();
         const agents = new MockAgentPort(sessions);
         const events: WorkflowEvent[] = [];
+        const writerMessages: string[] = [];
         let writerInvokes = 0;
         // writer：首轮 prompt 写正文，修订轮按消息内容区分（都是 prompt），都用 summary 回报。
         agents.register("writer", (turn): {message: string; data: JsonValue} => {
             writerInvokes++;
+            writerMessages.push(turn.message ?? "");
             if (turn.message?.includes("评审发现以下问题")) {
                 return {
                     message: "修订完成",
@@ -78,6 +80,7 @@ describe("chapter-write-review-revise workflow", () => {
 
         const view = await runner.start(await workflow("chapter-write-review-revise"), {
             chapterPath,
+            chapterId: "7",
             brief: "本章目标：解开封印并遭遇邪教徒。",
             reviewRounds: "2",
         });
@@ -112,6 +115,11 @@ describe("chapter-write-review-revise workflow", () => {
         expect(rounds).toHaveLength(2);
         // writer 恰好被调 2 次：1 写 + 1 修。
         expect(writerInvokes).toBe(2);
+        // 意图清单不下发 writer：它只作为评审材料，事实简报由 writer 自取。
+        expect(writerMessages[0]).toContain("get_chapter_writer_brief");
+        for (const message of writerMessages) {
+            expect(message).not.toContain("本章目标");
+        }
 
         // 参与者：1 个非 ephemeral 的真实 writer + 每轮 3 个 ephemeral adhoc 评审。
         const creates = view.journal
@@ -155,6 +163,7 @@ describe("chapter-write-review-revise workflow", () => {
 
         const view = await runner.start(await workflow("chapter-write-review-revise"), {
             chapterPath,
+            chapterId: "7",
             brief: "本章目标：解开封印。",
             reviewRounds: "2",
         });
@@ -190,6 +199,7 @@ describe("chapter-write-review-revise workflow", () => {
 
         const view = await runner.start(await workflow("chapter-write-review-revise"), {
             chapterPath,
+            chapterId: "7",
             brief: "本章目标：解开封印。",
             infoControl,
             reviewRounds: "1",

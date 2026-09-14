@@ -34,6 +34,7 @@ Skill 提供**知识和方法**（怎么做），workflow 提供**确定的执�
 | `split-book` | 拆书：逐章并发摘要 + 剧情合并分析 |
 | `book-deconstruct` | 商业拆书：按章采样，逐章拆解钩子 / 承诺 / 爽点 / 节奏 / 信息披露 / 章末推力，产出竞品分析报告 |
 | `character-qa-fanout` | 角色问答批量候选：按组并发为每题生成多个候选答案并汇总矛盾 |
+| `contrast-write-review` | 对照实验专用：把调用方给定的 writer 提示原样下发写正文，再做一致性 / 节奏 / 文风三维评审一轮（不修订）。只给写作质量对照实验用，普通写作请用 `chapter-write-review-revise` |
 
 Agent 通过 `WorkflowCatalog` 看到可用列表，用 `run_workflow` 触发。
 

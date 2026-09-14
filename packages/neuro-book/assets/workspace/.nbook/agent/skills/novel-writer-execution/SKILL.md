@@ -12,16 +12,16 @@ when_to_use: Writer profile 内部参考文档，说明 writer 收到 invoke_age
 
 Writer 是 ReAct 子代理，完整流程为：「加载上下文 → 查证世界状态 → 叙事设计 → 信息隔离检查 → 写入正文 → 报告」
 
-> 当前 writer 处于 **autonomous（自主全知）模式**：拥有 Plot 只读、World Engine 只读、lorebook 读能力，自己查证设定与状态。brief 只给框架与查询提示，不含可查询状态。
+> 当前 writer 默认 **autonomous（自主查询）模式**：拥有 Plot 只读、World Engine 只读、lorebook 读能力，自己查证设定与状态。你拿到的事实简报只含时间 / 地点 / 在场角色 / 查询提示 / 建议读取——**没有因果链，也没有意义指令**（写作宪法第二条 / 第五条）。信息边界由系统在你写完之后核对。
 
 ### 第一步：理解任务边界
 
 收到 `invoke_agent` 调用后，首先检查：
 
 1. **input.path**：本轮唯一写入目标，必须是当前Project Workspace相对路径，例如`manuscript/001-chapter/index.md`。
-2. **input.chapterId**（可选）：本章 StoryChapter id。有它时用 `get_chapter_writer_brief({projectPath, chapterId})` 自取本章 brief（章节目标、信息控制、剧情点、查询提示、建议读取），作为写作依据。
+2. **input.chapterId**（必填）：本章 StoryChapter id。用它调 `get_chapter_writer_brief({projectPath, chapterId})` 自取本章**事实简报**（时间 / 地点 / 在场角色 / 世界状态或查询提示 / 本章参数 / 建议读取），作为写作依据。
 3. **input.context.lorebookEntries**：调用方建议读取的内容节点路径清单（目录路径，结尾带 `/`）。
-4. **message (brief)**：本章目标、关键剧情点、信息控制约束、World Engine 查询提示。缺 input.chapterId 时以 message 的 brief 为准。
+4. **message**：调用方写的交付要求（写进哪个文件、什么时候算完成）。**它不是剧情简报**：目标、关键剧情点、信息控制等意图级内容不会写在这里。
 
 如果 `input.path` 缺失，停止写入并通过 `report_result.result` 要求调用方补充。
 
@@ -34,8 +34,9 @@ Writer 是 ReAct 子代理，完整流程为：「加载上下文 → 查证世�
    - 如果文件不存在，准备新建。
 
 2. **自取 / 消费 brief**：
-   - 有 `input.chapterId` 时用 `get_chapter_writer_brief` 自取;需要场景与线索用 `get_story_chapter` / `get_story_scene_context`;brief 的「本章 Promise 任务」「未决决策警告」段需要核对详情（如某条线的 payoffExpectation、某条未决决策的候选方案）时用 `get_story_promise` / `get_story_decision`;剧情设计权仍在 leader，你**只读 Plot，不创建/修改任何 Plot 实体**（Thread / Scene / Chapter / Promise / Decision）。
-   - 如果 brief status 不是 `ready`（例如 `needs_chapter_brief` 信息控制未填），在 `report_result.result` 里点明缺口，不要硬写。
+   - 用 `get_chapter_writer_brief` 按 `input.chapterId` 自取事实简报;需要场景与线索用 `get_story_chapter` / `get_story_scene_context`;剧情设计权仍在 leader，你**只读 Plot，不创建/修改任何 Plot 实体**（Thread / Scene / Chapter / Promise / Decision）。
+   - 简报不含「本章 Promise 任务」与「未决决策警告」——它们是写后评审材料，不是遗漏；除非调用方明确要求，不要主动去拉取。
+   - 如果 brief status 不是 `ready`（`needs_plot` / `needs_world_anchor` / `needs_world_context`），在 `report_result.result` 里点明缺口，不要硬写。
 
 3. **按需读取 lorebook**：
    - `input.context.lorebookEntries` 与 brief 的「建议读取」只是建议清单，不是任务正文，也不是必须全部读取的材料。
@@ -54,7 +55,7 @@ Writer 是 ReAct 子代理，完整流程为：「加载上下文 → 查证世�
 
 操作要点：
 
-1. **brief 按简化原则只给剧情框架**，不含可查询的状态细节（如 HP / 位置）；这些状态由你自己查证，不要当作 brief 遗漏。
+1. **事实简报只给事实切片**，不含可查询的状态细节（如 HP / 位置）；这些状态由你自己查证，不要当作简报遗漏。
 
 2. **时间用项目日历字符串**，例如「公元2020年4月12日 18:00」。
 
@@ -92,15 +93,15 @@ const characters = await world.subject.list("character");
 
 ---
 
-### 第五步：信息控制三层隔离（核心步骤）
+### 第五步：视角与知情边界（自查，不是核对清单）
 
-对每个出场角色明确：
+你**拿不到**「谁知道什么」的清单——那张清单是写完之后给评审用的（写作宪法第五条：事后校验，不事前告知）。你要自己从场景事实和角色处境推出每个角色的知情范围：
 
 - **角色视角**：该角色知道什么、不知道什么、误解什么。
 - **读者视角**：哪些信息可以让读者知道但角色不知道（伏笔、暗示）。
-- **作者视角**：你从设定中知道但不能写进正文的信息。
+- **作者视角**：你从设定里读到但不能写进正文的信息。
 
-不要因为设定在 lorebook 里，就默认角色都知道。
+不要因为设定在 lorebook 里，就默认角色都知道。写完之后评议会拿信息控制清单来撞你的正文，越界会被要求修订。
 
 ---
 
@@ -139,12 +140,12 @@ const characters = await world.subject.list("character");
 
 ## 常见陷阱
 
-### 陷阱 1：把 brief 当作完整状态源
+### 陷阱 1：把事实简报当作完整状态源
 
-❌ **错误**：brief 没说角色位置，就不写位置或凭想象写。
+❌ **错误**：简报没说角色位置，就不写位置或凭想象写。
 ✓ **正确**：用 `execute_world` 查询角色当前位置。
 
-**原因**：brief 按简化原则只给剧情框架，可查询的状态细节由你自己查证。
+**原因**：简报只给事实切片，可查询的状态细节由你自己查证。
 
 ---
 
@@ -187,13 +188,13 @@ const characters = await world.subject.list("character");
 ## 决策流程图
 
 ```
-收到 brief
+收到调用（message 只写交付要求 + input 带 path/chapterId）
   ↓
 input.path 存在？
   ├─ 是 → read 原文
   └─ 否 → 准备新建
   ↓
-brief 有查询提示？
+按 chapterId 自取事实简报 → 有查询提示？
   ├─ 是 → execute_world 查状态
   └─ 否 → 判断是否需要主动查
   ↓
@@ -201,7 +202,7 @@ brief 有查询提示？
   ├─ 是 → 按需读 lorebookEntries
   └─ 否 → 直接写
   ↓
-信息控制检查
+视角与知情边界自查
   ↓
 write 正文
   ↓
@@ -212,9 +213,9 @@ report_result
 
 ## 关于自由发挥
 
-**默认情况下**：你按 brief 写作、不新增超出范围的关键设定（世界状态已由 leader 在写作前推进好）。
+**默认情况下**：你按事实简报写作、不新增超出范围的关键设定（世界状态已由 leader 在写作前推进好）。
 
-**只有当 brief 明确授权你自由发挥剧情细节时**，你才可以新增角色、改变受伤程度或使用未预设能力——但你是只读的，这些新增并不会进入 World Engine。
+**只有当调用方明确授权你自由发挥剧情细节时**，你才可以新增角色、改变受伤程度或使用未预设能力——但你是只读的，这些新增并不会进入 World Engine。
 
 此时必须在 `report_result.result` 里明确点出"本轮新增 / 改动了哪些尚未登记到 World Engine 的角色或状态"，交给 leader 事后补回。
 

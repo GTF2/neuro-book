@@ -21,13 +21,14 @@
 }
 ```
 
-每轮调用通过 `invoke_agent.message` 写清自然语言任务，通过 `invoke_agent.input` 指定唯一目标文件和建议读取清单：
+每轮调用通过 `invoke_agent.input` 指定唯一目标文件、章节 id 和建议读取清单；`invoke_agent.message` 只写交付要求（写作宪法第二条 / 第五条：意图级内容不下发 writer）：
 
 ```json
 {
-  "message": "请续写这一章，从主角推开档案室门开始，到她发现账册缺页并决定隐瞒为止。\n\n【Scene 上下文】\n- 场景：皇宫西配殿档案室，傍晚\n- 时间范围：帝纪520年4月12日 申时-酉时\n- 出场角色：萧云舒（主角，女官）\n- 前情：主角被派来调查账目，但她怀疑这是陷阱\n- 关键剧情点：主角发现账册第8页被撕掉，意识到有人故意留下痕迹\n- 信息控制：主角知道账册缺页，但不知道是谁撕的；读者和主角知道的一样多\n- World Engine 查询提示：查询萧云舒在帝纪520年4月12日酉时的状态、位置和心理状态\n\n写完后润色一次并 report_result 汇报实际修改路径和约 100 字剧情摘要。",
+  "message": "请完成本章写作任务，正文写入 input.path 指定的章节文件；本章事实简报请用 get_chapter_writer_brief 按 input.chapterId 自取。写完后润色一次并 report_result 汇报实际修改路径和约 100 字剧情摘要。",
   "input": {
     "path": "my-novel/manuscript/001-volume/003-chapter/index.md",
+    "chapterId": "12",
     "context": {
       "lorebookEntries": ["my-novel/lorebook/character/protagonist/"],
       "readablePaths": ["my-novel/manuscript/001-volume/002-chapter/index.md"]
@@ -36,9 +37,9 @@
 }
 ```
 
-`message` 必须可独立表达本轮任务：写什么、范围、约束、结束条件和交付要求。`input.context` 只是结构化引用清单，不能替代任务说明。
+`message` 只写交付要求：写进哪个文件、什么时候算完成。目标、关键剧情点、信息控制这类**意图级内容不写在这里**——它们在同一份编译产物的评审视图里。`input.context` 只是结构化引用清单，不能替代任务说明。
 
-**注**：遗留字段 `context.threadIds/sceneIds/plotIds` 可选保留向后兼容，但 writer 不会使用它们独立读取 Plot。需要 Scene/World Context 时，必须由 leader 编译完整 brief 后放入 `message`。
+**注**：遗留字段 `context.threadIds/sceneIds/plotIds` 可选保留向后兼容，但 writer 不会使用它们独立读取 Plot。需要 Scene / World Context 时，writer 用 `get_chapter_writer_brief` 按 `input.chapterId` 自取事实简报。
 
 ## Profile 预设
 
@@ -86,14 +87,15 @@ Writer 按需主动调用工具：
 调用 writer 前，leader 应尽量准备好：
 
 - `input.path`：唯一目标Markdown文件，必须是当前Project Workspace相对路径，例如`manuscript/.../index.md`。
-- `message`：本轮正文任务、范围、重点、禁忌和结束条件。
-- **Scene / World Context**：leader 用 `get_chapter_writer_brief` 编译后的章节 brief，包含：
-  - 关键剧情点和 Scene 摘要
+- `input.chapterId`：本章 `StoryChapter` id；writer 用它自取事实简报。
+- `message`：只写交付要求（写进哪个文件、什么时候算完成）。**不写**剧情重点与禁忌——那是意图级内容。
+- **Scene / World Context**：writer 用 `get_chapter_writer_brief` 自取，拿到的是事实切片（`suggestedBriefMarkdown`）：
   - 时间范围和出场 subjects
-  - 信息控制要求（谁知道什么）
-  - World Engine 查询提示（"查询主角在纪元12345的状态"）
+  - World Engine 查询提示（autonomous：如"查询主角在纪元12345的状态"），或展开的状态摘要（curated / slice-only）
+  - 本章参数（视角、语气）与建议读取
 - 设定引用：建议读取的 lorebook entries 或 readablePaths。
-- 禁止改动的事实和边界。
+
+意图级内容——本章目标与落点、信息控制要求（谁知道什么）、禁写项、场景目的、Promise 推进指令、未决决策——**不进 writer 的动笔前上下文**：它们在同一份编译产物的评审视图（`reviewChecklistMarkdown`）里，由写完之后的评审消费。
 
 如果剧情状态尚未裁决，先使用 World Engine 推进流程，而不是让 writer 自己判断世界怎么变。
 

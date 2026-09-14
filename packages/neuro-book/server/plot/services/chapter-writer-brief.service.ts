@@ -26,16 +26,21 @@ import type {
  * Chapter writer brief 只读聚合服务。
  *
  * 聚合 ChapterBrief(章级写作指令)+ Scene 剧情点 + Scene/Thread refs + Scene World Context
- * + 规划层两段(本章 Promise 任务 D25 / 未决决策警告 D26),
- * 按 writer 防全知模式渲染三种 markdown:
- * - autonomous:writer 自查 World Engine/lorebook,brief 只给「查哪些 subject / 哪个时间窗」的查询提示,不展开状态。
- * - curated:writer 读不到设定源,brief 展开 World Context 状态摘要,由 leader 投喂前按 mustHide 删减。
- * - slice-only:纯事实切片(写作宪法第五条「事后校验,不事前告知」),只含时间/地点/在场角色/
- *   世界状态截面/查询提示等事实;信息控制四字段与禁写类意义指令不进入 writer 动笔前上下文。
+ * + 规划层两段(本章 Promise 任务 D25 / 未决决策警告 D26),再按写作宪法第二条/第五条
+ * 拆成两个互不重叠的 markdown 视图:
+ * - writer 视图(suggestedBriefMarkdown):只含事实级细节——章节身份、数据警告、本章参数、
+ *   每个 Scene 的时间/地点/在场角色、世界状态截面或查询提示、建议读取。这是唯一交给 writer
+ *   的动笔前上下文,也是 agent 工具 get_chapter_writer_brief 的文本输出。
+ * - 评审视图(reviewChecklistMarkdown):收纳全部意图级内容——目标与落点、节奏/开场钩子、
+ *   信息控制四字段、禁写、按 Scene 的目的/写作提示/线索脉络、Promise 推进任务、未决决策警告。
+ *   只在写完之后的评审使用,绝不下发 writer。
  *
- * 信息控制是 autonomous/curated 模式下防全知唯一的按章控制面,四项全空时 status 降级为 needs_chapter_brief,阻断 handoff;
- * slice-only 模式下信息控制不参与 status 门槛(改由 review workflow 事后核对),全空不降级。
- * 规划层两段只追加内容,不参与 status 阶梯(D26 第一版不做 status 阻断)。
+ * 三个防全知模式全部保留,但差异只剩「世界状态怎么给」:autonomous 给 execute_world 查询提示
+ * (writer 自查),curated / slice-only 展开状态摘要(writer 读不到设定源)。三者在「只给事实」
+ * 这一点上完全一致。
+ *
+ * 信息控制不参与 status 阶梯:四字段是事后核对清单(写作宪法第五条),四项全空不再降级、不阻断 handoff。
+ * 规划层两段只追加内容,同样不参与 status 阶梯(D26 第一版不做 status 阻断)。
  */
 export class ChapterWriterBriefService {
     constructor(
@@ -51,8 +56,8 @@ export class ChapterWriterBriefService {
     ) {}
 
     /**
-     * 生成指定章节的 writer brief DTO 与可直接交给 writer 的 markdown 草案。
-     * @param mode 防全知模式;默认 autonomous。
+     * 生成指定章节的双视图 DTO:writer 视图(事实切片)与评审视图(事后核对清单)。
+     * @param mode 防全知模式,只影响世界状态呈现方式;默认 autonomous。
      */
     async getChapterWriterBrief(chapterId: number, mode: ChapterWriterBriefMode = "autonomous"): Promise<ChapterWriterBriefDto> {
         const story = await this.storyService.ensureStory();
@@ -64,18 +69,12 @@ export class ChapterWriterBriefService {
         const promiseTasks = await this.buildPromiseTasks(records);
         const openDecisions = await this.buildOpenDecisionWarnings(story.id, chapter.id, records);
         const warnings = uniqueStrings(scenes.flatMap((scene) => scene.warnings));
-        const status = chooseStatus(scenes, chapterDto.brief, mode);
+        const status = chooseStatus(scenes);
         if (records.length === 0) {
             warnings.push("本章节尚未关联 Plot Scene；请先建立章节 Scene 顺序。");
         }
-        if (status === "needs_chapter_brief") {
-            warnings.push("信息控制未填写：请在 ChapterBrief 补「读者已知 / 主角已知 / 必须隐藏 / 可暗示」中至少一项，这是防全知唯一的按章控制面。");
-        }
-        if (mode === "slice-only") {
-            warnings.push("slice-only 模式：信息控制与禁写不参与本 brief，本章将依赖事后评审核对信息边界。");
-        }
 
-        const brief: Omit<ChapterWriterBriefDto, "suggestedBriefMarkdown"> = {
+        const brief: Omit<ChapterWriterBriefDto, "suggestedBriefMarkdown" | "reviewChecklistMarkdown"> = {
             chapter: chapterDto,
             mode,
             status,
@@ -88,7 +87,8 @@ export class ChapterWriterBriefService {
         };
         return {
             ...brief,
-            suggestedBriefMarkdown: renderSuggestedBriefMarkdown(brief),
+            suggestedBriefMarkdown: renderWriterBriefMarkdown(brief),
+            reviewChecklistMarkdown: renderReviewChecklistMarkdown(brief),
         };
     }
 
@@ -271,18 +271,10 @@ export class ChapterWriterBriefService {
 }
 
 /**
- * 判断信息控制四项是否全空。
- */
-function isInfoControlEmpty(brief: ChapterBriefDto): boolean {
-    return !brief.readerKnows && !brief.protagonistKnows && !brief.mustHide && !brief.hintOnly;
-}
-
-/**
  * 按固定优先级聚合 brief 状态。
- * needs_chapter_brief(信息控制缺失)排在世界上下文之后:先保证 Scene/World 数据完整,再要求信息控制。
- * slice-only 模式跳过信息控制门槛(写作宪法第五条:意义指令不进动笔前上下文,四字段改作事后核对单)。
+ * 信息控制不参与 status:四字段已降级为事后核对清单(写作宪法第五条),填写与否都不阻断 handoff。
  */
-function chooseStatus(scenes: ChapterWriterBriefSceneDto[], brief: ChapterBriefDto, mode: ChapterWriterBriefMode): ChapterWriterBriefStatus {
+function chooseStatus(scenes: ChapterWriterBriefSceneDto[]): ChapterWriterBriefStatus {
     if (scenes.length === 0) {
         return "needs_plot";
     }
@@ -291,9 +283,6 @@ function chooseStatus(scenes: ChapterWriterBriefSceneDto[], brief: ChapterBriefD
     }
     if (scenes.some((scene) => scene.worldContext === null || scene.worldContext.unresolvedSubjectIds.length > 0)) {
         return "needs_world_context";
-    }
-    if (mode !== "slice-only" && isInfoControlEmpty(brief)) {
-        return "needs_chapter_brief";
     }
     return "ready";
 }
@@ -347,15 +336,15 @@ function resolveDecisionTouchReason(decision: StoryDecisionDto, context: {
 }
 
 /**
- * 渲染可直接作为 writer message 草案的 markdown。
+ * 渲染 writer 视图(事实切片):章节身份 + 数据警告 + 本章参数 + 按 Scene 的事实与 World 状态 + 建议读取。
+ * 这是唯一进入 writer 动笔前上下文的交付物;目标、目的、写作提示、线索脉络、节奏、Promise 任务、
+ * 未决决策、信息控制、禁写等意图级内容一律走 renderReviewChecklistMarkdown。
  */
-function renderSuggestedBriefMarkdown(brief: Omit<ChapterWriterBriefDto, "suggestedBriefMarkdown">): string {
-    const modeLabel = brief.mode === "curated" ? "Curated（受控投喂）" : brief.mode === "slice-only" ? "Slice-only（纯事实切片）" : "Autonomous（自主全知）";
-    const modeNote = brief.mode === "curated"
-        ? "> 受控模式:writer 读不到设定源,以下状态摘要即写作依据;leader 投喂前必须按「必须隐藏」删减。"
-        : brief.mode === "slice-only"
-            ? "> 切片模式:你只拿到此刻的事实横截面——时间、地点、在场角色、世界状态截面与查询提示;没有因果链,也没有信息控制或禁写指令。放开写现场,写完后系统会拿世界引擎与信息控制清单事后校验,只砍真撞错的。"
-            : "> 自主模式:writer 自行用 execute_world 查证状态与读 lorebook;以下只给框架与查询提示,不含可查询状态。";
+function renderWriterBriefMarkdown(brief: Omit<ChapterWriterBriefDto, "suggestedBriefMarkdown" | "reviewChecklistMarkdown">): string {
+    const modeLabel = brief.mode === "curated" ? "Curated（受控投喂）" : brief.mode === "slice-only" ? "Slice-only（受控投喂）" : "Autonomous（自主查询）";
+    const modeNote = brief.mode === "autonomous"
+        ? "> 事实切片:以下只给此刻的事实与查询提示——时间、地点、在场角色,以及你该用 execute_world 查什么。没有因果链,也没有意义指令;信息边界由系统在写完之后核对。放开写现场。"
+        : "> 事实切片(展开状态):你读不到设定源,以下状态摘要即写作依据。没有因果链,也没有意义指令;信息边界由系统在写完之后核对。放开写现场。";
     const lines: string[] = [
         `# Chapter Writer Brief — ${modeLabel}`,
         "",
@@ -365,11 +354,11 @@ function renderSuggestedBriefMarkdown(brief: Omit<ChapterWriterBriefDto, "sugges
         "",
     ];
 
-    appendChapterBriefSections(lines, brief.chapter.brief, brief.mode);
-
     if (brief.warnings.length > 0) {
         lines.push("## Warnings", ...brief.warnings.map((warning) => `- ${warning}`), "");
     }
+
+    appendChapterParams(lines, brief.chapter.brief);
 
     if (brief.scenes.length === 0) {
         lines.push("## 关键剧情点", "- 本章节尚未关联 Plot Scene。", "");
@@ -381,75 +370,102 @@ function renderSuggestedBriefMarkdown(brief: Omit<ChapterWriterBriefDto, "sugges
                 `### ${index + 1}. ${scene.title}`,
                 `- Thread: ${scene.threadTitle}${scene.threadIsMain ? "（主线）" : ""}`,
                 `- 本场做什么: ${scene.summary || "未填写"}`,
-                `- 本场目的: ${scene.purpose ?? "未填写"}`,
             );
-            if (scene.writingTip) {
-                lines.push(`- 写作提示: ${scene.writingTip}`);
-            }
-            if (scene.threadSummary) {
-                lines.push(`- 线索脉络: ${scene.threadSummary}`);
-            }
             appendSceneWorld(lines, scene, brief.mode);
         }
         lines.push("");
     }
 
-    appendPromiseTasks(lines, brief.promiseTasks);
-    appendOpenDecisionWarnings(lines, brief.openDecisions);
     appendSuggestedReading(lines, brief.suggestedReading);
     return lines.join("\n").trimEnd();
 }
 
 /**
- * 渲染 ChapterBrief 章级指令段(目标/参数/信息控制/节奏/禁写)。空字段不渲染,信息控制全空时显式标注必填缺口。
- * slice-only 模式跳过信息控制与禁写两段(意义指令不进动笔前上下文,写作宪法第五条)。
+ * 渲染评审视图(事后核对清单):目标与落点、节奏/开场钩子、信息控制四字段、禁写、
+ * 按 Scene 的目的与写作提示、Promise 推进任务、未决决策警告。
+ * 全部为意图级内容,只交给写完之后的评审;整份清单无任何内容时也给占位行,保证文本非空。
  */
-function appendChapterBriefSections(lines: string[], brief: ChapterBriefDto, mode: ChapterWriterBriefMode): void {
-    const goalParts = [brief.goal, brief.ending ? `落点：${brief.ending}` : null].filter(Boolean);
+function renderReviewChecklistMarkdown(brief: Omit<ChapterWriterBriefDto, "suggestedBriefMarkdown" | "reviewChecklistMarkdown">): string {
+    const lines: string[] = [
+        "# Chapter Review Checklist — 事后核对清单",
+        "",
+        `Chapter: ${brief.chapter.title}(name: ${brief.chapter.name})`,
+        "> 本清单只用于正文写完之后的评审与信息边界核对,不是写作任务的一部分,不下发 writer。",
+        "",
+    ];
+    const emptyMarker = lines.length;
+
+    const goalParts = [brief.chapter.brief.goal, brief.chapter.brief.ending ? `落点：${brief.chapter.brief.ending}` : null]
+        .filter((part): part is string => part !== null);
     if (goalParts.length > 0) {
         lines.push("## 本章目标与落点", ...goalParts.map((part) => `- ${part}`), "");
     }
 
-    const params = [
-        brief.pov ? `视角：${brief.pov}` : null,
-        brief.tone ? `语气：${brief.tone}` : null,
-    ].filter(Boolean);
-    if (params.length > 0) {
-        lines.push("## 本章参数（覆盖 writer 默认）", ...params.map((part) => `- ${part}`), "");
-    }
-
-    if (mode !== "slice-only") {
-        lines.push("## 信息控制（必填）");
-        const infoControl = [
-            brief.readerKnows ? `读者已知：${brief.readerKnows}` : null,
-            brief.protagonistKnows ? `主角已知：${brief.protagonistKnows}` : null,
-            brief.mustHide ? `必须隐藏：${brief.mustHide}` : null,
-            brief.hintOnly ? `可暗示但不可明说：${brief.hintOnly}` : null,
-        ].filter(Boolean);
-        if (infoControl.length > 0) {
-            lines.push(...infoControl.map((part) => `- ${part}`));
-        } else {
-            lines.push("- ⚠ 未设置：writer 拥有上帝视角查询能力,缺信息控制会导致越界泄露。请在 ChapterBrief 补齐后再交接。");
-        }
-        lines.push("");
-    }
-
     const pacingParts = [
-        brief.pacing ? `节奏：${brief.pacing}` : null,
-        brief.opening ? `开场钩子：${brief.opening}` : null,
-    ].filter(Boolean);
+        brief.chapter.brief.pacing ? `节奏：${brief.chapter.brief.pacing}` : null,
+        brief.chapter.brief.opening ? `开场钩子：${brief.chapter.brief.opening}` : null,
+    ].filter((part): part is string => part !== null);
     if (pacingParts.length > 0) {
         lines.push("## 节奏 / 下一章牵引", ...pacingParts.map((part) => `- ${part}`), "");
     }
 
-    if (mode !== "slice-only" && brief.doNotWrite) {
-        lines.push("## 禁写", `- ${brief.doNotWrite}`, "");
+    const infoControl = [
+        brief.chapter.brief.readerKnows ? `读者已知：${brief.chapter.brief.readerKnows}` : null,
+        brief.chapter.brief.protagonistKnows ? `主角已知：${brief.chapter.brief.protagonistKnows}` : null,
+        brief.chapter.brief.mustHide ? `必须隐藏：${brief.chapter.brief.mustHide}` : null,
+        brief.chapter.brief.hintOnly ? `可暗示但不可明说：${brief.chapter.brief.hintOnly}` : null,
+    ].filter((part): part is string => part !== null);
+    if (infoControl.length > 0) {
+        lines.push(
+            "## 信息控制（事后核对）",
+            "> 逐条核对正文:角色是否知道了他不该知道的信息?「必须隐藏」项是否被直接或变相泄露?「可暗示」项是否被明说?",
+            ...infoControl.map((part) => `- ${part}`),
+            "",
+        );
+    }
+
+    if (brief.chapter.brief.doNotWrite) {
+        lines.push("## 禁写", `- ${brief.chapter.brief.doNotWrite}`, "");
+    }
+
+    const sceneIntentLines = brief.scenes.flatMap((scene, index) => {
+        const parts = [
+            scene.purpose ? `- 本场目的: ${scene.purpose}` : null,
+            scene.writingTip ? `- 写作提示: ${scene.writingTip}` : null,
+            scene.threadSummary ? `- 线索脉络: ${scene.threadSummary}` : null,
+            scene.threadWritingTip ? `- 线索写作提示: ${scene.threadWritingTip}` : null,
+        ].filter((part): part is string => part !== null);
+        return parts.length === 0 ? [] : ["", `### ${index + 1}. ${scene.title}`, ...parts];
+    });
+    if (sceneIntentLines.length > 0) {
+        lines.push("## 关键剧情点意图（按 Scene）", ...sceneIntentLines, "");
+    }
+
+    appendPromiseTasks(lines, brief.promiseTasks);
+    appendOpenDecisionWarnings(lines, brief.openDecisions);
+
+    if (lines.length === emptyMarker) {
+        lines.push("## 本章无意图级内容", "- 本章未填写目标与落点、节奏、信息控制、禁写、场景意图、Promise 任务或未决决策。", "");
+    }
+    return lines.join("\n").trimEnd();
+}
+
+/**
+ * 渲染「本章参数(覆盖 writer 默认)」段。pov/tone 是写作参数而非意义指令,保留在 writer 视图。
+ */
+function appendChapterParams(lines: string[], brief: ChapterBriefDto): void {
+    const params = [
+        brief.pov ? `视角：${brief.pov}` : null,
+        brief.tone ? `语气：${brief.tone}` : null,
+    ].filter((part): part is string => part !== null);
+    if (params.length > 0) {
+        lines.push("## 本章参数（覆盖 writer 默认）", ...params.map((part) => `- ${part}`), "");
     }
 }
 
 /**
  * 按模式渲染单个 Scene 的世界连接:autonomous 给查询提示,curated 与 slice-only 展开状态摘要。
- * slice-only 的状态摘要是「事实截面」——宪法第五条允许事实进动笔前上下文,禁止的是意义指令。
+ * 两者都是「事实截面」——宪法第五条允许事实进动笔前上下文,禁止的是意义指令(已归入评审视图)。
  */
 function appendSceneWorld(lines: string[], scene: ChapterWriterBriefSceneDto, mode: ChapterWriterBriefMode): void {
     const timeRange = formatRange(scene.worldAnchor.startTime ?? scene.worldAnchor.startInstant, scene.worldAnchor.endTime ?? scene.worldAnchor.endInstant);

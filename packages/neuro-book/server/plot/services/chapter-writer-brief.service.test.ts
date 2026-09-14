@@ -14,7 +14,7 @@ import {describe, expect, it, vi} from "vitest";
 
 const chapterId = 7;
 
-/** 章实体 fixture;默认信息控制填了 mustHide(否则会降级 needs_chapter_brief)。 */
+/** 章实体 fixture;默认信息控制填了 mustHide(信息控制不参与 status,只作为评审清单内容)。 */
 function chapterEntity(briefPatch: Partial<StoryChapter> = {}): StoryChapter {
     return {
         id: chapterId,
@@ -45,7 +45,7 @@ function chapterEntity(briefPatch: Partial<StoryChapter> = {}): StoryChapter {
 }
 
 describe("ChapterWriterBriefService", () => {
-    it("autonomous ready：只给查询提示,不展开状态,含信息控制与建议读取", async () => {
+    it("autonomous ready：writer 视图只给事实与查询提示,意图级内容全部进评审清单", async () => {
         const {service, sceneWorldContextService} = createService([createRecord()]);
 
         const brief = await service.getChapterWriterBrief(chapterId, "autonomous");
@@ -59,8 +59,7 @@ describe("ChapterWriterBriefService", () => {
         const md = brief.suggestedBriefMarkdown;
         expect(md).toContain("Autonomous");
         expect(md).toContain("神殿相遇");
-        expect(md).toContain("信息控制");
-        expect(md).toContain("必须隐藏：薇洛丝不知道项链是前作遗物");
+        expect(md).toContain("本场做什么: 主角在神殿遇到未来盟友。");
         expect(md).toContain("World 查询提示");
         // 建议读取由 Scene refs 编译。
         expect(md).toContain("## 建议读取");
@@ -69,8 +68,14 @@ describe("ChapterWriterBriefService", () => {
         expect(md).not.toContain("Subject states");
         expect(md).not.toContain("attrs");
         expect(md).not.toContain("\"hp\"");
-        // 不产出「写作约束」段(文风归 writer profile)。
-        expect(md).not.toContain("写作约束");
+        expectWriterViewFactOnly(md);
+
+        // 被剔除的意图级内容全部落在评审清单。
+        const checklist = brief.reviewChecklistMarkdown;
+        expect(checklist).toContain("必须隐藏：薇洛丝不知道项链是前作遗物");
+        expect(checklist).toContain("- 本场目的: 建立同盟关系。");
+        expect(checklist).toContain("- 写作提示: 突出压迫感。");
+        expect(checklist).toContain("- 线索脉络: 主线推进到神殿。");
     });
 
     it("curated ready：展开 World Context 状态摘要供投喂", async () => {
@@ -90,7 +95,7 @@ describe("ChapterWriterBriefService", () => {
         expect(md).not.toContain("\"hp\"");
     });
 
-    it("needs_chapter_brief：信息控制四项全空时阻断 handoff", async () => {
+    it("信息控制四项全空：不再是 status 门槛,也不再阻断 handoff", async () => {
         const {service} = createService([createRecord()], {}, chapterEntity({
             briefReaderKnows: null,
             briefProtagonistKnows: null,
@@ -100,13 +105,15 @@ describe("ChapterWriterBriefService", () => {
 
         const brief = await service.getChapterWriterBrief(chapterId, "autonomous");
 
-        expect(brief.status).toBe("needs_chapter_brief");
-        expect(brief.warnings.some((warning) => warning.includes("信息控制未填写"))).toBe(true);
-        expect(brief.suggestedBriefMarkdown).toContain("⚠ 未设置");
+        expect(brief.status).toBe("ready");
+        expect(brief.warnings.some((warning) => warning.includes("信息控制未填写"))).toBe(false);
+        // 四字段全空 → 评审清单里也不出现信息控制段。
+        expect(brief.reviewChecklistMarkdown).not.toContain("## 信息控制");
+        expectWriterViewFactOnly(brief.suggestedBriefMarkdown);
     });
 
-    it("F1 修复链路：save_story_chapter 补信息控制后 status 从 needs_chapter_brief 走到 ready", async () => {
-        // 阶段一：信息控制四项全空 → needs_chapter_brief（Agent 自主流程在此死锁，Task 87 遗留）。
+    it("F1 修复链路：save_story_chapter 补信息控制后写入 round-trip,评审清单读到新值", async () => {
+        // 阶段一：信息控制四项全空也不再阻断 status（信息控制已降级为事后核对清单）。
         let stored = chapterEntity({
             briefReaderKnows: null,
             briefProtagonistKnows: null,
@@ -114,7 +121,7 @@ describe("ChapterWriterBriefService", () => {
             briefHintOnly: null,
         });
         const before = createService([createRecord()], {}, stored);
-        expect((await before.service.getChapterWriterBrief(chapterId, "autonomous")).status).toBe("needs_chapter_brief");
+        expect((await before.service.getChapterWriterBrief(chapterId, "autonomous")).status).toBe("ready");
 
         // 阶段二：用真实 ChapterService.updateStoryChapter 应用 save_story_chapter 工具透传的 brief patch（{brief: {mustHide}}）。
         const chapterService = new ChapterService(
@@ -140,9 +147,12 @@ describe("ChapterWriterBriefService", () => {
             brief: {mustHide: "薇洛丝不知道项链是前作遗物"},
         });
 
-        // 阶段三：重新编译 brief → ready，死锁解除。
+        // 阶段三：重新编译 brief → 评审清单带上新写入的信息控制，writer 视图仍不含它。
         const after = createService([createRecord()], {}, stored);
-        expect((await after.service.getChapterWriterBrief(chapterId, "autonomous")).status).toBe("ready");
+        const brief = await after.service.getChapterWriterBrief(chapterId, "autonomous");
+        expect(brief.status).toBe("ready");
+        expect(brief.reviewChecklistMarkdown).toContain("必须隐藏：薇洛丝不知道项链是前作遗物");
+        expectWriterViewFactOnly(brief.suggestedBriefMarkdown);
     });
 
     it("M1-1：反向约束 / 状态约束 / authorOnly 写入→读取 round-trip，且 undefined 键不覆盖", async () => {
@@ -252,21 +262,22 @@ describe("ChapterWriterBriefService", () => {
         expect(brief.promiseTasks[1]).toMatchObject({sceneId: "10", promiseName: "grisha-oath", kind: "payoff", payoffExpectation: "读者回读第一章的改口细节产生 aha。"});
         expect(brief.promiseTasks[2]).toMatchObject({sceneId: "12", kind: "advance", note: null, payoffExpectation: null});
 
-        // markdown:四类指令措辞按 D25,note 与 payoffExpectation 全文输出。
-        const md = brief.suggestedBriefMarkdown;
-        expect(md).toContain("## 本章 Promise 任务");
-        expect(md).toContain("### Scene「神殿相遇」");
-        expect(md).toContain("### Scene「回营地」");
-        expect(md).toContain("- [建立] 项链伏笔（f-necklace）：自然埋下线索，不要提前解释答案。");
-        expect(md).toContain("  - 本次指示: 只写到项链发烫，不许发光。");
-        expect(md).toContain("- [兑现] 格里沙誓言线（grisha-oath）：正面揭示并兑现此线，避免只重复此前的提示；写出揭示带来的情绪与后果。");
-        expect(md).toContain("  - 预期戏剧效果: 读者回读第一章的改口细节产生 aha。");
-        expect(md).toContain("- [推进] 项链伏笔（f-necklace）：侧面提及、制造回忆点，但保持悬念，不在本场展开解释。");
+        // 评审清单:四类指令措辞按 D25,note 与 payoffExpectation 全文输出。
+        const checklist = brief.reviewChecklistMarkdown;
+        expect(checklist).toContain("## 本章 Promise 任务");
+        expect(checklist).toContain("### Scene「神殿相遇」");
+        expect(checklist).toContain("### Scene「回营地」");
+        expect(checklist).toContain("- [建立] 项链伏笔（f-necklace）：自然埋下线索，不要提前解释答案。");
+        expect(checklist).toContain("  - 本次指示: 只写到项链发烫，不许发光。");
+        expect(checklist).toContain("- [兑现] 格里沙誓言线（grisha-oath）：正面揭示并兑现此线，避免只重复此前的提示；写出揭示带来的情绪与后果。");
+        expect(checklist).toContain("  - 预期戏剧效果: 读者回读第一章的改口细节产生 aha。");
+        expect(checklist).toContain("- [推进] 项链伏笔（f-necklace）：侧面提及、制造回忆点，但保持悬念，不在本场展开解释。");
         // 建立场不给预期效果(D7:payoffExpectation 只给兑现场)。
-        expect(md.indexOf("预期戏剧效果")).toBe(md.lastIndexOf("预期戏剧效果"));
-        // 段落顺序:关键剧情点 → Promise 任务 → 建议读取。
-        expect(md.indexOf("## 本章 Promise 任务")).toBeGreaterThan(md.indexOf("## 关键剧情点"));
-        expect(md.indexOf("## 建议读取")).toBeGreaterThan(md.indexOf("## 本章 Promise 任务"));
+        expect(checklist.indexOf("预期戏剧效果")).toBe(checklist.lastIndexOf("预期戏剧效果"));
+        // Promise 任务段排在场景意图段之后;writer 视图里一个字段都没有。
+        expect(checklist.indexOf("## 本章 Promise 任务")).toBeGreaterThan(checklist.indexOf("## 关键剧情点意图"));
+        expect(brief.suggestedBriefMarkdown).not.toContain("本章 Promise 任务");
+        expect(brief.suggestedBriefMarkdown).not.toContain("自然埋下线索");
     });
 
     it("本章 Promise 任务：无 beats 不出段;archived 场不查询,abandoned 线不下发", async () => {
@@ -285,7 +296,7 @@ describe("ChapterWriterBriefService", () => {
         const brief = await service.getChapterWriterBrief(chapterId, "autonomous");
 
         expect(brief.promiseTasks).toEqual([]);
-        expect(brief.suggestedBriefMarkdown).not.toContain("本章 Promise 任务");
+        expect(brief.reviewChecklistMarkdown).not.toContain("本章 Promise 任务");
         expect(promiseRepository.findBeatsByScene).toHaveBeenCalledTimes(1);
         expect(promiseRepository.findBeatsByScene).toHaveBeenCalledWith(10);
     });
@@ -324,15 +335,17 @@ describe("ChapterWriterBriefService", () => {
         expect(brief.openDecisions[4]?.reason).toContain("需在章「第四章」前拍板");
         expect(brief.openDecisions[5]?.reason).toContain("已到而仍未拍板");
 
-        const md = brief.suggestedBriefMarkdown;
-        expect(md).toContain("## 未决决策警告");
-        expect(md).toContain("不得擅自写死");
-        expect(md).toContain("### 莉雅误召真相走向（d-anchor-chapter）");
-        expect(md).toContain("- 待决问题: 误召的真相按哪个方案揭开？");
-        expect(md).toContain("- 候选方案: 自愿献祭（情感冲击大） / 被诱骗");
-        expect(md).not.toContain("d-other-chapter");
-        expect(md).not.toContain("d-deadline-far");
-        expect(md).not.toContain("d-already-decided");
+        const checklist = brief.reviewChecklistMarkdown;
+        expect(checklist).toContain("## 未决决策警告");
+        expect(checklist).toContain("不得擅自写死");
+        expect(checklist).toContain("### 莉雅误召真相走向（d-anchor-chapter）");
+        expect(checklist).toContain("- 待决问题: 误召的真相按哪个方案揭开？");
+        expect(checklist).toContain("- 候选方案: 自愿献祭（情感冲击大） / 被诱骗");
+        expect(checklist).not.toContain("d-other-chapter");
+        expect(checklist).not.toContain("d-deadline-far");
+        expect(checklist).not.toContain("d-already-decided");
+        // writer 视图不含未决决策。
+        expectWriterViewFactOnly(brief.suggestedBriefMarkdown);
     });
 
     it("未决决策警告：存在 open Decision 但全不触及本章时整段不出现", async () => {
@@ -346,10 +359,10 @@ describe("ChapterWriterBriefService", () => {
         const brief = await service.getChapterWriterBrief(chapterId, "autonomous");
 
         expect(brief.openDecisions).toEqual([]);
-        expect(brief.suggestedBriefMarkdown).not.toContain("未决决策警告");
+        expect(brief.reviewChecklistMarkdown).not.toContain("未决决策警告");
     });
 
-    it("slice-only：纯事实切片——展开状态截面,剔除信息控制与禁写,信息控制全空不降级 status", async () => {
+    it("slice-only：展开事实截面,意图级内容仍只进评审清单", async () => {
         const {service} = createService([createRecord()], {}, chapterEntity({
             briefReaderKnows: null,
             briefProtagonistKnows: null,
@@ -368,16 +381,14 @@ describe("ChapterWriterBriefService", () => {
         expect(md).toContain("World slices");
         expect(md).toContain("Subject states");
         expect(md).toContain("时间:");
-        // 意义指令不进动笔前上下文(模式说明与 warning 提到「信息控制」字样,断言段标题与字段行)。
-        expect(md).not.toContain("## 信息控制");
-        expect(md).not.toContain("必须隐藏");
-        expect(md).not.toContain("## 禁写");
-        expect(md).not.toContain("不许出现解释性独白");
-        expect(md).not.toContain("needs_chapter_brief");
-        expect(brief.warnings.some((warning) => warning.includes("slice-only 模式"))).toBe(true);
+        expectWriterViewFactOnly(md);
+        // 禁写是意图级内容:只进评审清单。
+        expect(brief.reviewChecklistMarkdown).toContain("## 禁写");
+        expect(brief.reviewChecklistMarkdown).toContain("- 不许出现解释性独白");
+        expect(brief.warnings.some((warning) => warning.includes("slice-only 模式"))).toBe(false);
     });
 
-    it("curated 模式：规划层两段与现有 World 展开段共存,互不破坏", async () => {
+    it("curated 模式：writer 视图展开 World 状态,规划层两段只留在评审清单", async () => {
         const beatsByScene = new Map<number, StoryPromiseBeatWithPromise[]>([[10, [createBeat()]]]);
         const decisions = [createDecisionDto({anchorKind: "chapter", anchorTargetId: "7"})];
         const {service} = createService([createRecord()], {}, chapterEntity(), {beatsByScene, decisions});
@@ -387,11 +398,57 @@ describe("ChapterWriterBriefService", () => {
         const md = brief.suggestedBriefMarkdown;
         expect(md).toContain("World slices");
         expect(md).toContain("Subject states");
-        expect(md).toContain("## 本章 Promise 任务");
-        expect(md).toContain("## 未决决策警告");
         expect(md).toContain("## 建议读取");
+        expectWriterViewFactOnly(md);
+
+        const checklist = brief.reviewChecklistMarkdown;
+        expect(checklist).toContain("## 本章 Promise 任务");
+        expect(checklist).toContain("## 未决决策警告");
+    });
+
+    it("评审清单永不为空:本章未填写任何意图级内容时给占位段", async () => {
+        const record = createRecord({
+            purpose: null,
+            writingTip: null,
+            thread: {id: 2, title: "主线", isMainThread: true, summary: "", writingTip: null},
+        });
+        const {service} = createService([record], {}, chapterEntity({
+            briefReaderKnows: null,
+            briefProtagonistKnows: null,
+            briefMustHide: null,
+            briefHintOnly: null,
+        }));
+
+        const brief = await service.getChapterWriterBrief(chapterId, "autonomous");
+
+        expect(brief.reviewChecklistMarkdown).toContain("## 本章无意图级内容");
+        expectWriterViewFactOnly(brief.suggestedBriefMarkdown);
     });
 });
+
+/**
+ * writer 视图的事实/意义分离黑名单:以下意图级段标题与字段行一个都不允许出现在 writer 动笔前上下文。
+ */
+function expectWriterViewFactOnly(md: string): void {
+    const forbidden = [
+        "## 本章目标与落点",
+        "## 信息控制",
+        "## 禁写",
+        "## 节奏 / 下一章牵引",
+        "## 关键剧情点意图",
+        "## 本章 Promise 任务",
+        "## 未决决策警告",
+        "- 本场目的:",
+        "- 写作提示:",
+        "- 线索脉络:",
+        "不许出现解释性独白",
+        "不得擅自写死",
+        "自然埋下线索",
+    ];
+    for (const fragment of forbidden) {
+        expect(md, `writer 视图不应包含意图级内容:${fragment}`).not.toContain(fragment);
+    }
+}
 
 /** 规划层 fixtures:beats 驱动「本章 Promise 任务」段,decisions 驱动「未决决策警告」段。 */
 type PlanningFixtures = {

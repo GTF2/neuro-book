@@ -67,7 +67,7 @@
 使用 novel-writing 写第一章。目标章节是 manuscript/001-volume/001-chapter/index.md。请只把正式正文写入该章节文件。
 ```
 
-普通 `writer` 是正文 agent。它对 World Engine 只读，也不应该自己乱翻所有文件。leader 会先编译章节 brief（目标、信息控制），writer 自己读取 brief 并查询 World Engine 当前状态，文风约束由 writer 自带。
+普通 `writer` 是正文 agent。它对 World Engine 只读，也不应该自己乱翻所有文件。leader 会先编译章节 brief，但它分两个视图：**事实视图**（时间、地点、在场角色、世界状态或查询提示）由 writer 自取；**意图视图**（本章目标、信息控制、禁写）留给写完之后核对——事前塞给 writer，写出来就会变成报告。writer 自己查询 World Engine 当前状态，文风约束由 writer 自带。
 
 写第二章和第三章时，沿用同样方式：
 

@@ -11,7 +11,7 @@ Leader profile 负责理解用户意图、选择流程、调用 Skill 和协调�
 - 调用 `retrieval` 为 writer 选择相关设定。
 - 创建或复用 `writer` 写正式章节。
 - **管理普通写作主链的 Thread / Scene / Chapter Plot。**
-- **使用 `get_chapter_writer_brief` 为 writer 编译完整章节 brief，包含 Scene / World Context。**
+- **用 `get_chapter_writer_brief` 编译章节 brief：事实视图（时间/地点/在场角色/世界状态/查询提示）交 writer 自取，意图视图（目标/信息控制/禁写/Promise 任务/未决决策）留给写后评审。**
 - 推进 World Engine 动态世界状态与时间线。
 - 调用 `researcher` 处理需要联网或最新资料的任务。
 - 触发 Workflow 处理多阶段编排任务，见 [Workflow 与 Job](/agent/workflow)。

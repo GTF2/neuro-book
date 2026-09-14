@@ -93,6 +93,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Agent Runtime 与 Profile | [Reference: Agent](../../packages/neuro-book/assets/reference/agent/README.md) | Session、Profile、Workflow、Skill、Job、Project Workspace 与 Agent 协作协议 |
 | Agent 资产运行期安装与 Catalog 根 | [`agent/asset-install-runtime.md`](agent/asset-install-runtime.md) | State Root Install Root、Runtime Reference Root、Install → Project 覆盖和显式 artifact context 已由代码与合同测试支持 |
 | Agent Session Abort | [`agent/session-abort.md`](agent/session-abort.md) | HTTP abort、合作/forced 收口、唯一 durable lifecycle、写入恢复与 409/503 失败合同已由实现和行为测试支持 |
+| Plot Writer Brief 双视图 | [`plot/chapter-writer-brief.md`](plot/chapter-writer-brief.md) | brief 拆事实视图（进 writer）与意图视图（只进评审）；信息控制降级为事后核对、不参与 status 门槛 |
 | 内容与 Project Workspace | [Reference: Content](../../packages/neuro-book/assets/reference/content/README.md) | 内容节点、正文、素材、检索、引用与 Workspace 术语 |
 | World Engine | [Reference: World Engine](../../packages/neuro-book/assets/reference/world-engine/README.md) | 时间线、slice、subject、schema、calendar 与写作协作 |
 | Plot | [Reference: Plot](../../packages/neuro-book/assets/reference/plot/README.md) | Story、Thread、Scene、Writer Brief、Agent 与前端合同 |
@@ -132,7 +133,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | 优先级 | 功能域 | 现有证据 | 缺口 |
 |---|---|---|---|
 | P0 | 关键帧写作（写作宪法第三条、第六条） | [`doctrine/writing-doctrine.md`](../doctrine/writing-doctrine.md)、[关键帧实验](../doctrine/keyframe-experiment-2026-09-14.md)、`packages/neuro-book/server/plot/services/keyframe.service.ts`、`prisma/project.schema.prisma`（StoryKeyframe）、`assets/workspace/.nbook/agent/workflows/keyframe-tween-review/` | 帧实体、回撞流转、裁决留痕与补间 workflow 已实现且有测试，但无 `implemented` Spec；agent 侧还没有关键帧工具与 Reference 正文 |
-| P0 | Writer brief 事实/意义分离（写作宪法第五条） | [`doctrine/writing-doctrine.md`](../doctrine/writing-doctrine.md)、[对照实验](../doctrine/contrast-experiment-2026-09-14.md)、`packages/neuro-book/server/plot/services/chapter-writer-brief.service.ts`（slice-only 模式）、`assets/reference/plot/writer-brief.md` | slice-only 模式与评审 `infoControl` 事后核对已实现，但 capability 未注册为 Spec；主循环与用户文档仍按"信息控制前置"叙述 |
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
 | P0 | Agent Session 持久化与历史 | `packages/neuro-book/docs/adr/0003-*`、`0014-agent-job-*`，`packages/neuro-book/server/agent/session/`、`packages/neuro-book/server/workspace-history/` | durable event、Job 历史、附件、租约和文件历史缺少统一状态与恢复规范 |

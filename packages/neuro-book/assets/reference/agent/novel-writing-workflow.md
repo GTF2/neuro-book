@@ -11,9 +11,9 @@
 - `leader.default` 负责和用户讨论剧情、确认 canon、推进 World Engine、维护 Thread / Scene / Chapter Plot、选择必要 lorebook、编译 `get_chapter_writer_brief`，并调度 `writer`。
 - `director` 只保留为高级或手动剧情导演 profile；不是普通写作主链必经节点。
 - `writer` 是章节正文 agent，不是剧情导演、世界模拟 agent 或状态写入 agent。
-- `writer` 创建 initial 为空；每轮通过 `invoke_agent.message` 接收写作 brief，通过 `invoke_agent.input` 接收唯一目标 `path` 和建议读取清单。
+- `writer` 创建 initial 为空；每轮通过 `invoke_agent.input` 接收唯一目标 `path`、`chapterId` 和建议读取清单，用 `get_chapter_writer_brief` 自取本章事实简报；`invoke_agent.message` 只承载交付要求。
 - `writer` 拥有只读 `execute_world`，只能查询 World Engine；不能写入、删除或编辑 slice。
-- `writer` 不直接持有 Plot tools，不读取 `simulation/` 作为普通写作状态源；payload 里遗留的 `threadIds` / `sceneIds` / `plotIds` 兼容字段会被忽略。需要 Scene / World Context 时，由上游把完整 brief 写进 `invoke_agent.message`。
+- `writer` 不直接持有 Plot tools，不读取 `simulation/` 作为普通写作状态源；payload 里遗留的 `threadIds` / `sceneIds` / `plotIds` 兼容字段会被忽略。需要 Scene / World Context 时，writer 用 `get_chapter_writer_brief` 自取事实简报；上游不把意图级内容写进 `message`。
 - `writer` 不默认展开全项目 lorebook；只按 brief 判断是否读取 `lorebookEntries` / `readablePaths`。
 - 写作前，leader 应先完成“剧情初步设计 -> 推进 World Engine -> 剧情设计 -> 更新 Plot -> get_chapter_writer_brief”，brief status 为 `ready` 后再调用 writer；写作后若 writer 自由发挥产生新事实，由 leader 回到 `novel-writing` 拍板落库环节确认并补回 World Engine。
 
@@ -25,7 +25,7 @@
 4. **World Engine init**：项目有明确时间线和需追踪对象时，使用 `novel-setup` 阶段四建立 `calendar.ts`、`schema/index.ts`、纪元锚点和开局状态。
 5. **Plot / state planning**：使用 `novel-writing`（剧情设计 → 拍板落库环节）讨论剧情。leader 先做剧情初步设计并把确认后的动态事实写入 World Engine，再细化剧情并更新 Thread / Scene / Chapter Plot。
 6. **Retrieval handoff**：需要设定上下文时先调用 `retrieval`，leader 选择 `entries[].path` 放入 writer payload 的 `context.lorebookEntries`，不把 retrieval 的 reason / use / risk 直接交给 writer。
-7. **Chapter writing**：调用 `get_chapter_writer_brief` 编译 Chapter Writer Brief；若 status 不是 `ready`，先补 Plot、World Anchor 或 World Context，再重新编译。ready 后按 `novel-writing` 正文循环环节调用普通 `writer`，传完整 brief、目标 `input.path`、建议读取路径和 World Engine 查询提示。
+7. **Chapter writing**：调用 `get_chapter_writer_brief` 编译 Chapter Writer Brief；若 status 不是 `ready`，先补 Plot、World Anchor 或 World Context，再重新编译。ready 后按 `novel-writing` 正文循环环节调用普通 `writer`，传目标 `input.path`、`chapterId` 和建议读取路径——事实简报由 writer 自取，意图清单（`reviewChecklistMarkdown`）留给写后评审。
 8. **Post-write check**：leader 按 `novel-writing` 正文循环的评审步骤检查正文；如产生新事实或状态变化，回拍板落库环节做 World Engine 回补。
 
 ## Writing Skills
@@ -53,9 +53,10 @@ Legacy（已归档到 `packages/neuro-book/docs/archived/skills/`，不进 skill
 - `invoke_agent.input.path`：唯一写入目标，必须是当前Project Workspace相对Markdown路径，例如`manuscript/.../index.md`。
 - `invoke_agent.input.context.lorebookEntries`：建议读取的内容节点路径，writer 按需读取。
 - `invoke_agent.input.context.readablePaths`：建议读取的普通 Markdown 文件路径。
-- `invoke_agent.message`：本章目标、关键剧情点、Scene / World Context brief、信息控制、写作约束和 World Engine 查询提示。
+- `invoke_agent.input.chapterId`：本章 `StoryChapter` id；writer 用它自取 `get_chapter_writer_brief` 的事实简报（时间 / 地点 / 在场角色 / 世界状态或查询提示 / 建议读取）。
+- `invoke_agent.message`：只写交付要求。**不要**写本章目标、关键剧情点、信息控制、写作约束等意图级内容——它们在 `reviewChecklistMarkdown` 里，由写完之后的评审消费。
 
-不要把完整 World Engine 状态、HP / 位置等可查询细节、slice / patch JSON 或旧 Plot id-only handoff 塞进 brief。writer 会用只读 `execute_world` 自查状态。
+不要把完整 World Engine 状态、HP / 位置等可查询细节、slice / patch JSON 或旧 Plot id-only handoff 塞进 writer 的上下文。writer 会用只读 `execute_world` 自查状态；意图级内容同理不进 `message`。
 
 ## Legacy Boundary
 

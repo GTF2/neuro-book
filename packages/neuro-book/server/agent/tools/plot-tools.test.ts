@@ -551,6 +551,71 @@ describe("plot tools", () => {
         expect(runReadyProjectOperationMock).toHaveBeenCalledWith(overrideReady, expect.any(Function));
         expect(activateReadyProjectModuleMock).toHaveBeenCalledWith(overrideReady, expect.anything());
     });
+
+    it("writer profile 调用:details 收口为事实字段,不带任何意图级结构化数据", async () => {
+        const plotFacadeMock = plotFacade as {
+            getChapterWriterBrief: ReturnType<typeof vi.fn>;
+        };
+        plotFacadeMock.getChapterWriterBrief.mockResolvedValueOnce({
+            chapter: {id: "7", name: "001-opening", title: "开篇"},
+            mode: "autonomous",
+            status: "ready",
+            scenes: [{
+                id: "10",
+                threadId: "2",
+                threadTitle: "主线",
+                threadIsMain: true,
+                threadSummary: "主线推进到神殿。",
+                threadWritingTip: "保持悬念。",
+                chapterId: "7",
+                chapterSortOrder: 0,
+                threadSortOrder: 0,
+                title: "神殿相遇",
+                status: "draft",
+                summary: "主角在神殿遇到未来盟友。",
+                purpose: "建立同盟关系。",
+                writingTip: "突出压迫感。",
+                worldAnchor: {},
+                worldContext: null,
+                warnings: [],
+            }],
+            totalScenes: 1,
+            suggestedReading: [],
+            promiseTasks: [{
+                sceneId: "10",
+                sceneTitle: "神殿相遇",
+                promiseId: "31",
+                promiseName: "f-necklace",
+                promiseTitle: "项链伏笔",
+                kind: "plant",
+                note: "只写到项链发烫。",
+                payoffExpectation: null,
+            }],
+            openDecisions: [],
+            warnings: [],
+            suggestedBriefMarkdown: "# Brief\n\n事实切片。",
+            reviewChecklistMarkdown: "# Checklist\n\n必须隐藏：薇洛丝不知道项链是前作遗物",
+        });
+        const tool = createPlotTools().find((item) => item.key === "get_chapter_writer_brief");
+
+        const result = await tool!.executeWithContext!(testContext(emptyHarness(), "writer"), "plot-brief-writer", {
+            chapterId: "7",
+        });
+
+        // writer 只拿到事实视图文本。
+        expect(result.content).toEqual([{type: "text", text: "# Brief\n\n事实切片。"}]);
+        const details = result.details as Record<string, unknown>;
+        expect(details).toMatchObject({status: "ready", suggestedBriefMarkdown: "# Brief\n\n事实切片。"});
+        expect(details).not.toHaveProperty("promiseTasks");
+        expect(details).not.toHaveProperty("openDecisions");
+        expect(details).not.toHaveProperty("reviewChecklistMarkdown");
+        const scenes = details.scenes as Array<Record<string, unknown>>;
+        expect(scenes[0]).not.toHaveProperty("purpose");
+        expect(scenes[0]).not.toHaveProperty("writingTip");
+        expect(scenes[0]).not.toHaveProperty("threadSummary");
+        expect(scenes[0]).not.toHaveProperty("threadWritingTip");
+        expect(JSON.stringify(details)).not.toContain("必须隐藏");
+    });
 });
 
 /**

@@ -283,6 +283,7 @@ Plot refs 用结构化关系连接剧情对象和内容节点。
 - `get_story_thread` / `get_story_scene_context` / `get_scene_world_context` 可以在未传 id 时使用 session 的 `plot.selection` 焦点；`save_story_thread` / `save_story_scene` 的 update/archive 目标与 `save_promise_beat` 的 `sceneId` 缺省时同样取 `plot.selection`。
 - 创建或更新 Thread / Scene 会刷新 `plot.selection`。
 - Writer 写章节前，Leader 应优先用 `get_chapter_writer_brief` 编译 Chapter Writer Brief。若 status 不是 `ready`，再用 `get_story_chapter` / `get_story_scene_context` / `get_scene_world_context` 和 save_* 工具补 Plot、ChapterBrief、World Anchor 或 World Context 后重新编译。
+- 编译产物分两个视图：`suggestedBriefMarkdown`（只含事实级细节，交 writer）与 `reviewChecklistMarkdown`（目标/信息控制/禁写/Promise 任务/未决决策等意图级内容，只交写完之后的评审）。意图级内容不进入 writer 的动笔前上下文；信息控制不参与 status 阶梯，四项全空不再阻断 handoff。
 - Plot refs 帮助检索上下文，但不自动授权 writer 读取隐藏 lorebook 或 subject 私密 knowledge。
 
 Thread / Scene 的 agent-facing 写法、摘要密度和 World Engine 连接规则见 [agent-spec.md](agent-spec.md)。
@@ -293,7 +294,7 @@ After plot edits, check continuity: character motivation, causal chain, reader i
 
 Agent 写作或规划时按这个顺序读 Plot：
 
-1. 调用 writer 前，用 `get_chapter_writer_brief`(传 `chapterId` + `mode`)编译目标章节的 writer brief。brief 已含「本章 Promise 任务」段与未决决策警告段，不需要为 writer 另行摘抄账本。
+1. 调用 writer 前，用 `get_chapter_writer_brief`(传 `chapterId` + `mode`)编译目标章节的 writer brief。writer 只拿到 `suggestedBriefMarkdown`（事实切片）；「本章 Promise 任务」段与未决决策警告段在 `reviewChecklistMarkdown` 里，属写后评审材料，不需要为 writer 另行摘抄账本。
 2. 如果 brief status 不是 `ready`，用 `get_story_chapter`(传 `chapterId`)获取目标章节承载的 scenes。
 3. 如果需要更完整的线索，用 `get_story_scene_context` 读取 scene、parent thread 和同章 scene view。
 4. 如果目标 Scene 已连接 World Engine，用 `get_scene_world_context` 读取相关 slices 和 subject states。

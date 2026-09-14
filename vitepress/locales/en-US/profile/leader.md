@@ -11,7 +11,7 @@ A leader profile is responsible for reading your intent, picking a workflow, inv
 - Call `retrieval` to pick the relevant worldbuilding for the writer.
 - Create or reuse a `writer` to write finished chapters.
 - **Manage the Thread / Scene / Chapter Plot of the main writing chain.**
-- **Use `get_chapter_writer_brief` to compile a complete chapter brief for the writer, including Scene / World Context.**
+- **Use `get_chapter_writer_brief` to compile the chapter brief: the fact view (time / place / characters on stage / world state / query hints) is fetched by the writer itself, while the meaning view (goals / information control / do-not-write / promise tasks / open decisions) is kept for post-write review.**
 - Advance the World Engine's dynamic world state and timeline.
 - Call `researcher` for anything that needs the internet or up-to-date material.
 - Trigger a Workflow for multi-stage orchestration; see [Workflows and Jobs](/en/agent/workflow).

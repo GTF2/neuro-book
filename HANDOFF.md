@@ -35,9 +35,9 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 顺序 | 文件 | 为什么 |
 |---|---|---|
 | 1 | `docs/doctrine/writing-doctrine.md` | 宪法本体（含提交 5aa34d0c 的第二条精确化） |
-| 2 | `PROJECT-STATUS.md` | 现状 + 「写作宪法对齐」章节 + **已知未收口列表（第 0 条是 P0）** |
+| 2 | `PROJECT-STATUS.md` | 现状 + 「写作宪法对齐」章节 + **已知未收口列表（现为第 1–7 条，第 7 条是终审实验脚本待重建）** |
 | 3 | `docs/standards/fork-upstream-sync.md` | 我们是 fork（上游 notnotype/neuro-book），这是同步与防冲突规则 |
-| 4 | `docs/standards/fork-seams.md` | **接缝登记表 S1–S15**：改上游文件前先查这里 |
+| 4 | `docs/standards/fork-seams.md` | **接缝登记表 S1–S16**：改上游文件前先查这里 |
 | 5 | `docs/doctrine/prior-art-2026-09-14.md` | 外部调研：哪些轮子已有（别重复造）、采纳清单 |
 | 6 | `AGENTS.md` 顶部「与开发者的硬性约定（7 条）」 | 协作铁律：先计划后代码、一次一个功能、不通测试不提交、不改无关文件、冲突问不许猜、只推 origin、大白话 |
 
@@ -45,7 +45,8 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 3. 当前状态（2026-09-14）
 
-- 分支：**`feat/writing-doctrine-alignment`**；工作区干净；**领先上游 45 提交、落后 0**。
+- 分支：**`feat/writing-doctrine-alignment`**；**领先上游 46 提交、落后 0**；brief 双视图改造已完成但**尚未提交**（工作区有改动）。
+- 本文件曾在 2026-09-14 被并行执行者删除，作者已还原；同名 `CLAUDE.md` 已删且不再使用。看到 `D HANDOFF.md` 这类删除时先确认来源，不要当成自己的改动。
 - ⚠️ **有多个 AI/工具在同一仓库并行提交**（例：`676af095`、`282bc90d`、`9ab4bc56`、`ee651716` 都不是"我"提交的）。
   开工前先 `git log --oneline -15` 看有没有新东西；**绝不回退、覆盖来源不明的提交**；做完自己的事再提交。
 - 提交者身份（本机没配全局 git 身份）：
@@ -60,12 +61,13 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 5. **治理接线**：`docs/README.md` 真相源优先级新增第 0 级=宪法；`docs/specs/README.md` 规范缺口登记两个新 capability；`PROJECT-STATUS.md` 更新。
 6. **fork 工程**：上游合并实测零冲突；`git rerere` 已启用；`docs/standards/fork-{upstream-sync,seams}.md` 成文。
 7. **调研**：StoryForge / 章纲范式 / DOC 学术 / Swain 方法论（采纳清单见 prior-art 文档第五节）。
+8. **brief 双视图改造（P0，2026-09-14 完成）**：`suggestedBriefMarkdown`（事实，唯一进 writer）与 `reviewChecklistMarkdown`（意图，只进评审）落地；三个模式统一只给事实、`needs_chapter_brief` 废止；agent 工具对 writer 调用收口 `details`（writer 拿不到任何意图级结构化数据）；`chapter-write-review-revise` 的 `brief` / `infoControl` 只注入评审、`chapterId` 变必填。Reference 与 skill 主链（`plot/{writer-brief,system,agent-spec}.md`、`agent/{leader-default,novel-writing-workflow}.md`、`world-engine/workflow.md` §6.2/6.3/13、`skills/novel-writing/phases/02|03`、`novel-writer-execution`）与用户文档 `vitepress/{zh-Hans,en-US}/{core/plot-workbench,profile/writer,profile/leader,tutorials/04}` 中英对等同步；Spec `docs/specs/plot/chapter-writer-brief.md` 晋升 `implemented`；Work 记录在 `.agents/works/w00014-chapter-writer-brief-two-views/`。
 
 ### 进行中 / 待办（按优先级）
 
 | 优先级 | 任务 | 说明 |
 |---|---|---|
-| **P0** | **brief 双视图改造**（最大缺口） | 现状：`suggestedBriefMarkdown` 含 **13 项意图级内容**（目标与落点、本场目的、写作提示、线索脉络、节奏/开场钩子、Promise 指令+note+payoffExpectation、未决决策警告），**slice-only 只挡掉 2 项（信息控制、禁写），其余 11 项在所有模式泄漏**。方案：拆 `factualBrief`（唯一进 writer：时间/地点/在场/世界状态截面/建议读取）与 `reviewChecklist`（只进评审）；`slice-only` 升为唯一合法形态；信息控制 status 门槛废止。审计明细在 `PROJECT-STATUS.md` 第 0 条。改后必须补断言"writer 视图不含意图级内容"的测试 |
+| ~~P0~~ | ~~**brief 双视图改造**~~ **已完成 2026-09-14** | writer 视图只含事实、评审视图收纳全部意图级内容；三模式统一只给事实；`needs_chapter_brief` 废止；工具对 writer 调用收口 `details`；workflow 意图只进评审。Spec：`docs/specs/plot/chapter-writer-brief.md`（implemented）。**下一个 P0 是关键帧工具面** |
 | **P0** | **关键帧工具面** | `plot-tools.ts` **0 个 keyframe 工具**（agent 读写不了帧）；`assets/reference/` 无关键帧正文；`novel-writing/phases/03-chapter-loop.md` 不提帧（帧还是旁路，不是主产出物） |
 | P1 | Swain 词汇统一（文档级） | 用 `Goal/Conflict/Disaster`、`Reaction/Dilemma/Decision` 替换自造的"欲望/阻力/代价"，与既有 `outcomeType`（yes_but/no_and…）对齐；**不要新增 schema 字段** |
 | P1 | 未来影响分析 / 回读验证+回执 / 写回校验注册表 | 采纳 StoryForge 的三个成熟机制（见 prior-art 第五节 2/3/4） |
@@ -110,14 +112,15 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 宪法 / 实验证据 / 外部调研 | `docs/doctrine/writing-doctrine.md`、`contrast-experiment-2026-09-14.md`、`keyframe-experiment-2026-09-14.md`、`prior-art-2026-09-14.md` |
 | fork 规则 / 接缝登记 | `docs/standards/fork-upstream-sync.md`、`fork-seams.md` |
 | 现状与缺口 | `PROJECT-STATUS.md`（「写作宪法对齐」+ 已知未收口 0–6 条） |
-| brief 核心 | `packages/neuro-book/server/plot/services/chapter-writer-brief.service.ts`（渲染器 L352 起，`chooseStatus` 的信息控制门槛） |
+| brief 核心 | `packages/neuro-book/server/plot/services/chapter-writer-brief.service.ts`（`renderWriterBriefMarkdown` / `renderReviewChecklistMarkdown`；`chooseStatus` 已无信息控制门槛） |
 | brief 格式契约 | `packages/neuro-book/assets/reference/plot/writer-brief.md` |
+| brief 双视图 Spec / Work | `docs/specs/plot/chapter-writer-brief.md`（implemented）、`.agents/works/w00014-chapter-writer-brief-two-views/` |
 | 关键帧核心 | `server/plot/services/keyframe.service.ts`、`repositories/prisma-keyframe.repository.ts`、`api/projects/plot/[...segments].ts`（`handleKeyframes` L446） |
 | 关键帧 schema | `prisma/project.schema.prisma`（StoryKeyframe）+ `server/workspace-files/project-workspace.ts`（迁移 SQL） |
 | 评审核对单 | `assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts`（`infoControl` 参数，只进一致性评审） |
 | 补间 workflow | `assets/workspace/.nbook/agent/workflows/keyframe-tween-review/workflow.ts` |
 | 写作 skill | `assets/workspace/.nbook/agent/skills/novel-writing/`（SKILL.md、phases/02-canon-commit.md、03-chapter-loop.md、**05-keyframe-tween.md 是正确范式模板**） |
-| 实验脚本 | `packages/neuro-book/scripts/smoke/slice-vs-told-contrast.ts` |
+| 实验脚本 / workflow | `packages/neuro-book/scripts/smoke/slice-vs-told-contrast.ts`、`assets/workspace/.nbook/agent/workflows/contrast-write-review/workflow.ts`（实验专用，不接入主链） |
 | 上游契约 | `docs/specs/agent/asset-install-runtime.md`（三层覆盖 Seed→Install→Project + dirty fail-closed = 插件层保护） |
 
 ---
@@ -133,5 +136,12 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 8. 建议的第一步
 
-按硬性约定第 1 条（先计划后代码），用大白话向开发者复述 **P0 brief 双视图改造**的方案与影响面，确认后开工。
-它是所有后续工作的前提：在 writer 只拿到事实之前，任何"事后校验"主张都立不住（对照组不成立）。
+brief 双视图改造已于 2026-09-14 完成（[Spec](docs/specs/plot/chapter-writer-brief.md)、[Work](.agents/works/w00014-chapter-writer-brief-two-views/)）。**下一个 P0 是关键帧工具面**：
+
+- `server/agent/tools/plot-tools.ts` 目前 **0 个 keyframe 工具**——agent 读写不了帧，skill `phases/05-keyframe-tween.md` 是空头支票；
+- `assets/reference/` 没有关键帧正文；
+- `novel-writing/phases/03-chapter-loop.md` 不提帧——帧还是旁路，不是人的主要产出物。
+
+按硬性约定第 1 条，先向开发者复述方案与影响面，确认后开工。
+
+另有一项待真实模型验证（见 PROJECT-STATUS 未收口第 7 条）：终审实验链路已重建——新增实验专用 workflow `contrast-write-review`（调用方显式给定 writer 提示原样下发 + 三维评审一轮、不修订），`scripts/smoke/slice-vs-told-contrast.ts` 改为「同一份事实简报，唯一变量 = 意图清单是否随提示下发」。**尚缺真实 Provider 跑一轮 + 开发者判定**；`bun run smoke:contrast` 就是入口。

@@ -34,43 +34,55 @@
 - 写完后检查返回的 issues：`severity: "error"` 必须修；`severity: "advisory"` 确认本次语义符合预期即可，不落库。向用户解释时使用返回的 `title`、`message`、`explanation`，不要自行按 code 生成文案。
 - 对用户用人话解释做了什么（"我把这段剧情记到时间线里了"），不抛 slice / patch / op 这些术语。
 
-## 第二步：准备简化 brief 调用 writer
+## 第二步：调用 writer（意图不下发）
 
 通过 `invoke_agent` 调用 `writer`。两个入口各有分工：
 
-- `input`：传 `{path: "manuscript/001-volume/001-chapter/index.md", context: {lorebookEntries: ["lorebook/character/foo/", ...]}}`。
+- `input`：传 `{path: "manuscript/001-volume/001-chapter/index.md", chapterId: "<StoryChapter id>", context: {lorebookEntries: ["lorebook/character/foo/", ...]}}`。
   - `path` 是本轮唯一写入目标，必须是当前 Project Workspace 相对路径，指向章节 `index.md`。
+  - `chapterId` 让 writer 用 `get_chapter_writer_brief` 自取本章**事实简报**。
   - `context.lorebookEntries` 只传内容节点 path 字符串数组（目录路径，结尾带 `/`）。
-- `message`（brief）：本章的写作任务正文。
+- `message`：只写交付要求（写进哪个文件、什么时候算完成）。
 
-brief 应当**简化**——因为写作前世界状态已推进好、writer 又能自查，只传剧情框架，不传可查询的状态细节：
+**写作宪法第二条/第五条：writer 的动笔前上下文只含事实，不含意义。** 所以：
 
-| brief 应该传 | brief 不要传 |
+| 由 writer 自取 / 只传事实 | 只交写后评审（不写进 message） |
 | --- | --- |
-| 章节目标 / 关键剧情点 | 详细角色状态 |
-| 信息控制（谁知道什么 / 谁不知道什么） | 完整世界状态 |
-| 写作约束（视角、节奏、章节如何收尾） | HP / 位置等可查询的细节 |
-| 建议读取的 lorebook（也可放 input.context） | 完整时间线记录 |
-| World Engine 查询提示（查哪些 subject、哪个时间范围） | patch 细节 |
+| 时间 / 地点 / 在场角色 / 世界状态截面 | 本章目标与落点、本场目的、写作提示、线索脉络 |
+| 本章参数（视角、语气） | 信息控制四字段（谁知道什么 / 谁不知道什么） |
+| 建议读取的 lorebook | 禁写项、节奏与开场钩子 |
+| World Engine 查询提示（autonomous 模式） | Promise 推进指令、未决决策警告 |
 
-**不要**把 HP、位置、完整状态塞进 brief。writer 会自己用 readonly `execute_world` 查到当前真值；把状态都塞进 brief 既冗余，又会让 writer 退化成纯执行者，还浪费了它的查询能力。
+右列全部在 `get_chapter_writer_brief` 评审视图（`reviewChecklistMarkdown`）里：评审步骤交给评审 agent，或作为 `chapter-write-review-revise` 的 `brief` / `infoControl` 参数传入。ChapterBrief 上这些字段仍然要填——它们不是没用了，而是从"事前告知"改成"写完拿正文来撞"的核对清单，填得越具体，事后校验越准。
 
-信息控制是 brief 的硬要求：按 subject 视角分别说明知识边界，例如「薇洛丝视角：不知道莉雅的真实身份」「反派视角：从教会典籍见过项链记载，认出标志但不确定眼前女孩是谁」。writer 据此控制每个角色的言行与心理披露。
+也不要传可查询的状态细节（HP / 位置 / 完整世界状态 / patch 细节）：writer 会用只读 `execute_world` 自查，塞进去既冗余，又让它退化成纯执行者。
 
-brief 示例（节选）：
+writer 实际拿到的动笔前上下文长这样（`get_chapter_writer_brief` 的 writer 视图，节选）：
 
-```
-本章目标：薇洛丝在星陨遗迹深处解开莉雅的封印，两人初次交流后被追来的邪教徒巡逻队逼入绝境。
-关键剧情点：1) 解封过程的异象 2) 莉雅失忆、只记得片段 3) 邪教徒追入，章末停在对峙瞬间。
-信息控制：薇洛丝不知道莉雅真实身份与被封印原因；莉雅失忆，不知外面世界过了多久。
-写作约束：薇洛丝单视角第三人称；节奏由探索转紧张；章末收在对峙未发生战斗的悬念上。
-World Engine 查询提示：用 execute_world 查 weiluosi、liya、cultist-patrol-01 在「公元2020年4月12日 18:00」附近的状态。
-建议读取：lorebook/location/ruins-meteor/。
-```
+````
+# Chapter Writer Brief — Autonomous（自主查询）
+
+Chapter: 开篇(name: 001-opening)
+Status: ready
+> 事实切片:以下只给此刻的事实与查询提示——时间、地点、在场角色,以及你该用 execute_world 查什么。没有因果链,也没有意义指令;信息边界由系统在写完之后核对。放开写现场。
+
+## 本章参数（覆盖 writer 默认）
+- 视角：薇洛丝单视角第三人称
+
+## 关键剧情点（按 Scene）
+
+### 1. 星陨遗迹解封
+- Thread: 薇洛丝主线（主线）
+- 本场做什么: 薇洛丝在遗迹深处解开莉雅的封印，两人初次交流。
+- World 查询提示: 用 execute_world 查 subject [薇洛丝, 莉雅]、地点 星陨遗迹 在 复兴纪元1日 18:00 ~ 18:40 的状态
+
+## 建议读取
+- lorebook/location/ruins-meteor/（depends_on · 确认遗迹设定）
+````
 
 ## 第三步：writer 侧（自查状态后写正文）
 
-writer 拥有 readonly `execute_world` 能力。它的典型流程是：读 brief 指定的 lorebook → 用 `execute_world` 按提示查相关 subject 在章节时间范围的状态 → 构思并写入正文到章节 `index.md` → `report_result` 报告落点。writer 的详细执行手册见 `novel-writer-execution` skill。
+writer 拥有 readonly `execute_world` 能力。它的典型流程是：用 `get_chapter_writer_brief` 按 `input.chapterId` 自取本章事实简报 → 读简报与 `input.context` 指定的 lorebook → 用 `execute_world` 按简报提示查相关 subject 在章节时间范围的状态 → 构思并写入正文到章节 `index.md` → `report_result` 报告落点。writer 的详细执行手册见 `novel-writer-execution` skill。
 
 leader 不需要在此步骤干预；writer 是自主子代理。注意 writer 能查到角色真值，但在某个角色视角的叙述里不会让该角色"知道"他不该知道的设定——查询服务于写作一致性，不等于授权角色越界知情。
 
@@ -85,7 +97,7 @@ writer 完成后，leader 对正文做评审。基础检查（每章必做）：
 
 需要更严格评审时（用户要求、重点章节、开局章节），可扩展评审维度：节奏与爽点、文风与 AI 味、承诺兑现（对照 Plot Promise）、读者弃书风险。可用 `invoke_agent` 拉独立评审视角逐维度出具体问题清单，每条附可执行的修改建议。
 
-> 本环节的写-评-修可以整体交给 `run_workflow` 的 `chapter-write-review-revise` 编排：它调用真实 writer 写入目标章节文件，三个评审维度（一致性/节奏/文风）并发挑问题，writer 按 major 问题修订循环。args 传 `chapterPath`（必填）+ `brief` 或 `chapterId`（至少一个）+ 可选 `lorebookEntries` / `reviewRounds`(1-3) / `revise`。前置与手动流程相同：剧情事实已拍板、World Engine 已推进、章节节点已存在。需要逐步人工把关或用户要参与每轮决策时，仍按本文手动循环。轻量非章节文本（简介、文案）用 `write-review-loop`（不写文件）。
+> 本环节的写-评-修可以整体交给 `run_workflow` 的 `chapter-write-review-revise` 编排：它调用真实 writer 写入目标章节文件，三个评审维度（一致性/节奏/文风）并发挑问题，writer 按 major 问题修订循环。args 传 `chapterPath` + `chapterId`（都必填：writer 按 chapterId 自取事实简报）+ 可选 `brief` / `infoControl`（**只注入评审**，不下发 writer）+ `lorebookEntries` / `reviewRounds`(1-3) / `revise`。前置与手动流程相同：剧情事实已拍板、World Engine 已推进、章节节点已存在。需要逐步人工把关或用户要参与每轮决策时，仍按本文手动循环。轻量非章节文本（简介、文案）用 `write-review-loop`（不写文件）。
 >
 > 写完若干章后想做全书体检，用 `consistency-audit` workflow：leader 先列章节路径、用 execute_world 预查相关角色状态整理成 worldFacts 文本，一并传入。
 
@@ -116,7 +128,7 @@ writer 完成后，leader 对正文做评审。基础检查（每章必做）：
 **模式 A：标准（推荐）**
 
 ```
-leader 设计剧情 → leader 写作前推进 World Engine → leader 准备简化 brief → writer 自查并写正文 → leader 评审 → 修订
+leader 设计剧情 → leader 写作前推进 World Engine → leader 确认 ChapterBrief 与 Plot → writer 自取事实简报并写正文 → leader 按核对清单评审 → 修订
 ```
 
 世界状态先行，writer 看到的状态始终一致。需要严格控制剧情走向时用这个模式。

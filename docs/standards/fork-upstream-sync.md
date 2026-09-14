@@ -74,11 +74,17 @@
 
 ## 已知待改的不一致（fork 侧任务，不改上游结构）
 
-写作宪法接线后仍按旧范式叙述的文档（全部为共享上游文件，按外科手术规则逐段改，第二波执行）：
+写作宪法接线涉及的用户文档（全部为共享上游文件，按外科手术规则逐段改）：
 
-- `README.md` / `README.en.md`：Plot 段落"信息控制＝写作时强制生效" → 切片 + 事后校验，工作链补"人定帧 → 模型补间"。
-- `vitepress/{zh-Hans,en-US}/core/plot-workbench.md`：同冲突；并缺关键帧说明。
-- `vitepress/{zh-Hans,en-US}/profile/writer.md`、`profile/leader.md`：brief 输入契约与三模式。
-- `vitepress/{zh-Hans,en-US}/tutorials/04-first-three-chapters.md`、`tutorials/03-skills-bootstrap.md`、`agent/tools.md`、`core/world-engine.md`：主链与 phase 05 同步（中英必须对等，改完跑 `docs:check`）。
+**已完成（2026-09-14，brief 双视图改造）：**
+
+- `vitepress/{zh-Hans,en-US}/core/plot-workbench.md`：信息控制改为「事后核对、不事前下发、四字段全空不阻断交接」。
+- `vitepress/{zh-Hans,en-US}/profile/writer.md`、`profile/leader.md`：brief 输入契约改双视图，示例 `message` 不再承载剧情简报。
+- `vitepress/{zh-Hans,en-US}/tutorials/04-first-three-chapters.md`：主链叙述同步。
+- `README.md` / `README.en.md`：已核对——只描述字段存在，未声称"写作时强制生效"，无需改动。
+
+**仍未处理（需要时另立任务）：**
+
+- `vitepress/{zh-Hans,en-US}/tutorials/03-skills-bootstrap.md`、`agent/tools.md`、`core/world-engine.md`：phase 05 与关键帧主链说明（与关键帧工具面任务一起做更合适；中英必须对等，改完跑 `docs:check`）。
 - `CONTRIBUTING.md`/`.en.md`：`.agents/tasks/` 行已过时（应为 `.agents/works/`）。
 - `PROJECT-STATUS.md`：产品运行时/最新收口版本行滞后于 `RELEASE.md`（0.10.2）。

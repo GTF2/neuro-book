@@ -229,7 +229,7 @@ function submit(): void {
                     <FormTextarea v-model="draft.pacing" :rows="2" placeholder="节奏、悬念、下一章牵引(可空)" />
                 </FormField>
 
-                <!-- 信息控制:防全知的按章控制面,四项全空时 brief status 会停在 needs_chapter_brief -->
+                <!-- 信息控制:写完之后的事后核对清单(写作宪法第五条),四项全空不阻断 handoff,也不事前下发 writer -->
                 <div class="mt-1 mb-1 text-[11px] font-medium text-[var(--text-muted)]">信息控制(至少填一项,防止 writer 越界泄露)</div>
                 <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
                     <FormField label="读者已知">

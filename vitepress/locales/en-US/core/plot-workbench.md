@@ -58,15 +58,14 @@ Three months on, what you see is not just "the protagonist went dark", but "we p
 
 ## Chapter briefs
 
-Every chapter can carry a **chapter brief**, the chapter-level constraints handed to writer:
+Every chapter can carry a **chapter brief**, but its fields travel two very different paths (writing doctrine, articles 2 and 5):
 
-- The goal of this chapter, the POV character, requirements for the opening and the ending
-- **Information control**: what the reader knows, what the protagonist knows, what must stay hidden, what may only be hinted at
-- Things not to write
+- **Into the writer's pre-writing context**: the POV character, the tone, and the time / place / characters on stage / world state of the chapter's scenes.
+- **Used only for post-write checking**: the goal and landing point of this chapter, requirements for the opening and the ending, information control, and things not to write.
 
-The information control fields are Hitchcock's theory of suspense turned into engineering — there is a bomb under the table and the characters do not know, which is the only reason the suspense works. **AI narrates from a god's-eye view by default**; without explicit constraints it will let a character say something she has no way of knowing. Fill these fields in and they are enforced while writing.
+The information control fields (what the reader knows, what the protagonist knows, what must stay hidden, what may only be hinted at) are Hitchcock's theory of suspense turned into engineering — there is a bomb under the table and the characters do not know, which is the only reason the suspense works. **AI narrates from a god's-eye view by default**, so it has to be constrained.
 
-If all four information control fields are empty, the system blocks the writing handoff and asks you to fill in the chapter brief first.
+The constraint, however, is **post-hoc**: these fields are not pushed into the writer's pre-writing context — pushed there, the prose turns cautious, smooth and report-like — they are used after the draft as a checklist to collide against the text, cutting only what genuinely crosses the line. All four fields empty no longer blocks the writing handoff.
 
 ## Scene fields
 

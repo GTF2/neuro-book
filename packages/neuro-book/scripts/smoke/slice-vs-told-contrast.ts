@@ -1,22 +1,28 @@
 /**
- * 对照实验:事前告知模式 vs 事后校验模式(写作宪法第五条终审实验)。
+ * 对照实验:事前告知 vs 事后校验(写作宪法第五条终审实验,否决权条款第 2 条)。
  *
- * 同一章、同一写作任务,跑两遍 chapter-write-review-revise:
- * - A「事前告知」:brief 用 autonomous 模式编译(含信息控制四字段 + 禁写项,写作前置输入);
- * - B「事后校验」:brief 用 slice-only 模式编译(纯事实切片,不含意义指令),
- *   信息控制四字段改传 infoControl 入参,只注入一致性评审做事后核对。
+ * 同一章、同一份事实简报,**只改一个变量**——意图清单给不给 writer:
+ * - A「事前告知」:writer 提示 = 事实简报 + 评审清单全文(目标与落点 / 信息控制 / 禁写 /
+ *   场景目的 / 写作提示 / 线索脉络 / Promise 任务 / 未决决策);评审核对清单为空。
+ * - B「事后校验」:writer 提示 = 纯事实简报;信息控制四字段只作 reviewChecklist 注入一致性评审。
  *
- * 两遍都只写+评审一轮(revise=false),产出两份正文与各自的评审问题清单,
- * 供人工评定现场感与报告味(docs/doctrine/writing-doctrine.md 否决权条款第 2 条)。
+ * 两组都经 `contrast-write-review` workflow(实验专用)写正文 + 三维评审一轮,**不修订**——
+ * 修订会把两组样本的差异洗掉。产出两份正文与评审问题清单,供人工评定现场感与报告味,
+ * 判定词写入 docs/doctrine/ 的实验记录。
+ *
+ * 为什么不用 `chapter-write-review-revise`:宪法第二条/第五条落地后,生产链路只把事实简报交给
+ * writer(`brief` 参数只注入评审),已无法构造「事前告知」组。实验需要一个由调用方**显式给定**
+ * writer 提示的受控通道——这是 `contrast-write-review` 存在的唯一理由,它不接入普通写作主链。
  *
  * 前提:
  * - dev server 已启动(bun run dev),Provider apiKey 已配置;
  * - 用户提供一个已经 open 的现成测试项目,脚本不自建、不 open 项目;
- * - 项目里目标章已关联 Scene、World Anchor 与信息控制已填写(autonomous 编译需要)。
+ * - 目标章已关联 Scene、World Anchor,且 ChapterBrief 的意图字段与信息控制已填写
+ *   (否则 A 组没有可告知的意图、B 组没有核对单,对照失去意义——脚本会给出警告)。
  *
  * 用法(在应用包目录执行):
  *   bun run smoke:contrast -- --project <projectRoot> --chapter-id <storyChapterId> \
- *     --out-dir .contrast --review-rounds 1
+ *     --out-dir .contrast
  *
  * 环境变量:AGENT_HTTP_BASE_URL,默认 http://localhost:3000。
  */
@@ -38,7 +44,6 @@ type CliOptions = {
     projectRoot: string;
     chapterId: string;
     outDir: string;
-    reviewRounds: string;
 };
 
 type ChapterBriefFields = {
@@ -51,6 +56,7 @@ type ChapterBriefFields = {
 type WriterBriefResponse = {
     mode: string;
     suggestedBriefMarkdown: string;
+    reviewChecklistMarkdown: string;
     chapter: {brief: ChapterBriefFields};
 };
 
@@ -60,7 +66,9 @@ type RunOutcome = {
     status: AgentJobStatus;
     outputPath: string;
     prose: string;
-    reviewRounds: JsonValue;
+    reviews: JsonValue;
+    writerBriefLength: number;
+    reviewChecklistLength: number;
     durationMs: number;
 };
 
@@ -72,28 +80,35 @@ async function main(): Promise<void> {
     await ensureProjectOpen(options.projectRoot);
     const projectDir = resolveProjectDir(options.projectRoot);
 
-    // 1) 编译两种 brief:told=autonomous(含信息控制),slice=slice-only(纯事实)。
-    const toldBrief = await fetchWriterBrief(options, "autonomous");
-    const sliceBrief = await fetchWriterBrief(options, "slice-only");
-    if (sliceBrief.mode !== "slice-only") {
-        throw new Error(`slice-only brief 编译失败:mode=${sliceBrief.mode}`);
+    // 1) 只编译一次事实简报(slice-only:展开状态截面,两组共用,保证只有一个变量),
+    //    并取评审清单全文供 A 组拼接「事前告知」提示。
+    const brief = await fetchWriterBrief(options, "slice-only");
+    if (brief.mode !== "slice-only") {
+        throw new Error(`事实简报编译失败:mode=${brief.mode}`);
     }
-    const infoControl = compileInfoControlChecklist(toldBrief.chapter.brief);
-    console.log(`brief 编译完成:told(${toldBrief.suggestedBriefMarkdown.length} 字符,含信息控制) slice-only(${sliceBrief.suggestedBriefMarkdown.length} 字符,纯事实)`);
-    console.log(`infoControl 核对单:${infoControl ? `${infoControl.length} 字符` : "四字段全空,核对单为空"}`);
+    const facts = brief.suggestedBriefMarkdown;
+    const checklist = brief.reviewChecklistMarkdown;
+    const infoControl = compileInfoControlChecklist(brief.chapter.brief);
+    if (!checklist.trim()) {
+        console.warn("⚠ 评审清单为空:A 组没有可告知的意图,对照会失去意义。请先补齐 ChapterBrief 的意图字段。");
+    }
+    if (!infoControl) {
+        console.warn("⚠ 信息控制四字段全空:B 组没有事后核对单,对照会失去意义。");
+    }
+    console.log(`事实简报 ${facts.length} 字符;评审清单 ${checklist.length} 字符;信息控制核对单 ${infoControl.length} 字符`);
 
-    // 2) 两种模式各跑一遍写+评审(revise=false,只留评审问题清单)。
+    // 2) 只改一个变量:意图清单是否随 writer 提示下发。
     const outcomes: RunOutcome[] = [];
     outcomes.push(await runScenario(projectDir, options, {
         mode: "told",
-        briefMarkdown: toldBrief.suggestedBriefMarkdown,
-        infoControl: "",
+        writerBrief: `${facts}\n\n${checklist}\n`,
+        reviewChecklist: "",
         outputName: "told.md",
     }));
     outcomes.push(await runScenario(projectDir, options, {
         mode: "slice-only",
-        briefMarkdown: sliceBrief.suggestedBriefMarkdown,
-        infoControl,
+        writerBrief: facts,
+        reviewChecklist: infoControl,
         outputName: "slice-only.md",
     }));
 
@@ -107,35 +122,35 @@ async function main(): Promise<void> {
     }
 }
 
-/** 事前告知模式:brief 原文(已含信息控制与禁写)。事后校验模式:纯事实切片 + infoControl 只进评审。 */
+/** A 组:事实 + 意图清单原文下发 writer;B 组:纯事实,核对单只进一致性评审。 */
 async function runScenario(
     projectDir: string,
     options: CliOptions,
-    scenario: {mode: "told" | "slice-only"; briefMarkdown: string; infoControl: string; outputName: string},
+    scenario: {mode: "told" | "slice-only"; writerBrief: string; reviewChecklist: string; outputName: string},
 ): Promise<RunOutcome> {
     const chapterPath = path.posix.join(options.outDir, scenario.outputName);
     const args: Record<string, JsonValue> = {
         chapterPath,
-        brief: scenario.briefMarkdown,
-        reviewRounds: options.reviewRounds,
-        revise: "false",
+        writerBrief: scenario.writerBrief,
     };
-    if (scenario.infoControl) {
-        args.infoControl = scenario.infoControl;
+    if (scenario.reviewChecklist) {
+        args.reviewChecklist = scenario.reviewChecklist;
     }
-    const started = await startWorkflowRun(options.projectRoot, "chapter-write-review-revise", args);
+    const started = await startWorkflowRun(options.projectRoot, "contrast-write-review", args);
     const startedAt = Date.now();
     const job = await pollJob(started.jobId, options.projectRoot);
     const outputPath = path.join(projectDir, chapterPath);
     const prose = existsSync(outputPath) ? await readFile(outputPath, "utf-8") : "";
-    const result = job.result && typeof job.result === "object" ? job.result as {rounds?: JsonValue} : {};
+    const result = job.result && typeof job.result === "object" ? job.result as {reviews?: JsonValue} : {};
     return {
         mode: scenario.mode,
         jobId: started.jobId,
         status: job.status,
         outputPath: chapterPath,
         prose,
-        reviewRounds: result.rounds ?? [],
+        reviews: result.reviews ?? [],
+        writerBriefLength: scenario.writerBrief.length,
+        reviewChecklistLength: scenario.reviewChecklist.length,
         durationMs: Date.now() - startedAt,
     };
 }
@@ -154,8 +169,9 @@ function renderReport(outcomes: RunOutcome[]): string {
     const lines: string[] = [
         "# 对照实验报告:事前告知 vs 事后校验(写作宪法第五条)",
         "",
+        "> 唯一变量:意图清单是否随 writer 提示下发。A=told(事实 + 意图清单);B=slice-only(纯事实)。",
         "> 人工评定口径:现场感(是否被迫写现场)、报告味(是否保守平滑总结腔)。",
-        "> 评审问题清单:两种模式各自的 review rounds 结构化输出。",
+        "> 评审问题清单:两组各自的三维评审结构化输出(B 组的一致性评审带上信息控制核对单)。",
         "",
     ];
     for (const outcome of outcomes) {
@@ -163,6 +179,7 @@ function renderReport(outcomes: RunOutcome[]): string {
             `## 模式 ${outcome.mode}`,
             "",
             `- 状态:${outcome.status};耗时:${outcome.durationMs / 1000}s;正文:${outcome.outputPath}(${outcome.prose.length} 字符)`,
+            `- writer 提示:${outcome.writerBriefLength} 字符;评审核对单:${outcome.reviewChecklistLength} 字符`,
             "",
             "### 正文",
             "",
@@ -173,7 +190,7 @@ function renderReport(outcomes: RunOutcome[]): string {
             "### 评审问题清单",
             "",
             "```json",
-            JSON.stringify(outcome.reviewRounds, null, 2),
+            JSON.stringify(outcome.reviews, null, 2),
             "```",
             "",
         );
@@ -330,13 +347,12 @@ function parseArgs(argv: string[]): CliOptions {
         projectRoot,
         chapterId,
         outDir: values.get("out-dir") ?? ".contrast",
-        reviewRounds: values.get("review-rounds") ?? "1",
     };
 }
 
 function printUsageAndExit(code: number): never {
     console.log([
-        "用法:bun run smoke:contrast -- --project <projectRoot> --chapter-id <storyChapterId> [--out-dir .contrast] [--review-rounds 1]",
+        "用法:bun run smoke:contrast -- --project <projectRoot> --chapter-id <storyChapterId> [--out-dir .contrast]",
         "",
         "前提:dev server 已启动(bun run dev),Provider 已配置,项目已 open,目标章已关联 Scene/World Anchor/信息控制。",
     ].join("\n"));

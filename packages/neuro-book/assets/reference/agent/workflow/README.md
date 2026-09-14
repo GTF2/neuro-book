@@ -143,3 +143,4 @@ const data = outcome.result.data; // agent 调用 report_result 后，这是通�
 - `split-book`：读取 Project Workspace 书稿，逐章并发摘要，再汇总剧情结构。
 - `write-review-loop`：在两个独立 session 间执行固定轮数的初稿、评审与修订，返回最终文本和评审记录；它不直接写文件。
 - `parallel-brainstorm`：按多个角度并发发散，再汇总去重为一份方案。
+- `contrast-write-review`（实验专用）：把调用方给出的 writer 提示原样下发写正文，再做一致性 / 节奏 / 文风三维评审一轮、**不修订**。它存在的唯一理由是写作宪法否决权条款第 2 条需要「事前告知」对照组——生产链路按第二条/第五条不下发意图，构造不出该组。**普通章节写作不得使用它**；调用方见 `packages/neuro-book/scripts/smoke/slice-vs-told-contrast.ts`。

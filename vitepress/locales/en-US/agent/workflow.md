@@ -34,6 +34,7 @@ A Skill provides **knowledge and method** (how to do it); a workflow provides **
 | `split-book` | Book splitting: concurrent per-chapter summaries plus a merged plot analysis |
 | `book-deconstruct` | Commercial deconstruction: samples chapters and breaks each one down by hook, promise, payoff, pacing, information reveal and end-of-chapter push, producing a competitor analysis report |
 | `character-qa-fanout` | Batch character Q&A candidates: generates several candidate answers per question in concurrent groups and collects the contradictions |
+| `contrast-write-review` | Experiment-only: sends the caller-provided writer prompt through verbatim, then runs one round of the three-dimension review (consistency / pacing / style) without revising. For writing-quality contrast experiments only; use `chapter-write-review-revise` for ordinary writing |
 
 An agent sees the available list through the `WorkflowCatalog` and triggers one with `run_workflow`.
 
