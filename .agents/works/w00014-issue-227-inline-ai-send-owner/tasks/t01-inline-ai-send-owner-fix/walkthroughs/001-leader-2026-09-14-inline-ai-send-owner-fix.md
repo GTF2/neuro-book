@@ -1,6 +1,6 @@
 # t01 叙事记录：Inline AI 发送 owner 修复
 
-> **状态：治理链已完成。** 本文件与 `evidences/` 已在实现分支 `fix/w00014-inline-ai-send-owner` 提交；登记提交 `5c4fccfc` 已在 `origin/master`，主工作区不再保留副本。遗留：该分支尚未 push / 开 PR / 合并（需单独授权）。
+> **状态：治理链已完成。** 本文件与 `evidences/` 已在实现分支 `fix/w00014-inline-ai-send-owner` 提交；登记提交 `5c4fccfc` 已在 `origin/master`，主工作区不再保留副本。遗留：分支已 push 并开 PR **#235**，待 review/合并（勿 squash，需保留登记提交祖先关系）。
 >
 > 执行者：Leader（开发者在本会话直接授权执行实现与验证）；Task canonical role 登记为 `tasker`（结果类型是实现），属对 `.agents/roles/leader/AGENTS.md` 分工的会话内偏离。
 
