@@ -12,8 +12,8 @@ Agent 工具是模型能请求执行的能力。NeuroBook 的工具设计目标�
 | 协作 | `create_agent` `invoke_agent` `get_agent` `get_agent_profile` `get_session` `detach_agent` | 创建和调用 linked agent |
 | 控制 | `request_user_input` `switch_mode` | 向用户提问、请求切换模式 |
 | 任务 | `task_create` `task_set_status` | 会话内的任务清单 |
-| 剧情（读） | `get_story_tree` `get_story_thread` `get_story_scene_context` `get_scene_world_context` `get_story_chapter` `get_chapter_writer_brief` `get_story_promise` `get_story_decision` | 不传 id 时返回列表 |
-| 剧情（写） | `save_story_act` `save_story_chapter` `save_story_thread` `save_story_scene` `save_story_promise` `save_promise_beat` `save_story_decision` | 必填 `action` 枚举，含生命周期动作 |
+| 剧情（读） | `get_story_tree` `get_story_thread` `get_story_scene_context` `get_scene_world_context` `get_story_chapter` `get_chapter_writer_brief` `get_story_promise` `get_story_decision` `get_story_keyframe` `get_tween_keyframes` | 不传 id 时返回列表；补间区间用 `get_tween_keyframes` |
+| 剧情（写） | `save_story_act` `save_story_chapter` `save_story_thread` `save_story_scene` `save_story_promise` `save_promise_beat` `save_story_decision` `save_story_keyframe` | 必填 `action` 枚举，含生命周期动作；关键帧没有删除动作（推翻必须留决策留痕） |
 | 世界引擎 | `execute_world` | 单一 CodeAct 工具，readonly / readwrite 双形态 |
 | Workflow | `run_workflow` `list_workflows` | 触发与列出可用 workflow |
 | 后台任务 | `list_jobs` `get_job` `cancel_job` | 长任务生命周期 |
@@ -23,7 +23,7 @@ Agent 工具是模型能请求执行的能力。NeuroBook 的工具设计目标�
 | Subject 记忆 | `subject_rag_search` `subject_event_append` `subject_memory_update` | 历史系统，见下文 |
 | 结果 | `report_result` | 返回结构化结果 |
 
-工具在定义时必须**显式声明**自己会不会改动工作区。声明为改动的工具（文件写入 + 7 个剧情写工具：6 个 `save_story_*` 加 `save_promise_beat`）在只读模式下会被拦截并要求审批，见 [三种模式](/agent/modes)。
+工具在定义时必须**显式声明**自己会不会改动工作区。声明为改动的工具（文件写入 + 8 个剧情写工具：7 个 `save_story_*` 加 `save_promise_beat`）在只读模式下会被拦截并要求审批，见 [三种模式](/agent/modes)。
 
 ## 文件工具
 
@@ -76,6 +76,8 @@ World Engine 只有一个工具 `execute_world`，内部是受控代码沙箱，
 读工具统一 `get_story_*` 前缀，**不传 id 时是列表模式**。写工具合并成 `save_*` 加一个必填的 `action` 枚举——除了 create / update，生命周期动作（归档、放弃、兑现、拍板、作废）也走 action。
 
 **物理删除不开放给 Agent**。Agent 能做的最多是软删（归档 / 放弃），删数据得你自己在界面上操作。
+
+**关键帧（人定帧、模型补间）**：用 `get_story_keyframe` 读帧与状态、`get_tween_keyframes` 读两个帧之间的路标，用 `save_story_keyframe` 声明或更新帧。新建的帧一律是"待回撞"状态，回撞与裁决之后才会变成"已确认"或"被推翻"；**推翻一个帧必须同时挂一条创作决策记录**，所以工具里没有"删帧"这个动作。
 
 ## SQL
 

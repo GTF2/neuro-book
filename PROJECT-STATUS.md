@@ -21,9 +21,9 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 
 1. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。agent 侧工具面已于 2026-09-14 补齐（Work `w00015-keyframe-agent-toolface`），UI 由并行执行者按既有分工推进。
 2. **`infoControl` 真自动编译**：清单仍由调用方从 ChapterBrief 四字段编译传入（workflow 读不到项目数据）。2026-09-14（Work `w00016`）已消除"静默"——漏传时一致性评审显式标注「信息边界未核对」、运行日志记警告、返回值 `infoControlChecked=false`。真自动编译需宿主接线 `wf.query` / `wf.callAction`，已登记为 P1 规范缺口。
-3. **用户文档剩余**：`vitepress/{zh-Hans,en-US}/core/plot-workbench.md`、`profile/{writer,leader}.md`、`tutorials/04-first-three-chapters.md` 已按双视图改写（中英对等）；`README.md` / `README.en.md` 的 Plot 段落已核对，无需改动。剩余 `tutorials/03-*`、`agent/tools.md`、`core/world-engine.md`（与阶段 05 一起做，中英对等）。
-4. **真实模型尺度验证**：两轮终审实验已完成并留痕（事前告知 vs 事后校验、关键帧补间；判词见 `docs/doctrine/`）。仍待验证：帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）的实操，以及"欲望/阻力/代价"是否应成为写作入口的硬门槛。
-5. **fork 杂项**：`CONTRIBUTING` 过时路径；`PROJECT-STATUS` 版本行滞后 `RELEASE.md`。
+3. **真实模型尺度验证**：两轮终审实验已完成并留痕（事前告知 vs 事后校验、关键帧补间；判词见 `docs/doctrine/`）。仍待验证：帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）的实操，以及"欲望/阻力/代价"是否应成为写作入口的硬门槛。
+
+2026-09-14 收口（不再列为未收口）：用户文档（`agent/tools.md` 补关键帧工具与写工具计数、`core/world-engine.md` 补「帧驱动」小节，中英对等；`tutorials/03` 复核后无需改动）；fork 杂项（`CONTRIBUTING{,.en}.md` 命令改为 monorepo 用法、版本行对齐 `RELEASE.md` 的 `0.10.2-canary`）。
 
 规范归属状态：Writer brief 双视图（[`docs/specs/plot/chapter-writer-brief.md`](docs/specs/plot/chapter-writer-brief.md)）与关键帧写作（[`docs/specs/plot/keyframe.md`](docs/specs/plot/keyframe.md)）均已晋升 `implemented`，`docs/specs/README.md` 的原 P0 关键帧缺口已闭合。
 
@@ -46,7 +46,7 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 | Plot | 两棵树模型已落地：承载树负责章节呈现，因果树负责剧情组织，`StoryScene` 连接两者 | [Task 78](packages/neuro-book/.agents/tasks/78-plot-scene-world-engine-bridge/README.md)、[Task 93](packages/neuro-book/.agents/tasks/93-plot-planning-layer/README.md)、[Task 99](packages/neuro-book/.agents/tasks/99-plot-planning-ui/README.md) |
 | Agent / Workflow | 主要链路已实现；Provider API / Automatic Model Discovery 已在 PR #101 合并并完成 Task 104 收尾，真实 Project、外部 Provider 和完整浏览器产品流程仍待做 | [Task 104](packages/neuro-book/.agents/tasks/104-pi-models-runtime-upgrade/README.md)、[Task 111](packages/neuro-book/.agents/tasks/111-workflow-agent-integration/README.md)、[Task 116](packages/neuro-book/.agents/tasks/116-agent-workflow-reliability/README.md)、[Task 139](packages/neuro-book/.agents/tasks/139-agent-abort-error-projection/README.md) |
 | Project 生命周期与存储 | 生命周期、快照、路径和运行产物合同已实现；跨环境发布验收未完成 | [Task 118](packages/neuro-book/.agents/tasks/118-project-catalog-snapshot-path-integration/README.md)、[Task 125](packages/neuro-book/.agents/tasks/125-runtime-artifact-storage-lifecycle/README.md) |
-| Product Runtime / Manager | `0.9.6-canary.20260814.024826Z.9653191d` 已完成五平台 Product、Windows Portable、容器和公开资产验收；stable、公开签名安装器和正式 Desktop 发行方案仍未完成 | [Task 105](.agents/tasks/105-unified-installation-manager/README.md)、[Task 145](.agents/tasks/145-electron-desktop-productization/README.md) |
+| Product Runtime / Manager | 最近公开发布为 `0.10.2-canary`（2026-09-08 限量 canary，见 [RELEASE.md](RELEASE.md)）；`0.9.6-canary.20260814.024826Z.9653191d` 阶段已完成五平台 Product、Windows Portable、容器和公开资产验收；stable、公开签名安装器和正式 Desktop 发行方案仍未完成 | [RELEASE.md](RELEASE.md)、[Task 105](.agents/tasks/105-unified-installation-manager/README.md)、[Task 145](.agents/tasks/145-electron-desktop-productization/README.md) |
 | Task 143 Desktop Envelope | Windows-first Electron/Tauri spike 已完成合同和共享 Workbench Chrome 验收；内部 Desktop 产品化证据继续由 Task 145维护 | [Task 143](.agents/tasks/143-desktop-envelope-installation-spike/README.md)、[Task 145](.agents/tasks/145-electron-desktop-productization/README.md) |
 | Task 145 Electron Desktop Productization | Windows x64 内部 Desktop beta 的安装、UAC、Repair、卸载和 Sandbox `--delete-data` 验收已收口；公开 Application Canary `v0.9.6-canary.20260814.024826Z.9653191d` 已发布，但不包含 Electron Desktop ZIP/Depot。原生 Snap、真实外部 Provider、公开签名、updater 和 macOS 实包仍未完成 | [Task 145](.agents/tasks/145-electron-desktop-productization/README.md)、[ADR 0014](packages/neuro-book/docs/adr/0014-electron-desktop-productization.md)、[ADR 0016](packages/neuro-book/docs/adr/0016-windows-desktop-uac-broker.md)、[#87](https://github.com/notnotype/neuro-book/issues/87) |
 | Agent 资产安装协议 | 方案已起草并完成自审，尚未实施 | [Task 135](packages/neuro-book/.agents/tasks/135-agent-asset-install-protocol/README.md) |

@@ -24,17 +24,17 @@ You need Git, [Bun](https://bun.sh/), and tools required by the target platform.
 
 ```bash
 bun install
-bun run dev
+bun run --cwd packages/neuro-book dev
 ```
 
 Choose checks that cover the change:
 
 ```bash
-bun run test -- path/to/relevant.test.ts
-bun run typecheck
+bun run --cwd packages/neuro-book test -- path/to/relevant.test.ts
+bun run --cwd packages/neuro-book typecheck
 bun run docs:check
 bun run docs:build
-bun run build
+bun run --cwd packages/neuro-book build
 ```
 
 List exact commands and results in the PR; mark omitted checks as “not run.” Focused tests, full tests, builds, browser verification, and real-provider acceptance are distinct evidence.

@@ -12,8 +12,8 @@ Each profile decides what it may use through a tool allowlist. **No profile has 
 | Collaboration | `create_agent` `invoke_agent` `get_agent` `get_agent_profile` `get_session` `detach_agent` | Create and call linked agents |
 | Control | `request_user_input` `switch_mode` | Ask the user a question, request a mode switch |
 | Tasks | `task_create` `task_set_status` | The in-session task list |
-| Plot (read) | `get_story_tree` `get_story_thread` `get_story_scene_context` `get_scene_world_context` `get_story_chapter` `get_chapter_writer_brief` `get_story_promise` `get_story_decision` | Omit the id to get a list |
-| Plot (write) | `save_story_act` `save_story_chapter` `save_story_thread` `save_story_scene` `save_story_promise` `save_promise_beat` `save_story_decision` | Require an `action` enum, including lifecycle actions |
+| Plot (read) | `get_story_tree` `get_story_thread` `get_story_scene_context` `get_scene_world_context` `get_story_chapter` `get_chapter_writer_brief` `get_story_promise` `get_story_decision` `get_story_keyframe` `get_tween_keyframes` | Omit the id to get a list; use `get_tween_keyframes` for the window between two frames |
+| Plot (write) | `save_story_act` `save_story_chapter` `save_story_thread` `save_story_scene` `save_story_promise` `save_promise_beat` `save_story_decision` `save_story_keyframe` | Require an `action` enum, including lifecycle actions; keyframes have no delete action (overthrowing a frame must leave a decision trail) |
 | World Engine | `execute_world` | A single CodeAct tool, in readonly and readwrite forms |
 | Workflow | `run_workflow` `list_workflows` | Trigger and list available workflows |
 | Background jobs | `list_jobs` `get_job` `cancel_job` | Long-task lifecycle |
@@ -23,7 +23,7 @@ Each profile decides what it may use through a tool allowlist. **No profile has 
 | Subject memory | `subject_rag_search` `subject_event_append` `subject_memory_update` | Legacy system, see below |
 | Result | `report_result` | Return a structured result |
 
-Every tool must **declare explicitly** at definition time whether it mutates the workspace. Tools declared as mutating (the file writes plus the seven plot write tools: six `save_story_*` plus `save_promise_beat`) are intercepted in read-only mode and require approval — see [Three Modes](/en/agent/modes).
+Every tool must **declare explicitly** at definition time whether it mutates the workspace. Tools declared as mutating (the file writes plus the eight plot write tools: seven `save_story_*` plus `save_promise_beat`) are intercepted in read-only mode and require approval — see [Three Modes](/en/agent/modes).
 
 ## File Tools
 
@@ -76,6 +76,8 @@ Inside the sandbox, time converts between text and the internal tick with `world
 The read tools all share the `get_story_*` prefix, and **omitting the id puts them in list mode**. The write tools are collapsed into `save_*` plus a required `action` enum — besides create and update, the lifecycle actions (archive, abandon, fulfill, sign off, void) go through action too.
 
 **Hard deletes are not exposed to agents.** The most an agent can do is a soft delete (archive or abandon); deleting data is something you do yourself in the UI.
+
+**Keyframes (a human declares the frames, the model tweens between them)**: read frames and their status with `get_story_keyframe`, read the road markers between two frames with `get_tween_keyframes`, and declare or update a frame with `save_story_keyframe`. A new frame always starts as "pending collision check"; only after the collision check and adjudication does it become confirmed or overthrown. **Overthrowing a frame requires a creative decision record**, so there is no delete-frame action.
 
 ## SQL
 

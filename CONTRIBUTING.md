@@ -24,17 +24,17 @@ Issue 被接受表示方向可以推进，不保证具体实现或完成时间�
 
 ```bash
 bun install
-bun run dev
+bun run --cwd packages/neuro-book dev
 ```
 
 按改动选择验证：
 
 ```bash
-bun run test -- path/to/relevant.test.ts
-bun run typecheck
+bun run --cwd packages/neuro-book test -- path/to/relevant.test.ts
+bun run --cwd packages/neuro-book typecheck
 bun run docs:check
 bun run docs:build
-bun run build
+bun run --cwd packages/neuro-book build
 ```
 
 PR 列出实际命令和结果；没有执行的检查写“未运行”。聚焦测试、全量测试、构建、浏览器和真实 Provider 验收不能互相替代。

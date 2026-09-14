@@ -67,6 +67,15 @@ Scene `summary` 应覆盖：
 
 Scene `purpose` 写这场戏在剧情结构中的功能。Scene `writingTip` 写正文落实建议，例如 POV、情绪曲线、节奏、对白密度、动作描写重点、哪些信息要明说或压住，不重复 `summary`。
 
+## Scene Tension Slots
+
+Scene 的张力槽位用经典写作理论的既有形式表达，不自造术语（依据见 `docs/doctrine/prior-art-2026-09-14.md` 第二节）：
+
+- Swain 的 Scene：`Goal（目标）→ Conflict（冲突）→ Disaster（灾难）`；
+- Swain 的 Sequel：`Reaction（反应）→ Dilemma（困境）→ Decision（决定）`。
+
+判定结果直接落 Scene 既有字段 `outcomeType`（`yes_but` / `no_and` / `yes_and` / `no_but` / `yes` / `no`），不新增字段。
+
 ## Scene Granularity
 
 Scene 不是五段式大纲，也不是单个动作点。一个 Scene 应能被 writer 展开成连续正文，且具备明确起点、冲突或信息变化、结尾状态。

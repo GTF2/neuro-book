@@ -83,6 +83,14 @@ flowchart LR
 
 If drafting produces new facts — you decide mid-scene to injure a supporting character, say — go back to World Engine and backfill.
 
+### Frames: the human declares them, the model tweens
+
+If a chapter falls between two **keyframes**, there is another entry point: you declare only the **irreversible changes** in the two frames (who gets the list, who dies, which oath breaks, what can never be used again) and the model evolves the prose in between; after the draft you check it against the declared changes and adjudicate only the real collisions.
+
+- Frames are maintained **through the conversation** today: ask the Agent to "record this pair of frames" and it uses `save_story_keyframe`; you can also ask it for the road markers between two frames (`get_tween_keyframes`).
+- **There is no dedicated panel yet**: frames are viewed and edited by talking to the Agent (or by editing project data directly).
+- A frame holds facts, not writing instructions; overthrowing a frame always leaves a creative decision record.
+
 ::: tip Worldbook vs. World Engine
 `lorebook/` holds **stable canon**: things that do not change as the story moves, like the rules of the world or a sect's historical background. World Engine holds **state that changes**: where a character is right now, how badly hurt, how the factions stand. The test is a single question — "does this change as the story moves?"
 :::

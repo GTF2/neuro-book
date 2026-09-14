@@ -23,6 +23,16 @@
 - 帧里**不写**意义指令：结局要求、「必须隐瞒 / 只能暗示」、推进节拍、风格要求。它们要么进事后评审核对项（`reviewChecklistMarkdown`），要么留在作者给的写作任务书里。
 - `note` 不保证是事实，所以 agent 工具对 `writer` profile 不返回 `note`；leader 与评审拿到完整字段。
 
+## 张力槽位：用标准词汇，不自造术语
+
+帧的张力按**经典写作理论既有形式**填写（调研与采纳依据见 `docs/doctrine/prior-art-2026-09-14.md` §二「不要自造词汇」）：
+
+- **Swain 的 Scene 式**：`Goal（目标）→ Conflict（冲突）→ Disaster（灾难）`——即"要什么、什么挡着、输了怎样"。
+- **Swain 的 Sequel 式**：`Reaction（反应）→ Dilemma（困境）→ Decision（决定）`——代价落地之后如何收束。
+- 结果判定沿用 Scene 既有字段 `outcomeType`（`yes_but` / `no_and` / `yes_and` / `no_but` / `yes` / `no`），**不新增 schema 字段**。
+
+这些词汇只描述"发生了什么、什么不可逆地变了"，仍然是事实；不要借它们写"应该让读者感到什么"。
+
 ## 状态流转（单向）
 
 ```text
