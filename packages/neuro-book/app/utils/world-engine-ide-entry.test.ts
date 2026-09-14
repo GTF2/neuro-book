@@ -240,7 +240,7 @@ describe("World Engine IDE entry", () => {
         expect(previewPage).toContain("function deleteSelectedBuilderMutation(): void");
         expect(previewPage).toContain("function moveSelectedBuilderMutation(direction: \"up\" | \"down\"): void");
         expect(previewPage).toContain("mutationLoadIndex.value = String(clampMutationIndex(length, index));");
-        expect(previewProjectPanel).toContain("新建 Project");
+        expect(previewProjectPanel).toContain("新建项目");
         expect(previewProjectPanel).not.toContain("创建示例世界");
         expect(previewProjectPanel).toContain("loadingProjects: boolean;");
         expect(previewProjectPanel).toContain("loadingWorld: boolean;");
@@ -308,7 +308,7 @@ describe("World Engine IDE entry", () => {
         expect(previewPage).toContain(":loading-world=\"loadingWorld\"");
         expect(previewActions).toContain("const canCreateSubject = computed(() => props.projectReady && !props.loadingWorld && !props.actionBusy && props.subjectForm.id.trim() && props.subjectForm.type.trim() && props.subjectForm.time.trim() && !subjectIdAlreadyExists.value);");
         expect(previewPage).toContain("async function createSubject(): Promise<void> {\n    if (loadingWorld.value) return;");
-        expect(previewActions).toContain("该 subject 已存在。点击左侧 subject 会载入查询上下文；新建 subject 请填写新的 id。");
+        expect(previewActions).toContain("该主体已存在。点击左侧主体会载入查询上下文；新建主体请填写新的 ID。");
         expect(previewActions).toContain(":disabled=\"!canCreateSubject\"");
         expect(previewActions).toContain("const canWriteSlice = computed(() => props.projectReady && !props.loadingWorld && !props.actionBusy && props.sliceForm.time.trim());");
         expect(previewPage).toContain("async function writeSlice(): Promise<void> {\n    if (loadingWorld.value) return;");
@@ -319,8 +319,8 @@ describe("World Engine IDE entry", () => {
         expect(previewActions).toContain("const canQueryState = computed(() => props.projectReady && !props.loadingWorld && !props.actionBusy && (props.queryForm.subjectIds.trim() || props.queryForm.type.trim()));");
         expect(previewPage).toContain("async function queryState(options: {clearActionIssues?: boolean} = {}): Promise<void> {\n    if (loadingWorld.value && options.clearActionIssues !== false) return;");
         expect(previewActions).toContain(":disabled=\"!canQueryState\"");
-        expect(previewActions).toContain("Create Subject");
-        expect(previewActions).toContain("Write Slice");
+        expect(previewActions).toContain("创建主体");
+        expect(previewActions).toContain("写入切片");
         expect(previewActions).toContain("<fieldset class=\"space-y-2 disabled:opacity-60\" :disabled=\"loadingWorld || actionBusy\">");
         expect(previewActions.match(/<fieldset class="space-y-2 disabled:opacity-60" :disabled="loadingWorld \|\| actionBusy">/g)?.length).toBe(3);
         expect(previewActions).toContain("Query");
@@ -349,14 +349,14 @@ describe("World Engine IDE entry", () => {
         expect(previewMutationBuilder).not.toContain("collectionRemoveValueOptions");
         expect(previewMutationBuilder).not.toContain("syncCollectionRemoveValue");
         expect(previewMutationBuilder).not.toContain("从当前 State Query 结果中选择要移除的 collection 项");
-        expect(previewMutationBuilder).toContain("JSON Pointer path, e.g. /memory/师门");
+        expect(previewMutationBuilder).toContain("JSON Pointer 路径，如 /memory/师门");
         expect(previewMutationBuilder).toContain("update-builder-field");
         expect(previewMutationBuilder).toContain("add-builder-mutation");
         expect(previewMutationBuilder).toContain("builder.op === 'remove'");
         expect(mutationActionButtons).toContain("i-lucide-list-plus");
         expect(mutationActionButtons).toContain("i-lucide-refresh-ccw");
-        expect(previewStatePanel).toContain("World State");
-        expect(previewStatePanel).toContain("State Query");
+        expect(previewStatePanel).toContain("世界状态");
+        expect(previewStatePanel).toContain("状态查询");
         expect(previewStatePanel).toContain("formatSlicePatches");
         expect(previewStatePanel).toContain("actionBusy: boolean;");
         expect(previewPage).toContain(":action-busy=\"actionBusy\"");
@@ -365,7 +365,7 @@ describe("World Engine IDE entry", () => {
         expect(previewStatePanel).toContain("load-slice");
         expect(previewStatePanel).toContain("delete-slice");
         expect(previewStatePanel).toContain("stateIssues");
-        expect(previewStatePanel).toContain("本次操作 issues");
+        expect(previewStatePanel).toContain("本次操作问题");
         expect(previewStatePanel).toContain("i-lucide-trash-2");
         expect(previewStatePanel).toContain("aria-label=\"载入编辑 slice\"");
         expect(previewStatePanel).toContain("aria-label=\"删除 slice\"");
@@ -915,8 +915,8 @@ describe("World Engine IDE entry", () => {
         expect(workbenchPreviewInspector).toContain("buildWorldWorkbenchSubjectFileProposals");
         expect(workbenchPreviewInspector).toContain("data-testid=\"subject-file-proposals\"");
         expect(workbenchPreviewInspector).toContain("data-testid=\"subject-file-proposal-count\"");
-        expect(workbenchPreviewInspector).toContain("Subject file proposals");
-        expect(workbenchPreviewInspector).toContain("仅生成建议，不会自动写入 simulation/subjects");
+        expect(workbenchPreviewInspector).toContain("主体文件建议");
+        expect(workbenchPreviewInspector).toContain("仅生成建议，不会自动写入");
         expect(workbenchPreviewInspector).toContain("formatWorldWorkbenchSubjectFileProposal");
         expect(workbenchPreviewInspector).toContain("navigator.clipboard.writeText");
         expect(workbenchPreviewInspector).toContain("复制主体文件建议");
@@ -956,8 +956,8 @@ describe("World Engine IDE entry", () => {
         expect(workbenchPreviewInspector).toContain("title=\"打开 events.jsonl\"");
         expect(workbenchPreviewInspector).toContain("title=\"打开 memory.jsonl\"");
         expect(workbenchPreviewInspector).toContain("title=\"打开 state.md\"");
-        expect(workbenchPreviewInspector).toContain("events.jsonl draft");
-        expect(workbenchPreviewInspector).toContain("memory facts");
+        expect(workbenchPreviewInspector).toContain("events.jsonl 草稿");
+        expect(workbenchPreviewInspector).toContain("记忆事实");
         expect(workbenchPreviewInspector).toContain("state.md review");
         expect(workbenchPreviewInspector).toContain("subjectFileProposalFocusVersion?: number;");
         expect(workbenchPreviewInspector).toContain("function scrollSubjectFileProposalsIntoView(): Promise<void>");
@@ -1166,7 +1166,7 @@ describe("World Engine IDE entry", () => {
         expect(mutationEditor).toContain("/api/projects/world-engine/slices");
         expect(mutationEditor).toContain("/edit");
         expect(mutationEditor).toContain("hasDirtyDraft");
-        expect(mutationEditorHeader).toContain("Edit Timeline");
+        expect(mutationEditorHeader).toContain("编辑时间线");
         expect(mutationEditorHeader).toContain("载入所选 Slice");
         expect(mutationEditorHeader).toContain("新建模式");
         expect(mutationEditorHeader).toContain("放弃草稿并载入");
@@ -1202,7 +1202,7 @@ describe("World Engine IDE entry", () => {
         expect(mutationEditor).toContain("mutation value 必须是 JSON object");
         expect(mutationEditor).toContain("必须是 JSON object");
         expect(mutationEditor).toContain("objectFieldRefOptions");
-        expect(subjectCreator).toContain("Create Subject");
+        expect(subjectCreator).toContain("创建主体");
         expect(subjectCreator).toContain("/api/projects/world-engine/subjects");
         expect(subjectCreator).toContain("$fetch<CreateSubjectResultDto>");
         expect(subjectCreator).toContain("issues: result.issues");
