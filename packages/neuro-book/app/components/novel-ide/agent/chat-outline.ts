@@ -175,7 +175,17 @@ const resolveBlockDetail = (nodes: ChatWorkBlockNode[]): string => {
 };
 
 /** 锚点 id 直接进 DOM，必须先剔除可能出现在消息 id 里的特殊字符。 */
-const sanitizeAnchor = (value: string): string => value.replace(/[^A-Za-z0-9_-]/gu, "-");
+const sanitizeAnchor = (value: string): string => {
+    try {
+        // 用百分号编码而不是统一压成 `-`：后者是满射而非单射，会把 `a:b` 和 `a-b`
+        // 撞成同一个锚点，而 querySelector 只认第一个命中 —— 跳转就会落到错误的行上。
+        // 编码后每个输入都有唯一输出，字符集也全部落在属性选择器的安全范围内。
+        return encodeURIComponent(value);
+    } catch {
+        // 畸形字符串（lone surrogate）会让 encodeURIComponent 抛 URIError；逐字符十六进制兜底。
+        return Array.from(value, (char) => `_${char.codePointAt(0)?.toString(16) ?? "0"}_`).join("");
+    }
+};
 
 /** 主时间线渲染节点对应的锚点 id，渲染层与大纲层共用，保证两边永远一致。 */
 export const chatNodeAnchorId = (nodeKey: string): string => `chat-anchor-n-${sanitizeAnchor(nodeKey)}`;

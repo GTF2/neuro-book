@@ -92,13 +92,13 @@ const rowLabel = (item: ChatOutlineItem): string => {
         return item.preview || t("agent.outline.emptyAnswer");
     }
     const parts = [t(CHAT_WORK_BLOCK_META[item.blockKind].labelKey)];
-    // 单步操作已经由类别本身说明「做了什么」，只有多个文件时才值得再报数量。
+    // 单步操作由类别本身就说清了「做了什么」，再报数量只会读出「编辑 · 1 个文件」这种废话。
+    // 多步时才值得补一句规模：文件超过一个就报文件数，否则报步数
+    // （同一个文件被连续改多次时文件数恒为 1，报步数才有信息量）。
     if (item.count > 1) {
-        parts.push(item.fileCount > 0
+        parts.push(item.fileCount > 1
             ? t("agent.workBlock.fileCount", {count: item.fileCount})
             : t("agent.workBlock.stepCount", {count: item.count}));
-    } else if (item.fileCount > 0) {
-        parts.push(t("agent.workBlock.fileCount", {count: item.fileCount}));
     }
     if (item.failedCount > 0) {
         parts.push(t("agent.workBlock.failedCount", {count: item.failedCount}));

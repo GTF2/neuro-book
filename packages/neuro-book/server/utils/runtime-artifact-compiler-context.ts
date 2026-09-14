@@ -1,4 +1,4 @@
-import {existsSync, readFileSync} from "node:fs";
+import {existsSync, readFileSync, realpathSync} from "node:fs";
 import {createRequire} from "node:module";
 import {dirname, isAbsolute, join, relative, resolve, sep} from "node:path";
 import {pathToFileURL} from "node:url";
@@ -195,6 +195,20 @@ function sourcePathMappingsFor(applicationRoot: string): readonly RuntimeArtifac
     return Object.freeze(mappings);
 }
 
+/**
+ * 取真实路径，解析不了就原样返回。
+ *
+ * portable 安装里 workspace 是个 junction / symlink：写进来的路径可能已经被解析成真实路径，
+ * 而 mapping 记的是逻辑路径（也可能反过来），两边直接比对会落空。
+ */
+const realpathOrSelf = (value: string): string => {
+    try {
+        return realpathSync.native(value);
+    } catch {
+        return value;
+    }
+};
+
 /** 把显式编译上下文内的物理路径稳定写成 manifest 逻辑身份。 */
 export function normalizeRuntimeArtifactPath(
     filePath: string,
@@ -204,14 +218,33 @@ export function normalizeRuntimeArtifactPath(
     const mappings = "compilerContext" in context
         ? context.mappings
         : context.sourcePathMappings;
-    for (const mapping of [...mappings]
+    const ordered = [...mappings]
         .map((item) => ({...item, physicalRoot: resolve(item.physicalRoot)}))
-        .sort((left, right) => right.physicalRoot.length - left.physicalRoot.length)) {
-        const outputRelative = relative(mapping.physicalRoot, absolutePath);
-        if (outputRelative === "" || (outputRelative !== ".." && !outputRelative.startsWith(`..${sep}`) && !isAbsolute(outputRelative))) {
-            const logicalRoot = mapping.logicalRoot.replace(/[\\/]+/gu, "/").replace(/\/$/u, "");
-            const suffix = outputRelative === "" ? "" : `/${outputRelative.split(/[\\/]+/u).join("/")}`;
-            return `${logicalRoot}${suffix}`.replace(/^\//u, "") || ".";
+        .sort((left, right) => right.physicalRoot.length - left.physicalRoot.length);
+
+    const toLogical = (mapping: RuntimeArtifactPathMapping, target: string): string | null => {
+        const outputRelative = relative(mapping.physicalRoot, target);
+        if (outputRelative !== "" && (outputRelative === ".." || outputRelative.startsWith(`..${sep}`) || isAbsolute(outputRelative))) {
+            return null;
+        }
+        const logicalRoot = mapping.logicalRoot.replace(/[\\/]+/gu, "/").replace(/\/$/u, "");
+        const suffix = outputRelative === "" ? "" : `/${outputRelative.split(/[\\/]+/u).join("/")}`;
+        return `${logicalRoot}${suffix}`.replace(/^\//u, "") || ".";
+    };
+
+    for (const mapping of ordered) {
+        const logical = toLogical(mapping, absolutePath);
+        if (logical !== null) {
+            return logical;
+        }
+    }
+    // 直接比对全部落空时，按真实路径再比一遍 —— 这一步有磁盘开销，所以只在没命中时才付。
+    // 少了它，portable 安装（workspace 为 junction）会被误判成「不在稳定逻辑根内」而整包编译失败。
+    const physicalTarget = realpathOrSelf(absolutePath);
+    for (const mapping of ordered) {
+        const logical = toLogical({...mapping, physicalRoot: realpathOrSelf(mapping.physicalRoot)}, physicalTarget);
+        if (logical !== null) {
+            return logical;
         }
     }
     throw new Error(`Runtime artifact 路径未映射到稳定逻辑根：${absolutePath}`);

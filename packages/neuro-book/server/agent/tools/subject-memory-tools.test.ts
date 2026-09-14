@@ -34,6 +34,30 @@ import {
 
 const memoryCuratorProfile = normalizeAgentProfile(memoryCuratorProfileDefinition);
 
+/**
+ * 等 File Index 重建到能看见该节点。
+ *
+ * `read()` 给的是「最新稳定快照」，而 watcher 重建有 120ms 防抖（见
+ * FILE_INDEX_REBUILD_DEBOUNCE_MS）—— 写完文件立刻读必然还是旧快照，
+ * 断言会假失败。这里等到节点出现为止，超时再让断言自己报错。
+ */
+async function waitForIndexedNode(
+    fileIndex: {read: () => Promise<{nodes: ReadonlyArray<{path: string; size?: number}>}>},
+    path: string,
+): Promise<{path: string; size: number}> {
+    const deadline = Date.now() + 5_000;
+    for (;;) {
+        const node = (await fileIndex.read()).nodes.find((item) => item.path === path);
+        if (node?.size !== undefined) {
+            return {path: node.path, size: node.size};
+        }
+        if (Date.now() > deadline) {
+            throw new Error(`File Index 超时未见节点：${path}`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, 25));
+    }
+}
+
 describe("subject memory tools", () => {
     let root: string;
     let workspaceRoot: string;
@@ -214,9 +238,7 @@ describe("subject memory tools", () => {
         await mkdir(subjectRoot, {recursive: true});
         await writeFile(join(subjectRoot, "events.jsonl"), "{\"text\":\"旧事件。\"}\n", "utf-8");
         const fileIndex = requireReadyModuleHandle(invocationReady, PROJECT_FILE_INDEX_MODULE_TOKEN);
-        const beforeNode = (await fileIndex.read()).nodes.find((node) => (
-            node.path === "simulation/subjects/heroine/events.jsonl"
-        ));
+        const beforeNode = await waitForIndexedNode(fileIndex, "simulation/subjects/heroine/events.jsonl");
         expect(beforeNode).toBeDefined();
         const tool = mustTool("subject_event_append", harness);
 
@@ -481,9 +503,7 @@ describe("subject memory tools", () => {
             "",
         ].join("\n"), "utf-8");
         const fileIndex = requireReadyModuleHandle(invocationReady, PROJECT_FILE_INDEX_MODULE_TOKEN);
-        const beforeNode = (await fileIndex.read()).nodes.find((node) => (
-            node.path === "simulation/subjects/heroine/memory.jsonl"
-        ));
+        const beforeNode = await waitForIndexedNode(fileIndex, "simulation/subjects/heroine/memory.jsonl");
         expect(beforeNode).toBeDefined();
         faux.setResponses([
             fauxAssistantMessage([

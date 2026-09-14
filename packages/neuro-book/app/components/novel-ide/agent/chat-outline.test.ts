@@ -193,7 +193,7 @@ describe("chat-outline", () => {
         expect(outline).toHaveLength(0);
     });
 
-    it("锚点 id 稳定，且剔除消息 id 里的特殊字符", () => {
+    it("锚点 id 稳定、可安全进选择器，且不会把不同消息 id 撞成同一个锚点", () => {
         const outline = buildChatOutline([
             {kind: "node", node: userNode("user/1.x", "提问")},
             blockItem(["success", "error"]),
@@ -202,9 +202,17 @@ describe("chat-outline", () => {
         const prompt = outline[0];
         const block = outline[1];
         expect(prompt?.anchorId).toBe(chatNodeAnchorId("user/1.x-text"));
+        // 锚点会被拼进 [data-anchor="..."]，引号与空白会截断选择器。
+        expect(prompt?.anchorId).not.toContain("\"");
+        expect(prompt?.anchorId).not.toContain(" ");
         expect(prompt?.anchorId).not.toContain("/");
-        expect(prompt?.anchorId).not.toContain(".");
         expect(block?.kind === "block" ? block.anchorId : "").toBe(chatBlockAnchorId("t0::t1"));
+
+        // 关键约束：编码必须单射。早先统一压成 `-` 时 `a:b` 与 `a-b` 会撞成同一个值，
+        // 而 querySelector 只认第一个命中 —— 撞了就会跳到错误的行上。
+        expect(chatNodeAnchorId("a:b")).not.toBe(chatNodeAnchorId("a-b"));
+        expect(chatNodeAnchorId("a/b")).not.toBe(chatNodeAnchorId("a-b"));
+        expect(chatNodeAnchorId("a b")).not.toBe(chatNodeAnchorId("a-b"));
     });
 
     it("resolveTextOutlineKind 只认用户提问、有正文的 AI 回答", () => {
