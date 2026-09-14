@@ -55,13 +55,31 @@ type CliOptions = {
     skipWrite: boolean;
 };
 
-type ScenarioStatus = "passed" | "failed" | "skipped";
+export type ScenarioStatus = "passed" | "failed" | "skipped";
 
-type ScenarioResult = {
+export type ScenarioResult = {
     name: string;
     status: ScenarioStatus;
     detail: string;
     durationMs: number;
+};
+
+/** `runWritingWorkflowSmoke` 的运行选项；CLI 与真实模型测试共用。 */
+export type WritingWorkflowSmokeOptions = {
+    /** dev server 地址；缺省依次读 AGENT_HTTP_BASE_URL、http://localhost:3000。 */
+    baseUrl?: string;
+    /** 单段 Project Root。 */
+    projectRoot: string;
+    /** consistency-audit 的章节清单原始字符串；未提供时该场景与 cancel 场景跳过。 */
+    chapters: string | null;
+    /** chapter-write-review-revise 的目标章节路径；未提供时写盘场景跳过。 */
+    writeChapter?: string | null;
+    /** 写盘场景的写作任务；缺省使用内置冒烟 brief。 */
+    brief?: string;
+    /** 只跑只读（consistency-audit）与 cancel 场景。 */
+    skipWrite?: boolean;
+    /** 写盘场景是否在本地读取目标章节断言非空；与 dev server 不同 State Root 的调用方传 false。 */
+    verifyChapterFile?: boolean;
 };
 
 /** GET /api/agent/jobs/[jobId] 的精简本地形状：只声明本脚本实际读取的字段。 */
@@ -73,7 +91,44 @@ type JobDetail = {
     result?: JsonValue;
 };
 
-await main();
+/**
+ * 执行写作 workflow 冒烟场景；外部前置（dev server、项目）由调用方负责 gate，
+ * 场景自身失败以 `ScenarioResult.status === "failed"` 返回。
+ */
+export async function runWritingWorkflowSmoke(options: WritingWorkflowSmokeOptions): Promise<ScenarioResult[]> {
+    const baseUrl = options.baseUrl ?? BASE_URL;
+    const results: ScenarioResult[] = [];
+
+    if (!options.chapters) {
+        results.push(skip("consistency-audit（只读）", "未提供 --chapters，跳过（不猜测项目章节结构）"));
+        results.push(skip("cancel（consistency-audit）", "未提供 --chapters，cancel 场景需要一个可启动的 consistency-audit run，一并跳过"));
+    } else {
+        const chapterPaths = splitPaths(options.chapters);
+        results.push(await runScenario("consistency-audit（只读）", () => runConsistencyAudit(baseUrl, options.projectRoot, options.chapters!, chapterPaths)));
+        results.push(await runScenario("cancel（consistency-audit）", () => runCancelScenario(baseUrl, options.projectRoot, options.chapters!, chapterPaths)));
+    }
+
+    if (options.skipWrite) {
+        results.push(skip("chapter-write-review-revise（写盘）", "--skip-write 已启用"));
+    } else if (!options.writeChapter) {
+        results.push(skip("chapter-write-review-revise（写盘）", "未提供 --write-chapter，跳过写盘场景"));
+    } else {
+        const projectAbsRoot = path.resolve(resolveStateRoot(), "workspace", options.projectRoot);
+        results.push(await runScenario(
+            "chapter-write-review-revise（写盘）",
+            () => runChapterWriteReviewRevise(
+                baseUrl,
+                options.projectRoot,
+                options.writeChapter!,
+                options.brief ?? DEFAULT_BRIEF,
+                projectAbsRoot,
+                options.verifyChapterFile ?? true,
+            ),
+        ));
+    }
+
+    return results;
+}
 
 async function main(): Promise<void> {
     let options: CliOptions;
@@ -87,28 +142,13 @@ async function main(): Promise<void> {
         return;
     }
 
-    const results: ScenarioResult[] = [];
-
-    if (!options.chapters) {
-        results.push(skip("consistency-audit（只读）", "未提供 --chapters，跳过（不猜测项目章节结构）"));
-        results.push(skip("cancel（consistency-audit）", "未提供 --chapters，cancel 场景需要一个可启动的 consistency-audit run，一并跳过"));
-    } else {
-        const chapterPaths = splitPaths(options.chapters);
-        results.push(await runScenario("consistency-audit（只读）", () => runConsistencyAudit(options.projectRoot, options.chapters!, chapterPaths)));
-        results.push(await runScenario("cancel（consistency-audit）", () => runCancelScenario(options.projectRoot, options.chapters!, chapterPaths)));
-    }
-
-    if (options.skipWrite) {
-        results.push(skip("chapter-write-review-revise（写盘）", "--skip-write 已启用"));
-    } else if (!options.writeChapter) {
-        results.push(skip("chapter-write-review-revise（写盘）", "未提供 --write-chapter，跳过写盘场景"));
-    } else {
-        const projectAbsRoot = path.resolve(resolveStateRoot(), "workspace", options.projectRoot);
-        results.push(await runScenario(
-            "chapter-write-review-revise（写盘）",
-            () => runChapterWriteReviewRevise(options.projectRoot, options.writeChapter!, options.brief, projectAbsRoot),
-        ));
-    }
+    const results = await runWritingWorkflowSmoke({
+        projectRoot: options.projectRoot,
+        chapters: options.chapters,
+        writeChapter: options.writeChapter,
+        brief: options.brief,
+        skipWrite: options.skipWrite,
+    });
 
     printSummary(results);
     if (results.some((result) => result.status === "failed")) {
@@ -240,14 +280,14 @@ function skip(name: string, reason: string): ScenarioResult {
 }
 
 /** 场景一：consistency-audit 只读审计。 */
-async function runConsistencyAudit(projectRoot: string, chaptersArg: string, chapterPaths: string[]): Promise<string> {
+async function runConsistencyAudit(baseUrl: string, projectRoot: string, chaptersArg: string, chapterPaths: string[]): Promise<string> {
     const args: Record<string, JsonValue> = {
         chapterPaths: chaptersArg,
         // 显式对齐 maxChapters 与实际传入章数，避免默认上限 12 截断导致断言假失败（workflow 上限 1-20）。
         maxChapters: String(Math.min(20, Math.max(chapterPaths.length, 1))),
     };
-    const {jobId, runId} = await startWorkflowRun(projectRoot, "consistency-audit", args);
-    const job = await pollJobUntilTerminal(jobId);
+    const {jobId, runId} = await startWorkflowRun(baseUrl, projectRoot, "consistency-audit", args);
+    const job = await pollJobUntilTerminal(baseUrl, jobId);
     if (job.status !== "completed") {
         throw new Error(`run 未完成：status=${job.status}${job.error ? `，error=${job.error}` : ""}`);
     }
@@ -265,14 +305,16 @@ async function runConsistencyAudit(projectRoot: string, chaptersArg: string, cha
 
 /** 场景二：chapter-write-review-revise 写盘 + 多维评审。 */
 async function runChapterWriteReviewRevise(
+    baseUrl: string,
     projectRoot: string,
     chapterPath: string,
     brief: string,
     projectAbsRoot: string,
+    verifyChapterFile: boolean,
 ): Promise<string> {
     const args: Record<string, JsonValue> = {chapterPath, brief};
-    const {jobId, runId} = await startWorkflowRun(projectRoot, "chapter-write-review-revise", args);
-    const job = await pollJobUntilTerminal(jobId);
+    const {jobId, runId} = await startWorkflowRun(baseUrl, projectRoot, "chapter-write-review-revise", args);
+    const job = await pollJobUntilTerminal(baseUrl, jobId);
     if (job.status !== "completed") {
         throw new Error(`run 未完成：status=${job.status}${job.error ? `，error=${job.error}` : ""}`);
     }
@@ -284,6 +326,10 @@ async function runChapterWriteReviewRevise(
     const rounds = expectArray(workflowResult.rounds, "rounds");
     if (rounds.length === 0) {
         throw new Error("rounds 为空数组，评审循环未记录任何一轮");
+    }
+
+    if (!verifyChapterFile) {
+        return `run ${runId}（job ${jobId}）：converged=${converged}，共 ${rounds.length} 轮（调用方声明与 dev server 不同 State Root，本地章节文件断言已跳过）`;
     }
 
     // 脚本与 dev server 共用本机文件系统：直接读目标章节文件断言非空。
@@ -301,14 +347,14 @@ async function runChapterWriteReviewRevise(
  * 已知风险：若真实模型响应极快，run 可能在 cancel 生效前已 completed；这是取消场景固有的竞态，
  * 出现该结果时应视为环境过快导致的偶发 flake，而非 cancel 链路本身的缺陷。
  */
-async function runCancelScenario(projectRoot: string, chaptersArg: string, chapterPaths: string[]): Promise<string> {
+async function runCancelScenario(baseUrl: string, projectRoot: string, chaptersArg: string, chapterPaths: string[]): Promise<string> {
     const args: Record<string, JsonValue> = {
         chapterPaths: chaptersArg,
         maxChapters: String(Math.min(20, Math.max(chapterPaths.length, 1))),
     };
-    const {jobId, runId} = await startWorkflowRun(projectRoot, "consistency-audit", args);
-    await requestJson(`/api/agent/jobs/${jobId}/cancel`, {method: "POST"});
-    const job = await pollJobUntilTerminal(jobId);
+    const {jobId, runId} = await startWorkflowRun(baseUrl, projectRoot, "consistency-audit", args);
+    await requestJson(baseUrl, `/api/agent/jobs/${jobId}/cancel`, {method: "POST"});
+    const job = await pollJobUntilTerminal(baseUrl, jobId);
     if (job.status !== "cancelled") {
         throw new Error(`预期终态 cancelled，实际 ${job.status}${job.error ? `（error=${job.error}）` : ""}`);
     }
@@ -320,8 +366,8 @@ async function runCancelScenario(projectRoot: string, chaptersArg: string, chapt
 type StartRunResponse = {jobId: string; runId: string};
 
 /** POST /api/agent/workflow/runs：立即返回 jobId + runId，实际执行在后台，需轮询 job 端点。 */
-async function startWorkflowRun(projectRoot: string, workflowKey: string, args: Record<string, JsonValue>): Promise<StartRunResponse> {
-    const response = await requestJson("/api/agent/workflow/runs", {
+async function startWorkflowRun(baseUrl: string, projectRoot: string, workflowKey: string, args: Record<string, JsonValue>): Promise<StartRunResponse> {
+    const response = await requestJson(baseUrl, "/api/agent/workflow/runs", {
         method: "POST",
         body: {projectRoot, workflowKey, args},
     });
@@ -335,10 +381,10 @@ async function startWorkflowRun(projectRoot: string, workflowKey: string, args: 
 }
 
 /** 轮询 GET /api/agent/jobs/[jobId] 直到终态（completed/failed/cancelled/interrupted）。 */
-async function pollJobUntilTerminal(jobId: string): Promise<JobDetail> {
+async function pollJobUntilTerminal(baseUrl: string, jobId: string): Promise<JobDetail> {
     const deadline = Date.now() + POLL_TIMEOUT_MS;
     while (Date.now() < deadline) {
-        const response = await requestJson(`/api/agent/jobs/${jobId}`, {method: "GET"});
+        const response = await requestJson(baseUrl, `/api/agent/jobs/${jobId}`, {method: "GET"});
         const wrapper = expectObject(response as JsonValue, "jobs 详情响应");
         const jobRecord = expectObject(wrapper.job, "job");
         const status = jobRecord.status;
@@ -373,8 +419,8 @@ function sleep(ms: number): Promise<void> {
 }
 
 /** 与 agent-http.ts 同口径的最小 fetch 封装。 */
-async function requestJson(pathname: string, input: {method: "GET" | "POST"; body?: unknown}): Promise<unknown> {
-    const response = await fetch(`${BASE_URL}${pathname}`, {
+async function requestJson(baseUrl: string, pathname: string, input: {method: "GET" | "POST"; body?: unknown}): Promise<unknown> {
+    const response = await fetch(`${baseUrl}${pathname}`, {
         method: input.method,
         headers: input.body ? {"content-type": "application/json"} : undefined,
         body: input.body ? JSON.stringify(input.body) : undefined,
@@ -422,3 +468,5 @@ function printSummary(results: ScenarioResult[]): void {
     const skipped = results.filter((result) => result.status === "skipped").length;
     console.log(`\n共 ${results.length} 个场景：${passed} 通过 / ${failed} 失败 / ${skipped} 跳过`);
 }
+
+if (import.meta.main) await main();

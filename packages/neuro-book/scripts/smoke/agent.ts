@@ -3,14 +3,19 @@ import path from "node:path";
 import process from "node:process";
 import {resolveAgentTempRoot} from "@notnotype/neuro-book-test-support/paths";
 import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
-import {resolvePiApiKeyForModelFromConfig, resolvePiModelFromConfig} from "nbook/server/agent/harness/model-resolver";
+import {resolvePiApiKeyForModelFromConfig, resolvePiModelFromConfig, type ResolvedPiModel} from "nbook/server/agent/harness/model-resolver";
 import {resolvePiModelsFromConfig} from "nbook/server/agent/harness/pi-runtime-resolver";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {messageText} from "nbook/server/agent/messages/message-utils";
 import {loadGlobalEffectiveConfigSync} from "nbook/server/config/config-service";
+import {createVariableDefinitionArtifactPathContextResolver} from "nbook/server/agent/variables/definition-artifact";
+import {resolveUserNbookRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import type {AgentInvocationResult} from "nbook/server/agent/harness/types";
+import type {EffectiveConfig} from "nbook/server/config/types";
 
 const PROFILE_KEY = "leader.default";
+/** 应用包根：隔离 smoke workspace 没有 runtimePaths 时，变量 artifact 仍按应用资产的编译产物解析。 */
+const APPLICATION_ROOT = path.resolve(import.meta.dirname, "../..");
 
 export type AgentSmokeHarness = Pick<
     NeuroAgentHarness,
@@ -115,23 +120,71 @@ export async function runAgentSmoke(options: AgentSmokeOptions): Promise<AgentSm
     }
 }
 
+/** `leader.default` smoke 的模型与凭据解析结果。 */
+export type AgentSmokeModelSetup = {
+    config: EffectiveConfig;
+    model: ResolvedPiModel;
+    apiKey: string;
+};
+
+/**
+ * 解析 `leader.default` smoke 的模型与凭据；缺配置时抛错，由调用方决定 gate 语义
+ * （CLI 直接失败退出，真实模型测试转为 skip）。
+ */
+export function resolveAgentSmokeModelSetup(): AgentSmokeModelSetup {
+    const config = loadGlobalEffectiveConfigSync();
+    const model = resolvePiModelFromConfig(config, PROFILE_KEY);
+    const apiKey = resolvePiApiKeyForModelFromConfig(config, model);
+    if (!apiKey) {
+        throw new Error(`provider ${model.provider} 未配置 apiKey，请先在 workspace/.nbook/config.json 或设置页中填写真实 Provider 密钥`);
+    }
+    return {config, model, apiKey};
+}
+
+/**
+ * 把当前 Global Config 复制进隔离 smoke workspace；Harness 运行期按 Workspace Root 读取
+ * Provider 配置（apiKey、requestOptions、模型清单）。
+ *
+ * 副本含明文 Provider 密钥，因此只落在一次性隔离目录：随 smoke 结束删除，POSIX 下收紧为 0600；
+ * Windows 依赖系统 Temp 的账户级 ACL。进程被强杀时副本可能残留（系统 Temp 内），不得挪作持久存储。
+ */
+export async function prepareAgentSmokeWorkspace(workspaceRoot: string): Promise<void> {
+    const source = path.join(resolveUserNbookRoot(), "config.json");
+    const target = path.join(workspaceRoot, ".nbook", "config.json");
+    await fs.mkdir(path.dirname(target), {recursive: true});
+    try {
+        await fs.copyFile(source, target);
+    } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === "ENOENT") return;
+        throw error;
+    }
+    if (process.platform !== "win32") {
+        await fs.chmod(target, 0o600);
+    }
+}
+
+/** 用当前 Provider 配置建立真实 Harness；CLI smoke 与真实模型测试共用同一装配。 */
+export async function createAgentSmokeHarness(
+    workspaceRoot: string,
+    setup: AgentSmokeModelSetup,
+): Promise<AgentSmokeHarness> {
+    await prepareAgentSmokeWorkspace(workspaceRoot);
+    return new NeuroAgentHarness({
+        repo: new JsonlSessionRepository(workspaceRoot),
+        definitionArtifactPathContextProvider: createVariableDefinitionArtifactPathContextResolver(APPLICATION_ROOT),
+        modelResolver: () => setup.model,
+        runtimeResolver: () => resolvePiModelsFromConfig(setup.config, setup.model),
+    });
+}
+
 async function main(): Promise<void> {
     try {
-        const config = loadGlobalEffectiveConfigSync();
-        const model = resolvePiModelFromConfig(config, PROFILE_KEY);
-        const apiKey = resolvePiApiKeyForModelFromConfig(config, model);
-        if (!apiKey) {
-            throw new Error(`provider ${model.provider} 未配置 apiKey，请先在 workspace/.nbook/config.json 或设置页中填写真实 Provider 密钥`);
-        }
+        const setup = resolveAgentSmokeModelSetup();
         const report = await runAgentSmoke({
             workspaceRoot: resolveAgentSmokeWorkspaceRoot(),
-            modelLabel: `${model.provider}/${model.id}`,
+            modelLabel: `${setup.model.provider}/${setup.model.id}`,
             compact: process.env.AGENT_SMOKE_COMPACT === "1",
-            createHarness: (workspaceRoot) => new NeuroAgentHarness({
-                repo: new JsonlSessionRepository(workspaceRoot),
-                modelResolver: () => model,
-                runtimeResolver: () => resolvePiModelsFromConfig(config, model),
-            }),
+            createHarness: (workspaceRoot) => createAgentSmokeHarness(workspaceRoot, setup),
         });
         console.log(report.output);
         if (!report.ok) process.exitCode = 1;

@@ -76,3 +76,15 @@
 - 长期测试覆盖可观察行为与可能回归，不为措辞或实现镜像增加测试。Bug 有合适切入点时保留复现为回归测试，否则用聚焦 smoke 并说明缺口。
 - 所需检查通过后，仅因后续改动使证据失效、出现失败或具体未解风险才重跑或扩大。仅叙事文档形成新 revision 不自动使代码测试证据失效。
 - 提交前运行 `git diff --cached --check`。既有失败与本次失败分开报告，不能把“focused 通过”写成“全量通过”；远端登记 Issue 仍需授权。
+
+## 应用包真实模型 smoke（`test:real-model`）
+
+`bun run test:real-model`（等价 `bun run --cwd packages/neuro-book test:real-model`）是应用包唯一会真实调用
+Provider 的测试入口：独立配置 `packages/neuro-book/vitest.real-model.config.ts` 只收集
+`packages/neuro-book/scripts/smoke/real-model/**`，默认门禁（`bun run test`）显式排除该目录，常规测试零模型调用。
+
+- **凭据**：从仓库根 dotenv（`.env`，含 `.env.local` / `.env.real-model*` 变体）白名单注入测试进程（`DEEPSEEK_API_KEY`，可选 `DEEPSEEK_API_BASE`）；缺凭据的用例 skip 并在证据中记为「未验证」，不得写成通过。`REAL_MODEL_SMOKE_MODEL` 可覆盖模型（默认 `deepseek/deepseek-flash`）。
+- **隔离**：测试使用独立 State Root 与临时 workspace；写入的全局配置只落在本 run 的隔离根内（缺少 `NEURO_BOOK_STATE_ROOT` 时直接拒绝写入），POSIX 下收紧为 0600，随 run teardown 删除。
+- **外部前置**：HTTP 与写作 workflow 用例需要已启动的 dev server（`AGENT_HTTP_BASE_URL`，默认 `http://localhost:3000`），仅网络层不可达时 skip，已监听但接口失败按测试失败暴露；workflow 用例还需 `REAL_MODEL_SMOKE_PROJECT` 与 `REAL_MODEL_SMOKE_CHAPTERS`（缺一即 skip），写盘场景仅在显式设置 `REAL_MODEL_SMOKE_WRITE_CHAPTER` 时执行。
+- **与 smoke CLI 的关系**：`smoke:agent`、`smoke:agent-http`、`smoke:writing-workflow` 面向手工单次执行、失败即退出；测试命令提供统一入口与 skip 语义。两者共用 `packages/neuro-book/scripts/smoke/` 的装配与运行函数。
+- **CI**：默认工作流不运行该命令（无外部凭据）；发布或人工验收需要时手动执行。
