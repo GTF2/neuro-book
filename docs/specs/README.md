@@ -119,6 +119,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Component Lab | [`ui/component-lab.md`](ui/component-lab.md) | Source Dev-only 确定性 fixture、响应式检视和 Product 排除合同；当前尚未实现 |
 | Agent Session Store 租约 | [`agent/session-store-lease.md`](agent/session-store-lease.md) | proper-lockfile 租约互斥、mtime 心跳、失效与 Windows 文件系统兼容目标；修复验证闭合前保持 `planned` |
 | Agent Session Follow-up 队列投递 | [`agent/session-followup-queue.md`](agent/session-followup-queue.md) | 队列来源可见性、单条与批量处理入口、暂停后的空闲自愈与人工接管；行为合同已定稿，等待实现 |
+| Agent Workflow 只读数据查询 | [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md) | Workflow 版本化只读查询（宿主 `ActivityExecutor` 装配 + journal 重放）；首期消费者 `plot.chapter-info-control@1` 让 infoControl 由 `chapterId` 自动编译，能力缺席退回漏传显形、查询失败 fail-closed；行为合同已定稿，等待实现 |
 
 ## 冻结过渡规范
 
@@ -140,7 +141,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
 | P0 | Agent Session 持久化与历史 | `packages/neuro-book/docs/adr/0003-*`、`0014-agent-job-*`，`packages/neuro-book/server/agent/session/`、`packages/neuro-book/server/workspace-history/` | durable event、Job 历史、附件、租约和文件历史缺少统一状态与恢复规范 |
-| P1 | Workflow 侧读取项目数据（infoControl 自动编译） | `packages/neuro-book/assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts`、`packages/nb-workflow/src/types.ts`（`wf.query` / `wf.callAction`）、`packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md` | 宿主未接线 `wf.query` / `wf.callAction`，workflow 无法确定性读取 Plot 数据（章节四字段只能由调用方手填传入）；当前保证仅为「漏传必定显形」，尚无 `implemented` Spec |
+| P1 | Workflow 侧读取项目数据（infoControl 自动编译） | `packages/neuro-book/assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts`、`packages/nb-workflow/src/types.ts`（`wf.query` / `wf.callAction`）、`packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md` | 宿主已装配只读 `wf.query` 并由版本化查询 `plot.chapter-info-control@1` 自动编译 infoControl（合同见 [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md)）；该能力尚无 `implemented` Spec——宿主查询的真库端到端路径仍未验证，实现闭合后由该 `planned` Spec 原地晋升 |
 | P1 | 配置、模型与凭据 | `packages/neuro-book/server/config/`、`packages/neuro-book/server/models/`、`packages/neuro-book/shared/dto/app-settings.dto.ts` | 配置优先级、敏感字段、provider identity、错误和 UI 行为没有单一规范 |
 | P1 | Markdown Studio 与编辑工作台 | [`../../vitepress/locales/zh-Hans/core/markdown-studio.md`](../../vitepress/locales/zh-Hans/core/markdown-studio.md)、[历史 editor plan](../../packages/neuro-book/docs/archived/plan/06-editor-workbench.md)、`packages/neuro-book/shared/editor-workbench.ts` | 用户文档与历史 plan 存在，但需要按当前代码和测试核对后转成内部当前规范 |
 | P1 | Passport 与身份 | `packages/neuro-book/server/passport/`、相关 migration 与测试 | 登录、官方 origin、凭据存储和失败语义缺少当前规范 |

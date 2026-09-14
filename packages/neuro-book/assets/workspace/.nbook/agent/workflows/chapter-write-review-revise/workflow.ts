@@ -48,6 +48,30 @@ const REVIEW_DIMENSIONS = [
 /** 每次贴给评审的正文截断长度（章节正文比拆书摘要长，放宽到 12000）。 */
 const BODY_SLICE = 12000;
 
+/**
+ * 把 `plot.chapter-info-control@1` 的查询结果编译成事后核对清单文本。
+ * 四字段全空返回空串——「本章未声明信息控制」与「未核对」是两种不同状态，上层分开处理。
+ */
+function compileInfoControlChecklist(fields: unknown): string {
+    const record = (fields !== null && typeof fields === "object" && !Array.isArray(fields))
+        ? fields as Record<string, unknown>
+        : {};
+    const text = (key: string): string | null => {
+        const value = record[key];
+        return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+    };
+    const readerKnows = text("readerKnows");
+    const protagonistKnows = text("protagonistKnows");
+    const mustHide = text("mustHide");
+    const hintOnly = text("hintOnly");
+    return [
+        readerKnows ? `读者已知：${readerKnows}` : null,
+        protagonistKnows ? `主角已知：${protagonistKnows}` : null,
+        mustHide ? `必须隐藏：${mustHide}` : null,
+        hintOnly ? `可暗示但不可明说：${hintOnly}` : null,
+    ].filter((part): part is string => part !== null).join("\n");
+}
+
 export default {
     key: "chapter-write-review-revise",
     title: "章级写作评审循环",
@@ -57,7 +81,7 @@ export default {
         {name: "chapterPath", label: "章节 index.md 路径（Project Workspace 相对路径，必填）", defaultValue: ""},
         {name: "chapterId", label: "StoryChapter id（必填）：writer 按它用 get_chapter_writer_brief 自取事实简报，leader 不把意图写进 writer 消息", defaultValue: ""},
         {name: "brief", label: "本章意图清单（可选）：目标/关键剧情点等，**只注入评审**用于覆盖度与信息边界判定，不下发 writer", defaultValue: ""},
-        {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；仅注入一致性评审做事后校验，不下发 writer）。由 leader 从 StoryChapter 的四字段编译（见 novel-writing/phases/03-chapter-loop.md）；漏传不会静默跳过——一致性评审会显式标注「信息边界未核对」，返回值 infoControlChecked=false", defaultValue: ""},
+        {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；仅注入一致性评审做事后校验，不下发 writer）。通常不必手填：宿主装配了只读查询时，workflow 会按 chapterId 自动从 StoryChapter 的 ChapterBrief 编译（返回值 infoControlSource=auto）；需要覆盖时才显式传入（provided）。宿主未装配时退回手填 + 漏传显形（missing：一致性评审显式标注「信息边界未核对」、infoControlChecked=false）", defaultValue: ""},
         {name: "lorebookEntries", label: "建议读取的内容节点路径（逗号或换行分隔，可选）", defaultValue: ""},
         {name: "reviewRounds", label: "评审轮数（1-3）", defaultValue: "2"},
         {name: "revise", label: "是否按评审修订（false 时只写+评审一轮）", defaultValue: "true"},
@@ -78,19 +102,46 @@ export default {
         // 只注入评审用于覆盖度与信息边界判定；writer 的事实上下文由 get_chapter_writer_brief 提供。
         const brief = typeof args?.brief === "string" ? args.brief.trim() : "";
         const chapterId = typeof args?.chapterId === "string" ? args.chapterId.trim() : "";
-        // 信息控制事后核对清单：leader 把 ChapterBrief 的四字段编译成清单传入；仅注入一致性评审。
-        const infoControl = typeof args?.infoControl === "string" ? args.infoControl.trim() : "";
-        // 宪法第五条要求事后校验真的发生：清单缺失时不静默跳过，而是显式标注「未核对」并记入返回值。
-        const infoControlChecked = infoControl.length > 0;
         if (!chapterId) {
             throw new Error("缺少 chapterId：writer 的事实简报由 input.chapterId 经 get_chapter_writer_brief 自取；意图清单（brief/infoControl）只进评审，不能替代它");
         }
-        // 一致性评审专用的事后核对段：清单缺失时给显式标注段，而不是让这一层校验静默消失。
-        const infoControlBlock = infoControlChecked
-            ? `【信息控制事后核对】\n以下是本章信息边界清单，仅用于事后校验，不是写作任务的一部分：\n${infoControl}\n逐条核对正文：角色是否知道了他不该知道的信息？「必须隐藏」项是否被直接或变相泄露？「可暗示」项是否被明说？只报告有正文证据的越界，无越界则不报告。`
-            : "【信息控制事后核对】\n调用方未提供本章信息控制清单：本轮不做信息边界判定，不要据此报告越界问题；请在 overall 里明确写明「信息边界未核对」。";
-        if (!infoControlChecked) {
+        // 信息控制事后核对清单来源三态：
+        // - provided：调用方显式传入（优先）；
+        // - auto：缺省时按 chapterId 经宿主只读查询自动编译（Spec: agent.workflow-data-queries）；
+        // - missing：宿主未装配查询能力，退回 w00016 的「漏传必定显形」路径。
+        const providedInfoControl = typeof args?.infoControl === "string" ? args.infoControl.trim() : "";
+        let infoControl = providedInfoControl;
+        let infoControlSource: "provided" | "auto" | "missing" = providedInfoControl.length > 0 ? "provided" : "missing";
+        if (infoControlSource === "missing") {
+            const numericChapterId = Number(chapterId);
+            // 合法 id 才发起查询：非法 id 属「无法编译」，同样退回显形而不是失败。
+            if (Number.isSafeInteger(numericChapterId) && numericChapterId > 0) {
+                try {
+                    const fields = await wf.query("plot.chapter-info-control@1", {chapterId: numericChapterId});
+                    infoControl = compileInfoControlChecklist(fields);
+                    infoControlSource = "auto";
+                } catch (error) {
+                    const errorName = error instanceof Error ? error.name : "";
+                    // 能力缺席（宿主未装配执行器 / 未注册该引用）是部署状态：退回显形，run 仍可完成。
+                    // 其它错误（Project 未打开 / 章节不存在 / DB 错误）是 fail-closed：绝不把「查不到」说成「没有问题」。
+                    if (errorName !== "ActivityExecutorNotConfiguredError" && errorName !== "ActivityDefinitionNotFoundError") {
+                        throw error;
+                    }
+                }
+            }
+        }
+        // 宪法第五条要求事后校验真的发生：没有任何清单来源时显式标注「未核对」并记入返回值。
+        const infoControlChecked = infoControlSource !== "missing";
+        // 一致性评审专用的事后核对段：按来源生成，缺失时给显式标注段，而不是让这一层校验静默消失。
+        let infoControlBlock: string;
+        if (infoControlSource === "missing") {
+            infoControlBlock = "【信息控制事后核对】\n调用方未提供本章信息控制清单，且宿主未装配自动编译：本轮不做信息边界判定，不要据此报告越界问题；请在 overall 里明确写明「信息边界未核对」。";
             wf.log("警告：未提供 infoControl 清单，本轮不做信息边界事后校验（宪法第五条）；一致性评审会显式标注未核对。");
+        } else if (infoControl.length > 0) {
+            const sourceNote = infoControlSource === "auto" ? "（已按 chapterId 自动编译自本章 ChapterBrief）" : "";
+            infoControlBlock = `【信息控制事后核对】\n以下是本章信息边界清单${sourceNote}，仅用于事后校验，不是写作任务的一部分：\n${infoControl}\n逐条核对正文：角色是否知道了他不该知道的信息？「必须隐藏」项是否被直接或变相泄露？「可暗示」项是否被明说？只报告有正文证据的越界，无越界则不报告。`;
+        } else {
+            infoControlBlock = "【信息控制事后核对】\n已按 chapterId 自动查询本章 ChapterBrief：四项信息控制字段均为空，本章未声明信息边界。不要据此报告越界问题。";
         }
         const rawEntries = Array.isArray(args?.lorebookEntries)
             ? args.lorebookEntries
@@ -246,6 +297,6 @@ export default {
         wf.chart.move(currentNode, "final", {label: converged ? "已收敛" : "达到轮数上限"});
         wf.chart.leave("final");
         wf.log(`章级写作评审循环完成：共 ${rounds.length} 轮，${converged ? "已收敛" : "未收敛（仍有 major 问题）"}`);
-        return {chapterPath, rounds, converged, finalSummary, finalLength: finalBody.length, infoControlChecked};
+        return {chapterPath, rounds, converged, finalSummary, finalLength: finalBody.length, infoControlChecked, infoControlSource};
     },
 };

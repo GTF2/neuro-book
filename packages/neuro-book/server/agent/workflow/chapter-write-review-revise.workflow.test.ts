@@ -4,6 +4,7 @@ import {resolve} from "node:path";
 import {afterAll, beforeAll, describe, expect, test} from "vitest";
 import {WorkflowCatalog} from "nbook/server/agent/workflow/workflow-catalog";
 import {
+    MemoryActivityExecutor,
     MemorySessionStore,
     MockAgentPort,
     WorkflowRunner,
@@ -257,6 +258,130 @@ describe("chapter-write-review-revise workflow", () => {
         for (const message of writerMessages) {
             expect(message).not.toContain("信息控制事后核对");
         }
+    });
+
+    test("infoControl 缺省：宿主装配只读查询时按 chapterId 自动编译清单（auto）", async () => {
+        const sessions = new MemorySessionStore();
+        const agents = new MockAgentPort(sessions);
+        const consistencyMessages: string[] = [];
+        const writerMessages: string[] = [];
+        agents.register("writer", (turn): {message: string; data: JsonValue} => {
+            writerMessages.push(turn.message ?? "");
+            return {message: "章节写作完成", data: {summary: "首轮即达标", outputPath: chapterPath}};
+        });
+        agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
+            if (turn.message?.includes("一致性")) consistencyMessages.push(turn.message ?? "");
+            return {message: "评审完成", data: {overall: "没有必须修订的问题", issues: []}};
+        });
+        // 只装配只读查询：证明自动编译取数不依赖额外模型调用。
+        const activities = new MemoryActivityExecutor();
+        let queryCalls = 0;
+        activities.registerQuery<{chapterId: number}, {
+            chapterId: number;
+            readerKnows: string | null;
+            protagonistKnows: string | null;
+            mustHide: string | null;
+            hintOnly: string | null;
+        }>("plot.chapter-info-control@1", (input) => {
+            queryCalls++;
+            return {
+                chapterId: input.chapterId,
+                readerKnows: "项链存在",
+                protagonistKnows: "项链发烫",
+                mustHide: "项链是前作遗物",
+                hintOnly: null,
+            };
+        });
+        const runner = new WorkflowRunner({sessions, agents}, {
+            workspace: createMemoryWorkspace({[chapterPath]: chapterBody}),
+        }, {activities});
+
+        const view = await runner.start(await workflow("chapter-write-review-revise"), {
+            chapterPath,
+            chapterId: "7",
+            brief: "本章目标：解开封印。",
+            reviewRounds: "1",
+        });
+
+        expect(view.status).toBe("completed");
+        expect((view.result as {infoControlSource?: string}).infoControlSource).toBe("auto");
+        expect((view.result as {infoControlChecked?: boolean}).infoControlChecked).toBe(true);
+        // 一致性评审拿到自动编译的清单原文；writer 的动笔前上下文仍不含信息控制（宪法第五条）。
+        expect(consistencyMessages).toHaveLength(1);
+        expect(consistencyMessages[0]).toContain("【信息控制事后核对】");
+        expect(consistencyMessages[0]).toContain("必须隐藏：项链是前作遗物");
+        for (const message of writerMessages) {
+            expect(message).not.toContain("必须隐藏");
+        }
+        // 取数恰好一次且进入 journal（重放可命中，不重复读库）。
+        expect(queryCalls).toBe(1);
+        expect(view.journal.filter((record) => record.kind === "query")).toHaveLength(1);
+    });
+
+    test("infoControl 显式传入优先：即使装配了查询也不调用（provided）", async () => {
+        const sessions = new MemorySessionStore();
+        const agents = new MockAgentPort(sessions);
+        const consistencyMessages: string[] = [];
+        agents.register("writer", (): {message: string; data: JsonValue} => ({message: "章节写作完成", data: {summary: "首轮即达标", outputPath: chapterPath}}));
+        agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
+            if (turn.message?.includes("一致性")) consistencyMessages.push(turn.message ?? "");
+            return {message: "评审完成", data: {overall: "没有必须修订的问题", issues: []}};
+        });
+        const activities = new MemoryActivityExecutor();
+        let queryCalls = 0;
+        activities.registerQuery<{chapterId: number}, {chapterId: number}>("plot.chapter-info-control@1", (input) => {
+            queryCalls++;
+            return {chapterId: input.chapterId};
+        });
+        const runner = new WorkflowRunner({sessions, agents}, {
+            workspace: createMemoryWorkspace({[chapterPath]: chapterBody}),
+        }, {activities});
+
+        const view = await runner.start(await workflow("chapter-write-review-revise"), {
+            chapterPath,
+            chapterId: "7",
+            brief: "本章目标：解开封印。",
+            infoControl: "必须隐藏：项链是前作遗物",
+            reviewRounds: "1",
+        });
+
+        expect(view.status).toBe("completed");
+        expect((view.result as {infoControlSource?: string}).infoControlSource).toBe("provided");
+        expect(queryCalls).toBe(0);
+        expect(consistencyMessages[0]).toContain("必须隐藏：项链是前作遗物");
+        expect(consistencyMessages[0]).not.toContain("自动编译");
+    });
+
+    test("执行器已装配但未注册该查询：退回显形（missing），run 仍完成", async () => {
+        const sessions = new MemorySessionStore();
+        const agents = new MockAgentPort(sessions);
+        const events: unknown[] = [];
+        const consistencyMessages: string[] = [];
+        agents.register("writer", (): {message: string; data: JsonValue} => ({message: "章节写作完成", data: {summary: "首轮即达标", outputPath: chapterPath}}));
+        agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
+            if (turn.message?.includes("一致性")) consistencyMessages.push(turn.message ?? "");
+            return {message: "评审完成", data: {overall: "没有必须修订的问题", issues: []}};
+        });
+        // 装配了执行器，但没有注册该查询引用 → ActivityDefinitionNotFoundError → 能力缺席。
+        const activities = new MemoryActivityExecutor();
+        activities.registerQuery<{probe: boolean}, null>("other.query@1", () => null);
+        const runner = new WorkflowRunner({sessions, agents}, {
+            workspace: createMemoryWorkspace({[chapterPath]: chapterBody}),
+            onEvent: (event) => events.push(event),
+        }, {activities});
+
+        const view = await runner.start(await workflow("chapter-write-review-revise"), {
+            chapterPath,
+            chapterId: "7",
+            brief: "本章目标：解开封印。",
+            reviewRounds: "1",
+        });
+
+        expect(view.status).toBe("completed");
+        expect((view.result as {infoControlSource?: string}).infoControlSource).toBe("missing");
+        expect((view.result as {infoControlChecked?: boolean}).infoControlChecked).toBe(false);
+        expect(consistencyMessages[0]).toContain("信息边界未核对");
+        expect(JSON.stringify(events)).toContain("未提供 infoControl");
     });
 
     test("chapterPath 缺失：在创建任何 agent 前失败", async () => {

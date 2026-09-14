@@ -8,6 +8,8 @@
 - [`../packages/neuro-book/docs/proposals/agent-skills-adaptation.md`](../../packages/neuro-book/docs/proposals/agent-skills-adaptation.md)：Agent Skills 项目化适配，状态为 `accepted`。
 - [`../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md`](../../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md)：Harness Agent、completion 与 headless 三套调用面、Catalog、授权和 Workflow 重放边界，状态为 `accepted`。
 - [`p-005-development-workflow-governance.md`](./p-005-development-workflow-governance.md)：`P-005`，current Work 是 Task 的强制容器，Task 指定唯一 canonical role；Issue 由 Work 可选引用，Proposal 独立且可被多个 Work 引用，Agent主导执行，开发者在明示节点参与，PM/Reviewer按需，状态为`accepted`。
+- [`../packages/neuro-book/docs/proposals/future-impact-analysis.md`](../../packages/neuro-book/docs/proposals/future-impact-analysis.md)：正文采纳后的未来影响分析（受影响 Promise / Scene / 关键帧清单，只标记、不自动改规划），状态为 `draft`。
+- [`../packages/neuro-book/docs/proposals/workflow-project-data-queries.md`](../../packages/neuro-book/docs/proposals/workflow-project-data-queries.md)：Workflow 只读数据查询（首期消费者 = infoControl 自动编译；复用已接受提案的 `ActivityExecutor` 计划），状态为 `accepted`。
 
 已完成沉淀的信息架构提案见 [`../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md`](../../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md)。
 

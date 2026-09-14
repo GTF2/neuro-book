@@ -6,6 +6,7 @@ import {MockAgentPort, WorkflowRunner, createMemoryWorkspace, extractCfg, skelet
 import type {ActivityRecord, AgentInvokeUsage, AgentWorkflowDefinition, JsonValue, PendingAsk, RunView, SessionId, WorkflowEvent, WorkspacePort} from "@notnotype/nb-workflow";
 import {NeuroWorkflowSessionPort} from "nbook/server/agent/workflow/workflow-session-port";
 import {HarnessAgentPort, RoutingAgentPort} from "nbook/server/agent/workflow/workflow-agent-port";
+import {createWorkflowActivityExecutor} from "nbook/server/agent/workflow/workflow-data-queries";
 import {
     DEMO_BOOK, DEMO_BOOK_PATH, DEMO_SCENARIOS, demoKnobs, registerDemoResponders,
 } from "nbook/server/agent/workflow/workflow-demo-scenarios";
@@ -313,6 +314,11 @@ class WorkflowDemoService {
         this.runner = new WorkflowRunner({sessions: this.sessions, agents}, {
             workspace: createMemoryWorkspace({[DEMO_BOOK_PATH]: DEMO_BOOK}),
             onEvent: (event) => this.onEvent(event),
+        }, {
+            // 版本化只读数据查询（首期消费者 infoControl 自动编译）：按 run 的 Project 上下文解析作用域，只注册只读查询。
+            activities: createWorkflowActivityExecutor({
+                resolveProject: () => this.runContextStorage.getStore()?.project ?? null,
+            }),
         });
     }
 
