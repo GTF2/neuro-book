@@ -34,7 +34,7 @@ const sceneCount = computed(() => props.timeline.scenes.length);
         <section class="rounded-[28px] border border-[var(--border-color)] bg-[var(--bg-panel)] px-5 py-5 shadow-[0_18px_60px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
             <div class="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                 <div class="max-w-[900px]">
-                    <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">Plot Timeline</div>
+                    <div class="text-[11px] uppercase tracking-[0.28em] text-[var(--text-muted)]">情节时间线</div>
                     <div class="mt-2 text-2xl font-semibold text-[var(--text-main)]">{{ props.timeline.phase.title }}</div>
                     <div class="mt-3 text-sm leading-7 text-[var(--text-secondary)]">
                         {{ props.timeline.phase.summary }}
@@ -43,19 +43,19 @@ const sceneCount = computed(() => props.timeline.scenes.length);
 
                 <div class="grid gap-3 sm:grid-cols-4">
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Thread</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">线索</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ props.timeline.threads.length }}</div>
                     </div>
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Scene</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">场景</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ sceneCount }}</div>
                     </div>
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Chapter</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">章节</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ chapterCount }}</div>
                     </div>
                     <div class="rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-3">
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Draft Tail</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">草稿尾</div>
                         <div class="mt-1 text-lg font-semibold text-[var(--text-main)]">{{ props.timeline.draftSlotCount }}</div>
                     </div>
                 </div>

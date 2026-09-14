@@ -240,7 +240,7 @@ const {t} = useI18n();
 
 /** PromptBar 的用户动作拿不到 Surface owner 时必须给出可见反馈，不能静默失败。 */
 function notifyInlinePromptUnavailable(): void {
-    notification.error(t("ide.inlineAi.agentNotReady"), {title: "Inline AI"});
+    notification.error(t("ide.inlineAi.agentNotReady"), {title: "行内 AI"});
 }
 
 const inlineEditorAgent = useInlineEditorAgentController({
@@ -568,7 +568,7 @@ const markdownCommandSections = computed(() => [
     },
     {
         id: "style",
-        title: "Style",
+        title: "样式",
         items: [
             createMarkdownCommandItem("command:paragraph", t("ide.markdownMenu.paragraph"), t("ide.markdownMenu.paragraphDescription"), "i-lucide-type", "paragraph"),
             createMarkdownCommandItem("command:heading-1", t("ide.markdownMenu.heading1"), t("ide.markdownMenu.heading1Description"), "i-lucide-heading-1", "heading-1"),
@@ -583,7 +583,7 @@ const markdownCommandSections = computed(() => [
     },
     {
         id: "insert",
-        title: "Insert",
+        title: "插入",
         items: [
             createMarkdownCommandItem("command:image", t("ide.markdownMenu.image"), t("ide.markdownMenu.imageDescription"), "i-lucide-image", "image", true),
             createMarkdownCommandItem("command:link", t("ide.markdownMenu.link"), t("ide.markdownMenu.linkDescription"), "i-lucide-link", "link", true),
@@ -1053,21 +1053,21 @@ async function sendInlineEditorPrompt(): Promise<void> {
         return;
     }
     if (!inlinePromptAvailable.value) {
-        notification.warning(t("ide.inlineAi.unsupportedFile"), {title: "Inline AI"});
+        notification.warning(t("ide.inlineAi.unsupportedFile"), {title: "行内 AI"});
         return;
     }
     if (!selectedFilePath.value) {
-        notification.warning(t("ide.inlineAi.openEditableFileFirst"), {title: "Inline AI"});
+        notification.warning(t("ide.inlineAi.openEditableFileFirst"), {title: "行内 AI"});
         return;
     }
     if (!inlinePromptInstruction.value.trim() && inlinePromptReferences.value.length === 0) {
-        notification.warning(t("ide.inlineAi.missingInstruction"), {title: "Inline AI"});
+        notification.warning(t("ide.inlineAi.missingInstruction"), {title: "行内 AI"});
         return;
     }
 
     const owner = captureInlinePromptOwner();
     if (!owner) {
-        notification.error(t("ide.inlineAi.agentNotReady"), {title: "Inline AI"});
+        notification.error(t("ide.inlineAi.agentNotReady"), {title: "行内 AI"});
         return;
     }
     const payload: InlineEditPayload = {
@@ -1095,7 +1095,7 @@ async function sendInlineEditorPrompt(): Promise<void> {
             // 用户点击了发送，被取代时必须有反馈：否则界面只是"闪一下"消失，
             // 无法区分"已发出但没有输出"和"根本没发出去"。
             inlinePromptStatusText.value = t("ide.inlineAi.sendSuperseded");
-            notification.warning(inlinePromptStatusText.value, {title: "Inline AI"});
+            notification.warning(inlinePromptStatusText.value, {title: "行内 AI"});
             return;
         }
         inlinePromptInstruction.value = "";
@@ -1105,7 +1105,7 @@ async function sendInlineEditorPrompt(): Promise<void> {
     } catch (error) {
         if (!acceptsInlinePromptOwner(owner)) return;
         inlinePromptStatusText.value = resolveApiErrorMessage(error, t("ide.inlineAi.sendFailed"));
-        notification.error(inlinePromptStatusText.value, {title: "Inline AI"});
+        notification.error(inlinePromptStatusText.value, {title: "行内 AI"});
     } finally {
         if (acceptsInlinePromptOwner(owner)) {
             inlinePromptRunning.value = false;
@@ -1145,7 +1145,7 @@ async function selectInlineEditorSession(sessionId: number): Promise<void> {
     } catch (error) {
         if (!acceptsInlinePromptOwner(owner)) return;
         inlinePromptStatusText.value = resolveApiErrorMessage(error, t("ide.inlineAi.bindFailed"));
-        notification.error(inlinePromptStatusText.value, {title: "Inline AI"});
+        notification.error(inlinePromptStatusText.value, {title: "行内 AI"});
     }
 }
 
@@ -1165,7 +1165,7 @@ async function createInlineEditorSession(): Promise<void> {
     } catch (error) {
         if (!acceptsInlinePromptOwner(owner)) return;
         inlinePromptStatusText.value = resolveApiErrorMessage(error, t("ide.inlineAi.createSessionFailed"));
-        notification.error(inlinePromptStatusText.value, {title: "Inline AI"});
+        notification.error(inlinePromptStatusText.value, {title: "行内 AI"});
     }
 }
 
@@ -1193,7 +1193,7 @@ async function openInlineEditorSessionChat(): Promise<void> {
     } catch (error) {
         if (!acceptsInlinePromptOwner(owner)) return;
         inlinePromptStatusText.value = resolveApiErrorMessage(error, t("ide.inlineAi.openModelPanelFailed"));
-        notification.error(inlinePromptStatusText.value, {title: "Inline AI"});
+        notification.error(inlinePromptStatusText.value, {title: "行内 AI"});
     }
 }
 
@@ -1224,7 +1224,7 @@ watch([inlinePromptAvailable, agentSurfaceRef], ([available, surface]) => {
     if (available && surface?.refreshInlineEditorSessions) {
         void surface.refreshInlineEditorSessions().catch((error: unknown) => {
             if (agentSurfaceRef.value !== surface) return;
-            notification.error(resolveApiErrorMessage(error, t("ide.inlineAi.bindFailed")), {title: "Inline AI"});
+            notification.error(resolveApiErrorMessage(error, t("ide.inlineAi.bindFailed")), {title: "行内 AI"});
         });
     }
 }, {immediate: true});

@@ -219,19 +219,19 @@ const kindFilterOptions = computed<SegmentedControlOption[]>(() => [
 ]);
 const statusFilterOptions = computed<SegmentedControlOption[]>(() => [
     {value: "all", label: "全部", disabled: props.busy},
-    {value: "open", label: "open", count: statusShortcutStats.value.openSlices, tone: "warning", title: "只看仍有 open issue 的切片", disabled: props.busy},
-    {value: "done", label: "done", count: statusShortcutStats.value.doneSlices, tone: "accent", title: "只看 review 已处理完成的切片", disabled: props.busy},
-    {value: "clean", label: "clean", count: statusShortcutStats.value.cleanSlices, title: "只看没有派生 issue 的 clean 切片", disabled: props.busy},
-    {value: "draft", label: "draft", count: statusShortcutStats.value.draftSlices, tone: "warning", title: "只看有未应用草稿的切片", disabled: props.busy},
+    {value: "open", label: "待处理", count: statusShortcutStats.value.openSlices, tone: "warning", title: "只看仍有待处理问题的切片", disabled: props.busy},
+    {value: "done", label: "已完成", count: statusShortcutStats.value.doneSlices, tone: "accent", title: "只看已审查处理完成的切片", disabled: props.busy},
+    {value: "clean", label: "干净", count: statusShortcutStats.value.cleanSlices, title: "只看没有派生问题的干净切片", disabled: props.busy},
+    {value: "draft", label: "草稿", count: statusShortcutStats.value.draftSlices, tone: "warning", title: "只看有未应用草稿的切片", disabled: props.busy},
 ]);
 const scopeLabel = computed(() => {
     if (!props.selectedSubjectIds.length) {
         return "整体世界";
     }
     if (props.selectedSubjectIds.length === 1) {
-        return `单 subject：${selectedSubjectFilters.value[0]?.label ?? props.selectedSubjectIds[0]}`;
+        return `单主体：${selectedSubjectFilters.value[0]?.label ?? props.selectedSubjectIds[0]}`;
     }
-    return props.subjectFilterMode === "all" ? "多 subject：全部命中" : "多 subject：任一命中";
+    return props.subjectFilterMode === "all" ? "多主体：全部命中" : "多主体：任一命中";
 });
 const activeFilterChips = computed<WorkbenchPreviewFilterChip[]>(() => {
     const chips: WorkbenchPreviewFilterChip[] = [];
@@ -611,28 +611,28 @@ watch(() => props.resetKey, () => {
                         <span class="shrink-0 font-mono text-[10px] text-[var(--we-text-muted)]">{{ item.displayTime }}</span>
                         <span class="min-w-0 truncate font-medium">{{ item.displayTitle }}</span>
                         <span class="shrink-0 rounded bg-[var(--we-bg-subtle)] px-1 font-mono text-[10px] text-[var(--we-text-muted)]">{{ item.displayKind }}</span>
-                        <span v-if="item.metadataDraftCount" class="shrink-0 rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1 font-mono text-[10px] text-[var(--we-warning)]">meta</span>
-                        <span v-if="item.valueDraftCount" class="shrink-0 rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1 font-mono text-[10px] text-[var(--we-warning)]">value {{ item.valueDraftCount }}</span>
-                        <span v-if="item.draftSummary" class="shrink-0 rounded bg-[var(--we-bg-subtle)] px-1 text-[10px] text-[var(--we-text-muted)]">preview</span>
+                        <span v-if="item.metadataDraftCount" class="shrink-0 rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1 font-mono text-[10px] text-[var(--we-warning)]">元数据</span>
+                        <span v-if="item.valueDraftCount" class="shrink-0 rounded border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-1 font-mono text-[10px] text-[var(--we-warning)]">值 {{ item.valueDraftCount }}</span>
+                        <span v-if="item.draftSummary" class="shrink-0 rounded bg-[var(--we-bg-subtle)] px-1 text-[10px] text-[var(--we-text-muted)]">预览</span>
                     </button>
                 </div>
             </div>
             <div class="mt-2 flex flex-wrap items-center gap-2 rounded-md border border-[var(--we-border)] bg-[var(--we-bg-subtle)] px-2 py-1.5 text-[11px]" data-testid="slice-list-filter-toolbar">
                 <div class="flex min-w-0 flex-wrap items-center gap-1">
-                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">kind</span>
+                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">类型</span>
                     <SegmentedControl :model-value="props.sliceKindFilter" :options="kindFilterOptions" tone="accent" @update:model-value="updateSliceKindFilter" />
                 </div>
                 <div class="h-5 w-px bg-[var(--we-border)]"></div>
                 <div class="flex min-w-0 flex-wrap items-center gap-1">
-                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">status</span>
+                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">状态</span>
                     <SegmentedControl :model-value="props.sliceHealthFilter" :options="statusFilterOptions" @update:model-value="updateSliceHealthFilter" />
                 </div>
                 <div class="h-5 w-px bg-[var(--we-border)]"></div>
                 <div class="flex min-w-0 flex-wrap items-center gap-1">
-                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">layout</span>
+                    <span class="px-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--we-text-muted)]">布局</span>
                     <SegmentedControl :model-value="layoutCols" :options="layoutOptions" tone="accent" @update:model-value="layoutCols = $event as 'single' | 'double'" />
                 </div>
-                <button v-if="props.sliceKindFilter !== 'all' || props.sliceHealthFilter !== 'all'" type="button" class="ml-auto inline-flex h-7 items-center gap-1 rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-2 text-[11px] text-[var(--we-text-secondary)] transition-colors hover:bg-[var(--we-bg-hover)] hover:text-[var(--we-text-main)] disabled:opacity-45" :disabled="props.busy" title="清空 kind / status 过滤" @click="clearKindAndHealthFilters">
+                <button v-if="props.sliceKindFilter !== 'all' || props.sliceHealthFilter !== 'all'" type="button" class="ml-auto inline-flex h-7 items-center gap-1 rounded-md border border-[var(--we-border)] bg-[var(--we-bg-panel)] px-2 text-[11px] text-[var(--we-text-secondary)] transition-colors hover:bg-[var(--we-bg-hover)] hover:text-[var(--we-text-main)] disabled:opacity-45" :disabled="props.busy" title="清空类型 / 状态过滤" @click="clearKindAndHealthFilters">
                     <span class="i-lucide-rotate-ccw h-3.5 w-3.5"></span>
                     清空
                 </button>

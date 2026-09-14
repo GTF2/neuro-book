@@ -1,4 +1,4 @@
-import {appendFile, mkdir, readFile, readdir, stat, writeFile} from "node:fs/promises";
+import {appendFile, mkdir, readFile, readdir, rm, stat, writeFile} from "node:fs/promises";
 import {createReadStream} from "node:fs";
 import type {BigIntStats} from "node:fs";
 import {createInterface} from "node:readline";
@@ -938,6 +938,23 @@ export class JsonlSessionRepository {
             }
         }
         return leafId;
+    }
+
+    /**
+     * 永久删除一个 Session：移除其 JSONL 日志文件。不可恢复。
+     * 调用方负责先终止活跃调用并清理关联数据（Composer 草稿等），
+     * 否则运行中的 invocation 会继续 append 并重建文件。
+     */
+    async deleteSession(sessionId: SessionId): Promise<void> {
+        const sessionPath = this.sessionPath(sessionId);
+        try {
+            await rm(sessionPath, {force: false});
+        } catch (error) {
+            if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+                throw new AgentSessionNotFoundError(sessionId);
+            }
+            throw error;
+        }
     }
 
     private sessionPath(sessionId: SessionId): string {

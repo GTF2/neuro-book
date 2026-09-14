@@ -25,13 +25,13 @@ const props = withDefaults(defineProps<{
     theme: "sepia",
     actions: () => [
         {id: "cancel", label: "取消"},
-        {id: "use-incoming", label: "使用 Incoming"},
+        {id: "use-incoming", label: "使用传入版本"},
         {id: "save-result", label: "保存结果", tone: "primary"},
     ],
     mergeReadonly: false,
     renderSideBySide: true,
     showWhitespace: false,
-    title: "Diff",
+    title: "差异对比",
     subtitle: "",
 });
 

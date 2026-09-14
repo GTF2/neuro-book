@@ -109,6 +109,7 @@ export class ChapterService {
             name: input.name,
             title: input.title,
             note: input.note ?? null,
+            authorOnly: input.authorOnly ?? null,
             ...briefInputToColumns(input.brief),
         });
         return this.assembler.toStoryChapterDto(chapter);
@@ -134,6 +135,7 @@ export class ChapterService {
             title: patch.title,
             note: patch.note,
             sortOrder: patch.sortOrder,
+            ...(patch.authorOnly === undefined ? {} : {authorOnly: patch.authorOnly}),
             ...briefInputToColumns(patch.brief),
         });
         return this.assembler.toStoryChapterDto(updated);
@@ -198,6 +200,12 @@ function briefInputToColumns(brief: ChapterBriefInputDto | undefined): Partial<C
     }
     if (brief.doNotWrite !== undefined) {
         columns.briefDoNotWrite = brief.doNotWrite;
+    }
+    if (brief.constraintNegative !== undefined) {
+        columns.briefConstraintNegative = brief.constraintNegative;
+    }
+    if (brief.stateShift !== undefined) {
+        columns.briefStateShift = brief.stateShift;
     }
     return columns;
 }

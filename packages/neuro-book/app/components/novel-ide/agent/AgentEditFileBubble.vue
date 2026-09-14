@@ -292,9 +292,6 @@ const hintNote = computed(() => {
                         <div v-if="hintNote" class="mt-1 text-[11.5px] opacity-80">{{ hintNote }}</div>
                     </div>
                     <div v-else class="mt-2.5 text-[11.5px] text-[var(--text-muted)]">{{ t("agent.tool.editHintNoContent") }}</div>
-                </div>
-            </div>
-
             <!-- 原始报错降级为技术详情，避免与失败卡片重复渲染 -->
             <details v-if="props.toolCall.error" class="rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)]">
                 <summary class="cursor-pointer px-3 py-2 text-xs text-[var(--text-secondary)]">{{ t("agent.tool.editTechDetails") }}</summary>

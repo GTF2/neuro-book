@@ -47,7 +47,7 @@ const writeFailureBannerBody = computed(() => props.toolCall.interrupted
                 <span class="i-lucide-file-code h-3 w-3 mr-1 inline-block align-text-bottom"></span>
                 {{ filePathText || t("agent.tool.resolvingPath") }}
             </span>
-            <span class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">overwrite</span>
+            <span class="rounded border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1 font-mono text-[10px] text-[var(--text-muted)]">覆盖</span>
         </div>
         
         <!-- 写入失败：先声明未写入，避免下面的内容预览被读成已经落盘 -->

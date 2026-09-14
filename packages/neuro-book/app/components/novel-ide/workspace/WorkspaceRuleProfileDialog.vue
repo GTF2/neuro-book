@@ -269,8 +269,8 @@ watch(() => [props.modelValue, props.node?.path, selectedFileContent.value], () 
                 </div>
                 <textarea :value="draft.retrieval.trigger ?? ''" rows="2" class="textarea" :placeholder="t('ide.workspace.common.retrievalTrigger')" @input="draft.retrieval.trigger = ($event.target as HTMLTextAreaElement).value || null" @blur="void saveDraft()"></textarea>
                 <div class="grid grid-cols-2 gap-2">
-                    <input v-model="draft.governance.source" class="field" placeholder="source" @blur="void saveDraft()">
-                    <input v-model="draft.governance.review" class="field" placeholder="review" @blur="void saveDraft()">
+                    <input v-model="draft.governance.source" class="field" placeholder="来源" @blur="void saveDraft()">
+                    <input v-model="draft.governance.review" class="field" placeholder="评审" @blur="void saveDraft()">
                 </div>
                 <div v-for="(entryRef, index) in draft.refs" :key="index" class="flex items-center gap-1">
                     <input v-model="entryRef.relation" class="field w-[88px]" :placeholder="t('ide.workspace.common.relation')" @blur="void saveDraft()">

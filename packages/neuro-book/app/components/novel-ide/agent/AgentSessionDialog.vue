@@ -35,6 +35,7 @@ const emit = defineEmits<{
     (e: "archive", session: AgentSessionSummaryDto): void;
     (e: "restore", session: AgentSessionSummaryDto): void;
     (e: "rename", session: AgentSessionSummaryDto): void;
+    (e: "delete", session: AgentSessionSummaryDto): void;
     (e: "refresh", query: AgentSessionListQueryDto): void;
     (e: "loadMore", query: AgentSessionListQueryDto): void;
 }>();
@@ -78,12 +79,98 @@ const query = computed<AgentSessionListQueryDto>(() => ({
     offset: 0,
     limit: 50,
 }));
-const listedSessions = computed(() => props.sessions);
+/**
+ * 刚归档的会话快照：归档后原地保留显示，切换筛选、搜索或关闭弹窗后清除。
+ */
+const justArchived = ref(new Map<number, AgentSessionSummaryDto>());
+
+/**
+ * 把刚归档的会话快照覆盖为归档态展示，与真实归档状态的交互能力保持一致。
+ */
+function archivedSnapshot(session: AgentSessionSummaryDto): AgentSessionSummaryDto {
+    return {
+        ...session,
+        status: "archived",
+        archived: true,
+        interaction: {
+            canInvoke: false,
+            canResolveUserInput: false,
+            canRegisterAttachment: false,
+            canInsertAttachment: false,
+            canMutateHistory: false,
+            canChangeRuntime: false,
+            canArchive: false,
+            canRestore: true,
+            canAbort: false,
+        },
+    };
+}
+
+/**
+ * 列表渲染数据：真实列表 + 本地保留的刚归档会话。
+ * 父组件收到 archive 后会刷新列表，props.sessions 里该会话会消失，由本地快照补齐。
+ */
+const listedSessions = computed(() => {
+    if (justArchived.value.size === 0) {
+        return props.sessions;
+    }
+    const merged = new Map<number, AgentSessionSummaryDto>();
+    for (const session of props.sessions) {
+        merged.set(session.sessionId, session);
+    }
+    for (const [sessionId, snapshot] of justArchived.value) {
+        if (!merged.has(sessionId)) {
+            merged.set(sessionId, archivedSnapshot(snapshot));
+        }
+    }
+    return [...merged.values()];
+});
 const sessionTitle = (session: AgentSessionSummaryDto) => session.title || `Session #${String(session.sessionId)}`;
 const sessionPreview = (session: AgentSessionSummaryDto) => session.summary || session.lastMessagePreview || t("agent.session.noRecentMessages");
 const canArchiveSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canArchive === true;
 const canRestoreSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canRestore === true;
 const canRenameSession = (session: AgentSessionSummaryDto): boolean => session.interaction?.canChangeRuntime === true;
+
+/**
+ * 当前打开中的会话；已归档的会话不再显示选中高亮和"活跃"徽标，避免与归档状态视觉冲突。
+ */
+const isActiveSession = (session: AgentSessionSummaryDto): boolean => session.sessionId === props.activeSessionId && session.status !== "archived";
+
+/**
+ * 归档会话：本地标记为已归档状态原地展示，同时通知父组件执行归档。
+ */
+function markArchived(session: AgentSessionSummaryDto): void {
+    justArchived.value.set(session.sessionId, session);
+    justArchived.value = new Map(justArchived.value);
+    emit("archive", session);
+}
+
+/**
+ * 恢复会话：清除本地标记，同时通知父组件执行恢复。
+ */
+function restoreSession(session: AgentSessionSummaryDto): void {
+    justArchived.value.delete(session.sessionId);
+    justArchived.value = new Map(justArchived.value);
+    emit("restore", session);
+}
+
+/**
+ * 空状态引导：直接切到归档筛选。
+ */
+function viewArchived(): void {
+    statusFilter.value = "archived";
+}
+
+/**
+ * 请求删除会话：同步清除本地保留的刚归档快照，删除后不再以幽灵条目出现。
+ */
+function requestDelete(session: AgentSessionSummaryDto): void {
+    if (justArchived.value.has(session.sessionId)) {
+        justArchived.value.delete(session.sessionId);
+        justArchived.value = new Map(justArchived.value);
+    }
+    emit("delete", session);
+}
 
 /**
  * 关闭弹窗。
@@ -93,9 +180,20 @@ function close(): void {
 }
 
 /**
+ * 清除本地保留的刚归档会话。
+ */
+function clearJustArchived(): void {
+    if (justArchived.value.size === 0) {
+        return;
+    }
+    justArchived.value = new Map();
+}
+
+/**
  * 通知父组件用当前筛选条件刷新 session 列表。
  */
 function refresh(): void {
+    clearJustArchived();
     emit("refresh", query.value);
 }
 
@@ -195,6 +293,7 @@ watch(query, () => {
     debouncedRefresh();
 }, {deep: true});
 watch(() => props.modelValue, (open) => {
+    clearJustArchived();
     if (open) {
         refresh();
     }
@@ -216,7 +315,7 @@ watch(() => props.modelValue, (open) => {
 
         <div class="flex min-h-0 flex-1 flex-col space-y-4 pt-4">
             <!-- Session 搜索和操作 -->
-            <div class="relative flex items-center gap-2">
+            <div class="flex items-center gap-2">
                 <div class="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-input)] px-3">
                     <span class="i-lucide-search h-4 w-4 shrink-0 text-[var(--text-muted)]"></span>
                     <input v-model="sessionSearch" type="text" :placeholder="t('agent.session.dialogSearchPlaceholder')" class="min-w-0 flex-1 bg-transparent text-sm text-[var(--text-main)] outline-none placeholder:text-[var(--text-muted)]">
@@ -231,6 +330,7 @@ watch(() => props.modelValue, (open) => {
                     <span class="i-lucide-plus h-4 w-4"></span>
                     {{ t("agent.session.create") }}
                 </button>
+            </div>
 
             </div>
 
@@ -260,7 +360,7 @@ watch(() => props.modelValue, (open) => {
                     v-for="session in listedSessions"
                     :key="session.sessionId"
                     class="group flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg border px-3 py-3 text-left transition-all duration-200"
-                    :class="session.sessionId === activeSessionId ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] shadow-sm' : 'border-[var(--border-color)] bg-transparent hover:bg-[var(--bg-hover)]'"
+                    :class="isActiveSession(session) ? 'border-[var(--accent-main)] bg-[var(--accent-bg)] shadow-sm' : 'border-[var(--border-color)] bg-transparent hover:bg-[var(--bg-hover)]'"
                     @click="emit('select', session.sessionId)"
                 >
                     <div class="min-w-0 flex-1">
@@ -269,7 +369,7 @@ watch(() => props.modelValue, (open) => {
                                 <span :class="session.parentSessionId ? 'i-lucide-bot' : 'i-lucide-crown'" class="h-4.5 w-4.5"></span>
                             </div>
                             <span class="truncate text-sm font-semibold text-[var(--text-main)] transition-colors group-hover:text-[var(--accent-main)]">{{ sessionTitle(session) }}</span>
-                            <span v-if="session.sessionId === activeSessionId" class="rounded bg-[var(--accent-main)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--text-inverse)] shadow-sm">{{ t("agent.session.active") }}</span>
+                            <span v-if="isActiveSession(session)" class="rounded bg-[var(--accent-main)] px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-[0.1em] text-[var(--text-inverse)] shadow-sm">{{ t("agent.session.active") }}</span>
                             <span class="rounded px-1.5 py-0.5 text-[10px] font-medium" :class="statusClass(session.status)">{{ statusLabel(session.status) }}</span>
                             <span v-if="profileAvailabilityLabel(session)" class="inline-flex shrink-0 items-center gap-1 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[10px] font-medium text-[var(--status-warning)]" :title="profileAvailabilityTitle(session)">
                                 <span class="i-lucide-lock h-3 w-3"></span>
@@ -289,13 +389,16 @@ watch(() => props.modelValue, (open) => {
                         <button class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--bg-input)] hover:text-[var(--accent-text)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canRenameSession(session)" :title="t('agent.session.rename')" @click.stop="emit('rename', session)">
                             <span class="i-lucide-pencil-line h-4 w-4"></span>
                         </button>
-                        <button v-if="canRestoreSession(session)" class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-success-bg)] hover:text-[var(--status-success)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.restore')" @click.stop="emit('restore', session)">
+                        <button v-if="canRestoreSession(session)" class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-success-bg)] hover:text-[var(--status-success)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.restore')" @click.stop="restoreSession(session)">
                             <span v-if="actionId === session.sessionId" class="i-lucide-loader-circle h-4 w-4 animate-spin"></span>
                             <span v-else class="i-lucide-archive-restore h-4 w-4"></span>
                         </button>
-                        <button v-else class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canArchiveSession(session)" :title="t('agent.session.archive')" @click.stop="emit('archive', session)">
+                        <button v-else class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading || !canArchiveSession(session)" :title="t('agent.session.archive')" @click.stop="markArchived(session)">
                             <span v-if="actionId === session.sessionId" class="i-lucide-loader-circle h-4 w-4 animate-spin"></span>
                             <span v-else class="i-lucide-archive h-4 w-4"></span>
+                        </button>
+                        <button class="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-muted)] opacity-50 transition-all hover:bg-[var(--status-danger-bg)] hover:text-[var(--status-danger)] hover:opacity-100 group-hover:opacity-100 disabled:opacity-40" :disabled="actionId === session.sessionId || loading" :title="t('agent.session.delete')" @click.stop="requestDelete(session)">
+                            <span class="i-lucide-trash-2 h-4 w-4"></span>
                         </button>
                     </div>
                 </div>
@@ -309,10 +412,11 @@ watch(() => props.modelValue, (open) => {
                 </div>
 
                 <div v-if="listedSessions.length === 0" class="rounded-lg border border-dashed border-[var(--border-color)] bg-[var(--bg-sidebar)] px-4 py-10 text-center text-sm text-[var(--text-muted)]">
-                    {{ t("agent.session.noMatching") }}
+                    {{ statusFilter === "active" && !sessionSearch.trim() ? t("agent.session.emptyActiveHint") : t("agent.session.noMatching") }}
                     <div class="mt-3 flex justify-center gap-2">
                         <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="resetFilters">{{ t("agent.session.resetFilters") }}</button>
                         <button type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="sessionSearch = ''">{{ t("agent.session.clearSearch") }}</button>
+                        <button v-if="statusFilter !== 'archived'" type="button" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]" @click="viewArchived">{{ t("agent.session.viewArchived") }}</button>
                     </div>
                 </div>
             </div>
@@ -320,7 +424,7 @@ watch(() => props.modelValue, (open) => {
 
         <template #footer>
             <div class="flex w-full items-center justify-between">
-                <div class="text-[11px] text-[var(--text-muted)]">{{ t("agent.session.recentCount", {filtered: listedSessions.length, total: props.total}) }}</div>
+                <div class="text-[11px] text-[var(--text-muted)]">{{ t("agent.session.recentCount", {filtered: props.sessions.length, total: props.total}) }}</div>
                 <button class="inline-flex h-8 cursor-pointer items-center justify-center rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-4 text-[13px] font-medium text-[var(--text-main)] transition-colors duration-200 hover:bg-[var(--bg-hover)] active:scale-95" @click="close">{{ t("agent.session.close") }}</button>
             </div>
         </template>

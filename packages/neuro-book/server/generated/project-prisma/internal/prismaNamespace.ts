@@ -1703,6 +1703,9 @@ export const StoryChapterScalarFieldEnum = {
   briefOpening: 'briefOpening',
   briefEnding: 'briefEnding',
   briefDoNotWrite: 'briefDoNotWrite',
+  briefConstraintNegative: 'briefConstraintNegative',
+  briefStateShift: 'briefStateShift',
+  authorOnly: 'authorOnly',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -75,7 +75,7 @@ const copyTitle = computed(() => props.message.role === "assistant" ? "复制为
             />
 
             <div v-if="props.message.toolCalls?.length" class="space-y-2">
-                <div class="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">Tool Calls</div>
+                <div class="text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--text-muted)]">工具调用</div>
                 <div v-for="toolCall in props.message.toolCalls" :key="toolCall.id" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)]/55">
                     <div class="flex min-w-0 items-center gap-2 border-b border-[var(--border-color)]/60 px-2 py-1.5">
                         <span class="i-lucide-wrench h-3.5 w-3.5 text-[var(--accent-text)]"></span>

@@ -192,6 +192,9 @@ model StoryChapter {
   briefOpening          String? // 开场钩子
   briefEnding           String? // 章节落点 / 结尾定句
   briefDoNotWrite       String? // 禁写事项
+  briefConstraintNegative String? // 反向约束:本章不许发生什么(只说不许,不说该发生什么)
+  briefStateShift         String? // 状态约束:本章结束时必须已不可逆改变的状态(只描述状态,不描述怎么变)
+  authorOnly              Boolean? // 纲领九:该章正文由作者本人撰写;系统不生成,只做一致性校验
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @default(now()) @updatedAt
   story                 Story           @relation(fields: [storyId], references: [id], onDelete: Cascade)

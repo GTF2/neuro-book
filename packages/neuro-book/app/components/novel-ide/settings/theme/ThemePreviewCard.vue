@@ -87,7 +87,7 @@ const previewStyle = computed<CSSProperties>(() => ({...props.vars}));
                 <div class="mb-1.5 text-[11px] font-medium uppercase tracking-wide text-[var(--text-muted)]">{{ t("settings.themePreview.sceneSource") }}</div>
                 <div class="space-y-1 rounded-lg border border-[var(--border-color)] bg-[var(--source-bg)] px-3 py-2.5 font-mono text-[11px]">
                     <div class="text-[var(--source-muted)]">{{ t("settings.themePreview.sourceComment") }}</div>
-                    <div class="text-[var(--source-text)]"><span class="text-[var(--accent-text)]">const</span> scene = loadScene(<span class="text-[var(--status-info)]">"chapter-01"</span>);</div>
+                    <div class="text-[var(--source-text)]"><span class="text-[var(--accent-text)]">const</span> scene = loadScene(<span class="text-[var(--status-info)]">"第一章·潮线"</span>);</div>
                 </div>
             </div>
 

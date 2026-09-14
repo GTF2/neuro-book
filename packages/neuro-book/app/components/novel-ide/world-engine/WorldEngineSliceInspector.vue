@@ -34,7 +34,7 @@ function formatMutationValue(mutation: WorldSlicePatchDto): string {
 <template>
     <!-- Selected Slice 检查器 -->
     <div>
-        <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-secondary)]">Selected Slice</div>
+        <div class="mb-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-secondary)]">选中切片</div>
         <div v-if="selectedSlice" class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-3">
             <div class="flex items-start justify-between gap-2">
                 <div class="min-w-0">

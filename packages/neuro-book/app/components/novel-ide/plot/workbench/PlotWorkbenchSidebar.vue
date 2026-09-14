@@ -202,7 +202,7 @@ onClickOutside(filterPanelRef, () => {
             </div>
 
             <div v-if="pinnedThreads.length" class="mb-3 space-y-1.5 border-b border-[var(--border-color)] pb-3">
-                <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">Pinned</div>
+                <div class="text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--text-muted)]">已固定</div>
                 <button
                     v-for="thread in pinnedThreads"
                     :key="thread.id"
@@ -221,7 +221,7 @@ onClickOutside(filterPanelRef, () => {
                             <span class="rounded-full px-1.5 py-0.5 text-[10px] font-semibold" :class="thread.isMainThread ? 'workbench-main-chip' : PLOT_THREAD_TONE_STYLES[thread.tone].chipClass">
                                 {{ thread.isMainThread ? "主线" : "支线" }}
                             </span>
-                            <button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" title="编辑 Thread" @click.stop="emit('editThread', thread.id)">
+                            <button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" title="编辑线索" @click.stop="emit('editThread', thread.id)">
                                 <span class="i-lucide-pencil-line h-3 w-3"></span>
                             </button>
                         </span>
@@ -252,7 +252,7 @@ onClickOutside(filterPanelRef, () => {
                             <span class="rounded-full px-1.5 py-0.5 text-[10px] font-semibold" :class="thread.isMainThread ? 'workbench-main-chip' : PLOT_THREAD_TONE_STYLES[thread.tone].chipClass">
                                 {{ thread.isMainThread ? "主线" : "支线" }}
                             </span>
-                            <button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" title="编辑 Thread" @click.stop="emit('editThread', thread.id)">
+                            <button type="button" class="inline-flex h-5 w-5 items-center justify-center rounded-md text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" title="编辑线索" @click.stop="emit('editThread', thread.id)">
                                 <span class="i-lucide-pencil-line h-3 w-3"></span>
                             </button>
                         </span>
@@ -291,15 +291,15 @@ onClickOutside(filterPanelRef, () => {
 
                 <div class="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-2">
-                        <div class="text-[10px] text-[var(--text-muted)]">Threads</div>
+                        <div class="text-[10px] text-[var(--text-muted)]">线索</div>
                         <div class="font-semibold text-[var(--text-main)]">{{ props.threads.length }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-2">
-                        <div class="text-[10px] text-[var(--text-muted)]">Scenes</div>
+                        <div class="text-[10px] text-[var(--text-muted)]">场景</div>
                         <div class="font-semibold text-[var(--text-main)]">{{ props.scenes.length }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-2">
-                        <div class="text-[10px] text-[var(--text-muted)]">Main</div>
+                        <div class="text-[10px] text-[var(--text-muted)]">主线</div>
                         <div class="font-semibold text-[var(--text-main)]">{{ mainThreadCount }}</div>
                     </div>
                 </div>

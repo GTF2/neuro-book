@@ -34,7 +34,7 @@ const headerGridStyle = computed(() => {
             <div class="sticky top-0 z-20 mb-4 grid grid-cols-[220px_minmax(0,1fr)] gap-3 bg-[var(--bg-panel)]/96 pb-3 backdrop-blur">
                 <div class="flex items-end rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)] px-4 py-4">
                     <div>
-                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">StoryPhase</div>
+                        <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">故事阶段</div>
                         <div class="mt-2 text-base font-semibold text-[var(--text-main)]">{{ props.timeline.phase.title }}</div>
                         <div class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{{ props.timeline.phase.summary }}</div>
                     </div>
@@ -82,8 +82,8 @@ const headerGridStyle = computed(() => {
                     <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[var(--border-color)] bg-[var(--bg-panel)] text-[var(--text-muted)]">
                         <span class="i-lucide-waypoints h-6 w-6"></span>
                     </div>
-                    <div class="mt-4 text-sm font-semibold text-[var(--text-main)]">当前 StoryPhase 还没有可展示的 Thread</div>
-                    <div class="mt-2 text-sm leading-7 text-[var(--text-secondary)]">时间轴按单 StoryPhase 工作。请切换到其他 Phase，或先为这个阶段补充 Thread 与 Scene。</div>
+                    <div class="mt-4 text-sm font-semibold text-[var(--text-main)]">当前故事阶段还没有可展示的线索</div>
+                    <div class="mt-2 text-sm leading-7 text-[var(--text-secondary)]">时间轴按单个故事阶段工作。请切换到其他阶段，或先为这个阶段补充线索与场景。</div>
                 </div>
             </div>
         </div>

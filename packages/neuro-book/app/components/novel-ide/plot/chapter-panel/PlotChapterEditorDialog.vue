@@ -203,7 +203,7 @@ function submit(): void {
                     <FormSelect v-model="draft.actId" :options="actOptions" placeholder="未归卷" />
                 </FormField>
             </div>
-            <FormField label="name(供 Prose frontmatter 反指)">
+            <FormField label="名称(供正文元数据反指)">
                 <FormInput v-model="draft.name" placeholder="如 001-volume-001-chapter(小写字母/数字/连字符)" />
             </FormField>
             <FormField label="备注">
@@ -218,7 +218,7 @@ function submit(): void {
                     <FormTextarea v-model="draft.goal" :rows="2" placeholder="本章要达成什么、落在哪里(可空)" />
                 </FormField>
                 <div class="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
-                    <FormField label="POV / 视角">
+                    <FormField label="视角">
                         <FormTextarea v-model="draft.pov" :rows="2" placeholder="视角、叙述距离、切换限制(可空)" />
                     </FormField>
                     <FormField label="语气 / 风格">

@@ -115,24 +115,24 @@ watch(() => props.projectRoot, () => {
     <section class="border-b border-[var(--border-color)] p-2">
         <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-3">
             <div class="mb-2 flex items-center justify-between gap-2">
-                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-secondary)]">Create Subject</div>
+                <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-secondary)]">创建主体</div>
                 <span class="i-lucide-user-plus h-4 w-4 text-[var(--text-muted)]"></span>
             </div>
             <fieldset class="space-y-2 disabled:opacity-60" :disabled="formDisabled">
                 <div class="grid grid-cols-2 gap-2">
-                    <input v-model="form.id" class="h-8 min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="id">
+                    <input v-model="form.id" class="h-8 min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="ID">
                     <select v-model="form.type" class="h-8 min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]">
                         <option v-for="type in schemaTypes" :key="type.type" :value="type.type">{{ type.type }}</option>
                     </select>
                 </div>
-                <input v-model="form.name" class="h-8 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="name">
-                <input v-model="form.time" class="h-8 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="time">
+                <input v-model="form.name" class="h-8 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="名称">
+                <input v-model="form.time" class="h-8 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-[12px] outline-none focus:border-[var(--accent-main)]" placeholder="时间">
                 <div class="flex max-h-14 flex-wrap gap-1 overflow-hidden">
                     <span v-for="attr in selectedTypeAttrs.slice(0, 8)" :key="attr.name" class="rounded border border-[var(--border-color)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">{{ attr.name }}</span>
                 </div>
                 <button type="button" class="inline-flex h-8 w-full items-center justify-center gap-2 rounded-md border border-[var(--border-color)] px-2 text-[12px] text-[var(--text-main)] hover:bg-[var(--bg-hover)] disabled:opacity-50" :disabled="!canSubmit" @click="void createSubject()">
                     <span :class="creating ? 'i-lucide-loader-2 animate-spin' : 'i-lucide-circle-plus'" class="h-3.5 w-3.5"></span>
-                    创建 Subject
+                    创建主体
                 </button>
             </fieldset>
         </div>

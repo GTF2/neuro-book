@@ -3524,6 +3524,37 @@ const restoreSessionFromDialog = async (target: AgentSessionSummaryDto): Promise
     }
 };
 
+/** 永久删除一个 Session（不可恢复）；删除当前打开的会话时清空面板回到未选择态。 */
+const deleteSessionFromDialog = async (target: AgentSessionSummaryDto): Promise<void> => {
+    if (loadingSession.value || sessionActionId.value) {
+        return;
+    }
+    const confirmed = await confirm(
+        t("agent.session.deleteConfirm", {title: target.title || `#${String(target.sessionId)}`}),
+        t("agent.session.deleteConfirmTitle"),
+    );
+    if (!confirmed) {
+        return;
+    }
+    sessionActionId.value = target.sessionId;
+    try {
+        await agentApi.deleteSession(target.sessionId);
+        await refreshSessions();
+        if (target.sessionId === activeSessionId.value) {
+            clearActiveAgentSession();
+            const state = surfaceActivation.state.value;
+            if (state.status === "ready" && acceptsActivation(state.attempt)) {
+                surfaceActivation.markUnselected(state.attempt, sessionScopeKey.value);
+            }
+        }
+        notification.success(t("agent.session.deleteSuccess"));
+    } catch (error) {
+        notifyAgentError(error, t("agent.session.deleteFailed"));
+    } finally {
+        sessionActionId.value = null;
+    }
+};
+
 /** Composer 状态条动作只调用现有显式 Session 命令，不隐式创建。 */
 function handleComposerAvailabilityAction(action: AgentComposerAvailabilityAction): void {
     if (action === "choose-session") {
@@ -3840,6 +3871,7 @@ defineExpose({
     archiveSessionFromDialog,
     restoreSessionFromDialog,
     renameSessionFromDialog,
+    deleteSessionFromDialog,
 });
 
 /**
@@ -4482,6 +4514,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @archive="void archiveSessionFromDialog($event)"
                 @restore="void restoreSessionFromDialog($event)"
                 @rename="void renameSessionFromDialog($event)"
+                @delete="void deleteSessionFromDialog($event)"
                 @refresh="void refreshSessionsWithQuery($event)"
                 @load-more="void refreshSessionsWithQuery($event)"
             />

@@ -79,7 +79,7 @@ const chapterLinkedCountMap = computed(() => {
     <div class="grid min-h-0 gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
         <section class="flex min-h-0 flex-col overflow-hidden rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-[0_18px_50px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
             <div class="border-b border-[var(--border-color)] px-4 py-3">
-                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Story / Phase</div>
+                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">故事 / 阶段</div>
                 <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">{{ story.title }}</div>
                 <div class="mt-2 text-xs leading-6 text-[var(--text-secondary)]">{{ story.summary }}</div>
             </div>
@@ -123,7 +123,7 @@ const chapterLinkedCountMap = computed(() => {
         <section class="flex min-h-0 flex-col overflow-hidden rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-[0_18px_50px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
             <div class="flex items-center justify-between gap-3 border-b border-[var(--border-color)] px-4 py-3">
                 <div>
-                    <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Threads</div>
+                    <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">线索</div>
                     <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">快速定位剧情线</div>
                 </div>
 
@@ -175,7 +175,7 @@ const chapterLinkedCountMap = computed(() => {
 
                         <div class="mt-4 grid grid-cols-3 gap-2 text-[11px]">
                             <div class="rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-2">
-                                <div class="text-[var(--text-muted)]">Scene</div>
+                                <div class="text-[var(--text-muted)]">场景</div>
                                 <div class="mt-1 font-semibold text-[var(--text-main)]">{{ sceneCountMap[thread.id] ?? 0 }}</div>
                             </div>
                             <div class="rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-2">
@@ -183,7 +183,7 @@ const chapterLinkedCountMap = computed(() => {
                                 <div class="mt-1 font-semibold text-[var(--text-main)]">{{ chapterLinkedCountMap[thread.id] ?? 0 }}</div>
                             </div>
                             <div class="rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-2">
-                                <div class="text-[var(--text-muted)]">Refs</div>
+                                <div class="text-[var(--text-muted)]">引用</div>
                                 <div class="mt-1 font-semibold text-[var(--text-main)]">{{ thread.refs.length }}</div>
                             </div>
                         </div>

@@ -53,11 +53,11 @@ function submitAndContinueForm(): void {
     <!-- Slice 草稿表单 -->
     <div class="space-y-3">
         <div class="grid grid-cols-[180px_minmax(0,1fr)_120px] gap-2">
-            <input :value="time" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="time" @input="emit('update:time', inputValue($event))">
-            <input :value="title" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="title" @input="emit('update:title', inputValue($event))">
-            <input :value="kind" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="kind" @input="emit('update:kind', inputValue($event))">
+            <input :value="time" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="时间" @input="emit('update:time', inputValue($event))">
+            <input :value="title" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="标题" @input="emit('update:title', inputValue($event))">
+            <input :value="kind" class="h-9 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="类型" @input="emit('update:kind', inputValue($event))">
         </div>
-        <textarea :value="summary" class="min-h-16 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="summary" @input="emit('update:summary', inputValue($event))"></textarea>
+        <textarea :value="summary" class="min-h-16 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-3 py-2 text-[13px] outline-none focus:border-[var(--accent-main)] disabled:opacity-60" :disabled="saving" placeholder="摘要" @input="emit('update:summary', inputValue($event))"></textarea>
 
         <slot></slot>
 

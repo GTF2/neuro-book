@@ -250,11 +250,11 @@ function issueStatusClass(status: WorldWorkbenchPreviewReviewQueueItem["status"]
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span v-if="hasMetadataDraft" class="rounded-md border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--we-warning)]" :title="`未应用 metadata 草稿：${metadataDraftDiffLabel}`">meta draft</span>
-                            <span v-if="hasValueDraft" class="rounded-md border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--we-warning)]" :title="`${props.valueDraftCount} 个未应用 value 草稿`">value draft {{ props.valueDraftCount }}</span>
+                            <span v-if="hasMetadataDraft" class="rounded-md border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--we-warning)]" :title="`未应用元数据草稿：${metadataDraftDiffLabel}`">元数据草稿</span>
+                            <span v-if="hasValueDraft" class="rounded-md border border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--we-warning)]" :title="`${props.valueDraftCount} 个未应用值草稿`">值草稿 {{ props.valueDraftCount }}</span>
                             <button v-if="subjectFileProposalCount" data-testid="slice-card-subject-file-proposal-count" type="button" class="inline-flex items-center gap-1 rounded-md border border-[var(--we-accent-border)] bg-[var(--we-accent-soft)] px-2 py-1 text-[11px] font-semibold text-[var(--we-accent-strong)] transition-colors hover:bg-[var(--we-bg-active)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--we-accent-border)]" title="按当前主体语境，当前切片有主体文件建议；打开右侧 Inspector 查看" @click.stop="openSubjectFileProposals">
                                 <span class="i-lucide-files h-3 w-3"></span>
-                                files {{ subjectFileProposalCount }}
+                                文件 {{ subjectFileProposalCount }}
                             </button>
                             <span v-if="hasIssues" class="rounded-md border px-2 py-1 text-[11px] font-semibold" :class="hasOpenIssues ? 'border-[var(--we-warning-border)] bg-[var(--we-warning-soft)] text-[var(--we-warning)]' : 'border-[var(--we-accent-border)] bg-[var(--we-accent-soft)] text-[var(--we-accent-strong)]'">{{ reviewBadgeLabel }}</span>
                         </div>

@@ -99,8 +99,8 @@ export interface ChapterRepository {
     findChaptersByStory(storyId: number): Promise<StoryChapter[]>;
     findUngroupedChapters(storyId: number): Promise<StoryChapter[]>;
     findChapterByName(storyId: number, name: string, excludeChapterId?: number): Promise<StoryChapter | null>;
-    createChapter(input: {storyId: number; actId: number | null; sortOrder: number; name: string; title: string; note: string | null} & Partial<ChapterBriefColumns>): Promise<StoryChapter>;
-    updateChapter(chapterId: number, data: Partial<Pick<StoryChapter, "actId" | "sortOrder" | "name" | "title" | "note">> & Partial<ChapterBriefColumns>): Promise<StoryChapter>;
+    createChapter(input: {storyId: number; actId: number | null; sortOrder: number; name: string; title: string; note: string | null} & Partial<ChapterBriefColumns> & Partial<Pick<StoryChapter, "authorOnly">>): Promise<StoryChapter>;
+    updateChapter(chapterId: number, data: Partial<Pick<StoryChapter, "actId" | "sortOrder" | "name" | "title" | "note">> & Partial<ChapterBriefColumns> & Partial<Pick<StoryChapter, "authorOnly">>): Promise<StoryChapter>;
     deleteChapter(chapterId: number): Promise<void>;
 }
 

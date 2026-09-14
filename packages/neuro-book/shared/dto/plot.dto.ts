@@ -196,6 +196,10 @@ export const ChapterBriefDtoSchema = z.object({
     ending: z.string().nullable(),
     // 禁写事项。
     doNotWrite: z.string().nullable(),
+    // 反向约束:本章不许发生什么(只说不许,不说该发生什么)。
+    constraintNegative: z.string().nullable(),
+    // 状态约束:本章结束时必须已不可逆改变的状态(只描述状态,不描述怎么变)。
+    stateShift: z.string().nullable(),
 });
 
 // 承载树:Chapter(章)一等实体。Prose 文件通过 frontmatter `chapter: <name>` 反指本实体。
@@ -209,6 +213,8 @@ export const StoryChapterDtoSchema = z.object({
     title: z.string(),
     // `note` 为空表示没有额外备注。
     note: z.string().nullable(),
+    // 纲领九:`true` 表示该章正文必须由作者本人撰写,系统不生成、只做一致性校验;null/未设置为普通章。
+    authorOnly: z.boolean().nullable(),
     brief: ChapterBriefDtoSchema,
     createdAt: z.string(),
     updatedAt: z.string(),
@@ -696,6 +702,8 @@ export const ChapterBriefInputDtoSchema = z.object({
     opening: StorySummarySchema.nullable().optional().describe("Opening hook. Null clears it."),
     ending: StorySummarySchema.nullable().optional().describe("Chapter landing / closing line. Null clears it."),
     doNotWrite: StorySummarySchema.nullable().optional().describe("Do-not-write list (secrets, premature reveals). Null clears it."),
+    constraintNegative: StorySummarySchema.nullable().optional().describe("Negative constraint: what must NOT happen in this chapter. Null clears it."),
+    stateShift: StorySummarySchema.nullable().optional().describe("State constraint: what must be irreversibly changed by the end of this chapter. Describe the state, not how it changes. Null clears it."),
 });
 
 export const CreateStoryActRequestDtoSchema = z.object({
@@ -731,6 +739,7 @@ export const CreateStoryChapterRequestDtoSchema = z.object({
     // `note` 为空表示显式清空备注。
     note: StoryNoteSchema.nullable().optional().describe("Optional note. Null clears it."),
     brief: ChapterBriefInputDtoSchema.optional().describe("Chapter-level writer brief (goal, POV, info control, opening/ending, do-not-write)."),
+    authorOnly: z.boolean().nullable().optional().describe("Author-only chapter: when true, the system never generates prose for it and only runs consistency checks. Null clears it."),
 });
 
 export const UpdateStoryChapterRequestDtoSchema = z.object({
@@ -742,6 +751,7 @@ export const UpdateStoryChapterRequestDtoSchema = z.object({
     note: StoryNoteSchema.nullable().optional().describe("Optional note. Null clears it."),
     sortOrder: z.number().int().nonnegative().optional().describe("Chapter order within the story."),
     brief: ChapterBriefInputDtoSchema.optional().describe("Chapter-level writer brief fields to update. Omitted fields stay unchanged; null fields are cleared."),
+    authorOnly: z.boolean().nullable().optional().describe("Author-only chapter: when true, the system never generates prose for it and only runs consistency checks. Null clears it."),
 }).refine((value) => (
     value.actId !== undefined
     || value.name !== undefined
@@ -749,6 +759,7 @@ export const UpdateStoryChapterRequestDtoSchema = z.object({
     || value.note !== undefined
     || value.sortOrder !== undefined
     || value.brief !== undefined
+    || value.authorOnly !== undefined
 ), {
     message: "至少提供一个更新字段",
 });

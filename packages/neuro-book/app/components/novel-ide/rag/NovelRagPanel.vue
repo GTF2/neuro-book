@@ -438,15 +438,15 @@ onMounted(() => {
         <div class="flex w-[42%] min-w-[150px] max-w-[240px] shrink-0 flex-col border-r border-[var(--border-color)]">
             <div class="border-b border-[var(--border-color)] p-2">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="text-[11px] font-semibold uppercase text-[var(--text-secondary)]">Subjects</div>
+                    <div class="text-[11px] font-semibold uppercase text-[var(--text-secondary)]">主体</div>
                     <button type="button" class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" title="刷新" :disabled="loadingOverview" @click="void loadOverview()">
                         <span :class="loadingOverview ? 'i-lucide-loader-2 animate-spin' : 'i-lucide-refresh-cw'" class="h-3.5 w-3.5"></span>
                     </button>
                 </div>
                 <div class="mt-2 grid grid-cols-2 gap-1 text-[11px] text-[var(--text-muted)]">
-                    <div>{{ subjects.length }} subjects</div>
-                    <div>{{ totalEvents }} events</div>
-                    <div>{{ totalMemories }} memory</div>
+                    <div>{{ subjects.length }} 个主体</div>
+                    <div>{{ totalEvents }} 个事件</div>
+                    <div>{{ totalMemories }} 条记忆</div>
                     <div :class="sourceStatusClass(selectedSubject?.sourceStatuses)">{{ selectedSubject ? subjectStatusLabel(selectedSubject) : "无选中" }}</div>
                 </div>
             </div>
@@ -454,8 +454,8 @@ onMounted(() => {
             <div v-if="error" class="border-b border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] p-2 text-[11px] text-[var(--status-danger)]">{{ error }}</div>
 
             <div class="min-h-0 flex-1 overflow-auto p-2">
-                <div v-if="!currentProjectRoot" class="py-8 text-center text-[12px] text-[var(--text-muted)]">当前没有 Project Workspace。</div>
-                <div v-else-if="!loadingOverview && subjects.length === 0" class="py-8 text-center text-[12px] text-[var(--text-muted)]">当前 Project 暂无 subject RAG 数据。</div>
+                <div v-if="!currentProjectRoot" class="py-8 text-center text-[12px] text-[var(--text-muted)]">当前没有项目工作区。</div>
+                <div v-else-if="!loadingOverview && subjects.length === 0" class="py-8 text-center text-[12px] text-[var(--text-muted)]">当前项目暂无主体 RAG 数据。</div>
                 <button
                     v-for="subject in subjects"
                     :key="subject.subjectPath"
@@ -478,22 +478,22 @@ onMounted(() => {
             <div class="flex shrink-0 items-center justify-between gap-2 border-b border-[var(--border-color)] px-3 py-2">
                 <div class="min-w-0">
                     <div class="truncate text-[12px] font-semibold">{{ selectedSubject?.subjectId ?? "RAG" }}</div>
-                    <div class="truncate text-[10px] text-[var(--text-muted)]">{{ selectedSubjectPath || "请选择 subject" }}</div>
+                    <div class="truncate text-[10px] text-[var(--text-muted)]">{{ selectedSubjectPath || "请选择主体" }}</div>
                 </div>
                 <div class="flex shrink-0 items-center gap-1">
-                    <button type="button" class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:opacity-50" title="重建当前 subject 索引" :disabled="!selectedSubjectPath || actionBusy" @click="void rebuildRag('subject')">
+                    <button type="button" class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:opacity-50" title="重建当前主体索引" :disabled="!selectedSubjectPath || actionBusy" @click="void rebuildRag('subject')">
                         <span :class="actionBusy ? 'i-lucide-loader-2 animate-spin' : 'i-lucide-refresh-cw'" class="h-3.5 w-3.5"></span>
                     </button>
-                    <button type="button" class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:opacity-50" title="重建当前 Project 索引" :disabled="subjects.length === 0 || actionBusy" @click="void rebuildRag('project')">
+                    <button type="button" class="rounded-md p-1 text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:opacity-50" title="重建当前项目索引" :disabled="subjects.length === 0 || actionBusy" @click="void rebuildRag('project')">
                         <span class="i-lucide-database-backup h-3.5 w-3.5"></span>
                     </button>
                 </div>
             </div>
 
             <div class="flex shrink-0 border-b border-[var(--border-color)] px-2 pt-2">
-                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'events' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'events'">Events</button>
-                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'memory' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'memory'">Memory</button>
-                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'search' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'search'">Search</button>
+                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'events' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'events'">事件</button>
+                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'memory' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'memory'">记忆</button>
+                <button type="button" class="px-3 py-1.5 text-[12px]" :class="activeTab === 'search' ? 'border-b-2 border-[var(--accent-main)] text-[var(--text-main)]' : 'text-[var(--text-muted)]'" @click="activeTab = 'search'">搜索</button>
             </div>
 
             <div v-if="subjectDetail?.errors.length" class="border-b border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-[11px] text-[var(--status-danger)]">
@@ -574,19 +574,19 @@ onMounted(() => {
             </div>
         </div>
 
-        <Dialog v-model="eventDialogOpen" :title="eventEditorMode === 'create' ? '新增 Event' : '编辑 Event'" width="460px" show-cancel :busy="actionBusy" @confirm="saveEvent">
+        <Dialog v-model="eventDialogOpen" :title="eventEditorMode === 'create' ? '新增事件' : '编辑事件'" width="460px" show-cancel :busy="actionBusy" @confirm="saveEvent">
             <div class="space-y-3">
-                <input v-model="eventForm.tick" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="tick">
-                <input v-model="eventForm.time" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="time">
-                <textarea v-model="eventForm.text" class="min-h-28 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="text"></textarea>
+                <input v-model="eventForm.tick" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="时刻">
+                <input v-model="eventForm.time" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="时间">
+                <textarea v-model="eventForm.text" class="min-h-28 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="内容"></textarea>
             </div>
         </Dialog>
 
-        <Dialog v-model="memoryDialogOpen" :title="memoryEditorMode === 'create' ? '新增 Memory' : '编辑 Memory'" width="520px" show-cancel :busy="actionBusy" @confirm="saveMemory">
+        <Dialog v-model="memoryDialogOpen" :title="memoryEditorMode === 'create' ? '新增记忆' : '编辑记忆'" width="520px" show-cancel :busy="actionBusy" @confirm="saveMemory">
             <div class="space-y-3">
-                <input v-model="memoryForm.topic" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="topic">
-                <input v-model="memoryForm.aliases" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="aliases，用逗号分隔">
-                <textarea v-model="memoryForm.view" class="min-h-36 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="view"></textarea>
+                <input v-model="memoryForm.topic" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="主题">
+                <input v-model="memoryForm.aliases" class="w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="别名，用逗号分隔">
+                <textarea v-model="memoryForm.view" class="min-h-36 w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5 text-sm" placeholder="视图"></textarea>
             </div>
         </Dialog>
 

@@ -82,6 +82,65 @@ describe("initProjectDatabaseAtRoot", () => {
             await removeTempProject(projectRoot);
         }
     });
+
+    it("创作层三列：新库建表即带列，且连续两次初始化不报错（幂等）", async () => {
+        const projectRoot = await fs.mkdtemp(testHostPath("nbook-project-constraint-columns-"));
+        try {
+            await initProjectDatabaseAtRoot(projectRoot);
+            // 连续启动两次：补列逻辑不得重复报错。
+            await initProjectDatabaseAtRoot(projectRoot);
+
+            const client = createClient({url: toSqliteFileUrl(path.join(projectRoot, ".nbook", "project.sqlite"))});
+            try {
+                const columns = await client.execute(`PRAGMA table_info("StoryChapter")`);
+                expect(columns.rows.map((row) => String(row.name))).toEqual(expect.arrayContaining([
+                    "briefConstraintNegative",
+                    "briefStateShift",
+                    "authorOnly",
+                ]));
+            } finally {
+                client.close();
+            }
+        } finally {
+            await removeTempProject(projectRoot);
+        }
+    });
+
+    it("创作层三列：老库(缺列)打开后被幂等补齐，已有章节数据不丢", async () => {
+        const projectRoot = await fs.mkdtemp(testHostPath("nbook-project-constraint-legacy-"));
+        try {
+            const databasePath = path.join(projectRoot, ".nbook", "project.sqlite");
+            await fs.mkdir(path.dirname(databasePath), {recursive: true});
+            const client = createClient({url: toSqliteFileUrl(databasePath)});
+            try {
+                await createLegacyChapterSchema(client);
+            } finally {
+                client.close();
+                collectReleasedSqliteHandles({force: true});
+            }
+
+            await initProjectDatabaseAtRoot(projectRoot);
+
+            const migratedClient = createClient({url: toSqliteFileUrl(databasePath)});
+            try {
+                const columns = await migratedClient.execute(`PRAGMA table_info("StoryChapter")`);
+                expect(columns.rows.map((row) => String(row.name))).toEqual(expect.arrayContaining([
+                    "briefConstraintNegative",
+                    "briefStateShift",
+                    "authorOnly",
+                ]));
+
+                const chapter = (await migratedClient.execute(`SELECT "title", "briefMustHide", "briefConstraintNegative" FROM "StoryChapter" WHERE "id" = 1`)).rows[0];
+                expect(String(chapter.title)).toBe("老章节");
+                expect(String(chapter.briefMustHide)).toBe("不能提前说");
+                expect(chapter.briefConstraintNegative).toBeNull();
+            } finally {
+                migratedClient.close();
+            }
+        } finally {
+            await removeTempProject(projectRoot);
+        }
+    });
 });
 
 /**
@@ -118,4 +177,15 @@ async function createLegacyPlotSchema(client: ReturnType<typeof createClient>): 
     await client.execute(`INSERT INTO "StoryPlot" ("id", "sceneId", "sortOrder", "kind", "summary", "effect", "writingTip") VALUES (1, 1, 0, 'conflict', '旧 Plot 摘要', '旧 Plot 效果', '旧 Plot 提示')`);
     await client.execute(`INSERT INTO "StorySceneRef" ("id", "sceneId", "sortOrder", "relation", "rawTarget", "targetKind", "targetPlotId") VALUES (1, 1, 0, 'foreshadows', 'plot://1', 'plot', 1)`);
     await client.execute(`INSERT INTO "StorySceneRef" ("id", "sceneId", "sortOrder", "relation", "rawTarget", "targetKind", "targetSceneId") VALUES (2, 1, 1, 'pays_off', 'scene://2', 'scene', 2)`);
+}
+
+/**
+ * 构造创作层三列落地前的老 StoryChapter 表:
+ * 缺 briefConstraintNegative / briefStateShift / authorOnly,且已有一行章节数据。
+ */
+async function createLegacyChapterSchema(client: ReturnType<typeof createClient>): Promise<void> {
+    await client.execute(`CREATE TABLE "Story" ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "title" TEXT NOT NULL, "summary" TEXT NOT NULL DEFAULT '', "note" TEXT, "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
+    await client.execute(`CREATE TABLE "StoryChapter" ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "storyId" INTEGER NOT NULL, "actId" INTEGER, "sortOrder" INTEGER NOT NULL, "name" TEXT NOT NULL, "title" TEXT NOT NULL, "note" TEXT, "briefGoal" TEXT, "briefPov" TEXT, "briefTone" TEXT, "briefPacing" TEXT, "briefReaderKnows" TEXT, "briefProtagonistKnows" TEXT, "briefMustHide" TEXT, "briefHintOnly" TEXT, "briefOpening" TEXT, "briefEnding" TEXT, "briefDoNotWrite" TEXT, "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)`);
+    await client.execute(`INSERT INTO "Story" ("id", "title", "summary") VALUES (1, '故事', '')`);
+    await client.execute(`INSERT INTO "StoryChapter" ("id", "storyId", "sortOrder", "name", "title", "briefMustHide") VALUES (1, 1, 0, '001-old', '老章节', '不能提前说')`);
 }

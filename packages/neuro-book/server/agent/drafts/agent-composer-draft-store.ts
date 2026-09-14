@@ -81,6 +81,14 @@ export class AgentComposerDraftStore {
         });
     }
 
+    /** 删除指定 Session 的全部草稿；Session 被永久删除时调用。 */
+    async clearBySessionId(sessionId: number, now = Date.now()): Promise<void> {
+        await withFileLock(this.filePath, async () => {
+            const current = await this.read();
+            await this.write(validDrafts(current.drafts, now).filter((item) => item.sessionId !== sessionId));
+        });
+    }
+
     /** 合并首次加载时发现的旧 WebView 草稿；同一身份保留更新时间较新的版本。 */
     async migrate(records: AgentComposerDraftMigrationRecord[], now = Date.now()): Promise<AgentComposerDraftMigrationResult> {
         return await withFileLock(this.filePath, async () => {

@@ -572,7 +572,7 @@ watch(threadTags, (value) => {
             <section class="space-y-2 rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-3">
                 <div class="flex items-center justify-between gap-3">
                     <div>
-                        <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">Refs</div>
+                        <div class="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--text-muted)]">引用</div>
                     </div>
                     <button
                         type="button"

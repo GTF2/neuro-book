@@ -35,6 +35,9 @@ function chapterEntity(briefPatch: Partial<StoryChapter> = {}): StoryChapter {
         briefOpening: null,
         briefEnding: null,
         briefDoNotWrite: null,
+        briefConstraintNegative: null,
+        briefStateShift: null,
+        authorOnly: null,
         createdAt: new Date("2026-01-01T00:00:00Z"),
         updatedAt: new Date("2026-01-01T00:00:00Z"),
         ...briefPatch,
@@ -140,6 +143,54 @@ describe("ChapterWriterBriefService", () => {
         // 阶段三：重新编译 brief → ready，死锁解除。
         const after = createService([createRecord()], {}, stored);
         expect((await after.service.getChapterWriterBrief(chapterId, "autonomous")).status).toBe("ready");
+    });
+
+    it("M1-1：反向约束 / 状态约束 / authorOnly 写入→读取 round-trip，且 undefined 键不覆盖", async () => {
+        let stored = chapterEntity();
+        const chapterService = new ChapterService(
+            {
+                updateChapter: async (_chapterId: number, patch: Partial<StoryChapter>) => {
+                    stored = {
+                        ...stored,
+                        ...Object.fromEntries(Object.entries(patch).filter(([, value]) => value !== undefined)),
+                    };
+                    return stored;
+                },
+            } as unknown as ChapterRepository,
+            {
+                ensureStory: vi.fn(async () => ({id: 1, title: "小说", summary: "", note: null, createdAt: new Date(), updatedAt: new Date()})),
+            } as unknown as StoryService,
+            {
+                assertChapter: vi.fn(async () => stored),
+            } as unknown as PlotScopeGuard,
+            new PlotDtoAssembler(),
+        );
+
+        const updated = await chapterService.updateStoryChapter(chapterId, {
+            brief: {
+                constraintNegative: "不许出现解释性独白；不许让她说出真相",
+                stateShift: "她已经无法再假装不知道项链的来历",
+            },
+            authorOnly: true,
+        });
+
+        expect(stored.briefConstraintNegative).toBe("不许出现解释性独白；不许让她说出真相");
+        expect(stored.briefStateShift).toBe("她已经无法再假装不知道项链的来历");
+        expect(stored.authorOnly).toBe(true);
+        expect(updated.brief.constraintNegative).toBe("不许出现解释性独白；不许让她说出真相");
+        expect(updated.brief.stateShift).toBe("她已经无法再假装不知道项链的来历");
+        expect(updated.authorOnly).toBe(true);
+        // 未传的既有 brief 字段必须保持不变。
+        expect(updated.brief.mustHide).toBe("薇洛丝不知道项链是前作遗物");
+
+        // null = 显式清空；未传的字段不被清掉。
+        const cleared = await chapterService.updateStoryChapter(chapterId, {
+            brief: {stateShift: null},
+            authorOnly: null,
+        });
+        expect(cleared.brief.stateShift).toBeNull();
+        expect(cleared.authorOnly).toBeNull();
+        expect(cleared.brief.constraintNegative).toBe("不许出现解释性独白；不许让她说出真相");
     });
 
     it("needs_plot：章节没有关联 Scene 时要求先补 Plot", async () => {

@@ -803,7 +803,7 @@ function updateDesktopCloseBehavior(value: string): void {
 
                     <div class="flex shrink-0 flex-wrap items-center justify-end gap-2">
                         <div v-if="activeScope === 'project'" class="flex min-w-[300px] items-center gap-2 rounded-lg border border-[var(--border-color)] border-opacity-60 bg-[var(--bg-panel)] bg-opacity-35 px-3 py-2">
-                            <span class="shrink-0 text-[11px] font-semibold text-[var(--text-muted)]">Project</span>
+                            <span class="shrink-0 text-[11px] font-semibold text-[var(--text-muted)]">项目</span>
                             <span class="min-w-0 flex-1 truncate text-xs font-medium text-[var(--text-main)]" :title="targetLabel">{{ targetLabel }}</span>
                         </div>
 

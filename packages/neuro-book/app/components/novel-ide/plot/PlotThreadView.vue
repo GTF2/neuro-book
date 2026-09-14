@@ -54,7 +54,7 @@ const visibleScenes = computed(() => {
     <div class="grid min-h-0 gap-4 xl:grid-cols-[280px_minmax(0,1fr)]">
         <section class="flex min-h-0 flex-col overflow-hidden rounded-[22px] border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-[0_18px_50px_color-mix(in_srgb,var(--shadow-color)_8%,transparent)]">
             <div class="border-b border-[var(--border-color)] px-4 py-3">
-                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">Threads</div>
+                <div class="text-[11px] uppercase tracking-[0.24em] text-[var(--text-muted)]">线索</div>
                 <div class="mt-1 text-sm font-semibold text-[var(--text-main)]">切换正在规划的剧情线</div>
             </div>
 
@@ -119,7 +119,7 @@ const visibleScenes = computed(() => {
                         <div class="flex flex-wrap items-center justify-between gap-3">
                             <div class="flex flex-wrap items-center gap-2">
                                 <span class="rounded-full border border-[var(--border-color)] px-2 py-0.5 text-[11px] text-[var(--text-muted)]">
-                                    Scene {{ scene.threadSortOrder + 1 }}
+                                    场景 {{ scene.threadSortOrder + 1 }}
                                 </span>
                                 <span class="rounded-full border border-[var(--border-color)] px-2 py-0.5 text-[11px] text-[var(--text-muted)]">{{ scene.status }}</span>
                             </div>
@@ -142,14 +142,14 @@ const visibleScenes = computed(() => {
 
                         <div class="mt-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_180px]">
                             <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3">
-                                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Purpose</div>
-                                <div class="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{{ scene.purpose || "尚未填写 purpose" }}</div>
+                                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">目的</div>
+                                <div class="mt-2 text-sm leading-7 text-[var(--text-secondary)]">{{ scene.purpose || "尚未填写目的" }}</div>
                             </div>
                             <div class="rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3">
-                                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Scene Stats</div>
+                                <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">场景统计</div>
                                 <div class="mt-2 space-y-2 text-sm text-[var(--text-secondary)]">
-                                    <div>Refs：{{ scene.refs.length }}</div>
-                                    <div>Chapter 位次：{{ scene.chapterSortOrder === null ? "未分配" : scene.chapterSortOrder + 1 }}</div>
+                                    <div>引用：{{ scene.refs.length }}</div>
+                                    <div>章节位次：{{ scene.chapterSortOrder === null ? "未分配" : scene.chapterSortOrder + 1 }}</div>
                                 </div>
                             </div>
                         </div>

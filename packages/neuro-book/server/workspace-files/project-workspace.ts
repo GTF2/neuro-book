@@ -68,6 +68,9 @@ CREATE TABLE IF NOT EXISTS "StoryChapter" (
     "briefOpening" TEXT,
     "briefEnding" TEXT,
     "briefDoNotWrite" TEXT,
+    "briefConstraintNegative" TEXT,
+    "briefStateShift" TEXT,
+    "authorOnly" BOOLEAN,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "StoryChapter_storyId_fkey" FOREIGN KEY ("storyId") REFERENCES "Story" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -388,6 +391,7 @@ export async function initProjectDatabaseAtRoot(projectRoot: string): Promise<st
         await migrateStorySceneChapterEntity(client);
         await ensureWorldSliceSummaryColumn(client);
         await ensurePlanningLayerColumns(client);
+        await ensureStoryChapterConstraintColumns(client);
     } finally {
         await client.close();
         collectReleasedSqliteHandles();
@@ -431,6 +435,24 @@ async function ensurePlanningLayerColumns(client: Client): Promise<void> {
     }
     if (!sceneColumns.has("pacingRole")) {
         await client.execute(`ALTER TABLE "StoryScene" ADD COLUMN "pacingRole" TEXT`);
+    }
+}
+
+/**
+ * 创作层纲领字段幂等补列:StoryChapter.briefConstraintNegative / briefStateShift / authorOnly。
+ * 新库由 PROJECT_MIGRATION_SQL 的 CREATE TABLE 直接带上;老库靠这里补齐。
+ * 必须在 migrateStorySceneChapterEntity 之后执行。
+ */
+async function ensureStoryChapterConstraintColumns(client: Client): Promise<void> {
+    const columns = await tableColumns(client, "StoryChapter");
+    if (!columns.has("briefConstraintNegative")) {
+        await client.execute(`ALTER TABLE "StoryChapter" ADD COLUMN "briefConstraintNegative" TEXT`);
+    }
+    if (!columns.has("briefStateShift")) {
+        await client.execute(`ALTER TABLE "StoryChapter" ADD COLUMN "briefStateShift" TEXT`);
+    }
+    if (!columns.has("authorOnly")) {
+        await client.execute(`ALTER TABLE "StoryChapter" ADD COLUMN "authorOnly" BOOLEAN`);
     }
 }
 
