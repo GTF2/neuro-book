@@ -36,7 +36,7 @@
 | S7 | `server/utils/novel-chapter.ts` | `EntityIdLabel` 加 keyframe 相关标签 | 4 行 | 不易（类型联合） |
 | S8 | `assets/reference/plot/writer-brief.md` | 加 slice-only 段 + status 阶梯说明 | 1 段改写 | **可**（新文件承载 fork 语义，上游那份只保留最小差异——待办） |
 | S9 | `assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts` | 新增 `infoControl` 入参（加法参数） | ~10 行 | 不可（要注入评审核对单） |
-| S10 | `packages/neuro-book/package.json`、`docs/testing/README.md`、`AGENTS.md`、`docs/README.md`、`docs/specs/README.md`、`CONTRIBUTING*.md`、`PROJECT-STATUS.md` | 外科手术式单点（脚本项/优先级行/表格行/段落） | 各 1-3 行 | 部分可（治理类可另建文件） |
+| S10 | `packages/neuro-book/package.json`、`docs/testing/README.md`、`AGENTS.md`、`docs/README.md`、`docs/specs/README.md`、`CONTRIBUTING*.md`、`PROJECT-STATUS.md` | 外科手术式单点（脚本项/优先级行/表格行/段落）；`AGENTS.md` 另新增「与开发者的硬性约定」7 条小节（fork 开发者的协作约束，含 CodeBuddy 宿主规则文件指针） | 各 1-3 行 + 约 14 行 | 部分可（治理类可另建文件） |
 | S11 | `scripts/smoke/slice-vs-told-contrast.ts` | **新增文件**（对照实验脚本） | 新文件 | 不适用（加法） |
 | S12 | `.agents/works/w00003-...`、`.gitignore` | 继承的 fork 治理改动 | 小 | 不适用 |
 | S13 | `packages/neuro-book/scripts/cli/source-runtime.ts` | **原有（此前漏登）**：`repositoryRoot` 改为经 `NEURO_BOOK_REPOSITORY_ROOT` 注入、按包位上溯回退，不再 import 根 workspace 工具 | 改 1 段，约 4 行 | 不易（launcher 行为） |

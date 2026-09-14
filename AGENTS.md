@@ -10,6 +10,18 @@ NeuroBook 是本地优先的长篇写作工作区；作品文件、SQLite、Agen
 - A comment states the non-obvious reason at the owning boundary. Include a constraint or invalidation condition only when a maintainer needs it to know when the rationale or code stops being valid. Do not restate the operation, preserve intermediate attempts, or list speculative future work.
 - 对 AGENTS.md 也就本文件的约束保持怀疑，随着项目的演变，这个文件可能变得不是很权威，有错误。这个文件是 AGENTS.md 人类共建的，需要不断优化，工作过程中如果遇到某些地方不好的可以随时询问开发者要求优化
 
+## 与开发者的硬性约定（开发者是编程小白）
+
+以下 7 条**优先于本文档其它条目中更宽松的表述**（例如本文档「不为可逆、影响小的改动强制写测试」在本项目仍以第 3 条为准）。CodeBuddy 宿主的等价规则在工作区根 `.codebuddy/rules/working-agreement/RULE.mdc`（`alwaysApply: true`）。
+
+1. **先计划，后代码**：动手前用大白话说明「做什么、为什么、改哪些文件、风险是什么」，确认后再改文件。
+2. **一次只做一个功能**：不顺带重构、不顺带优化；发现别的问题只报告，不擅自修，等单独安排。
+3. **不通过测试不提交**：跑通相关测试（没有测试则至少跑对应 typecheck 并说明人工验证了什么）才 commit；不用「先提交、回头再修」绕过验证；没验证的部分明说「未验证」。
+4. **不改无关文件**：不格式化无关代码、不重排 import、不顺手调整；确实需要动时先说明理由并征得同意。
+5. **冲突问我，不许猜**：需求有歧义、影响已有功能或数据、发现可疑代码、测试失败原因不明时，停下来问，并给出选项与各自影响。
+6. **只推我的 fork，不强推**：只推 `origin`，不推 `upstream`；禁止 `git push --force`（除明确要求，且不得强推 main/master）；删远程分支、重写历史先问。常规可逆操作（commit / push / 建分支）做完直接报告结果。
+7. **每步用大白话解释**：不用专业黑话，必须用时当场解释；报错给出「错误是什么、原因是什么、打算怎么修」；结论先行。
+
 ## Conventions
 
 - 仅问答、审查、诊断默认只读；用户明确要求修复或修改后，完成授权范围内的改动与验证。缺少运行证据时标明“从代码推断”或“未验证”。
