@@ -50,16 +50,27 @@ const desktopAvailable = computed(() => import.meta.client && Boolean(window.neu
     border: 0 solid;
 }
 
-/* Firefox support */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: var(--text-muted) transparent;
-}
+/*
+ * 这里刻意不写 scrollbar-width / scrollbar-color —— 它们是「标准滚动条」属性：
+ * 一旦在某个元素上生效，Chrome 121+ 就会改用标准渲染路径，该元素的 ::-webkit-scrollbar*
+ * 全部随之失效，包括下面那条用来去掉上下箭头的 ::-webkit-scrollbar-button。
+ * 之前几轮「明明写了 display: none 却仍有箭头、粗细也不对」就是这个原因。
+ * 需要隐藏某个容器的滚动条时，在那个容器上单独写 scrollbar-width: none，不要在这里统一设。
+ */
 
 /* WebKit-based browsers support */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+}
+
+/* 上下箭头按钮一律不显示：只留轨道与滑块，箭头在现代界面里既占位置又显旧。 */
+::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
 }
 
 ::-webkit-scrollbar-track {
