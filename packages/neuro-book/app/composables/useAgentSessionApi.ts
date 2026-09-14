@@ -28,6 +28,8 @@ import type {
     AgentSessionRelationsDto,
     AgentSessionRecoveryDto,
     AgentSessionSystemPromptDto,
+    AgentToolExplanationDto,
+    AgentToolExplanationRequestDto,
     AgentTreeResult,
     AgentTreeRequestDto,
     AgentUserMessageContentDto,
@@ -154,6 +156,18 @@ export function useAgentSessionApi() {
         });
     };
 
+    /**
+     * 请求解释一次工具调用。
+     * 旁路调用：只带这一次的参数与结果，服务端不写会话历史，解释也不会回流进主对话。
+     */
+    const explainToolCall = (sessionId: number, body: AgentToolExplanationRequestDto, signal?: AbortSignal) => {
+        return $fetch<AgentToolExplanationDto>(`/api/agent/sessions/${sessionId}/tool-explanation`, {
+            method: "POST",
+            body,
+            signal,
+        });
+    };
+
     const runCommand = (sessionId: number, body: AgentCommandRequestDto) => {
         return $fetch<AgentCommandResult>(`/api/agent/sessions/${sessionId}/commands`, {
             method: "POST",
@@ -222,6 +236,7 @@ export function useAgentSessionApi() {
         getSessionRelations,
         getSessionSystemPrompt,
         getSessionUserContent,
+        explainToolCall,
         invokeSession,
         listSessions,
         migrateComposerDrafts,

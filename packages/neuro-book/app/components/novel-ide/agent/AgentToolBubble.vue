@@ -69,6 +69,7 @@ const resultAttachments = computed(() => (props.toolCall.publicResult?.content ?
         <AgentToolNode
             :tool-call="props.toolCall"
             :expanded="!isCollapsed"
+            :session-id="props.sessionId"
             :action-disabled="props.actionDisabled"
             :run-action-disabled="props.runActionDisabled"
             @toggle="toggle"

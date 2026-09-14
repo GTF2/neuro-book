@@ -833,3 +833,27 @@ export type AgentSessionQueryResultDto =
     | AgentSessionRecoveryDto
     | AgentSessionHistoryPageDto
     | AgentSessionSystemPromptDto;
+
+/**
+ * 请求 AI 解释一次工具调用。
+ *
+ * 这是旁路请求：只携带该次调用的公开参数与结果，服务端用一次独立模型调用生成解释，
+ * 既不读取也不写入会话历史，因此不会污染主对话上下文、也不会影响后续 Agent 决策。
+ * 文本上限与工具卡片的公开投影上限同量级，避免整篇文件正文被塞进来。
+ */
+export const AgentToolExplanationRequestDtoSchema = z.object({
+    toolName: z.string().min(1).max(200),
+    argsText: z.string().max(20_000).nullish(),
+    resultText: z.string().max(20_000).nullish(),
+    errorText: z.string().max(20_000).nullish(),
+    locale: z.enum(["zh-CN", "en-US"]).optional(),
+}).strict();
+
+export type AgentToolExplanationRequestDto = z.infer<typeof AgentToolExplanationRequestDtoSchema>;
+
+/** 解释正文；纯文本，前端按段落就地渲染。 */
+export const AgentToolExplanationDtoSchema = z.object({
+    explanation: z.string(),
+});
+
+export type AgentToolExplanationDto = z.infer<typeof AgentToolExplanationDtoSchema>;

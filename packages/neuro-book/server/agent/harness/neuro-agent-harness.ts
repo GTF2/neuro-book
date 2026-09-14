@@ -187,6 +187,8 @@ import type {
     AgentSessionRelationsDto,
     AgentSessionSummarizerStateDto,
     AgentSessionSummaryDto,
+    AgentToolExplanationDto,
+    AgentToolExplanationRequestDto,
     AgentTreeRequestDto,
     AgentUserMessageContentDto,
 } from "nbook/shared/dto/agent-session.dto";
@@ -199,6 +201,7 @@ import {appLogger} from "nbook/server/app-logs/logger";
 import {PiRequestRecorder} from "nbook/server/agent/observability/pi-request-recorder";
 import type {PiTraceCorrelation, PiTraceKind} from "nbook/server/agent/observability/pi-request-recorder";
 import {tracedStreamSimple} from "nbook/server/agent/observability/traced-provider";
+import {generateToolExplanation} from "nbook/server/agent/harness/tool-explanation";
 import {aggregateSegmentLabels, buildTraceSegments, computeToolsHash, type PromptPrefixAttribution} from "nbook/server/agent/observability/trace-segments";
 import {buildContextDiagnostics} from "nbook/server/agent/observability/context-diagnostics";
 import {emptyContextFacts, resolveModelCacheRetention, timelineDto} from "nbook/server/agent/observability/context-inspection";
@@ -942,6 +945,33 @@ export class NeuroAgentHarness {
             });
             return (await this.resolveSessionRuntimeProjection(sessionId)).summary;
         });
+    }
+
+    /**
+     * 用一次独立的模型调用把某个工具调用解释成人话。
+     *
+     * 旁路契约：不创建 session、不写任何会话历史，只把该次调用的参数与结果拼成一次性上下文。
+     * 因此解释正文既不会成为主对话的噪音，也不会影响后续 Agent 的决策。
+     */
+    async explainToolCall(sessionId: number, input: AgentToolExplanationRequestDto): Promise<AgentToolExplanationDto> {
+        const snapshot = await this.repo.readSession(sessionId);
+        const config = await loadEffectiveConfig(resolveNonInvocationConfigTarget(snapshot.metadata, this.workspaceRoot));
+        const model = this.modelResolver(config, snapshot.metadata.profileKey);
+        const models = this.runtimeResolver(config, model);
+        const providerOptions = this.providerOptions(config, model);
+        const explanation = await generateToolExplanation({
+            toolName: input.toolName,
+            argsText: input.argsText ?? null,
+            resultText: input.resultText ?? null,
+            errorText: input.errorText ?? null,
+            locale: input.locale ?? "zh-CN",
+            models,
+            model,
+            apiKey: resolvePiApiKeyForModelFromConfig(config, model),
+            timeoutMs: providerOptions.timeoutMs,
+            requestOptions: providerOptions.requestOptions,
+        });
+        return {explanation};
     }
 
     /**

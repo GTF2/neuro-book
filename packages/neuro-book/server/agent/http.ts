@@ -31,6 +31,8 @@ import {
     type AgentSessionListQueryDto,
     type AgentSessionQueryDto,
     type AgentSessionQueryResultDto,
+    type AgentToolExplanationDto,
+    type AgentToolExplanationRequestDto,
     type AgentTreeRequestDto,
     type AgentTreeResult,
     type AgentUserMessageContentDto,
@@ -126,6 +128,15 @@ export async function updateAgentSessionCurrentProject(
     harness = useAgentHarness(),
 ) {
     return withAgentSessionHttpError(sessionId, () => harness.updateCurrentProject(sessionId, body.projectRoot));
+}
+
+/** 用一次旁路模型调用解释某个工具调用；结果只返回给调用方，不写入会话历史。 */
+export async function explainAgentToolCall(
+    sessionId: number,
+    body: AgentToolExplanationRequestDto,
+    harness = useAgentHarness(),
+): Promise<AgentToolExplanationDto> {
+    return withAgentSessionHttpError(sessionId, () => harness.explainToolCall(sessionId, body));
 }
 
 /**

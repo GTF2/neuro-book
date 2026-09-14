@@ -2087,6 +2087,12 @@ const zhCN = {
             rawArgs: "原始参数",
             rawResult: "原始结果",
             argsLabel: "参数",
+            // 按需 AI 解释：旁路调用，不进入主对话上下文
+            explainStep: "AI 解释这步",
+            explaining: "正在生成解释…",
+            explainTitle: "AI 解释",
+            explainAgain: "重新生成",
+            explainFailed: "生成解释失败",
             planFileSize: "完整计划文件 · {size}",
             resultLabel: "结果",
             errorLabel: "错误",

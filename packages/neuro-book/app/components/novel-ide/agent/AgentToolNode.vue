@@ -3,10 +3,13 @@ import type { AgentToolCall } from "nbook/app/components/novel-ide/agent/agent-m
 import { resolveToolRenderConfig } from "nbook/app/components/novel-ide/agent/tool-render-registry";
 import { FILE_EDIT_TOOL_NAMES, toolStatusClass, toolStatusIcon } from "nbook/app/components/novel-ide/agent/agent-message";
 import JsonViewer from "nbook/app/components/common/JsonViewer.vue";
+import { resolveApiErrorMessage } from "nbook/app/utils/api-error";
 
 const props = defineProps<{
     toolCall: AgentToolCall;
     expanded: boolean;
+    /** 旁路解释需要它定位 session 的模型配置；缺失时不显示解释入口。 */
+    sessionId?: number | null;
     /** 会话正在跑或正在写入时禁用重跑类动作。 */
     actionDisabled?: boolean;
     runActionDisabled?: boolean;
@@ -22,7 +25,42 @@ const emit = defineEmits<{
 }>();
 
 const renderConfig = computed(() => resolveToolRenderConfig(props.toolCall));
-const {t} = useI18n();
+const {t, locale} = useI18n();
+const agentApi = useAgentSessionApi();
+
+/**
+ * 按需解释：默认一个 token 都不花，点一次才发一次旁路调用。
+ * 结果只留在本组件的局部状态里，不写会话历史、也不会回流进主对话。
+ */
+const explanation = ref("");
+const explaining = ref(false);
+const explainError = ref("");
+
+/** 解释要有一个 session 作为模型配置来源；没有 session 就不显示入口，避免点了必然失败。 */
+const canExplain = computed(() => Boolean(props.sessionId));
+
+const requestExplanation = async (): Promise<void> => {
+    const sessionId = props.sessionId;
+    if (!sessionId || explaining.value) {
+        return;
+    }
+    explaining.value = true;
+    explainError.value = "";
+    try {
+        const result = await agentApi.explainToolCall(sessionId, {
+            toolName: props.toolCall.name,
+            argsText: props.toolCall.argsJson ?? props.toolCall.argsText ?? null,
+            resultText: props.toolCall.result ?? null,
+            errorText: props.toolCall.error ?? null,
+            locale: locale.value === "en-US" ? "en-US" : "zh-CN",
+        });
+        explanation.value = result.explanation;
+    } catch (error) {
+        explainError.value = resolveApiErrorMessage(error, t("agent.tool.explainFailed"));
+    } finally {
+        explaining.value = false;
+    }
+};
 
 const isRunning = computed(() => props.toolCall.status === "running" || props.toolCall.status === "streaming");
 const collapsedPreview = computed(() => renderConfig.value.collapsedPreviewKey ? t(renderConfig.value.collapsedPreviewKey) : renderConfig.value.collapsedPreview);
@@ -239,6 +277,40 @@ const parsedResult = computed<unknown | null>(() => {
                     </button>
                 </div>
                 <div class="mt-1 text-[10.5px] text-[var(--text-muted)]">{{ t("agent.tool.editRetryHint") }}</div>
+            </div>
+
+            <!-- 按需 AI 解释：默认不请求，点了才发一次旁路调用，结果就地渲染 -->
+            <div v-if="canExplain" class="mt-3">
+                <button
+                    v-if="!explanation && !explaining"
+                    type="button"
+                    class="inline-flex h-7 items-center gap-1 rounded-md border border-dashed border-[var(--border-color)] px-2.5 text-[11.5px] text-[var(--text-muted)] transition-colors hover:border-[var(--accent-main)] hover:text-[var(--accent-main)]"
+                    :disabled="isActionDisabled"
+                    @click="requestExplanation"
+                >
+                    <span class="i-lucide-sparkles h-3 w-3"></span>{{ t("agent.tool.explainStep") }}
+                </button>
+
+                <div v-else-if="explaining" class="inline-flex h-7 items-center gap-1.5 rounded-md border border-dashed border-[var(--border-color)] px-2.5 text-[11.5px] text-[var(--text-muted)]">
+                    <span class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("agent.tool.explaining") }}
+                </div>
+
+                <div v-else class="rounded-lg border border-[var(--status-info-border)] bg-[var(--status-info-bg)] px-3 py-2">
+                    <div class="mb-1 flex items-center gap-1.5 text-[11px] font-semibold text-[var(--status-info)]">
+                        <span class="i-lucide-sparkles h-3 w-3"></span>{{ t("agent.tool.explainTitle") }}
+                        <button
+                            type="button"
+                            class="ml-auto rounded p-0.5 transition-colors hover:bg-[var(--bg-hover)]"
+                            :title="t('agent.tool.explainAgain')"
+                            @click="requestExplanation"
+                        >
+                            <span class="i-lucide-rotate-cw h-3 w-3"></span>
+                        </button>
+                    </div>
+                    <p class="whitespace-pre-wrap text-[12px] leading-5 text-[var(--status-info)]">{{ explanation }}</p>
+                </div>
+
+                <div v-if="explainError" class="mt-1 text-[11px] text-[var(--status-danger)]">{{ explainError }}</div>
             </div>
         </div>
     </div>

@@ -2089,6 +2089,12 @@ const enUS = {
             rawArgs: "Raw arguments",
             rawResult: "Raw result",
             argsLabel: "Arguments",
+            // On-demand AI explanation: a side-channel call that never enters the main conversation.
+            explainStep: "Explain this step",
+            explaining: "Generating explanation...",
+            explainTitle: "AI explanation",
+            explainAgain: "Regenerate",
+            explainFailed: "Failed to generate explanation",
             planFileSize: "Full plan file · {size}",
             resultLabel: "Result",
             errorLabel: "Error",
