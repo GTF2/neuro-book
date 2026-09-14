@@ -57,7 +57,7 @@ export default {
         {name: "chapterPath", label: "章节 index.md 路径（Project Workspace 相对路径，必填）", defaultValue: ""},
         {name: "chapterId", label: "StoryChapter id（必填）：writer 按它用 get_chapter_writer_brief 自取事实简报，leader 不把意图写进 writer 消息", defaultValue: ""},
         {name: "brief", label: "本章意图清单（可选）：目标/关键剧情点等，**只注入评审**用于覆盖度与信息边界判定，不下发 writer", defaultValue: ""},
-        {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；可选，仅注入一致性评审做事后校验，不下发 writer）", defaultValue: ""},
+        {name: "infoControl", label: "信息控制事后核对清单（读者已知/主角已知/必须隐藏/可暗示；仅注入一致性评审做事后校验，不下发 writer）。由 leader 从 StoryChapter 的四字段编译（见 novel-writing/phases/03-chapter-loop.md）；漏传不会静默跳过——一致性评审会显式标注「信息边界未核对」，返回值 infoControlChecked=false", defaultValue: ""},
         {name: "lorebookEntries", label: "建议读取的内容节点路径（逗号或换行分隔，可选）", defaultValue: ""},
         {name: "reviewRounds", label: "评审轮数（1-3）", defaultValue: "2"},
         {name: "revise", label: "是否按评审修订（false 时只写+评审一轮）", defaultValue: "true"},
@@ -80,8 +80,17 @@ export default {
         const chapterId = typeof args?.chapterId === "string" ? args.chapterId.trim() : "";
         // 信息控制事后核对清单：leader 把 ChapterBrief 的四字段编译成清单传入；仅注入一致性评审。
         const infoControl = typeof args?.infoControl === "string" ? args.infoControl.trim() : "";
+        // 宪法第五条要求事后校验真的发生：清单缺失时不静默跳过，而是显式标注「未核对」并记入返回值。
+        const infoControlChecked = infoControl.length > 0;
         if (!chapterId) {
             throw new Error("缺少 chapterId：writer 的事实简报由 input.chapterId 经 get_chapter_writer_brief 自取；意图清单（brief/infoControl）只进评审，不能替代它");
+        }
+        // 一致性评审专用的事后核对段：清单缺失时给显式标注段，而不是让这一层校验静默消失。
+        const infoControlBlock = infoControlChecked
+            ? `【信息控制事后核对】\n以下是本章信息边界清单，仅用于事后校验，不是写作任务的一部分：\n${infoControl}\n逐条核对正文：角色是否知道了他不该知道的信息？「必须隐藏」项是否被直接或变相泄露？「可暗示」项是否被明说？只报告有正文证据的越界，无越界则不报告。`
+            : "【信息控制事后核对】\n调用方未提供本章信息控制清单：本轮不做信息边界判定，不要据此报告越界问题；请在 overall 里明确写明「信息边界未核对」。";
+        if (!infoControlChecked) {
+            wf.log("警告：未提供 infoControl 清单，本轮不做信息边界事后校验（宪法第五条）；一致性评审会显式标注未核对。");
         }
         const rawEntries = Array.isArray(args?.lorebookEntries)
             ? args.lorebookEntries
@@ -158,9 +167,7 @@ export default {
                     message: [
                         `${dimension.messagePrefix}评审第 ${round} 轮章节正文，按已声明 schema 汇报。`,
                         brief ? `【写作任务】\n${brief}` : `【写作任务】\n本章按 StoryChapter ${chapterId} 的 brief 写作。`,
-                        infoControl && dimension.key === "consistency"
-                            ? `【信息控制事后核对】\n以下是本章信息边界清单，仅用于事后校验，不是写作任务的一部分：\n${infoControl}\n逐条核对正文：角色是否知道了他不该知道的信息？「必须隐藏」项是否被直接或变相泄露？「可暗示」项是否被明说？只报告有正文证据的越界，无越界则不报告。`
-                            : "",
+                        dimension.key === "consistency" ? infoControlBlock : "",
                         `【章节正文】\n${body.slice(0, BODY_SLICE)}`,
                     ].filter(Boolean).join("\n\n"),
                 });
@@ -239,6 +246,6 @@ export default {
         wf.chart.move(currentNode, "final", {label: converged ? "已收敛" : "达到轮数上限"});
         wf.chart.leave("final");
         wf.log(`章级写作评审循环完成：共 ${rounds.length} 轮，${converged ? "已收敛" : "未收敛（仍有 major 问题）"}`);
-        return {chapterPath, rounds, converged, finalSummary, finalLength: finalBody.length};
+        return {chapterPath, rounds, converged, finalSummary, finalLength: finalBody.length, infoControlChecked};
     },
 };

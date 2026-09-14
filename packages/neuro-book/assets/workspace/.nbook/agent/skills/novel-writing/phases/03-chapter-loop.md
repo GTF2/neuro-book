@@ -98,7 +98,7 @@ writer 完成后，leader 对正文做评审。基础检查（每章必做）：
 
 需要更严格评审时（用户要求、重点章节、开局章节），可扩展评审维度：节奏与爽点、文风与 AI 味、承诺兑现（对照 Plot Promise）、读者弃书风险。可用 `invoke_agent` 拉独立评审视角逐维度出具体问题清单，每条附可执行的修改建议。
 
-> 本环节的写-评-修可以整体交给 `run_workflow` 的 `chapter-write-review-revise` 编排：它调用真实 writer 写入目标章节文件，三个评审维度（一致性/节奏/文风）并发挑问题，writer 按 major 问题修订循环。args 传 `chapterPath` + `chapterId`（都必填：writer 按 chapterId 自取事实简报）+ 可选 `brief` / `infoControl`（**只注入评审**，不下发 writer）+ `lorebookEntries` / `reviewRounds`(1-3) / `revise`。前置与手动流程相同：剧情事实已拍板、World Engine 已推进、章节节点已存在。需要逐步人工把关或用户要参与每轮决策时，仍按本文手动循环。轻量非章节文本（简介、文案）用 `write-review-loop`（不写文件）。
+> 本环节的写-评-修可以整体交给 `run_workflow` 的 `chapter-write-review-revise` 编排：它调用真实 writer 写入目标章节文件，三个评审维度（一致性/节奏/文风）并发挑问题，writer 按 major 问题修订循环。args 传 `chapterPath` + `chapterId`（都必填：writer 按 chapterId 自取事实简报）+ `brief`（可选，**只注入评审**，不下发 writer）+ `infoControl`（**每次都要传**：从 `get_story_chapter` 读本章 ChapterBrief 的 `readerKnows` / `protagonistKnows` / `mustHide` / `hintOnly` 四字段，编译成「读者已知 / 主角已知 / 必须隐藏 / 可暗示」清单；**只注入一致性评审**，不下发 writer）+ `lorebookEntries` / `reviewRounds`(1-3) / `revise`。**漏传 `infoControl` 不会静默跳过**：一致性评审会显式标注「信息边界未核对」，返回值 `infoControlChecked=false`——看到这个标记就补上清单重跑。前置与手动流程相同：剧情事实已拍板、World Engine 已推进、章节节点已存在。需要逐步人工把关或用户要参与每轮决策时，仍按本文手动循环。轻量非章节文本（简介、文案）用 `write-review-loop`（不写文件）。
 >
 > 写完若干章后想做全书体检，用 `consistency-audit` workflow：leader 先列章节路径、用 execute_world 预查相关角色状态整理成 worldFacts 文本，一并传入。
 

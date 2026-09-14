@@ -21,7 +21,8 @@ owners:
 - 不规定正文写作质量，也不规定 llmlint 规则（属第七条）。
 - 不新增 Scene / Promise / Decision / Keyframe 实体字段。
 - 不删除 `ChapterWriterBriefMode` 的既有枚举值（删除属破坏性改动，另行评估）。
-- 不做 `infoControl` 的自动编译：`chapter-write-review-revise` 的评审清单入参仍由调用方传入，自动编译需要 Workflow 侧读取 Plot 的能力，属另一项 capability。
+- 不做 `infoControl` 的自动编译：`chapter-write-review-revise` 的评审清单入参仍由调用方传入；自动编译需要 Workflow 侧确定性读取 Plot 数据的能力（当前宿主未接线 `wf.query` / `wf.callAction`），属另一项 capability，已登记在规范缺口表。
+- **但漏传不再静默**：清单缺失时一致性评审收到显式「信息边界未核对」标注、运行日志记警告、返回值 `infoControlChecked=false`。事后校验可以缺失，但缺失必须可见（宪法第五条）。
 
 ## 术语与参与者
 
@@ -123,6 +124,12 @@ writer 视图**不得出现**：本章目标与落点（`goal`/`ending`）、本
 - **Given** 章节无关联 Scene，
   **When** 编译，
   **Then** `status=needs_plot`，`suggestedBriefMarkdown` 仍为可读的非空文本。
+- **Given** 调用 `chapter-write-review-revise` 时未传 `infoControl`，
+  **When** 运行一轮评审，
+  **Then** 一致性评审消息含「信息边界未核对」显式标注、返回值 `infoControlChecked=false`、事件流含未提供清单的警告，且 writer 消息仍不含信息控制内容。
+- **Given** 传入了 `infoControl`，
+  **When** 运行一轮评审，
+  **Then** 一致性评审消息含清单原文与逐条核对要求，返回值 `infoControlChecked=true`。
 - Smoke 入口：`packages/neuro-book/server/plot/services/chapter-writer-brief.service.test.ts`、`packages/neuro-book/server/agent/tools/plot-tools.test.ts`、`packages/neuro-book/server/api/projects/plot/[...segments].test.ts`。
 
 ## 实现合同

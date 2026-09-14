@@ -63,6 +63,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 7. **调研**：StoryForge / 章纲范式 / DOC 学术 / Swain 方法论（采纳清单见 prior-art 文档第五节）。
 8. **brief 双视图改造（P0，2026-09-14 完成）**：`suggestedBriefMarkdown`（事实，唯一进 writer）与 `reviewChecklistMarkdown`（意图，只进评审）落地；三个模式统一只给事实、`needs_chapter_brief` 废止；agent 工具对 writer 调用收口 `details`（writer 拿不到任何意图级结构化数据）；`chapter-write-review-revise` 的 `brief` / `infoControl` 只注入评审、`chapterId` 变必填。Reference 与 skill 主链（`plot/{writer-brief,system,agent-spec}.md`、`agent/{leader-default,novel-writing-workflow}.md`、`world-engine/workflow.md` §6.2/6.3/13、`skills/novel-writing/phases/02|03`、`novel-writer-execution`）与用户文档 `vitepress/{zh-Hans,en-US}/{core/plot-workbench,profile/writer,profile/leader,tutorials/04}` 中英对等同步；Spec `docs/specs/plot/chapter-writer-brief.md` 晋升 `implemented`；Work 记录在 `.agents/works/w00014-chapter-writer-brief-two-views/`。
 9. **关键帧 agent 工具面与主链接线（P0，2026-09-14 完成）**：`plot-tools.ts` 新增 `get_story_keyframe` / `get_tween_keyframes` / `save_story_keyframe`（写面 `action=create|update`；读面对 writer 白名单剔除 `note`）；新增 Reference `assets/reference/plot/keyframe.md` 并接入目录索引；`phases/05-keyframe-tween.md` 的「Plot API」改为真实工具名，`phases/03-chapter-loop.md` 前置检查与完成标准接帧；Spec `docs/specs/plot/keyframe.md` 晋升 `implemented`（P0 规范缺口闭合）；Work 记录在 `.agents/works/w00015-keyframe-agent-toolface/`；接缝登记 S18。
+10. **信息控制漏传必定显形（2026-09-14）**：`chapter-write-review-revise` 在 `infoControl` 缺失时给一致性评审显式的「信息边界未核对」标注段、运行日志记警告、返回值新增 `infoControlChecked=false`；主链 skill 把 `infoControl` 改为每次必传并写清编译来源；Spec 与 `writer-brief.md` 契约同步；真自动编译登记为 P1 规范缺口。Work 记录在 `.agents/works/w00016-info-control-non-silent/`；接缝 S9 更新。
 
 ### 进行中 / 待办（按优先级）
 
@@ -71,6 +72,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | ~~P0~~ | ~~**brief 双视图改造**~~ **已完成 2026-09-14** | writer 视图只含事实、评审视图收纳全部意图级内容；三模式统一只给事实；`needs_chapter_brief` 废止；工具对 writer 调用收口 `details`；workflow 意图只进评审。Spec：`docs/specs/plot/chapter-writer-brief.md`（implemented）。**下一个 P0 是关键帧工具面** |
 | ~~P0~~ | ~~**关键帧工具面**~~ **已完成 2026-09-14（w00015）** | 新增 3 个工具（读帧 / 读补间路标 / 声明与更新帧）+ Reference `plot/keyframe.md` + `phases/03|05` 接真实工具名与主链；Spec `docs/specs/plot/keyframe.md`（implemented） |
 | **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑 CLI/脚本路径，UI 由并行执行者按既有分工推进 |
+| P1 | `infoControl` 真自动编译 | 漏传已必定显形（评审标注 + 日志 + 返回值 `infoControlChecked`，Work w00016）；真自动编译要宿主接线 `wf.query` / `wf.callAction`，让 workflow 能确定性读项目数据（已登记 P1 规范缺口） |
 | P1 | Swain 词汇统一（文档级） | 用 `Goal/Conflict/Disaster`、`Reaction/Dilemma/Decision` 替换自造的"欲望/阻力/代价"，与既有 `outcomeType`（yes_but/no_and…）对齐；**不要新增 schema 字段** |
 | P1 | 未来影响分析 / 回读验证+回执 / 写回校验注册表 | 采纳 StoryForge 的三个成熟机制（见 prior-art 第五节 2/3/4） |
 | P2 | 用户文档剩余 | `vitepress/{zh-Hans,en-US}` 的 `tutorials/03-*`、`agent/tools.md`、`core/world-engine.md`（与阶段 05 一起做）；**中英必须对等**，改完跑 `docs:check` |
@@ -148,7 +150,7 @@ brief 双视图（[Spec](docs/specs/plot/chapter-writer-brief.md)、[Work](.agen
 
 1. **人写帧入口（P1）**：`app/` 还没有关键帧面板——宪法第三条要求"人写帧"，目前只有工具面与 CLI 路径。UI 属并行执行者的活跃区，动手前先与其边界对齐。
 2. **帧驱动的尺度验证（P1，需 Provider 授权）**：两轮终审实验已完成（判词见 `docs/doctrine/`），仍缺整章 / 整卷尺度的帧驱动表现与裁决闭环实操。
-3. **`infoControl` 自动编译（P1）**：目前漏传即静默失去事后校验。
+3. **`infoControl` 真自动编译（P1）**：漏传已不再静默（见 §3 已完成第 10 条）；剩下的是让 workflow 能确定性读项目数据（宿主 `wf.query` / `wf.callAction` 未接线）。
 4. **用户文档剩余（P2）**：`tutorials/03-*`、`agent/tools.md`、`core/world-engine.md`，与阶段 05 一起做，中英对等。
 
 真实模型对照实验入口仍是 `bun run smoke:contrast -- --project <项目> --chapter-id <章 id>`（需 Provider 已配置、项目已 open；注意用 `127.0.0.1`）。

@@ -35,7 +35,7 @@
 | S6 | `server/agent/tools/plot-tools.ts` | brief mode 枚举加 `slice-only`；brief 工具文本改出 writer 视图、`details` 按 `profileKey` 收口（writer 不带意图级结构化数据）；keyframe 工具见 S18 | 约 35 行 | 不易（agent 只能通过工具访问） |
 | S7 | `server/utils/novel-chapter.ts` | `EntityIdLabel` 加 keyframe 相关标签 | 4 行 | 不易（类型联合） |
 | S8 | `assets/reference/plot/writer-brief.md` | 整篇改写为双视图格式契约（writer 视图 / 评审视图 / 三模式差异 / status 阶梯） | 全文改写 | **可**（新文件承载 fork 语义，上游那份只保留最小差异——待办） |
-| S9 | `assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts` | `infoControl` 入参（加法参数）；`brief` 改为一律只注入评审、writer 消息只留交付要求，`chapterId` 由可选变必填 | ~20 行 | 不可（要注入评审核对单） |
+| S9 | `assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts` | `infoControl` 入参（加法参数）；`brief` 改为一律只注入评审、writer 消息只留交付要求，`chapterId` 由可选变必填；2026-09-14 加「漏传 `infoControl` 必定显形」（一致性评审显式标注「信息边界未核对」+ 运行日志警告 + 返回值 `infoControlChecked`） | 约 25 行 | 不可（要注入评审核对单） |
 | S10 | `packages/neuro-book/package.json`、`docs/testing/README.md`、`AGENTS.md`、`docs/README.md`、`docs/specs/README.md`、`CONTRIBUTING*.md`、`PROJECT-STATUS.md` | 外科手术式单点（脚本项/优先级行/表格行/段落）；`AGENTS.md` 另新增「与开发者的硬性约定」7 条小节（fork 开发者的协作约束，含 CodeBuddy 宿主规则文件指针） | 各 1-3 行 + 约 14 行 | 部分可（治理类可另建文件） |
 | S11 | `scripts/smoke/slice-vs-told-contrast.ts` | **新增文件**（对照实验脚本）；2026-09-14 重建：改用实验专用 workflow，A 组 writer 提示由脚本拼接，唯一变量 = 意图清单是否随提示下发 | 重写约 90 行 | 不适用（加法） |
 | S12 | `.agents/works/w00003-...`、`.gitignore` | 继承的 fork 治理改动 | 小 | 不适用 |

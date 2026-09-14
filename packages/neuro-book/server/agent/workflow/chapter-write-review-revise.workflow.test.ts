@@ -206,6 +206,7 @@ describe("chapter-write-review-revise workflow", () => {
         });
 
         expect(view.status).toBe("completed");
+        expect((view.result as {infoControlChecked?: boolean}).infoControlChecked).toBe(true);
         // 一致性评审拿到事后核对清单。
         expect(consistencyMessages).toHaveLength(1);
         expect(consistencyMessages[0]).toContain("【信息控制事后核对】");
@@ -213,6 +214,47 @@ describe("chapter-write-review-revise workflow", () => {
         // writer 的动笔前上下文绝不包含信息控制清单（宪法第五条）。
         for (const message of writerMessages) {
             expect(message).not.toContain("必须隐藏");
+            expect(message).not.toContain("信息控制事后核对");
+        }
+    });
+
+    test("infoControl 漏传：一致性评审显式标注未核对，不留静默跳过（且不下发 writer）", async () => {
+        const sessions = new MemorySessionStore();
+        const agents = new MockAgentPort(sessions);
+        const events: unknown[] = [];
+        const writerMessages: string[] = [];
+        const consistencyMessages: string[] = [];
+        agents.register("writer", (turn): {message: string; data: JsonValue} => {
+            writerMessages.push(turn.message ?? "");
+            return {message: "章节写作完成", data: {summary: "首轮即达标", outputPath: chapterPath}};
+        });
+        agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
+            if (turn.message?.includes("一致性")) consistencyMessages.push(turn.message ?? "");
+            return {message: "评审完成", data: {overall: "没有必须修订的问题", issues: []}};
+        });
+        const runner = new WorkflowRunner({sessions, agents}, {
+            workspace: createMemoryWorkspace({[chapterPath]: chapterBody}),
+            onEvent: (event) => events.push(event),
+        });
+
+        const view = await runner.start(await workflow("chapter-write-review-revise"), {
+            chapterPath,
+            chapterId: "7",
+            brief: "本章目标：解开封印。",
+            reviewRounds: "1",
+        });
+
+        expect(view.status).toBe("completed");
+        // 返回值暴露「本轮没做信息边界校验」，调用方与用户都能看见。
+        expect((view.result as {infoControlChecked?: boolean}).infoControlChecked).toBe(false);
+        // 一致性评审拿到显式标注段，而不是静默少了一段。
+        expect(consistencyMessages).toHaveLength(1);
+        expect(consistencyMessages[0]).toContain("【信息控制事后核对】");
+        expect(consistencyMessages[0]).toContain("信息边界未核对");
+        // 事件流里留了运行日志警告。
+        expect(JSON.stringify(events)).toContain("未提供 infoControl");
+        // 意图级内容仍然不进 writer 上下文（宪法第五条）。
+        for (const message of writerMessages) {
             expect(message).not.toContain("信息控制事后核对");
         }
     });

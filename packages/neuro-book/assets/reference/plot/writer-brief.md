@@ -57,7 +57,7 @@ writer 调 `get_chapter_writer_brief` 时,工具的结构化结果也会收口�
 
 | 段 | 防什么 | 来源与维护 |
 | --- | --- | --- |
-| 3 信息控制 | **防泄露**:写完逐条核对,writer 是否让角色知道了他不该知道的、是否泄露了必须隐藏项 | ChapterBrief 手填;不参与 status 阶梯 |
+| 3 信息控制 | **防泄露**:写完逐条核对,writer 是否让角色知道了他不该知道的、是否泄露了必须隐藏项 | ChapterBrief 手填;由 leader 编译成 `infoControl` 随 workflow 传入(漏传时一致性评审显式标注「信息边界未核对」,不静默跳过);不参与 status 阶梯 |
 | 6 本章 Promise 任务 | **防欠债**:规划期打的计划 beat,本章该推进的债务线推进到位、幅度按 note 收住 | PromiseBeat 派生,自动编译;有任务才出现 |
 | 7 未决决策警告 | **防写死**:未拍板的问题保持开放,不替 leader 做决定 | open Decision 派生,自动编译;触及本章才出现 |
 
