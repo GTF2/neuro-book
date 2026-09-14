@@ -47,6 +47,7 @@ PR 列出实际命令和结果；没有执行的检查写“未运行”。聚�
 
 | 入口 | 用途 |
 |---|---|
+| [`docs/doctrine/writing-doctrine.md`](docs/doctrine/writing-doctrine.md) | 写作宪法（项目最高优先级 spec）；写作相关改动先对照七条信念 |
 | [`docs/specs/README.md`](docs/specs/README.md) | 产品行为、数据、接口、失败和验收的当前规范注册表 |
 | [`packages/neuro-book/docs/specs/foundation/terminology.md`](packages/neuro-book/docs/specs/foundation/terminology.md) | Workspace、运行时、存储与 Agent 标准术语 |
 | [`docs/standards/code/README.md`](docs/standards/code/README.md) | 按改动路径选择前端、服务端、桌面、脚本、数据库或包规范 |

@@ -2,6 +2,7 @@
 
 文档分类、真相源优先级和生命周期统一见 [`README.md`](README.md)。本文件只规定 Agent 的读取与交付动作：
 
+- 涉及写作行为、写作质量、writer 上下文或剧情流程时，先读写作宪法 [`doctrine/writing-doctrine.md`](doctrine/writing-doctrine.md)；它与任何下级文档冲突时以宪法为准。
 - 创建或修改产品行为规范时，读取 [`specs/AGENTS.md`](specs/AGENTS.md)，并更新同一 capability 的单一 Spec 与成熟度登记。
 - 整理原始需求或长期方案时，读取 [`proposals/README.md`](proposals/README.md)；Proposal 未沉淀为 Spec 前不作为产品合同。
 - 修改 ADR、migration、runbook、testing 或 standards 时，读取目标目录 README，只在其职责内写内容，并链接 Spec 而不复制行为正文。

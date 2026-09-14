@@ -6,6 +6,8 @@
 
 [`manual-eval/README.md`](manual-eval/README.md) 是测试体系中的人工验收子系统：`criteria.md` 定义判定与证据合同，`journeys/` 保存用户旅程用例，`agent-guide.md` 定义一次评测的执行步骤，`report-template.md` 约束结果格式。它不属于 `packages/neuro-book/docs/runbooks/`，因为整套资产不仅包含操作步骤，还包含测试判据、用例和报告合同。
 
+写作质量类改动还须遵守写作宪法的终审要求（[`../doctrine/writing-doctrine.md`](../doctrine/writing-doctrine.md) 否决权条款第 2 条）：涉及 writer 上下文形态或写作流程的改动，必须产出同题对照样本（如"事前告知 vs 事后校验"、改前 vs 改后），由人判定现场感与报告味；判定词写入 `docs/doctrine/` 下的实验记录。参考实现：`packages/neuro-book/scripts/smoke/slice-vs-told-contrast.ts`（`bun run smoke:contrast`）。
+
 1. **测试临时根统一在 `<系统Temp>/neuro-book/vitest/<runId>/`**：
    - 由 `@notnotype/neuro-book-test-support/vitest` 在每个 Vitest worker 启动时把
      `TMPDIR`/`TEMP`/`TMP` 指向该目录；测试里 `os.tmpdir()` / `mkdtemp(tmpdir()...)`

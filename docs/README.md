@@ -5,6 +5,7 @@
 VitePress 源码位于 [`../vitepress/`](../vitepress/)，面向用户发布，不是内部规范真相源；current 一次实现的 Work、Task、过程和证据位于 [`../.agents/works/`](../.agents/works/)，legacy Task 记录位于 [`../.agents/tasks/`](../.agents/tasks/)，二者都不代替当前规范。
 
 ## 真相源优先级
+0. [`doctrine/writing-doctrine.md`](doctrine/writing-doctrine.md)：**项目最高优先级 spec（写作宪法）**。七条信念裁决所有 behavior 合同；与宪法冲突的 Spec、ADR、Reference 或用户文档一律以宪法为准。修改宪法须由项目所有者批准，并附否决权条款第 2 条要求的对照实验证据。
 1. [`specs/`](specs/)：已批准的 `planned` 目标合同与代码支持的 `implemented` 当前合同；功能行为、状态、数据、接口、失败语义和验收依据只在这里维护。
 2. [`../packages/neuro-book/docs/adr/`](../packages/neuro-book/docs/adr/)：已接受架构决策及理由；ADR 不复制完整功能行为。
 3. [`../packages/neuro-book/docs/migrations/`](../packages/neuro-book/docs/migrations/)：有状态升级、备份与回滚步骤。
@@ -19,8 +20,8 @@ VitePress 源码位于 [`../vitepress/`](../vitepress/)，面向用户发布，�
 ## 目录分工
 
 ```text
-docs/                          根文档治理：README、AGENTS、specs 注册表、standards、
-                               testing、modules、proposals 索引
+docs/                          根文档治理：README、AGENTS、doctrine（写作宪法）、
+                               specs 注册表、standards、testing、modules、proposals 索引
 packages/neuro-book/docs/      主应用专属文档：术语与 capability Spec、adr、
                                migrations、runbooks、research、proposals、archived
 ```
@@ -37,6 +38,7 @@ packages/neuro-book/docs/      主应用专属文档：术语与 capability Spec
 
 ## 当前入口
 
+- [写作宪法](doctrine/writing-doctrine.md)：项目最高优先级 spec（七条信念 + 冲突裁决 + 否决权条款 + 实验证据表）。
 - [规范编程与注册表](specs/README.md)：Spec 成熟度、格式、流水线、capability 归属和 Reference 迁移状态。
 - [编码与仓库标准](standards/README.md)：按语言触发的编码规范和维护者仓库流程。
 - [Proposal 规则](proposals/README.md)：原始需求如何结构化、评审、批准并沉淀为 `planned` Spec。

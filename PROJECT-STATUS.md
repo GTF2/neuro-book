@@ -1,10 +1,32 @@
 # Project Status
 
-截至 2026-08-17。本文只记录仓库级现状；具体 TODO 以 GitHub Issue 为准，实现过程与证据以对应 Task 为准，当前版本发布载荷以 [`RELEASE.md`](RELEASE.md) 为准。
+截至 2026-09-14。本文只记录仓库级现状；具体 TODO 以 GitHub Issue 为准，实现过程与证据以对应 Task 为准，当前版本发布载荷以 [`RELEASE.md`](RELEASE.md) 为准。
 
 ## 一句话结论
 
 NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作模式 v1；核心数据与运行时合同基本落地，主要缺口是 stable 发布、真实 Provider、完整浏览器流程和持续作者试用。
+
+## 写作宪法对齐（2026-09-14）
+
+项目所有者确立写作宪法 [`docs/doctrine/writing-doctrine.md`](docs/doctrine/writing-doctrine.md)（七条信念，最高优先级 spec，裁决所有 behavior 合同）。本轮对齐已落地：
+
+| 项 | 状态 | 依据 |
+| --- | --- | --- |
+| Writer brief 事实/意义分离（第五条） | 已实现：新增 `slice-only` 模式，信息控制四字段与禁写项不再进 writer 动笔前上下文，全空不再阻断 handoff | `chapter-writer-brief.service.ts`、`assets/reference/plot/writer-brief.md` |
+| 事后校验（第五条） | 已实现：`chapter-write-review-revise` 新增 `infoControl` 入参，四字段只注入一致性评审 | workflow 与其回归测试 |
+| 关键帧写作（第三条/第六条） | 已实现：`StoryKeyframe` 实体（instant 锚 + 不可逆变化声明 + `source: author/derived` + 裁决留痕）、补间区间 API、`keyframe-tween-review` workflow、skill `phases/05-keyframe-tween.md` | `keyframe.service.ts`、prisma `project.schema.prisma` |
+| 实验验证（否决权条款第 2 条） | 两轮终审已留痕：事前告知 vs 事后校验（SLICE 优于 TOLD，但都"读不下去"）；关键帧补间（**可读性变强，判定通过**） | `docs/doctrine/contrast-experiment-2026-09-14.md`、`keyframe-experiment-2026-09-14.md` |
+
+已知未收口（改动前先建规范归属）：
+
+1. **关键帧工具面缺失**：`plot-tools.ts` 无 keyframe 工具、`assets/reference/` 无关键帧正文 → agent 目前无法读写帧，skill phase 05 是空头支票。
+2. **主循环未接入帧**：`novel-writing/phases/03-chapter-loop.md` 不提帧；帧仍是旁路而非人的主要产出物。
+3. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。
+4. **`infoControl` 需手动传参**：漏传即静默失去事后校验，应由 `chapterId` 自动编译。
+5. **用户文档与 README 仍按旧范式叙述**：`README.md`、`vitepress/**/core/plot-workbench.md`、`profile/writer.md`、`profile/leader.md` 等仍写"信息控制=写作前置/强制生效"。
+6. 两个新 capability（slice-only、StoryKeyframe）已登记进 [`docs/specs/README.md`](docs/specs/README.md) 的规范缺口，待写 `implemented` Spec。
+
+遗留清理状态：实验夹具（场景/剧情线/关键帧/brief 字段）已从 Project 数据中删除还原；`.contrast/` 临时目录已清；实验正文全文归档在 `docs/doctrine/` 的两份实验记录中。
 
 ## 产品基线
 

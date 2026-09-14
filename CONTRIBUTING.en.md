@@ -47,6 +47,7 @@ Confirm the current contract before editing:
 
 | Entry | Purpose |
 |---|---|
+| [`docs/doctrine/writing-doctrine.md`](docs/doctrine/writing-doctrine.md) | Writing constitution (the project's highest-priority spec); check the seven tenets first for writing-related changes |
 | [`docs/specs/README.md`](docs/specs/README.md) | Registry for current behavior, data, interfaces, failures, and acceptance |
 | [`docs/specs/foundation/terminology.md`](packages/neuro-book/docs/specs/foundation/terminology.md) | Standard Workspace, runtime, storage, and Agent terminology |
 | [`docs/standards/code/README.md`](docs/standards/code/README.md) | Route changes to frontend, server, desktop, scripts, database, or package standards |
