@@ -45,7 +45,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 3. 当前状态（2026-09-14）
 
-- 分支：**`feat/writing-doctrine-alignment`**。brief 双视图改造（w00014）与关键帧工具面（w00015）均已提交；截至 2026-09-14，本地 HEAD 在 brief 双视图之后又前进 7 个提交（含并行执行者的 Agent UI 收口），本机比 `origin` **多 1 个未推送提交** `a14e916d`（并行执行者在途工作，未动、未推）。
+- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-14，本地与 `origin` **已同步**（HEAD `bd1aeda6`）；领先上游 65 提交、落后 0。工作区有并行执行者未提交的 Agent follow-up 队列改动（未动、未提交）。
 - 本文件曾在 2026-09-14 被并行执行者删除，作者已还原；同名 `CLAUDE.md` 已删且不再使用。看到 `D HANDOFF.md` 这类删除时先确认来源，不要当成自己的改动。
 - ⚠️ **有多个 AI/工具在同一仓库并行提交**（例：`676af095`、`282bc90d`、`9ab4bc56`、`ee651716` 都不是"我"提交的）。
   开工前先 `git log --oneline -15` 看有没有新东西；**绝不回退、覆盖来源不明的提交**；做完自己的事再提交。
@@ -65,15 +65,15 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 9. **关键帧 agent 工具面与主链接线（P0，2026-09-14 完成）**：`plot-tools.ts` 新增 `get_story_keyframe` / `get_tween_keyframes` / `save_story_keyframe`（写面 `action=create|update`；读面对 writer 白名单剔除 `note`）；新增 Reference `assets/reference/plot/keyframe.md` 并接入目录索引；`phases/05-keyframe-tween.md` 的「Plot API」改为真实工具名，`phases/03-chapter-loop.md` 前置检查与完成标准接帧；Spec `docs/specs/plot/keyframe.md` 晋升 `implemented`（P0 规范缺口闭合）；Work 记录在 `.agents/works/w00015-keyframe-agent-toolface/`；接缝登记 S18。
 10. **信息控制漏传必定显形（2026-09-14）**：`chapter-write-review-revise` 在 `infoControl` 缺失时给一致性评审显式的「信息边界未核对」标注段、运行日志记警告、返回值新增 `infoControlChecked=false`；主链 skill 把 `infoControl` 改为每次必传并写清编译来源；Spec 与 `writer-brief.md` 契约同步；真自动编译登记为 P1 规范缺口。Work 记录在 `.agents/works/w00016-info-control-non-silent/`；接缝 S9 更新。
 11. **文档杂项收口（2026-09-14）**：Swain 词汇统一（帧 / 场景张力槽位改用 `Goal/Conflict/Disaster`、`Reaction/Dilemma/Decision`，与 `outcomeType` 对齐；宪法与实验记录不动）；`agent/tools.md` 与 `core/world-engine.md` 中英补关键帧内容；`CONTRIBUTING{,.en}.md` 命令修正为 monorepo 用法；`PROJECT-STATUS` 版本行对齐 `RELEASE.md`。
+12. **未来影响分析（StoryForge 机制一，2026-09-14 完成）**：正文采纳后由 leader 扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），产出只标记、不改动的受影响清单交作者逐项裁决。新增 Reference `assets/reference/plot/future-impact-analysis.md`；主链 skill `phases/03-chapter-loop.md` 新增「第六步：未来影响分析」；Spec `docs/specs/plot/future-impact-analysis.md` 晋升 `implemented`；Work 记录在 `.agents/works/w00017-future-impact-analysis/`；接缝登记 S19。**形态修正**：不做 `impact-scan` workflow——workflow 内 `adhoc` 工具面固定 `read` + `report_result`，读不到 Plot 数据，故由持有 Plot 工具面的 leader 在 skill 阶段执行。
 
 ### 进行中 / 待办（2026-09-14 重排：只留未完成项，按优先级；已完成见上）
 
 | 优先级 | 任务 | 说明 |
 |---|---|---|
 | **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑对话 / 脚本路径。**等 UI 执行者回一句**：帧的 `instant` 显示走 (a) 原始数字，还是 (b) 我补「instant ↔ 项目日历时间」转换接口；选 (b) 我做后端那半 |
-| **P1** | StoryForge 机制一：未来影响分析 | **Proposal 已出**：[`future-impact-analysis.md`](packages/neuro-book/docs/proposals/future-impact-analysis.md)（`draft`）。待开发者接受后落 `planned` Spec（capability `plot.future-impact-analysis`）并建 Work/Task；实现形态 = 资产层 `impact-scan` workflow + skill 阶段 + Reference 清单格式，**不新增实体 / 字段 / 工具** |
 | **P1** | `infoControl` 真自动编译 | **Proposal 已出**：[`workflow-project-data-queries.md`](packages/neuro-book/docs/proposals/workflow-project-data-queries.md)（`draft`；复用已接受提案 `agent-model-execution-surfaces.md` 的 `ActivityExecutor` 计划，只加只读数据查询）。接受后落 planned Spec + Work/Task |
-| P1 | StoryForge 机制二 / 三：回读验证+回执、写回校验注册表 | prior-art 第五节 3/4 |
+| P1 | StoryForge 机制二 / 三：回读验证+回执、写回校验注册表 | prior-art 第五节 3/4；机制一（未来影响分析）已于 2026-09-14 完成（见上第 12 条） |
 | P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
 | P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
 | P2 | 合并上游（例行） | 现状：领先上游 60 提交 / 落后 0（2026-09-14 实测）；并行执行者有未提交改动，现在合并风险高，等其落定再做 |
@@ -152,6 +152,6 @@ brief 双视图（[Spec](docs/specs/plot/chapter-writer-brief.md)、[Work](.agen
 1. **人写帧入口（P1）**：`app/` 还没有关键帧面板——宪法第三条要求"人写帧"，目前只有工具面与 CLI 路径。UI 属并行执行者的活跃区，动手前先与其边界对齐。
 2. **帧驱动的尺度验证（P1，需 Provider 授权）**：两轮终审实验已完成（判词见 `docs/doctrine/`），仍缺整章 / 整卷尺度的帧驱动表现与裁决闭环实操。
 3. **`infoControl` 真自动编译（P1）**：漏传已不再静默（见 §3 已完成第 10 条）；剩下的是让 workflow 能确定性读项目数据（宿主 `wf.query` / `wf.callAction` 未接线）。
-4. **用户文档剩余（P2）**：`tutorials/03-*`、`agent/tools.md`、`core/world-engine.md`，与阶段 05 一起做，中英对等。
+4. **StoryForge 机制二 / 三（P1）**：回读验证 + 回执、写回校验注册表（prior-art 第五节 3/4）；机制一（未来影响分析）已于 2026-09-14 完成。
 
 真实模型对照实验入口仍是 `bun run smoke:contrast -- --project <项目> --chapter-id <章 id>`（需 Provider 已配置、项目已 open；注意用 `127.0.0.1`）。
