@@ -5,7 +5,6 @@ import type {AgentMessage, AgentToolCall} from "nbook/app/components/novel-ide/a
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import {
     AgentSurfaceOperationController,
-    inlineOperationScopeOf,
     type AgentSurfaceActivationAttempt,
     type AgentSurfaceOperationResult,
 } from "nbook/app/components/novel-ide/agent/agent-chat-surface-state";
@@ -222,15 +221,7 @@ export function useInlineEditorAgentController(
         operationRevision.value += 1;
     }
 
-    function captureOperation(expectedOperationKey?: string): AgentSurfaceActivationAttempt | null {
-        // expectedOperationKey 由页面从 AgentChatSurface 的 inlineOperationScopeKey 铸造，
-        // 其 `@inline:<n>` 尾段来自 Surface 自己的计数器，与本控制器的 operationRevision
-        // 不同源。比较整个 key 会把正常的用户发送误判成 scope 已变化并静默丢弃，
-        // 所以这里只比较两侧共享的 Project scope 段。
-        if (expectedOperationKey !== undefined
-            && inlineOperationScopeOf(expectedOperationKey) !== scopeKey.value) {
-            return null;
-        }
+    function captureOperation(): AgentSurfaceActivationAttempt | null {
         return operationController.capture(scopeKey.value);
     }
 
@@ -417,9 +408,8 @@ export function useInlineEditorAgentController(
     async function sendPrompt(
         payload: InlineEditPayload,
         visibleMessage: string,
-        expectedOperationKey?: string,
     ): Promise<AgentSurfaceOperationResult<void>> {
-        const owner = captureOperation(expectedOperationKey);
+        const owner = captureOperation();
         if (!owner) return {status: "superseded"};
         const targetResult = await ensureSession(owner);
         if (targetResult.status === "superseded") return targetResult;

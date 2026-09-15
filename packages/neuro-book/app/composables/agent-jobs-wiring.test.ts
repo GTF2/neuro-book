@@ -44,7 +44,9 @@ describe("Jobs feed 页面接线合同", () => {
         expect(runtimeSource.lastIndexOf('"nuxt", "dev", "--no-fork"')).toBeGreaterThan(
             runtimeSource.indexOf("await seedSystemAssets"),
         );
-        expect(runtimeSource).toContain("const repositoryRoot = process.env.NEURO_BOOK_REPOSITORY_ROOT?.trim() || resolve(packageRoot, \"../..\");");
+        // 应用不得跨根 import 根 #scripts：仓库根只能由 source-dev.ts 注入，缺失时 fail closed。
+        expect(runtimeSource).not.toContain("#scripts/");
+        expect(runtimeSource).toContain("缺少 NEURO_BOOK_REPOSITORY_ROOT");
         expect(runtimeSource).toContain("process.env.NEURO_BOOK_REPOSITORY_ROOT = repositoryRoot;");
     });
 
