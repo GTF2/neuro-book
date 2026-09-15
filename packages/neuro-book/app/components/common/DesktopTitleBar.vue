@@ -137,8 +137,8 @@ function menuButtonKeydown(event: KeyboardEvent, group: MenuGroup, index: number
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault();
         const offset = event.key === "ArrowRight" ? 1 : -1;
-        const nextIndex = (index + offset + menus.length) % menus.length;
-        rootRef.value?.querySelector<HTMLElement>(`[data-menu-button="${menus[nextIndex]?.label}"]`)?.focus();
+        const nextIndex = (index + offset + menus.value.length) % menus.value.length;
+        rootRef.value?.querySelector<HTMLElement>(`[data-menu-button="${menus.value[nextIndex]?.label}"]`)?.focus();
         return;
     }
     if (event.key === "Escape") openMenu.value = null;
@@ -154,8 +154,8 @@ function menuItemKeydown(event: KeyboardEvent, group: MenuGroup, groupIndex: num
     if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
         event.preventDefault();
         const offset = event.key === "ArrowRight" ? 1 : -1;
-        const nextIndex = (groupIndex + offset + menus.length) % menus.length;
-        void openMenuFromKeyboard(menus[nextIndex]?.label ?? group.label);
+        const nextIndex = (groupIndex + offset + menus.value.length) % menus.value.length;
+        void openMenuFromKeyboard(menus.value[nextIndex]?.label ?? group.label);
         return;
     }
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
