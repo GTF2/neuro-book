@@ -135,7 +135,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | git 身份 | 每次提交加 `-c user.name=GTF2 -c user.email=GTF2@users.noreply.github.com` |
 | 提交消息 | 多行/含斜杠括号时 PowerShell `-m` 会解析失败 → 写文件后 `git commit -F <文件>` |
 | `.gitignore` 误伤 | `packages/neuro-book/.gitignore` 的 `workspace/` 规则会忽略 `assets/workspace/**` 的**新文件** → 新增 .nbook 资产要 `git add -f` |
-| dev server | `cd packages/neuro-book; bun run dev`（端口 3000）。项目会话会因 UI 关闭变 409 `PROJECT_NOT_OPEN` → `POST /api/projects/open {projectRoot}` 重开；多实例租约冲突时重启 dev server |
+| dev server | **GTF 的启动入口是 `.local/run-dev.cmd`**（`.local/` 被 gitignore，仅 README 例外）。2026-09-15 修：该脚本第 3 行曾硬编码老工作区 `C:\Users\Administrator\CodeBuddy\NeuroBook\neuro-book`，**双击它启动的一直是那份旧代码**——这正是「3000 端口在跑旧代码」的根因（已改为 `D:\MyProject\neuro-book`，并加了两句防混提示与 `echo Source root:`）。手起：`cd packages/neuro-book; bun run dev`（端口 3000）。**两个实例不能并存**：共享 State Root，第二个会因 `runtime.lease` 租约冲突启动失败（`ELOCKED: Lock file is already being held`），必须先停老的。**判断实例归属别用 `/api/app/version`**（两份工作区的 versionLabel 完全相同）——看首页 HTML 里的 `/_nuxt/@fs/<源码根>`，或直接拉运行时模块 `GET /_nuxt/@fs/<abs>/.../PlotWorkbenchDialog.vue` grep 标识符，这是「跑的到底是不是我改的代码」最快的证据。项目会话会因 UI 关闭变 409 `PROJECT_NOT_OPEN` → `POST /api/projects/open {projectRoot}` 重开 |
 | 门禁 | `bun run docs:check`（文档，~50s）、`bun run governance:check`（治理）、`bun run typecheck`（~90s） |
 | 真实模型实验 | `bun run smoke:contrast -- --project <root> --chapter-id <id>`（需 Provider 已配置、项目已 open；单轮写+评审约 13–20 分钟） |
 | 残留 | `.git/COMMIT_MSG_FORK_RESEARCH.txt` 是此前提交消息的临时文件，可留可删 |
