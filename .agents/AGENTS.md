@@ -4,6 +4,7 @@
 
 以下读取在首次进入对应任务或恢复缺失上下文时触发；已加载且未变化的内容不重读。执行 Task 指定的正式 role，不依次扮演所有角色。
 
+- 语言硬规则先于任何加载生效：**一律用简体中文——回复与思考都是**。范围是对开发者可见的全部产出：思考/推理过程、计划与待办、进度话与工具调用说明、正文解释与报错说明；不得因为上下文或代码是英文而切成英文；代码、命令、路径、日志与报错原文保持原样。判据见根 [`AGENTS.md`](../AGENTS.md) 文首「语言硬规则」与 [`.omp/RULES.md`](../.omp/RULES.md) 第 1 条。
 - 执行 PM、Leader、Tasker 或 Reviewer 工作时，读取对应 [`roles/<role>/AGENTS.md`](roles/)；角色合同不替代 Issue、Work、Proposal、Spec 或 Task。
 - Leader处理或恢复尚无远端编号的Issue时读取[`issues/README.md`](issues/README.md)和`issues/drafts/`；草稿路径只作恢复键，不写入 Work `issueId`。
 - 创建、推进或审查 current 工作时，先读 [`works/README.md`](works/README.md) 和 [`works/AGENTS.md`](works/AGENTS.md)，再读具体 Work 与 Task。修复历史 provenance 时追加读取 [`tasks/README.md`](tasks/README.md) 和 [`tasks/AGENTS.md`](tasks/AGENTS.md)。
