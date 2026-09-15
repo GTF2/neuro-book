@@ -45,7 +45,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 3. 当前状态（2026-09-15）
 
-- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15 17:50（**GTF 正式授权 Neo 接手项目**，授权范围：Leader 单核 + 按需起子代理；推送 origin、合并上游、真实模型调用三项已获授权）：HEAD `ba7cd006`（Merge upstream/master 0.10.3-canary）；**已与上游追平（领先 77 / 落后 0）**，领先 `origin/feat/writing-doctrine-alignment` 13 条待推。
+- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15 18:00（**GTF 正式授权 Neo 接手项目**，授权范围：Leader 单核 + 按需起子代理；推送 origin、合并上游、真实模型调用三项已获授权）：HEAD `5bcdc5c8`（基线收口）；**与 `origin` 完全同步（0 领先 / 0 落后）**，相对上游**已追平并领先 78 / 落后 0**（上游顶端 `45906272` / 0.10.3-canary）。
 - Neo 本轮提交（2026-09-15）：`cd109f7b`（语言硬规则加固）、`ba7cd006`（合并上游 0.10.3-canary，解决 4 处冲突）。更早两条为 `ea77062b`（Workflow 只读数据查询 + `infoControl` 自动编译）、`53e270ca`（修 leader 资产过期断言），均已推 origin。工作区仍有并行执行者未提交的改动（**未动、未提交**，清单见下）；这批改动已有独立备份（见 §5「在途改动备份」）。
 - 本文件曾在 2026-09-14 被并行执行者删除，作者已还原；同名 `CLAUDE.md` 已删且不再使用。看到 `D HANDOFF.md` 这类删除时先确认来源，不要当成自己的改动。
 - ⚠️ **有多个 AI/工具在同一仓库并行提交**（例：`676af095`、`282bc90d`、`9ab4bc56`、`ee651716`、`1176a5fb` 都不是"我"提交的）。
@@ -99,7 +99,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
 | P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
 | ~~P2~~ | ~~合并上游（例行）~~ **已完成（2026-09-15）** | 见已完成第 18 条。当前与上游**追平**（领先 77 / 落后 0，上游顶端 `45906272` / 0.10.3-canary） |
-| **P1** | **推 origin（已获授权，待执行）** | 本地领先 13 条（含 `cd109f7b`、`ba7cd006`）。GTF 已于 2026-09-15 明确授权推送 origin |
+| ~~P1~~ | ~~推 origin~~ **已完成（2026-09-15）** | 已推送 14 条到 `origin/feat/writing-doctrine-alignment`（`7791f828..5bcdc5c8`），当前 0 领先 / 0 落后 |
 | **P1** | **修 `DesktopTitleBar.vue` 键盘导航（真 bug）** | typecheck 报 6 处 TS2339，全在该文件。根因：`d5b225dc`（中文化提交）把 `menus` 由常量数组改为 `computed`，但 `menuButtonKeydown` / `menuItemKeydown` 仍按数组访问 `menus.length` / `menus[index]`；`<script setup>` 里 computed 不自动解包 → 算出 `NaN`、取到 `undefined`。**后果：桌面标题栏菜单的左右方向键导航实际是坏的**。修法：那 4 处改 `menus.value.*`（约 4 行）。按「发现别的问题只报告不擅修」的惯例，**等 GTF 一句话** |
 | P2 | 队列功能收口 | `docs/specs/agent/session-followup-queue.md` 仍是 `planned`，仓库里**没有任何 followup 相关测试文件**；那批代码是并行执行者的在途工作（**未提交**，清单见开头「并行在途清单」），最后改动停在 2026-09-14 22:24–23:30（**已 18+ 小时无动静**）。typecheck 另报 `AgentChatSurface.vue(2687,37)`：`confirm()` 被传了 `{title, message}` 对象，而签名要 `string`。**处置待 GTF 决定**：收编（补测试 + 修类型）还是废弃 |
 | P2 | `docs/proposals/README.md` 补登记行 | 该文件里 follow-up 队列提案行与辅助任务模型提案行**仍是相邻两行未提交**；等它空闲时补单行提交（只加自己那行，不替对方提交） |
@@ -144,6 +144,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 删除目录 | 用**普通绝对路径** + `-Recurse -Force`（宿主的安全删除会走回收站，`\\?\` 长路径前缀会被它拒绝：`relative path rejected`）；Git 自己删含 `node_modules` 的目录会报 `Filename too long`，所以用 PowerShell 删、删完再 `git worktree prune` |
 | **提交能力（2026-09-15 实测更正）** | **本环境可以正常 `git commit`。** 实测：`commit --allow-empty` 成功（`7791f828` → `31290b33`）、`git update-ref refs/heads/feat/writing-doctrine-alignment <sha>` 回退干净、未提交文件无损；`git update-ref refs/heads/__probe__ HEAD` 创建引用再删除也成功。**上一轮记的「本沙箱不能移动分支引用、不要在此环境 commit」是沙箱开启时的假阳性，已作废。** 提交一律 `git -c user.name=GTF2 -c user.email=GTF2@users.noreply.github.com commit -F <消息文件>`（本轮 `cd109f7b`、`ba7cd006` 均如此落地）；提交消息写文件再传，别用 `-m` |
 | **在途改动备份** | `.workbuddy/backups/2026-09-15-followup-inflight/`：`all-uncommitted.patch`（合并上游前的全部未提交差异）+ `untracked.tar.gz`（5 个未跟踪项）。合并流程为 **stash → merge → pop**（`git stash push -u`），全程零冲突；该备份仍保留作兜底 |
+| **推送 origin 必须禁交互（实测）** | 裸 `git push` 在 Agent 环境会**卡死**：本机 `credential.helper` 是 git-credential-manager，未禁交互时它要弹窗，非交互环境直接挂住（实测卡满 3 分钟、零输出、被后台化）。**正确写法**：`GIT_TERMINAL_PROMPT=0 GCM_INTERACTIVE=never git push origin <branch>`——此时 GCM 改用已存凭据，实测成功。诊断同类问题的通用手法：加 `GIT_TERMINAL_PROMPT=0` 让它立即失败并报原因，而不是挂住 |
 | **合并上游的稳妥流程（2026-09-15 实测）** | ① 先 `git status` 看清哪些改动是自己的、哪些是别人的；② 只把**自己的**文件单独提交（`git add` 点名，永不 `-A`）；③ `git stash push -u -m "<说明>"` 收好其余改动；④ `git fetch upstream && git merge upstream/master --no-edit`；⑤ 冲突逐处按语义解决（两侧独立修同一问题**优先取上游**，fork 独有的改进要**融合保留**）；⑥ 跑 typecheck + 受影响测试；⑦ 提交后 `git stash pop` 原样恢复 |
 
 ---
