@@ -52,6 +52,24 @@ import {withWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-fil
 import {serializeAgentImageMarkdown} from "nbook/shared/agent/agent-image-markdown";
 import managedSummarizerProfileDefinition from "../../../assets/workspace/.nbook/agent/profiles/builtin/summarizer.profile";
 import {createRasterTestFixtures} from "nbook/server/agent/test-utils/raster-fixtures";
+import {appLogger} from "nbook/server/app-logs/logger";
+import type {ToolExplanationInput} from "nbook/server/agent/harness/tool-explanation";
+
+/**
+ * 解释正文真正打模型，不适合当断言靶子：这里把 `generateToolExplanation` 换成记录入参的替身，
+ * 让「Harness 把哪个模型交给了下游」成为可直接断言的合同事实（真实回退逻辑仍在 Harness 内执行）。
+ */
+const toolExplanationStub = vi.hoisted(() => {
+    const explanation = "这一步读取了目标文件的内容。";
+    return {
+        explanation,
+        generateToolExplanation: vi.fn(async (_input: ToolExplanationInput): Promise<string> => explanation),
+    };
+});
+
+vi.mock("nbook/server/agent/harness/tool-explanation", () => ({
+    generateToolExplanation: toolExplanationStub.generateToolExplanation,
+}));
 
 const managedSummarizerProfile = normalizeAgentProfile(managedSummarizerProfileDefinition);
 
@@ -11166,6 +11184,153 @@ describe("NeuroAgentHarness", () => {
                 .rejects.toMatchObject({code: "invalid_public_tool_identity"});
         }
         expect(harness.eventHub.metrics(991_001).replayCount).toBe(0);
+    });
+
+    describe("辅助任务模型解析合同", () => {
+        type AuxiliaryHarnessSetup = {
+            profileKey: string;
+            auxiliaryModelKey: string | null;
+            installedModelKeys?: readonly string[];
+        };
+
+        /**
+         * 重建 Harness 并注册 Profile，把辅助模型 key 按生产路径写进 Workspace Config。
+         *
+         * 辅助模型 key 属于运行配置（Profile 作者契约 `runtimeDefaults` 不含该字段），
+         * 所以这里走 `agent.profiles.<key>.runtime.auxiliary.modelKey`，由 `explainToolCall`
+         * 真正加载的 effective config 提供。
+         *
+         * `modelResolver` 是构造注入点，只有它能把「Profile 模型」与「辅助模型」变成两个可区分的实例，
+         * 从而把断言落在「下游到底收到哪个模型」上，而不是「有没有抛错」。
+         */
+        async function installAuxiliaryHarness(input: AuxiliaryHarnessSetup) {
+            const profileModel = {...faux.getModel(), id: `profile-model-${randomUUID()}`};
+            const auxiliaryModel = {...faux.getModel(), id: `auxiliary-model-${randomUUID()}`};
+            const installedModelKeys = new Set(input.installedModelKeys ?? []);
+            const resolverCalls: Array<{profileKey: string; modelKey: string | null}> = [];
+            await mkdir(join(root, ".nbook"), {recursive: true});
+            await writeFile(join(root, ".nbook", "config.json"), JSON.stringify({
+                models: fauxProviderConfig(faux).models,
+                agent: {
+                    profiles: {
+                        [input.profileKey]: input.auxiliaryModelKey === null
+                            ? {}
+                            : {runtime: {auxiliary: {modelKey: input.auxiliaryModelKey}}},
+                    },
+                },
+            }, null, 4), "utf8");
+            const auxiliaryHarness = createTestHarness({
+                repo: harness.repo,
+                profiles: harness.profiles,
+                modelResolver: (_config, profileKey, override) => {
+                    const modelKey = override?.modelKey ?? null;
+                    resolverCalls.push({profileKey, modelKey});
+                    if (modelKey === null) {
+                        return profileModel;
+                    }
+                    if (!installedModelKeys.has(modelKey)) {
+                        throw new Error(`Model未安装：${modelKey}`);
+                    }
+                    return auxiliaryModel;
+                },
+                runtimeResolver: () => faux.runtime,
+                enableSessionSummarizer: false,
+            });
+            harness = auxiliaryHarness;
+            harness.profiles.register(defineAgentProfile({
+                manifest: {key: input.profileKey, name: "Auxiliary Model"},
+                initialSchema: Type.Object({}),
+                allowedToolKeys: [],
+                prepare() {
+                    return {};
+                },
+            }), false);
+            return {harness, profileModel, auxiliaryModel, resolverCalls};
+        }
+
+        it("未配置 auxiliary.modelKey 时解释使用 Profile 模型", async () => {
+            const profileKey = "test.auxiliary-unconfigured";
+            const setup = await installAuxiliaryHarness({profileKey, auxiliaryModelKey: null});
+            toolExplanationStub.generateToolExplanation.mockClear();
+            const created = await setup.harness.createAgent({profileKey, initial: {}});
+            const warnSpy = vi.spyOn(appLogger, "warn").mockResolvedValue(undefined);
+            try {
+                // createAgent 自身也会解析模型，这里只比较解释这一步新增的解析调用。
+                const resolverCallsBefore = setup.resolverCalls.length;
+                await expect(setup.harness.explainToolCall(created.sessionId, {
+                    toolName: "read_file",
+                    argsText: JSON.stringify({path: "chapters/01.md"}),
+                    resultText: "章节正文",
+                })).resolves.toEqual({explanation: toolExplanationStub.explanation});
+
+                const explanationInput = toolExplanationStub.generateToolExplanation.mock.calls.at(-1)?.[0];
+                expect(explanationInput?.model).toBe(setup.profileModel);
+                expect(explanationInput?.model).not.toBe(setup.auxiliaryModel);
+                expect(setup.resolverCalls.slice(resolverCallsBefore)).toEqual([{profileKey, modelKey: null}]);
+                expect(warnSpy.mock.calls.filter(([event]) => event === "agent.auxiliaryModel.fallback")).toHaveLength(0);
+            } finally {
+                warnSpy.mockRestore();
+            }
+        }, 30_000);
+
+        it("配置了可用 auxiliary.modelKey 时解释使用该辅助模型", async () => {
+            const profileKey = "test.auxiliary-available";
+            const auxiliaryModelKey = "installed/aux-model";
+            const setup = await installAuxiliaryHarness({profileKey, auxiliaryModelKey, installedModelKeys: [auxiliaryModelKey]});
+            toolExplanationStub.generateToolExplanation.mockClear();
+            const created = await setup.harness.createAgent({profileKey, initial: {}});
+            const warnSpy = vi.spyOn(appLogger, "warn").mockResolvedValue(undefined);
+            try {
+                const resolverCallsBefore = setup.resolverCalls.length;
+                await expect(setup.harness.explainToolCall(created.sessionId, {
+                    toolName: "read_file",
+                    resultText: "章节正文",
+                })).resolves.toEqual({explanation: toolExplanationStub.explanation});
+
+                const explanationInput = toolExplanationStub.generateToolExplanation.mock.calls.at(-1)?.[0];
+                expect(explanationInput?.model).toBe(setup.auxiliaryModel);
+                expect(explanationInput?.model).not.toBe(setup.profileModel);
+                expect(setup.resolverCalls.slice(resolverCallsBefore)).toEqual([{profileKey, modelKey: auxiliaryModelKey}]);
+                expect(warnSpy.mock.calls.filter(([event]) => event === "agent.auxiliaryModel.fallback")).toHaveLength(0);
+            } finally {
+                warnSpy.mockRestore();
+            }
+        }, 30_000);
+
+        it("配置的 auxiliary.modelKey 不可用时回退到 Profile 模型并记录回退日志", async () => {
+            const profileKey = "test.auxiliary-fallback";
+            const requestedModelKey = "missing/aux-model";
+            const setup = await installAuxiliaryHarness({
+                profileKey,
+                auxiliaryModelKey: requestedModelKey,
+                installedModelKeys: ["installed/aux-model"],
+            });
+            toolExplanationStub.generateToolExplanation.mockClear();
+            const created = await setup.harness.createAgent({profileKey, initial: {}});
+            const warnSpy = vi.spyOn(appLogger, "warn").mockResolvedValue(undefined);
+            try {
+                const resolverCallsBefore = setup.resolverCalls.length;
+                await expect(setup.harness.explainToolCall(created.sessionId, {
+                    toolName: "read_file",
+                    argsText: JSON.stringify({path: "chapters/01.md"}),
+                })).resolves.toEqual({explanation: toolExplanationStub.explanation});
+
+                const explanationInput = toolExplanationStub.generateToolExplanation.mock.calls.at(-1)?.[0];
+                expect(explanationInput?.model).toBe(setup.profileModel);
+                expect(explanationInput?.model).not.toBe(setup.auxiliaryModel);
+                expect(setup.resolverCalls.slice(resolverCallsBefore)).toEqual([
+                    {profileKey, modelKey: requestedModelKey},
+                    {profileKey, modelKey: null},
+                ]);
+                expect(warnSpy).toHaveBeenCalledWith("agent.auxiliaryModel.fallback", expect.objectContaining({
+                    profileKey,
+                    modelKey: requestedModelKey,
+                    error: expect.stringContaining(`Model未安装：${requestedModelKey}`),
+                }));
+            } finally {
+                warnSpy.mockRestore();
+            }
+        }, 30_000);
     });
 
 });

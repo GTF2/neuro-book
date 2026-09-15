@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: agent.auxiliary-task-model
 owners:
   - agent-runtime
@@ -106,7 +106,13 @@ owners:
 
 ## 实现合同
 
-`planned`：目标合同已批准，代码**已落地**——字段与 DTO、配置规范化、四层继承解析、草稿与界面组、harness 消费与回退均已实现。尚未闭合的两项：① 真实 Provider 下「解释这一步确实使用指定模型」的端到端观测未做（需 Provider 授权）；② 「指定模型不可用 → 回退」分支目前只有代码路径与日志点，没有合同测试。当前进度与未闭合项同 `docs/specs/README.md`「规范缺口」P1 行；闭合后原地晋升 `implemented` 并在本节补齐 owner、稳定入口与证据。
+- owner：字段与读写路径归 config（`shared/agent/profile-runtime-settings.ts`、`shared/dto/config.dto.ts`、`server/config/normalizer.ts`、`server/agent/profiles/profile-runtime-settings.ts`）；运行期消费归 agent-runtime（`server/agent/harness/neuro-agent-harness.ts`）。Profile 模型解析**复用**既有 `modelResolver`，本能力不复制一套解析规则。
+- 公开接口：运行策略 patch 与解析结果中的 `auxiliary.modelKey`（`string | null`），属向后兼容的新增；解析结果始终输出该字段，未配置时为 `null`。不新增 HTTP 路由、agent 工具或环境变量。
+- 稳定入口：`auxiliary.modelKey` 字段与其 DTO；`normalizeProfileRuntimeSettingsPatch` 的 `auxiliary` 分组规范化（该分组此前在读写配置时被静默丢弃，属已修缺陷）；四层继承解析；`NeuroAgentHarness` 的 `modelResolver` 构造注入点。回退逻辑 `resolveAuxiliaryModel` 为 private，对外可观察的消费入口是 `explainToolCall`。
+- 回退语义：`modelKey` 非 `null` 时先用 `{modelKey}` 解析；解析抛错则记 `agent.auxiliaryModel.fallback`（含 `profileKey` / `modelKey` / 错误摘要）并回退到该 Profile 的模型，辅助功能保持可用。回退只写运行日志，不进用户面、不改既有 provider 错误码。`modelKey` 为 `null` 时直接走 Profile 模型，不尝试解析 override。
+- 字段三态：省略（本层不表态，继续继承下一层）、`null`（显式跟随）、非空字符串（指定 key，保存前去除首尾空白）。空字符串等非法值不参与遮蔽，按「本层未表态」处理。
+- 不进对话：解释调用不写会话历史、不进入主对话上下文、不影响后续 Agent 决策（沿用既有旁路契约）。
+- 测试入口：`server/config/normalizer.test.ts` 与 `app/components/novel-ide/settings/profile-runtime-settings.test.ts`（字段三态与草稿组装）；`server/agent/harness/neuro-agent-harness.test.ts` 的「辅助任务模型解析合同」（未配置 / 指定可用 / 指定不可用回退三条路径，断言落在下游实际收到的模型、resolver 调用序列与回退日志）；`scripts/smoke/real-model/auxiliary-model.test.ts`（**真实 Provider 端到端观测**：指定的辅助模型走 openrouter、未配置走 Profile 的 deepseek，按请求 host 与请求体 `model` 判定）。
 
 ## 证据
 
