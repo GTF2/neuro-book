@@ -45,8 +45,8 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 3. 当前状态（2026-09-15）
 
-- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15：HEAD `1176a5fb`（**该提交属并行执行者，本地领先 origin 1 条未推**）；领先上游 74 提交、**落后 11**（上游已到 `45906272` / 0.10.3-canary）。
-- 本人最近两条提交：`ea77062b`（Workflow 只读数据查询 + `infoControl` 自动编译）、`53e270ca`（修 leader 资产过期断言）。两者均已推 origin；工作区仍有并行执行者未提交的改动（**未动、未提交**，清单见下）。
+- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15 17:50（**GTF 正式授权 Neo 接手项目**，授权范围：Leader 单核 + 按需起子代理；推送 origin、合并上游、真实模型调用三项已获授权）：HEAD `ba7cd006`（Merge upstream/master 0.10.3-canary）；**已与上游追平（领先 77 / 落后 0）**，领先 `origin/feat/writing-doctrine-alignment` 13 条待推。
+- Neo 本轮提交（2026-09-15）：`cd109f7b`（语言硬规则加固）、`ba7cd006`（合并上游 0.10.3-canary，解决 4 处冲突）。更早两条为 `ea77062b`（Workflow 只读数据查询 + `infoControl` 自动编译）、`53e270ca`（修 leader 资产过期断言），均已推 origin。工作区仍有并行执行者未提交的改动（**未动、未提交**，清单见下）；这批改动已有独立备份（见 §5「在途改动备份」）。
 - 本文件曾在 2026-09-14 被并行执行者删除，作者已还原；同名 `CLAUDE.md` 已删且不再使用。看到 `D HANDOFF.md` 这类删除时先确认来源，不要当成自己的改动。
 - ⚠️ **有多个 AI/工具在同一仓库并行提交**（例：`676af095`、`282bc90d`、`9ab4bc56`、`ee651716`、`1176a5fb` 都不是"我"提交的）。
   开工前先 `git log --oneline -15` 看有没有新东西；**绝不回退、覆盖来源不明的提交**；做完自己的事再提交；提交时**只 `git add` 自己的文件**，别用 `git add -A`。
@@ -77,6 +77,17 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 14. **写回校验清单（StoryForge 机制三，2026-09-14 完成）**：把散落在四处以上的写回校验项收敛成声明式清单（项名 / 判据 / 失败动作 block·warn·record / 消费方），成为各消费方的单一索引入口。新增 Reference `assets/reference/plot/write-back-checks.md`；消费方只加指向不改语义；Spec `docs/specs/plot/write-back-checks.md`（implemented）；Work `w00019-write-back-checks`；接缝 S21。**至此 StoryForge 三机制（未来影响分析 / 回读验证+回执 / 写回校验注册表）全部完成。**
 15. **Workflow 只读数据查询 + `infoControl` 自动编译（2026-09-15 完成，提交 `ea77062b`）**：宿主**首次装配** `ActivityExecutor`（装配点 `server/agent/workflow/workflow-demo-service.ts`），注册版本化只读查询 `plot.chapter-info-control@1`（输入 `{chapterId}` → 章节信息控制四字段）；`chapter-write-review-revise` 在 `infoControl` 缺省时按 `chapterId` 自动编译核对清单，**不再靠调用方手填**。新增模块 `server/agent/workflow/workflow-data-queries.ts`；Proposal `workflow-project-data-queries.md` 升 `accepted`；Spec `docs/specs/agent/workflow-data-queries.md`（**仍是 `planned`**，见待办）；Work `w00020-workflow-data-queries`；接缝 S22（S9 范围同步扩展）。**三条设计要点**：①返回值新增 `infoControlSource`（`auto`/`provided`/`missing`）而**不原地改**既有布尔 `infoControlChecked`——它已被 `w00016` 合同测试与主链 skill 消费，改语义属静默破坏；②**能力缺席 ≠ 查询失败**：宿主未装配执行器 / 未注册该引用（内核抛 `ActivityExecutorNotConfiguredError` / `ActivityDefinitionNotFoundError`）视为**部署状态**，退回 `w00016` 的漏传显形且 run 仍完成（否则测试 / demo 宿主跑不了同一份 workflow 资产）；查询本身失败（Project 未打开 / 章节不存在 / DB 错误）才 fail-closed，绝不把「查不到」说成「没问题」；③只读、无副作用，成功结果进 journal、重放命中返回原值不重读库——与 Temporal Activity / `sideEffect`、Restate `ctx.run` 同构，**复用内核既有语义而非另造**（内核 `runtime.ts` 命中 journal 时执行体完全不被调用）。显式传入 `infoControl` 始终优先，且此时**不发起查询**。
 16. **修 leader 资产过期断言（2026-09-15，提交 `53e270ca`）**：`server/agent/profiles/leader-assets-profile.test.ts` 沿用 upstream 旧口径，断言 leader 默认 profile 含「`invoke_agent.message` 必须写清」。该口径已被本 fork 按宪法第二/五条**反转**——`assets/reference/agent/leader-default.md` 现要求 message「只写交付要求」，意图级内容不下发 writer（相对 upstream 仅 3 行增删）——**资产是对的，测试是过期的一侧**。断言改为锁住反转后的合同，并**额外**断言 `意图级内容不下发 writer`（否则单靠前半句，有人删掉宪法实质那句测试仍绿）。登记在接缝 S16。
+17. **设置保存反馈 + 辅助任务模型收口（2026-09-15，提交 `1176a5fb`，22 文件 / +549 -23）**：两个交付面，**代码由本轮的并行执行者写，我（写本条的 AI）只做核对、补规范归属、登记与独立复验**。
+   ①**辅助任务模型来源**：「AI 解释这一步」原先直接用会话 Profile 的模型（通常最贵），现在运行策略新增一组 `auxiliary.modelKey`——`null` = 跟随本 Profile 的模型（默认，与改动前完全一致），指定值不可用时**回退 Profile 模型并记 `agent.auxiliaryModel.fallback` 警告日志**（旁路小功能不该因一个失效 key 整体不可用）；四层继承沿用既有机制，与「自动摘要」同款写法。运行期入口：`explainToolCall` → 私有 `resolveAuxiliaryModel`。界面「辅助任务」组复用同页 `NovelIdeModelSelect`（候选与「默认模型」同源，消灭手填 key 打错），历史保存过但已不在清单中的 key 合成一条「不可运行 · key」选项。**顺带修真机缺陷**：`normalizeProfileRuntimeSettingsPatch` 此前只规范化 summarizer / compaction / fileChangeNotice，`auxiliary` 在读写配置时被静默丢弃（选完保存界面立刻回弹成「跟随」、配置文件里始终是 `{}`）；`mergeProfileRuntimePatches` 与 `resolveProfileRuntimeSettings` 本来就支持该分组，所以只补这一处。**默认值保持「跟随本 Profile」**（2026-09-15 开发者拍板，不写死厂商模型）。
+   ②**保存反馈改造**：「Agent Profile 模型」面板保存成功后标题下方的绿色成功横幅**删除**，改为头部「保存设定」按钮三态（默认 / 有改动 accent / 保存成功绿底 +「已保存」2.4 秒回落）；`SettingsSavePanelExpose` 的 `justSaved` 是**可选字段**，其余 5 个面板不受影响；再次改动即时取消成功态；「重置主目录」提示改 `notification.success`。
+   治理：新增 `planned` Spec [`docs/specs/agent/auxiliary-task-model.md`](docs/specs/agent/auxiliary-task-model.md)（辅助任务此前**完全没有规范归属**）并登记 `docs/specs/README.md`；Proposal `agent-auxiliary-task-model.md` 升 `accepted`；接缝登记 **S23**；Work `w00021-auxiliary-model-and-save-feedback` / Task `t01`。
+   验证：**在临时 worktree 里只放本批子集**（`bun install` + `nuxt:prepare` + `generate`）跑 `server/config` + `app/components/novel-ide/settings`，**13 文件 / 127 条全通过、typecheck 退出码 0**；完整工作区另跑 14 文件 / 144 条全通过；`docs:check` 5515 文件 0 失败、`governance:check` 通过。子集纯度核对：worktree 内 harness 的 `followUp` 计数与 HEAD 一致（93），已暂存的 i18n 里 `followUpQueue` 出现 0 次。真机证据是上一轮留下的 `out/settings-saved-flash.png`（**本收尾轮只复核、未复跑探针**）。
+   **未验证**：真实 Provider 下「解释这一步」是否真用指定模型；回退分支只有代码路径与日志点、**无合同测试**（→ 待办表有对应晋升条件）。**未推送** `origin`。
+18. **基线收口（2026-09-15，Neo 接手项目后的第一刀）**：三件事。
+   ①**语言硬规则落地提交**（`cd109f7b`，3 文件 / +17 -1）：上一轮改的三处入口（`AGENTS.md` 文首块、`.omp/RULES.md` 第 1 条、`.agents/AGENTS.md` 加载首位）当时只跑了门禁、没提交，现补提；`governance:check` → `failures: []`，`docs:check` → 5515 文件 0 失败。
+   ②**合并上游**（`ba7cd006`，落后 11 → **追平**）：4 个文件冲突，逐处按语义解决——`source-runtime.ts` 与 `agent-jobs-wiring.test.ts` 取上游（上游 `392faaa3` 独立修了同一问题「应用不得跨根 import 根 #scripts」，且 fail closed 比 fork 的按包位回退更严格，**S13 接缝归零**）；`useInlineEditorAgentController.ts` 取上游（`#235` 把行内 AI 所有权从 Surface 实例搬到 Inline controller，从根上取代了 fork 的 `inlineOperationScopeOf` 补丁）；`index.vue` 结构取上游、**保留 fork 的可见反馈**（新登记 **S24**）。合并前把未提交改动 stash 收好、合并后原样 pop，**全程零冲突**。
+   ③**验证**：`app/composables` 8 文件 / 47 条、`app/components/novel-ide/agent` 29 文件 / 317 条、server 基线 38 文件 / 275 条，**全绿**；`packages/neuro-book` typecheck 无本次引入的错误。
+   **未收口**：typecheck 仍有 7 处错误（6 处 `DesktopTitleBar.vue` 键盘导航真 bug + 1 处队列功能在途代码），**均非本次合并引入**，见待办表。
 
 ### 进行中 / 待办（2026-09-15 重排：只留未完成项，按优先级；已完成见上）
 
@@ -84,10 +95,14 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 |---|---|---|
 | **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑对话 / 脚本路径。**等 UI 执行者回一句**：帧的 `instant` 显示走 (a) 原始数字，还是 (b) 我补「instant ↔ 项目日历时间」转换接口；选 (b) 我做后端那半 |
 | **P1** | `agent.workflow-data-queries` Spec 晋升 `implemented` | 代码与测试已落地（见已完成第 15 条），Spec 仍 `planned`，两点未闭合：① 宿主执行器用的是内核**进程内**执行器（不提供进程重启 / 重试 / lease 保证；对只读查询可接受，因为内核 journal 才是重放第一真相），生产级执行器边界归已接受提案 `agent-model-execution-surfaces.md`；② 查询触及**真实 Project 数据库**的端到端路径尚无独立集成测试（现有测试注入 reader + mock 了 facade 边界）。补一个集成测试即可原地晋升 |
+| **P1** | `agent.auxiliary-task-model` Spec 晋升 `implemented` | 代码与测试已落地（见已完成第 17 条），Spec 仍 `planned`，两点未闭合：① **真实 Provider 下「AI 解释这一步」确实使用指定模型**未观测（需 Provider 授权）；② 「指定模型不可用 → 回退 Profile 模型」只有代码路径与 `agent.auxiliaryModel.fallback` 日志点、**没有合同测试**。补一条回退合同测试 + 一次 Provider 观测即可原地晋升 |
 | P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
 | P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
-| P2 | 合并上游（例行） | 2026-09-15 实测：领先上游 74 / **落后 11**（上游已到 `45906272` / 0.10.3-canary）；并行执行者有未提交改动，现在合并风险高，等其落定后再 `git fetch upstream && git merge upstream/master` 并跑 `docs:check` |
-| P2 | 推 origin | 本地领先 1 条：`1176a5fb`（**并行执行者的提交**）。不是自己的提交，推之前先向其归属确认 |
+| ~~P2~~ | ~~合并上游（例行）~~ **已完成（2026-09-15）** | 见已完成第 18 条。当前与上游**追平**（领先 77 / 落后 0，上游顶端 `45906272` / 0.10.3-canary） |
+| **P1** | **推 origin（已获授权，待执行）** | 本地领先 13 条（含 `cd109f7b`、`ba7cd006`）。GTF 已于 2026-09-15 明确授权推送 origin |
+| **P1** | **修 `DesktopTitleBar.vue` 键盘导航（真 bug）** | typecheck 报 6 处 TS2339，全在该文件。根因：`d5b225dc`（中文化提交）把 `menus` 由常量数组改为 `computed`，但 `menuButtonKeydown` / `menuItemKeydown` 仍按数组访问 `menus.length` / `menus[index]`；`<script setup>` 里 computed 不自动解包 → 算出 `NaN`、取到 `undefined`。**后果：桌面标题栏菜单的左右方向键导航实际是坏的**。修法：那 4 处改 `menus.value.*`（约 4 行）。按「发现别的问题只报告不擅修」的惯例，**等 GTF 一句话** |
+| P2 | 队列功能收口 | `docs/specs/agent/session-followup-queue.md` 仍是 `planned`，仓库里**没有任何 followup 相关测试文件**；那批代码是并行执行者的在途工作（**未提交**，清单见开头「并行在途清单」），最后改动停在 2026-09-14 22:24–23:30（**已 18+ 小时无动静**）。typecheck 另报 `AgentChatSurface.vue(2687,37)`：`confirm()` 被传了 `{title, message}` 对象，而签名要 `string`。**处置待 GTF 决定**：收编（补测试 + 修类型）还是废弃 |
+| P2 | `docs/proposals/README.md` 补登记行 | 该文件里 follow-up 队列提案行与辅助任务模型提案行**仍是相邻两行未提交**；等它空闲时补单行提交（只加自己那行，不替对方提交） |
 | P2 | 只读查询面扩展（可选） | 当前只注册 1 个查询引用 `plot.chapter-info-control@1`；新增消费者 = 新增引用（名字带显式版本后缀），不改既有引用的参数与结果形状 |
 
 ---
@@ -123,6 +138,13 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | 文本搜索看不见点号目录 / 被 gitignore 的目录 | 搜索工具对 `.nbook`、`.agents` 返回 0 条 ≠ 不存在；`packages/neuro-book/assets/workspace` 被 `.gitignore` 排除**但其中很多文件是 tracked 的**，凡按 `.gitignore` 过滤的搜索（含 IDE）会整棵跳过它。**对策：搜仓库一律 `git grep --no-index -n "<pattern>"`**，或列目录 / 直接读文件确认。（2026-09-15 曾因此把「资产里实际不存在」错当成依据） |
 | 在会话里跑测试 | 不想找 node 路径时可用 bun：`bun run --cwd "…/neuro-book/packages/neuro-book" test -- <过滤词>`（本机实测可用，bun 1.4.2） |
 | PowerShell 传 JS 给 bun | `bun -e "…"` 会被吞引号 → 写成临时 `.mjs` 再 `bun <文件>`，用完删除 |
+| **暂存区纪律** | 别在暂存区留东西：同仓别的 AI 一条 `git commit` 就可能把你的暂存内容一起带走。**「暂存 + 提交」一把做完**；`git add` 只点自己的文件，永不 `git add -A` |
+| 部分暂存（共享文件只有自己那几段要提交） | `git diff --output=<文件> -- <路径>` 取原始补丁 → 用 `[System.IO.File]::ReadAllText/WriteAllText`（UTF-8 **无 BOM**）按 `@@` 分段过滤 → 写回时**末尾必须补一个换行**（少了 `git apply` 会报 `corrupt patch`）→ `git apply --cached`。纯度核对用 `git diff --cached --numstat`（本机实测 harness +29/-1、两份 i18n 各 +5/-2） |
+| 独立 worktree 做子集验证 | 只 `bun install` 不够：还要 `bun run --cwd packages/neuro-book nuxt:prepare`（生成 `.nuxt/tsconfig*`，否则 vitest 报 `Tsconfig not found`）和 `bun run --cwd packages/neuro-book generate`（生成 `server/generated/prisma`，否则类型检查报 `Cannot find module 'nbook/server/generated/prisma/client'`）。临时目录放 `.worktree/`（被 `.gitignore` 忽略）；`bun install` 首次约 200s |
+| 删除目录 | 用**普通绝对路径** + `-Recurse -Force`（宿主的安全删除会走回收站，`\\?\` 长路径前缀会被它拒绝：`relative path rejected`）；Git 自己删含 `node_modules` 的目录会报 `Filename too long`，所以用 PowerShell 删、删完再 `git worktree prune` |
+| **提交能力（2026-09-15 实测更正）** | **本环境可以正常 `git commit`。** 实测：`commit --allow-empty` 成功（`7791f828` → `31290b33`）、`git update-ref refs/heads/feat/writing-doctrine-alignment <sha>` 回退干净、未提交文件无损；`git update-ref refs/heads/__probe__ HEAD` 创建引用再删除也成功。**上一轮记的「本沙箱不能移动分支引用、不要在此环境 commit」是沙箱开启时的假阳性，已作废。** 提交一律 `git -c user.name=GTF2 -c user.email=GTF2@users.noreply.github.com commit -F <消息文件>`（本轮 `cd109f7b`、`ba7cd006` 均如此落地）；提交消息写文件再传，别用 `-m` |
+| **在途改动备份** | `.workbuddy/backups/2026-09-15-followup-inflight/`：`all-uncommitted.patch`（合并上游前的全部未提交差异）+ `untracked.tar.gz`（5 个未跟踪项）。合并流程为 **stash → merge → pop**（`git stash push -u`），全程零冲突；该备份仍保留作兜底 |
+| **合并上游的稳妥流程（2026-09-15 实测）** | ① 先 `git status` 看清哪些改动是自己的、哪些是别人的；② 只把**自己的**文件单独提交（`git add` 点名，永不 `-A`）；③ `git stash push -u -m "<说明>"` 收好其余改动；④ `git fetch upstream && git merge upstream/master --no-edit`；⑤ 冲突逐处按语义解决（两侧独立修同一问题**优先取上游**，fork 独有的改进要**融合保留**）；⑥ 跑 typecheck + 受影响测试；⑦ 提交后 `git stash pop` 原样恢复 |
 
 ---
 

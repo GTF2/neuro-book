@@ -9,7 +9,7 @@
 
 ## 一、改动面总览（2026-09-14 实测）
 
-`git diff --stat upstream/master...HEAD`：**259 文件** / +15241 -1487（2026-09-14 实测，S19 落地后复测）。较上一轮基线 245 文件 / +14507 -1470 的增长来自两部分：并行执行者已提交的 Agent 会话线收口，以及 S19 新增的 4 个文件（Reference 正文、Spec、Work 登记）。清单里包含 `CLAUDE.md` 删除项与 `HANDOFF.md`（曾被并行执行者删除后由作者还原），它们不是本 fork 写作宪法工作。
+`git diff --stat upstream/master...HEAD`：**294 文件** / +17137 -1529（2026-09-15 合并上游 `45906272` / 0.10.3-canary 后实测；上一轮基线为 259 文件 / +15241 -1487，两次计量的 merge-base 不同，不宜直接相减）。清单里包含 `CLAUDE.md` 删除项与 `HANDOFF.md`（曾被并行执行者删除后由作者还原），它们不是本 fork 写作宪法工作。
 
 | 类别 | 文件数 | 性质 | 冲突风险 |
 |---|---|---|---|
@@ -22,7 +22,7 @@
 | `assets/reference/world-engine/**`（README 索引补行 + 新增 canon-read-back.md） | 2 | 新增 fork 正文 + 上游索引补一行 | 低（加法为主） |
 | `shared/dto/plot.dto.ts`、`api/projects/plot/**`、`openapi/route-map.ts`、`prisma/project.schema.prisma`、`workspace-files/project-workspace.ts`、`utils/novel-chapter.ts` | 7 | 加法式小切口 | 中低 |
 | `docs/`（doctrine、standards、specs 注册表、testing）、`AGENTS.md`、`README`、`CONTRIBUTING`、`PROJECT-STATUS.md` | ~12 | fork 治理 + 外科手术式改写 | 低 |
-| `packages/neuro-book/{nuxt.config.ts,app/spa-loading-template.html,scripts/cli/source-dev.ts,scripts/cli/source-runtime.ts}`（启动体验补丁：首屏加载占位 + 就绪后打开浏览器） | 4 | 加法式小切口（新增占位文件 + 少量配置/启动逻辑） | 低 |
+| `packages/neuro-book/{nuxt.config.ts,app/spa-loading-template.html,scripts/cli/source-dev.ts}`（启动体验补丁：首屏加载占位 + 就绪后打开浏览器） | 3 | 加法式小切口（新增占位文件 + 少量配置/启动逻辑） | 低 |
 
 ## 二、核心接缝逐条登记（改上游文件的地方）
 
@@ -40,7 +40,7 @@
 | S10 | `packages/neuro-book/package.json`、`docs/testing/README.md`、`AGENTS.md`、`docs/README.md`、`docs/specs/README.md`、`CONTRIBUTING*.md`、`PROJECT-STATUS.md` | 外科手术式单点（脚本项/优先级行/表格行/段落）；`AGENTS.md` 另新增「与开发者的硬性约定」7 条小节（fork 开发者的协作约束，含 CodeBuddy 宿主规则文件指针）；2026-09-14 修正 `CONTRIBUTING{,.en}.md` 的 monorepo 命令（`bun run --cwd packages/neuro-book …`）并同步 `PROJECT-STATUS` 版本行 | 各 1-3 行 + 约 14 行 | 部分可（治理类可另建文件） |
 | S11 | `scripts/smoke/slice-vs-told-contrast.ts` | **新增文件**（对照实验脚本）；2026-09-14 重建：改用实验专用 workflow，A 组 writer 提示由脚本拼接，唯一变量 = 意图清单是否随提示下发 | 重写约 90 行 | 不适用（加法） |
 | S12 | `.agents/works/w00003-...`、`.gitignore` | 继承的 fork 治理改动 | 小 | 不适用 |
-| S13 | `packages/neuro-book/scripts/cli/source-runtime.ts` | **原有（此前漏登）**：`repositoryRoot` 改为经 `NEURO_BOOK_REPOSITORY_ROOT` 注入、按包位上溯回退，不再 import 根 workspace 工具 | 改 1 段，约 4 行 | 不易（launcher 行为） |
+| ~~S13~~ | ~~`packages/neuro-book/scripts/cli/source-runtime.ts`~~ | **已注销（2026-09-15）**：上游 `392faaa3` 独立修了同一问题（「应用不得跨根 import 根 #scripts」），且实现更严格——仓库根只由 `source-dev.ts` 注入、缺失即 fail closed。fork 原写法（`NEURO_BOOK_REPOSITORY_ROOT` 注入 + 按包位上溯回退）会静默掩盖注入失败，故合并时取上游版，本接缝消失 | — | 已归零 |
 | S14 | `packages/neuro-book/app/spa-loading-template.html`（新增）+ `packages/neuro-book/nuxt.config.ts`（`spaLoadingTemplate` + 存在性断言） | SPA 首屏加载占位。上游 `ssr: false` 且未配 `spaLoadingTemplate`，首屏 HTML 只有空的 `<div id="__nuxt"></div>`，JS 下载并执行前完全白屏（dev 模式按需编译可达数秒）。**坑**：该配置项传字符串时 Nuxt 走 `resolve(srcDir, value)`，`~` 别名**不展开**（`"~/x.html"` → `<srcDir>/~/x.html`）；文件不存在则报 `NUXT_B7016` 并 `return ""`，加载界面**静默消失**。故此处传构建时解析的绝对路径，并加断言使其缺文件即启动报错。同文件另加 `vite.ssr.external: ["node:sqlite", "bun:ffi"]`，消除 Rollup 对这两个宿主内置模块反复报的解析告警（两者均以 `await import()` 惰性加载） | 新增 1 文件 + 上游改约 18 行 | **可**（上游若自行引入加载占位则本项归零） |
 | S15 | `packages/neuro-book/scripts/cli/source-dev.ts` | 直接执行 CLI 时，先 HTTP 探测到应用真正可服务，再打开系统浏览器（跨平台：`start` / `open` / `xdg-open`）。不用 `nuxt dev --open`，因其在 Vite 监听时即抢跑、早于 Nitro 编译完成十余秒。`import.meta.main` 守卫保证被 import 时（launcher 测试、Manager 内部入口）不生效；`NEURO_BOOK_DEV_NO_OPEN=1` 亦可关闭。另注入 `NODE_OPTIONS=--disable-warning=ExperimentalWarning`（保留用户既有 NODE_OPTIONS），静音 `node:sqlite` 的实验性 API 警告（需 Node 21.3+，本机 v22.22.2） | 新增 2 个辅助函数 + 1 段调用 + 1 项环境变量，约 58 行 | 不易（launcher 行为） |
 
@@ -59,6 +59,8 @@
 | S22 | `server/agent/workflow/workflow-data-queries.ts`（**新增**）、`server/agent/workflow/workflow-demo-service.ts`、`assets/workspace/.nbook/agent/skills/novel-writing/phases/03-chapter-loop.md`（与 S16/S18/S19/S21 同文件） | Workflow 只读数据查询：宿主首次装配 `ActivityExecutor`（`WorkflowRunner` 第三参 `options.activities`），注册版本化只读查询 `plot.chapter-info-control@1`（输入 `{chapterId}` → 章节信息控制四字段），供 `chapter-write-review-revise` 在 `infoControl` 缺省时按 `chapterId` 自动编译事后核对清单。只读、无副作用；成功结果进 journal、重放命中返回原值不重读库；**能力缺席**退回漏传显形（run 仍可完成），**查询失败** fail-closed。复用既有 Project 作用域登记（`runReadyProjectOperation` + `activateReadyProjectModule(PROJECT_PLOT_WORLD_MODULE_TOKEN)`） | 新增 1 文件；`workflow-demo-service.ts` 装配点约 +8 行；skill 1 处；`workflow.ts` 改动并入 S9 | 加法为主；`workflow-demo-service.ts` 属上游文件，装配点被上游改动时需人肉处理 |
 
 | S23 | `shared/agent/profile-runtime-settings.ts`、`shared/dto/config.dto.ts`、`server/agent/profiles/profile-runtime-settings.ts`、`server/config/normalizer.ts` + `normalizer.test.ts`、`server/agent/harness/neuro-agent-harness.ts`（另加两处，与 S9/S22 的宿主改动不同段）、`app/components/novel-ide/settings/{ProfileRuntimeSettingsFields.vue,AgentProfileDefaultsPanel.vue,AgentProfileDetailPanel.vue,profile-runtime-settings.{ts,test.ts},NovelIdeAgentProfileModelSettingsPanel.vue}`、`app/components/novel-ide/NovelIdeSettingsDialog.vue`、`app/i18n/locales/{zh-CN,en-US}.ts` | 辅助任务模型来源 + 设置保存反馈：运行策略新增 `auxiliary.modelKey` 一组（`null` = 跟随本 Profile，四层继承沿用既有机制），`explainToolCall` 按该值解析模型、不可用时回退 Profile 模型并记 `agent.auxiliaryModel.fallback` 警告日志；`normalizeProfileRuntimeSettingsPatch` 补 `auxiliary` 分组规范化——该分组此前在读写配置时被静默丢弃（真机缺陷：选完保存界面即刻回弹），`mergeProfileRuntimePatches` / `resolveProfileRuntimeSettings` 本来就支持，故只补这一处；设置面板新增「辅助任务」组（复用同页 `NovelIdeModelSelect`，避免两处模型清单漂移）；保存成功反馈由标题下方绿色横幅改为「保存设定」按钮上的 2.4 秒绿底 ✓「已保存」（`SettingsSavePanelExpose` 增可选 `justSaved?`，其余面板不受影响） | 核心约 120 行 / UI 与文案约 90 行 | 不易（模型解析在 harness、字段在共享 DTO 与配置读写层，都是行为所在）；UI 与 i18n 改动属本表「`app/components/novel-ide/**`」既定的继承定制区，不新增独立接缝 |
+
+| S24 | `packages/neuro-book/app/pages/index.vue` | 行内 AI Prompt Bar 的 fork 改进（上游没有）：① owner 缺失时不再静默 `return`，改走 `notifyInlinePromptUnavailable()` 给可见反馈（否则按钮点了没反应）；② 发送被取代（`result.status === "superseded"`）时写状态文案 + 警告通知，避免界面「闪一下消失」、无法区分「没发出去」与「发了没输出」。另含 `d5b225dc` 的中文化（菜单分区标题「样式 / 插入」、通知标题「行内 AI」）。**结构已在 2026-09-15 跟随上游 #235**：owner 不再持有 surface、`sendPrompt` 不再传 `operationKey`、refresh watch 改走 `inlineEditorAgent.operationScopeKey`——fork 原先的 `inlineOperationScopeOf` 补丁已被上游从根上取代（`captureOperation` 去参），该函数现无生产消费者、仅存自身测试 | 相对上游约 41 行新增 | 不易（须与上游的行内 AI 所有权结构同步，上游改这段即需人肉融合） |
 
 ## 三、继承的定制（非本 fork 写作宪法工作，需要所有者决策）
 
