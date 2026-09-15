@@ -2,6 +2,7 @@
 import {computed, ref} from "vue";
 import {storeToRefs} from "pinia";
 import Dialog from "nbook/app/components/common/Dialog.vue";
+import PlotKeyframeLedgerTab from "nbook/app/components/novel-ide/plot/keyframe/PlotKeyframeLedgerTab.vue";
 import PlotDecisionLedgerTab from "nbook/app/components/novel-ide/plot/planning/PlotDecisionLedgerTab.vue";
 import PlotPromiseLedgerTab from "nbook/app/components/novel-ide/plot/planning/PlotPromiseLedgerTab.vue";
 import PlotWorkbenchInspector from "nbook/app/components/novel-ide/plot/workbench/PlotWorkbenchInspector.vue";
@@ -81,6 +82,7 @@ const emit = defineEmits<{
 const MARKDOWN_LINK_PATTERN = /\[([^\]]+)]\(([^)]+)\)/g;
 
 const novelIdeStore = useNovelIdeStore();
+const {t} = useI18n();
 // activeTab 直接读写 store 的 plotWorkbenchTab:侧栏计数入口、Scene 芯片跳转都通过它定位 tab;
 // plotPlanningFocusId 是账本聚焦请求(Inspector 芯片跳转时写入,对应 tab 消费一次);
 // workspaceTree 是 refs 目标候选的内容节点来源(与 @ 引用菜单同源)。
@@ -89,12 +91,14 @@ const inspectorMode = ref<"thread" | "scene" | null>(null);
 const search = ref("");
 const threadMode = ref<"all" | "main" | "support" | "active" | "draft" | "paused" | "unmounted" | "pinned">("all");
 
-// 三个真 tab:线程规划(默认)/承诺账本/决策记录,主体随 tab 切换。
-const tabs: Array<{value: "thread" | "promises" | "decisions"; label: string; icon: string}> = [
+// 四个真 tab:线程规划(默认)/承诺账本/决策记录/关键帧,主体随 tab 切换。
+const tabs = computed<Array<{value: "thread" | "promises" | "decisions" | "keyframes"; label: string; icon: string}>>(() => [
     {value: "thread", label: "线程规划", icon: "i-lucide-git-branch-plus"},
     {value: "promises", label: "承诺账本", icon: "i-lucide-scroll-text"},
     {value: "decisions", label: "决策记录", icon: "i-lucide-gavel"},
-];
+    // 关键帧(写作宪法第三条):新文案走 i18n,与 en-US 对等。
+    {value: "keyframes", label: t("plotKeyframe.tabLabel"), icon: "i-lucide-milestone"},
+]);
 
 const selectedThread = computed(() => {
     return props.threads.find((thread) => thread.id === props.selectedThreadId) ?? null;
@@ -422,7 +426,7 @@ function toPanelRefs(refs: WorkbenchManualRef[]): PlotThreadPanelRef[] {
 
                 <!-- 决策记录 tab:自含数据加载,引用/锚点点场景同样跳回线程规划 -->
                 <PlotDecisionLedgerTab
-                    v-else
+                    v-else-if="activeTab === 'decisions'"
                     :project-root="props.projectRoot"
                     :acts="props.acts ?? []"
                     :chapters="props.chapters"
@@ -430,6 +434,12 @@ function toPanelRefs(refs: WorkbenchManualRef[]): PlotThreadPanelRef[] {
                     :scenes="props.scenes"
                     @select-scene="jumpToSceneFromLedger"
                     @mutated="emit('planningMutated', $event)"
+                />
+
+                <!-- 关键帧 tab(写作宪法第三条):自含数据加载;人不写帧时会话/脚本是唯一入口,这里补上界面入口 -->
+                <PlotKeyframeLedgerTab
+                    v-else
+                    :project-root="props.projectRoot"
                 />
             </div>
         </div>
