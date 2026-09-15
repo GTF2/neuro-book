@@ -45,7 +45,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 
 ## 3. 当前状态（2026-09-15）
 
-- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15 18:00（**GTF 正式授权 Neo 接手项目**，授权范围：Leader 单核 + 按需起子代理；推送 origin、合并上游、真实模型调用三项已获授权）：HEAD `5bcdc5c8`（基线收口）；**与 `origin` 完全同步（0 领先 / 0 落后）**，相对上游**已追平并领先 78 / 落后 0**（上游顶端 `45906272` / 0.10.3-canary）。
+- 分支：**`feat/writing-doctrine-alignment`**。截至 2026-09-15 18:35（**GTF 正式授权 Neo 接手项目**，授权范围：Leader 单核 + 按需起子代理；推送 origin、合并上游、真实模型调用三项已获授权）：HEAD `4a161254`（人写帧 UI）；**与 `origin` 完全同步（0 领先 / 0 落后）**，相对上游**领先 83 / 落后 0**（上游顶端 `45906272` / 0.10.3-canary）。接手后累计 5 个提交，全部已推送。
 - Neo 本轮提交（2026-09-15）：`cd109f7b`（语言硬规则加固）、`ba7cd006`（合并上游 0.10.3-canary，解决 4 处冲突）。更早两条为 `ea77062b`（Workflow 只读数据查询 + `infoControl` 自动编译）、`53e270ca`（修 leader 资产过期断言），均已推 origin。工作区仍有并行执行者未提交的改动（**未动、未提交**，清单见下）；这批改动已有独立备份（见 §5「在途改动备份」）。
 - 本文件曾在 2026-09-14 被并行执行者删除，作者已还原；同名 `CLAUDE.md` 已删且不再使用。看到 `D HANDOFF.md` 这类删除时先确认来源，不要当成自己的改动。
 - ⚠️ **有多个 AI/工具在同一仓库并行提交**（例：`676af095`、`282bc90d`、`9ab4bc56`、`ee651716`、`1176a5fb` 都不是"我"提交的）。
@@ -88,19 +88,25 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
    ②**合并上游**（`ba7cd006`，落后 11 → **追平**）：4 个文件冲突，逐处按语义解决——`source-runtime.ts` 与 `agent-jobs-wiring.test.ts` 取上游（上游 `392faaa3` 独立修了同一问题「应用不得跨根 import 根 #scripts」，且 fail closed 比 fork 的按包位回退更严格，**S13 接缝归零**）；`useInlineEditorAgentController.ts` 取上游（`#235` 把行内 AI 所有权从 Surface 实例搬到 Inline controller，从根上取代了 fork 的 `inlineOperationScopeOf` 补丁）；`index.vue` 结构取上游、**保留 fork 的可见反馈**（新登记 **S24**）。合并前把未提交改动 stash 收好、合并后原样 pop，**全程零冲突**。
    ③**验证**：`app/composables` 8 文件 / 47 条、`app/components/novel-ide/agent` 29 文件 / 317 条、server 基线 38 文件 / 275 条，**全绿**；`packages/neuro-book` typecheck 无本次引入的错误。
    **未收口**：typecheck 仍有 7 处错误（6 处 `DesktopTitleBar.vue` 键盘导航真 bug + 1 处队列功能在途代码），**均非本次合并引入**，见待办表。
+19. **接手后的第二轮：bug 修复 + 两个 Spec 晋升 + 人写帧 UI（2026-09-15，Neo）**：GTF 说「按你说的做」后连做四项，`f7ac415c` / `fc6e4c72` / `d2047671` / `4a161254` 四个提交全部已推 origin。
+   ①**修 `DesktopTitleBar.vue` 键盘导航**（`f7ac415c`，4 行）：`d5b225dc` 把 `menus` 由常量数组改为 `computed`，但 `menuButtonKeydown` / `menuItemKeydown` 里 4 处仍按数组访问 `menus.length` / `menus[index]`；`<script setup>` 中 computed 不自动解包 → `NaN` 与 `undefined`，**桌面标题栏菜单的左右方向键导航实际是坏的**。改 `menus.value.*`；该文件 6 处 TS2339 归零，`test:desktop-contract` 16 文件 / 61 条全绿。
+   ②**`agent.workflow-data-queries` 晋升 `implemented`**（`fc6e4c72`）：新增 `server/agent/workflow/workflow-data-queries.integration.test.ts`——真开 Project + 真 SQLite、**不 mock** project-session 与 plot（与既有合同测试互补），两个用例覆盖「部分字段读取 + 未填归一化为 null」与「章节不存在 fail-closed」。Spec 补齐 owner / 公开接口 / 稳定入口 / journal 重放边界 / 失败语义；README 三处同步。
+   ③**`agent.auxiliary-task-model` 晋升 `implemented`**（`d2047671`）：补 3 条回退合同测试（断言落在「下游实际收到的模型」、resolver 调用序列 `[{modelKey},{modelKey:null}]` 与 `agent.auxiliaryModel.fallback` 日志三要素）+ **真实 Provider 端到端观测**（新增 `scripts/smoke/real-model/auxiliary-model.test.ts`，包装 `globalThis.fetch` 记录后透传真发请求）：实验组 `auxiliary.modelKey=openrouter/claude-opus-4-6` → 请求打到 `kapibala.asia`；对照组未配置 → 打到 `api.deepseek.com`，模型归属可见。**顺带发现**：既有 smoke helper `createAgentSmokeHarness` 注入的 `modelResolver: () => setup.model` 会忽略 modelKey override，用它做实验组必然退化成 Profile 模型 → 该用例改为直接构造 `NeuroAgentHarness`。
+   ④**人写帧 UI 入口**（`4a161254`）：宪法第三条此前只有 agent 工具面，`app/` 无界面入口。新增 `app/components/novel-ide/plot/keyframe/`（logic / api / LedgerTab / EditorDialog + 26 条纯逻辑单测），剧本工作台加第 4 个 tab「关键帧」。**instant 显示取原始数字**（不为显示新造后端接口）：依据是日历格式化只在服务端且需动态 import 项目自己的 `world-engine/calendar.ts`、World Engine HTTP 面只把时间当入参（无反向出口）、`StoryKeyframeDto` 不含格式化字段——Scene 那边的 `startTime` 是服务端另行补的，帧这条路径后端没补。**浏览器人工验证未做**。
+   验证：`app/components/novel-ide` + `app/stores` 43 文件 / 413 条、`server/agent/workflow` 16 文件 / 67 条、`neuro-agent-harness` 3 文件 / 237 条、`server/config` + settings 13 文件 / 127 条 —— 全绿；`governance:check` → `failures: []`、`docs:check` → 5524 文件 0 失败；typecheck 仅剩 1 处错误（他人未提交的在途 follow-up 队列代码）。
+   **i18n 部分暂存（本轮首次用到，值得记）**：两个 i18n 文件里既有他人未提交的 41 行、又有本次的 68 行。做法：读工作区文件 → 按 hunk 行号删掉他人那 41 行 → `git hash-object -w` 得 blob → `git update-index --cacheinfo 100644,<sha>,<path>`，使 **index 只含本次改动而工作区文件不动**；提交后 `git status` 仍显示该文件 modified（他人的改动还在），已核对无损。比 `git apply --cached` 分段补丁更省事（不必处理 hunk 行号漂移）。
 
 ### 进行中 / 待办（2026-09-15 重排：只留未完成项，按优先级；已完成见上）
 
 | 优先级 | 任务 | 说明 |
 |---|---|---|
-| **P1** | 人写帧入口（UI） | `app/` 没有关键帧面板（宪法第三条要求人写帧）；agent 侧工具面已可支撑对话 / 脚本路径。**等 UI 执行者回一句**：帧的 `instant` 显示走 (a) 原始数字，还是 (b) 我补「instant ↔ 项目日历时间」转换接口；选 (b) 我做后端那半 |
-| **P1** | `agent.workflow-data-queries` Spec 晋升 `implemented` | 代码与测试已落地（见已完成第 15 条），Spec 仍 `planned`，两点未闭合：① 宿主执行器用的是内核**进程内**执行器（不提供进程重启 / 重试 / lease 保证；对只读查询可接受，因为内核 journal 才是重放第一真相），生产级执行器边界归已接受提案 `agent-model-execution-surfaces.md`；② 查询触及**真实 Project 数据库**的端到端路径尚无独立集成测试（现有测试注入 reader + mock 了 facade 边界）。补一个集成测试即可原地晋升 |
-| **P1** | `agent.auxiliary-task-model` Spec 晋升 `implemented` | 代码与测试已落地（见已完成第 17 条），Spec 仍 `planned`，两点未闭合：① **真实 Provider 下「AI 解释这一步」确实使用指定模型**未观测（需 Provider 授权）；② 「指定模型不可用 → 回退 Profile 模型」只有代码路径与 `agent.auxiliaryModel.fallback` 日志点、**没有合同测试**。补一条回退合同测试 + 一次 Provider 观测即可原地晋升 |
+| ~~P1~~ | ~~人写帧入口（UI）· 两个 Spec 晋升~~ **均已完成（2026-09-15）** | 见已完成第 19 条：关键帧面板（剧本工作台第 4 个 tab，`app/components/novel-ide/plot/keyframe/`）；`agent.workflow-data-queries` 与 `agent.auxiliary-task-model` 两个 Spec 均晋升 `implemented` |
+| **P1** | **关键帧面板的浏览器人工验证** | 面板已实现并通过 43 文件 / 413 条测试，但 tab 切换、新建/编辑对话框与实际渲染**未经人眼确认**（dev server 在本环境会被宿主回收，未起）。GTF 在自己的终端跑 `cd packages/neuro-book && bun run dev`（用 `127.0.0.1:3000`），点「剧情 → 剧本工作台 → 关键帧」看一眼即可 |
 | P1 | 真实模型尺度验证 | 帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）实操；需先造帧素材（跑完清理），已获作者概括授权 |
 | P2 | 运行期可见性验证 | 重启 dev server 后确认 3 个关键帧工具 + 新 Reference + 新 workflow 文本在运行的应用里生效；**作者暂不希望被打断**，等他一句话 |
 | ~~P2~~ | ~~合并上游（例行）~~ **已完成（2026-09-15）** | 见已完成第 18 条。当前与上游**追平**（领先 77 / 落后 0，上游顶端 `45906272` / 0.10.3-canary） |
 | ~~P1~~ | ~~推 origin~~ **已完成（2026-09-15）** | 已推送 14 条到 `origin/feat/writing-doctrine-alignment`（`7791f828..5bcdc5c8`），当前 0 领先 / 0 落后 |
-| **P1** | **修 `DesktopTitleBar.vue` 键盘导航（真 bug）** | typecheck 报 6 处 TS2339，全在该文件。根因：`d5b225dc`（中文化提交）把 `menus` 由常量数组改为 `computed`，但 `menuButtonKeydown` / `menuItemKeydown` 仍按数组访问 `menus.length` / `menus[index]`；`<script setup>` 里 computed 不自动解包 → 算出 `NaN`、取到 `undefined`。**后果：桌面标题栏菜单的左右方向键导航实际是坏的**。修法：那 4 处改 `menus.value.*`（约 4 行）。按「发现别的问题只报告不擅修」的惯例，**等 GTF 一句话** |
+| ~~P1~~ | ~~修 `DesktopTitleBar.vue` 键盘导航~~ **已完成（2026-09-15）** | 见已完成第 19 条 ①。4 处改 `menus.value.*`，该文件 6 处 TS2339 归零；`test:desktop-contract` 16 文件 / 61 条全绿 |
 | P2 | 队列功能收口 | `docs/specs/agent/session-followup-queue.md` 仍是 `planned`，仓库里**没有任何 followup 相关测试文件**；那批代码是并行执行者的在途工作（**未提交**，清单见开头「并行在途清单」），最后改动停在 2026-09-14 22:24–23:30（**已 18+ 小时无动静**）。typecheck 另报 `AgentChatSurface.vue(2687,37)`：`confirm()` 被传了 `{title, message}` 对象，而签名要 `string`。**处置待 GTF 决定**：收编（补测试 + 修类型）还是废弃 |
 | P2 | `docs/proposals/README.md` 补登记行 | 该文件里 follow-up 队列提案行与辅助任务模型提案行**仍是相邻两行未提交**；等它空闲时补单行提交（只加自己那行，不替对方提交） |
 | P2 | 只读查询面扩展（可选） | 当前只注册 1 个查询引用 `plot.chapter-info-control@1`；新增消费者 = 新增引用（名字带显式版本后缀），不改既有引用的参数与结果形状 |
