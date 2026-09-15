@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: agent.workflow-data-queries
 owners:
   - agent-runtime
@@ -106,7 +106,15 @@ owners:
 
 ## 实现合同
 
-`planned`：目标合同已批准，代码**部分落地**——宿主只读查询的注册与输入/结果校验、workflow 的三态消费（`auto` / `provided` / `missing`）与 fail-closed 分支均已有合同测试。尚未闭合的两项：① 宿主执行器目前使用内核提供的进程内执行器（不提供进程重启 / 重试 / lease 保证；对只读查询可接受，因为内核 journal 才是重放的第一真相，生产级执行器边界仍归已接受提案 `agent-model-execution-surfaces.md`）；② 查询触及真实 Project 数据库的端到端路径尚无独立集成测试。当前进度与未闭合项同 `docs/specs/README.md`「规范缺口」P1 行；闭合后原地晋升 `implemented` 并在本节补齐 owner、公开接口、journal/重放边界与稳定入口。
+- owner：查询实现归 Plot——`readChapterInfoControlFromPlot` 在 Project 作用域内经 Plot facade 读 `StoryChapter.brief`；`ActivityExecutor` 的装配与注入归 agent-runtime（`server/agent/workflow/workflow-demo-service.ts` 作为宿主装配点，经 `WorkflowRunner` 第三参 `options.activities`）。
+- 公开接口：workflow 脚本侧的 `wf.query(reference, input, options?)`；首期唯一引用 `plot.chapter-info-control@1`（输入 `{chapterId: number}`，正整数）。不新增 HTTP 路由、agent 工具或文件读入口。
+- 稳定入口：`PLOT_CHAPTER_INFO_CONTROL_QUERY`（引用常量）、`createWorkflowActivityExecutor`（装配工厂，`readChapterInfoControl` 可注入）、`readChapterInfoControlFromPlot`（真实读取实现）。
+- journal 与重放边界：成功查询的参数指纹与结果由内核写进 run journal；同一 run 重放命中 journal 时**不调用**宿主查询实现。失败查询不进成功 journal——只读且无副作用，故恢复后可安全重试；不承诺 exactly-once。
+- 失败语义：**能力缺席**（宿主未装配执行器 / 未注册该引用）视为部署状态，退回 `w00016` 的漏传显形且 run 正常完成；**查询本身失败**（Project 未打开 / 章节不存在 / 不属于当前 Story / DB 错误）fail-closed 上抛终止 run，绝不降级为「未提供清单」。
+- 显式优先：`infoControl` 显式传入时始终优先于自动编译，且此时不发起查询。
+- writer 边界：无论清单来自哪条路径，都不进入 writer 的动笔前上下文（写作宪法第二条、第五条）。
+- 未纳入本 Spec：进程重启 / 重试 / lease 保证的生产级执行器边界，仍归已接受提案 `agent-model-execution-surfaces.md`。当前装配使用内核提供的进程内执行器，对只读查询可接受——内核 journal 才是重放的第一真相。
+- 测试入口：`workflow-data-queries.test.ts`（合同测试：结果形状、Project 作用域、输入校验、fail-closed、显形路径）、`workflow-data-queries.integration.test.ts`（**真实 Project Workspace + 真实 SQLite** 的端到端读取与 fail-closed）、`chapter-write-review-revise` workflow 的三态回归。
 
 ## 证据
 

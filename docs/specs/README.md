@@ -93,6 +93,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Agent Runtime 与 Profile | [Reference: Agent](../../packages/neuro-book/assets/reference/agent/README.md) | Session、Profile、Workflow、Skill、Job、Project Workspace 与 Agent 协作协议 |
 | Agent 资产运行期安装与 Catalog 根 | [`agent/asset-install-runtime.md`](agent/asset-install-runtime.md) | State Root Install Root、Runtime Reference Root、Install → Project 覆盖和显式 artifact context 已由代码与合同测试支持 |
 | Agent Session Abort | [`agent/session-abort.md`](agent/session-abort.md) | HTTP abort、合作/forced 收口、唯一 durable lifecycle、写入恢复与 409/503 失败合同已由实现和行为测试支持 |
+| Agent Workflow 只读数据查询 | [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md) | workflow 经宿主 `ActivityExecutor` 做版本化只读查询，结果进 journal 且重放命中不重读库；首期引用 `plot.chapter-info-control@1` 让 infoControl 由 `chapterId` 自动编译，能力缺席退回漏传显形、查询失败 fail-closed |
 | Plot Writer Brief 双视图 | [`plot/chapter-writer-brief.md`](plot/chapter-writer-brief.md) | brief 拆事实视图（进 writer）与意图视图（只进评审）；信息控制降级为事后核对、不参与 status 门槛 |
 | Plot 关键帧写作 | [`plot/keyframe.md`](plot/keyframe.md) | 帧声明不可逆变化、补间区间查询、回撞与裁决留痕（推翻必须挂创作决策记录）；agent 工具面读帧对 writer 只给事实字段 |
 | Plot 未来影响分析 | [`plot/future-impact-analysis.md`](plot/future-impact-analysis.md) | 正文采纳后扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），只标记不改动；不新增实体 / 字段 / 工具，由 leader 在工具面内执行 |
@@ -119,7 +120,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Component Lab | [`ui/component-lab.md`](ui/component-lab.md) | Source Dev-only 确定性 fixture、响应式检视和 Product 排除合同；当前尚未实现 |
 | Agent Session Store 租约 | [`agent/session-store-lease.md`](agent/session-store-lease.md) | proper-lockfile 租约互斥、mtime 心跳、失效与 Windows 文件系统兼容目标；修复验证闭合前保持 `planned` |
 | Agent Session Follow-up 队列投递 | [`agent/session-followup-queue.md`](agent/session-followup-queue.md) | 队列来源可见性、单条与批量处理入口、暂停后的空闲自愈与人工接管；行为合同已定稿，等待实现 |
-| Agent Workflow 只读数据查询 | [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md) | Workflow 版本化只读查询（宿主 `ActivityExecutor` 装配 + journal 重放）；首期消费者 `plot.chapter-info-control@1` 让 infoControl 由 `chapterId` 自动编译，能力缺席退回漏传显形、查询失败 fail-closed；行为合同已定稿，等待实现 |
 | 辅助任务模型来源 | [`agent/auxiliary-task-model.md`](agent/auxiliary-task-model.md) | 旁路辅助任务（首期「AI 解释这一步」）的模型来源：一行模型选择、默认跟随本 Profile、字段级四层继承、不可用自动回退；行为合同已定稿、代码已落地，真实 Provider 观测与回退合同测试闭合后原地晋升 |
 
 ## 冻结过渡规范
@@ -142,7 +142,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
 | P0 | Agent Session 持久化与历史 | `packages/neuro-book/docs/adr/0003-*`、`0014-agent-job-*`，`packages/neuro-book/server/agent/session/`、`packages/neuro-book/server/workspace-history/` | durable event、Job 历史、附件、租约和文件历史缺少统一状态与恢复规范 |
-| P1 | Workflow 侧读取项目数据（infoControl 自动编译） | `packages/neuro-book/assets/workspace/.nbook/agent/workflows/chapter-write-review-revise/workflow.ts`、`packages/nb-workflow/src/types.ts`（`wf.query` / `wf.callAction`）、`packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md` | 宿主已装配只读 `wf.query` 并由版本化查询 `plot.chapter-info-control@1` 自动编译 infoControl（合同见 [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md)）；该能力尚无 `implemented` Spec——宿主查询的真库端到端路径仍未验证，实现闭合后由该 `planned` Spec 原地晋升 |
 | P1 | 配置、模型与凭据 | `packages/neuro-book/server/config/`、`packages/neuro-book/server/models/`、`packages/neuro-book/shared/dto/app-settings.dto.ts` | 配置优先级、敏感字段、provider identity、错误和 UI 行为没有单一规范；其中辅助任务模型来源已单独建规范（[`agent/auxiliary-task-model.md`](agent/auxiliary-task-model.md)），设置面板的保存反馈仍属本缺口 |
 | P1 | Markdown Studio 与编辑工作台 | [`../../vitepress/locales/zh-Hans/core/markdown-studio.md`](../../vitepress/locales/zh-Hans/core/markdown-studio.md)、[历史 editor plan](../../packages/neuro-book/docs/archived/plan/06-editor-workbench.md)、`packages/neuro-book/shared/editor-workbench.ts` | 用户文档与历史 plan 存在，但需要按当前代码和测试核对后转成内部当前规范 |
 | P1 | Passport 与身份 | `packages/neuro-book/server/passport/`、相关 migration 与测试 | 登录、官方 origin、凭据存储和失败语义缺少当前规范 |
