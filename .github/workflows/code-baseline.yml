@@ -152,4 +152,8 @@ jobs:
         # Agent bash 合同会真实执行 rg；GitHub Ubuntu runner 不保证预装 ripgrep。
         run: sudo apt-get update && sudo apt-get install --yes ripgrep
       - name: Run full tests
-        run: bun run --cwd packages/neuro-book test -- --reporter=dot
+        # 用 `bun --bun` 让 vitest 跑在 Bun 运行时上：NeuroBook 应用本身由 Bun 启动
+        # （manager 的 resolveBun），用 Node 跑测试等于测另一个环境——Node 既没有 Bun 全局，
+        # 也无法在 worker 内加载 TS（execArgv 的 --import 不进 worker），相关用例只能长期
+        # red 或被迫 skip，那批 Bun 专有路径在 CI 上就永远得不到覆盖。
+        run: bun --bun run --cwd packages/neuro-book test -- --reporter=dot

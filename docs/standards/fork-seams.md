@@ -72,6 +72,8 @@
 
 | S29 | `packages/neuro-book/server/agent/test/setup.ts`、`packages/neuro-book/server/api/projects/cover-multipart.test.ts` | **测试基建的 Bun 运行时兼容**（为把门禁切到 Bun 铺路）：① `setup.ts` 在 jsdom 环境下全局 `URL` 由 jsdom 提供，对 `file:` 基址做相对解析会落到 `http://localhost:3000/...`，`fileURLToPath` 随即抛 `The URL must be of scheme file` 并打死整个 setup，**连带所有 jsdom 套件一条用例都跑不到**；改为用「是否存在 `window`」判定非 node 环境并跳过，真解析再加 `try/catch` 兜底（未改那两个用例的 `@vitest-environment`，那会丢掉它们真正的 jsdom 覆盖目的）。② `cover-multipart.test.ts` 在 Bun 下 `Request` 的 Headers 惰性物化，先 `arrayBuffer()` 消费 body 再读 header 会得到 `null`；改为消费 body 前先取请求头（不动断言、不改被测行为） | setup 约 +11/-1；multipart 约 +9/-1 | 低（测试基建与测试写法）；上游若自行适配 Bun 运行时即归零 |
 
+| S30 | `.github/workflows/code-baseline.yml`、`packages/neuro-book-test-support/src/tmp.ts`、`server/world-engine/codeact.test.ts`、`server/{workspace-files/project-lock,workspace-files/workspace-command,agent/profiles/profile-compile-worker,agent/profiles/profile-compile-worker-lifecycle}.test.ts`、`server/api/projects/cover-multipart.test.ts`（与 S29 同文件） | **门禁运行时对齐 Bun + Windows 清理可靠性**：① `code-baseline.yml` 的 Full tests 由 `bun run` 改为 `bun --bun run`——vitest 的 bin shim 是 `#!/usr/bin/env node`，`bun run` 实际把测试跑在 **Node** 上，而应用由 Bun 启动，环境不一致导致 19 条按 Bun 编写的用例常年 red（这正是「78 条失败当基线」的由来）；切到 Bun 后 11 条 worker service 用例才真正被执行。② `tmp.ts` 给每个删除动作（含原来**完全没有重试**的最后一步 `rmdir`）加有界指数退避重试，仅对瞬时占用错误码重试、**耗尽即抛真实错误、绝不吞**。③ `codeact.test.ts` 加 `afterEach(closeAllProjects)`——真凶是用例开 SQLite 连接不关闭，句柄占着 `history.sqlite-wal` 使清理**必然**失败（不是 flake）。④ 4 个测试文件：8 条改为按 `process.versions.bun` 分支取 bun 可执行文件、11 条 worker service 加 `skipIf` 守卫（Node 无 worker 内 TS 加载实现，属 Bun 专有运行时能力） | CI 1 行 + 测试基建与用例若干处 | 不易（门禁运行时是仓库级约定）；上游若自行对齐运行时即归零 |
+
 
 ## 三、继承的定制（非本 fork 写作宪法工作，需要所有者决策）
 
