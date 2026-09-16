@@ -95,6 +95,7 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
    ④**人写帧 UI 入口**（`4a161254`）：宪法第三条此前只有 agent 工具面，`app/` 无界面入口。新增 `app/components/novel-ide/plot/keyframe/`（logic / api / LedgerTab / EditorDialog + 26 条纯逻辑单测），剧本工作台加第 4 个 tab「关键帧」。**instant 显示取原始数字**（不为显示新造后端接口）：依据是日历格式化只在服务端且需动态 import 项目自己的 `world-engine/calendar.ts`、World Engine HTTP 面只把时间当入参（无反向出口）、`StoryKeyframeDto` 不含格式化字段——Scene 那边的 `startTime` 是服务端另行补的，帧这条路径后端没补。**浏览器人工验证未做**。
    验证：`app/components/novel-ide` + `app/stores` 43 文件 / 413 条、`server/agent/workflow` 16 文件 / 67 条、`neuro-agent-harness` 3 文件 / 237 条、`server/config` + settings 13 文件 / 127 条 —— 全绿；`governance:check` → `failures: []`、`docs:check` → 5524 文件 0 失败；typecheck 仅剩 1 处错误（他人未提交的在途 follow-up 队列代码）。
    **i18n 部分暂存（本轮首次用到，值得记）**：两个 i18n 文件里既有他人未提交的 41 行、又有本次的 68 行。做法：读工作区文件 → 按 hunk 行号删掉他人那 41 行 → `git hash-object -w` 得 blob → `git update-index --cacheinfo 100644,<sha>,<path>`，使 **index 只含本次改动而工作区文件不动**；提交后 `git status` 仍显示该文件 modified（他人的改动还在），已核对无损。比 `git apply --cached` 分段补丁更省事（不必处理 hunk 行号漂移）。
+20. **follow-up 队列在途工作收编（2026-09-16，提交 `67d8cf18`，已推 origin）**：GTF 拍板「收编」后一轮完成。定性结论先行：那批放了近两天的在途改动**不是野代码**——提案 `agent-followup-queue-delivery.md` 里有 GTF 本人 2026-09-14 的拍板记录（主方案 +「停止不清队列」决策），实现质量高（+470 行全加法、串行化边界、错误合同齐全），缺口只有三处：①真 bug ②零测试 ③文档状态尾巴。本轮：①修 `AgentChatSurface.vue` 「全部忽略」二次确认 `confirm()` 参数顺序（传了 `{title,message}` 对象、合同是 `message,title`，修复前弹窗正文显示 `[object Object]`）；②补 6 条 harness 合同测试（送达置顶与真实投递 / 不存在项 404 / 忽略保留暂停原因且绝不投递 / completed 收尾自动重试与进度公开 / 3 次重试上限 exhausted / 用户停止不自动重试+显式恢复）+ 1 条投影测试（`source` 白名单映射、内部标识不外泄）；③Spec `session-followup-queue.md` 晋升 `implemented` 并补实现合同，**测试发现一处 Spec 漏写的合同并已补**：投递的消息 durable 写入会话后即按已送达 ack，模型运行失败不重放该消息（失败的是运行不是投递）；`docs/specs/README.md` 注册表同步、`docs/proposals/README.md` 两行状态与本体对齐。验证：harness 204/204、projection 3/3、typecheck 0 错误、governance `failures: []`、docs:check 5529 文件 0 失败。**未验证**：队列条 UI 的浏览器人工 smoke（真实会话里走一遍暂停→送达→忽略路径）。测试编写时踩过的坑值得记：`followup` 入队要求 active invocation 存在，用例必须用 deferred 门闩挂住 provider 再入队（照抄 `模型错误后暂停 followUp queue` 用例的模式），否则全文件跑时撞时序空窗报 `active_invocation_required`。
 
 ### 进行中 / 待办（2026-09-15 重排：只留未完成项，按优先级；已完成见上）
 
@@ -107,8 +108,8 @@ NeuroBook 是本地优先的长篇小说写作 IDE（Bun + TS monorepo，主应�
 | ~~P2~~ | ~~合并上游（例行）~~ **已完成（2026-09-15）** | 见已完成第 18 条。当前与上游**追平**（领先 77 / 落后 0，上游顶端 `45906272` / 0.10.3-canary） |
 | ~~P1~~ | ~~推 origin~~ **已完成（2026-09-15）** | 已推送 14 条到 `origin/feat/writing-doctrine-alignment`（`7791f828..5bcdc5c8`），当前 0 领先 / 0 落后 |
 | ~~P1~~ | ~~修 `DesktopTitleBar.vue` 键盘导航~~ **已完成（2026-09-15）** | 见已完成第 19 条 ①。4 处改 `menus.value.*`，该文件 6 处 TS2339 归零；`test:desktop-contract` 16 文件 / 61 条全绿 |
-| P2 | 队列功能收口 | `docs/specs/agent/session-followup-queue.md` 仍是 `planned`，仓库里**没有任何 followup 相关测试文件**；那批代码是并行执行者的在途工作（**未提交**，清单见开头「并行在途清单」），最后改动停在 2026-09-14 22:24–23:30（**已 18+ 小时无动静**）。typecheck 另报 `AgentChatSurface.vue(2687,37)`：`confirm()` 被传了 `{title, message}` 对象，而签名要 `string`。**处置待 GTF 决定**：收编（补测试 + 修类型）还是废弃 |
-| P2 | `docs/proposals/README.md` 补登记行 | 该文件里 follow-up 队列提案行与辅助任务模型提案行**仍是相邻两行未提交**；等它空闲时补单行提交（只加自己那行，不替对方提交） |
+| P2 | ~~队列功能收口~~ **已完成（2026-09-16，提交 `67d8cf18`）** | 见已完成第 20 条：收编 + 修 confirm bug + 7 条合同测试 + Spec 晋升 implemented；剩队列条 UI 浏览器人工 smoke |
+| P2 | ~~`docs/proposals/README.md` 补登记行~~ **已完成（2026-09-16）** | 随 `67d8cf18` 一并落地，两行状态已与提案本体对齐（均 accepted） |
 | P2 | 只读查询面扩展（可选） | 当前只注册 1 个查询引用 `plot.chapter-info-control@1`；新增消费者 = 新增引用（名字带显式版本后缀），不改既有引用的参数与结果形状 |
 
 ---
