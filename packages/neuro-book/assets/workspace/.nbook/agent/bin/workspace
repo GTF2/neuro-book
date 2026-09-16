@@ -1,6 +1,16 @@
 #!/usr/bin/env sh
 set -eu
 
+# MSYS/Cygwin(Git Bash)下 pwd/dirname 返回 /d/... 形式,而 bun.exe 是原生 Windows 程序、打不开这种路径。
+# 宿主提供 cygpath 时把要交给 bun 的路径转成原生盘符形式;纯 POSIX 环境没有 cygpath,原样返回(行为不变)。
+to_runtime_path() {
+    if command -v cygpath >/dev/null 2>&1; then
+        cygpath -w "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
+
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd) || exit 1
 SOURCE_RELATIVE_PATH="server/workspace-files/workspace-command.ts"
 
@@ -41,8 +51,8 @@ is_product_present() {
 }
 
 run_source_dev() {
-    export NEURO_BOOK_APPLICATION_ROOT="$APPLICATION_ROOT"
-    exec "$BUN_RUNTIME" --no-install "$SOURCE_SCRIPT" "$@"
+    export NEURO_BOOK_APPLICATION_ROOT="$(to_runtime_path "$APPLICATION_ROOT")"
+    exec "$BUN_RUNTIME" --no-install "$(to_runtime_path "$SOURCE_SCRIPT")" "$@"
 }
 
 APPLICATION_ROOT=$(resolve_application_root) || {
@@ -60,8 +70,8 @@ if [ "${NODE_ENV:-}" = "development" ] && is_source_dev; then
     run_source_dev "$@"
 fi
 if [ -f "$PRODUCT_COMMAND" ]; then
-    export NEURO_BOOK_APPLICATION_ROOT="$APPLICATION_ROOT"
-    exec "$BUN_RUNTIME" --no-install --no-env-file "$PRODUCT_COMMAND" command workspace "$@"
+    export NEURO_BOOK_APPLICATION_ROOT="$(to_runtime_path "$APPLICATION_ROOT")"
+    exec "$BUN_RUNTIME" --no-install --no-env-file "$(to_runtime_path "$PRODUCT_COMMAND")" command workspace "$@"
 fi
 if is_product_present; then
     echo "Product Runtime 不完整：缺少 .output/server/commands/product-command.mjs。" >&2

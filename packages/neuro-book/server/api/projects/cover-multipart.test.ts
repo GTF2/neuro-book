@@ -60,9 +60,17 @@ describe("PUT /api/projects/cover browser multipart", () => {
             method: "PUT",
             body: form,
         });
+        // Bun 下 Request 的 Headers 惰性物化:若先消费 body 再读 header,get() 会返回 null
+        // (实测 arrayBuffer() 之后、未提前访问过的 header 全部读不到),Busboy 随即报 Missing Content-Type。
+        // 故在消费 body 之前先取出请求头,使该用例在 Node 与 Bun 下构造出等价的请求(不改断言、不改被测行为)。
+        const headerRecord: Record<string, string> = {};
+        for (const headerName of ["content-type", "content-length"]) {
+            const headerValue = browserRequest.headers.get(headerName);
+            if (headerValue !== null) headerRecord[headerName] = headerValue;
+        }
         const body = Buffer.from(await browserRequest.arrayBuffer());
         const request = Object.assign(Readable.from([body]), {
-            headers: Object.fromEntries(browserRequest.headers.entries()),
+            headers: headerRecord,
             url: "/api/projects/cover?projectRoot=book",
         }) as IncomingMessage;
         const event = {node: {req: request, res: {}}, path: request.url} as H3Event;
