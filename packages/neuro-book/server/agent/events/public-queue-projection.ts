@@ -41,10 +41,15 @@ export function projectQueuedMessage(
         .map((block) => block.text)
         .join("");
     const images = content.filter((block) => block.type === "attachment");
+    // 只映射来源白名单：caller 里的 sessionId / profileKey / toolCallId 不对外暴露。
+    const source = item.caller === undefined
+        ? "unknown"
+        : item.caller.kind === "user" ? "user" : "system";
     return {
         id: item.id,
         clientMessageId: item.clientMessageId,
         kind: item.kind,
+        source,
         ...(text ? {text: budgetText(text, budget, 2 * 1024)} : {}),
         images: images.slice(0, PUBLIC_QUEUE_IMAGES).map((image) => ({
             mimeType: budgetText(image.attachment.mimeType, budget, 256).preview || "application/octet-stream",

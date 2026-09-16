@@ -17,7 +17,7 @@ import type {TSchema} from "typebox";
 import {Value} from "typebox/value";
 import type {AgentMessage, Usage} from "nbook/server/agent/messages/types";
 import type {Message as RuntimeMessage} from "nbook/server/agent/messages/types";
-import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
+import {AgentFollowUpItemMissingError, NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
 import type {AgentInvocationResult} from "nbook/server/agent/harness/types";
 import type {ResolvedPiModel} from "nbook/server/agent/harness/pi-model-metadata";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
@@ -9519,6 +9519,369 @@ describe("NeuroAgentHarness", () => {
             });
         } finally {
             releaseProvider.resolve();
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("deliverFollowUpItem 置顶并解除暂停,空闲时真实投递;不存在时抛 AgentFollowUpItemMissingError", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"});
+            },
+            fauxAssistantMessage("delivered-first"),
+            fauxAssistantMessage("delivered-second"),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            // 门闩住 provider,保证 followup 入队时 active invocation 一定还在
+            await providerStarted.promise;
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued first"},
+            });
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued second"},
+            });
+            releaseProvider.resolve();
+            const failed = await running;
+            expect(failed.status).toBe("error");
+            const paused = await harness.getSessionRecovery(created.sessionId);
+            expect(paused.followUpQueue.status).toBe("paused");
+            expect(paused.followUpQueue.items).toHaveLength(2);
+
+            // 队列里不存在的项:fail-closed,不产生任何副作用
+            await expect(harness.deliverFollowUpItem(created.sessionId, "missing-item"))
+                .rejects.toBeInstanceOf(AgentFollowUpItemMissingError);
+
+            // 送达第二条:置顶并解除暂停;会话空闲,drain 立即按顺序真实投递
+            const target = paused.followUpQueue.items[1]!;
+            const snapshot = await harness.deliverFollowUpItem(created.sessionId, target.id);
+            expect(snapshot.status).toBe("ready");
+            expect(snapshot.items[0]?.text).toEqual(expect.objectContaining({preview: "queued second", omitted: false}));
+            await harness.drainBackgroundTasks();
+            await waitFor(async () => {
+                const after = await harness.getSessionRecovery(created.sessionId);
+                expect(after.followUpQueue.items).toEqual([]);
+            });
+            expect(faux.getPendingResponseCount()).toBe(0);
+        } finally {
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("dismissFollowUpItem 移除单条且保留暂停原因,清空后回到 ready;忽略绝不触发投递", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"});
+            },
+            fauxAssistantMessage("must not run"),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            await providerStarted.promise;
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued first"},
+            });
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued second"},
+            });
+            releaseProvider.resolve();
+            const failed = await running;
+            expect(failed.status).toBe("error");
+
+            await expect(harness.dismissFollowUpItem(created.sessionId, "missing-item"))
+                .rejects.toBeInstanceOf(AgentFollowUpItemMissingError);
+
+            const once = await harness.dismissFollowUpItem(created.sessionId, (await harness.getSessionRecovery(created.sessionId)).followUpQueue.items[0]!.id);
+            expect(once.status).toBe("paused");
+            expect(once.pausedBy?.reason).toBe("error");
+            expect(once.items).toHaveLength(1);
+            const final = await harness.dismissFollowUpItem(created.sessionId, once.items[0]!.id);
+            expect(final.status).toBe("ready");
+            expect(final.items).toEqual([]);
+            await harness.drainBackgroundTasks();
+            // 忽略是纯移除:暂停原因随最后一条一起消失,但绝不触发投递
+            expect(faux.getPendingResponseCount()).toBe(1);
+        } finally {
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("error 暂停的队列在下一轮 completed 收尾自动重试并真实投递,重试进度公开", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"});
+            },
+            fauxAssistantMessage("prompt-ok"),
+            fauxAssistantMessage("followup-delivered"),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            await providerStarted.promise;
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued followup"},
+            });
+            releaseProvider.resolve();
+            const failed = await running;
+            expect(failed.status).toBe("error");
+            const paused = await harness.getSessionRecovery(created.sessionId);
+            expect(paused.followUpQueue.status).toBe("paused");
+            // error 收尾本身不触发自动重试
+            expect(faux.getPendingResponseCount()).toBe(2);
+
+            const second = await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "again"},
+            });
+            expect(second.status).toBe("completed");
+            await harness.drainBackgroundTasks();
+            await waitFor(async () => {
+                const after = await harness.getSessionRecovery(created.sessionId);
+                expect(after.followUpQueue.items).toEqual([]);
+            });
+            const after = await harness.getSessionRecovery(created.sessionId);
+            expect(after.followUpQueue.status).toBe("ready");
+            expect(after.followUpQueue.autoRetry).toEqual({attempt: 1, limit: 3, exhausted: false});
+            expect(faux.getPendingResponseCount()).toBe(0);
+        } finally {
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("自动重试连续失败 3 次后停止重试并公开 exhausted,等人工处理", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"});
+            },
+            fauxAssistantMessage("ok-1"),
+            fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"}),
+            fauxAssistantMessage("ok-2"),
+            fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"}),
+            fauxAssistantMessage("ok-3"),
+            fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"}),
+            fauxAssistantMessage("ok-4"),
+            fauxAssistantMessage("must not run"),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            await providerStarted.promise;
+            for (const text of ["queued-1", "queued-2", "queued-3", "queued-4"]) {
+                await harness.invokeAgent({
+                    sessionId: created.sessionId,
+                    mode: "followup",
+                    message: {text},
+                });
+            }
+            releaseProvider.resolve();
+            const failed = await running;
+            expect(failed.status).toBe("error");
+
+            // 每轮 completed 收尾恢复一次暂停(attempt+1)并投递一条;投递的消息运行失败后按已送达 ack,
+            // 暂停原因变为 error,队列反复回到 paused,形成「恢复 → 失败 → 再暂停」循环
+            for (let round = 1; round <= 3; round += 1) {
+                const result = await harness.invokeAgent({
+                    sessionId: created.sessionId,
+                    mode: "prompt",
+                    message: {text: `again-${round}`},
+                });
+                expect(result.status).toBe("completed");
+                await harness.drainBackgroundTasks();
+                await waitFor(async () => {
+                    const snapshot = await harness.getSessionRecovery(created.sessionId);
+                    expect(snapshot.followUpQueue.status).toBe("paused");
+                    expect(snapshot.followUpQueue.autoRetry).toEqual({attempt: round, limit: 3, exhausted: round === 3});
+                });
+            }
+
+            // 第四轮 completed:attempt 已达上限,不再自动恢复,队列原样保留等人工处理
+            const fourth = await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "again-4"},
+            });
+            expect(fourth.status).toBe("completed");
+            await harness.drainBackgroundTasks();
+            const exhausted = await harness.getSessionRecovery(created.sessionId);
+            expect(exhausted.followUpQueue.status).toBe("paused");
+            expect(exhausted.followUpQueue.autoRetry).toEqual({attempt: 3, limit: 3, exhausted: true});
+            expect(faux.getPendingResponseCount()).toBe(1);
+        } finally {
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("投递的消息运行失败不重放:消息保留在对话历史,队列 ack 清空为 ready", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"});
+            },
+            fauxAssistantMessage("ok-1"),
+            fauxAssistantMessage("failed", {stopReason: "error", errorMessage: "provider failed"}),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            await providerStarted.promise;
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "doomed followup"},
+            });
+            releaseProvider.resolve();
+            const failed = await running;
+            expect(failed.status).toBe("error");
+            expect((await harness.getSessionRecovery(created.sessionId)).followUpQueue.status).toBe("paused");
+
+            const second = await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "prompt",
+                message: {text: "again"},
+            });
+            expect(second.status).toBe("completed");
+            await harness.drainBackgroundTasks();
+            await waitFor(async () => {
+                const after = await harness.getSessionRecovery(created.sessionId);
+                expect(after.followUpQueue.status).toBe("ready");
+                expect(after.followUpQueue.items).toEqual([]);
+            });
+            // 消息一旦 durable 写入对话就按已送达 ack:失败的是那轮运行,不是投递;重试绝不重放用户消息
+            const snapshot = await harness.repo.readSession(created.sessionId);
+            const written = snapshot.entries.filter((entry) => entry.type === "message"
+                && entry.message.role === "user"
+                && messageText(entry.message).includes("doomed followup"));
+            expect(written).toHaveLength(1);
+            expect(faux.getPendingResponseCount()).toBe(0);
+        } finally {
+            await running.catch(() => undefined);
+        }
+    });
+
+    it("用户停止造成的暂停不自动重试,resumeFollowUps 显式恢复后按顺序全部投递", async () => {
+        const providerStarted = createDeferred();
+        const releaseProvider = createDeferred();
+        faux.setResponses([
+            async () => {
+                providerStarted.resolve();
+                await releaseProvider.promise;
+                return fauxAssistantMessage("stopped", {stopReason: "aborted", errorMessage: "user stopped"});
+            },
+            fauxAssistantMessage("resume-first"),
+            fauxAssistantMessage("resume-second"),
+        ]);
+        const created = await harness.createAgent({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        const running = harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        try {
+            await providerStarted.promise;
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued first"},
+            });
+            await harness.invokeAgent({
+                sessionId: created.sessionId,
+                mode: "followup",
+                message: {text: "queued second"},
+            });
+            // 用户点「停止」:只中止当前这一轮,队列保留为暂停(clearQueue: false)
+            await harness.abortInvocation(created.sessionId, {reason: "stop", clearQueue: false});
+            releaseProvider.resolve();
+            await running;
+            await harness.drainBackgroundTasks();
+
+            // 空闲后不自动重试:队列保留,哨兵响应未被消费
+            const paused = await harness.getSessionRecovery(created.sessionId);
+            expect(paused.followUpQueue.status).toBe("paused");
+            expect(paused.followUpQueue.pausedBy?.reason).toBe("aborted");
+            expect(paused.followUpQueue.autoRetry).toBeUndefined();
+            expect(paused.followUpQueue.items).toHaveLength(2);
+            expect(faux.getPendingResponseCount()).toBe(2);
+
+            // 用户显式「全部送达」:解除暂停并按时间顺序全部投递
+            const resumed = await harness.resumeFollowUps(created.sessionId);
+            expect(resumed.status).toBe("ready");
+            await harness.drainBackgroundTasks();
+            await waitFor(async () => {
+                const after = await harness.getSessionRecovery(created.sessionId);
+                expect(after.followUpQueue.items).toEqual([]);
+            });
+            expect(faux.getPendingResponseCount()).toBe(0);
+        } finally {
             await running.catch(() => undefined);
         }
     });

@@ -95,6 +95,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Agent Session Abort | [`agent/session-abort.md`](agent/session-abort.md) | HTTP abort、合作/forced 收口、唯一 durable lifecycle、写入恢复与 409/503 失败合同已由实现和行为测试支持 |
 | Agent Workflow 只读数据查询 | [`agent/workflow-data-queries.md`](agent/workflow-data-queries.md) | workflow 经宿主 `ActivityExecutor` 做版本化只读查询，结果进 journal 且重放命中不重读库；首期引用 `plot.chapter-info-control@1` 让 infoControl 由 `chapterId` 自动编译，能力缺席退回漏传显形、查询失败 fail-closed |
 | 辅助任务模型来源 | [`agent/auxiliary-task-model.md`](agent/auxiliary-task-model.md) | 旁路辅助任务（首期「AI 解释这一步」）可单独指定模型，默认跟随 Profile 模型；指定模型不可用则回退并记 `agent.auxiliaryModel.fallback`；字段级四层继承，回退合同测试与真实 Provider 端到端观测均已执行 |
+| Agent Session Follow-up 队列投递 | [`agent/session-followup-queue.md`](agent/session-followup-queue.md) | 队列来源可见性、单条与批量处理入口、暂停后的空闲自愈与人工接管；送达/忽略/恢复操作与 3 次重试上限已由 harness 合同测试支持，已写入会话的投递消息运行失败不重放 |
 | Plot Writer Brief 双视图 | [`plot/chapter-writer-brief.md`](plot/chapter-writer-brief.md) | brief 拆事实视图（进 writer）与意图视图（只进评审）；信息控制降级为事后核对、不参与 status 门槛 |
 | Plot 关键帧写作 | [`plot/keyframe.md`](plot/keyframe.md) | 帧声明不可逆变化、补间区间查询、回撞与裁决留痕（推翻必须挂创作决策记录）；agent 工具面读帧对 writer 只给事实字段 |
 | Plot 未来影响分析 | [`plot/future-impact-analysis.md`](plot/future-impact-analysis.md) | 正文采纳后扫描「新事实 → 下游规划」的失效（Promise / Scene / 帧 / 期限），只标记不改动；不新增实体 / 字段 / 工具，由 leader 在工具面内执行 |
@@ -120,7 +121,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 |---|---|---|
 | Component Lab | [`ui/component-lab.md`](ui/component-lab.md) | Source Dev-only 确定性 fixture、响应式检视和 Product 排除合同；当前尚未实现 |
 | Agent Session Store 租约 | [`agent/session-store-lease.md`](agent/session-store-lease.md) | proper-lockfile 租约互斥、mtime 心跳、失效与 Windows 文件系统兼容目标；修复验证闭合前保持 `planned` |
-| Agent Session Follow-up 队列投递 | [`agent/session-followup-queue.md`](agent/session-followup-queue.md) | 队列来源可见性、单条与批量处理入口、暂停后的空闲自愈与人工接管；行为合同已定稿，等待实现 |
 
 ## 冻结过渡规范
 

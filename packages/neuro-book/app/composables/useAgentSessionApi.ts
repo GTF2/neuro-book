@@ -14,6 +14,7 @@ import type {
     AgentCommandRequestDto,
     AgentCreateSessionRequestDto,
     AgentCurrentProjectRequestDto,
+    AgentFollowUpQueueStateDto,
     AgentInvokeRequestDto,
     AgentSessionEventDto,
     AgentSessionEventsQueryDto,
@@ -168,6 +169,27 @@ export function useAgentSessionApi() {
         });
     };
 
+    /** 送达队列中的某一条：置顶并解除暂停；返回操作后的队列快照。 */
+    const deliverFollowUpItem = (sessionId: number, itemId: string) => {
+        return $fetch<AgentFollowUpQueueStateDto>(`/api/agent/sessions/${sessionId}/followups/${encodeURIComponent(itemId)}/deliver`, {
+            method: "POST",
+        });
+    };
+
+    /** 忽略队列中的某一条：永久移除；返回操作后的队列快照。 */
+    const dismissFollowUpItem = (sessionId: number, itemId: string) => {
+        return $fetch<AgentFollowUpQueueStateDto>(`/api/agent/sessions/${sessionId}/followups/${encodeURIComponent(itemId)}`, {
+            method: "DELETE",
+        });
+    };
+
+    /** 解除队列暂停并继续投递；返回操作后的队列快照。 */
+    const resumeFollowUps = (sessionId: number) => {
+        return $fetch<AgentFollowUpQueueStateDto>(`/api/agent/sessions/${sessionId}/followups/resume`, {
+            method: "POST",
+        });
+    };
+
     const runCommand = (sessionId: number, body: AgentCommandRequestDto) => {
         return $fetch<AgentCommandResult>(`/api/agent/sessions/${sessionId}/commands`, {
             method: "POST",
@@ -243,7 +265,10 @@ export function useAgentSessionApi() {
         moveTree,
         runCommand,
         deleteSession,
+        deliverFollowUpItem,
+        dismissFollowUpItem,
         resolveSessionAttachments,
+        resumeFollowUps,
         saveComposerDraft,
         snapshotSessionAttachment,
         subscribeSessionEvents,

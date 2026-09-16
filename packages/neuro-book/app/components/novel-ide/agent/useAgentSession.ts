@@ -1,5 +1,6 @@
 import type {AgentChatEntryDto, AgentChatUserEntryDto} from "nbook/shared/dto/agent-public-event.dto";
 import type {
+    AgentFollowUpQueueStateDto,
     AgentPendingUserInputDto,
     AgentRuntimeStreamEventDto,
     AgentSessionEventDto,
@@ -276,6 +277,20 @@ export function useAgentSession() {
             }
             released = true;
             localRunPending.value = Math.max(0, localRunPending.value - 1);
+        };
+    };
+
+    /**
+     * 用队列操作返回的快照更新本地 follow-up 队列投影。
+     * 只替换队列本身，不重建整个 recovery shell。
+     */
+    const applyFollowUpQueue = (queue: AgentFollowUpQueueStateDto): void => {
+        if (!recoveryShell.value) {
+            return;
+        }
+        recoveryShell.value = {
+            ...recoveryShell.value,
+            followUpQueue: queue,
         };
     };
 
@@ -706,6 +721,7 @@ export function useAgentSession() {
         appendOptimisticUserMessage,
         applyConnectionStatus,
         applyEvent,
+        applyFollowUpQueue,
         applyHistoryPage,
         applyLiveState,
         applyRecovery,
@@ -721,6 +737,7 @@ export function useAgentSession() {
         lastSeq,
         liveOverlay,
         liveRunStatus,
+        localRunPending,
         loadPrevious,
         loadSystemPrompt,
         messages,

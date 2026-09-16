@@ -472,10 +472,15 @@ export type AgentPendingUserInputDto = {
 /** @deprecated 使用 AgentPendingUserInputDto */
 export type AgentPendingApprovalDto = AgentPendingUserInputDto;
 
+/** 队列项来源：用户运行中排队、后台任务回流，或缺少内部 caller 的旧队列项。 */
+export type AgentQueuedMessageSourceDto = "user" | "system" | "unknown";
+
 export type AgentQueuedMessageDto = {
     id: string;
     clientMessageId: string;
     kind: "steer" | "followup";
+    /** 谁把这条放进队列；旧队列项缺少内部 caller 时投影为 unknown。 */
+    source?: AgentQueuedMessageSourceDto;
     text?: import("nbook/shared/dto/agent-public-event.dto").PublicTextPreviewDto;
     images: Array<{mimeType: string; dataBytes: number; dataOmitted: true}>;
     omittedImages: number;
@@ -492,6 +497,12 @@ export type AgentFollowUpQueueStateDto = {
         itemId?: string;
         reason: "error" | "aborted" | "interrupted" | "admission_error";
         message?: string;
+    };
+    /** 暂停后的自动重试进度；未进入自动重试时缺省。`exhausted` 表示已停止重试、等待人工。 */
+    autoRetry?: {
+        attempt: number;
+        limit: number;
+        exhausted: boolean;
     };
     items: AgentFollowUpQueueItemDto[];
     omittedItems: number;

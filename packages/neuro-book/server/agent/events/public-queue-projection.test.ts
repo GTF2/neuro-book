@@ -37,4 +37,29 @@ describe("public queue projection", () => {
         expect(projected.omittedItems).toBe(36);
         expect(Buffer.byteLength(JSON.stringify(projected), "utf8")).toBeLessThan(128 * 1024);
     });
+
+    it("来源按 caller 白名单映射为 user/system/unknown,且不输出任何内部调用方标识", () => {
+        const baseItem = {
+            clientMessageId: "message-source",
+            kind: "followup" as const,
+            message: {content: [{type: "text" as const, text: "hello"}]},
+            createdAt: 1,
+        };
+
+        expect(projectQueuedMessage({...baseItem, id: "queue-user", caller: {kind: "user"}}).source).toBe("user");
+        expect(projectQueuedMessage({...baseItem, id: "queue-agent", caller: {kind: "agent"}}).source).toBe("system");
+        expect(projectQueuedMessage({...baseItem, id: "queue-system", caller: {kind: "system"}}).source).toBe("system");
+        // 旧队列项缺少内部 caller:降级为未知来源,不报错。
+        expect(projectQueuedMessage({...baseItem, id: "queue-legacy"}).source).toBe("unknown");
+
+        // 白名单映射之外,caller 携带的内部标识(sessionId/profileKey/toolCallId)一律不进入公开投影。
+        const serialized = JSON.stringify(projectQueuedMessage({
+            ...baseItem,
+            id: "queue-internal",
+            caller: {kind: "agent", sessionId: 3, profileKey: "leader.default", toolCallId: "tool-1"},
+        }));
+        expect(serialized).not.toContain("profileKey");
+        expect(serialized).not.toContain("toolCallId");
+        expect(JSON.parse(serialized)).not.toHaveProperty("sessionId");
+    });
 });

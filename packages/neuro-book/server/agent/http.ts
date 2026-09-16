@@ -1,5 +1,5 @@
 import {createError, getRouterParam} from "h3";
-import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
+import {AgentFollowUpItemMissingError, NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {AgentHistoryQueryError} from "nbook/server/agent/session/history-query";
@@ -19,6 +19,7 @@ import {
     type AgentCommandRequestDto,
     type AgentCreateSessionRequestDto,
     type AgentCurrentProjectRequestDto,
+    type AgentFollowUpQueueStateDto,
     type ClientVariablePatchAckDto,
     type AgentInvokeRequestDto,
     type AgentSessionEventsQueryDto,
@@ -137,6 +138,46 @@ export async function explainAgentToolCall(
     harness = useAgentHarness(),
 ): Promise<AgentToolExplanationDto> {
     return withAgentSessionHttpError(sessionId, () => harness.explainToolCall(sessionId, body));
+}
+
+/**
+ * 读取待投递队列项的路由参数。
+ */
+export function requireAgentFollowUpItemId(event: Parameters<typeof getRouterParam>[0]): string {
+    const raw = getRouterParam(event, "itemId");
+    if (raw === undefined || raw.length === 0 || raw.length > 200) {
+        throw createError({
+            statusCode: 400,
+            message: "itemId 无效",
+        });
+    }
+    return raw;
+}
+
+/** 送达队列中的某一条：置顶并解除暂停；会话空闲时立即投递。 */
+export async function deliverAgentFollowUpItem(
+    sessionId: number,
+    itemId: string,
+    harness = useAgentHarness(),
+): Promise<AgentFollowUpQueueStateDto> {
+    return withAgentSessionHttpError(sessionId, () => harness.deliverFollowUpItem(sessionId, itemId));
+}
+
+/** 忽略队列中的某一条：永久移除，不再送达。 */
+export async function dismissAgentFollowUpItem(
+    sessionId: number,
+    itemId: string,
+    harness = useAgentHarness(),
+): Promise<AgentFollowUpQueueStateDto> {
+    return withAgentSessionHttpError(sessionId, () => harness.dismissFollowUpItem(sessionId, itemId));
+}
+
+/** 解除队列暂停并按时间顺序继续投递。 */
+export async function resumeAgentFollowUps(
+    sessionId: number,
+    harness = useAgentHarness(),
+): Promise<AgentFollowUpQueueStateDto> {
+    return withAgentSessionHttpError(sessionId, () => harness.resumeFollowUps(sessionId));
 }
 
 /**
@@ -412,6 +453,13 @@ export function mapAgentHttpError(error: unknown, requestSessionId: number | und
             statusCode: primaryMissing ? 404 : 409,
             message: primaryMissing ? "Session 不存在或已不可用" : "关联对话不存在或已不可用",
             data: {code: primaryMissing ? "SESSION_NOT_FOUND" : "SESSION_DEPENDENCY_NOT_FOUND"},
+        });
+    }
+    if (error instanceof AgentFollowUpItemMissingError) {
+        return createError({
+            statusCode: 404,
+            message: error.message,
+            data: {code: "AGENT_FOLLOW_UP_ITEM_NOT_FOUND", retryable: false},
         });
     }
     if (error instanceof AgentHistoryQueryError) {

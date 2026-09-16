@@ -2,6 +2,7 @@
 import type {AgentPendingUserInputSession} from "nbook/app/components/novel-ide/agent/agent-message";
 import type {AgentPendingResolutionDraft, AgentPendingSubmissionIssue} from "nbook/app/components/novel-ide/agent/agent-pending-resolution";
 import AgentComposerInput from "nbook/app/components/novel-ide/agent/AgentComposerInput.vue";
+import AgentFollowUpQueuePanel from "nbook/app/components/novel-ide/agent/AgentFollowUpQueuePanel.vue";
 import AgentSessionModelControls from "nbook/app/components/novel-ide/agent/AgentSessionModelControls.vue";
 import AgentUserInputPrompt from "nbook/app/components/novel-ide/agent/AgentUserInputPrompt.vue";
 import AgentWorkspaceChanges from "nbook/app/components/novel-ide/agent/AgentWorkspaceChanges.vue";
@@ -11,7 +12,7 @@ import type {
     AgentTriggerMenuState,
 } from "nbook/app/components/novel-ide/agent/trigger-menu";
 import type {EnabledModelOptionDto} from "nbook/shared/dto/app-settings.dto";
-import type {AgentQueuedMessageDto, AgentMode, AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
+import type {AgentFollowUpQueueStateDto, AgentQueuedMessageDto, AgentMode, AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import {publicValuePreviewJsonValue} from "nbook/app/components/novel-ide/agent/agent-message";
 import {agentAttachmentUrl} from "nbook/app/components/novel-ide/agent/agent-attachment";
 import type {ComposerImageNode} from "nbook/app/components/novel-ide/agent/composer-image-transaction";
@@ -30,6 +31,8 @@ const props = defineProps<{
     canAbort: boolean;
     pendingSubmissionIssue: AgentPendingSubmissionIssue | null;
     running: boolean;
+    /** 已提交、服务端 live state 尚未回流的运行；这段空窗没有任何服务端状态可依赖。 */
+    localRunPending: boolean;
     availability: AgentComposerAvailability;
     canRegisterAttachments: boolean;
     canInsertAttachments: boolean;
@@ -56,6 +59,12 @@ const props = defineProps<{
     runPhaseLabel: string;
     connectionNeedsAction: boolean;
     queuedMessages: AgentQueuedMessageDto[];
+    /** 待投递队列快照；用于队列条的来源、状态与原因展示。 */
+    followUpQueue: AgentFollowUpQueueStateDto | null;
+    /** 会话是否允许操作待投递队列。 */
+    canOperateFollowUpQueue: boolean;
+    /** 是否有队列操作正在提交。 */
+    followUpQueueBusy: boolean;
     menuRefreshKey: string | number;
     projectRoot: string | null;
     historyInboxRefreshKey: string | number;
@@ -81,6 +90,14 @@ const emit = defineEmits<{
     (e: "send"): void;
     (e: "steer"): void;
     (e: "followup"): void;
+    /** 送达待投递队列中的某一条。 */
+    (e: "deliver-follow-up", itemId: string): void;
+    /** 忽略待投递队列中的某一条。 */
+    (e: "dismiss-follow-up", itemId: string): void;
+    /** 解除队列暂停并全部送达。 */
+    (e: "resume-follow-ups"): void;
+    /** 请求宿主对「全部忽略」做二次确认。 */
+    (e: "request-dismiss-all-follow-ups"): void;
     (e: "stop"): void;
     (e: "cycle-mode"): void;
     (e: "toggle-session-model-popover"): void;
@@ -112,18 +129,6 @@ type ComposerAvailabilityView = {
 
 /** 将 availability 映射成持续可见的状态说明与唯一可用操作。 */
 const availabilityView = computed<ComposerAvailabilityView | null>(() => {
-    // 运行中优先：否则长阻塞的运行完全没有文字反馈，用户只能靠发送键图标猜。
-    // 仅在 ready 时接管 —— 其他状态（unselected/archived/blocked…）本身信息量更大，不覆盖。
-    if (props.running && props.availability.status === "ready") {
-        return {
-            icon: "i-lucide-loader-circle animate-spin",
-            message: t("agent.composer.generating"),
-            tone: "info",
-            action: null,
-            actionIcon: "",
-            actionLabel: "",
-        };
-    }
     switch (props.availability.status) {
         case "ready":
             return null;
@@ -309,6 +314,10 @@ const sendDisabled = computed(() => {
     if (messageSubmitBlocked.value) {
         return true;
     }
+    // 本地提交尚未回流：此时没有可中止的服务端运行，发送键只承担状态展示。
+    if (props.localRunPending && !runInputText.value.trim()) {
+        return true;
+    }
     if (props.running) {
         return false;
     }
@@ -323,6 +332,10 @@ const sendIconClass = computed(() => {
         return failedPendingImage.value
             ? "i-lucide-image-off"
             : "i-lucide-loader-2 animate-spin";
+    }
+    // 提交后、服务端确认前的空窗：发送键转圈，用户才知道已经受理。
+    if (props.localRunPending && !runInputText.value.trim()) {
+        return "i-lucide-loader-circle animate-spin";
     }
     if (props.running && !runInputText.value.trim()) {
         return "i-lucide-square";
@@ -353,6 +366,9 @@ const sendButtonTitle = computed(() => {
     }
     if (images.budgetError.value) {
         return images.budgetError.value;
+    }
+    if (props.localRunPending && !runInputText.value.trim()) {
+        return t("agent.composer.generating");
     }
     if (composerReadonly.value) {
         return availabilityView.value?.message || t("agent.composer.readonly");
@@ -521,7 +537,20 @@ defineExpose({focus, insertAttachment});
 <template>
     <!-- Agent 底部输入容器 -->
     <div class="relative shrink-0 bg-[var(--bg-panel)] px-2 pb-1">
-        <!-- pending 引导/队列 -->
+        <!-- 待投递队列：默认一行，来源 / 原因 / 送达 / 忽略都在这里 -->
+        <AgentFollowUpQueuePanel
+            v-if="!hasPendingUserInput"
+            :queue="props.followUpQueue"
+            :running="props.running"
+            :can-operate="props.canOperateFollowUpQueue"
+            :busy="props.followUpQueueBusy"
+            @deliver="emit('deliver-follow-up', $event)"
+            @dismiss="emit('dismiss-follow-up', $event)"
+            @resume="emit('resume-follow-ups')"
+            @request-dismiss-all="emit('request-dismiss-all-follow-ups')"
+        />
+
+        <!-- 运行中的引导消息 -->
         <div v-if="!hasPendingUserInput && props.queuedMessages.length > 0" class="flex min-w-0 flex-wrap gap-1 px-1 pb-1.5">
             <div
                 v-for="item in props.queuedMessages"

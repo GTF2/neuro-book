@@ -257,6 +257,16 @@ type HarnessOptions = ({
 const REPORT_RESULT_ERROR_LIMIT = 3;
 /** provider/tool 收到 AbortSignal 后自行收尾的宽限期；超时后由 Harness fencing 强制收口。 */
 const INVOCATION_ABORT_GRACE_MS = 150;
+/** 队列暂停后允许的自动重试次数；超限后转为人工处理，避免投递通道持续失败时无限重试。 */
+const FOLLOW_UP_AUTO_RETRY_LIMIT = 3;
+
+/** 队列项已被处理或不存在；HTTP 层据此返回 404。 */
+export class AgentFollowUpItemMissingError extends Error {
+    constructor(readonly itemId: string) {
+        super(`队列里已经没有这条消息：${itemId}`);
+        this.name = "AgentFollowUpItemMissingError";
+    }
+}
 
 type SessionSummarizerState = {
     sessionId?: number;
@@ -555,6 +565,8 @@ export class NeuroAgentHarness {
     private readonly steerableSessions = new Set<number>();
     private readonly steerQueues = new Map<number, AgentQueuedInvocationTruth[]>();
     private readonly followUpQueues = new Map<number, FollowUpQueueTruthState>();
+    /** 空闲后自动重试投递的累计次数；达到上限即停止自动重试，等用户手动处理。 */
+    private readonly followUpAutoRetries = new Map<number, number>();
     private readonly abortControllers = new Map<number, AbortController>();
     /** accepted running 段的 settle/fence 控制面，waiting 后 resume 会以同一 invocationId 新建。 */
     private readonly invocationCompletions = new Map<string, InvocationCompletion>();
@@ -1192,6 +1204,72 @@ export class NeuroAgentHarness {
         });
         this.startBackgroundTask("agent.followup.drain", this.drainFollowUps(input.sessionId));
         return result;
+    }
+
+    /**
+     * 立即送达队列中的某一条：置顶并解除暂停。
+     *
+     * 投递本身交给 `drainFollowUps`：会话空闲时立即送达；运行中则排到本轮结束后第一个送出，
+     * 不打断当前 invocation。返回操作后的队列快照，供界面直接更新。
+     */
+    async deliverFollowUpItem(sessionId: number, itemId: string): Promise<AgentFollowUpQueueStateDto> {
+        const queue = await this.withSessionMutation(sessionId, async () => {
+            const snapshot = await this.repo.readSession(sessionId);
+            const current = this.followUpQueueState(sessionId, this.repo.reduce(snapshot));
+            const item = current.items.find((candidate) => candidate.id === itemId);
+            if (item === undefined) {
+                throw new AgentFollowUpItemMissingError(itemId);
+            }
+            const next: FollowUpQueueTruthState = {
+                status: "ready",
+                items: [item, ...current.items.filter((candidate) => candidate.id !== itemId)],
+            };
+            await this.setFollowUpQueueState(sessionId, next);
+            return next;
+        });
+        this.followUpAutoRetries.delete(sessionId);
+        this.startBackgroundTask("agent.followup.drain", this.drainFollowUps(sessionId));
+        return this.publicFollowUpQueue(sessionId, queue);
+    }
+
+    /** 忽略队列中的某一条：从队列永久移除，不再送达；队列其余部分与暂停状态保持不变。 */
+    async dismissFollowUpItem(sessionId: number, itemId: string): Promise<AgentFollowUpQueueStateDto> {
+        const queue = await this.withSessionMutation(sessionId, async () => {
+            const snapshot = await this.repo.readSession(sessionId);
+            const current = this.followUpQueueState(sessionId, this.repo.reduce(snapshot));
+            if (!current.items.some((candidate) => candidate.id === itemId)) {
+                throw new AgentFollowUpItemMissingError(itemId);
+            }
+            const remaining = current.items.filter((candidate) => candidate.id !== itemId);
+            // 队列状态是判别联合：分开构造，保留原有的暂停原因。
+            const next: FollowUpQueueTruthState = remaining.length === 0
+                ? this.emptyFollowUpQueueState()
+                : current.status === "paused"
+                    ? {status: "paused", pausedBy: current.pausedBy, items: remaining}
+                    : {status: "ready", items: remaining};
+            await this.setFollowUpQueueState(sessionId, next);
+            return next;
+        });
+        await this.publishSessionState(sessionId);
+        return this.publicFollowUpQueue(sessionId, queue);
+    }
+
+    /** 解除暂停并按时间顺序继续投递全部积压。 */
+    async resumeFollowUps(sessionId: number): Promise<AgentFollowUpQueueStateDto> {
+        const queue = await this.withSessionMutation(sessionId, async () => {
+            const snapshot = await this.repo.readSession(sessionId);
+            const current = this.followUpQueueState(sessionId, this.repo.reduce(snapshot));
+            if (current.items.length === 0) {
+                return current;
+            }
+            // 已经 ready 的队列同样需要推进一次 drain：用户可能刚点过单条送达。
+            const next: FollowUpQueueTruthState = {status: "ready", items: current.items};
+            await this.setFollowUpQueueState(sessionId, next);
+            return next;
+        });
+        this.followUpAutoRetries.delete(sessionId);
+        this.startBackgroundTask("agent.followup.drain", this.drainFollowUps(sessionId));
+        return this.publicFollowUpQueue(sessionId, queue);
     }
 
     /** 已完成 admission 的 queue 输入直接进入 core，禁止重新解码或保存 attachment。 */
@@ -1914,7 +1992,7 @@ export class NeuroAgentHarness {
             callerKind: input.caller.kind,
         });
         if (input.finalResult.status === "completed") {
-            await this.drainFollowUps(input.sessionId).catch((error) => {
+            await this.resumePausedFollowUpsThenDrain(input.sessionId).catch((error) => {
                 void appLogger.warn("agent.followup.drainFailed", {
                     sessionId: input.sessionId,
                     invocationId: input.invocationId,
@@ -2775,7 +2853,7 @@ export class NeuroAgentHarness {
                 : {}),
             pendingUserInputs: await Promise.all(projection.pendingApprovals.map((pending) => this.pendingApprovalDto(snapshot, pending, true))),
             steerQueue: projectQueuedMessages(this.steerQueues.get(sessionId) ?? []),
-            followUpQueue: this.publicFollowUpQueue(followUpQueue),
+            followUpQueue: this.publicFollowUpQueue(sessionId, followUpQueue),
             activeInvocation: projection.activeInvocation,
             model: projectSessionModelRef(model),
             thinkingLevel: context.thinkingLevel,
@@ -6366,6 +6444,30 @@ export class NeuroAgentHarness {
         };
     }
 
+    /**
+     * 会话空闲后的队列推进：被暂停的队列先自动解除暂停，再交给 drain 投递。
+     *
+     * 自动重试有次数上限；超限后保持暂停并公开 `autoRetry.exhausted`，等用户手动处理，
+     * 避免投递通道持续失败时无限重试。
+     *
+     * 用户主动停止（aborted）造成的暂停**不参与自动重试**：会话刚被停止就立刻空闲，
+     * 若在此自动重投，等于「停止」把下一条直接送进运行，停止语义失效。这类暂停只能由
+     * 用户显式操作恢复（单条送达 / 全部送达 / 重新排队）。
+     */
+    private async resumePausedFollowUpsThenDrain(sessionId: number): Promise<void> {
+        const queue = this.followUpQueues.get(sessionId);
+        if (queue !== undefined && queue.status === "paused" && queue.items.length > 0) {
+            const userStopped = queue.pausedBy.reason === "aborted";
+            const attempts = this.followUpAutoRetries.get(sessionId) ?? 0;
+            if (!userStopped && attempts < FOLLOW_UP_AUTO_RETRY_LIMIT) {
+                this.followUpAutoRetries.set(sessionId, attempts + 1);
+                await this.setFollowUpQueueState(sessionId, {status: "ready", items: queue.items});
+                await this.publishSessionState(sessionId);
+            }
+        }
+        await this.drainFollowUps(sessionId);
+    }
+
     private async drainFollowUps(sessionId: number): Promise<void> {
         if (this.activeInvocations.has(sessionId)) {
             return;
@@ -7159,13 +7261,28 @@ export class NeuroAgentHarness {
         };
     }
 
-    private publicFollowUpQueue(queue: FollowUpQueueTruthState): AgentFollowUpQueueStateDto {
+    private publicFollowUpQueue(sessionId: number, queue: FollowUpQueueTruthState): AgentFollowUpQueueStateDto {
         const projected = projectQueuedMessages(queue.items);
+        const autoRetry = this.followUpAutoRetry(sessionId);
         return {
             status: queue.status,
             ...(queue.status === "paused" ? {pausedBy: queue.pausedBy} : {}),
+            ...(autoRetry === null ? {} : {autoRetry}),
             items: projected.items,
             omittedItems: projected.omittedItems,
+        };
+    }
+
+    /** 由内存计数派生自动重试进度；一次都没试过时不公开该字段。 */
+    private followUpAutoRetry(sessionId: number): {attempt: number; limit: number; exhausted: boolean} | null {
+        const attempts = this.followUpAutoRetries.get(sessionId) ?? 0;
+        if (attempts === 0) {
+            return null;
+        }
+        return {
+            attempt: Math.min(attempts, FOLLOW_UP_AUTO_RETRY_LIMIT),
+            limit: FOLLOW_UP_AUTO_RETRY_LIMIT,
+            exhausted: attempts >= FOLLOW_UP_AUTO_RETRY_LIMIT,
         };
     }
 

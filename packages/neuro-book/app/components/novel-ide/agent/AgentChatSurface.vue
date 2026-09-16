@@ -261,6 +261,8 @@ const themeManager = useThemeManager();
 const costDisplay = useCostDisplay();
 const messages = session.messages;
 const running = session.running;
+/** 本地已受理、服务端 live state 尚未回流的运行：Composer 用它把「已提交」画在发送键上。 */
+const localRunPending = computed(() => session.localRunPending.value > 0);
 const connectionStatus = session.connectionStatus;
 const runPhase = session.runPhase;
 const pendingUserInputSession = session.pendingUserInputSession;
@@ -323,10 +325,13 @@ const composerAvailability = computed<AgentComposerAvailability>(() => projectAg
 const activeSummarizer = computed(() => activeRecovery.value?.summarizer ?? null);
 const linkedAgents = computed(() => activeRecovery.value?.linkedAgents ?? []);
 const linkedByAgents = computed(() => activeRecovery.value?.linkedByAgents ?? []);
-const queuedMessages = computed<AgentQueuedMessageDto[]>(() => [
-    ...activeRecovery.value?.steerQueue.items ?? [],
-    ...activeRecovery.value?.followUpQueue.items ?? [],
-].sort((left, right) => left.createdAt - right.createdAt));
+/** 运行中的引导消息；待投递队列由 AgentFollowUpQueuePanel 独立展示来源与状态。 */
+const queuedMessages = computed<AgentQueuedMessageDto[]>(() => activeRecovery.value?.steerQueue.items ?? []);
+/** 待投递队列快照：空闲时为空表示没有待送达内容。 */
+const followUpQueue = computed(() => activeRecovery.value?.followUpQueue ?? null);
+const canOperateFollowUpQueue = computed(() => activeInteraction.value.canInvoke);
+/** 队列操作提交中：避免重复点击。 */
+const followUpQueueBusy = ref(false);
 const linkedAgentCount = computed(() => linkedAgents.value.length + linkedByAgents.value.length);
 const agentMode = computed<AgentMode>(() => activeRecovery.value?.agentMode ?? "normal");
 const activeModelSupportsImages = computed(() => {
@@ -2147,7 +2152,9 @@ const stopRun = async (): Promise<void> => {
         return;
     }
     try {
-        await agentApi.abortSession(activeSessionId.value, {reason: "user abort"});
+        // clearQueue: false —— 停止只中止当前这一轮；队列里的消息保留为「已暂停」，
+        // 由用户在队列条上决定逐条送达或忽略。默认的 true 会连用户还没看到的通知一起删掉。
+        await agentApi.abortSession(activeSessionId.value, {reason: "user abort", clearQueue: false});
         await syncActiveSessionRecovery();
     } catch (error) {
         notification.error(resolveApiErrorMessage(error, t("agent.chatSurface.stopRunFailed")));
@@ -2621,6 +2628,69 @@ const steer = async (): Promise<void> => sendRunningMessage("steer");
 /** 运行中把消息排到当前 loop 结束后继续执行。 */
 const followup = async (): Promise<void> => {
     await sendRunningMessage("followup");
+};
+
+/** 送达待投递队列中的某一条；返回的快照就地更新队列状态。 */
+const deliverFollowUp = async (itemId: string): Promise<void> => {
+    if (!activeSessionId.value || followUpQueueBusy.value) {
+        return;
+    }
+    followUpQueueBusy.value = true;
+    try {
+        session.applyFollowUpQueue(await agentApi.deliverFollowUpItem(activeSessionId.value, itemId));
+    } catch (error) {
+        console.error("送达队列消息失败", error);
+        notification.error(t("agent.followUpQueue.deliverFailed"));
+    } finally {
+        followUpQueueBusy.value = false;
+    }
+};
+
+/** 忽略待投递队列中的某一条。 */
+const dismissFollowUp = async (itemId: string): Promise<void> => {
+    if (!activeSessionId.value || followUpQueueBusy.value) {
+        return;
+    }
+    followUpQueueBusy.value = true;
+    try {
+        session.applyFollowUpQueue(await agentApi.dismissFollowUpItem(activeSessionId.value, itemId));
+    } catch (error) {
+        console.error("忽略队列消息失败", error);
+        notification.error(t("agent.followUpQueue.dismissFailed"));
+    } finally {
+        followUpQueueBusy.value = false;
+    }
+};
+
+/** 解除队列暂停并按时间顺序继续投递。 */
+const resumeFollowUps = async (): Promise<void> => {
+    if (!activeSessionId.value || followUpQueueBusy.value) {
+        return;
+    }
+    followUpQueueBusy.value = true;
+    try {
+        session.applyFollowUpQueue(await agentApi.resumeFollowUps(activeSessionId.value));
+    } catch (error) {
+        console.error("继续投递队列失败", error);
+        notification.error(t("agent.followUpQueue.resumeFailed"));
+    } finally {
+        followUpQueueBusy.value = false;
+    }
+};
+
+/** 「全部忽略」需要二次确认：忽略后这些通知不会再送达。 */
+const requestDismissAllFollowUps = async (): Promise<void> => {
+    const items = followUpQueue.value?.items ?? [];
+    if (items.length === 0 || followUpQueueBusy.value) {
+        return;
+    }
+    const confirmed = await confirm(t("agent.followUpQueue.dismissAllConfirmMessage", {count: items.length}), t("agent.followUpQueue.dismissAllConfirmTitle"));
+    if (!confirmed) {
+        return;
+    }
+    for (const item of items) {
+        await dismissFollowUp(item.id);
+    }
 };
 
 /**
@@ -4498,6 +4568,10 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 :can-abort="activeInteraction.canAbort"
                 :pending-submission-issue="pendingSubmissionIssue"
                 :running="running"
+                :local-run-pending="localRunPending"
+                :follow-up-queue="followUpQueue"
+                :can-operate-follow-up-queue="canOperateFollowUpQueue"
+                :follow-up-queue-busy="followUpQueueBusy"
                 :availability="composerAvailability"
                 :can-register-attachments="activeInteraction.canRegisterAttachment"
                 :can-insert-attachments="activeInteraction.canInsertAttachment"
@@ -4536,6 +4610,10 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @resync-user-input="void resyncPendingUserInput()"
                 @open-context-inspector="contextInspectorOpen = true"
                 @send="void send()"
+                @deliver-follow-up="void deliverFollowUp($event)"
+                @dismiss-follow-up="void dismissFollowUp($event)"
+                @resume-follow-ups="void resumeFollowUps()"
+                @request-dismiss-all-follow-ups="void requestDismissAllFollowUps()"
                 @steer="void steer()"
                 @followup="void followup()"
                 @stop="void stopRun()"
