@@ -17,11 +17,20 @@ import {
     readConfigBootstrap,
     readConfigEditorSnapshot,
     readConfigSnapshot,
+    readGlobalConfigFileAtWorkspaceRoot,
     resolveConfigTarget,
     resetProjectProfileHome,
     saveGlobalConfig,
     saveProjectConfig,
 } from "nbook/server/config/config-service";
+import {
+    ENCRYPTED_SECRET_PREFIX,
+    resolveSecretCipher,
+    SecretDecryptError,
+    setSecretCipherForTesting,
+    type SecretCipher,
+} from "nbook/server/config/secret-cipher";
+import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {ProjectNotOpenError, resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
 import {closeProjectForTest, openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {createIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
@@ -69,6 +78,8 @@ describe("config service", {timeout: 30_000}, () => {
     });
 
     afterEach(async () => {
+        // 防御性复位:防止某个用例注入的 fake cipher 泄漏到后续用例(setSecretCipherForTesting 是模块级全局状态)。
+        setSecretCipherForTesting(null);
         await resetConfigTestState();
     });
 
@@ -311,7 +322,10 @@ describe("config service", {timeout: 30_000}, () => {
         };
 
         expect(raw.models?.providers?.[0]?.modelApi).toBe("openai-responses");
-        expect(raw.models?.providers?.[0]?.options?.apiKey).toBe("sk-keep-model-api");
+        const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+        // 安全③：这里锁的是「有意加密落盘」的产品行为——加密可用时必须是 dpapi:v1: 密文且能解回原值，
+        // 不可用时按设计降级明文；不是为了让红变绿而随手适配。
+        expectPersistedSecret(raw.models?.providers?.[0]?.options?.apiKey, readBack.models?.providers?.[0]?.options?.apiKey, "sk-keep-model-api");
     });
 
     it("旧客户端省略 sourceIndex 时不会按 Provider ID 猜测 Secret", async () => {
@@ -650,7 +664,9 @@ describe("config service", {timeout: 30_000}, () => {
             models?: {providers?: Array<{options: {apiKey: string}}>}
         };
 
-        expect(raw.models?.providers?.[0]?.options.apiKey).toBe("sk-test-123456");
+        const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+        // 安全③:写回缺失 value 时旧 Key 仍保留在盘上——加密可用时是密文、不可用时是明文,两者读回都应为原明文。
+        expectPersistedSecret(raw.models?.providers?.[0]?.options.apiKey, readBack.models?.providers?.[0]?.options.apiKey, "sk-test-123456");
         expect(snapshot.modelSettings.providers[0]?.options.apiKey).toEqual({
             configured: true,
             maskedValue: "sk-t...3456",
@@ -701,8 +717,10 @@ describe("config service", {timeout: 30_000}, () => {
             web?: {search?: {providers?: {tavily?: {apiKey?: string}; brave?: {apiKey?: string}}}}
         };
 
-        expect(raw.web?.search?.providers?.tavily?.apiKey).toBe("tvly-secret-123456");
-        expect(raw.web?.search?.providers?.brave?.apiKey).toBe("brave-secret-123456");
+        const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+        // 安全③:两个搜索 Key 都按同一规则落盘——加密可用时是密文、不可用时是明文,读回都应为原明文。
+        expectPersistedSecret(raw.web?.search?.providers?.tavily?.apiKey, readBack.web?.search?.providers?.tavily?.apiKey, "tvly-secret-123456");
+        expectPersistedSecret(raw.web?.search?.providers?.brave?.apiKey, readBack.web?.search?.providers?.brave?.apiKey, "brave-secret-123456");
         expect(snapshot.global.web?.search?.providers?.tavily?.apiKey).toEqual({
             configured: true,
             maskedValue: "tvly...3456",
@@ -811,7 +829,89 @@ describe("config service", {timeout: 30_000}, () => {
             models?: {providers?: Array<{options: {apiKey: string}}>}
         };
         expect(raw.auth).toBeUndefined();
-        expect(raw.models?.providers?.[0]?.options.apiKey).toBe("sk-keep-me");
+        const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+        // 安全③:部分写回不改变已有 Key 的加密形态——加密可用时盘上是密文、不可用时是明文,读回都应为原明文。
+        expectPersistedSecret(raw.models?.providers?.[0]?.options.apiKey, readBack.models?.providers?.[0]?.options.apiKey, "sk-keep-me");
+    });
+
+    // 安全③:加密分支在 Linux CI 上永远不可达(isDpapiRuntime 要求 Bun + win32),故用 fake cipher
+    // 强制覆盖「写前加密 → 读后解密」的编排,保证核心安全行为有持续验证装置(而非只在开发者 Windows 本机跑到)。
+    it("加密可用时 saveGlobalConfig 落盘为密文且读回解出原值（fake cipher 强制覆盖加密分支）", async () => {
+        const cipher = createRecordingFakeCipher();
+        setSecretCipherForTesting(cipher);
+        try {
+            await saveGlobalConfig({models: modelsInputWithApiKey("sk-fake-secret")}, {workspaceKind: "user-assets"});
+
+            const raw = JSON.parse(await fs.readFile(path.join(workspaceRoot(), ".nbook", "config.json"), "utf-8")) as {
+                models?: {providers?: Array<{options?: {apiKey?: string}}>};
+            };
+            const onDisk = raw.models?.providers?.[0]?.options?.apiKey;
+            // 写入点确实「加密」:盘上是带前缀的密文、绝不是明文,且加密函数真的被调用。
+            expect(onDisk?.startsWith(ENCRYPTED_SECRET_PREFIX)).toBe(true);
+            expect(onDisk).not.toBe("sk-fake-secret");
+            expect(cipher.encryptCalls).toContain("sk-fake-secret");
+
+            // 读取点走真实产品读路径且确实「解密」:读回原明文,而不是把密文原样透出。
+            const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+            expect(readBack.models?.providers?.[0]?.options?.apiKey).toBe("sk-fake-secret");
+            expect(cipher.decryptCalls.length).toBeGreaterThan(0);
+        } finally {
+            setSecretCipherForTesting(null);
+        }
+    });
+
+    it("已是密文的 Key 再次保存不会被二次加密（幂等）", async () => {
+        const cipher = createRecordingFakeCipher();
+        setSecretCipherForTesting(cipher);
+        try {
+            const configPath = path.join(workspaceRoot(), ".nbook", "config.json");
+            const readOnDisk = async (): Promise<string | undefined> => {
+                const raw = JSON.parse(await fs.readFile(configPath, "utf-8")) as {
+                    models?: {providers?: Array<{options?: {apiKey?: string}}>};
+                };
+                return raw.models?.providers?.[0]?.options?.apiKey;
+            };
+
+            await saveGlobalConfig({models: modelsInputWithApiKey("sk-idempotent")}, {workspaceKind: "user-assets"});
+            const firstOnDisk = await readOnDisk();
+            expect(firstOnDisk?.startsWith(ENCRYPTED_SECRET_PREFIX)).toBe(true);
+
+            // 再保存一个无关片段:内部会「读回解密 → 合并 → 写前加密」。密文不得叠加成 dpapi:v1:dpapi:v1:...
+            await saveGlobalConfig({ui: {theme: "sepia", customThemes: [], costCurrency: "USD"}}, {workspaceKind: "user-assets"});
+            const secondOnDisk = await readOnDisk();
+            expect(secondOnDisk?.startsWith(`${ENCRYPTED_SECRET_PREFIX}${ENCRYPTED_SECRET_PREFIX}`)).toBe(false);
+            expect(secondOnDisk).toBe(firstOnDisk);
+
+            const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+            expect(readBack.models?.providers?.[0]?.options?.apiKey).toBe("sk-idempotent");
+        } finally {
+            setSecretCipherForTesting(null);
+        }
+    });
+
+    it("密文解不开时优雅降级：清空该字段并告警，其余配置仍可用", async () => {
+        const configPath = path.join(workspaceRoot(), ".nbook", "config.json");
+        await fs.mkdir(path.dirname(configPath), {recursive: true});
+        // 前缀合法但内容是 fake 不认识的 base64 —— 模拟「换机器/换账户」导致解不开的密文。
+        await fs.writeFile(configPath, JSON.stringify({
+            embedding: {apiKey: `${ENCRYPTED_SECRET_PREFIX}${Buffer.from("not-fake", "utf8").toString("base64")}`},
+            ui: {theme: "sepia"},
+        }), "utf-8");
+
+        setSecretCipherForTesting(createRecordingFakeCipher());
+        const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+        try {
+            const readBack = await readGlobalConfigFileAtWorkspaceRoot(absoluteFsPath(workspaceRoot()));
+            // 解不开的字段被清空(而不是把密文原样透出),且不抛崩。
+            expect(readBack.embedding?.apiKey).toBe("");
+            // 其余配置照常可用。
+            expect(readBack.ui?.theme).toBe("sepia");
+            // 按既定设计给出中文告警。
+            expect(warnSpy.mock.calls.some((call) => String(call[0]).includes("无法解密"))).toBe(true);
+        } finally {
+            warnSpy.mockRestore();
+            setSecretCipherForTesting(null);
+        }
     });
 
     it("Global 模型写回会保留 Pi Model 字段", async () => {
@@ -1856,6 +1956,41 @@ function validModelsInput(): NonNullable<GlobalConfigUpdateDto["models"]> {
     };
 }
 
+/** 在合法 models 输入上填一个明文 API Key（复用 validModelsInput，避免重复大段 fixture）。 */
+function modelsInputWithApiKey(apiKey: string): NonNullable<GlobalConfigUpdateDto["models"]> {
+    const input = validModelsInput();
+    input.providers[0]!.options.apiKey = {configured: false, maskedValue: null, value: apiKey};
+    return input;
+}
+
+/**
+ * 记录加解密调用的 fake cipher：让「加密分支」在任何平台/运行时（含 Linux CI）都能被强制覆盖。
+ *
+ * 它只锁「配置服务的编排」——写前加密、读后解密、幂等、降级；不测 DPAPI 算法本身
+ * （CryptProtectData 的真实往返由 Windows 本地测试与 spike 负责）。
+ */
+function createRecordingFakeCipher(): SecretCipher & {encryptCalls: string[]; decryptCalls: string[]} {
+    const encryptCalls: string[] = [];
+    const decryptCalls: string[] = [];
+    return {
+        available: true,
+        encryptCalls,
+        decryptCalls,
+        encrypt(plaintext: string): string {
+            encryptCalls.push(plaintext);
+            return Buffer.from(`fake:${plaintext}`, "utf8").toString("base64");
+        },
+        decrypt(ciphertext: string): string {
+            decryptCalls.push(ciphertext);
+            const decoded = Buffer.from(ciphertext, "base64").toString("utf8");
+            if (!decoded.startsWith("fake:")) {
+                throw new SecretDecryptError("fake cipher 无法识别该密文");
+            }
+            return decoded.slice("fake:".length);
+        },
+    };
+}
+
 async function createProjectFixture(): Promise<void> {
     await fs.mkdir(path.join(workspaceRoot(), "config-test-project"), {recursive: true});
     await fs.writeFile(path.join(workspaceRoot(), "config-test-project", "project.yaml"), [
@@ -1906,6 +2041,29 @@ async function resetConfigTestState(): Promise<void> {
     if (failures.length > 0) {
         throw new AggregateError(failures, "Config test 用例清理存在失败项");
     }
+}
+
+/**
+ * 断言 Global Config 中某个 apiKey 的「落盘形态」与「读回值」，锁住安全③「有意加密落盘」的产品行为。
+ *
+ * - 加密可用（Bun + Windows，走 DPAPI）：落盘必须带 {@link ENCRYPTED_SECRET_PREFIX} 前缀（证明确实加密），
+ *   且经产品读路径 {@link readGlobalConfigFileAtWorkspaceRoot} 能解回原始明文（证明能解回来）。
+ * - 加密不可用（如 CI 的 Node 运行时）：按设计降级为明文落盘（见 global-config-secrets.ts），读回仍是原明文。
+ *
+ * 两条路径都是产品有意为之的行为，各自都要被锁住；这里刻意不接受「只要非空 / 只要不等于原值」这类弱断言。
+ */
+function expectPersistedSecret(
+    storedValue: string | undefined,
+    readBackValue: string | undefined,
+    plaintext: string,
+): void {
+    if (resolveSecretCipher().available) {
+        expect(storedValue?.startsWith(ENCRYPTED_SECRET_PREFIX)).toBe(true);
+        expect(storedValue).not.toBe(plaintext);
+    } else {
+        expect(storedValue).toBe(plaintext);
+    }
+    expect(readBackValue).toBe(plaintext);
 }
 
 /** 返回当前用例显式拥有的 Workspace Root，避免测试通过进程 cwd 隐式寻址。 */
