@@ -289,6 +289,12 @@ describe("useNovelIdeStore Project Catalog", () => {
         expect(store.currentProjectRoot).toBe("direct-open");
         expect(store.currentWorkspaceRoot).toBe("workspace/direct-open");
     });
+
+    it("剧本工作台默认落在承诺账本 tab", async () => {
+        const store = await createStore();
+        // 锁产品意图:承诺账本是最有差异化的规划能力,默认藏在「线程规划」后面会让新用户看不到它。
+        expect(store.plotWorkbenchTab).toBe("promises");
+    });
 });
 
 type ProjectListResponse = {

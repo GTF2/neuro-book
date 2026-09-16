@@ -229,7 +229,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     const leftPanelWidth = ref(340);
     const plotWorkbenchOpen = ref(false);
     // 剧本工作台当前 tab:线程规划 / 承诺账本 / 决策记录 / 关键帧;侧栏计数入口与账本跳转联动直接写它。
-    const plotWorkbenchTab = ref<"thread" | "promises" | "decisions" | "keyframes">("thread");
+    const plotWorkbenchTab = ref<"thread" | "promises" | "decisions" | "keyframes">("promises");
     // 跳账本时要聚焦的 promise/decision id;为空表示无待消费的聚焦请求,对应 tab 消费一次后置回 null。
     const plotPlanningFocusId = ref<string | null>(null);
     const selectedModel = ref<string>(DEFAULT_MODEL_LABEL);

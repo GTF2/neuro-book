@@ -91,7 +91,7 @@ const inspectorMode = ref<"thread" | "scene" | null>(null);
 const search = ref("");
 const threadMode = ref<"all" | "main" | "support" | "active" | "draft" | "paused" | "unmounted" | "pinned">("all");
 
-// 四个真 tab:线程规划(默认)/承诺账本/决策记录/关键帧,主体随 tab 切换。
+// 四个真 tab:线程规划/承诺账本(默认)/决策记录/关键帧,主体随 tab 切换。
 const tabs = computed<Array<{value: "thread" | "promises" | "decisions" | "keyframes"; label: string; icon: string}>>(() => [
     {value: "thread", label: "线程规划", icon: "i-lucide-git-branch-plus"},
     {value: "promises", label: "承诺账本", icon: "i-lucide-scroll-text"},
