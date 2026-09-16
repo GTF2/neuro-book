@@ -50,6 +50,7 @@ import type {
     StoredProjectConfig,
     StoredProviderConfig,
 } from "nbook/server/config/types";
+import {decryptGlobalConfigSecrets, emitSecretWarnings, encryptGlobalConfigSecrets} from "nbook/server/config/global-config-secrets";
 import {
     applyLowCodeResourceMutations,
     resolveLowCodeForm,
@@ -249,7 +250,10 @@ export async function saveGlobalConfig(
             includeResourceMutationFinalKeys: true,
         }, "global");
         await applyProfileResourceMutations(input.agent?.profiles, mutationTarget, profiles, undefined, "global");
-        await writeJsonFile(globalConfigPath(), next);
+        // 写盘前把明文 API Key 加密（安全③）；cipher 不可用时降级为明文并告警。
+        const {config: encryptedGlobal, warnings: secretWarnings} = encryptGlobalConfigSecrets(next);
+        emitSecretWarnings(secretWarnings);
+        await writeJsonFile(globalConfigPath(), encryptedGlobal);
         return readConfigEditorSnapshotForTarget(responseTarget);
     });
 }
@@ -377,8 +381,9 @@ export async function loadGlobalEffectiveConfigAtWorkspaceRoot(input: {
  * 同步读取 Global Config。仅用于 provider key 这类同步入口。
  */
 export function loadGlobalEffectiveConfigSync(): EffectiveConfig {
-    const global = readJsonFileSync<StoredGlobalConfig>(globalConfigPath());
-    return resolveEffectiveConfig(normalizeGlobalConfig(global), null);
+    const {config, warnings} = decryptGlobalConfigSecrets(readJsonFileSync<StoredGlobalConfig>(globalConfigPath()));
+    emitSecretWarnings(warnings);
+    return resolveEffectiveConfig(normalizeGlobalConfig(config), null);
 }
 
 /**
@@ -448,11 +453,15 @@ async function readConfigFiles(target: ConfigTarget): Promise<{
 }
 
 async function readGlobalConfigFile(): Promise<StoredGlobalConfig> {
-    return normalizeGlobalConfig(await readJsonFile<StoredGlobalConfig>(globalConfigPath()));
+    const {config, warnings} = decryptGlobalConfigSecrets(await readJsonFile<StoredGlobalConfig>(globalConfigPath()));
+    emitSecretWarnings(warnings);
+    return normalizeGlobalConfig(config);
 }
 
 export async function readGlobalConfigFileAtWorkspaceRoot(workspaceRoot: AbsoluteFsPath): Promise<StoredGlobalConfig> {
-    return normalizeGlobalConfig(await readJsonFile<StoredGlobalConfig>(path.join(workspaceRoot, ".nbook", "config.json")));
+    const {config, warnings} = decryptGlobalConfigSecrets(await readJsonFile<StoredGlobalConfig>(path.join(workspaceRoot, ".nbook", "config.json")));
+    emitSecretWarnings(warnings);
+    return normalizeGlobalConfig(config);
 }
 
 async function readProjectConfigFile(configPath: string): Promise<StoredProjectConfig> {
