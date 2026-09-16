@@ -6,6 +6,10 @@ const adminRoutes = [
     "server/api/admin/users/index.post.ts",
     "server/api/admin/users/[userId].patch.ts",
     "server/api/admin/users/[userId]/password.put.ts",
+    // 云备份会打包并上传 State Root，必须与管理员接口同级受 requireAdminAccess 保护。
+    "server/api/passport/backups/index.post.ts",
+    "server/api/passport/backups/[id]/restore.post.ts",
+    "server/api/passport/backups/jobs/[id].get.ts",
 ];
 
 describe("admin auth contract", () => {

@@ -1,4 +1,5 @@
 import {PassportBackupStartRequestSchema, type PassportBackupStartRequestDto} from "nbook/shared/dto/passport.dto";
+import {requireAdminAccess} from "nbook/server/utils/auth";
 import {validateBody} from "nbook/server/utils/novel-chapter";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {usePassportJobManager} from "nbook/server/backup/backup-job-manager";
@@ -8,6 +9,7 @@ import {usePassportJobManager} from "nbook/server/backup/backup-job-manager";
  * 已有任务在跑时 409。
  */
 export default defineEventHandler(async (event): Promise<{jobId: string}> => {
+    await requireAdminAccess(event);
     const body = await validateBody<PassportBackupStartRequestDto>(event, PassportBackupStartRequestSchema);
     const jobId = usePassportJobManager().startBackup(runtimePathsFromEnv(), body.comment);
     return {jobId};

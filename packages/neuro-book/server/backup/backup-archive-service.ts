@@ -7,7 +7,7 @@ import {finished} from "node:stream/promises";
 import {createClient} from "@libsql/client";
 import {strToU8, Zip, ZipDeflate} from "fflate";
 import type {RuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
-import {isSqliteFile, shouldExcludeFromBackup} from "nbook/server/backup/backup-archive-rules";
+import {isGlobalConfigBackupEntry, isSqliteFile, redactGlobalConfigSecrets, shouldExcludeFromBackup} from "nbook/server/backup/backup-archive-rules";
 import type {BackupEncryptionKey} from "nbook/server/backup/backup-keyring-service";
 import {createBackupEnvelopeCipher} from "nbook/server/backup/backup-envelope";
 
@@ -95,10 +95,12 @@ export class BackupArchiveService {
         const snapshotDir = join(tmpDir, "sqlite-snapshots");
         await mkdir(snapshotDir, {recursive: true});
 
-        // 收集打包清单：workspace/ 全量 + State Root 顶层 config.yaml / .env
+        // 收集打包清单：workspace/ 全量 + State Root 顶层 config.yaml。
+        // 顶层 .env 含 NUXT_SESSION_PASSWORD 与 DATABASE_URL，绝不进备份；workspace 内的全局
+        // config.json 仍打包，但写入时经 redactGlobalConfigSecrets 脱敏，不把明文 API Key 带出。
         const files: string[] = [];
         await collectFiles(paths.workspaceRoot, "workspace", files);
-        for (const topLevel of ["config.yaml", ".env"]) {
+        for (const topLevel of ["config.yaml"]) {
             try {
                 if ((await stat(join(paths.stateRoot, topLevel))).isFile()) {
                     files.push(topLevel);
@@ -168,6 +170,16 @@ export class BackupArchiveService {
             await drainIfNeeded();
         };
 
+        /** 写入一个内存字符串条目；用于需要先脱敏再入包的小文件（Global Config）。 */
+        const addTextEntry = async (entryName: string, text: string): Promise<void> => {
+            const entry = new ZipDeflate(entryName, {level: 6});
+            zip.add(entry);
+            entry.push(strToU8(text));
+            await drainIfNeeded();
+            entry.push(new Uint8Array(0), true);
+            await drainIfNeeded();
+        };
+
         const appVersion = await readAppVersion();
         try {
             // 归档自述文件放 zip 根（spec §9.4）
@@ -184,15 +196,20 @@ export class BackupArchiveService {
             let done = 0;
             for (const relative of files) {
                 const absolute = join(paths.stateRoot, relative);
-                let sourcePath = absolute;
-                if (isSqliteFile(relative)) {
-                    try {
-                        sourcePath = await snapshotSqlite(absolute, snapshotDir);
-                    } catch (error) {
-                        throw new Error(`SQLite 快照失败，备份已停止：${relative}`, {cause: error});
+                if (isGlobalConfigBackupEntry(relative)) {
+                    // Global Config 内含明文 API Key：读取后脱敏再入包，绝不流式原样打包。
+                    await addTextEntry(relative, redactGlobalConfigSecrets(await readFile(absolute, "utf8")));
+                } else {
+                    let sourcePath = absolute;
+                    if (isSqliteFile(relative)) {
+                        try {
+                            sourcePath = await snapshotSqlite(absolute, snapshotDir);
+                        } catch (error) {
+                            throw new Error(`SQLite 快照失败，备份已停止：${relative}`, {cause: error});
+                        }
                     }
+                    await addEntry(relative, sourcePath);
                 }
-                await addEntry(relative, sourcePath);
                 done += 1;
                 onProgress?.(done, files.length);
             }

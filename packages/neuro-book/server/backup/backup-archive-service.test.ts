@@ -38,6 +38,27 @@ beforeAll(async () => {
     await writeFile(join(fixtureRoot, "secrets", "backup-keyring.json"), "must not leak");
     await writeFile(join(fixtureRoot, "config.yaml"), "auth:\n  enabled: true\n");
     await writeFile(join(fixtureRoot, ".env"), "SECRET=1\n");
+    await writeFile(join(fixtureRoot, "workspace", ".nbook", "config.json"), JSON.stringify({
+        models: {
+            default: null,
+            providers: [{
+                id: "openai",
+                name: "OpenAI",
+                enabled: true,
+                modelApi: null,
+                options: {
+                    apiKey: "sk-live-provider-secret",
+                    baseURL: "https://api.example.com",
+                    proxy: "",
+                    timeoutMs: null,
+                    requestOptions: {},
+                },
+                models: [],
+            }],
+        },
+        embedding: {enabled: false, provider: "openai-compatible", model: null, dimensions: null, apiKey: "sk-live-embedding-secret", baseURL: "", timeoutMs: null, requestOptions: {}},
+        web: {search: {order: ["tavily"], providers: {tavily: {enabled: true, apiKey: "tvly-live-secret", timeoutMs: 15000}, brave: {enabled: false, apiKey: "", country: "US", searchLang: "en", timeoutMs: 15000}}}},
+    }, null, 4));
 
     const dbPath = join(fixtureRoot, "workspace", ".nbook", "neuro-book.sqlite").replaceAll("\\", "/");
     const client = createClient({url: `file:${dbPath}`});
@@ -68,7 +89,7 @@ describe("BackupArchiveService", () => {
         );
 
         expect(result.warnings).toEqual([]);
-        expect(result.fileCount).toBe(4); // chapter-1.md + neuro-book.sqlite + config.yaml + .env
+        expect(result.fileCount).toBe(4); // chapter-1.md + neuro-book.sqlite + config.yaml + config.json（.env 已排除）
         expect(progress.at(-1)).toEqual([4, 4]);
 
         const envelopeBytes = await readFile(result.backupPath);
@@ -88,13 +109,29 @@ describe("BackupArchiveService", () => {
         const zipBytes = Buffer.concat(decryptedChunks);
 
         const entries = unzipSync(new Uint8Array(zipBytes));
+        expect(Object.keys(entries)).not.toContain(".env");
         expect(Object.keys(entries).sort()).toEqual([
-            ".env",
             "config.yaml",
             "nb-backup.json",
+            "workspace/.nbook/config.json",
             "workspace/.nbook/neuro-book.sqlite",
             "workspace/novel-a/manuscript/chapter-1.md",
         ]);
+
+        // Global Config 内的明文 API Key 已脱敏，且产物仍是可解析 JSON
+        const redactedConfigText = strFromU8(entries["workspace/.nbook/config.json"] as Uint8Array);
+        expect(redactedConfigText).not.toContain("sk-live-provider-secret");
+        expect(redactedConfigText).not.toContain("sk-live-embedding-secret");
+        expect(redactedConfigText).not.toContain("tvly-live-secret");
+        const redactedConfig = JSON.parse(redactedConfigText) as {
+            models: {providers: Array<{options: {apiKey: string; baseURL: string}}>};
+            embedding: {apiKey: string};
+            web: {search: {providers: {tavily: {apiKey: string}}}};
+        };
+        expect(redactedConfig.models.providers[0]?.options.apiKey).toBe("");
+        expect(redactedConfig.embedding.apiKey).toBe("");
+        expect(redactedConfig.web.search.providers.tavily.apiKey).toBe("");
+        expect(redactedConfig.models.providers[0]?.options.baseURL).toBe("https://api.example.com");
 
         const manifest = JSON.parse(strFromU8(entries["nb-backup.json"] as Uint8Array)) as {formatVersion: number; encryption: string};
         expect(manifest.formatVersion).toBe(2);

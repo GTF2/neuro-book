@@ -191,4 +191,26 @@ describe("BackupRestoreService", () => {
             fileSizeHint: servedBackup.byteLength,
         })).rejects.toThrow(/加密格式/);
     });
+
+    it("归档不含 .env 也能恢复（新备份已剔除会话密钥）", async () => {
+        servedBackup = makeBackup({
+            "workspace/.nbook/config.json": strToU8(JSON.stringify({models: {providers: [{options: {apiKey: ""}}]}})),
+            "config.yaml": strToU8("auth:\n  enabled: true\n"),
+        });
+        const result = await service().restore({
+            paths: paths(),
+            token: "nbp_at_test",
+            backupId: 7,
+            expectedSha256: sha256Hex(servedBackup),
+            expectedKeyId: encryptionKey.keyId,
+            encryptionKey,
+            fileSizeHint: servedBackup.byteLength,
+        });
+
+        expect(result.appVersion).toBe("0.0.0-test");
+        // 归档没有 .env：恢复照旧成功；会话密钥由 Manager/Product 下次启动重建
+        await expect(readFile(join(result.restoreDir, ".env"))).rejects.toThrow();
+        const restoredConfig = await readFile(join(result.restoreDir, "workspace", ".nbook", "config.json"), "utf8");
+        expect((JSON.parse(restoredConfig) as {models: {providers: Array<{options: {apiKey: string}}>}}).models.providers[0]?.options.apiKey).toBe("");
+    });
 });
