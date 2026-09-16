@@ -31,6 +31,20 @@ const PROFILE_SOURCE = `
     });
 `;
 
+/**
+ * 为什么 worker **service** 用例只在 Bun 运行时下有意义（显式 skip 守卫）。
+ *
+ * `ProfileCompileWorkerService` 通过真正的 `worker_threads` 从 TS 源码启动编译 worker，
+ * worker 依赖图使用 `nbook/*` 这类 tsconfig path alias。只有 Bun 能在 worker 内执行 TS 并解析
+ * paths（`execArgv: ["--import", tsxLoader]` 在 Bun 的 worker 内生效）。Node 的 worker_threads
+ * 不把 `--import` 传给 worker——实测 worker 内直接 `ERR_MODULE_NOT_FOUND`，且 Node 不认 tsconfig paths。
+ * 因此 Node 侧不存在可执行的实现：这是「Bun 专有运行时能力」，不是「写法写错了」。
+ *
+ * 生产路径走预编译 `.mjs` worker，不受此限制。对照：上一条 worker **runtime** 用例在本进程内直接调用
+ * `runProfileCompile`，跨运行时成立，故不 skip。
+ */
+const bunWorkerServiceRuntime = typeof process.versions.bun === "string";
+
 describe("profile compile worker Project lifecycle", () => {
     it("worker runtime 将 Project lifecycle error 返回为内部字段", async () => {
         await withLifecycleProfile(async (assets) => {
@@ -64,7 +78,7 @@ describe("profile compile worker Project lifecycle", () => {
             ), "utf8")).rejects.toMatchObject({code: "ENOENT"});
         });
     }, 120_000);
-    it("worker service 将 Project lifecycle error 重新抛为 ProjectNotOpenError", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service 将 Project lifecycle error 重新抛为 ProjectNotOpenError", async () => {
         await withLifecycleProfile(async (assets) => {
             const {projectRoot, sessionId} = await createUnopenedProjectSession(assets);
             const fileName = PROFILE_FILE_NAME;

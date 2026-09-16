@@ -32,6 +32,26 @@ function runtimePathsFor(assets: IsolatedWorkspaceAssets): RuntimePaths {
         stateRoot: absoluteFsPath(assets.root),
     });
 }
+
+/**
+ * 为什么 worker **service** 用例只在 Bun 运行时下有意义（显式 skip 守卫，不是「Node 跑不过就跳过」）。
+ *
+ * 这些用例通过真正的 `worker_threads` 从 TS 源码启动编译 worker，因此依赖运行时的两项能力：
+ *   1. 在 worker 内执行 TypeScript 入口；
+ *   2. 在 worker 内解析 `nbook/*` 这类 tsconfig path alias（worker 依赖图大量使用）。
+ * 只有 Bun 同时满足：Bun 原生执行 TS 并原生解析 tsconfig paths，且 `execArgv: ["--import", tsxLoader]`
+ * 在 worker 内生效。Node 的 worker_threads 不会把 `--import` 传给 worker——实测 worker 内直接报
+ * `ERR_MODULE_NOT_FOUND ... profile-compile-worker-runtime`（tsx loader 未生效，且 Node 不认 paths）。
+ * 也就是说：Node 侧不存在可执行的实现，这是「Bun 专有运行时能力」，不是「写法写错了」。
+ *
+ * 与生产无关：生产路径经 `resolveProfileCompileWorkerPathsForRoot` 的 productRuntime 分支走预编译
+ * `.mjs` worker，不需要运行时加载器；该约束只存在于「从源码跑 dev/test」。
+ *
+ * 对照：worker **runtime** 用例在本进程内直接调用 `runProfileCompile*`，跨运行时成立，故不 skip——
+ * 它们仍必须两侧都真跑，用作 Node 侧的有效覆盖。
+ */
+const bunWorkerServiceRuntime = typeof process.versions.bun === "string";
+
 describe("profile compile worker runtime", () => {
     it("Product Root 只使用预编译 Authoring Kit worker，不携带 tsx vendor 或运行源码", async () => {
         const productRoot = await createProductWorkerFixture();
@@ -79,7 +99,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("通过 worker service 后台编译 .profile.tsx 源码", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("通过 worker service 后台编译 .profile.tsx 源码", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const fileName = "builtin/leader.default.profile.tsx";
             const source = await readFile(profilePath(assets, fileName), "utf8");
@@ -127,7 +147,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("worker service 并发单文件编译不会互相覆盖 manifest entry", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service 并发单文件编译不会互相覆盖 manifest entry", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const profileRoot = assets.userProfileRoot;
             const firstFile = "codex.concurrent.one.profile.tsx";
@@ -159,7 +179,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("watcher与手动请求并发编译同一文件时不会微任务自旋", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("watcher与手动请求并发编译同一文件时不会微任务自旋", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const profileRoot = assets.userProfileRoot;
             const fileName = "codex.concurrent.same.profile.tsx";
@@ -184,7 +204,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("worker service 并发 in-process 单文件编译后 Registry 保留完整 manifest", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service 并发 in-process 单文件编译后 Registry 保留完整 manifest", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const profileRoot = join(assets.workspaceContainerRoot, "project", ".nbook", "agent", "profiles");
             await mkdir(profileRoot, {recursive: true});
@@ -235,7 +255,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("staging cleanup 失败不会阻断结果或后续 worker 任务", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("staging cleanup 失败不会阻断结果或后续 worker 任务", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const profileRoot = assets.userProfileRoot;
             const firstFile = "codex.cleanup.one.profile.tsx";
@@ -310,7 +330,7 @@ describe("profile compile worker runtime", () => {
         }
     }, 120000);
 
-    it("worker service compileAll 发布前发现 profile 源文件集合变化时返回 stale", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service compileAll 发布前发现 profile 源文件集合变化时返回 stale", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const slowFile = "aaa.codex-source-set-slow.profile.tsx";
             const addedFile = "zzz.codex-source-set-added.profile.tsx";
@@ -334,7 +354,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("worker service compileAll 发布前发现同名 profile 源码内容变化时返回 stale", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service compileAll 发布前发现同名 profile 源码内容变化时返回 stale", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const slowFile = "aaa.codex-source-content-slow.profile.tsx";
             const slowPath = profilePath(assets, slowFile);
@@ -486,7 +506,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("通过 worker service 后台全量编译用户 profile root", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("通过 worker service 后台全量编译用户 profile root", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const worker = useProfileCompileWorker(assets.userProfileRoot, runtimePathsFor(assets));
             try {
@@ -504,7 +524,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("worker service in-process 发布会回调 Registry sink，且不把 staging 泄露给调用方", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service in-process 发布会回调 Registry sink，且不把 staging 泄露给调用方", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const worker = new ProfileCompileWorkerService("test-in-process-publish", 1, undefined, assets.userProfileRoot, undefined, runtimePathsFor(assets));
             const publishedRoots: string[] = [];
@@ -527,7 +547,7 @@ describe("profile compile worker runtime", () => {
         });
     }, 120000);
 
-    it("worker service 全量编译出的 director artifact 不依赖 Nitro importMeta shim", async () => {
+    it.skipIf(!bunWorkerServiceRuntime)("worker service 全量编译出的 director artifact 不依赖 Nitro importMeta shim", async () => {
         await withCompiledRootSnapshot(async (assets) => {
             const worker = useProfileCompileWorker(assets.userProfileRoot, runtimePathsFor(assets));
             try {

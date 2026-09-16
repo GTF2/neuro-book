@@ -206,8 +206,12 @@ describe("ProjectLockModule", () => {
             "fixtures",
             "project-occupancy-holder.ts",
         );
-        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim，需要用 which 解析真正的 bun。
-        const bunExecutable = Bun.which("bun") ?? process.execPath;
+        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim：拿它 spawn 会把 `run`/参数按 node 解析。
+        // 因此 Bun 运行时必须用 `Bun.which("bun")` 解析真正的 bun；Node（`Bun` 全局不存在）下回退到 PATH 上的 bun。
+        // 两条分支都要真跑，不用 skip 掩盖 Node 侧的写法问题。
+        const bunExecutable = process.versions.bun
+            ? (Bun.which("bun") ?? process.execPath)
+            : (process.env.BUN || "bun");
         const child = spawn(bunExecutable, [fixturePath], {
             cwd: process.cwd(),
             env: {

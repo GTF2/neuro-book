@@ -188,9 +188,14 @@ async function createFixture(): Promise<Fixture> {
 
 async function runWorkspace(fixture: Fixture, args: string[], cwd = fixture.workspaceRoot): Promise<CliResult> {
     return await new Promise((resolveResult, rejectResult) => {
-        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim（bun-node-*/node.exe），
-        // 直接用它 spawn 会让 CLI 参数被按 node 解析；用 which 解析真正的 bun 可执行文件。
-        const bunExecutable = Bun.which("bun") ?? process.execPath;
+        // vitest 下 process.execPath 指向 bun 的 node 兼容 shim（bun-node-*/node.exe）：
+        // 直接拿它 spawn，`run` 会被当成入口文件解析（实测 `Module not found '<cwd>/run'`）。
+        // 因此 Bun 运行时必须用 `Bun.which("bun")` 解析真正的 bun 可执行文件；
+        // Node（bun run 的 node shim，`Bun` 全局不存在）下回退到 PATH 上的 bun。
+        // 两条分支都要真跑，不用 skip 掩盖 Node 侧的写法问题。
+        const bunExecutable = process.versions.bun
+            ? (Bun.which("bun") ?? process.execPath)
+            : (process.env.BUN || "bun");
         const child = spawn(bunExecutable, ["run", "--no-install", workspaceCommand, ...args], {
             cwd,
             env: fixture.env,
