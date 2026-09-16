@@ -108,6 +108,29 @@ export async function resolveStateDatabaseUrl(stateRoot: string): Promise<string
     return selectAppSqliteUrl(environment.DATABASE_URL, bootUrl);
 }
 
+/**
+ * 判断 State Root 的 `config.yaml` 是否显式开启鉴权。
+ *
+ * 复用与 Product 相同的 `yaml` 解析器；文件缺失、为空、无法解析或 `auth.enabled` 不是
+ * 布尔 `true` 时一律返回 `false`。安全校验必须 fail-closed：无法证明鉴权已开启时按未开启处理。
+ */
+export async function isStateAuthenticationEnabled(stateRoot: string): Promise<boolean> {
+    const path = join(stateRoot, "config.yaml");
+    const text = await readFile(path, "utf8").catch((error: NodeJS.ErrnoException) => {
+        if (error.code === "ENOENT") return "";
+        throw error;
+    });
+    if (!text.trim()) return false;
+    let config: {auth?: {enabled?: unknown}} | null;
+    try {
+        config = parse(text) as {auth?: {enabled?: unknown}} | null;
+    } catch {
+        // 无法解析的 config.yaml 不能作为“鉴权已开启”的证据，返回 false 交由调用方 fail-closed。
+        return false;
+    }
+    return config?.auth?.enabled === true;
+}
+
 /** 仅供 Windows Portable 创建管理员成功后启用鉴权。 */
 export async function enableAuthentication(stateRoot: string): Promise<void> {
     const path = join(stateRoot, "config.yaml");

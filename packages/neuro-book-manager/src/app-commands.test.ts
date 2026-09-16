@@ -6,6 +6,7 @@ import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {
     applicationEnvironment,
     applyApplicationStateMigration,
+    assertNativeListenSafety,
     createAdmin,
     launchApplication,
     planApplicationStateMigration,
@@ -51,10 +52,31 @@ vi.mock("#manager/docker", () => ({
 vi.mock("@notnotype/owned-process", () => ({spawnOwnedProcess: ownedProcess.spawn}));
 vi.mock("#manager/application-execution", () => ({verifyApplicationExecution: applicationExecution.verify}));
 
+// 仅供 native 监听 fail-closed 用例使用：默认完全透传真实实现，只有显式设置 hostOverride 时才强制
+// HOST/NITRO_HOST，用来模拟“未来传入非 loopback host”与“继承环境漏进 HOST”的场景，不影响其它用例。
+const runtimeEnvironment = vi.hoisted(() => ({hostOverride: null as string | null}));
+vi.mock("@notnotype/neuro-book-contracts/environment", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@notnotype/neuro-book-contracts/environment")>();
+    return {
+        ...actual,
+        createProductRuntimeEnvironment: (
+            input: Parameters<typeof actual.createProductRuntimeEnvironment>[0],
+        ): NodeJS.ProcessEnv => {
+            const environment = actual.createProductRuntimeEnvironment(input);
+            if (runtimeEnvironment.hostOverride !== null) {
+                environment.HOST = runtimeEnvironment.hostOverride;
+                environment.NITRO_HOST = runtimeEnvironment.hostOverride;
+            }
+            return environment;
+        },
+    };
+});
+
 const roots: string[] = [];
 
 beforeEach(() => {
     vi.clearAllMocks();
+    runtimeEnvironment.hostOverride = null;
     ownedProcess.spawn.mockReturnValue({
         completion: Promise.resolve({exitCode: 0, signal: null}),
         terminate: vi.fn(async () => ({exitCode: 0, signal: null, terminationReason: "shutdown"})),
@@ -91,6 +113,91 @@ describe("Product exit diagnostics", () => {
         expect(productExitErrorMessage({code: 17, signal: null}, "NeuroBook 服务退出")).toBe(
             "NeuroBook 服务退出：17",
         );
+    });
+});
+
+describe("Native 监听安全收口（fail-closed）", () => {
+    it("非回环地址且鉴权关闭时拒绝启动", () => {
+        expect(() => assertNativeListenSafety({HOST: "0.0.0.0", NITRO_HOST: "0.0.0.0"}, false))
+            .toThrow("不是本机回环地址");
+    });
+
+    it("非回环地址但鉴权开启时放行", () => {
+        expect(() => assertNativeListenSafety({HOST: "0.0.0.0", NITRO_HOST: "0.0.0.0"}, true))
+            .not.toThrow();
+    });
+
+    it("回环地址在鉴权关闭时放行，接受 IPv6、方括号与主机名写法", () => {
+        for (const host of ["127.0.0.1", "::1", "[::1]", "localhost", "  LOCALHOST  "]) {
+            expect(() => assertNativeListenSafety({HOST: host}, false)).not.toThrow();
+        }
+    });
+
+    it("按 NITRO_HOST 优先于 HOST 的实际取值顺序判断", () => {
+        expect(() => assertNativeListenSafety({NITRO_HOST: "0.0.0.0", HOST: "127.0.0.1"}, false))
+            .toThrow("不是本机回环地址");
+        expect(() => assertNativeListenSafety({NITRO_HOST: "127.0.0.1", HOST: "0.0.0.0"}, false))
+            .not.toThrow();
+    });
+
+    it("未设置监听地址时按非回环 fail-closed", () => {
+        expect(() => assertNativeListenSafety({}, false)).toThrow("不是本机回环地址");
+    });
+});
+
+describe("launchApplication native 监听接线", () => {
+    it("监听地址对外且鉴权关闭时拒绝启动，且不拉起 Product 进程", async () => {
+        const root = await nativeProductRoot();
+        runtimeEnvironment.hostOverride = "0.0.0.0";
+
+        await expect(launchApplication(root, productManifest())).rejects.toThrow("不是本机回环地址");
+        expect(ownedProcess.spawn).not.toHaveBeenCalled();
+    });
+
+    it("监听地址对外但 State Root 已启用鉴权时放行", async () => {
+        const root = await nativeProductRoot();
+        await mkdir(join(root, "data"), {recursive: true});
+        await writeFile(join(root, "data", "config.yaml"), "auth:\n    enabled: true\n", "utf8");
+        runtimeEnvironment.hostOverride = "0.0.0.0";
+        const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({versionLabel: "v0.8.0-canary.1"}));
+
+        try {
+            const launch = await launchApplication(root, productManifest());
+            await launch.ready;
+            const spec = ownedProcess.spawn.mock.calls[0]?.[0] as {env: NodeJS.ProcessEnv};
+            expect(spec.env.HOST).toBe("0.0.0.0");
+            await launch.terminate();
+        } finally {
+            fetch.mockRestore();
+        }
+    });
+
+    it("回环地址且鉴权关闭时放行（当前默认启动形态）", async () => {
+        const root = await nativeProductRoot();
+        const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(Response.json({versionLabel: "v0.8.0-canary.1"}));
+
+        try {
+            const launch = await launchApplication(root, productManifest());
+            await launch.ready;
+            const spec = ownedProcess.spawn.mock.calls[0]?.[0] as {env: NodeJS.ProcessEnv};
+            expect(spec.env.HOST).toBe("127.0.0.1");
+            expect(spec.env.NITRO_HOST).toBe("127.0.0.1");
+            await launch.terminate();
+        } finally {
+            fetch.mockRestore();
+        }
+    });
+
+    it("容器分支不经过 native 监听收口", async () => {
+        const root = await mkdtemp(testHostPath("manager-container-listen-safety-"));
+        roots.push(root);
+        docker.start.mockResolvedValue(undefined);
+
+        const launch = await launchApplication(root, dockerManifest());
+        await launch.ready;
+
+        expect(docker.start).toHaveBeenCalledOnce();
+        expect(ownedProcess.spawn).not.toHaveBeenCalled();
     });
 });
 

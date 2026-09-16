@@ -15,7 +15,7 @@ import {
 } from "@notnotype/neuro-book-contracts/product-runtime";
 import {shutdownNativeProduct} from "#manager/product-shutdown";
 
-import {enableAuthentication, ensureWritableRuntimeRoots, loadStateEnv} from "#manager/config";
+import {enableAuthentication, ensureWritableRuntimeRoots, isStateAuthenticationEnabled, loadStateEnv} from "#manager/config";
 import {createProductRuntimeEnvironment} from "@notnotype/neuro-book-contracts/environment";
 import {containerComposeOptions, runDockerApplicationCommand, startDocker, stopDockerContainer, verifyRunningDockerApplication} from "#manager/docker";
 import {pathExists} from "#manager/files";
@@ -166,6 +166,35 @@ export async function terminateFailedLaunch(launch: ApplicationLaunch, failure: 
     }
 }
 
+/**
+ * 校验 native Product 的最终监听安全（fail-closed）。
+ *
+ * native 启动把监听地址写进 `HOST`/`NITRO_HOST`，Product 侧按 `NITRO_HOST || HOST` 取值
+ * （见 packages/neuro-book/server/runtime/product-start-command.mjs）。鉴权未启用时只允许监听
+ * 本机回环地址；否则同一网络内的其他主机可免登录访问，并可能经备份等端点窃取全部小说与密钥。
+ * 这里做成纯函数，让 Manager 在拉起 Product 进程之前先行收口，且不依赖 Product 自身行为。
+ */
+export function assertNativeListenSafety(environment: NodeJS.ProcessEnv, authenticationEnabled: boolean): void {
+    if (authenticationEnabled) return;
+    const host = environment.NITRO_HOST?.trim() || environment.HOST?.trim();
+    if (isLoopbackListenHost(host)) return;
+    const displayHost = host && host.length > 0 ? host : "<未设置>";
+    throw new Error(
+        `拒绝启动：Product 监听地址“${displayHost}”不是本机回环地址（127.0.0.1、::1、localhost），`
+        + "且当前实例未启用鉴权（State Root 的 config.yaml 中 auth.enabled 不是 true）。"
+        + "此时同一网络内的其他主机可免登录访问，并可能通过备份等端点窃取全部数据。\n"
+        + "修复方式（任选其一）：\n"
+        + "  1. 把监听地址改回本机回环：设置 HOST/NITRO_HOST=127.0.0.1；\n"
+        + "  2. 或启用鉴权：在 State Root 的 config.yaml 写入 auth.enabled: true（Windows Portable 创建管理员会自动启用）。",
+    );
+}
+
+/** 判断监听地址是否为本机回环；空值或未识别地址一律按非回环处理，保证 fail-closed。 */
+function isLoopbackListenHost(host: string | undefined): boolean {
+    const normalized = host?.trim().toLocaleLowerCase("en-US").replace(/^\[|\]$/gu, "");
+    return normalized === "127.0.0.1" || normalized === "::1" || normalized === "localhost";
+}
+
 /** 创建 native/container 启动句柄；调用方决定 ready 后提交还是继续等待。 */
 export async function launchApplication(
     root: string,
@@ -243,6 +272,8 @@ export async function launchApplication(
         BUN: bun,
     };
     if (execution.kind === "native-product") delete env.NODE_PATH;
+    // 容器分支已提前 return，其 HOST=0.0.0.0 由容器网络边界负责；此处只对 native 启动收口。
+    assertNativeListenSafety(env, await isStateAuthenticationEnabled(stateRoot));
     const command = bun;
     const args = manifest.profile === "source-dev"
         ? ["--no-install", "run", "dev:runtime"]
