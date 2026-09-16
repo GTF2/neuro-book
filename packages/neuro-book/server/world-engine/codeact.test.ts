@@ -12,6 +12,7 @@ import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspac
 import {PROJECT_DATABASE_MODULE_TOKEN} from "nbook/server/workspace-files/project-database-module";
 import {requireReadyModuleHandle} from "nbook/server/workspace-files/project-session";
 import {openProjectForTest, removeProjectWorkspaceForTest} from "nbook/server/workspace-files/project-session-test-utils";
+import {closeAllProjects} from "nbook/server/workspace-files/project-session";
 import {createIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
 import {resolveRuntimeArtifactCompilerContext} from "nbook/server/utils/runtime-artifact-compiler-context";
 import {WorldEngineFacade} from "./world-engine.facade";
@@ -48,6 +49,16 @@ describe("CodeAct Integration", {timeout: 30_000}, () => {
             requireReadyModuleHandle(ready, PROJECT_DATABASE_MODULE_TOKEN),
             compilerContext,
         );
+    }, 30_000);
+
+    /**
+     * 每个用例都会 `openProjectForTest` 打开一个新的 Project（libsql/SQLite）。
+     * 不关闭的话句柄会一直占着 `.nbook/history.sqlite(-wal/-shm)`：Windows 下 afterAll 的
+     * fixture 清理删不掉这些文件（EBUSY/EPERM），且**重试无解**（句柄还没释放）——
+     * 表现为整个 suite 在 teardown 变红。与 workspace-files.test.ts 的 afterEach 保持同一约定。
+     */
+    afterEach(async () => {
+        await closeAllProjects();
     }, 30_000);
 
     afterAll(async () => {

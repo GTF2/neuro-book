@@ -3,6 +3,7 @@ import {randomUUID} from "node:crypto";
 import {lstat, mkdir, mkdtemp, readdir, readFile, rm, rmdir, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {basename, resolve} from "node:path";
+import {setTimeout as sleep} from "node:timers/promises";
 import {resolveAgentTempRoot} from "./paths";
 import {isProcessAlive, TEST_RUN_ID_ENV} from "./process";
 
@@ -204,6 +205,42 @@ export async function readTmpMarker(root: string): Promise<TestTmpRootMarker | n
     };
 }
 
+/**
+ * Windows 上并行 teardown（多 fork 同时删 fixture root）与 Defender 扫描会瞬时占用句柄，
+ * 这些错误码值得退避重试而不是直接判失败。
+ */
+const TRANSIENT_REMOVE_CODES = new Set(["EBUSY", "EPERM", "ENOTEMPTY", "EMFILE", "ENFILE", "EACCES"]);
+/** 单次删除动作的最大重试次数（含首次）。 */
+const REMOVE_RETRY_ATTEMPTS = 6;
+const REMOVE_RETRY_BASE_DELAY_MS = 100;
+const REMOVE_RETRY_MAX_DELAY_MS = 1_500;
+
+function isTransientRemoveError(error: unknown): boolean {
+    return typeof error === "object"
+        && error !== null
+        && "code" in error
+        && TRANSIENT_REMOVE_CODES.has(String((error as {code: unknown}).code));
+}
+
+/**
+ * 有界指数退避 + 抖动地重试一个删除动作（`rm` 或 `rmdir`）。
+ *
+ * **耗尽后抛出最后一次真实错误**——绝不把清理失败吞成静默：这是清理可靠性与「掩盖真问题」的分界线。
+ * 只有瞬时占用类错误才会重试；非瞬时错误（如 ENOENT、权限模型错误）立即透传。
+ */
+async function retryTransientRemove(attempt: () => Promise<void>): Promise<void> {
+    for (let index = 0; index < REMOVE_RETRY_ATTEMPTS; index += 1) {
+        try {
+            await attempt();
+            return;
+        } catch (error) {
+            if (index === REMOVE_RETRY_ATTEMPTS - 1 || !isTransientRemoveError(error)) throw error;
+            const backoff = Math.min(REMOVE_RETRY_MAX_DELAY_MS, REMOVE_RETRY_BASE_DELAY_MS * 2 ** index);
+            await sleep(backoff + Math.floor(Math.random() * REMOVE_RETRY_BASE_DELAY_MS));
+        }
+    }
+}
+
 /** 删除带 marker 的真实目录；marker 最后删除，失败时恢复 marker。 */
 export async function removeMarkedTmpRoot(root: string, markerFile: string): Promise<void> {
     const rootPath = resolve(root);
@@ -218,7 +255,7 @@ export async function removeMarkedTmpRoot(root: string, markerFile: string): Pro
     for (const entry of await readdir(rootPath, {withFileTypes: true})) {
         if (entry.name === basename(markerPath)) continue;
         try {
-            await rm(resolve(rootPath, entry.name), {recursive: true, force: false, maxRetries: 10, retryDelay: 100});
+            await retryTransientRemove(() => rm(resolve(rootPath, entry.name), {recursive: true, force: false}));
         } catch (error) {
             failures.push(error);
         }
@@ -226,9 +263,11 @@ export async function removeMarkedTmpRoot(root: string, markerFile: string): Pro
     if (failures.length > 0) throw new AggregateError(failures, `Vitest run root 清理存在失败项：${rootPath}`);
     const finalRootStats = await lstat(rootPath);
     if (finalRootStats.isSymbolicLink() || !finalRootStats.isDirectory()) throw new Error(`run root 在清理时变为非真实目录：${rootPath}`);
-    await rm(markerPath, {force: false});
+    await retryTransientRemove(() => rm(markerPath, {force: false}));
     try {
-        await rmdir(rootPath);
+        await retryTransientRemove(async () => {
+            await rmdir(rootPath);
+        });
     } catch (error) {
         await writeFile(markerPath, markerText, "utf8").catch((restoreError: unknown) => {
             throw new AggregateError([error, restoreError], `run root 清理失败且无法恢复 marker：${rootPath}`);
@@ -283,7 +322,7 @@ export async function removeFixtureTree(root: string): Promise<void> {
         const target = resolve(root, entry.name);
         try {
             const stats = await lstat(target);
-            await rm(target, {recursive: true, force: true, maxRetries: 10, retryDelay: 100});
+            await retryTransientRemove(() => rm(target, {recursive: true, force: true}));
             if (stats.isSymbolicLink()) continue;
         } catch (error) {
             failures.push(error);
@@ -295,10 +334,12 @@ export async function removeFixtureTree(root: string): Promise<void> {
     const markerTexts = new Map<string, string | null>();
     for (const name of markerNames) {
         markerTexts.set(name, await readFile(resolve(root, name), "utf8").catch(() => null));
-        await rm(resolve(root, name), {force: true, maxRetries: 10, retryDelay: 100});
+        await retryTransientRemove(() => rm(resolve(root, name), {force: true}));
     }
     try {
-        await rmdir(root);
+        await retryTransientRemove(async () => {
+            await rmdir(root);
+        });
     } catch (error) {
         const restoreFailures: unknown[] = [error];
         for (const [name, text] of markerTexts) {
