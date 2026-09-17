@@ -1,0 +1,213 @@
+/*
+ * sepia-paper —— 纸墨。暖纸 + 赭石墨的写作主题，低 chrome 取向。
+ *
+ * 论点一句话：**把器械退场，让纸说话。**
+ *
+ * 与 nbook 的两处实质差异，其余原样跟随（几何/圆角/中文排版那几条是被验证过的取值，
+ * 没有理由为了不一样而不一样）：
+ *
+ * ① **冷暖分界被抹掉**。nbook 的器械是冷玻璃、只有稿面是暖纸，那个对比就是它的身份。
+ *    本主题反过来：器械与纸同在一个暖色系里，靠**明度**分层而不是靠色相。
+ *    长时写作时窗口几乎全屏被稿面占据，一块冷灰侧栏在暖纸旁边读起来像「另一个软件」。
+ *    代价写在明处：失去了 nbook 那种材质二分的戏剧性，换来整屏只有一个色温。
+ * ② **低 chrome**。面板不描边、按钮平时不显形、面上不加渐变与抬起阴影。
+ *    分层交给留白与底色——这一条是本主题与 nbook 最直观的分界，全部落在角色映射层。
+ *
+ * 纪律：这里**不许出现任何字面颜色**，只许引用配色变量或用 color-mix 从配色派生。
+ * 唯一例外是纯白 / 纯黑的低透明度叠层（本文件没有用到）。
+ * `theme-packages.test.ts` 按这条规则扫：不许 hex，rgb() 只许白或黑。
+ * 另：主题要按明暗分档必须挂 `[data-nb-appearance]`，**不许挂 `[data-nb-colorway]`**——
+ * 后者是配色的身份而非明暗属性，对用户自定义的暗色配色一律失效且不报错。
+ */
+
+:root[data-nb-theme="sepia-paper"] {
+    /* ---- 排版：中文优先（沿用 nbook 的判断） ------------------------------ */
+    /*
+     * 拉丁在前、CJK 在后。中文字体自带的拉丁字形质量普遍较差，放在前面会把西文一起接管。
+     * 三条平台覆盖缺一不可：PingFang SC 管 macOS/iOS，Microsoft YaHei 管 Windows 7+，
+     * Noto Sans CJK SC 管 Linux 与装了 Noto 的环境。
+     */
+    --font-ui: -apple-system, "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif;
+    /* 稿面用宋。界面用黑体、正文用宋体是中文出版的默认分工 */
+    --font-display: "Source Han Serif SC", "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
+    --font-mono: "SF Mono", ui-monospace, Menlo, Consolas, "Noto Sans Mono CJK SC", monospace;
+    /* 中文没有斜体：italic 是把字形剪切变形，看起来像渲染故障，所以强调换字面不换字形 */
+    --font-emphasis: KaiTi, STKaiti, "楷体", "Kaiti SC", "Noto Serif SC", serif;
+
+    /*
+     * 界面前三档压平：--text-2xs / --text-xs / --text-sm 依次 11/12/13，
+     * 正文基准仍取 14（中文比拉丁占满 em 框，比 macOS 的 13px 加一档）。
+     * 低 chrome 的取向是**减少层级数量**：本主题不用 13px 这一档去做「比正文小一点」的中间态，
+     * 层级只由 12（辅助）/ 14（正文）/ 16（标题）/ 20（页面标题）四档承担。
+     */
+    --text-2xs: 11px;
+    --text-xs: 12px;
+    --text-sm: 12px;
+    --text-md: 14px;
+    --text-lg: 16px;
+    --text-xl: 20px;
+    --leading-tight: 1.3;
+    /* 汉字没有升降部来制造行间空隙，同样的 1.35 在中文里会贴得多 */
+    --leading-ui: 1.5;
+    --tracking-ui: 0;
+
+    /* ---- 几何：比 nbook 收一档 ------------------------------------------- */
+    /*
+     * nbook 是 28/34/42，这里收成 28/32/38。
+     *
+     * 依据是密度判断：本主题面向「一屏里同时有树、正文、检查器」的写作台，
+     * 34px 的中档控件在密集工具栏里偏高，会把本就紧张的高度吃掉。
+     * 32/38 是从星炉（NovelForge，28/30/32/34/36/38 六档）的密集档位里取的**参考值**，
+     * 不是复制——星炉那套是给它的内嵌字体调的，字面高度与中文不同。
+     * 代价写在明处：这是目测取向，没有可引的规范，需要真实界面验收后再定。
+     */
+    --control-h-sm: 28px;
+    --control-h-md: 32px;
+    --control-h-lg: 38px;
+    --control-px: 14px;
+    --panel-p: 16px;
+    --stack-gap: 16px;
+
+    /*
+     * 圆角沿用 nbook，不动。
+     *
+     * 20px 有出处（Chromium 记录 macOS 26 Tahoe 窗口圆角用 20pt）；对话框 26px 出自
+     * Apple 官方 macOS 27 UI Kit 的 Save Dialog 实测。本主题的改动目标是「少一点视觉噪音」，
+     * 而圆角不是噪音来源——把它改小只会让界面变硬，不会变干净。
+     */
+    --radius-control: 10px;
+    --radius-control-lg: var(--radius-pill);
+    --radius-panel: 20px;
+    --radius-menu: 12px;
+    --radius-pill: 999px;
+    --radius-dialog: 26px;
+    --border-w: 1px;
+
+    /* ---- 动效：比 nbook 松一档，缓动换更软的一条 ------------------------- */
+    /*
+     * 档位取库的裸基线 120/180/220（nbook 是 90/140/180）。
+     *
+     * 判断依据：暖纸是低对比底，90ms 的反馈在这种底上读起来「跳」；
+     * 而 `fast < base < enter` 这个顺序是合同，不能破。
+     *
+     * 缓动换成 cubic-bezier(0.2, 0.8, 0.2, 1)——起步快、收尾长，读起来更「软」，
+     * 与纸墨的性格一致。nbook 那条 (0.25, 0.1, 0.25, 1) 是标准缓出，偏机械。
+     * 两套都是目测决定，没有可引的规范。
+     */
+    --motion-fast: 120ms;
+    --motion-base: 180ms;
+    --motion-enter: 220ms;
+    --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+    /* ---- 装饰：全关 ------------------------------------------------------ */
+    /*
+     * 面上不加渐变、不加内阴影、不做抬起。这三条是「低 chrome」的物理层面：
+     * 一个面上叠的视觉效果越少，它在满屏里越安静。
+     */
+    --surface-raise: none;
+    --inset-shadow: none;
+    --elevation-raised: none;
+
+    /*
+     * 焦点环留在两层（库默认是三层）。无障碍上必须可见，这里只是把外圈压薄：
+     * 三层在小控件上会糊成一团，两层已经够「看得出来」。
+     */
+    --focus-ring:
+        0 0 0 1px color-mix(in srgb, var(--accent-main) 45%, transparent),
+        0 0 0 3px color-mix(in srgb, var(--accent-main) 16%, transparent);
+    --focus-outline: color-mix(in srgb, var(--accent-main) 80%, var(--control-outline));
+
+    /* ---- 角色映射：本主题真正的落点 -------------------------------------- */
+    /*
+     * 这一层是**主题决策不是颜色决策**：控件的面用哪个配色变量、描边用不用色、
+     * 分隔靠线还是靠底色。低 chrome 全靠它表达，一行组件代码都不用改。
+     *
+     * 比 nb-ui 文档里那个 `quiet` 示例**温和三处**，理由是可用性：
+     * 示例把 button-outline / control-surface / divider 全设成 transparent，
+     * 那是「界面完全退场」的极限演示。实际产品里按钮会变得完全看不见、
+     * 列表项之间失去分隔、输入框没有边界——那是「干净」变成了「找不到」。
+     * 所以这里保留最细的一层描边与极淡的分隔，只把「面」和「装饰」退掉。
+     */
+
+    /* 面板：不描边，分层交给留白与底色差 */
+    --panel-surface: var(--bg-panel);
+    --panel-outline: transparent;
+
+    /* 器械面：侧栏与工具栏都吃配色给的底，不额外加效果 */
+    --sidebar-surface: var(--bg-sidebar);
+    --toolbar-surface: var(--bg-panel);
+
+    /* 浮层：实心（本主题不做玻璃），镜面层一并关掉 */
+    --overlay-surface: var(--bg-panel);
+    --overlay-blur: none;
+    --overlay-sheen: none;
+
+    /*
+     * 浮层里「当前项」的填充。取半透明派生而不是不透明的 --bg-hover：
+     * 后者是给实心面准备的角色，铺在浮层上会成了一块与周围断开的实色补丁。
+     * 从 --text-main 派生是为了**一条声明在明暗两套下都对**——暗色里它是浅色，
+     * 叠上去是提亮；亮色里它是深墨，叠上去是压暗。两边都朝「和面色拉开」走。
+     */
+    --overlay-item-active: color-mix(in srgb, var(--text-main) 12%, transparent);
+
+    /* 窄条 chrome（操作条 / 表头）与极淡分隔线 */
+    --strip-surface: var(--bg-subtle);
+    --divider: color-mix(in srgb, var(--text-main) 9%, transparent);
+
+    /*
+     * 控件与按钮。
+     *
+     * `--control-surface` 从面上抬起 5%（而不是取 --bg-input）：配色表保证 --bg-input
+     * 不低于 --bg-panel，但「抬起」比「换一个底色」更符合纸的物理——输入区域是从纸上
+     * 浮起来的一小块，不是挖下去的一个坑。
+     *
+     * `--button-surface: transparent` 是本主题最显性的一条：按钮平时**没有底**，
+     * 只剩一圈极淡的描边，hover 时才出现底色。主操作按钮不受影响——它由组件用
+     * --accent-main 画实底，与这个角色无关。
+     */
+    --control-surface: color-mix(in srgb, var(--text-main) 5%, transparent);
+    --control-outline: color-mix(in srgb, var(--text-main) 16%, transparent);
+    --button-surface: transparent;
+    --button-outline: color-mix(in srgb, var(--text-main) 18%, transparent);
+
+    /* ---- 稿面 ------------------------------------------------------------ */
+    /*
+     * `--page-surface` 取 --bg-panel 而不是另给一个色，是因为配色表已经保证
+     * panel 恒亮于 main，「纸比桌亮」用一条派生式就同时在明暗下成立。
+     */
+    --page-surface: var(--bg-panel);
+    --page-ink: var(--text-main);
+    --page-rule: color-mix(in srgb, var(--text-main) 7%, transparent);
+    /*
+     * 稿面是内容层唯一一处阴影——器械靠底色分层，纸靠影子浮起。
+     * 具体配方按明暗分档（下方两块），因为同一个百分比在深棕桌面上几乎看不见、
+     * 在米色桌面上又太重。
+     */
+    --page-lift:
+        0 1px 3px color-mix(in srgb, var(--shadow-color) 8%, transparent),
+        0 12px 32px color-mix(in srgb, var(--shadow-color) 10%, transparent);
+
+    /* 稿面比界面大一档：界面 14、正文 17 */
+    --reading-size: 17px;
+    /* 用 em 不用 rem：CJK 下 1em 是一个汉字宽，所以这个数就是「每行多少字」 */
+    --reading-measure: 34em;
+}
+
+/*
+ * 明暗分档。挂的是配色的**明暗属性**不是身份——任何暗色配色都会命中这一块，
+ * 包括用户自建的暗色配色。
+ */
+:root[data-nb-theme="sepia-paper"][data-nb-appearance="dark"] {
+    /* 暗底上阴影要加重：明度差本来就小，只靠面色区分不出层级 */
+    --page-lift:
+        0 1px 3px color-mix(in srgb, var(--shadow-color) 30%, transparent),
+        0 16px 40px color-mix(in srgb, var(--shadow-color) 45%, transparent);
+
+    /*
+     * 暗色下分隔线要**提亮**而不是压暗：压暗的线在暗面上等于没画。
+     * 从 --text-main 派生本身就满足这一点（暗色里它是浅色），这里只是把比例调高一点点，
+     * 因为暖棕底的明度差比冷灰底更小。
+     */
+    --divider: color-mix(in srgb, var(--text-main) 12%, transparent);
+    --page-rule: color-mix(in srgb, var(--text-main) 10%, transparent);
+}
