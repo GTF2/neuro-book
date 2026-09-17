@@ -129,11 +129,26 @@ function handleKeydown(event: KeyboardEvent): void {
     padding: 16px 24px 0;
 }
 
+/*
+ * 折叠态平时**不描边、不填底**：它是元数据，坐在正文上方，不该是这一屏第一眼最强的东西。
+ * 描边与底色只在 hover / focus-within 时浮出，表示「这里可以操作」。
+ *
+ * error 态例外——那是需要被看见的状态，不受这条约束。
+ */
 .frontmatter-card,
 .frontmatter-add {
     overflow: hidden;
-    border: 1px solid var(--border-color);
+    border: 1px solid transparent;
     border-radius: 8px;
+    background: transparent;
+    transition: border-color 0.16s ease, background-color 0.16s ease;
+}
+
+.frontmatter-card:hover,
+.frontmatter-card:focus-within,
+.frontmatter-add:hover,
+.frontmatter-add:focus-visible {
+    border-color: var(--border-color);
     background: color-mix(in srgb, var(--bg-input) 80%, transparent);
 }
 
@@ -156,16 +171,32 @@ function handleKeydown(event: KeyboardEvent): void {
     flex: 1;
     align-items: center;
     gap: 8px;
-    color: var(--text-secondary);
-    font-size: 12px;
+    color: var(--text-muted);
+    font-size: 11px;
     text-align: left;
 }
 
+/*
+ * 折叠态的操作平时不显示——其中一个是**删除**，破坏性操作不该在写作面上常驻待命。
+ *
+ * `pointer-events: none` 是必须的：仅用 opacity 隐藏的话，按钮虽然看不见却仍可点中，
+ * 鼠标在标题上方扫过时误删的风险比原来更大。
+ * 键盘不受影响——Tab 仍能聚焦，聚焦会触发卡片的 `:focus-within` 把它显出来。
+ */
 .frontmatter-actions {
     display: flex;
     flex: none;
     align-items: center;
     gap: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.16s ease;
+}
+
+.frontmatter-card:hover .frontmatter-actions,
+.frontmatter-card:focus-within .frontmatter-actions {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .frontmatter-icon-action {
