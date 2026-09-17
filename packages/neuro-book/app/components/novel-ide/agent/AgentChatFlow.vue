@@ -100,6 +100,16 @@ const emit = defineEmits<{
     (e: "outline-change", items: ChatOutlineItem[]): void;
     /** 当前滚动位置对应的大纲行。 */
     (e: "active-anchor-change", anchorId: string): void;
+    /**
+     * 空态里的「新建对话」。
+     *
+     * `unselected` 这一个空态原本是**死路**：正文让用户「从对话列表中选择」，但可点对象
+     * 只有一个在底部输入区、相距约 500px 的按钮；而输入框此时是禁用的，所以整屏无处可去。
+     * 起点动作由外层提供（本组件只做投影，不持有会话操作），所以走 emit。
+     */
+    (e: "create-session"): void;
+    /** 空态里的「会话列表」：正文说「还有可用对话」，那就得给一个能选的地方。 */
+    (e: "open-session-list"): void;
 }>();
 
 const scrollRef = ref<HTMLDivElement | null>(null);
@@ -625,12 +635,31 @@ defineExpose({
         <div v-else class="flex h-full flex-col items-center justify-center space-y-6 px-4 text-center">
             <!-- main 模式空状态 -->
             <template v-if="props.mode === 'main' && props.unselected">
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] shadow-sm">
-                    <span class="i-lucide-messages-square h-6 w-6 text-[var(--status-warning)]"></span>
+                <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--bg-input)]">
+                    <span class="i-lucide-messages-square h-6 w-6 text-[var(--text-muted)]"></span>
                 </div>
                 <div class="space-y-2">
                     <h3 class="text-base font-medium text-[var(--text-main)]">{{ t("agent.chat.selectSessionTitle") }}</h3>
                     <p class="text-sm leading-relaxed text-[var(--text-muted)]">{{ t("agent.chat.selectSessionBody") }}</p>
+                </div>
+                <div class="flex flex-wrap items-center justify-center gap-2 pt-1">
+                    <button
+                        type="button"
+                        class="inline-flex h-9 items-center gap-1.5 rounded-md bg-[var(--accent-main)] px-3 text-[13px] font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-85 disabled:cursor-not-allowed disabled:opacity-50"
+                        :disabled="props.running"
+                        @click="emit('create-session')"
+                    >
+                        <span class="i-lucide-plus h-4 w-4"></span>
+                        <span>{{ t("agent.session.newChat") }}</span>
+                    </button>
+                    <button
+                        type="button"
+                        class="inline-flex h-9 items-center gap-1.5 rounded-md border border-[var(--border-color)] px-3 text-[13px] font-medium text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
+                        @click="emit('open-session-list')"
+                    >
+                        <span class="i-lucide-list h-4 w-4"></span>
+                        <span>{{ t("agent.chatSurface.sessionListTitle") }}</span>
+                    </button>
                 </div>
             </template>
             <!-- main 模式空状态 -->

@@ -4537,6 +4537,8 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     @branch-from-here="void branchFromMessage($event)"
                     @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
                     @load-previous="void loadPreviousHistory()"
+                    @create-session="void createSessionFromHeader()"
+                    @open-session-list="openSessionDialog()"
                     @attachment-registered="registerSessionAttachment"
                     @skip-edit="void skipFailedEdit()"
                     @outline-change="outlineItems = $event"
