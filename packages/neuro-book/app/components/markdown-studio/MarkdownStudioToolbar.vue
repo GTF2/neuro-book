@@ -287,14 +287,15 @@ function isDropTarget(tab: WorkspaceEditorTab, pinned: boolean, position: TabDro
                 <button
                     v-if="props.editorKind === 'markdown'"
                     type="button"
-                    class="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
+                    class="flex h-7 items-center gap-1 rounded-md px-2 text-xs transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
                     :class="props.focusModeActive ? 'bg-[var(--bg-hover)] text-[var(--accent-main)]' : ''"
-                    :title="t('markdownStudio.toolbar.focusMode')"
+                    :title="`${t('markdownStudio.toolbar.focusMode')} Ctrl+Shift+F`"
                     :aria-pressed="props.focusModeActive"
                     data-role="focus-mode-toggle"
                     @click="emit('toggle-focus-mode')"
                 >
                     <span class="i-lucide-focus h-4 w-4"></span>
+                    <span>{{ t("markdownStudio.toolbar.focusMode") }}</span>
                 </button>
                 <button
                     v-if="props.editorKind === 'markdown'"

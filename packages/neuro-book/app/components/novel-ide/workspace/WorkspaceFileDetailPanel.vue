@@ -332,8 +332,9 @@ function basename(filePath: string): string {
     >
         <template #header>
             <div class="min-w-0 overflow-hidden">
-                <div class="truncate text-xs font-semibold text-[var(--text-main)]">{{ props.node?.title || props.node?.path || t("ide.workspace.fileDetail.title") }}</div>
-                <div class="truncate text-[10px] text-[var(--text-muted)]">{{ props.node?.path }}</div>
+                <!-- 只放路径一行：选中节点的标题就在正上方的文件树行里高亮着，这里再放一遍是同一句话说两遍；
+                     路径则是全屏别处都不出现的唯一信息，用它来标识这份详情属于哪个文件。无 path 时退回标题。 -->
+                <div class="truncate text-xs font-semibold text-[var(--text-main)]">{{ props.node?.path || props.node?.title || t("ide.workspace.fileDetail.title") }}</div>
             </div>
         </template>
 
