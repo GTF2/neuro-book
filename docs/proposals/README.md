@@ -12,6 +12,7 @@
 - [`../packages/neuro-book/docs/proposals/agent-auxiliary-task-model.md`](../../packages/neuro-book/docs/proposals/agent-auxiliary-task-model.md)：辅助任务（AI 解释这一步 / 增强提示词）的模型来源与运行策略字段，状态为 `accepted`。
 - [`../packages/neuro-book/docs/proposals/future-impact-analysis.md`](../../packages/neuro-book/docs/proposals/future-impact-analysis.md)：正文采纳后的未来影响分析（受影响 Promise / Scene / 关键帧清单，只标记、不自动改规划），状态为 `draft`。
 - [`../packages/neuro-book/docs/proposals/workflow-project-data-queries.md`](../../packages/neuro-book/docs/proposals/workflow-project-data-queries.md)：Workflow 只读数据查询（首期消费者 = infoControl 自动编译；复用已接受提案的 `ActivityExecutor` 计划），状态为 `accepted`。
+- [`writing-experience-journey-metrics.md`](./writing-experience-journey-metrics.md)：冻结无完成定义的「体验打磨」，改为给现有 `manual-eval` 旅程体系补一个**量化层**（首字 / AI 首章 / 续写 / 伏笔闭环 / 扫 AI 味的时间与点击指标），不新立并列旅程体系；目标值待开发者拍板，状态为 `draft`。
 
 已完成沉淀的信息架构提案见 [`../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md`](../../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md)。
 
