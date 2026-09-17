@@ -11,6 +11,7 @@ import MarkdownSourceEditor from "nbook/app/components/markdown-studio/MarkdownS
 import MarkdownStudioToolbar from "nbook/app/components/markdown-studio/MarkdownStudioToolbar.vue";
 import MarkdownStudioWelcome from "nbook/app/components/markdown-studio/MarkdownStudioWelcome.vue";
 import MarkdownCommentFlowPanel from "nbook/app/components/markdown-studio/MarkdownCommentFlowPanel.vue";
+import NovelProseLintPanel from "nbook/app/components/novel-ide/NovelProseLintPanel.vue";
 import type {InlineEditReference} from "nbook/app/utils/inline-editor-selection";
 
 type WorkspaceMode = "novel" | "user-assets";
@@ -77,6 +78,9 @@ const isMarkdownFile = computed(() => resolveWorkspaceFileExtension(props.active
 const monacoLanguage = computed(() => resolveMonacoLanguage(props.activePath));
 const canEditCurrentFile = computed(() => props.node?.editable === true);
 
+// llmlint「扫 AI 味」抽屉的开关（只读入口，不写回正文）。
+const proseLintOpen = ref(false);
+
 watch(() => props.activePath, () => {
     props.controller.closeCommentView();
     props.controller.setInlineComments([]);
@@ -101,8 +105,11 @@ watch(() => props.activePath, () => {
             @move-tab="(path, targetPath, targetPinned, position) => emit('move-tab', path, targetPath, targetPinned, position)"
             @set-view-mode="emit('set-view-mode', $event)"
             @toggle-comment-view="props.controller.commentViewOpen.value ? props.controller.closeCommentView() : props.controller.openCommentView()"
+            @prose-lint="proseLintOpen = true"
             @more="emit('more')"
         />
+
+        <NovelProseLintPanel v-model="proseLintOpen" :file-path="props.activePath" />
 
         <div class="relative flex min-h-0 flex-1 overflow-hidden bg-[var(--editor-bg)]">
             <MarkdownStudioWelcome

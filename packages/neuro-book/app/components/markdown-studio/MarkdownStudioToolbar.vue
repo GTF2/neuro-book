@@ -26,6 +26,7 @@ const emit = defineEmits<{
     (e: "move-tab", path: string, targetPath: string | null, targetPinned: boolean, position: TabDropPosition): void;
     (e: "set-view-mode", mode: WorkspaceEditorViewMode): void;
     (e: "toggle-comment-view"): void;
+    (e: "prose-lint"): void;
     (e: "more"): void;
 }>();
 
@@ -293,6 +294,17 @@ function isDropTarget(tab: WorkspaceEditorTab, pinned: boolean, position: TabDro
                         v-if="props.commentCount > 0"
                         class="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full border border-[var(--toolbar-bg)] bg-[var(--status-warning)] px-0.5 text-[9px] font-semibold leading-none text-[var(--text-inverse)]"
                     >{{ props.commentCount > 9 ? "9+" : props.commentCount }}</span>
+                </button>
+                <button
+                    v-if="props.editorKind === 'markdown' && props.activePath"
+                    type="button"
+                    class="flex h-7 items-center gap-1 rounded-md px-2 text-xs transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
+                    :title="t('markdownStudio.toolbar.proseLint')"
+                    data-role="prose-lint-entry"
+                    @click="emit('prose-lint')"
+                >
+                    <span class="i-lucide-scan-text h-4 w-4"></span>
+                    <span>{{ t("markdownStudio.toolbar.proseLint") }}</span>
                 </button>
                 <button class="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('markdownStudio.toolbar.more')" @click="emit('more')">
                     <span class="i-lucide-ellipsis-vertical h-4 w-4"></span>
