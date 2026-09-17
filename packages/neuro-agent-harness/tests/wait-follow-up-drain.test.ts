@@ -180,7 +180,11 @@ describe("waitForFollowUpQueueDrain", () => {
         });
         await new Promise<void>((resolve) => setTimeout(resolve, 50));
         controller.abort(new Error("host cancelled drain"));
-        await expect(waitPromise).rejects.toThrow("host cancelled drain");
+        // 不用 expect(...).rejects：Bun 1.4.x 下对 “同步 abort 后才触发、需靠宏任务
+        // 轮询落定的 promise” 使用 .rejects 匹配器会导致用例挂起（见下方 .then 手动断言）。
+        const drainRejection = await waitPromise.then(() => undefined, (reason: unknown) => reason);
+        expect(drainRejection).toBeInstanceOf(Error);
+        expect((drainRejection as Error).message).toContain("host cancelled drain");
         await harness.dispose();
     });
 
@@ -213,7 +217,10 @@ describe("waitForFollowUpQueueDrain", () => {
         const waitPromise = harness.waitForFollowUpQueueDrain(sessionId, {timeoutMs: 5_000});
         await new Promise<void>((resolve) => setTimeout(resolve, 50));
         await harness.dispose();
-        await expect(waitPromise).rejects.toThrow("NeuroAgentHarness 已 dispose");
+        // 同上：改用 .then 手动断言，规避 Bun 1.4.x 下 expect(...).rejects 的挂起。
+        const disposeRejection = await waitPromise.then(() => undefined, (reason: unknown) => reason);
+        expect(disposeRejection).toBeInstanceOf(Error);
+        expect((disposeRejection as Error).message).toContain("NeuroAgentHarness 已 dispose");
 
         const directory = await mkdtemp(join(tmpdir(), "harness-drain-missing-"));
         try {

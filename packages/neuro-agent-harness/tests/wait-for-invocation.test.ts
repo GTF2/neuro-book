@@ -170,7 +170,11 @@ describe("waitForInvocation", () => {
         );
         await new Promise<void>((resolve) => setTimeout(resolve, 50));
         controller.abort(new Error("host cancelled wait"));
-        await expect(waitPromise).rejects.toThrow("host cancelled wait");
+        // 不用 expect(...).rejects：Bun 1.4.x 下对 “同步 abort 后才触发、需靠宏任务
+        // 轮询落定的 promise” 使用 .rejects 匹配器会导致用例挂起（见下方 .then 手动断言）。
+        const waitRejection = await waitPromise.then(() => undefined, (reason: unknown) => reason);
+        expect(waitRejection).toBeInstanceOf(Error);
+        expect((waitRejection as Error).message).toContain("host cancelled wait");
         await harness.dispose();
     });
 
@@ -193,7 +197,10 @@ describe("waitForInvocation", () => {
         );
         await new Promise<void>((resolve) => setTimeout(resolve, 50));
         await harness.dispose();
-        await expect(waitPromise).rejects.toThrow("NeuroAgentHarness 已 dispose");
+        // 同上：改用 .then 手动断言，规避 Bun 1.4.x 下 expect(...).rejects 的挂起。
+        const disposeRejection = await waitPromise.then(() => undefined, (reason: unknown) => reason);
+        expect(disposeRejection).toBeInstanceOf(Error);
+        expect((disposeRejection as Error).message).toContain("NeuroAgentHarness 已 dispose");
     });
 
     test("interrupted 视为未终态，等待至超时并携带 lastStatus", async () => {
