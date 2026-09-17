@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {themeTokens} from "nbook/app/utils/theme/theme-tokens";
+import {ideThemeIds, themeTokens} from "nbook/app/utils/theme/theme-tokens";
 import {
     DEFAULT_CHROME_LEVEL,
     chromeLevels,
@@ -26,14 +26,19 @@ describe("观感档位", () => {
         expect(resolved["--border-accent"]).toBe(sepia["--border-accent"]);
     });
 
-    it("低 chrome 档的分隔线从文字色派生，明暗主题各自跟对方向", () => {
-        for (const themeId of ["sepia", "dark"] as const) {
+    it("低 chrome 档基于该主题自己的线色、退向透明", () => {
+        for (const themeId of ideThemeIds) {
             const vars = themeTokens[themeId];
             const derived = resolveChromeVars(vars, "quiet")["--border-color"];
 
-            expect(derived).toContain(vars["--text-main"]);
-            expect(derived).toContain("color-mix(in srgb");
+            // 基于本主题线色，而不是文字色：各主题线色相对文字色的深浅本来就不一样，
+            // 取固定比例会让一部分主题的线**变深**（实测 light 主题下从文字色取 20%，
+            // 把线从 #e5e7eb 加重到了 #cfd1d4，与「退场」相反）。
+            expect(derived).toContain(vars["--border-color"]);
+            // 退向透明而不是某个具体底色：线坐在活动栏、面板、主区各种底上，
+            // 写死底色会在别的底上跑偏（试过 --bg-panel，线在灰色活动栏上距底色只剩 1，等于消失）。
             expect(derived).toContain("transparent");
+            expect(derived).not.toContain(vars["--text-main"]);
         }
     });
 

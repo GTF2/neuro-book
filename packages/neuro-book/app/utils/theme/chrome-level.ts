@@ -22,19 +22,30 @@ export const DEFAULT_CHROME_LEVEL: ChromeLevel = "full";
 export const CHROME_LEVEL_STORAGE_KEY = "neurobook.chrome-level";
 
 /**
- * 低 chrome 档下分隔线从文字色派生的比例（百分数）。
+ * 低 chrome 档保留的原线色比例（百分数），其余部分透出底色。
  *
- * 数值是估计值，**没有做渲染验证**——本环境起不了 dev server。它的作用是给验证一个
- * 起点，看完实际效果再调；偏保守是因为退得不够只是没效果，退过头会让面板糊成一片，
- * 而本轮的兜底手段（底色分层）在主仓的默认主题里对比度本来就偏弱。
+ * 两处都是实测出来的，不是估计：
+ * 1. **必须基于该主题自己的 --border-color**，不能「从文字色取固定比例」。各主题线色相对
+ *    文字色的深浅本来就不一样（sepia 的 #d6c7a9 约在文字色 20% 处，light 的 #e5e7eb 更浅），
+ *    固定比例会让一部分主题的线**变深**，与「退场」相反——实测 light 下取 20% 把线从
+ *    #e5e7eb 加重到了 #cfd1d4。
+ * 2. **退向 transparent，不要退向某个具体底色**。线分布在活动栏、面板、主区各种底上，
+ *    写死一个底色就会在别的底上跑偏：试过退向 --bg-panel（白），结果线在灰色活动栏上
+ *    距底色只剩 1，等于消失。半透明交给合成器，任何底色上都自动变淡。
+ *
+ * 55% 下实测 light 主题的线距底色从 18 降到约 10——退了一半，仍可辨。
  */
-const QUIET_BORDER_MIX = 20;
+const QUIET_BORDER_KEEP = 55;
 
 /**
  * 按档位解析变量表。
  *
  * 只收 `--border-color`，不动 `--border-strong`：后者承载 hover / focus / 可拖拽边界
  * 这类**功能性**边界，退场会让人找不到可操作区域；前者绝大多数场合只是「这里有一条缝」。
+ *
+ * 注意这里是**在 JS 里算出字面值**而不是生成 `var()` 引用：主题变量写在宿主的 inline style 上，
+ * 生成的 var() 引用会在宿主上下文解析、拿到的可能是覆盖后的值。算出字面值还顺带避开了
+ * 自定义属性的自引用循环（`--border-color: color-mix(… var(--border-color) …)` 是无效的）。
  */
 export function resolveChromeVars(vars: ThemeVars, level: ChromeLevel): ThemeVars {
     if (level === "full") {
@@ -43,7 +54,7 @@ export function resolveChromeVars(vars: ThemeVars, level: ChromeLevel): ThemeVar
 
     return {
         ...vars,
-        "--border-color": `color-mix(in srgb, ${vars["--text-main"]} ${QUIET_BORDER_MIX}%, transparent)`,
+        "--border-color": `color-mix(in srgb, ${vars["--border-color"]} ${QUIET_BORDER_KEEP}%, transparent)`,
     };
 }
 
