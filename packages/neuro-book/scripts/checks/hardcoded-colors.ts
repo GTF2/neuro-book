@@ -32,6 +32,9 @@ export const BASELINE_PATH = resolve(here, "hardcoded-colors.baseline.json");
  * 以 `/` 结尾表示整目录放行。
  *
  * 每条都对应 README「分类与内容色板例外」或「阴影与选区」里的原话，改动前先改文档。
+ *
+ * 注意：README「恒亮元件例外」（开关滑块 `bg-white`、按钮扫光 `bg-white/20`）**不在这里放行**——
+ * 它们是文件内的少数固定色，靠 baseline 计数锁定、不允许新增，而不是整文件豁免。
  */
 export const EXCEPTION_PATHS: readonly string[] = [
     // 主题系统自身：36 变量的唯一事实源 + 派生 / 编辑器 / 导入导出。

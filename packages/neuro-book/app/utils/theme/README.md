@@ -125,6 +125,17 @@ Reference chip 的唯一外观源是 `app/styles/reference-chips.css`。Vue / Ti
 
 NotificationViewport 当前挂在 `.novel-ide-theme` 宿主外层，是跨入口的玻璃 toast；它的玻璃拟态与固定反色文本暂作为宿主外例外处理。若未来将通知视口移入主题宿主，再按状态变量统一。
 
+## 恒亮元件例外
+
+开关滑块（switch thumb）与按钮扫光高光属「恒亮元件」：它们跨 8 套内置主题、两种状态都需要保持可辨识的高对比，而 36 个变量里没有「永远偏亮」这个语义——`--text-inverse` 在暗色主题下是本色（黑），压到深色轨道上会消失；`--bg-panel` 在暗色主题下又和未选中的 `--bg-input` 轨道过于接近，滑块会糊在一起。
+
+因此下列固定白色**暂不迁入主题变量**，由 `scripts/checks/hardcoded-colors.ts` 的 baseline 锁定、不允许新增：
+
+- 开关滑块的 `bg-white`：`LowCodeSwitchField.vue`、`NovelIdeWebSettingsPanel.vue`、`NovelIdeObservabilitySettingsPanel.vue`、`NovelIdeSettingsDialog.vue`。
+- 保存按钮的 `bg-white/20` 扫光高光（装饰性玻璃拟态，属「禁止事项」中遮罩 / 玻璃的例外）。
+
+**为何不为它新增组件层变量**：三次法则——目前「必须恒亮」的只有滑块这一类，硬抽一个 token 的收益为零（它恒亮、不随主题变，不会被别处复用），代价却是 8 套主题的永久维护面。等第三个同类需求出现时，再按「组件层变量登记」抽。
+
 ## 阴影与选区
 
 - 阴影必须通过 `--shadow-color` 表达，例如 `box-shadow: 0 12px 32px color-mix(in srgb, var(--shadow-color) 14%, transparent)`。
