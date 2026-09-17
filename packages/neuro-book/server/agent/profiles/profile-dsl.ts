@@ -1941,7 +1941,7 @@ function renderModeReminderText(kind: ModeSlotKind, workDirectory: string, toolD
     if (kind === "plan_steady") {
         return systemReminder([
             "Plan mode is still active (full instructions appeared earlier in this conversation).",
-            `- Read-only except Markdown work files under ${workDirectory}. File write tools targeting other paths will pause for user approval; bash stays read-only inspection, and state-changing tools (execute_sql / execute_world / plot save_*) stay read-only.`,
+            `- Read-only except Markdown work files under ${workDirectory}. File write tools targeting other paths will pause for user approval; bash and the state-changing tools (execute_sql / execute_world / plot save_*) also pause for user approval in this mode — even when you only intend a read-only query.`,
             `- Write or edit plan files via ${toolDirectory}/<slug>.md. For switch_mode to normal, pass planFilePath as .agent/plan/<slug>.md so the approval UI can preview the Project Workspace file.`,
             "- Do not create or invoke Explore agents.",
             "- Keep the user informed in chat: summarize important findings, unresolved decisions, and the current plan direction.",
@@ -1958,8 +1958,8 @@ function renderModeReminderText(kind: ModeSlotKind, workDirectory: string, toolD
             "",
             "- Read-only exploration is allowed and encouraged: read files, search, and run read-only commands to ground your answers in the real project.",
             "- File write tools will pause and ask the user for approval before executing. Do not attempt writes unless the user explicitly asks for a specific change mid-discussion; prefer describing what you would change and where.",
-            "- bash is for read-only inspection only. Never write files through shell redirection or scripts.",
-            "- Do not change project state through non-file tools either: no execute_sql INSERT/UPDATE/DELETE, no execute_world slice writes or patches, and no plot save_* tools. Keep these to read-only use (SELECT queries, world reads, and get_* lookups) and request writes via switch_mode to normal.",
+            "- bash is for read-only inspection only, and it pauses for user approval in this mode — even for a plain read-only command. Never write files through shell redirection or scripts.",
+            "- The state-changing tools (execute_sql / execute_world / plot save_*) also pause for user approval here — even for a pure read-only query. Do not change project state through non-file tools either: no execute_sql INSERT/UPDATE/DELETE, no execute_world slice writes or patches, and no plot save_* tools. Keep these to read-only use (SELECT queries, world reads, and get_* lookups) and request writes via switch_mode to normal.",
             "- Do not create or invoke Explore agents. Work locally with read/search tools.",
             "",
             "## How to Work in Discuss Mode",
@@ -1974,7 +1974,7 @@ function renderModeReminderText(kind: ModeSlotKind, workDirectory: string, toolD
     if (kind === "discuss_steady") {
         return systemReminder([
             "Discuss mode is still active (full instructions appeared earlier in this conversation).",
-            "Stay read-only: discuss, analyze, and recommend. File write tools pause for user approval; bash and state-changing tools (execute_sql / execute_world / plot save_*) stay read-only.",
+            "Stay read-only: discuss, analyze, and recommend. File write tools pause for user approval; bash and the state-changing tools (execute_sql / execute_world / plot save_*) also pause for user approval in this mode — even when you only intend a read-only query.",
             "Do not start implementing or producing plan files. When the user wants execution, request it via switch_mode.",
         ].join("\n"));
     }
@@ -1994,8 +1994,8 @@ function renderModeReminderText(kind: ModeSlotKind, workDirectory: string, toolD
         "",
         "- Read-only exploration is allowed and encouraged: read files, search, and run read-only commands.",
         `- The only directly writable location is Markdown files under ${workDirectory}. File write tools targeting any other path will pause and ask the user for approval; do not attempt such writes unless the user explicitly asks for a specific change mid-planning.`,
-        "- bash is for read-only inspection only. Never write files through shell redirection or scripts; use file tools so the mode rules apply.",
-        "- Do not change project state through non-file tools either: no execute_sql INSERT/UPDATE/DELETE, no execute_world slice writes or patches, and no plot save_* tools. Keep these to read-only use (SELECT queries, world reads, and get_* lookups) and request writes via switch_mode to normal.",
+        "- bash is for read-only inspection only, and it pauses for user approval in this mode — even for a plain read-only command. Never write files through shell redirection or scripts; use file tools so the mode rules apply.",
+        "- The state-changing tools (execute_sql / execute_world / plot save_*) also pause for user approval here — even for a pure read-only query. Do not change project state through non-file tools either: no execute_sql INSERT/UPDATE/DELETE, no execute_world slice writes or patches, and no plot save_* tools. Keep these to read-only use (SELECT queries, world reads, and get_* lookups) and request writes via switch_mode to normal.",
         "- Do not create or invoke Explore agents. Work locally with read/search tools.",
         "- Tests or commands are allowed only when they are read-only enough to refine the plan and do not update tracked files.",
         "- If the user asks you to implement while plan mode is active, keep planning instead. Explain that implementation starts after switching to normal mode through switch_mode once the plan is ready.",
