@@ -364,3 +364,4 @@ packages/nb-ui/**
 | 2026-09-17 | T0.8 文案包 | software-product-manager | （见 git log 本条） | 55 条成稿；两处二选一总设计师代决（推倒重来/和 AI 聊） | PM 报告 shell 异常，纯文档任务未受影响 |
 | 2026-09-17 | T0.1 结算表协议 | software-engineer | 01900a91 | 契约 4/4 + e2e 13/13（新 08 用例）+ typecheck 0；主理人独立复验 | 提交时 assets/workspace 需 git add -f（已知坑）；工作区另有 5 张过期证据 png（UI 线界面变化所致，未混入提交，待收口时统一重截） |
 | 2026-09-17 | T0.2 定稿原子提交 | software-engineer | （本条 commit） | 单测 7/7 + plot 92/92 + e2e 13/13 + typecheck 0；主理人复验 7/7 | 自抓 writeSlice 先提交后返回 issues 的真 bug 并加变体锁；测试窗口内改源码的过程偏差已自查并干净重跑 |
+| 2026-09-17 | T0.3 检索自动候选 | software-engineer | （本条 commit） | 工具 12/12 + 契约 17/17 + agent 全量 1522 + typecheck 0；主理人复验 | e2e 有 1 条资源型 flake（ERR_INSUFFICIENT_RESOURCES，单独重跑过，判 13/13 有效）；确认协议双通道供 T1.3 方案卡直接消费 |
