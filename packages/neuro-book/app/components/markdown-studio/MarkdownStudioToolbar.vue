@@ -12,10 +12,12 @@ const props = withDefaults(defineProps<{
     commentViewOpen?: boolean;
     commentCount?: number;
     activeTabRows?: number;
+    focusModeActive?: boolean;
 }>(), {
     commentViewOpen: false,
     commentCount: 0,
     activeTabRows: 3,
+    focusModeActive: false,
 });
 
 const emit = defineEmits<{
@@ -26,6 +28,7 @@ const emit = defineEmits<{
     (e: "move-tab", path: string, targetPath: string | null, targetPinned: boolean, position: TabDropPosition): void;
     (e: "set-view-mode", mode: WorkspaceEditorViewMode): void;
     (e: "toggle-comment-view"): void;
+    (e: "toggle-focus-mode"): void;
     (e: "prose-lint"): void;
     (e: "more"): void;
 }>();
@@ -281,6 +284,18 @@ function isDropTarget(tab: WorkspaceEditorTab, pinned: boolean, position: TabDro
                         <span :class="button.iconClass" class="h-3.5 w-3.5"></span>
                     </button>
                 </div>
+                <button
+                    v-if="props.editorKind === 'markdown'"
+                    type="button"
+                    class="flex h-7 w-7 items-center justify-center rounded-md transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]"
+                    :class="props.focusModeActive ? 'bg-[var(--bg-hover)] text-[var(--accent-main)]' : ''"
+                    :title="t('markdownStudio.toolbar.focusMode')"
+                    :aria-pressed="props.focusModeActive"
+                    data-role="focus-mode-toggle"
+                    @click="emit('toggle-focus-mode')"
+                >
+                    <span class="i-lucide-focus h-4 w-4"></span>
+                </button>
                 <button
                     v-if="props.editorKind === 'markdown'"
                     type="button"

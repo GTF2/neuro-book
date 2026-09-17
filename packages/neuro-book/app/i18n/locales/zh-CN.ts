@@ -2736,6 +2736,7 @@ const zhCN = {
             keepPreview: "保留预览",
             close: "关闭",
             comments: "评论视图",
+            focusMode: "专注写作",
             proseLint: "扫 AI 味",
             more: "更多",
         },

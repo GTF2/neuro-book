@@ -2738,6 +2738,7 @@ const enUS = {
             keepPreview: "Keep Preview",
             close: "Close",
             comments: "Comments",
+            focusMode: "Focus mode",
             proseLint: "AI-tell scan",
             more: "More",
         },

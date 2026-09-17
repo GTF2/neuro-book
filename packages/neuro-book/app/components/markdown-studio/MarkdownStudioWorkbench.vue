@@ -12,6 +12,7 @@ import MarkdownStudioToolbar from "nbook/app/components/markdown-studio/Markdown
 import MarkdownStudioWelcome from "nbook/app/components/markdown-studio/MarkdownStudioWelcome.vue";
 import MarkdownCommentFlowPanel from "nbook/app/components/markdown-studio/MarkdownCommentFlowPanel.vue";
 import NovelProseLintPanel from "nbook/app/components/novel-ide/NovelProseLintPanel.vue";
+import {useFocusMode} from "nbook/app/composables/useFocusMode";
 import type {InlineEditReference} from "nbook/app/utils/inline-editor-selection";
 
 type WorkspaceMode = "novel" | "user-assets";
@@ -81,6 +82,16 @@ const canEditCurrentFile = computed(() => props.node?.editable === true);
 // llmlint「扫 AI 味」抽屉的开关（只读入口，不写回正文）。
 const proseLintOpen = ref(false);
 
+/*
+ * 稿面专注模式。
+ *
+ * 挂载点选在工作台这一层而不是编辑器内部：`app/styles/focus-mode.css` 的选择器是
+ * `[data-focus-mode="on"] .ProseMirror …`，挂在工作台上刚好覆盖本工作台里的正文，
+ * 不会波及别处渲染的 Markdown（例如 Agent 对话里的内容块）。
+ * 状态本身是全局单例（见 useFocusMode），所以「哪个工作台开着」不需要各自记账。
+ */
+const focusMode = useFocusMode();
+
 watch(() => props.activePath, () => {
     props.controller.closeCommentView();
     props.controller.setInlineComments([]);
@@ -89,7 +100,11 @@ watch(() => props.activePath, () => {
 
 <template>
     <!-- Markdown Studio 工作台 -->
-    <section class="flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--editor-bg)]" :class="props.compact ? 'min-w-[260px]' : 'min-w-[640px]'">
+    <section
+        v-bind="focusMode.hostAttributes.value"
+        class="flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--editor-bg)]"
+        :class="props.compact ? 'min-w-[260px]' : 'min-w-[640px]'"
+    >
         <MarkdownStudioToolbar
             :tabs="props.tabs"
             :active-path="props.activePath"
@@ -98,6 +113,7 @@ watch(() => props.activePath, () => {
             :comment-view-open="props.controller.commentViewOpen.value"
             :comment-count="props.controller.inlineComments.value.length"
             :active-tab-rows="props.activeTabRows"
+            :focus-mode-active="focusMode.enabled.value"
             @select-tab="emit('select-tab', $event)"
             @close-tab="emit('close-tab', $event)"
             @set-pin="(path, pinned) => emit('set-pin', path, pinned)"
@@ -105,6 +121,7 @@ watch(() => props.activePath, () => {
             @move-tab="(path, targetPath, targetPinned, position) => emit('move-tab', path, targetPath, targetPinned, position)"
             @set-view-mode="emit('set-view-mode', $event)"
             @toggle-comment-view="props.controller.commentViewOpen.value ? props.controller.closeCommentView() : props.controller.openCommentView()"
+            @toggle-focus-mode="focusMode.toggle()"
             @prose-lint="proseLintOpen = true"
             @more="emit('more')"
         />

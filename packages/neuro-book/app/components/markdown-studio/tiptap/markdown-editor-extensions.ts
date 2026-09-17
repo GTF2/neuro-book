@@ -7,6 +7,7 @@ import {AgentSkill} from "nbook/app/components/novel-ide/agent/tiptap/AgentSkill
 import type {AgentSuggestionMenuState} from "nbook/app/components/novel-ide/agent/tiptap/agent-suggestion";
 import type {AgentTriggerMenuContext, AgentTriggerMenuState} from "nbook/app/components/novel-ide/agent/trigger-menu";
 import type {CommentItem} from "nbook/app/components/markdown-studio/tiptap/Comment";
+import {FocusMode} from "nbook/app/components/markdown-studio/tiptap/FocusMode";
 import type {HtmlEmbedDataApi, HtmlEmbedLabels} from "nbook/app/components/markdown-studio/tiptap/HtmlEmbed";
 import {createMarkdownDialectExtensions} from "nbook/app/components/markdown-studio/tiptap/markdown-dialect-extensions";
 import {MarkdownInlineCodeShortcut} from "nbook/app/components/markdown-studio/tiptap/MarkdownInlineCodeShortcut";
@@ -68,6 +69,7 @@ export function createMarkdownEditorExtensions(options: MarkdownEditorExtensionO
             },
         }),
         AgentHardBreak,
+        FocusMode,
         Placeholder.configure({
             placeholder: options.placeholder,
             emptyEditorClass: "is-editor-empty",
