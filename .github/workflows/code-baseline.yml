@@ -157,3 +157,47 @@ jobs:
         # 也无法在 worker 内加载 TS（execArgv 的 --import 不进 worker），相关用例只能长期
         # red 或被迫 skip，那批 Bun 专有路径在 CI 上就永远得不到覆盖。
         run: bun --bun run --cwd packages/neuro-book test -- --reporter=dot
+
+  e2e:
+    name: E2E smoke (main app)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: changes
+    # 与 test/typecheck 用同一个变化范围：只在应用运行时文件（packages/neuro-book/**、plugins/**、
+    # 根 package.json/bun.lock 等）变化时触发，纯文档改动不跑，避免每次 push 都白跑几分钟。
+    if: needs.changes.outputs.tests == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Set up Node
+        # `test:e2e` 是 `playwright test`，经 .bin shim 由 Node 执行 Playwright CLI，
+        # 因此运行期必须有 Node（Bun 只负责跑包脚本）。
+        uses: actions/setup-node@v5
+        with:
+          node-version: "24"
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install --frozen-lockfile --linker hoisted
+      - name: Generate Prisma clients
+        # e2e 入口 serve-e2e.ts 会先跑数据库迁移、再起应用；与 test job 一致地先显式生成
+        # Prisma 客户端，避免全新 checkout 上迁移链路缺生成物（幂等，dev:runtime 之后也会再生成一次）。
+        run: bun run --cwd packages/neuro-book generate
+      - name: Install Playwright browsers
+        # 主应用 e2e 只用 Chromium；--with-deps 一并装齐 Linux 系统依赖（含 apt 依赖）。
+        run: bun x playwright install --with-deps chromium
+      - name: Run main-app e2e smoke
+        # 与本地完全同一条命令。内部由 e2e/serve-e2e.ts 起两个隔离根（端口 3400/3401）
+        # 与两个本地 Mock LLM（端口 3499/3500），State/Cache 全部落在临时目录，
+        # 绝不触碰任何真实 State Root。
+        run: bun run --cwd packages/neuro-book test:e2e
+      - name: Upload Playwright artifacts on failure
+        # CI 上的失败本地难复现：仅失败时把 trace/截图留档（绿时不产生额外开销）。
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-main-app
+          path: packages/neuro-book/test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
