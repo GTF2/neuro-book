@@ -73,7 +73,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
         expect(mocks.runLlmlintCheck).toHaveBeenCalledWith({
             skillRoot: "C:/app/../llmlint/skill",
             absoluteFilePath: "C:/app/workspace/p/manuscript/chapter.md",
-            review: "agent",
+            review: "all",
             minLevel: "low",
             scanAll: false,
         });

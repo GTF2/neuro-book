@@ -59,7 +59,7 @@ const isMounted = ref(false);
 const loading = ref(false);
 const errorMessage = ref("");
 const report = ref<ProseLintCheckResponse | null>(null);
-const reviewScope = ref<ProseLintReviewScope>("agent");
+const reviewScope = ref<ProseLintReviewScope>("all");
 const minLevel = ref<ProseLintLevel>("low");
 
 const reviewOptions = computed<Array<{value: ProseLintReviewScope; label: string}>>(() => [

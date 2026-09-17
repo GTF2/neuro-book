@@ -150,7 +150,7 @@ export async function runLlmlintCheck(input: {
         "--format",
         "json",
         "--review",
-        input.review ?? "agent",
+        input.review ?? "all",
         "--min-level",
         input.minLevel ?? "low",
     ];

@@ -80,7 +80,7 @@ const LlmlintCheckBodySchema = z.object({
     projectRoot: ProjectRootDtoSchema.optional(),
     workspaceKind: z.literal("user-assets").optional(),
     path: z.string().trim().min(1, "path 不能为空"),
-    review: z.enum(["agent", "human", "none", "all"]).optional().default("agent"),
+    review: z.enum(["agent", "human", "none", "all"]).optional().default("all"),
     minLevel: z.enum(["high", "medium", "low"]).optional().default("low"),
     scanAll: z.boolean().optional().default(false),
 });
