@@ -15,6 +15,9 @@ import {FOCUS_CURRENT_BLOCK_CLASS} from "nbook/app/utils/focus-mode";
  * 标成列表的话，用户看到的「当前段」会是一大片，专注模式的引导作用当场消失——
  * 而这个错误在视觉上很自然，不做断言基本发现不了。
  *
+ * 第二要紧的是**标题不作数**（顺延到后面第一个正文段）：这条是真实浏览器里跑出来才发现的，
+ * 静态看代码完全合理，实际效果却是「一开专注模式整篇正文就变灰」。
+ *
  * 用 `EditorState` + 手写 schema 构造，不起 tiptap 的 `Editor`：后者需要 DOM，
  * 而本仓的 vitest 环境是 `node`。ProseMirror 的 model / state 本身与 DOM 无关，够用了。
  */
@@ -98,11 +101,61 @@ describe("buildFocusDecoration", () => {
         expect(readDecoration(state)).toHaveLength(1);
     });
 
-    it("marks a heading when the caret is in it", () => {
+    /*
+     * 标题不作数：光标停在标题上时标它下面的第一个正文段，而不是标题本身。
+     *
+     * 这条不是「更优雅」，是实测出来的硬需求：刚打开稿面时光标由 ProseMirror 默认落在文档起点
+     * （章标题里），标标题的结果是**标题独立保持全色、正文 100% 变灰**——用户看到的是
+     * 「文字被禁用了」，而不是「专注模式开着」。
+     */
+    it("marks the following paragraph, not the heading, when the caret is in a heading", () => {
+        const doc = schema.node("doc", null, [
+            schema.node("heading", {level: 1}, [text("开篇：蓝梓与芥末")]),
+            paragraph("“站住！不要跑……”"),
+            paragraph("“抓住他，抓小偷……”"),
+        ]);
+        const blocks = collectBlocks(doc);
+        const heading = blocks[0];
+        const firstParagraph = blocks[1];
+        expect(heading?.node.type.name).toBe("heading");
+        expect(firstParagraph?.node.type.name).toBe("paragraph");
+
+        // 光标落在标题的文字里——正是打开稿面时的默认位置
+        const state = EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, (heading?.pos ?? 0) + 1),
+        });
+
+        const [decoration] = readDecoration(state);
+        expect(decoration?.from).toBe(firstParagraph?.pos);
+        expect(decoration?.to).toBe((firstParagraph?.pos ?? 0) + (firstParagraph?.node.nodeSize ?? 0));
+    });
+
+    it("falls back to the heading itself when no prose block follows it", () => {
+        // 顺延不能变成「什么都不标」——那样整篇还是会全灰，退回标标题比那好
         const doc = schema.node("doc", null, [paragraph("正文"), schema.node("heading", {level: 2}, [text("标题")])]);
         const {state, from, to} = stateWithCaretIn(doc, 1);
 
         expect(readDecoration(state)).toEqual([{from, to, className: FOCUS_CURRENT_BLOCK_CLASS}]);
+    });
+
+    it("skips consecutive headings to reach prose", () => {
+        // 章标题下面紧跟小标题是常见排版，只跳一层还不够
+        const doc = schema.node("doc", null, [
+            schema.node("heading", {level: 1}, [text("第一章")]),
+            schema.node("heading", {level: 2}, [text("一")]),
+            paragraph("正文第一段"),
+        ]);
+        const blocks = collectBlocks(doc);
+        const prose = blocks[2];
+
+        const state = EditorState.create({
+            doc,
+            selection: TextSelection.create(doc, (blocks[0]?.pos ?? 0) + 1),
+        });
+
+        const [decoration] = readDecoration(state);
+        expect(decoration?.from).toBe(prose?.pos);
     });
 
     /*

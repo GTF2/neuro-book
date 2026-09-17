@@ -15,13 +15,18 @@ import {FOCUS_CURRENT_BLOCK_CLASS} from "nbook/app/utils/focus-mode";
  * - 开关切换是零成本的（改一个属性），不必 dispatch 事务、也不必重算装饰；
  * - 外观全在 CSS 里，将来要调「其余段落降到多淡」不用碰任何 TypeScript。
  *
- * ── 「当前块是谁」的两条规则 ────────────────────────────────────────────
+ * ── 「当前块是谁」的三条规则 ────────────────────────────────────────────
  *
  * ① **优先取最内层的文本块**，而不是顶层块。列表项、引用块里真正被写的是那个段落，
  *    标顶层会把整个列表一起点亮，用户看到的「当前段」变成一大片，引导作用当场消失。
  * ② **取不到文本块时退回光标所在的顶层块**。光标停在水平分割线、图片这类**原子块**上时
  *    （NodeSelection），路径上没有文本块可走。不退回的话整篇都会失去标注——
  *    专注模式会让**全文一起变灰**，比标错难看得多。
+ * ③ **标题不作数，顺延到它后面第一个正文块**。标题是结构标记，不是「你在写的东西」；
+ *    把标题当当前块的结果是**标题独立保持全色、正文 100% 变灰**——用户看到的是
+ *    「文字被禁用了」，而不是「专注模式开着」。这一条是**真实浏览器实测出来的**：
+ *    刚打开稿面时光标由 ProseMirror 默认落在文档起点（也就是章标题里），
+ *    于是每次开启专注模式的默认观感都是「整篇变灰」。
  *
  * 第 ② 条不能用 `$from` 的 depth 判断来实现：NodeSelection 的 `$from` 会解析到 doc 层级
  * （depth 为 0），此时 `before(1)` / `node(1)` 都拿不到东西。所以退回这一步改用
@@ -69,17 +74,54 @@ function topLevelBlockAt(doc: ProseMirrorNode, position: number): BlockRef | nul
 }
 
 /**
+ * 是否标题类块。TipTap 的标题节点名是 `heading`；这里把 `h1`–`h6` 也认下来，
+ * 免得将来换个 schema 命名就静默失效（失效的表现是整篇变灰，很难联想到命名）。
+ */
+function isHeading(node: ProseMirrorNode): boolean {
+    return node.type.name === "heading" || /^h[1-6]$/iu.test(node.type.name);
+}
+
+/**
+ * 找某个顶层块之后的第一个**正文块**（非标题的文本块）。
+ *
+ * 只在顶层顺序扫描：被找的块若嵌在容器里（例如引用块里的标题），位置对不上，
+ * 返回 null，调用方退回原标题块。这种文档在稿件里极罕见，为它引入容器遍历不划算。
+ */
+function nextProseBlockAfter(doc: ProseMirrorNode, position: number): BlockRef | null {
+    let found: BlockRef | null = null;
+    let passed = false;
+
+    doc.forEach((node, offset) => {
+        if (found) {
+            return;
+        }
+        if (offset === position) {
+            passed = true;
+            return;
+        }
+        if (passed && node.isTextblock && !isHeading(node)) {
+            found = {pos: offset, node};
+        }
+    });
+
+    return found;
+}
+
+/**
  * 解析「当前块」：优先最内层文本块，取不到则退回光标所在的顶层块。
  */
 function resolveCurrentBlock(state: EditorState): BlockRef | null {
     const {$from} = state.selection;
     const textblockDepth = nearestTextblockDepth($from);
+    const block = textblockDepth !== null
+        ? {pos: $from.before(textblockDepth), node: $from.node(textblockDepth)}
+        : topLevelBlockAt(state.doc, state.selection.from);
 
-    if (textblockDepth !== null) {
-        return {pos: $from.before(textblockDepth), node: $from.node(textblockDepth)};
+    if (block && isHeading(block.node)) {
+        return nextProseBlockAfter(state.doc, block.pos) ?? block;
     }
 
-    return topLevelBlockAt(state.doc, state.selection.from);
+    return block;
 }
 
 /**
