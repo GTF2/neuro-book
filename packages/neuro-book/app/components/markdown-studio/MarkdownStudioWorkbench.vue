@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type {AgentTriggerMenuContext, AgentTriggerMenuState} from "nbook/app/components/novel-ide/agent/trigger-menu";
 import type {MarkdownStudioController} from "nbook/app/composables/useMarkdownStudioController";
+import type {ManuscriptPositionSummary} from "nbook/app/utils/manuscript-position";
 import type {IdeTheme} from "nbook/app/utils/theme/theme-tokens";
 import type {WorkspaceEditorKind, WorkspaceEditorTab, WorkspaceEditorViewMode, WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import type {WorkspaceReferenceResolver} from "nbook/app/components/markdown-studio/tiptap/WorkspaceReference";
@@ -39,8 +40,11 @@ const props = withDefaults(defineProps<{
     inlineAiReferences?: InlineEditReference[];
     inlineAiHighlightReference?: InlineEditReference | null;
     enableQuickTriggers?: boolean;
+    /** 稿面状态行的位置感摘要（卷 / 第几章 / 字数）。由宿主从工作区树算好传入；null 时整行隐藏。 */
+    statusSummary?: ManuscriptPositionSummary | null;
 }>(), {
     activeTabRows: 3,
+    statusSummary: null,
     workspaceMode: "novel",
     referenceRefreshKey: "",
     resolveMenu: () => ({
@@ -77,7 +81,13 @@ const emit = defineEmits<{
 
 const isMarkdownFile = computed(() => resolveWorkspaceFileExtension(props.activePath) === ".md");
 const monacoLanguage = computed(() => resolveMonacoLanguage(props.activePath));
+const {t} = useI18n();
 const canEditCurrentFile = computed(() => props.node?.editable === true);
+
+/** 字数千分位。SSR 不参与（工作台是纯客户端渲染），不会出现水合不一致。 */
+function formatCount(value: number): string {
+    return value.toLocaleString();
+}
 
 // llmlint「扫 AI 味」抽屉的开关（只读入口，不写回正文）。
 const proseLintOpen = ref(false);
@@ -217,6 +227,16 @@ watch(() => props.activePath, () => {
                 @open-profile-workbench="emit('open-profile-workbench')"
             />
         </div>
+
+        <!-- 位置感状态行：我在哪（卷 / 第几章）、写到哪了（本章 / 全书字数）。
+             极轻的一行：11px 弱色、贴底、不占视觉重量，是 iA Writer 式的安静页脚而不是仪表盘。
+             摘要由宿主算好传入；任何一项推不出就整个省略，绝不显示误导性的 0。 -->
+        <footer v-if="props.statusSummary" class="flex h-7 shrink-0 items-center gap-3 overflow-hidden border-t border-[var(--border-color)] px-4 text-[11px] leading-none text-[var(--text-muted)]" data-role="manuscript-status-bar">
+            <span v-if="props.statusSummary.volumeTitle" class="max-w-44 truncate">{{ props.statusSummary.volumeTitle }}</span>
+            <span v-if="props.statusSummary.chapterCurrent !== null" class="shrink-0">{{ t("markdownStudio.status.chapterOf", {current: props.statusSummary.chapterCurrent, total: props.statusSummary.chapterTotal}) }}</span>
+            <span v-if="props.statusSummary.chapterWords !== null" class="shrink-0">{{ t("markdownStudio.status.chapterWords", {n: formatCount(props.statusSummary.chapterWords)}) }}</span>
+            <span v-if="props.statusSummary.scopeTitle && props.statusSummary.scopeWords !== null" class="ml-auto shrink-0">{{ t("markdownStudio.status.scopeWords", {title: props.statusSummary.scopeTitle, n: formatCount(props.statusSummary.scopeWords)}) }}</span>
+        </footer>
     </section>
 </template>
 

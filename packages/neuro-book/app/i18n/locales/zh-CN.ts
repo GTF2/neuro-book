@@ -2744,6 +2744,11 @@ const zhCN = {
             proseLint: "扫 AI 味",
             more: "更多",
         },
+        status: {
+            chapterOf: "第 {current} / {total} 章",
+            chapterWords: "本章 {n} 字",
+            scopeWords: "{title} {n} 字",
+        },
         proseLint: {
             title: "扫 AI 味",
             rescan: "重新扫描",

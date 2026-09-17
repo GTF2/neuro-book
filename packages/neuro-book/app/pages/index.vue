@@ -50,6 +50,7 @@ import {
 import {buildWorkspaceReferenceSections} from "nbook/app/utils/workspace-reference-menu";
 import {resolveWorkspaceFileExtension, type FrontmatterProfileKind} from "nbook/shared/editor-workbench";
 import {buildSelectionRefChip, type InlineEditPayload, type InlineEditReference, type InlineEditTask} from "nbook/app/utils/inline-editor-selection";
+import {resolveManuscriptPositionSummary} from "nbook/app/utils/manuscript-position";
 import type {DesktopMenuCommandId} from "@notnotype/neuro-book-contracts/desktop";
 import {dispatchDesktopMenuCommand} from "@notnotype/neuro-book-contracts/desktop";
 
@@ -481,6 +482,10 @@ const displayCurrentWorkspaceViewMode = computed<WorkspaceEditorViewMode>(() => 
 const displayMonacoTemporaryFontSize = computed(() => displayActiveWorkspaceTabPath.value
     ? monacoFontSizeOverridesByPath.value[displayActiveWorkspaceTabPath.value] ?? null
     : null);
+// 稿面状态行的位置感（卷 / 第几章 / 本章字数 / 全书字数），全部由工作区树推导；用户资产工作区不显示。
+const editorStatusSummary = computed(() => isUserAssetsWorkspace.value || !workspaceDisplayReady.value
+    ? null
+    : resolveManuscriptPositionSummary(workspaceTree.value, displayActiveWorkspaceTabPath.value));
 const characterProfileVisible = computed({
     get: () => frontmatterProfileKind.value === "character",
     set: (visible: boolean): void => {
@@ -2631,6 +2636,7 @@ onBeforeUnmount(() => {
                             :tabs="displayWorkspaceTabs"
                             :active-path="displayActiveWorkspaceTabPath"
                             :node="displaySelectedFileNode"
+                            :status-summary="editorStatusSummary"
                             :editor-kind="displayCurrentEditorKind"
                             :workspace-view-mode="displayCurrentWorkspaceViewMode"
                             :theme="activeThemeId"

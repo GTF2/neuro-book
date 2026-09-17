@@ -2746,6 +2746,11 @@ const enUS = {
             proseLint: "AI-tell scan",
             more: "More",
         },
+        status: {
+            chapterOf: "Chapter {current} / {total}",
+            chapterWords: "{n} words in this chapter",
+            scopeWords: "{title}: {n} words",
+        },
         proseLint: {
             title: "AI-tell scan",
             rescan: "Rescan",
