@@ -245,7 +245,7 @@ onBeforeUnmount(() => {
                 <span class="i-lucide-chevron-down h-3.5 w-3.5"></span>
             </button>
 
-            <div class="w-full overflow-visible rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-2xl shadow-black/10 transition-all focus-within:border-[var(--accent-main)] focus-within:ring-1 focus-within:ring-[var(--accent-main)]">
+            <div class="w-full overflow-visible rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)] shadow-[0_25px_50px_-12px_color-mix(in_srgb,var(--shadow-color)_10%,transparent)] transition-all focus-within:border-[var(--accent-main)] focus-within:ring-1 focus-within:ring-[var(--accent-main)]">
                 <!-- Inline AI 当前 Session 展示区 -->
                 <div v-if="hasLivePanel" class="border-b border-[var(--border-color)] bg-[var(--bg-sidebar)] px-4 py-2 text-xs text-[var(--text-secondary)]">
                     <div class="mb-2 flex items-center justify-between gap-3">

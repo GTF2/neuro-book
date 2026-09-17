@@ -97,7 +97,7 @@ const chapterLinkedCountMap = computed(() => {
                         <span class="block text-sm font-semibold">未分组线程</span>
                         <span class="mt-1 block text-xs opacity-80">用于世界设定线、候补线和未归档线</span>
                     </span>
-                    <span class="rounded-full bg-black/5 px-2 py-0.5 text-[11px]">
+                    <span class="rounded-full bg-[var(--bg-subtle)] px-2 py-0.5 text-[11px]">
                         {{ props.threads.filter((thread) => thread.phaseId === null).length }}
                     </span>
                 </button>

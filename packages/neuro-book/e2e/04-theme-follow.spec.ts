@@ -213,4 +213,44 @@ test.describe("主链路④：UI token 化护栏", () => {
             expect(dark[key], `${key} 在两个主题间应不同（证明完全跟随主题，而非写死）`).not.toBe(sepia[key]);
         }
     });
+
+    /**
+     * 存量收敛的运行时证据：剧情定位视图里那个「未分组线程」计数徽标，
+     * 本轮把 `bg-black/5` 换成了 `bg-[var(--bg-subtle)]`；这里证明它换主题后跟着走。
+     * `/plot.preview` 默认就是 locator 视图、且没有 Dialog 遮罩，主题按钮可直接点。
+     */
+    test("换主题 → 剧情定位视图计数徽标跟随（--bg-subtle）", async ({page}) => {
+        await page.goto("/plot.preview", {waitUntil: "domcontentloaded"});
+        await page.locator(".nb-boot").waitFor({state: "detached", timeout: 120_000}).catch(() => undefined);
+
+        const badge = page.locator("button", {hasText: "未分组线程"}).locator("span.rounded-full").first();
+        await expect(badge).toBeVisible();
+
+        const readBadge = async (): Promise<{rendered: string; token: string}> =>
+            await badge.evaluate((el) => {
+                const host = el.closest(".novel-ide-theme") ?? document.querySelector(".novel-ide-theme");
+                if (!(host instanceof HTMLElement)) {
+                    throw new Error("未找到 .novel-ide-theme 主题宿主");
+                }
+                const probe = document.createElement("span");
+                probe.style.color = "var(--bg-subtle)";
+                host.appendChild(probe);
+                const token = getComputedStyle(probe).color;
+                probe.remove();
+                return {rendered: getComputedStyle(el).backgroundColor, token};
+            });
+
+        const sepia = await readBadge();
+        expect(sepia.rendered, "计数徽标底色应取 --bg-subtle").toBe(sepia.token);
+
+        await page.getByRole("button", {name: "暗色", exact: true}).click();
+        await expect.poll(async () => (await readBadge()).rendered, {message: "切到暗色后徽标底色应变化"}).not.toBe(sepia.rendered);
+
+        const dark = await readBadge();
+        expect(dark.rendered, "暗色下同样应取 --bg-subtle").toBe(dark.token);
+        expect(dark.rendered).not.toBe(sepia.rendered);
+
+        mkdirSync(OUT_DIR, {recursive: true});
+        await page.screenshot({path: resolve(OUT_DIR, "plot-locator-dark-viewport.png")});
+    });
 });

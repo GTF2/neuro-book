@@ -489,7 +489,7 @@ onBeforeUnmount(() => {
                     <div class="flex flex-col gap-3">
                         <p class="text-xs text-[var(--text-secondary)]">{{ t("ide.profile.unlinkedHint") }}</p>
                         <div>
-                            <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-[var(--accent-main)] px-3 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50" :disabled="linkBusy" @click="startLink">
+                            <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-[var(--accent-main)] px-3 py-2 text-xs font-medium text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50" :disabled="linkBusy" @click="startLink">
                                 <span :class="linkBusy ? 'i-lucide-loader-2 animate-spin' : 'i-lucide-link'" class="h-3.5 w-3.5"></span>{{ t("ide.profile.linkAction") }}
                             </button>
                         </div>
@@ -508,7 +508,7 @@ onBeforeUnmount(() => {
                     </div>
                     <div class="flex items-center gap-2">
                         <FormInput v-model="backupComment" class="w-48" :placeholder="t('ide.profile.commentPlaceholder')" />
-                        <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-[var(--accent-main)] px-3 py-2 text-xs font-medium text-white hover:opacity-90 disabled:opacity-50" :disabled="activeJob?.state === 'running'" @click="startBackup">
+                        <button type="button" class="inline-flex items-center gap-1.5 rounded-md bg-[var(--accent-main)] px-3 py-2 text-xs font-medium text-[var(--text-inverse)] hover:opacity-90 disabled:opacity-50" :disabled="activeJob?.state === 'running'" @click="startBackup">
                             <span class="i-lucide-cloud-upload h-3.5 w-3.5"></span>{{ t("ide.profile.backupNow") }}
                         </button>
                     </div>
