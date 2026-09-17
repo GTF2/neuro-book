@@ -1,6 +1,7 @@
 import {mkdir} from "node:fs/promises";
 
 import {appLogger} from "nbook/server/app-logs/logger";
+import {migrateGlobalConfigSecretStorage} from "nbook/server/config/secret-migration";
 import {
     AGENT_SESSION_STORE_LEASE_HEARTBEAT_MS,
     AGENT_SESSION_STORE_LEASE_STALE_MS,
@@ -52,6 +53,18 @@ export async function prepareProductRuntime(): Promise<void> {
     }
 
     await assertProductMigrationsReady();
+    // 配置密钥迁移：把 Global Config 里的历史明文 API Key 升级为密文落盘。
+    // 放在此处的理由：Workspace Root 已在上面建好，且该迁移与 Session Store 无依赖——
+    // 置于 Session Store 之前，可保证即使 Session Store 启动失败，配置迁移也已收口。
+    // 语义是 best-effort：迁移失败只告警、绝不让启动门禁失败。未迁移成功的明文值不影响使用，
+    // 读路径仍会透明解密，写路径（saveGlobalConfig）会在下次保存配置时补加密。
+    await migrateGlobalConfigSecretStorage().catch((error: unknown) => {
+        void appLogger.warn(
+            "runtime.configSecretMigration.failed",
+            undefined,
+            error instanceof Error ? error.message : String(error),
+        );
+    });
     try {
         await startAgentSessionStoreRuntime(runtimePaths.workspaceRoot);
     } catch (error) {

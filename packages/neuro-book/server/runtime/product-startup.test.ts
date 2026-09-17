@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
     inspectStateRootIntegrity: vi.fn(async () => ({kind: "clean"})),
     stateRootIntegrityFailed: vi.fn(() => false),
     assertProductMigrationsReady: vi.fn(async () => undefined),
+    migrateGlobalConfigSecretStorage: vi.fn(async () => undefined),
     startAgentSessionStoreRuntime: vi.fn(async () => ({rootWorkspace: "C:/state/workspace"})),
     observeAgentSessionStoreRuntimeCompromised: vi.fn<() => Promise<{
         leasePath: string;
@@ -31,6 +32,10 @@ vi.mock("nbook/server/runtime/state-root-integrity", () => ({
 vi.mock("nbook/server/runtime/product-migration-gate", () => ({
     assertProductMigrationsReady: mocks.assertProductMigrationsReady,
 }));
+// 必须 mock：真实实现会解析 DPAPI/读 Global Config；在 Bun+Windows 下会产生真实副作用。
+vi.mock("nbook/server/config/secret-migration", () => ({
+    migrateGlobalConfigSecretStorage: mocks.migrateGlobalConfigSecretStorage,
+}));
 vi.mock("nbook/server/agent/session/agent-session-store-runtime", () => ({
     startAgentSessionStoreRuntime: mocks.startAgentSessionStoreRuntime,
     observeAgentSessionStoreRuntimeCompromised: mocks.observeAgentSessionStoreRuntimeCompromised,
@@ -48,6 +53,7 @@ describe("Product startup", () => {
         mocks.inspectStateRootIntegrity.mockResolvedValue({kind: "clean"});
         mocks.stateRootIntegrityFailed.mockReturnValue(false);
         mocks.assertProductMigrationsReady.mockResolvedValue(undefined);
+        mocks.migrateGlobalConfigSecretStorage.mockResolvedValue(undefined);
         mocks.startAgentSessionStoreRuntime.mockResolvedValue({rootWorkspace: "C:/state/workspace"});
         mocks.observeAgentSessionStoreRuntimeCompromised.mockReturnValue(new Promise(() => undefined));
     });
@@ -60,11 +66,15 @@ describe("Product startup", () => {
             stateRoot: "C:/state",
         });
         expect(mocks.assertProductMigrationsReady).toHaveBeenCalledOnce();
+        expect(mocks.migrateGlobalConfigSecretStorage).toHaveBeenCalledOnce();
         expect(mocks.startAgentSessionStoreRuntime).toHaveBeenCalledWith("C:/state/workspace");
         expect(mocks.mkdir.mock.invocationCallOrder[0]).toBeLessThan(
             mocks.assertProductMigrationsReady.mock.invocationCallOrder[0]!,
         );
         expect(mocks.assertProductMigrationsReady.mock.invocationCallOrder[0]).toBeLessThan(
+            mocks.migrateGlobalConfigSecretStorage.mock.invocationCallOrder[0]!,
+        );
+        expect(mocks.migrateGlobalConfigSecretStorage.mock.invocationCallOrder[0]).toBeLessThan(
             mocks.startAgentSessionStoreRuntime.mock.invocationCallOrder[0]!,
         );
     });
