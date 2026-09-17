@@ -365,3 +365,4 @@ packages/nb-ui/**
 | 2026-09-17 | T0.1 结算表协议 | software-engineer | 01900a91 | 契约 4/4 + e2e 13/13（新 08 用例）+ typecheck 0；主理人独立复验 | 提交时 assets/workspace 需 git add -f（已知坑）；工作区另有 5 张过期证据 png（UI 线界面变化所致，未混入提交，待收口时统一重截） |
 | 2026-09-17 | T0.2 定稿原子提交 | software-engineer | （本条 commit） | 单测 7/7 + plot 92/92 + e2e 13/13 + typecheck 0；主理人复验 7/7 | 自抓 writeSlice 先提交后返回 issues 的真 bug 并加变体锁；测试窗口内改源码的过程偏差已自查并干净重跑 |
 | 2026-09-17 | T0.3 检索自动候选 | software-engineer | （本条 commit） | 工具 12/12 + 契约 17/17 + agent 全量 1522 + typecheck 0；主理人复验 | e2e 有 1 条资源型 flake（ERR_INSUFFICIENT_RESOURCES，单独重跑过，判 13/13 有效）；确认协议双通道供 T1.3 方案卡直接消费 |
+| 2026-09-17 | T0.4 全稿扫描后端 | software-engineer | （本条 commit） | 测试 27/27 + route 29/29 + typecheck 0；主理人复验 | 真稿基线入档：236 文件 1433ms / 3936 命中 / 91 规则（60s 超时下 42 倍余量）；e2e 未跑（route 分支级改动，单文件路径未动）；openapi generate 本机 0 routes 疑需 dev server，待观察 |
