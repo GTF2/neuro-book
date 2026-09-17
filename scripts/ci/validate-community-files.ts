@@ -526,7 +526,9 @@ async function validateWorkflows(): Promise<void> {
         ensure(governanceCommands.some((actual) => actual.includes(command)), `Code Baseline governance 缺少命令：${command}`);
     }
     ensure(jobCommands(typecheck, "code-baseline/typecheck").includes("bun run --cwd packages/neuro-book typecheck"), "缺少应用 typecheck 命令");
-    ensure(jobCommands(test, "code-baseline/test").includes("bun run --cwd packages/neuro-book test -- --reporter=dot"), "缺少应用全量测试命令");
+    // 期望串必须与 `.github/workflows/code-baseline.yml` 里 test job 的真实命令**逐字一致**（含 `--bun`）。
+    // 这个精确匹配是刻意保留的摩擦：改 CI 测试命令时必须同步改这里，否则漏改会在此处翻红。
+    ensure(jobCommands(test, "code-baseline/test").includes("bun --bun run --cwd packages/neuro-book test -- --reporter=dot"), "缺少应用全量测试命令");
     const changesJob = baseline.jobs.changes;
     ensure(Boolean(changesJob?.steps?.length), "Code Baseline 缺少 changes 变更作用域 job");
     ensure(changesJob?.steps?.some((step) => step.uses === "actions/checkout@v5" && step.with?.["fetch-depth"] === 0), "changes job 必须全量 checkout 以计算 merge-base");

@@ -114,7 +114,10 @@ describe("迁移后九个 CI 工作流结构合同", () => {
         }
         expect(commands(workflow)).toContain("bun run --cwd packages/neuro-book generate");
         expect(commands(workflow)).toContain("bun run --cwd packages/neuro-book typecheck");
-        expect(commands(workflow)).toContain("bun run --cwd packages/neuro-book test -- --reporter=dot");
+        // 必须与 code-baseline.yml 里 test job 的真实命令逐字一致（含 `--bun`）。
+        // 注意这里是 joined 串的子串匹配：若漏写 `--bun`，`bun --bun run` 会因包含子串 `bun run` 而误判通过，
+        // 所以务必带上 `--bun` 前缀（否则等于悄悄放宽了这道门禁）。
+        expect(commands(workflow)).toContain("bun --bun run --cwd packages/neuro-book test -- --reporter=dot");
         expect(commands(workflow)).not.toMatch(/bun --cwd packages\/neuro-book run/u);
         expect(commands(workflow)).not.toContain("bun install --cwd desktop/electron");
         expect(workflow.name).toBe("Code Baseline");
