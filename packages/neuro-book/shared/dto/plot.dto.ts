@@ -116,6 +116,100 @@ export const StorySceneWorldAnchorDtoSchema = StorySceneWorldAnchorInputDtoSchem
     unresolvedSubjectIds: z.array(z.string()),
 });
 
+// 存量项目锚点补齐：生成只产生 pending 建议；只有显式确认 API 才能写入 Scene。
+export const WorldAnchorSuggestionStatusSchema = z.enum(["pending", "applying", "confirmed", "rejected"]);
+export const WorldAnchorSuggestionEvidenceDtoSchema = z.object({
+    subjectId: NonEmptyStringSchema,
+    name: NonEmptyStringSchema,
+    type: NonEmptyStringSchema,
+    occurrences: z.number().int().positive(),
+    resolved: z.boolean(),
+    source: z.enum(["world-subject", "lorebook"]),
+});
+export const WorldAnchorSuggestionTimeEstimateDtoSchema = z.object({
+    startInstant: z.string().regex(/^\d+$/, "startInstant 必须是非负整数字符串"),
+    reason: NonEmptyStringSchema,
+});
+export const WorldAnchorSuggestionDtoSchema = z.object({
+    suggestionId: NonEmptyStringSchema.max(160, "suggestionId 过长"),
+    chapterId: NonEmptyStringSchema,
+    chapterName: NonEmptyStringSchema,
+    chapterTitle: NonEmptyStringSchema,
+    chapterPath: z.string().nullable(),
+    sceneCount: z.number().int().nonnegative(),
+    subjectIds: z.array(NonEmptyStringSchema).max(MAX_STORY_SCENE_SUBJECT_COUNT, "subjectIds 过多"),
+    locationSubjectId: NonEmptyStringSchema.nullable(),
+    timeEstimate: WorldAnchorSuggestionTimeEstimateDtoSchema.nullable(),
+    evidence: z.array(WorldAnchorSuggestionEvidenceDtoSchema),
+    note: z.string().nullable(),
+    status: WorldAnchorSuggestionStatusSchema,
+    createdAt: z.string().datetime(),
+    resolvedAt: z.string().datetime().nullable(),
+}).superRefine((suggestion, context) => {
+    const unresolved = suggestion.status === "pending" || suggestion.status === "applying";
+    if (unresolved && suggestion.resolvedAt !== null) {
+        context.addIssue({code: "custom", path: ["resolvedAt"], message: "pending 或 applying 建议不能有 resolvedAt"});
+    }
+    if (!unresolved && suggestion.resolvedAt === null) {
+        context.addIssue({code: "custom", path: ["resolvedAt"], message: "confirmed 或 rejected 建议必须有 resolvedAt"});
+    }
+});
+export const WorldAnchorSuggestionStoreDtoSchema = z.object({
+    version: z.literal("world-anchor-suggestions-v1"),
+    nextSeq: z.number().int().positive(),
+    suggestions: z.array(WorldAnchorSuggestionDtoSchema),
+}).superRefine((store, context) => {
+    const seen = new Set<string>();
+    for (const [index, suggestion] of store.suggestions.entries()) {
+        if (seen.has(suggestion.suggestionId)) {
+            context.addIssue({code: "custom", path: ["suggestions", index, "suggestionId"], message: "suggestionId 不能重复"});
+        }
+        seen.add(suggestion.suggestionId);
+    }
+});
+export const WorldAnchorSuggestionAppliedSceneDtoSchema = z.object({
+    sceneId: NonEmptyStringSchema,
+    subjectIds: z.array(NonEmptyStringSchema),
+    locationSubjectId: NonEmptyStringSchema.nullable(),
+    startInstantApplied: z.string().regex(/^\d+$/, "startInstantApplied 必须是非负整数字符串").nullable(),
+});
+export const WorldAnchorSuggestionGenerateResultDtoSchema = z.object({
+    generated: z.number().int().nonnegative(),
+    skipped: z.number().int().nonnegative(),
+    failed: z.number().int().nonnegative(),
+    store: WorldAnchorSuggestionStoreDtoSchema,
+});
+export const WorldAnchorSuggestionConfirmOutcomeDtoSchema = z.object({
+    suggestionId: NonEmptyStringSchema,
+    status: z.enum(["confirmed", "skipped", "failed"]),
+    reason: z.string().optional(),
+    appliedScenes: z.array(WorldAnchorSuggestionAppliedSceneDtoSchema),
+});
+export const WorldAnchorSuggestionConfirmResultDtoSchema = z.object({
+    outcomes: z.array(WorldAnchorSuggestionConfirmOutcomeDtoSchema),
+    missingSuggestionIds: z.array(NonEmptyStringSchema),
+    store: WorldAnchorSuggestionStoreDtoSchema,
+});
+export const WorldAnchorSuggestionRejectOutcomeDtoSchema = z.object({
+    suggestionId: NonEmptyStringSchema,
+    status: z.enum(["rejected", "skipped"]),
+    reason: z.string().optional(),
+});
+export const WorldAnchorSuggestionRejectResultDtoSchema = z.object({
+    outcomes: z.array(WorldAnchorSuggestionRejectOutcomeDtoSchema),
+    missingSuggestionIds: z.array(NonEmptyStringSchema),
+    store: WorldAnchorSuggestionStoreDtoSchema,
+});
+const WorldAnchorSuggestionIdsSchema = z.array(NonEmptyStringSchema.max(160, "suggestionId 过长")).min(1, "suggestionIds 不能为空").max(100, "suggestionIds 过多").refine((ids) => new Set(ids).size === ids.length, {
+    message: "suggestionIds 不能重复",
+});
+export const ConfirmWorldAnchorSuggestionsRequestDtoSchema = z.object({
+    suggestionIds: WorldAnchorSuggestionIdsSchema,
+});
+export const RejectWorldAnchorSuggestionsRequestDtoSchema = z.object({
+    suggestionIds: WorldAnchorSuggestionIdsSchema,
+});
+
 export const SceneWorldContextDtoSchema = z.object({
     slices: z.array(z.object({
         id: z.string(),
@@ -1050,6 +1144,17 @@ export type StoryEffectiveRefDto = z.infer<typeof StoryEffectiveRefDtoSchema>;
 export type StorySceneWorldAnchorInputDto = z.infer<typeof StorySceneWorldAnchorInputDtoSchema>;
 export type StorySceneWorldAnchorSubjectDto = z.infer<typeof StorySceneWorldAnchorSubjectDtoSchema>;
 export type StorySceneWorldAnchorDto = z.infer<typeof StorySceneWorldAnchorDtoSchema>;
+export type WorldAnchorSuggestionStatus = z.infer<typeof WorldAnchorSuggestionStatusSchema>;
+export type WorldAnchorSuggestionEvidence = z.infer<typeof WorldAnchorSuggestionEvidenceDtoSchema>;
+export type WorldAnchorSuggestionTimeEstimate = z.infer<typeof WorldAnchorSuggestionTimeEstimateDtoSchema>;
+export type WorldAnchorSuggestion = z.infer<typeof WorldAnchorSuggestionDtoSchema>;
+export type WorldAnchorSuggestionStore = z.infer<typeof WorldAnchorSuggestionStoreDtoSchema>;
+export type WorldAnchorSuggestionAppliedScene = z.infer<typeof WorldAnchorSuggestionAppliedSceneDtoSchema>;
+export type WorldAnchorSuggestionGenerateResult = z.infer<typeof WorldAnchorSuggestionGenerateResultDtoSchema>;
+export type WorldAnchorSuggestionConfirmResult = z.infer<typeof WorldAnchorSuggestionConfirmResultDtoSchema>;
+export type WorldAnchorSuggestionRejectResult = z.infer<typeof WorldAnchorSuggestionRejectResultDtoSchema>;
+export type ConfirmWorldAnchorSuggestionsRequestDto = z.infer<typeof ConfirmWorldAnchorSuggestionsRequestDtoSchema>;
+export type RejectWorldAnchorSuggestionsRequestDto = z.infer<typeof RejectWorldAnchorSuggestionsRequestDtoSchema>;
 export type SceneWorldContextDto = z.infer<typeof SceneWorldContextDtoSchema>;
 export type StoryDto = z.infer<typeof StoryDtoSchema>;
 export type StoryPhaseDto = z.infer<typeof StoryPhaseDtoSchema>;

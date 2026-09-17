@@ -7,6 +7,8 @@ import {
     CreateStoryPromiseRequestDtoSchema,
     CreateStorySceneRequestDtoSchema,
     CreateStoryThreadRequestDtoSchema,
+    ConfirmWorldAnchorSuggestionsRequestDtoSchema,
+    RejectWorldAnchorSuggestionsRequestDtoSchema,
     ReorderStoryPhasesRequestDtoSchema,
     ReorderStoryScenesRequestDtoSchema,
     ReorderStoryThreadsRequestDtoSchema,
@@ -275,6 +277,9 @@ async function handleProjectPlotApi(event: H3Event): Promise<unknown> {
         if (segments[0] === "keyframes") {
             return handleKeyframes(plotFacade, event, method, segments);
         }
+        if (segments[0] === "world-anchor-suggestions") {
+            return handleWorldAnchorSuggestions(plotFacade, event, method, segments);
+        }
 
         throw createError({statusCode: 404, message: "未知 Project Plot API"});
     });
@@ -440,6 +445,25 @@ async function handleDecisions(plotFacade: PlotFacade, event: H3Event, method: s
         if (method === "DELETE") return plotFacade.deleteStoryDecision(decisionId);
     }
     throw createError({statusCode: 404, message: "未知 Project Decision API"});
+}
+
+/** worldAnchor 建议队列：生成只读，确认或拒绝必须携带显式 suggestionIds。 */
+async function handleWorldAnchorSuggestions(plotFacade: PlotFacade, event: H3Event, method: string, segments: string[]): Promise<unknown> {
+    if (method === "GET" && matchSegments(segments, ["world-anchor-suggestions"])) {
+        return plotFacade.getWorldAnchorSuggestionStore();
+    }
+    if (method === "POST" && matchSegments(segments, ["world-anchor-suggestions", "generate"])) {
+        return plotFacade.generateWorldAnchorSuggestions();
+    }
+    if (method === "POST" && matchSegments(segments, ["world-anchor-suggestions", "confirm"])) {
+        const body = await validateBody(event, ConfirmWorldAnchorSuggestionsRequestDtoSchema, {maxBytes: 16 * 1024});
+        return plotFacade.confirmWorldAnchorSuggestions(body);
+    }
+    if (method === "POST" && matchSegments(segments, ["world-anchor-suggestions", "reject"])) {
+        const body = await validateBody(event, RejectWorldAnchorSuggestionsRequestDtoSchema, {maxBytes: 16 * 1024});
+        return plotFacade.rejectWorldAnchorSuggestions(body);
+    }
+    throw createError({statusCode: 404, message: "未知 worldAnchor 建议 API"});
 }
 
 /** 关键帧(写作宪法第三条)CRUD + 补间区间查询。回撞状态流转与裁决不变式在服务层。 */

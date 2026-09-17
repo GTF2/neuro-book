@@ -5,6 +5,7 @@ import type {
     ParsedCreateStorySceneInput,
     ParsedReorderStorySceneItem,
     ParsedUpdateStorySceneInput,
+    SceneWorldAnchor,
 } from "nbook/server/plot/core/types";
 import {throwPlotBadRequest} from "nbook/server/plot/core/errors";
 import {OrderService} from "nbook/server/plot/services/order.service";
@@ -13,10 +14,11 @@ import {PromiseService} from "nbook/server/plot/services/promise.service";
 import {RefResolverService} from "nbook/server/plot/services/ref-resolver.service";
 import {SceneWorldAnchorValidator} from "nbook/server/plot/services/scene-world-anchor.validator";
 import {StoryService} from "nbook/server/plot/services/story.service";
-import type {
-    ChapterPlotDetailDto,
-    PlotTreeDto,
-    StorySceneDetailDto,
+import {
+    MAX_STORY_SCENE_SUBJECT_COUNT,
+    type ChapterPlotDetailDto,
+    type PlotTreeDto,
+    type StorySceneDetailDto,
 } from "nbook/shared/dto/plot.dto";
 
 /**
@@ -164,6 +166,57 @@ export class SceneService {
     }
 
     /**
+     * 把一条人工确认的 worldAnchor 建议合并到指定章节的全部活动 Scene。
+     *
+     * 调用方必须把本方法放在同一 Prisma transaction 内；本方法不经 HTTP DTO 回转，避免
+     * 显示层的 null 时间字段覆盖已持久化的 instant。
+     */
+    async applyWorldAnchorSuggestion(input: {
+        chapterId: number;
+        subjectIds: string[];
+        locationSubjectId: string | null;
+        startInstant: bigint | null;
+    }): Promise<Array<{sceneId: string; subjectIds: string[]; locationSubjectId: string | null; startInstantApplied: string | null}>> {
+        const story = await this.storyService.ensureStory();
+        const chapter = await this.scopeGuard.assertChapter(story.id, input.chapterId);
+        const scenes = await this.sceneRepository.findChapterScenes(chapter.id);
+        const activeScenes = scenes.filter((scene) => scene.status !== "archived");
+        if (activeScenes.length === 0) {
+            throwPlotBadRequest("该章节没有可写入的活动 Scene");
+        }
+
+        const applied: Array<{sceneId: string; subjectIds: string[]; locationSubjectId: string | null; startInstantApplied: string | null}> = [];
+        for (const scene of activeScenes) {
+            const subjectIds = mergeSubjectIds(parseStoredSubjectIds(scene.subjectIdsJson), input.subjectIds);
+            if (subjectIds.length > MAX_STORY_SCENE_SUBJECT_COUNT) {
+                throwPlotBadRequest(`Scene worldAnchor 的 subjectIds 不能超过 ${MAX_STORY_SCENE_SUBJECT_COUNT} 个`);
+            }
+            const locationSubjectId = scene.locationSubjectId ?? input.locationSubjectId;
+            const startInstant = scene.startInstant ?? input.startInstant;
+            const anchor: SceneWorldAnchor = {
+                startInstant,
+                endInstant: scene.endInstant,
+                subjectIds,
+                locationSubjectId,
+            };
+            this.worldAnchorValidator.validate(anchor);
+            await this.sceneRepository.updateScene(scene.id, {
+                startInstant: anchor.startInstant,
+                endInstant: anchor.endInstant,
+                subjectIdsJson: JSON.stringify(anchor.subjectIds),
+                locationSubjectId: anchor.locationSubjectId,
+            });
+            applied.push({
+                sceneId: String(scene.id),
+                subjectIds,
+                locationSubjectId,
+                startInstantApplied: scene.startInstant === null && input.startInstant !== null ? input.startInstant.toString() : null,
+            });
+        }
+        return applied;
+    }
+
+    /**
      * 删除场景。级联删除其 beats,删除后同步受影响 Promise 的 fulfilled 回退边界(D5)。
      */
     async deleteStoryScene(sceneId: number): Promise<void> {
@@ -226,4 +279,26 @@ export class SceneService {
 
         return this.storyService.getPlotTree();
     }
+}
+
+function parseStoredSubjectIds(value: string): string[] {
+    try {
+        const parsed = JSON.parse(value) as unknown;
+        if (!Array.isArray(parsed) || parsed.some((item) => typeof item !== "string" || !item.trim())) {
+            throw new Error("subjectIdsJson 不是非空字符串数组");
+        }
+        return parsed.map((item) => item.trim());
+    } catch (error) {
+        throwPlotBadRequest(`Scene worldAnchor 的 subjectIdsJson 损坏：${error instanceof Error ? error.message : String(error)}`);
+    }
+}
+
+function mergeSubjectIds(existing: string[], suggested: string[]): string[] {
+    const merged = [...existing];
+    for (const subjectId of suggested) {
+        if (!merged.includes(subjectId)) {
+            merged.push(subjectId);
+        }
+    }
+    return merged;
 }

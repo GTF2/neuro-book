@@ -1,3 +1,6 @@
+import {mkdir} from "node:fs/promises";
+import {join} from "node:path";
+import {lock as acquireFileLock} from "proper-lockfile";
 import {Prisma, PrismaClient} from "nbook/server/generated/project-prisma/client";
 import {PlotDtoAssembler} from "nbook/server/plot/assemblers/plot-dto.assembler";
 import {PrismaChapterRepository} from "nbook/server/plot/repositories/prisma-chapter.repository";
@@ -25,11 +28,19 @@ import {SceneService} from "nbook/server/plot/services/scene.service";
 import {SceneWorldAnchorValidator} from "nbook/server/plot/services/scene-world-anchor.validator";
 import {SceneWorldAnchorResolutionService} from "nbook/server/plot/services/scene-world-anchor-resolution.service";
 import {SceneWorldContextService} from "nbook/server/plot/services/scene-world-context.service";
+import {
+    confirmWorldAnchorSuggestions,
+    generateWorldAnchorSuggestions,
+    readWorldAnchorSuggestionStore,
+    rejectWorldAnchorSuggestions,
+    writeWorldAnchorSuggestionStore,
+} from "nbook/server/plot/services/world-anchor-suggestion.service";
 import {StoryService} from "nbook/server/plot/services/story.service";
 import {ThreadService} from "nbook/server/plot/services/thread.service";
 import {toSqliteFileUrl} from "nbook/server/workspace-files/project-workspace";
 import type {ProjectDatabaseModuleHandle} from "nbook/server/workspace-files/project-database-module";
 import {readProjectWorkspaceTreeSnapshot} from "nbook/server/workspace-files/project-workspace-index";
+import {parseMarkdownDocument, readWorkspaceTextFile} from "nbook/server/workspace-files/workspace-files";
 import type {ProjectFileIndexHandle} from "nbook/server/workspace-files/project-file-index";
 import type {ProjectHistoryHandle} from "nbook/server/workspace-history/project-history";
 import type {WorldEngineFacade} from "nbook/server/world-engine";
@@ -85,6 +96,12 @@ import type {
     UpdateStoryThreadRequestDto,
     StorySceneWorldAnchorInputDto,
     StorySceneWorldAnchorDto,
+    ConfirmWorldAnchorSuggestionsRequestDto,
+    RejectWorldAnchorSuggestionsRequestDto,
+    WorldAnchorSuggestionConfirmResult,
+    WorldAnchorSuggestionGenerateResult,
+    WorldAnchorSuggestionRejectResult,
+    WorldAnchorSuggestionStore,
 } from "nbook/shared/dto/plot.dto";
 
 type PlotModule = {
@@ -118,6 +135,7 @@ export class PlotFacade {
     private readonly sceneWorldAnchorResolutionService: SceneWorldAnchorResolutionService;
     // Prose 反指解析不依赖 Project SQLite,直接复用 workspace 内存索引,做 facade 级单例。
     private readonly chapterProseService: ChapterProseService;
+    private suggestionOperationQueue: Promise<void> = Promise.resolve();
     private accepting = true;
     private closed = false;
     private closing: Promise<void> | null = null;
@@ -358,6 +376,27 @@ export class PlotFacade {
      */
     async getChapterPlotDetailDto(chapterId: number): Promise<ChapterPlotDetailDto> {
         return this.formatChapterPlotAnchors(await (await this.createModule()).sceneService.getChapterPlotDetailDto(chapterId));
+    }
+
+    /** 读取当前 Project 的待确认 worldAnchor 建议队列。 */
+    async getWorldAnchorSuggestionStore(): Promise<WorldAnchorSuggestionStore> {
+        this.assertAccepting();
+        return readWorldAnchorSuggestionStore(this.workspace.root);
+    }
+
+    /** 重新生成待确认 worldAnchor 建议；不会写入任何 Scene。 */
+    async generateWorldAnchorSuggestions(): Promise<WorldAnchorSuggestionGenerateResult> {
+        return this.runSuggestionOperation(async () => generateWorldAnchorSuggestions(this.createWorldAnchorSuggestionPorts()));
+    }
+
+    /** 显式确认建议；每条建议的 Scene 合并在独立数据库事务内完成。 */
+    async confirmWorldAnchorSuggestions(input: ConfirmWorldAnchorSuggestionsRequestDto): Promise<WorldAnchorSuggestionConfirmResult> {
+        return this.runSuggestionOperation(async () => confirmWorldAnchorSuggestions(this.createWorldAnchorSuggestionPorts(), input));
+    }
+
+    /** 显式拒绝建议；只改变建议队列，不写入 Scene。 */
+    async rejectWorldAnchorSuggestions(input: RejectWorldAnchorSuggestionsRequestDto): Promise<WorldAnchorSuggestionRejectResult> {
+        return this.runSuggestionOperation(async () => rejectWorldAnchorSuggestions(this.createWorldAnchorSuggestionPorts(), input));
     }
 
     /**
@@ -827,6 +866,102 @@ export class PlotFacade {
     }
 
     /**
+     * 在单一 Project generation 中串行化建议队列的读—改—写，避免并发请求丢失 pending 状态。
+     */
+    private async runSuggestionOperation<TResult>(operation: () => Promise<TResult>): Promise<TResult> {
+        this.assertAccepting();
+        const previous = this.suggestionOperationQueue;
+        let release: (() => void) | undefined;
+        this.suggestionOperationQueue = new Promise<void>((resolve) => {
+            release = resolve;
+        });
+        await previous.catch(() => undefined);
+        let releaseFileLock: (() => Promise<void>) | undefined;
+        try {
+            const lockDirectory = join(this.workspace.root, ".nbook", "locks");
+            await mkdir(lockDirectory, {recursive: true});
+            releaseFileLock = await acquireFileLock(this.workspace.root, {
+                lockfilePath: join(lockDirectory, "world-anchor-suggestions.lock"),
+                realpath: false,
+                stale: 30_000,
+                update: 10_000,
+                retries: {
+                    retries: 20,
+                    factor: 1.2,
+                    minTimeout: 50,
+                    maxTimeout: 500,
+                    randomize: true,
+                },
+            });
+            return await operation();
+        } finally {
+            try {
+                await releaseFileLock?.();
+            } finally {
+                release?.();
+            }
+        }
+    }
+
+    private createWorldAnchorSuggestionPorts() {
+        return {
+            listWorldSubjects: () => this.worldEngine.listSubjects({}),
+            listLorebookNodes: async () => {
+                const snapshot = await readProjectWorkspaceTreeSnapshot({
+                    target: this.fileTarget,
+                    fileIndex: this.fileIndex,
+                });
+                return snapshot.nodes.filter((node) => node.path.startsWith("lorebook/"));
+            },
+            getPlotTree: () => this.getPlotTree(),
+            getChapterScenes: (chapterId: number) => this.getChapterPlotDetailDto(chapterId),
+            findProseForChapter: (chapterName: string) => this.findProseForChapter(chapterName),
+            listLegacyProseNodes: async () => {
+                const snapshot = await readProjectWorkspaceTreeSnapshot({
+                    target: this.fileTarget,
+                    fileIndex: this.fileIndex,
+                });
+                return snapshot.nodes
+                    .filter((node) => (
+                        node.isDirectory
+                        && node.contentNode
+                        && node.entryType === "chapter"
+                        && node.path.startsWith("manuscript/")
+                        && node.frontmatterError === null
+                        && (typeof node.frontmatter.chapter !== "string" || node.frontmatter.chapter.trim().length === 0)
+                    ))
+                    .map((node) => {
+                        const normalizedPath = node.path.replace(/\/+$/, "");
+                        return {
+                            path: normalizedPath,
+                            indexPath: `${normalizedPath}/index.md`,
+                            title: node.title,
+                            chapterName: "",
+                            words: node.words,
+                        };
+                    })
+                    .sort((left, right) => left.path.localeCompare(right.path));
+            },
+            readProse: async (indexPath: string) => {
+                try {
+                    return parseMarkdownDocument(await readWorkspaceTextFile(this.workspace.root, indexPath)).body;
+                } catch (error) {
+                    if (isErrorWithCode(error, "ENOENT")) {
+                        return null;
+                    }
+                    throw error;
+                }
+            },
+            readStore: () => readWorldAnchorSuggestionStore(this.workspace.root),
+            writeStore: (store: WorldAnchorSuggestionStore) => writeWorldAnchorSuggestionStore(this.workspace.root, store),
+            applySuggestion: (input: {chapterId: number; subjectIds: string[]; locationSubjectId: string | null; startInstant: bigint | null}) => (
+                this.runInTransaction((module) => module.sceneService.applyWorldAnchorSuggestion(input))
+            ),
+            now: () => new Date(),
+        };
+    }
+
+    /**
      * 按执行器构建剧情模块对象图。
      */
     private async createModule(): Promise<PlotModule> {
@@ -976,4 +1111,8 @@ export class PlotFacade {
             keyframeService,
         };
     }
+}
+
+function isErrorWithCode(error: unknown, code: string): boolean {
+    return typeof error === "object" && error !== null && "code" in error && error.code === code;
 }

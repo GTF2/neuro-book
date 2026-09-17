@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import {PassThrough} from "node:stream";
 import {createClient} from "@libsql/client";
 import {afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi} from "vitest";
 import {
@@ -415,6 +416,214 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
         await expect(callApi(handler, projectRootName, "GET", "tree")).rejects.toThrow("calendar.ts 加载失败");
     });
 
+    it("worldAnchor 建议生成、拒绝和确认会保留已有时间锚点", async () => {
+        const projectRootName = await createProject();
+        const root = projectDirectory(projectRootName);
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        await fs.mkdir(path.join(root, "lorebook", "character", "hero"), {recursive: true});
+        await fs.mkdir(path.join(root, "lorebook", "location", "temple"), {recursive: true});
+        await fs.writeFile(path.join(root, "lorebook", "character", "hero", "index.md"), [
+            "---",
+            "title: 主角",
+            "type: character",
+            "status: active",
+            "aliases:",
+            "  - 阿主",
+            "---",
+            "",
+        ].join("\n"), "utf8");
+        await fs.writeFile(path.join(root, "lorebook", "location", "temple", "index.md"), [
+            "---",
+            "title: 荒野神殿",
+            "type: location",
+            "status: active",
+            "---",
+            "",
+        ].join("\n"), "utf8");
+
+        const chapter = await callApi(handler, projectRootName, "POST", "chapters", {
+            name: "opening",
+            title: "开篇",
+        });
+        const thread = await callApi(handler, projectRootName, "POST", "threads", {
+            name: "main",
+            title: "主线",
+        });
+        const scene = await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread),
+            chapterId: readId(chapter),
+            title: "神殿相遇",
+            worldAnchor: {
+                startTime: "复兴纪元1日 00:01:40",
+                endTime: "复兴纪元1日 00:03:20",
+                startInstant: null,
+                endInstant: null,
+                subjectIds: [],
+                locationSubjectId: null,
+            },
+        });
+        await fs.writeFile(path.join(root, "manuscript", "001", "001-opening", "index.md"), [
+            "---",
+            "title: 开篇",
+            "chapter: opening",
+            "---",
+            "",
+            "主角走入荒野神殿。主角看见阿主留下的火光。",
+        ].join("\n"), "utf8");
+
+        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {
+            generated: number;
+            store: {suggestions: Array<{suggestionId: string; subjectIds: string[]; locationSubjectId: string | null}>};
+        };
+        expect(generated.generated).toBe(1);
+        const firstSuggestion = generated.store.suggestions[0];
+        expect(firstSuggestion).toMatchObject({subjectIds: ["hero"], locationSubjectId: "temple"});
+        if (!firstSuggestion) throw new Error("测试没有生成 worldAnchor 建议");
+
+        const rejected = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/reject", {
+            suggestionIds: [firstSuggestion.suggestionId],
+        });
+        expect(rejected).toMatchObject({outcomes: [{suggestionId: firstSuggestion.suggestionId, status: "rejected"}]});
+        const afterReject = await callApi(handler, projectRootName, "GET", "world-anchor-suggestions") as {suggestions: Array<{status: string}>};
+        expect(afterReject.suggestions).toHaveLength(1);
+        expect(afterReject.suggestions[0]).toMatchObject({status: "rejected"});
+
+        const regenerated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {
+            store: {suggestions: Array<{suggestionId: string; status: string}>};
+        };
+        const pendingSuggestion = regenerated.store.suggestions.find((suggestion) => suggestion.status === "pending");
+        if (!pendingSuggestion) throw new Error("测试没有重新生成 pending 建议");
+        await expect(callApi(handler, projectRootName, "POST", "world-anchor-suggestions/confirm", {suggestionIds: []}))
+            .rejects.toThrow("suggestionIds");
+        await expect(callApi(handler, projectRootName, "POST", "world-anchor-suggestions/confirm", {suggestionIds: ["x".repeat(161)]}))
+            .rejects.toThrow("suggestionId 过长");
+        await expect(callApi(handler, projectRootName, "POST", "world-anchor-suggestions/confirm", {suggestionIds: ["x".repeat(16 * 1024)]}))
+            .rejects.toThrow("请求体超过允许大小");
+
+        const confirmed = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/confirm", {
+            suggestionIds: [pendingSuggestion.suggestionId],
+        });
+        expect(confirmed).toMatchObject({outcomes: [{suggestionId: pendingSuggestion.suggestionId, status: "confirmed"}]});
+
+        const updated = await callApi(handler, projectRootName, "GET", `scenes/${readId(scene)}`) as {worldAnchor: {subjectIds: string[]; locationSubjectId: string | null; startInstant: string | null; endInstant: string | null}};
+        expect(updated.worldAnchor).toMatchObject({
+            subjectIds: ["hero"],
+            locationSubjectId: "temple",
+            startInstant: "100",
+            endInstant: "200",
+        });
+    });
+
+    it("worldAnchor 建议只匹配正文主体，不把 frontmatter 名称当作出场证据", async () => {
+        const projectRootName = await createProject();
+        const root = projectDirectory(projectRootName);
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        await fs.mkdir(path.join(root, "lorebook", "character", "hero"), {recursive: true});
+        await fs.writeFile(path.join(root, "lorebook", "character", "hero", "index.md"), [
+            "---",
+            "title: 主角",
+            "type: character",
+            "status: active",
+            "---",
+            "",
+        ].join("\n"), "utf8");
+        const chapter = await callApi(handler, projectRootName, "POST", "chapters", {name: "opening", title: "开篇"});
+        const thread = await callApi(handler, projectRootName, "POST", "threads", {name: "main", title: "主线"});
+        await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread), chapterId: readId(chapter), title: "空场",
+        });
+        await fs.writeFile(path.join(root, "manuscript", "001", "001-opening", "index.md"), [
+            "---",
+            "title: 主角",
+            "chapter: opening",
+            "---",
+            "",
+            "这一章正文没有登记角色姓名。",
+        ].join("\n"), "utf8");
+
+        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {generated: number; failed: number};
+        expect(generated).toEqual(expect.objectContaining({generated: 0, failed: 0}));
+    });
+
+    it("worldAnchor legacy 回退不读取已明确绑定给其他章节的正文", async () => {
+        const projectRootName = await createProject();
+        const root = projectDirectory(projectRootName);
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        await fs.mkdir(path.join(root, "lorebook", "character", "hero"), {recursive: true});
+        await fs.writeFile(path.join(root, "lorebook", "character", "hero", "index.md"), [
+            "---",
+            "title: 主角",
+            "type: character",
+            "status: active",
+            "---",
+            "",
+        ].join("\n"), "utf8");
+        const target = await callApi(handler, projectRootName, "POST", "chapters", {name: "target", title: "开篇"});
+        await callApi(handler, projectRootName, "POST", "chapters", {name: "other", title: "其他章"});
+        const thread = await callApi(handler, projectRootName, "POST", "threads", {name: "main", title: "主线"});
+        await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread), chapterId: readId(target), title: "目标场",
+        });
+        await fs.writeFile(path.join(root, "manuscript", "001", "001-opening", "index.md"), [
+            "---",
+            "title: 开篇",
+            "chapter: other",
+            "---",
+            "",
+            "主角只属于其他章节的正文。",
+        ].join("\n"), "utf8");
+
+        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {generated: number; failed: number};
+        expect(generated).toEqual(expect.objectContaining({generated: 0, failed: 1}));
+    });
+
+    it("worldAnchor 确认遇到章节内损坏 Scene 时整体回滚并保留 pending", async () => {
+        const projectRootName = await createProject();
+        const root = projectDirectory(projectRootName);
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        await fs.mkdir(path.join(root, "lorebook", "character", "hero"), {recursive: true});
+        await fs.writeFile(path.join(root, "lorebook", "character", "hero", "index.md"), [
+            "---",
+            "title: 主角",
+            "type: character",
+            "status: active",
+            "---",
+            "",
+        ].join("\n"), "utf8");
+        const chapter = await callApi(handler, projectRootName, "POST", "chapters", {name: "opening", title: "开篇"});
+        const thread = await callApi(handler, projectRootName, "POST", "threads", {name: "main", title: "主线"});
+        const firstScene = await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread), chapterId: readId(chapter), title: "第一场",
+        });
+        const secondScene = await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread), chapterId: readId(chapter), title: "第二场",
+        });
+        await fs.writeFile(path.join(root, "manuscript", "001", "001-opening", "index.md"), [
+            "---",
+            "title: 开篇",
+            "chapter: opening",
+            "---",
+            "",
+            "主角赶到门前，主角推开石门。",
+        ].join("\n"), "utf8");
+        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {
+            store: {suggestions: Array<{suggestionId: string}>};
+        };
+        const suggestion = generated.store.suggestions[0];
+        if (!suggestion) throw new Error("测试没有生成 worldAnchor 建议");
+        await updateSceneRawSubjectIds(projectRootName, readId(secondScene), "{损坏的 JSON");
+
+        const confirmation = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/confirm", {
+            suggestionIds: [suggestion.suggestionId],
+        });
+        expect(confirmation).toMatchObject({
+            outcomes: [{suggestionId: suggestion.suggestionId, status: "failed", appliedScenes: []}],
+            store: {suggestions: [{suggestionId: suggestion.suggestionId, status: "pending"}]},
+        });
+        const firstAfterFailure = await callApi(handler, projectRootName, "GET", `scenes/${readId(firstScene)}`) as {worldAnchor: {subjectIds: string[]}};
+        expect(firstAfterFailure.worldAnchor.subjectIds).toEqual([]);
+    });
+
     it("Keyframe CRUD + 补间区间 + 裁决留痕(写作宪法第三条/第六条)", async () => {
         const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
         const projectRootName = await createProject();
@@ -499,11 +708,21 @@ async function callApi(
     body?: unknown,
     query: Record<string, unknown> = {},
 ): Promise<unknown> {
+    const rawBody = body === undefined ? "" : JSON.stringify(body);
+    const request = new PassThrough();
+    request.end(rawBody);
+    Object.assign(request, {
+        headers: {
+            "content-length": String(Buffer.byteLength(rawBody, "utf8")),
+            "content-type": "application/json",
+        },
+    });
     return handler({
         method,
         path: `/api/projects/plot/${segments}`,
         query: {projectRoot: projectRootName, ...query},
         body,
+        node: {req: request},
         context: {params: {segments}},
     });
 }
@@ -526,6 +745,24 @@ async function updateSceneRawInstants(projectRootName: string, sceneId: string, 
         await client.execute({
             sql: `UPDATE "StoryScene" SET "startInstant" = ?, "endInstant" = ? WHERE "id" = ?`,
             args: [startInstant, endInstant, Number(sceneId)],
+        });
+    } finally {
+        client.close();
+        collectReleasedSqliteHandles();
+    }
+}
+
+async function updateSceneRawSubjectIds(projectRootName: string, sceneId: string, subjectIdsJson: string): Promise<void> {
+    const client = createClient({
+        url: toSqliteFileUrl(resolveProjectDatabasePath(
+            resolveRuntimeWorkspaceRoot(),
+            projectWorkspaceRef(projectRootName),
+        )),
+    });
+    try {
+        await client.execute({
+            sql: `UPDATE "StoryScene" SET "subjectIdsJson" = ? WHERE "id" = ?`,
+            args: [subjectIdsJson, Number(sceneId)],
         });
     } finally {
         client.close();
