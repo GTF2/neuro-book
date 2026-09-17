@@ -82,6 +82,16 @@
 
 价值在替换之后：想让面板退场，只改一处 `--panel-outline: none`，不必去动每个组件。
 
+### 一个不能违反的作用域约束
+
+引用配色变量的那批——角色映射 14 个，加 `--elevation-popover`、`--elevation-dialog`、`--focus-ring`、`--focus-outline`，共 18 个——**必须声明在 `.novel-ide-theme`（配色宿主）上，不能放 `:root`**。
+
+原因是 CSS 自定义属性的 `var()` 在**声明它的元素**的上下文里解析：写在 `:root` 的 `--panel-surface: var(--bg-panel)` 永远等于 `theme-vars.css` 里的 sepia fallback，而配色变量实际是运行时写在宿主的 inline style 上的——换任何别的主题，角色映射都**不跟随**。实测：宿主 `--bg-panel` 是 `#ffffff` 时，`:root` 版的 `--panel-surface` 仍返回 `#fdf6e3`，同一屏上出现两套色温。
+
+纯常量的刻度（间距 / 圆角 / 动效 / 字号 / 控件尺寸）不引用配色，继续留在 `:root`，靠继承下发，宿主外的元素也拿得到。
+
+`design-tokens.test.ts` 有两条断言守着这条边界：`:root` 块里不许出现引用配色变量的声明；宿主块里必须齐备那 18 个。
+
 ### 与 nb-ui 的关系
 
 本层名单与取值与 `@notnotype/nb-ui` 的 `src/theme/tokens.ts` / `src/tokens.css` **逐字一致**，分组同构。nb-ui 的口径是「主仓保持零改动，阶段 4 再合流」，本层按同一份取值先行补齐，合流时两边已经一样、直接删一份。

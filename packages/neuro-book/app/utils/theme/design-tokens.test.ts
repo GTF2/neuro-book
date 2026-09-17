@@ -45,6 +45,49 @@ describe("颜色契约与 nb-ui 的对齐", () => {
     });
 });
 
+/**
+ * 取某个选择器块的主体文本。锚定行首，避免命中 @media 里缩进的同名选择器。
+ */
+function readSelectorBody(css: string, selector: string): string | null {
+    const source = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    return source.match(new RegExp(`^${escaped}\\s*\\{([\\s\\S]*?)\\n\\}`, "m"))?.[1] ?? null;
+}
+
+describe("作用域约束：引用配色的 token 必须待在配色宿主上", () => {
+    const colourVars = themeVarNames.map((name) => `--${name}`);
+
+    it("rejects colour references inside the :root block", async () => {
+        const body = readSelectorBody(await readFile(tokensCssPath, "utf8"), ":root");
+
+        expect(body, "找不到 :root 块").toBeTruthy();
+
+        const offenders = [...(body as string).matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/g)]
+            .filter((match) => colourVars.some((colour) => (match[2] as string).includes(`var(${colour})`)))
+            .map((match) => match[1] as string);
+
+        // var() 在**声明它的元素**的上下文里解析。声明在 :root，computed value 就在 :root 求值，
+        // 那里只有 theme-vars.css 的 sepia fallback；配色变量实际写在 .novel-ide-theme 的 inline style 上。
+        // 后果是角色映射永远等于 sepia，换任何别的主题都不跟随（实测：宿主 --bg-panel 为 #ffffff 时，
+        // :root 版 --panel-surface 仍返回 #fdf6e3，同一屏两套色温）。
+        expect(offenders).toEqual([]);
+    });
+
+    it("keeps every colour-referencing token declared on the host", async () => {
+        const body = readSelectorBody(await readFile(tokensCssPath, "utf8"), ".novel-ide-theme");
+
+        expect(body, "找不到 .novel-ide-theme 块").toBeTruthy();
+
+        const declaredOnHost = new Set([...(body as string).matchAll(/(--[a-z0-9-]+)\s*:/g)].map((match) => match[1] as string));
+        const mustBeOnHost = ["--elevation-popover", "--elevation-dialog", "--focus-ring", "--focus-outline", ...themeRoleTokens];
+
+        expect(mustBeOnHost).toHaveLength(18);
+        for (const token of mustBeOnHost) {
+            expect(declaredOnHost.has(token), `${token} 应当声明在 .novel-ide-theme 上`).toBe(true);
+        }
+    });
+});
+
 describe("design token 层", () => {
     it("五组设计 token 与三组主题层基线的分组齐备且无重名", () => {
         expect(designTokens).toHaveLength(33);

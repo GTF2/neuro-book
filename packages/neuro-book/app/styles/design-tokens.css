@@ -6,12 +6,11 @@
  * 两者正交：换主题换的是颜色，换密度/观感换的是这一层。
  *
  * 取值与 `@notnotype/nb-ui` 的 `src/tokens.css` 逐字对齐，名单见 `app/utils/theme/design-tokens.ts`。
- * nb-ui 的落地口径是「主仓保持零改动，阶段 4 再合流」；本文件按同一份取值先行补齐，
- * 为的是主仓现在就能用上语义 token，且合流时两边已经一致、直接删一份即可，不产生迁移成本。
  *
- * **选择器只用 :root，不要加宿主类。** 这条是从 nb-ui 的实际故障里抄来的：运行时会往配色宿主
- * （这里就是 `.novel-ide-theme`）写变量，若 token 也在宿主上重复声明，宿主级的重声明会盖住
- * 更外层做的覆盖，现象是「变量改了但元素没变」，很难查。token 不随配色变化，靠继承下发就够。
+ * **本文件分成两个作用域，边界是「这个 token 引不引用配色变量」**：
+ * - 纯常量（刻度）放 `:root`，靠继承下发，与配色无关。
+ * - 引用配色变量的放 `.novel-ide-theme`（配色宿主）。**不能放 :root**——理由见下方那段。
+ * 这不是洁癖，是这个仓库里真实存在的坑，判据写在宿主块上方。
  */
 
 :root {
@@ -53,17 +52,12 @@
     --radius-menu: var(--radius-panel);
     --radius-pill: 999px;
 
-    /* ---- 4.4 层级：主用底色分层，阴影只给真正浮起的元素 --------------------- */
-    /*
-     * 阴影一律走 --shadow-color（随主题变），禁止固定 rgba。
-     *
-     * 浮层这一档首选配色给的 --shadow-panel：它是 nb-ui 配色契约的变量，主仓没有，
-     * 所以下面的兜底分支在主仓恒生效。这是刻意的——主仓的浮层本来就靠自算阴影，
-     * 兜底值等于把现有观感写成公式，不引入新观感。
-     */
+    /* ---- 4.4 层级 ---------------------------------------------------------- */
+    /* 常量这几档留在本块；引用了 --shadow-color 的两档在宿主块里，见下。 */
     --elevation-flat: none;
-    --elevation-popover: var(--shadow-panel, 0 4px 12px color-mix(in srgb, var(--shadow-color, #000) 8%, transparent));
-    --elevation-dialog: 0 16px 40px color-mix(in srgb, var(--shadow-color, #000) 14%, transparent);
+    --elevation-raised: none;
+    --surface-raise: none;
+    --inset-shadow: none;
 
     /* ---- 4.5 动效：只用于解释空间关系，不做装饰 ---------------------------- */
     --motion-fast: 120ms;
@@ -71,15 +65,14 @@
     --motion-enter: 220ms;
     --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 
-    /* ==== 主题层基线 ========================================================
-     * 以上五组是「刻度叫什么」；以下是「观感能改什么」。两者的名字分开登记，
-     * 因为改密度和改刻度是两件事。默认口径 = nb-ui 当前做法。 */
+    /* ==== 主题层基线·常量部分 ============================================== */
 
-    /* 展示字体与字距。多数主题与 --font-ui 同源，需要衬线的主题才换。 */
+    /* 展示字体。与 --font-ui 同源，两者都是常量，所以留在本块。 */
     --font-display: var(--font-ui);
     --tracking-ui: 0;
 
-    /* 控件与容器的尺寸刻度。**密度是观感最明显的一个维度**，也是本层最主要的开关。 */
+    /* 控件与容器的尺寸刻度。**密度是观感最明显的一个维度**，也是本层最主要的开关。
+       常量，不引用配色，所以留在 :root——宿主外的元素（例通知视口）也拿得到。 */
     --control-h-sm: 28px;
     --control-h-md: 32px;
     --control-h-lg: 38px;
@@ -94,9 +87,32 @@
     --radius-dialog: var(--radius-panel);
 
     --border-w: 1px;
-    --surface-raise: none;
-    --inset-shadow: none;
-    --elevation-raised: none;
+}
+
+/*
+ * 以下是**引用了配色变量**的那批，必须声明在配色宿主上。
+ *
+ * 为什么不能放 :root：CSS 自定义属性里的 var() 在**声明它的元素的上下文**里解析。
+ * 写成 `:root { --panel-surface: var(--bg-panel) }`，它的 computed value 就在 :root 求值；
+ * 而配色变量是运行时由 `apply-theme.ts` 写在 `.novel-ide-theme` 的 inline style 上的，
+ * :root 上只有 `theme-vars.css` 的 sepia fallback。结果是角色映射**永远等于 sepia**，
+ * 换任何别的主题都不跟随——实测过：宿主 --bg-panel 是 #ffffff 时，
+ * :root 版的 --panel-surface 仍返回 #fdf6e3，同一屏上出现两套色温。
+ *
+ * nb-ui 的同类变量敢写在 :root，是因为它的配色宿主就是 <html>；主仓的宿主是
+ * `.novel-ide-theme` 这个子树（通知视口等刻意留在宿主外，只吃 :root 的 fallback），
+ * 所以不能照抄它的作用域。
+ *
+ * 判据：**值里出现 var(--配色变量) 就必须待在本块**。design-tokens.test.ts 有一条断言守着。
+ */
+.novel-ide-theme {
+    /*
+     * 浮层两档。首选配色给的 --shadow-panel（nb-ui 配色契约的变量，主仓没有），
+     * 所以下面的兜底分支在主仓恒生效——这是刻意的：兜底值等于把主仓现有阴影写成公式，
+     * 不引入新观感。因为引用了 --shadow-color，所以必须留在宿主块里。
+     */
+    --elevation-popover: var(--shadow-panel, 0 4px 12px color-mix(in srgb, var(--shadow-color, #000) 8%, transparent));
+    --elevation-dialog: 0 16px 40px color-mix(in srgb, var(--shadow-color, #000) 14%, transparent);
 
     --focus-ring:
         0 0 0 1px color-mix(in srgb, var(--accent-main) 35%, transparent),
@@ -126,7 +142,8 @@
     --overlay-surface: var(--bg-panel);
 
     /* 浮层的磨砂与镜面。默认 none：不装主题时浮层是实心的，与改动前一模一样。
-       它们是**角色**不是材料——需要玻璃观感的一方把它映射到自己的配方，其余不用管它存在。 */
+       它们是**角色**不是材料——需要玻璃观感的一方把它映射到自己的配方，其余不用管它存在。
+       值本身是常量，但归在角色组里一起走宿主作用域，免得将来有人把它改成引用配色时踩同一个坑。 */
     --overlay-blur: none;
     --overlay-sheen: none;
 
