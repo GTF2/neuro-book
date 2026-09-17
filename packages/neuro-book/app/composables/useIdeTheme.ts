@@ -1,5 +1,7 @@
 import type { Ref } from "vue";
+import {chromeLevel, restoreChromeLevel} from "nbook/app/composables/useChromeLevel";
 import { applyThemeVars } from "nbook/app/utils/theme/apply-theme";
+import {resolveChromeVars} from "nbook/app/utils/theme/chrome-level";
 import { IDE_THEME_HOST_CLASS, type ThemeVars } from "nbook/app/utils/theme/theme-tokens";
 import {resolveTheme} from "nbook/app/utils/theme/resolve-theme";
 import type {CustomThemeDto} from "nbook/shared/theme/theme-vars";
@@ -9,14 +11,20 @@ const emptyCustomThemes = shallowRef<CustomThemeDto[]>([]);
 
 /**
  * 把变量表应用到当前宿主节点。
+ *
+ * 观感档位在这里合入，必须算成写出去的**值**：这 36 个变量落在宿主的 inline style 上，
+ * 优先级高于任何选择器，写成 CSS 规则的档位会被静默压掉。
+ * 档位同时写成 `data-chrome` 属性，让 DevTools 里一眼能看到当前档位，排查时不必猜。
  */
 const applyVarsToHost = (vars: ThemeVars): void => {
     if (!themeHost.value) {
         return;
     }
 
+    const level = chromeLevel.value;
     themeHost.value.classList.add(IDE_THEME_HOST_CLASS);
-    applyThemeVars(themeHost.value, vars);
+    themeHost.value.dataset.chrome = level;
+    applyThemeVars(themeHost.value, resolveChromeVars(vars, level));
 };
 
 /**
@@ -54,7 +62,12 @@ export const useIdeTheme = (
         applyThemeToHost();
     };
 
+    // 档位恢复挂在这一层而不是 useChromeLevel 内部：那边是设置界面的入口，
+    // 用户设置过档位却从没打开设置的话，档位就永远恢复不了。这里是所有页面的公共入口。
+    onMounted(restoreChromeLevel);
+
     watch([themeId, customThemes], applyThemeToHost, {deep: true});
+    watch(chromeLevel, applyThemeToHost);
 
     return {
         mountThemeHost,

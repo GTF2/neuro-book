@@ -14,6 +14,7 @@ import {useNovelIdeStore} from "nbook/app/stores/novel-ide";
 import {useNotification} from "nbook/app/composables/useNotification";
 import {useAuthSessionState} from "nbook/app/composables/useAuthSessionState";
 import {useThemeManager} from "nbook/app/composables/useThemeManager";
+import {chromeLevels, type ChromeLevel} from "nbook/app/utils/theme/chrome-level";
 import {ideThemeIds, themeMeta, type ThemeVars} from "nbook/app/utils/theme/theme-tokens";
 import {resolveTheme, isBuiltInThemeId} from "nbook/app/utils/theme/resolve-theme";
 import {createCustomThemeId, themeVarsToCustomVars} from "nbook/app/utils/theme/theme-editor";
@@ -56,6 +57,13 @@ const novelIdeStore = useNovelIdeStore();
 const notification = useNotification();
 const authSessionState = useAuthSessionState();
 const themeManager = useThemeManager();
+const {level: chromeLevel, setLevel: setChromeLevel} = useChromeLevel();
+
+/** 观感档位的选项。「界面退不退场」与具体配色正交，所以不并进主题卡片，而是单独一项。 */
+const chromeLevelOptions = computed<Array<{value: ChromeLevel; label: string}>>(() => chromeLevels.map((value) => ({
+    value,
+    label: t(value === "quiet" ? "settings.frontend.chromeQuiet" : "settings.frontend.chromeFull"),
+})));
 const {locale, setLocale, t} = useI18n();
 const {
     selectedReasoning,
@@ -938,6 +946,29 @@ function updateDesktopCloseBehavior(value: string): void {
                                     </div>
                                     <div class="w-48 shrink-0">
                                         <FormSelect :model-value="locale" :options="localeOptions" @update:model-value="updateLocale" />
+                                    </div>
+                                </div>
+
+                                <div class="group flex items-center gap-4 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-panel)] px-5 py-4 shadow-sm transition-all duration-300 hover:shadow-md">
+                                    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--bg-input)] text-[var(--text-secondary)] transition-colors group-hover:bg-[var(--accent-bg)] group-hover:text-[var(--accent-main)]">
+                                        <span class="i-lucide-square-dashed h-5 w-5"></span>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="text-sm font-medium text-[var(--text-main)]">{{ t("settings.frontend.chromeTitle") }}</div>
+                                        <div class="mt-0.5 text-xs text-[var(--text-secondary)]">{{ t("settings.frontend.chromeDescription") }}</div>
+                                    </div>
+                                    <div class="flex w-48 shrink-0 items-center gap-2">
+                                        <button
+                                            v-for="option in chromeLevelOptions"
+                                            :key="option.value"
+                                            type="button"
+                                            class="inline-flex h-8 flex-1 items-center justify-center rounded-md border text-xs font-medium transition-colors"
+                                            :class="chromeLevel === option.value
+                                                ? 'border-transparent bg-[var(--accent-main)] text-[var(--text-inverse)]'
+                                                : 'border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-main)] hover:bg-[var(--bg-hover)]'"
+                                            :aria-pressed="chromeLevel === option.value"
+                                            @click="setChromeLevel(option.value)"
+                                        >{{ option.label }}</button>
                                     </div>
                                 </div>
 
