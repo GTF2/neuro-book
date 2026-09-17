@@ -37,6 +37,8 @@
 
 `shared/dto/agent-session.dto.ts` 当前引用 Agent 内部类型，而 `server/agent/session/types.ts` 又引用 shared DTO。因为两侧都是 type-only import，本轮没有观察到运行时环。它被记录为 P2 结构问题；只有在 shared DTO 需要由另一个宿主独立编译、或者 TypeScript/project reference、生成客户端或打包边界被该环实际阻塞时，才单独设计最小的合同下沉。
 
+**2026-09-17 复核：环仍存在，与上述描述一致，维持暂不处理。** 精确宽度如下，供下次复核直接引用（不必再全量排查）：`shared/` 侧**只有 1 个文件**引用 `server/agent`——`shared/dto/agent-session.dto.ts:2-4`（引 `server/agent/{messages,session,variables}/types`）；反向由 `server/agent/session/types.ts:5-8` 引用 `shared/dto/{agent-session,agent-public-event,agent-attachment}.dto` 构成。两侧**全部是 `import type`**，无运行时环。（对照：`server/agent` 下有 74 个文件引用 `nbook/shared`，那是正常消费方向，不参与该环——**环只走这一条窄路径**。）触发处理的条件维持原文不变。
+
 ### 4. 暂不按行数拆分核心单体
 
 `NeuroAgentHarness`、Project Lifecycle、Workspace Files、Novel IDE 页面/Store 和 AgentChatSurface 的行数较大，但它们仍承担领域 Facade 角色，当前没有单凭行数就必须拆分的运行时证据。本轮不为追求文件变小而创建过多代理层或中间抽象。
