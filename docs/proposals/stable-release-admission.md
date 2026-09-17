@@ -57,7 +57,7 @@
 - **未满足**：有明确的「尚未实现 / 尚未执行」证据。
 - **无法判定**：缺执行条件或结果证据，判不了；必须写明为什么判不了。
 
-> 注意：**「门禁已实现并被 CI 强制执行」= 已满足；「门禁在当前修订上全绿」是另一件事**，单列为 A6（无法判定）。两者不能混为一谈。
+> 注意：**「门禁已实现并被 CI 强制执行」= 已满足；「门禁在当前修订上全绿」是另一件事**，单列为 A6（2026-09-17 已实测，结论「未满足」，证据见 A6 行）。两者不能混为一谈。
 
 ---
 
@@ -70,9 +70,9 @@
 | A1 | 治理与仓库合同门禁在 CI 自动执行 | 治理规则（Task/Spec 归属、workflow 与 Docker 合同）漂移不会被拦截；stable 会带着已失效的协作合同对外 | **已满足** | `.github/workflows/code-baseline.yml:83-105` |
 | A2 | 应用包 typecheck 门禁在 CI 自动执行 | 类型不闭合意味着公开接口/内部契约可能已不一致；stable 承诺接口稳定，类型错误不能带出去 | **已满足** | `code-baseline.yml:107-127` |
 | A3 | 全量测试门禁（Bun 运行时）在 CI 自动执行 | 全量回归是「改动不再破坏既有行为」的最低保证；stable 面向所有用户，不能像 canary 那样携带已知回归 | **已满足**（仅指门禁已实现并被强制执行） | `code-baseline.yml:129-159`（`:154-159` 用 `bun --bun` 跑 vitest） |
-| A4 | 主应用 E2E 冒烟门禁（Chromium）在 CI 自动执行 | 编辑器/关键帧/Agent/主题跟随/示例书等主链路坏掉时，单测仍可能全绿而浏览器里不可用 | **已满足** | `code-baseline.yml:161-202`；`packages/neuro-book/e2e/`（`01-editor`…`05-sample-book` 共 5 条 spec） |
+| A4 | 主应用 E2E 冒烟门禁（Chromium）在 CI 自动执行 | 编辑器/关键帧/Agent/主题跟随/示例书等主链路坏掉时，单测仍可能全绿而浏览器里不可用 | **已满足** | `code-baseline.yml:161-202`；`packages/neuro-book/e2e/`（`01-editor` / `02-keyframe` / `03-agent` / `04-theme-follow` / `05-sample-book` / `06-perf-baseline` / `07-agent-behavior` 共 **7 条 spec**：主链路 5 条 + 性能基线 + Agent 行为锁） |
 | A5 | 跨平台 Product 构建 + 原生验收门禁 | stable 承诺支持的平台必须在各自原生 runner 上真机产出并验收；只在本机构建等于没验证其它平台 | **已满足** | `product-platforms.yml:74-151`；`release-container.yml:198-374`、`:449-836` |
-| A6 | 目标 stable 修订上 A1–A5 实跑全绿 | 「门禁存在」≠「门禁通过」。stable 放行必须绑定一次具体、可复现的全绿运行，否则「有门禁」只是摆设 | **无法判定** | 本机未运行全量/typecheck/e2e，且同仓有另一工程师在途改动，按派单要求不跑全量以免互相干扰。判断依据：派单约束 + A1–A5 的门禁定义 |
+| A6 | 目标 stable 修订上 A1–A5 实跑全绿 | 「门禁存在」≠「门禁通过」。stable 放行必须绑定一次具体、可复现的全绿运行，否则「有门禁」只是摆设 | **未满足**（2026-09-17 已实测，结论：部分红 + 2 条本机挂起；非「无法判定」） | 实测快照：`deliverables/stable-admission-a6/acceptance-snapshot-2026-09-17-rev-eeb18d8.md`（钉在修订 `eeb18d8`）。**绿**：治理契约 182 用例、`governance:check`、scripts typecheck、主应用 typecheck、E2E 12 用例、`docs:check`、`docs:build`、manager 全组、nb-history / nb-workflow / nb-memory / nb-ui / llmlint、desktop-contract、product:policy。**2 条真红**：① 硬编码色护栏对 `design-tokens.css` 误报——**根因在护栏自身**（注释内色值与 `var()` 兜底值被误判），已修 `d1a2420a`；② `product-start.test.ts` 的 `@vue/shared` 版本分裂（根 hoisted 3.5.39 vs 嵌套 3.5.42，`bun.lock` 自身同时登记两者）——**本机无法确认修复**，需一次干净的 `bun install --frozen-lockfile`，而本机 `bun install` 会卡死，见 `HANDOFF.md`。**2 条本机挂起**：harness `verify` / `pack:smoke`——已定位为 Bun 1.4.x 下 `expect().rejects` 与「同步 abort + 宏任务轮询落定」的运行时交互问题（有纯 `bun:test` 最小复现），**非产品缺陷**，已修 `79ba7569`。**环境性假红**（本机缺件，CI 不触发）：`test:install` 缺 pwsh 7、`release-assets` 的 GNU tar 把 `C:` 当远程主机。**本机不可跑**的门禁另有清单（五平台 Product 构建、容器 build/publish、npm 公开发布、macOS 桌面合同、`test:real-model` 等），见快照 §5 |
 | A7 | 应用状态迁移声明与回滚路径 | 有状态升级若未声明迁移策略与回滚，用户升级可能丢数据且无法退回；stable 升级必须可回滚 | **已满足** | `packages/neuro-book/docs/migrations/README.md:3-11`；`packages/neuro-book-contracts/src/release.ts:61,104,151-174`（`none`/`automatic`/`manual` 语义校验） |
 
 ### B. 发布工艺
@@ -130,13 +130,14 @@
 
 | 分组 | 已满足 | 未满足 | 无法判定 | 小计 |
 | --- | --- | --- | --- | --- |
-| A. 技术门禁 | 6 | 0 | 1 | 7 |
+| A. 技术门禁 | 6 | 1 | 0 | 7 |
 | B. 发布工艺 | 7 | 3 | 0 | 10 |
 | C. 产品验收 | 2 | 4 | 2 | 8 |
-| **合计** | **15** | **7** | **3** | **25** |
+| **合计** | **15** | **8** | **2** | **25** |
 
-**未满足的 7 项**：B6 签名、B7 macOS 公证包、B8 后台 updater、C2 真实 Provider、C3 人工评测、C4 完整浏览器流程、C6 Desktop OS 级矩阵。
-**无法判定的 3 项**：A6 全门禁全绿实跑、C7 真实文件系统、C8 dogfooding。
+**未满足的 8 项**：A6 全门禁实跑（2026-09-17 已有实测快照，见上）、B6 签名、B7 macOS 公证包、B8 后台 updater、C2 真实 Provider、C3 人工评测、C4 完整浏览器流程、C6 Desktop OS 级矩阵。
+**无法判定的 2 项**：C7 真实文件系统、C8 dogfooding。
+**A6 本轮的变化**：从「无法判定」推进到「**未满足、但有实测证据**」——快照在固定修订上真跑了全部可跑门禁，并把 2 条真红中的 1 条（护栏误报，根因在护栏自身）与 2 条本机挂起（Bun 运行时交互）当场修掉；剩余 1 条真红（`@vue/shared` 版本分裂）需一次干净的 `bun install --frozen-lockfile` 才能确认，本机不可做。
 **结论**：机制层（A/B 的大头）基本就位；**放行层的 7 项缺口全部集中在「签名与平台实包」「真实模型与真人验收」**，没有一项是「再加几个单测」能补的。
 
 ---
