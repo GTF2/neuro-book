@@ -43,7 +43,7 @@
 - `input`：传 `{path: "manuscript/001-volume/001-chapter/index.md", chapterId: "<StoryChapter id>", context: {lorebookEntries: ["lorebook/character/foo/", ...]}}`。
   - `path` 是本轮唯一写入目标，必须是当前 Project Workspace 相对路径，指向章节 `index.md`。
   - `chapterId` 让 writer 用 `get_chapter_writer_brief` 自取本章**事实简报**。
-  - `context.lorebookEntries` 只传内容节点 path 字符串数组（目录路径，结尾带 `/`）。
+  - `context.lorebookEntries` 只传内容节点 path 字符串数组（目录路径，结尾带 `/`）。挑选来源走候选确认流：先用 `retrieval_candidates` 工具生成候选清单（lorebook 条目 + 正文片段，带 path / 摘要 / 来源 / 相关性），逐项呈给用户确认，确认后的 path 才进 `lorebookEntries`；清单不够用时再让 `retrieval` 子代理补充候选，同样先经用户确认。
 - `message`：只写交付要求（写进哪个文件、什么时候算完成）。
 
 **写作宪法第二条/第五条：writer 的动笔前上下文只含事实，不含意义。** 所以：

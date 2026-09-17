@@ -147,6 +147,7 @@ describe("assets builtin v3 profiles", () => {
             "detach_agent",
             "request_user_input",
             "switch_mode",
+            "retrieval_candidates",
             "task_create",
             "task_set_status",
             "execute_world",
@@ -223,6 +224,10 @@ describe("assets builtin v3 profiles", () => {
         expect(visiblePrompt).toContain("`invoke_agent.message` 只写交付要求");
         expect(visiblePrompt).toContain("意图级内容不下发 writer");
         expect(visiblePrompt).toContain("input.context.lorebookEntries");
+        // T0.3 设定检索自动候选：候选清单 → 用户确认 → 确认 path 进 lorebookEntries。
+        expect(visiblePrompt).toContain("retrieval_candidates");
+        expect(visiblePrompt).toContain("确认后的 path 才放入");
+        expect(visiblePrompt).toContain("不把相关性、摘要、风险等判断字段带给 writer");
         expect(visiblePrompt).toContain("创建 retrieval 时只传自然语言 `prompt`");
         expect(visiblePrompt).toContain("{ entries, note? }");
         expect(visiblePrompt).toContain("Content References");

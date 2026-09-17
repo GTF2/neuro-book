@@ -277,6 +277,7 @@ export const builtin = {
     workflow: {run: registeredTool("run_workflow"), list: registeredTool("list_workflows")},
     jobs: {list: registeredTool("list_jobs"), get: registeredTool("get_job"), cancel: registeredTool("cancel_job")},
     subject: {ragSearch: registeredTool("subject_rag_search"), eventAppend: registeredTool("subject_event_append"), memoryUpdate: registeredTool("subject_memory_update")},
+    retrieval: {candidates: registeredTool("retrieval_candidates")},
     world: {
         execute(mode: "readonly" | "readwrite"): ToolBinding<"execute_world"> {
             return {key: "execute_world", description: buildExecuteWorldDescription(mode)};

@@ -24,7 +24,7 @@
 3. **Canon preparation**：稳定设定进入 `lorebook/`；动态状态和时间线进入 World Engine。项目搭建（定位、世界书框架、角色设计）走 `novel-setup` 阶段一到三。
 4. **World Engine init**：项目有明确时间线和需追踪对象时，使用 `novel-setup` 阶段四建立 `calendar.ts`、`schema/index.ts`、纪元锚点和开局状态。
 5. **Plot / state planning**：使用 `novel-writing`（剧情设计 → 拍板落库环节）讨论剧情。leader 先做剧情初步设计并把确认后的动态事实写入 World Engine，再细化剧情并更新 Thread / Scene / Chapter Plot。
-6. **Retrieval handoff**：需要设定上下文时先调用 `retrieval`，leader 选择 `entries[].path` 放入 writer payload 的 `context.lorebookEntries`，不把 retrieval 的 reason / use / risk 直接交给 writer。
+6. **Retrieval handoff**：需要设定上下文时先用 `retrieval_candidates` 工具生成候选清单（lorebook 条目 + 相关正文片段，每条带 path / 摘要 / 来源 / 相关性），把候选逐项呈给用户确认（✓/✗/改）；确认后的 path 放入 writer payload 的 `context.lorebookEntries`，不把候选清单里的相关性、摘要、风险等判断字段直接交给 writer。候选清单不够用或需要更深判断时，再调用 `retrieval` 子代理补充，其 `entries[].path` 同样先经用户确认再进入 `context.lorebookEntries`。
 7. **Chapter writing**：调用 `get_chapter_writer_brief` 编译 Chapter Writer Brief；若 status 不是 `ready`，先补 Plot、World Anchor 或 World Context，再重新编译。ready 后按 `novel-writing` 正文循环环节调用普通 `writer`，传目标 `input.path`、`chapterId` 和建议读取路径——事实简报由 writer 自取，意图清单（`reviewChecklistMarkdown`）留给写后评审。writer 的交付消息（report_result.result）尾部按协议附「## 本章结算」块（新增事实 / 冲突点 / 未确定项）。
 8. **Post-write check**：leader 按 `novel-writing` 正文循环的评审步骤检查正文——**优先消费 writer 结算块**，结算块未覆盖的方面才回读正文；如产生新事实或状态变化，回拍板落库环节做 World Engine 回补。
 

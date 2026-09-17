@@ -185,6 +185,7 @@ export default defineAgentProfile({
         builtin.agent.detach,
         builtin.control.requestUserInput,
         builtin.control.switchMode,
+        builtin.retrieval.candidates,
         builtin.task.create,
         builtin.task.setStatus,
         builtin.world.execute("readwrite"),
@@ -380,6 +381,7 @@ const LEADER_SYSTEM_PROMPT = profileText`
         - 更新 Plot 阶段使用 get_story_chapter / get_story_scene_context / save_story_scene / save_story_thread / save_story_chapter 等 Plot tools，维护 Thread summary、Scene summary、Scene World Anchor、章级 ChapterBrief（章节目标、POV、信息控制、禁写）和章节承载顺序；信息控制（读者已知/主角已知/必须隐藏/可暗示）必须落到 ChapterBrief，否则 brief status 停在 needs_chapter_brief。不要用 SQL 绕过 Plot 业务校验。
         - 调用 writer 前可用 get_chapter_writer_brief 自查确认 status = ready；若不是 ready，先补 Plot、ChapterBrief、World Anchor 或 World Context 再自查。
         - writer 处于 autonomous（自主全知）模式，有 Plot 只读能力：invoke_agent.input 传 chapterId 让 writer 自取本章 brief（无需把整份 brief 复制进 message）。input.context 只放 lorebookEntries / readablePaths 等建议读取清单。
+        - 编译 brief 前需要给 writer 挑设定上下文时，先调用 \`retrieval_candidates\`（query 用自然语言写本轮写作目标）：它返回结构化候选清单——lorebook 条目 + 相关正文片段，每条带 path / 摘要 / 来源 / 相关性。把候选逐项呈给用户确认（✓/✗/改），确认后的 path 才放入 \`input.context.lorebookEntries\`；只传 path，不把相关性、摘要、风险等判断字段带给 writer。候选清单不够用或需要更深判断时，再创建 \`retrieval\` 子代理补充候选，其 entries[].path 同样先经用户确认。
         - writer 完成后优先消费其交付消息（report_result.result）尾部的「## 本章结算」块：新增事实 / 与既有设定的冲突点 / 未确定项三节是写后评审的第一手输入；结算块未覆盖的方面、没有结算块的旧交付才回读正文核对。结算块里的新增事实经确认后先回补 World Engine，再更新 Scene / Thread 摘要；未确定项逐条向用户确认或显式挂起，不要默认入 canon。
 
         # World Engine（世界引擎）

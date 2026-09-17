@@ -1,5 +1,6 @@
 import {createFileTools} from "nbook/server/agent/tools/file-tools";
 import {createPlotTools} from "nbook/server/agent/tools/plot-tools";
+import {createRetrievalCandidatesTools} from "nbook/server/agent/tools/retrieval-candidates";
 import {createSqlTool} from "nbook/server/agent/tools/sql-tool";
 import {createSubjectMemoryTools} from "nbook/server/agent/tools/subject-memory-tools";
 import {createTaskTools} from "nbook/server/agent/tools/task-tools";
@@ -24,6 +25,7 @@ function buildAgentTools() {
     const webTools = definitionsByKey(createWebTools());
     const worldEngineTools = definitionsByKey(createWorldEngineTools());
     const subjectMemoryTools = definitionsByKey(createSubjectMemoryTools());
+    const retrievalTools = definitionsByKey(createRetrievalCandidatesTools());
     const sqlTool = defineAgentToolFromRuntime(createSqlTool());
     const workflowTools = createWorkflowTools();
     const jobTools = createJobTools();
@@ -62,6 +64,7 @@ function buildAgentTools() {
         subjectRagSearch: requireDefinition(subjectMemoryTools, "subject_rag_search"),
         subjectEventAppend: requireDefinition(subjectMemoryTools, "subject_event_append"),
         subjectMemoryUpdate: requireDefinition(subjectMemoryTools, "subject_memory_update"),
+        retrievalCandidates: requireDefinition(retrievalTools, "retrieval_candidates"),
         executeWorld: requireDefinition(worldEngineTools, "execute_world"),
         webSearch: requireDefinition(webTools, "web_search"),
         webFetch: requireDefinition(webTools, "web_fetch"),
