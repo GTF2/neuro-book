@@ -64,16 +64,30 @@ export function createWorkbenchActivityItems(
     const projectDisabled = !context.surfaceActive;
     const novelOnlyDisabled = projectDisabled || context.userAssetsMode;
     return {
+        /*
+         * primary 只放**写作会话中被反复查阅**的入口。
+         *
+         * `world` 从 primary 移到 secondary：它是世界观引擎的**配置面**，配置一次长期不动，
+         * 而 files / characters / plot 是写一场戏时要同时对照的三样东西。依据是 NN/g 对渐进披露
+         * 的四条判断里的「频率」——一个配置型入口占着常驻位，等于让每一次写作都先掠过它。
+         *
+         * 这三项**不能拆到不同层级**（那是四条判断里的「共同使用」）：作者在同一次写作里要来回看
+         * 角色、地点与剧情线，分开放会逼用户反复切换导航。所以只动 world，不动另外两个。
+         */
         primary: [
             ...(!context.desktopAvailable ? [{id: "home" as const, disabled: false}] : []),
             {id: "files", disabled: projectDisabled},
             {id: "characters", disabled: novelOnlyDisabled},
             {id: "plot", disabled: novelOnlyDisabled},
-            {id: "world", disabled: novelOnlyDisabled},
         ],
+        /*
+         * 顺序即溢出优先级：`resolveActivityBarSecondaryItems` 从前往后保留可见项，
+         * 放不下才进 More。所以把最不常用的 world 放在最后。
+         */
         secondary: [
             {id: "trace", disabled: projectDisabled},
             {id: "history", disabled: novelOnlyDisabled},
+            {id: "world", disabled: novelOnlyDisabled},
         ],
         agentPanel: context.desktopAvailable
             ? null

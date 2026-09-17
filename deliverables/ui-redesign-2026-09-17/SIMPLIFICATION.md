@@ -12,7 +12,7 @@
 
 | 位置 | 现状 | 出处 |
 |---|---|---|
-| 活动栏入口 | **10 个平级图标**：`home` `files` `characters` `plot` `world` `trace` `history` `agent-panel` `account` `settings` | `app/utils/workbench-chrome.ts:12-22` |
+| 活动栏常驻项 | **同屏 6–7 个图标**：`files` `characters` `plot` `world`（primary）+ `trace` `history`（secondary）+ 底部 `account` `settings`。**分组机制本来就有**（primary / secondary / footer，且 secondary 已带 overflow 进 More 的逻辑），问题不在「没有分组」，而在 primary 里配置型入口与写作型入口同权 | `app/utils/workbench-chrome.ts:61-86` |
 | 首屏挂载 | **14 个** Dialog / Panel / Workbench / Screen 组件 | `app/pages/index.vue` |
 | 剧本工作台 | 4 个 tab（线程规划 / 承诺账本 / 裁决记录 / 关键帧） | `PlotWorkbenchDialog.vue` |
 | 应用体量 | 259 个组件 / 79,862 行 | 2026-09-17 体检报告 |
@@ -36,7 +36,7 @@ NeuroBook 现在把四层能力（写正文 / 管设定 / 看运行 / 改配置�
 > "Does the app respect a writing session, or does it ship seventeen sidebars?"
 > —— Daniel Ng, *Best Writing Apps 2026*（E1）
 
-按这条量 NeuroBook 现在的稿面：活动栏 10 项 + 工具面板 + 编辑器工具栏 + Agent 面板入口 + 状态栏。**进稿面时能看见的常驻控件远超"一次写作会话"需要的数量。**
+按这条量 NeuroBook 现在的稿面：活动栏 6–7 个图标 + 工具面板 + 编辑器工具栏（含一个带文字的「扫 AI 味」按钮）+ Agent 面板入口 + 状态栏。**进稿面时能看见的常驻控件明显多于"一次写作会话"需要的数量。**
 
 ---
 
@@ -159,24 +159,36 @@ NeuroBook 现在把四层能力（写正文 / 管设定 / 看运行 / 改配置�
 
 ### L2 · 信息收敛层（重排，解决「功能繁杂」）
 
-**活动栏 10 → 2 层**（严格两层，见 G2）：
+> **本轮修正（读代码后）**：初版这里写的「活动栏 10 个平级入口」**不准确**。分组机制本来就存在——
+> `createWorkbenchActivityItems` 返回 `primary` / `secondary` / `footer` 三组，`secondary` 还已经带了
+> overflow 进 More 的逻辑（`resolveActivityBarSecondaryItems`）。同屏常驻是 **6–7 个图标**，不是 10 个。
+>
+> 另外**撤回**初版的一个建议：把 `characters` / `plot` / `world` 合并成一个「设定」入口。
+> 按 NN/g 的共同使用判断重过一遍，这三个恰恰是写一场戏时要**同时对照**的东西
+> （这个人的性格、这个地方的规则、这条线走到哪了），塞进同一个入口的 tab 里等于逼用户在写作途中
+> 反复切换——正是酒店案例点名的失败形态。**省下两个图标位不值得这个代价。**
+
+**活动栏：按「写作时用的」与「配置时用的」分层**（严格两层，见 G2）。
+
+需要的不是新机制，是新的**放法**：
 
 ```
-常驻区（4 项）
-  ├─ 书架        home
-  ├─ 写作        files          ← 最常用，默认落点
-  ├─ 设定        characters / plot / world 三个 tab 合一   ← G3：共同使用，不可拆
-  └─ AI          agent-panel
-
-「更多」菜单（6 项，全部可通过 ⌘K 直达）
-  ├─ 运行追踪    trace
-  ├─ 历史        history
-  ├─ 账户        account
-  └─ 设置        settings
+现在                                   建议
+primary    files                       primary    files          ← 写作
+           characters                             characters     ← 写作时查
+           plot                                   plot           ← 写作时查
+           world                                  ───────
+secondary  trace              ──────►  secondary  trace
+           history                                history
+                                                  world          ← 配置一次，长期不动
+footer     account                     footer     account
+           settings                              settings
 ```
+
+判断依据是 NN/g 的频率与共同使用两条：`files` / `characters` / `plot` 在写作会话中被反复查阅且需要并置对照；`world` 是世界观引擎的配置面，配置一次长期不动。
 
 **两条不能违反的约束**：
-1. **设定那三项必须在一起**——作者写场景时要同时看角色、地点、剧情线（G3 的共同使用判断）。
+1. **`characters` / `plot` / `world` 不许拆到不同层级**——它们是被同一个人在同一段时间里用的（G3 的共同使用判断）。
 2. **下沉项必须有 `⌘K` 入口**（G8），否则就是"藏起来"而不是"渐进披露"。
 
 **其余重排**：
@@ -225,7 +237,7 @@ NeuroBook 现在把四层能力（写正文 / 管设定 / 看运行 / 改配置�
 
 | 判据 | 怎么量 | 现状 |
 |---|---|---|
-| 活动栏常驻项 ≤ 4 | 数 `WorkbenchActivityItems.primary.length` | 当前 10（含 secondary） |
+| 写作型与配置型入口分层 | `primary` 里不含 `world` | 当前 primary 含 `world` |
 | 披露层级 ≤ 2 | 数从常驻项到目标功能的层级数 | 当前部分功能需 3 层 |
 | **"十七个侧栏"判据** | 进稿面后，一屏内可见的常驻控件数（活动栏 + 工具面板头 + 编辑器工具栏 + 状态栏项） | **待测** |
 | 一个界面一个主操作 | 数 accent 实底按钮数，应 ≤ 1 | 待测 |

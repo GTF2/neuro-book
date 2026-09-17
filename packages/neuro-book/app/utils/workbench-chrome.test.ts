@@ -33,11 +33,12 @@ describe("Workbench Chrome", () => {
             ["files", true],
             ["characters", true],
             ["plot", true],
-            ["world", true],
         ]);
         expect(bookshelf.secondary.map((item) => [item.id, item.disabled])).toEqual([
             ["trace", true],
             ["history", true],
+            // world 是配置面（配置一次长期不动），所以不进常驻区；顺序即溢出优先级，放最后
+            ["world", true],
         ]);
         expect(bookshelf.agentPanel).toBeNull();
         expect(bookshelf.footer.map((item) => item.id)).toEqual(["account", "settings"]);
@@ -74,14 +75,21 @@ describe("Workbench Chrome", () => {
             overflow: [],
         });
 
+        /*
+         * 88 = 两个按钮位。容量算出 2 项，但放不下全部次要入口，所以必须先为 More 留一个
+         * 完整按钮位，实际只能显示 1 项——这条用例的意图正是验证那个「先留位」的次序。
+         *
+         * 原值是 132：那时容量（3）已大于条目数（2），走的是「全部可见」分支，
+         * 根本没经过留位逻辑，等于用例标题写的事没测。次要入口增加到 3 项之后这个洞才显形。
+         */
         expect(resolveActivityBarSecondaryItems(items, {
-            availableHeight: 132,
+            availableHeight: 88,
             fixedHeight: 0,
             itemHeight: 44,
             moreButtonHeight: 44,
         })).toEqual({
-            visible: items.slice(0, 2),
-            overflow: items.slice(2),
+            visible: items.slice(0, 1),
+            overflow: items.slice(1),
         });
 
         expect(resolveActivityBarSecondaryItems(items, {
