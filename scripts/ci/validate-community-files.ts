@@ -522,7 +522,7 @@ async function validateWorkflows(): Promise<void> {
     ensureRuntimeSetup(governance, "Code Baseline governance");
     const governanceCommands = jobCommands(governance, "code-baseline/governance");
     ensure(governance?.["timeout-minutes"] === 15, "Governance 超时必须为 15 分钟");
-    for (const command of ["bun run governance:check", "bun x tsc --noEmit -p scripts/tsconfig.json", "scripts/ci/workspace-workflows.test.ts", "scripts/build/dockerfile-contract.test.ts"]) {
+    for (const command of ["bun run governance:check", "bun x tsc --noEmit -p scripts/tsconfig.json", "scripts/ci/workspace-workflows.test.ts", "scripts/build/dockerfile-contract.test.ts", "scripts/build/nuxt-output-contract.test.ts"]) {
         ensure(governanceCommands.some((actual) => actual.includes(command)), `Code Baseline governance 缺少命令：${command}`);
     }
     ensure(jobCommands(typecheck, "code-baseline/typecheck").includes("bun run --cwd packages/neuro-book typecheck"), "缺少应用 typecheck 命令");
