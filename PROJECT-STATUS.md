@@ -22,7 +22,7 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 
 已知未收口（改动前先建规范归属）：
 
-1. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。agent 侧工具面已于 2026-09-14 补齐（Work `w00015-keyframe-agent-toolface`），UI 由并行执行者按既有分工推进。
+1. **人写帧无入口**：`app/` 无关键帧 UI（第三条要求人写帧）。agent 侧工具面已于 2026-09-14 补齐（Work `w00023-keyframe-agent-toolface`），UI 由并行执行者按既有分工推进。
 2. **`infoControl` 真自动编译**：清单仍由调用方从 ChapterBrief 四字段编译传入（workflow 读不到项目数据）。2026-09-14（Work `w00016`）已消除"静默"——漏传时一致性评审显式标注「信息边界未核对」、运行日志记警告、返回值 `infoControlChecked=false`。真自动编译需宿主接线 `wf.query` / `wf.callAction`，已登记为 P1 规范缺口。
 3. **真实模型尺度验证**：两轮终审实验已完成并留痕（事前告知 vs 事后校验、关键帧补间；判词见 `docs/doctrine/`）。仍待验证：帧驱动在整章 / 整卷尺度的表现、裁决闭环（改正文 vs 推翻帧 + `decisionRefId`）的实操，以及"欲望/阻力/代价"是否应成为写作入口的硬门槛。
 

@@ -16,4 +16,4 @@ issueId: null
 
 ## 编号修复说明
 
-`origin/master` 只登记到 `w00015-editor-workbench-spec-and-docs`。功能分支后续引入的 `w00014-chapter-writer-brief-two-views` 与 `w00015-keyframe-agent-toolface` 分别撞号；它们将在实现分支合入时迁移为 `w00022-chapter-writer-brief-two-views` 与 `w00023-keyframe-agent-toolface`，不重写历史。
+`origin/master` 只登记到 `w00015-editor-workbench-spec-and-docs`。功能分支后续引入的两项撞号 Work 已迁移为 `w00022-chapter-writer-brief-two-views` 与 `w00023-keyframe-agent-toolface`；各自 README 保留原编号映射，不重写历史。

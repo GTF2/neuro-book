@@ -122,4 +122,4 @@ owners:
 - 实现入口：[`keyframe.service.ts`](../../../packages/neuro-book/server/plot/services/keyframe.service.ts)、[`plot-tools.ts`](../../../packages/neuro-book/server/agent/tools/plot-tools.ts)、[Plot HTTP 路由](../../../packages/neuro-book/server/api/projects/plot/)、[Reference：关键帧](../../../packages/neuro-book/assets/reference/plot/keyframe.md)。
 - 验证：[`keyframe.service.test.ts`](../../../packages/neuro-book/server/plot/services/keyframe.service.test.ts)、[`plot-tools.test.ts`](../../../packages/neuro-book/server/agent/tools/plot-tools.test.ts)、[`keyframe-tween-review.workflow.test.ts`](../../../packages/neuro-book/server/agent/workflow/keyframe-tween-review.workflow.test.ts)。
 - 主链接入：[`phases/03-chapter-loop.md`](../../../packages/neuro-book/assets/workspace/.nbook/agent/skills/novel-writing/phases/03-chapter-loop.md) 与 [`phases/05-keyframe-tween.md`](../../../packages/neuro-book/assets/workspace/.nbook/agent/skills/novel-writing/phases/05-keyframe-tween.md)。
-- 实现 provenance：[Work w00015](../../../.agents/works/w00015-keyframe-agent-toolface/README.md)。
+- 实现 provenance：[Work w00023](../../../.agents/works/w00023-keyframe-agent-toolface/README.md)。

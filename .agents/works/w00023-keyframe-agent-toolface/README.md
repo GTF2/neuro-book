@@ -1,10 +1,12 @@
 ---
 schema: nbook.work/v1
-workId: w00015-keyframe-agent-toolface
+workId: w00023-keyframe-agent-toolface
 issueId: null
 ---
 
 # 关键帧 agent 工具面与主链接线
+
+> 编号迁移：该 Work 曾以 `w00015-keyframe-agent-toolface` 登记，后发现与已在 `origin/master` 的 `w00015-editor-workbench-spec-and-docs` 撞号。为保留历史且恢复 current Work 唯一性，迁移为 `w00023-keyframe-agent-toolface`；不重写已发布提交。
 
 把已实现的帧能力（帧实体、回撞流转、裁决留痕、补间 workflow）接到产品 Agent 工具面与主链上：agent 能读帧与补间区间、能声明与更新帧，Reference 有了关键帧正文，正文循环知道帧的存在。这是写作宪法第三条（人定帧、模型补间）与第六条（推翻留痕）在 agent 侧的最后一段接线。
 

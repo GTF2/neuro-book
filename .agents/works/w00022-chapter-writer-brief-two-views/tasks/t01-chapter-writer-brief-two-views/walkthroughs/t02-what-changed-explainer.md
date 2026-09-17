@@ -107,7 +107,7 @@ Chapter: 第一章 星陨遗迹(name: 001-opening)
 | 想看什么 | 打开这个文件 |
 |---|---|
 | 新规则（规范） | `docs/specs/plot/chapter-writer-brief.md` |
-| 实施记录（含验证） | `.agents/works/w00014-chapter-writer-brief-two-views/tasks/t01-chapter-writer-brief-two-views/walkthroughs/t01-implementation.md` |
+| 实施记录（含验证） | `.agents/works/w00022-chapter-writer-brief-two-views/tasks/t01-chapter-writer-brief-two-views/walkthroughs/t01-implementation.md` |
 | 交接说明 | `HANDOFF.md` |
 | 简报格式契约 | `packages/neuro-book/assets/reference/plot/writer-brief.md` |
 | 本次提交 | `git show --stat f4e14d93` |

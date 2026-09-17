@@ -1,10 +1,12 @@
 ---
 schema: nbook.work/v1
-workId: w00014-chapter-writer-brief-two-views
+workId: w00022-chapter-writer-brief-two-views
 issueId: null
 ---
 
 # Chapter Writer Brief 事实/意义双视图改造
+
+> 编号迁移：该 Work 曾以 `w00014-chapter-writer-brief-two-views` 登记，后发现与已在 `origin/master` 的 `w00014-issue-227-inline-ai-send-owner` 撞号。为保留历史且恢复 current Work 唯一性，迁移为 `w00022-chapter-writer-brief-two-views`；不重写已发布提交。
 
 把 `get_chapter_writer_brief` 的交付物拆成互不重叠的两个视图：writer 只拿到事实切片，全部意图级内容改为事后评审的核对清单。这是写作宪法第二条（禁止意图级因果链）与第五条（事后校验、不事前告知）在 brief 通道上的落地，也是"事后校验"主张成立的前提——在 writer 只拿到事实之前，对照组不成立。
 
