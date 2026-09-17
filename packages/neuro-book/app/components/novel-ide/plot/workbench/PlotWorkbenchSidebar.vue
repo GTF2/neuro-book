@@ -141,7 +141,7 @@ onClickOutside(filterPanelRef, () => {
 
 <template>
     <!-- 工作台左侧检索与线程列表 -->
-    <aside class="relative flex min-h-0 w-[292px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--bg-panel)]/78">
+    <aside class="relative flex min-h-0 w-[292px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-surface)]/78">
         <div class="shrink-0 space-y-3 border-b border-[var(--border-color)] px-3 py-3">
             <div class="flex items-center gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2.5 py-2">
                 <span class="i-lucide-search h-4 w-4 shrink-0 text-[var(--text-muted)]"></span>

@@ -37,7 +37,7 @@ function statusLabel(subject: ProjectRagSubjectSummaryDto): string {
 
 <template>
     <!-- RAG Workbench subject 浏览栏 -->
-    <aside class="flex w-[286px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--bg-panel)]/92">
+    <aside class="flex w-[286px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-surface)]/92">
         <div class="flex h-12 shrink-0 items-center justify-between border-b border-[var(--border-color)] px-3">
             <div>
                 <div class="text-[12px] font-semibold text-[var(--text-main)]">Subject 列表</div>

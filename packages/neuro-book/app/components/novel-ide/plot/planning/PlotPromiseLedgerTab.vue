@@ -488,7 +488,7 @@ watch(plotRefreshVersion, () => {
     <!-- 承诺账本 tab 主体:左列表右详情 -->
     <div class="flex min-h-0 min-w-0 flex-1" data-testid="plot-promise-ledger">
         <!-- 左:承诺列表 -->
-        <aside class="flex min-h-0 w-[360px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--bg-panel)]/78">
+        <aside class="flex min-h-0 w-[360px] shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-surface)]/78">
             <div class="shrink-0 space-y-2.5 border-b border-[var(--border-color)] px-3 py-3">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-1.5 text-[11px] font-semibold text-[var(--text-main)]">
