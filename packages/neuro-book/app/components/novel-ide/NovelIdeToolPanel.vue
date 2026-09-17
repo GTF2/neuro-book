@@ -354,7 +354,7 @@ function handleSyncDiffAction(payload: DiffWorkbenchActionPayload): void {
 <template>
     <!-- 左侧工具窗 -->
     <div class="contents">
-        <aside v-if="activeTab" v-bind="attrs" class="relative z-10 flex shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--bg-panel)]" :class="isResizing ? 'select-none transition-none' : ''" :style="panelStyle">
+        <aside v-if="activeTab" v-bind="attrs" class="relative z-10 flex shrink-0 flex-col border-r border-[var(--border-color)] bg-[var(--panel-surface)]" :class="isResizing ? 'select-none transition-none' : ''" :style="panelStyle">
             <!-- 宽度拖拽手柄 -->
             <div ref="resizeHandleRef" class="group absolute -right-1 top-0 z-30 h-full w-2 cursor-col-resize">
                 <div class="ml-0.5 h-full w-[2px] bg-[var(--accent-main)] opacity-0 transition-all duration-150 group-hover:opacity-100" :class="isResizing ? 'opacity-100 shadow-[0_0_0_1px_color-mix(in_srgb,var(--accent-main)_28%,transparent)]' : ''"></div>

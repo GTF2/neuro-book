@@ -3,6 +3,7 @@ import {ideThemeIds, themeTokens} from "nbook/app/utils/theme/theme-tokens";
 import {
     DEFAULT_CHROME_LEVEL,
     chromeLevels,
+    chromeOverriddenTokens,
     parseStoredChromeLevel,
     readChromeLevelFromSearch,
     resolveChromeVars,
@@ -42,11 +43,38 @@ describe("观感档位", () => {
         }
     });
 
-    it("除分隔线外，其余变量逐字保留", () => {
+    it("低 chrome 档只动这三样，其余主题变量逐字保留", () => {
         const resolved = resolveChromeVars(sepia, "quiet");
         const changed = (Object.keys(sepia) as Array<keyof typeof sepia>).filter((key) => resolved[key] !== sepia[key]);
 
-        expect(changed).toEqual(["--border-color"]);
+        // 收线一处 + 退面两处（活动栏底色、角色映射的面）。别的都不许动——
+        // 尤其 --editor-bg（稿面本身）和 --bg-panel（541 处消费，弹层/卡片/对话面都在用）。
+        expect(changed.sort()).toEqual(["--bg-sidebar", "--border-color"]);
+    });
+
+    it("低 chrome 档把导航 chrome 统一退到 app 底色", () => {
+        for (const themeId of ideThemeIds) {
+            const vars = themeTokens[themeId];
+            const resolved = resolveChromeVars(vars, "quiet");
+
+            // 活动栏与工具面板归到同一个 app 底色 → 合成一层安静的底
+            expect(resolved["--bg-sidebar"]).toBe(vars["--bg-main"]);
+            expect(resolved["--panel-surface"]).toBe(vars["--bg-main"]);
+            // 稿面自己不许被退掉，否则「唯一的亮面」就不存在了
+            expect(resolved["--editor-bg"]).toBe(vars["--editor-bg"]);
+            expect(resolved["--bg-panel"]).toBe(vars["--bg-panel"]);
+        }
+    });
+
+    it("档位额外覆写的 token 有登记，切回标准档时才清得掉", () => {
+        // resolveChromeVars 在简洁档会写入 themeVarKeys 之外的角色映射 token。
+        // 它们必须登记在 chromeOverriddenTokens 里，否则 applyThemeVars 的清理漏掉它们，
+        // 从简洁切回标准时内联值会残留，侧栏一直退场且看不出原因。
+        const resolved = resolveChromeVars(sepia, "quiet");
+        const themeKeys = new Set<string>(Object.keys(sepia));
+        const extra = Object.keys(resolved).filter((key) => !themeKeys.has(key));
+
+        expect(extra.sort()).toEqual([...chromeOverriddenTokens].sort());
     });
 
     it("不修改传入的变量表", () => {

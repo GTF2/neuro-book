@@ -5,7 +5,17 @@ import type {ThemeVars} from "./theme-tokens";
  *
  * 解决的问题：界面里「线」和「面」是两种分层手段。默认档两者都开着，于是每个面板都是
  * 「底色 + 描边」，面板一多界面就只剩下线——这是「繁杂」最直接的来源。低 chrome 档
- * 把装饰性的线收掉，改由底色分层，观感立刻安静下来。
+ * 收掉装饰性的线、并让**导航 chrome 的面退到 app 底色**，把「亮面」留给内容。
+ *
+ * ── 退的是哪一面，不退的是哪一面（这是设计判断，不是配色偏好）─────────────
+ *
+ * 稿面左上方的工具面板是**导航**，它的职责是"让你走到某处"，不是"让你读"。实测发现
+ * 它和稿面的底色**完全同值**（都是 `--bg-panel` 的白），所以从底色上根本分不出主次——
+ * 这是「没有视觉重心」的物质原因。低 chrome 档把它退到 `--bg-main`，于是屏幕上只剩
+ * **一个亮面**，也就是你正在写的那一页。
+ *
+ * 右侧 Agent 面板**不退**。它虽然也是个面板，但它是内容面——你在里面读回复、写指令，
+ * 和稿面同属"纸"。把它一起退掉会得到"两边都灰、中间亮"的对称噪声，反而分不出主次。
  *
  * **覆盖必须做在变量解析阶段，不能写成 CSS 规则。** 主题的 36 个颜色变量由
  * `apply-theme.ts` 写在宿主元素的 **inline style** 上，优先级高于任何选择器；
@@ -20,6 +30,15 @@ export type ChromeLevel = typeof chromeLevels[number];
 export const DEFAULT_CHROME_LEVEL: ChromeLevel = "full";
 
 export const CHROME_LEVEL_STORAGE_KEY = "neurobook.chrome-level";
+
+/**
+ * 档位会额外覆写的 token（角色映射层）。
+ *
+ * 这些不属于主题的 36 个颜色变量——它们由 `design-tokens.css` 声明在宿主块上。
+ * 在这里列出来，是为了让 `applyThemeVars` 应用新主题前把它们一并清掉：否则从「简洁」
+ * 切回「标准」时，内联的覆写值会留下来，侧栏会一直保持退场状态，而且现象上看不出原因。
+ */
+export const chromeOverriddenTokens = ["--panel-surface"] as const;
 
 /**
  * 低 chrome 档保留的原线色比例（百分数），其余部分透出底色。
@@ -40,14 +59,21 @@ const QUIET_BORDER_KEEP = 55;
 /**
  * 按档位解析变量表。
  *
- * 只收 `--border-color`，不动 `--border-strong`：后者承载 hover / focus / 可拖拽边界
- * 这类**功能性**边界，退场会让人找不到可操作区域；前者绝大多数场合只是「这里有一条缝」。
+ * 两条覆盖，都是「收掉装饰、保留功能」：
+ *
+ * · `--border-color` —— 收线。**不动 `--border-strong`**：后者承载 hover / focus /
+ *   可拖拽边界这类**功能性**边界，退场会让人找不到可操作区域；前者绝大多数场合只是
+ *   「这里有一条缝」。
+ * · `--bg-sidebar` / `--panel-surface` —— 退面。两者都归到该主题的 `--bg-main`（app 底色），
+ *   于是活动栏与工具面板合成一层安静的底，稿面成为屏幕上唯一的亮面。
+ *   **不退 `--editor-bg` / `--bg-panel` 本体**：前者是稿面本身，后者被 541 处消费
+ *   （弹层、卡片、对话面板都在用），动它会波及内容面。
  *
  * 注意这里是**在 JS 里算出字面值**而不是生成 `var()` 引用：主题变量写在宿主的 inline style 上，
  * 生成的 var() 引用会在宿主上下文解析、拿到的可能是覆盖后的值。算出字面值还顺带避开了
  * 自定义属性的自引用循环（`--border-color: color-mix(… var(--border-color) …)` 是无效的）。
  */
-export function resolveChromeVars(vars: ThemeVars, level: ChromeLevel): ThemeVars {
+export function resolveChromeVars(vars: ThemeVars, level: ChromeLevel): Record<`--${string}`, string> {
     if (level === "full") {
         return vars;
     }
@@ -55,6 +81,8 @@ export function resolveChromeVars(vars: ThemeVars, level: ChromeLevel): ThemeVar
     return {
         ...vars,
         "--border-color": `color-mix(in srgb, ${vars["--border-color"]} ${QUIET_BORDER_KEEP}%, transparent)`,
+        "--bg-sidebar": vars["--bg-main"],
+        "--panel-surface": vars["--bg-main"],
     };
 }
 
