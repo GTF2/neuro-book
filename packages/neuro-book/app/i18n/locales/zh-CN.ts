@@ -17,6 +17,16 @@ const zhCN = {
         colorFieldEyedropper: "屏幕取色",
         colorFieldInvalid: "颜色格式不正确",
     },
+    commandPalette: {
+        title: "命令面板",
+        placeholder: "搜索命令…",
+        empty: "没有匹配的命令",
+        groupGo: "前往",
+        groupAppearance: "外观",
+        groupEdit: "编辑",
+        stateOn: "已开启",
+        stateOff: "已关闭",
+    },
     api: {
         requestFailed: "请求失败",
     },

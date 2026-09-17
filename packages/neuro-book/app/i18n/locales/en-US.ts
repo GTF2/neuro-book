@@ -19,6 +19,16 @@ const enUS = {
         colorFieldEyedropper: "Pick color from screen",
         colorFieldInvalid: "Invalid color format",
     },
+    commandPalette: {
+        title: "Command palette",
+        placeholder: "Search commands…",
+        empty: "No matching commands",
+        groupGo: "Go to",
+        groupAppearance: "Appearance",
+        groupEdit: "Edit",
+        stateOn: "On",
+        stateOff: "Off",
+    },
     api: {
         requestFailed: "Request failed",
     },

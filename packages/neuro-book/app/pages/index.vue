@@ -51,6 +51,10 @@ import {buildWorkspaceReferenceSections} from "nbook/app/utils/workspace-referen
 import {resolveWorkspaceFileExtension, type FrontmatterProfileKind} from "nbook/shared/editor-workbench";
 import {buildSelectionRefChip, type InlineEditPayload, type InlineEditReference, type InlineEditTask} from "nbook/app/utils/inline-editor-selection";
 import {resolveManuscriptPositionSummary} from "nbook/app/utils/manuscript-position";
+import type {CommandItem} from "nbook/app/utils/command-palette";
+import {useChromeLevel} from "nbook/app/composables/useChromeLevel";
+import {useFocusMode} from "nbook/app/composables/useFocusMode";
+import CommandPalette from "nbook/app/components/common/CommandPalette.vue";
 import type {DesktopMenuCommandId} from "@notnotype/neuro-book-contracts/desktop";
 import {dispatchDesktopMenuCommand} from "@notnotype/neuro-book-contracts/desktop";
 
@@ -486,6 +490,80 @@ const displayMonacoTemporaryFontSize = computed(() => displayActiveWorkspaceTabP
 const editorStatusSummary = computed(() => isUserAssetsWorkspace.value || !workspaceDisplayReady.value
     ? null
     : resolveManuscriptPositionSummary(workspaceTree.value, displayActiveWorkspaceTabPath.value));
+
+// ── ⌘K 命令面板 ────────────────────────────────────────────────────────────
+// 存在的理由：功能下沉后必须有直达入口，否则「渐进披露」就退化成「藏起来」
+// （NN/g 点名的失败形态）。面板里每一项都调用与活动栏/工具栏**同一批**处理函数，
+// 没有第二条路径——功能只在一个地方真的工作，就不会出现点了没反应。
+const commandPaletteOpen = ref(false);
+// 两个 composable 都是模块级单例，在这里调用拿到的是与编辑器/主题宿主同一份状态。
+const {enabled: focusModeEnabled, toggle: toggleFocusMode} = useFocusMode();
+const {level: chromeLevelValue, toggle: toggleChromeLevel} = useChromeLevel();
+
+const commandPaletteCommands = computed<CommandItem[]>(() => {
+    const go = t("commandPalette.groupGo");
+    const appearance = t("commandPalette.groupAppearance");
+    const edit = t("commandPalette.groupEdit");
+
+    return [
+        {id: "home", label: t("ide.header.bookshelfTitle"), group: go, iconClass: "i-lucide-library"},
+        {id: "files", label: t("ide.toolPanel.files"), group: go, iconClass: "i-lucide-files"},
+        {id: "characters", label: t("ide.toolPanel.characters"), group: go, iconClass: "i-lucide-user-round"},
+        {id: "plot", label: t("ide.header.plotWorkbench"), group: go, iconClass: "i-lucide-git-branch"},
+        {id: "world", label: t("ide.header.worldEngine"), group: go, iconClass: "i-lucide-globe"},
+        {id: "trace", label: t("ide.header.traceViewerTitle"), group: go, iconClass: "i-lucide-activity"},
+        {id: "history", label: t("ide.header.historyInboxTitle"), group: go, iconClass: "i-lucide-history"},
+        {
+            id: "agent-panel",
+            label: agentPanelOpen.value ? t("ide.header.closeAgentPanel") : t("ide.header.openAgentPanel"),
+            group: go,
+            iconClass: "i-lucide-bot",
+        },
+        {id: "settings", label: t("settings.title"), group: go, iconClass: "i-lucide-settings"},
+        {
+            id: "focus-mode",
+            label: t("markdownStudio.toolbar.focusMode"),
+            group: appearance,
+            hint: focusModeEnabled.value ? t("commandPalette.stateOn") : t("commandPalette.stateOff"),
+            iconClass: "i-lucide-focus",
+        },
+        {
+            id: "chrome-level",
+            label: t("settings.frontend.chromeTitle"),
+            group: appearance,
+            hint: chromeLevelValue.value === "quiet" ? t("settings.frontend.chromeQuiet") : t("settings.frontend.chromeFull"),
+            iconClass: "i-lucide-square-dashed",
+        },
+        {id: "new-chapter", label: t("ide.shell.createChapterTitle"), group: edit, iconClass: "i-lucide-file-plus-2"},
+    ];
+});
+
+function runCommand(id: string): void {
+    switch (id) {
+        case "home": void openProjectPicker(); return;
+        case "files":
+        case "characters":
+        case "plot": handleSidebarToggle(id); return;
+        case "world": openWorldEngineWorkbench(); return;
+        case "trace": traceViewerOpen.value = true; return;
+        case "history": historyInboxOpen.value = true; return;
+        case "agent-panel": void toggleAgentPanel(); return;
+        case "settings": settingsDialogOpen.value = true; return;
+        case "focus-mode": toggleFocusMode(); return;
+        case "chrome-level": toggleChromeLevel(); return;
+        case "new-chapter": void createWelcomeChapter(); return;
+    }
+}
+
+function onCommandPaletteShortcut(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        commandPaletteOpen.value = !commandPaletteOpen.value;
+    }
+}
+
+onMounted(() => window.addEventListener("keydown", onCommandPaletteShortcut));
+onBeforeUnmount(() => window.removeEventListener("keydown", onCommandPaletteShortcut));
 const characterProfileVisible = computed({
     get: () => frontmatterProfileKind.value === "character",
     set: (visible: boolean): void => {
@@ -2765,6 +2843,7 @@ onBeforeUnmount(() => {
 
         <NovelIdeSettingsDialog v-model="settingsDialogOpen" />
         <NovelIdeProfileDialog v-model="accountProfileOpen" />
+        <CommandPalette v-model="commandPaletteOpen" :commands="commandPaletteCommands" @select="runCommand" />
         <AgentTraceViewerDialog v-if="projectSurfaceActive" v-model="traceViewerOpen" @open-session="void openTraceSession($event)" />
         <WorkspaceHistoryInboxDialog v-if="projectSurfaceActive" v-model="historyInboxOpen" :project-root="isUserAssetsWorkspace ? null : currentProjectRoot" :theme="activeThemeId" />
         <UserProfileWorkbenchDialog v-model="profileWorkbenchOpen" />
