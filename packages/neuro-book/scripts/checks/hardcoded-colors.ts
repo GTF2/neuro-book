@@ -93,20 +93,116 @@ export function isExemptFile(appRelativePath: string): boolean {
 }
 
 /**
+ * 计算「要排除的字符区间」（绝对索引，半开区间 `[start, end)`）。
+ *
+ * 两类命中会被排除，它们都**不构成视觉颜色**，属护栏的误报来源：
+ *
+ * 1. **块注释 `/* … *\/`**：注释是给人读的说明，里面的色值不参与渲染。
+ *    只处理块注释（CSS/JS 通用），不处理 `//` 行注释与 HTML `<!-- -->`——
+ *    后者容易把 `https://…` 之类误判成注释，且不在本护栏的误报清单里。
+ * 2. **`var(<token>, <fallback…>)` 的 fallback 参数**：该属性值的主来源是 token，
+ *    fallback 只是变量缺失时的防御性兜底（例如 `var(--shadow-color, #000)`）。
+ *    注意 `color-mix()` 内嵌套的 `var()` 同样适用（`color-mix` 自身的两个颜色参数
+ *    是真实颜色，**不**排除）。
+ *
+ * 扫描时跳过字符串字面量与被注释内容，避免把 `content: "/*"` 之类误当成注释起点。
+ */
+function computeExcludedRanges(text: string): Array<[number, number]> {
+    const ranges: Array<[number, number]> = [];
+    // 每个 `(` 一帧：fallbackStart >= 0 表示这是一个 var() 且已越过分隔逗号；
+    // -1 表示 var() 尚未遇到分隔逗号；-2 表示非 var() 的普通括号（仅用于归属逗号）。
+    const parenStack: Array<{fallbackStart: number}> = [];
+    let inComment = false;
+    let commentStart = 0;
+    let quote: string | null = null;
+
+    for (let index = 0; index < text.length; index += 1) {
+        const char = text[index]!;
+        const next = text[index + 1];
+
+        if (inComment) {
+            if (char === "*" && next === "/") {
+                ranges.push([commentStart, index + 2]);
+                inComment = false;
+                index += 1;
+            }
+            continue;
+        }
+        if (quote !== null) {
+            if (char === "\\") {
+                index += 1;
+                continue;
+            }
+            if (char === quote) {
+                quote = null;
+            }
+            continue;
+        }
+        if (char === "\"" || char === "'") {
+            quote = char;
+            continue;
+        }
+        if (char === "/" && next === "*") {
+            inComment = true;
+            commentStart = index;
+            index += 1;
+            continue;
+        }
+        if (char === "(") {
+            const before = index - 4 >= 0 ? text[index - 4]! : "";
+            const isVar = text.slice(Math.max(0, index - 3), index) === "var" && !/[A-Za-z0-9_-]/u.test(before);
+            parenStack.push({fallbackStart: isVar ? -1 : -2});
+            continue;
+        }
+        if (char === ",") {
+            // 逗号只归属于最内层的括号帧，这样 color-mix 内的逗号不会误伤外层 var()。
+            const frame = parenStack.at(-1);
+            if (frame && frame.fallbackStart === -1) {
+                frame.fallbackStart = index + 1;
+            }
+            continue;
+        }
+        if (char === ")") {
+            const frame = parenStack.pop();
+            if (frame && frame.fallbackStart >= 0) {
+                ranges.push([frame.fallbackStart, index]);
+            }
+            continue;
+        }
+    }
+    // 未闭合的注释：一直排到文本末尾。
+    if (inComment) {
+        ranges.push([commentStart, text.length]);
+    }
+    return ranges;
+}
+
+/**
  * 逐行找出一个文件里的硬编码颜色命中。
+ *
+ * 注释内容与 `var()` 的 fallback 参数会被排除（见 `computeExcludedRanges`）。
  */
 export function findColorHits(text: string): Array<Omit<ColorHit, "file">> {
     const hits: Array<Omit<ColorHit, "file">> = [];
-    const lines = text.replaceAll(HTML_ENTITY, "").split(/\r?\n/u);
+    // 统一换行，保证「行起始绝对偏移」的累加口径一致（\r\n 也按一个换行算）。
+    const normalized = text.replace(/\r\n?/gu, "\n").replaceAll(HTML_ENTITY, "");
+    const excluded = computeExcludedRanges(normalized);
+    const isExcluded = (absoluteIndex: number): boolean => excluded.some(([start, end]) => absoluteIndex >= start && absoluteIndex < end);
+
+    const lines = normalized.split("\n");
+    let lineStart = 0;
     for (const [index, line] of lines.entries()) {
         for (const [kind, pattern] of [["hex", HEX_COLOR], ["function", COLOR_FUNCTION], ["palette", PALETTE_CLASS]] as const) {
             pattern.lastIndex = 0;
             let match = pattern.exec(line);
             while (match !== null) {
-                hits.push({line: index + 1, text: match[0].trim(), kind});
+                if (!isExcluded(lineStart + match.index)) {
+                    hits.push({line: index + 1, text: match[0].trim(), kind});
+                }
                 match = pattern.exec(line);
             }
         }
+        lineStart += line.length + 1;
     }
     return hits;
 }
