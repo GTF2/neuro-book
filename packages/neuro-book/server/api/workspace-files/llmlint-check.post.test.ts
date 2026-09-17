@@ -24,6 +24,25 @@ const mocks = {
     })),
 };
 
+type StatResult = {
+    isDirectory: boolean;
+    editable: boolean;
+    absolutePath: string;
+};
+
+const DEFAULT_STAT: StatResult = {
+    isDirectory: false,
+    editable: true,
+    absolutePath: "C:/app/workspace/p/manuscript/chapter.md",
+};
+
+// 可变返回值：各用例通过覆盖 `statResult` 改变 statWorkspacePath 的结果，而不是在同一
+// 文件里对 `workspace-files` 重复调用 `vi.doMock`。后者在整套测试运行时会因 mock 注册
+// 顺序问题失效（用例读到 beforeEach 的默认 mock 而非自身覆盖），造成“单文件绿、整套红”
+// 的假红。改用一个稳定 `vi.fn` + 可变结果彻底消除该模式。
+let statResult: StatResult = {...DEFAULT_STAT};
+const statWorkspacePath = vi.fn(async () => statResult);
+
 let requestBody: unknown = {path: "manuscript/chapter.md", projectRoot: "p"};
 
 describe("POST /api/workspace-files/llmlint-check", () => {
@@ -31,6 +50,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
         vi.resetModules();
         vi.clearAllMocks();
         requestBody = {path: "manuscript/chapter.md", projectRoot: "p"};
+        statResult = {...DEFAULT_STAT};
         vi.stubGlobal("defineEventHandler", (handler: unknown) => handler);
         vi.stubGlobal("defineRouteMeta", () => undefined);
         vi.stubGlobal("readBody", async () => requestBody);
@@ -54,11 +74,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
             withProjectTargetOperation: (_target: unknown, handler: (handles: undefined) => unknown) => handler(undefined),
         }));
         vi.doMock("nbook/server/workspace-files/workspace-files", () => ({
-            statWorkspacePath: vi.fn(async () => ({
-                isDirectory: false,
-                editable: true,
-                absolutePath: "C:/app/workspace/p/manuscript/chapter.md",
-            })),
+            statWorkspacePath,
         }));
         vi.doMock("nbook/server/workspace-files/llmlint-check", () => ({
             resolveLlmlintSkillRoot: mocks.resolveLlmlintSkillRoot,
@@ -81,9 +97,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
     });
 
     it("目录目标返回 400，不调用 runner", async () => {
-        vi.doMock("nbook/server/workspace-files/workspace-files", () => ({
-            statWorkspacePath: vi.fn(async () => ({isDirectory: true, editable: false, absolutePath: "C:/app/workspace/p/manuscript"})),
-        }));
+        statResult = {isDirectory: true, editable: false, absolutePath: "C:/app/workspace/p/manuscript"};
         const handler = (await import("nbook/server/api/workspace-files/llmlint-check.post")).default;
 
         await expect(handler({} as never)).rejects.toMatchObject({statusCode: 400});
@@ -91,9 +105,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
     });
 
     it("非文本文件返回 400", async () => {
-        vi.doMock("nbook/server/workspace-files/workspace-files", () => ({
-            statWorkspacePath: vi.fn(async () => ({isDirectory: false, editable: false, absolutePath: "C:/app/workspace/p/a.bin"})),
-        }));
+        statResult = {isDirectory: false, editable: false, absolutePath: "C:/app/workspace/p/a.bin"};
         const handler = (await import("nbook/server/api/workspace-files/llmlint-check.post")).default;
 
         await expect(handler({} as never)).rejects.toMatchObject({statusCode: 400});
