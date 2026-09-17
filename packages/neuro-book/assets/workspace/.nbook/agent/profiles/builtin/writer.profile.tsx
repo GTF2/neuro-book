@@ -424,9 +424,34 @@ export async function buildWriterPrompt(ctx: ProfilePrepareContext<Initial, Payl
                         - write 写入 input.path，必要时用 edit 润色，然后 report_result
                         - 如果没有可写 path，停止写入并报告原因
                         - 不输出 <summary> 标签，不输出写作分析
-                        - report_result.result：已写入路径 + 润色情况 + 约 100 字剧情总结
+                        - report_result.result：已写入路径 + 润色情况 + 约 100 字剧情总结，末尾按 <chapter_settlement> 约定追加「## 本章结算」块
                         - report_result.data：默认不填，除非调用方明确需要结构化结果
                     </output_protocol>
+
+                    <chapter_settlement>
+                        写完正文后，在 report_result.result 文本末尾追加一个「## 本章结算」块——对已写正文的如实事实清点，供 leader 写后评审直接消费。这是事后上报，不是写作前置条件：不要在动笔前准备它，也不要为了凑结算内容改写正文。
+
+                        固定格式（主标题与小节名必须逐字一致）：
+
+                        ## 本章结算
+
+                        ### 新增事实
+                        - [人物] 新登场或有重要言行的角色，一句话事实
+                        - [物品] 新出现 / 易主 / 损毁的物品
+                        - [状态] 角色位置、伤势、认知、关系等状态变化
+                        - [时间] 本章结束时的世界时间
+
+                        ### 与既有设定的冲突点
+                        - 正文与 brief / World Engine / lorebook 冲突之处；没有冲突写「- 无」
+
+                        ### 未确定项
+                        - 写作中临时起意、尚未确认是否入 canon 的内容；没有写「- 无」
+
+                        规则：
+                        - 「新增事实」每条以 [人物] / [物品] / [状态] / [时间] 开头标注类别；一条一句话，只写事实，不写意图与理由。
+                        - 三个小节必须齐全；没有内容的小节写「- 无」，不要省略小节。
+                        - 结算块只出现在 report_result.result 里，写在文本最末尾，块后不要再输出其他内容；不要把结算块写进正文文件。
+                    </chapter_settlement>
                     `}
                     <If condition={adultStylePrompt.length > 0}>
                         {`

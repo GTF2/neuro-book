@@ -11,6 +11,8 @@ import {
     E2E_MOCK_PROVIDER_ID,
     E2E_MOCK_STREAM_CHUNKS,
     E2E_MOCK_STREAM_INTERVAL_MS,
+    E2E_SETTLEMENT_MARKER,
+    E2E_SETTLEMENT_SAMPLE_TEXT,
 } from "./e2e-env";
 
 /**
@@ -32,6 +34,54 @@ type MockLlmServer = {
     requestCount: () => number;
     stop: () => void;
 };
+
+/** Mock 端点收到的 chat completion 请求体（只声明用到的最小面）。 */
+type MockChatCompletionRequest = {
+    stream?: boolean;
+    model?: string;
+    messages?: MockChatMessage[];
+};
+
+/** OpenAI 兼容消息：content 既可能是纯文本，也可能是分段数组。 */
+type MockChatMessage = {
+    role?: string;
+    content?: unknown;
+};
+
+/**
+ * 取最后一条 user 消息的纯文本（结算样例模式据此判定标记）。
+ * content 为分段数组时拼接其中字符串与 `{type: "text", text}` 部分；取不到返回空串。
+ */
+function lastUserMessageText(messages: MockChatMessage[] | undefined): string {
+    if (!Array.isArray(messages)) {
+        return "";
+    }
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+        const message = messages[index];
+        if (message?.role !== "user") {
+            continue;
+        }
+        const content = message.content;
+        if (typeof content === "string") {
+            return content;
+        }
+        if (Array.isArray(content)) {
+            return content
+                .map((part) => {
+                    if (typeof part === "string") {
+                        return part;
+                    }
+                    if (part && typeof part === "object" && typeof (part as {text?: unknown}).text === "string") {
+                        return (part as {text: string}).text;
+                    }
+                    return "";
+                })
+                .join("");
+        }
+        return "";
+    }
+    return "";
+}
 
 /** 单条 SSE chunk 的标准外形（OpenAI Chat Completions 流式协议）。 */
 function chunkFrame(id: string, model: string, delta: Record<string, unknown>, finishReason: string | null): string {
@@ -82,8 +132,10 @@ export function startMockLlmServer(options: {port?: number} = {}): MockLlmServer
             }
 
             chatCompletions += 1;
-            const body = await request.json().catch(() => ({})) as {stream?: boolean; model?: string};
+            const body = await request.json().catch(() => ({})) as MockChatCompletionRequest;
             const model = typeof body.model === "string" ? body.model : E2E_MOCK_MODEL_ID;
+            // 写后结算块 e2e（T0.1）：消息含标记时吐固定结算样例，代替默认的「片段N」慢速流。
+            const settlementMode = lastUserMessageText(body.messages).includes(E2E_SETTLEMENT_MARKER);
 
             if (body.stream === false) {
                 return Response.json({
@@ -93,7 +145,10 @@ export function startMockLlmServer(options: {port?: number} = {}): MockLlmServer
                     model,
                     choices: [{
                         index: 0,
-                        message: {role: "assistant", content: "e2e mock 非流式回复"},
+                        message: {
+                            role: "assistant",
+                            content: settlementMode ? E2E_SETTLEMENT_SAMPLE_TEXT : "e2e mock 非流式回复",
+                        },
                         finish_reason: "stop",
                     }],
                     usage: {prompt_tokens: 1, completion_tokens: 1, total_tokens: 2},
@@ -118,13 +173,20 @@ export function startMockLlmServer(options: {port?: number} = {}): MockLlmServer
             const stream = new ReadableStream<Uint8Array>({
                 async start(controller): Promise<void> {
                     controller.enqueue(encoder.encode(chunkFrame(id, model, {role: "assistant"}, null)));
-                    // 慢速逐片吐字：每片之间留 E2E_MOCK_STREAM_INTERVAL_MS，UI 会一直处于「运行中」。
-                    for (let index = 0; index < E2E_MOCK_STREAM_CHUNKS; index += 1) {
+                    // 结算样例按空行分段流式吐出；其余用例维持「片段N」慢速流。
+                    const pieces = settlementMode
+                        ? E2E_SETTLEMENT_SAMPLE_TEXT.split("\n\n")
+                        : null;
+                    const totalPieces = pieces ? pieces.length : E2E_MOCK_STREAM_CHUNKS;
+                    for (let index = 0; index < totalPieces; index += 1) {
                         if (await waitTick()) {
                             controller.close();
                             return;
                         }
-                        controller.enqueue(encoder.encode(chunkFrame(id, model, {content: `片段${String(index + 1)} `}, null)));
+                        const content = pieces
+                            ? `${pieces[index]}${index < totalPieces - 1 ? "\n\n" : ""}`
+                            : `片段${String(index + 1)} `;
+                        controller.enqueue(encoder.encode(chunkFrame(id, model, {content}, null)));
                     }
                     controller.enqueue(encoder.encode(chunkFrame(id, model, {}, "stop")));
                     controller.enqueue(encoder.encode("data: [DONE]\n\n"));

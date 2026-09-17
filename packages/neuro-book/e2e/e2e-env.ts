@@ -56,6 +56,39 @@ export const E2E_MOCK_STREAM_INTERVAL_MS = 400;
 export const E2E_MOCK_STREAM_CHUNKS = 60;
 
 /**
+ * 写后结算块 e2e（T0.1 结算表协议）：用户消息里带此标记时，
+ * Mock LLM 改为流式吐固定结算样例文本（见 `E2E_SETTLEMENT_SAMPLE_TEXT`）。
+ * 其它用例的消息不含此标记，行为不变。
+ */
+export const E2E_SETTLEMENT_MARKER = "E2E-SETTLEMENT-SAMPLE";
+
+/**
+ * 固定结算样例：模拟 writer 交付消息（report_result.result 尾部按协议附「## 本章结算」块）。
+ *
+ * 格式必须与两处保持一致：
+ * - writer profile 的 `<chapter_settlement>` 交付约定；
+ * - `server/agent/profiles/writer-settlement.ts` 的解析器。
+ *
+ * `e2e/08-writer-settlement.spec.ts` 用它断言「交付消息可被解析出结算块结构」。
+ */
+export const E2E_SETTLEMENT_SAMPLE_TEXT = `已写入 manuscript/001-volume/001-chapter/index.md；润色 2 处。
+剧情总结：薇洛丝在星陨遗迹深处解开莉雅的封印，两人初次交流后结伴离开。
+
+## 本章结算
+
+### 新增事实
+- [人物] 莉雅首次登场：被封印于星陨遗迹深处的神明，与薇洛丝初次交流
+- [物品] 薇洛丝获得封印钥匙，材质不明
+- [状态] 薇洛丝左手在解封时被光刃划伤
+- [时间] 本章结束时为复兴纪元 1 日 19:00
+
+### 与既有设定的冲突点
+- 无
+
+### 未确定项
+- 莉雅对封印起源的说法尚未与 lorebook 核对，是否入 canon 待确认`;
+
+/**
  * 第二个隔离根：「全新安装、空书架」场景（示例书「空态即演示」用例专用）。
  *
  * 为什么必须**独立于主根**：空态用例要看到「一本书都没有」的首次启动条件，而主根里

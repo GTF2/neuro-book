@@ -84,13 +84,13 @@ Status: ready
 
 ## 第三步：writer 侧（自查状态后写正文）
 
-writer 拥有 readonly `execute_world` 能力。它的典型流程是：用 `get_chapter_writer_brief` 按 `input.chapterId` 自取本章事实简报 → 读简报与 `input.context` 指定的 lorebook → 用 `execute_world` 按简报提示查相关 subject 在章节时间范围的状态 → 构思并写入正文到章节 `index.md` → `report_result` 报告落点。writer 的详细执行手册见 `novel-writer-execution` skill。
+writer 拥有 readonly `execute_world` 能力。它的典型流程是：用 `get_chapter_writer_brief` 按 `input.chapterId` 自取本章事实简报 → 读简报与 `input.context` 指定的 lorebook → 用 `execute_world` 按简报提示查相关 subject 在章节时间范围的状态 → 构思并写入正文到章节 `index.md` → `report_result` 报告落点，并在 result 文本**末尾追加「## 本章结算」块**（写后结算表：新增事实〔人物/物品/状态/时间〕、与既有设定的冲突点、未确定项三节，格式见 writer profile 的 `<chapter_settlement>` 约定）。结算块是对已写正文的如实清点，属于事后上报，不影响 writer 的动笔前上下文边界。writer 的详细执行手册见 `novel-writer-execution` skill。
 
 leader 不需要在此步骤干预；writer 是自主子代理。注意 writer 能查到角色真值，但在某个角色视角的叙述里不会让该角色"知道"他不该知道的设定——查询服务于写作一致性，不等于授权角色越界知情。
 
 ## 第四步：评审
 
-writer 完成后，leader 对正文做评审。**本章要核对哪些项、每项判据与失败动作，先看写回校验清单 `reference/plot/write-back-checks.md`。** 基础检查（每章必做）：
+writer 完成后，leader 对正文做评审。**先消费 writer 交付消息（report_result.result）尾部的「## 本章结算」块**：新增事实、与既有设定的冲突点、未确定项三节是第一手输入——新增事实据此回补 World Engine（回拍板落库环节确认后写入），冲突点逐条裁决，未确定项向用户确认或显式挂起。**结算块未覆盖的方面、交付里没有结算块时，才回读正文逐段核对**（旧会话交付没有结算块，照常按老路径评审）。**本章要核对哪些项、每项判据与失败动作，先看写回校验清单 `reference/plot/write-back-checks.md`。** 基础检查（每章必做）：
 
 - 剧情点是否全部覆盖。
 - 角色视角 / 信息边界是否越界（有没有让角色知道他不该知道的设定）。
@@ -164,6 +164,7 @@ leader 给大致方向 → writer 自由发挥（含剧情细节）→ leader �
 ## 完成标准
 
 - 正文写入唯一目标章节 `index.md`。
+- writer 的「本章结算」块已被评审消费：新增事实已回补 World Engine 或显式挂起，冲突点已裁决，未确定项已向用户确认或记录。
 - 本章状态变化已在 World Engine：标准模式写作前已推进，自由模式写后已补回。
 - writer 已通过 `report_result` 报告写入路径与剧情摘要。
 - 评审基础检查全部通过：剧情点覆盖、视角与信息边界无越界、与 World Engine 一致。
