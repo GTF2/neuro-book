@@ -46,9 +46,13 @@
 - 测试文件与被测源码同目录，命名 `<module>.test.ts`；服务端需要 JSX 时用 `.test.tsx`。
 - 每个 Vitest 配置显式声明 `root`（仓库根或包根），不依赖 `process.cwd()`；include 覆盖
   该作用域内全部测试文件。
-- 全量测试统一 `bun run test`（node 运行时）。`bun --bun` 直接运行 vitest 时部分依赖
-  （如 zod）的 CJS/ESM interop 与 node 不同，过滤单文件可能误报
-  `zod does not provide an export named 'z'`；以 node 运行时为准。
+- 全量测试统一 `bun --bun run test`（Bun 运行时），与 Product 的实际运行时一致
+  （Product 由 `resolveBun` 以 Bun 启动），也与 `.github/workflows/code-baseline.yml`
+  的 Full tests 保持同一条命令。`test:e2e` 例外：它由 Node 执行 Playwright CLI。
+- Bun 下的一个已知陷阱（**2026-09-17 实测未复现，保留供排查**）：**过滤单文件**运行
+  vitest 时，部分依赖（如 zod）的 CJS/ESM interop 与 node 不同，曾出现
+  `zod does not provide an export named 'z'`。遇到时先按运行时差异排查，不要当作
+  源码回归信号；该次实测在 Bun 下跑全量与单文件过滤均未复现。
 - 新增测试目录（如新 `scripts/<area>/`）必须同步加入对应配置的 `include`，否则测试
   永远不运行——「写了但从不跑」比没有测试更危险。
 - 测试导入使用与源码一致的 `nbook/*` / `#manager/*` 别名，不使用跨项目相对路径。
