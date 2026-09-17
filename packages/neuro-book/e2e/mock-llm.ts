@@ -143,7 +143,9 @@ export function startMockLlmServer(options: {port?: number} = {}): MockLlmServer
     });
 
     return {
-        port: server.port,
+        // Bun.serve 的类型上 port 可空，但这里已显式指定具体端口，启动后必已绑定；
+        // 用请求端口兜底仅为满足 MockLlmServer.port: number 的类型契约（不改变实际值）。
+        port: server.port ?? E2E_MOCK_LLM_PORT,
         requestCount: () => chatCompletions,
         stop: () => {
             void server.stop(true);

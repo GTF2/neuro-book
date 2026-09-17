@@ -95,8 +95,8 @@ async function measureInputLatency(page: Page, runIndex: number): Promise<{first
     const probe = `${firstChar}PERF-${String(runIndex)}-${Date.now().toString(36)}-abcdefghij`;
     const hasText = async (needle: string): Promise<void> => {
         await page.waitForFunction(
-            ([selector, text]) => ((document.querySelector(selector) as HTMLElement | null)?.innerText ?? "").includes(text),
-            [EDITOR_SELECTOR, needle],
+            ([selector, text]: [string, string]) => ((document.querySelector(selector) as HTMLElement | null)?.innerText ?? "").includes(text),
+            [EDITOR_SELECTOR, needle] as [string, string],
             {polling: "raf", timeout: 15_000},
         );
     };
