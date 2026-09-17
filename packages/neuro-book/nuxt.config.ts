@@ -22,6 +22,16 @@ if (!existsSync(spaLoadingTemplatePath)) {
 }
 const configuredStateRoot = process.env.NEURO_BOOK_STATE_ROOT?.trim();
 const runtimeWorkspaceRoot = configuredStateRoot ? resolve(configuredStateRoot, "workspace").replace(/\\/g, "/").replace(/\/$/u, "") : "";
+/**
+ * 允许把 Nuxt 的 buildDir 指到别处（默认 `<rootDir>/.nuxt`）。
+ *
+ * 为什么要这个开关：e2e 会同时跑两个 dev server（各自独立的隔离根）。默认两者都写同一个 `.nuxt`，
+ * 后启动的那台执行 `nuxt prepare` 时会清掉 `.nuxt/dist`，把先启动、正在运行的 dev server 逼进
+ * 「Restarting Nuxt」并重新优化依赖，于是先启动那台正在跑的用例会吃到 504（Outdated Optimize Dep）。
+ * 让 e2e 给每个 dev server 各指一个 buildDir，两兄弟就不再互相踩。不设该变量时行为与从前完全一致，
+ * 产品构建与日常开发不受影响。
+ */
+const configuredBuildDir = process.env.NEURO_BOOK_BUILD_DIR?.trim();
 const productImageRoot = process.env.NEURO_BOOK_PRODUCT_IMAGE_ROOT?.trim();
 const requestedOutputRoot = process.env.NEURO_BOOK_OUTPUT_DIR?.trim();
 const productSourceDigest = process.env.NEURO_BOOK_PRODUCT_SOURCE_DIGEST?.trim();
@@ -56,6 +66,8 @@ const runtimeWorkspaceWatchIgnore = [
 ];
 
 export default defineNuxtConfig({
+    // 仅当环境显式指定时才覆盖 buildDir（见上方 configuredBuildDir 说明）。
+    ...(configuredBuildDir ? {buildDir: configuredBuildDir} : {}),
     ssr: false,
     // SPA 模式下浏览器先拿到空壳、再下载并执行 JS，期间是完全白屏；
     // 开启后由 Nuxt 把 app/spa-loading-template.html 注入到首屏 HTML，挂载即消失。

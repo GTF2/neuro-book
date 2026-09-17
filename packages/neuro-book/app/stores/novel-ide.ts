@@ -143,6 +143,24 @@ export type WorkspaceKind = "novel" | "user-assets";
 type WorkspaceQueryInput = {projectRoot: string} | {workspaceKind: "user-assets"};
 type ProjectCatalogMutation = "create" | "delete" | "cover-update";
 
+/**
+ * 「空态即演示」服务端返回：示例书 Project root 与（可选的）伏笔描述。
+ * 与 `server/workspace-files/sample-book.ts` 的 `SampleBookSeedResult` 对齐；仅用于前端消费。
+ */
+export type SampleBookSeedResponse = {
+    projectRoot: string;
+    projectTitle: string;
+    created: boolean;
+    seeded: boolean;
+    promise: {
+        name: string;
+        title: string;
+        summary: string;
+        deadlineChapterTitle: string | null;
+        plantedSceneTitle: string | null;
+    } | null;
+};
+
 type WorkspaceSessionState = {
     activeWorkspaceTabPath: string;
     workspaceTabs: WorkspaceEditorTab[];
@@ -1805,6 +1823,20 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     };
 
     /**
+     * 「空态即演示」：确保内置示例书存在并返回它的 Project root，供首页立即打开。
+     *
+     * 服务端幂等：示例书不存在则创建、叠加正文并写入 1 个未兑现伏笔；已存在则直接复用。
+     * 走 Project catalog mutation，成功后回读服务端权威 Catalog，示例书随即出现在列表里。
+     */
+    const openSampleBook = async (): Promise<string> => {
+        const result = await runProjectMutation<SampleBookSeedResponse>({
+            operation: "create",
+            request: () => $fetch<SampleBookSeedResponse>("/api/projects/sample-book", {method: "POST"}),
+        });
+        return result.projectRoot;
+    };
+
+    /**
      * 删除小说。
      */
     const deleteProject = async (projectRoot: string): Promise<void> => {
@@ -1929,6 +1961,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         novels,
         openWorkspacePath,
         openWorkspaceNode,
+        openSampleBook,
         optimisticRenameWorkspacePath,
         plotWorkbenchOpen,
         plotWorkbenchTab,

@@ -1,0 +1,29 @@
+{
+  "schema": "sample-book/v1",
+  "projectRoot": "sample-book-rust-and-echo",
+  "projectTitle": "示例书：锈与回声",
+  "projectSummary": "3 章微型示例：第 1 章埋下一把锈枪的伏笔（目标第 3 章、未兑现），第 3 章正文刻意保留多处「AI 味」，用来演示承诺账本与「扫 AI 味」。",
+  "manuscriptEntry": "manuscript/001-volume",
+  "thread": {
+    "name": "t-rust-and-echo",
+    "title": "主线：枪与回声",
+    "isMainThread": true
+  },
+  "scene": {
+    "name": "旧货市场的锈枪",
+    "chapterName": "001-volume-001-chapter",
+    "note": "林晚在旧货市场捡到一把锈住的老左轮；这是本伏笔的埋设点。"
+  },
+  "promise": {
+    "name": "p-rusty-gun",
+    "title": "这把枪还没响",
+    "importance": "high",
+    "summary": "第 1 章林晚捡到一把锈住的老左轮，枪膛里卡着一颗刻着失踪哥哥名字的子弹——枪迟早要响。",
+    "payoffExpectation": "在关键场景里真正打响这把枪，揭穿哥哥失踪的真相。",
+    "deadlineChapterName": "001-volume-003-chapter",
+    "note": "第 3 章应让这把枪响起，或至少留下明确的兑现线索。",
+    "tags": [
+      "setup_payoff"
+    ]
+  }
+}

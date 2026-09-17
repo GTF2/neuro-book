@@ -54,3 +54,32 @@ export const E2E_MOCK_API_KEY = "e2e-mock-key";
 /** 慢速流的节奏（毫秒/片）。够慢，UI 才有稳定的「运行中」窗口可中断。 */
 export const E2E_MOCK_STREAM_INTERVAL_MS = 400;
 export const E2E_MOCK_STREAM_CHUNKS = 60;
+
+/**
+ * 第二个隔离根：「全新安装、空书架」场景（示例书「空态即演示」用例专用）。
+ *
+ * 为什么必须**独立于主根**：空态用例要看到「一本书都没有」的首次启动条件，而主根里
+ * 播种的 `e2e-smoke` 会被 01~03 打开并写入内容。实测（Windows + Bun dev server）删除
+ * 一个本进程内被打开写过的项目会因目录仍被句柄占用而 500（PROJECT_PUBLISH_FAILED / publish-root），
+ * 因此**靠删除制造空态不可靠**。改用一个「从不播种」的独立根，空态由构造保证，
+ * 与前面用例留下什么彻底无关。
+ */
+export const E2E_EMPTY_ROOT = resolve(tmpdir(), "neuro-book-e2e-empty");
+export const E2E_EMPTY_STATE_ROOT = resolve(E2E_EMPTY_ROOT, "state");
+export const E2E_EMPTY_CACHE_ROOT = resolve(E2E_EMPTY_ROOT, "cache");
+export const E2E_EMPTY_PORT = 3401;
+export const E2E_EMPTY_BASE_URL = `http://${E2E_HOST}:${E2E_EMPTY_PORT}`;
+/** 「本次运行」标记文件（与主根同理，刻意放在隔离根之外）。 */
+export const E2E_EMPTY_RUN_MARKER_PATH = resolve(tmpdir(), "neuro-book-e2e-empty.run-id");
+/** 空根自己的 Workspace Root 与 `.nbook` 覆盖层（与主根同构，只是根不同）。 */
+export const E2E_EMPTY_WORKSPACE_ROOT = resolve(E2E_EMPTY_STATE_ROOT, "workspace");
+export const E2E_EMPTY_USER_NBOOK_ROOT = resolve(E2E_EMPTY_WORKSPACE_ROOT, ".nbook");
+export const E2E_EMPTY_GLOBAL_CONFIG_PATH = resolve(E2E_EMPTY_USER_NBOOK_ROOT, "config.json");
+/**
+ * 空根自己的 Mock LLM 端口。
+ *
+ * 两个隔离根会各起一个独立的应用进程，若共用 `E2E_MOCK_LLM_PORT` 会撞端口（EADDRINUSE）
+ * 拖垮第二个 webServer。给空根单独一个端口，两个根就各自自洽、互不依赖。
+ */
+export const E2E_EMPTY_MOCK_LLM_PORT = 3500;
+export const E2E_EMPTY_MOCK_LLM_BASE_URL = `http://${E2E_MOCK_LLM_HOST}:${E2E_EMPTY_MOCK_LLM_PORT}/v1`;

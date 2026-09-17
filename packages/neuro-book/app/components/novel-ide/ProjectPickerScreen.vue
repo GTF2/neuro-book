@@ -52,6 +52,7 @@ const {
     deleteProject,
     forgetProject,
     updateProjectCover,
+    openSampleBook,
 } = novelIdeStore;
 const { t, locale } = useI18n();
 
@@ -304,6 +305,41 @@ const handleCreateNovel = async (): Promise<void> => {
             await refreshPickerMutationState({kind: "create"}, attempt);
         } else {
             notification.error(resolveApiErrorMessage(error, t("ide.bookshelf.createOrSwitchFailed")), {title: t("ide.bookshelf.createOrSwitchFailed")});
+        }
+    } finally {
+        isCreating.value = false;
+    }
+};
+
+/**
+ * 「空态即演示」：确保内置示例书存在并立即打开。
+ *
+ * 与「新建」共用同一套恢复语义（提交状态未知时先刷新事实、不重放请求），
+ * 因此复用 create 恢复记录与 isCreating 忙态。
+ */
+const handleOpenSampleBook = async (): Promise<void> => {
+    if (createRecovery.value) return;
+    try {
+        isCreating.value = true;
+        createRecoveryNotice.value = "";
+        const projectRoot = await openSampleBook();
+        isCreateFormOpen.value = false;
+        emit("open", projectRoot);
+    } catch (error) {
+        const commitState = resolveProjectMutationCommitState(error, "create");
+        if (commitState === true || commitState === "unknown") {
+            const attempt = nextRecoveryAttempt();
+            pickerRecoveries.value = beginProjectPickerRecovery(
+                pickerRecoveries.value,
+                {kind: "create"},
+                {attempt, commitState},
+            );
+            await refreshPickerMutationState({kind: "create"}, attempt);
+        } else {
+            notification.error(
+                resolveApiErrorMessage(error, t("ide.picker.sampleBookFailed")),
+                {title: t("ide.picker.sampleBookFailed")},
+            );
         }
     } finally {
         isCreating.value = false;
@@ -721,10 +757,17 @@ onBeforeUnmount(() => {
                 </div>
                 <h2 class="mt-4 text-base font-semibold text-[var(--text-main)]">{{ t("ide.picker.emptyTitle") }}</h2>
                 <p class="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{{ t("ide.picker.empty") }}</p>
-                <button type="button" class="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[var(--accent-main)] px-4 text-sm font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-main)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-main)]" @click="void openCreateForm()">
-                    <span class="i-lucide-book-plus h-4 w-4"></span>
-                    {{ t("ide.bookshelf.createBook") }}
-                </button>
+                <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+                    <button type="button" class="inline-flex h-10 items-center justify-center gap-2 rounded-md bg-[var(--accent-main)] px-4 text-sm font-medium text-[var(--text-inverse)] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-main)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--bg-main)] disabled:cursor-not-allowed disabled:opacity-60" :disabled="isCreating" @click="void openCreateForm()">
+                        <span class="i-lucide-book-plus h-4 w-4"></span>
+                        {{ t("ide.bookshelf.createBook") }}
+                    </button>
+                    <button type="button" class="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-4 text-sm font-medium text-[var(--text-secondary)] transition-colors hover:border-[var(--border-accent)] hover:bg-[var(--bg-hover)] hover:text-[var(--accent-text)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-main)] disabled:cursor-not-allowed disabled:opacity-60" :disabled="isCreating || Boolean(createRecovery)" @click="void handleOpenSampleBook()">
+                        <span class="i-lucide-sparkles h-4 w-4"></span>
+                        {{ t("ide.picker.sampleBook") }}
+                    </button>
+                </div>
+                <p class="mt-3 max-w-[520px] text-xs leading-5 text-[var(--text-muted)]">{{ t("ide.picker.sampleBookHint") }}</p>
             </section>
 
             <!-- 最近项目 -->

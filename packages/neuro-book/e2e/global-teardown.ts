@@ -4,7 +4,16 @@ import {tmpdir} from "node:os";
 import {dirname, join} from "node:path";
 import {setTimeout as sleep} from "node:timers/promises";
 import {fileURLToPath} from "node:url";
-import {E2E_BASE_URL, E2E_ROOT, E2E_RUN_MARKER_PATH, E2E_STATE_ROOT} from "./e2e-env";
+import {
+    E2E_BASE_URL,
+    E2E_EMPTY_BASE_URL,
+    E2E_EMPTY_ROOT,
+    E2E_EMPTY_RUN_MARKER_PATH,
+    E2E_EMPTY_STATE_ROOT,
+    E2E_ROOT,
+    E2E_RUN_MARKER_PATH,
+    E2E_STATE_ROOT,
+} from "./e2e-env";
 
 /**
  * 跑完删除隔离根（红线收尾：临时 State Root 必须清掉）。
@@ -23,20 +32,48 @@ import {E2E_BASE_URL, E2E_ROOT, E2E_RUN_MARKER_PATH, E2E_STATE_ROOT} from "./e2e
  * 参数走环境变量、脚本走独立文件：本进程由 `bun run` 拉起，`process.execPath` 可能是 bun，
  * 而不同运行时对 `node -e` 的 argv 处理不一致（实测会静默不删），文件 + 环境变量才稳。
  *
+ * 两个隔离根（seed 3400 / empty 3401）各起一个应用进程，收尾时**两个都要清**。
+ *
  * ⚠️ 已知局限（实测，不隐瞒）：Windows 上 `bun run` 退出时会连带终止整棵进程树，
  * 这个 detached 子进程在真实 e2e 收尾路径上会被一起带走，于是延迟清理常常来不及执行。
- * 因此「跑完即清空隔离根」**不保证**：可能残留本次运行的隔离根（位于 `%TEMP%\neuro-book-e2e`）。
+ * 因此「跑完即清空隔离根」**不保证**：可能残留本次运行的隔离根（位于 `%TEMP%\neuro-book-e2e*`）。
  * 这不会污染真实数据，也不会累积——`serve-e2e.ts` 每次启动都会先整体清空再重建。
- * 需要立刻清掉时执行：`rm -rf "$TEMP/neuro-book-e2e"`。
+ * 需要立刻清掉时执行：`rm -rf "$TEMP/neuro-book-e2e" "$TEMP/neuro-book-e2e-empty"`。
  *
  * 防误删：清理进程每次动手前核对隔离根**之外**的「本次运行」标记，只删属于自己的那次运行。
  * 全程只告警不抛错：残留位于系统临时目录（不是真实 State Root）。
  */
 
+/** 一个隔离根的收尾所需信息。 */
+type IsolatedRootCleanup = {
+    root: string;
+    stateRoot: string;
+    markerPath: string;
+    readinessUrl: string;
+};
+
+/** 需要收尾的两个隔离根：主根（seed）与空根（empty）。 */
+const CLEANUP_TARGETS: readonly IsolatedRootCleanup[] = [
+    {
+        root: E2E_ROOT,
+        stateRoot: E2E_STATE_ROOT,
+        markerPath: E2E_RUN_MARKER_PATH,
+        readinessUrl: `${E2E_BASE_URL}/api/auth/me`,
+    },
+    {
+        root: E2E_EMPTY_ROOT,
+        stateRoot: E2E_EMPTY_STATE_ROOT,
+        markerPath: E2E_EMPTY_RUN_MARKER_PATH,
+        readinessUrl: `${E2E_EMPTY_BASE_URL}/api/auth/me`,
+    },
+];
+
+/** 所有隔离根共用的延迟清理日志文件。 */
+const CLEANUP_LOG_PATH = join(tmpdir(), "neuro-book-e2e-cleanup.log");
+
 /** 派一个 detached 清理进程，等应用退出后把隔离根删干净；返回是否成功派发。 */
-function spawnDeferredCleanup(expectedRunId: string): boolean {
+function spawnDeferredCleanup(target: IsolatedRootCleanup, expectedRunId: string): boolean {
     const scriptPath = join(dirname(fileURLToPath(import.meta.url)), "support", "cleanup-deferred.mjs");
-    const logPath = join(tmpdir(), "neuro-book-e2e-cleanup.log");
 
     try {
         const child = spawn(process.execPath, [scriptPath], {
@@ -45,26 +82,26 @@ function spawnDeferredCleanup(expectedRunId: string): boolean {
             windowsHide: true,
             env: {
                 ...process.env,
-                NEURO_E2E_CLEANUP_ROOT: E2E_ROOT,
-                NEURO_E2E_CLEANUP_URL: `${E2E_BASE_URL}/api/auth/me`,
-                NEURO_E2E_CLEANUP_MARKER: E2E_RUN_MARKER_PATH,
+                NEURO_E2E_CLEANUP_ROOT: target.root,
+                NEURO_E2E_CLEANUP_URL: target.readinessUrl,
+                NEURO_E2E_CLEANUP_MARKER: target.markerPath,
                 NEURO_E2E_CLEANUP_RUN_ID: expectedRunId,
-                NEURO_E2E_CLEANUP_LOG: logPath,
+                NEURO_E2E_CLEANUP_LOG: CLEANUP_LOG_PATH,
             },
         });
         child.unref();
         return true;
     } catch (error) {
-        process.stderr.write(`[e2e] 延迟清理进程未能启动：${String(error)}\n`);
+        process.stderr.write(`[e2e] 延迟清理进程未能启动（${target.root}）：${String(error)}\n`);
         return false;
     }
 }
 
 /** 有界退避的同步删除；返回是否已经删净。 */
-async function removeIsolatedRootNow(): Promise<boolean> {
+async function removeIsolatedRootNow(root: string): Promise<boolean> {
     for (let attempt = 0; attempt < 4; attempt += 1) {
         try {
-            rmSync(E2E_ROOT, {recursive: true, force: true});
+            rmSync(root, {recursive: true, force: true});
             return true;
         } catch {
             await sleep(500);
@@ -74,29 +111,33 @@ async function removeIsolatedRootNow(): Promise<boolean> {
 }
 
 export default async function globalTeardown(): Promise<void> {
-    // 标记在隔离根之外，正常不会被同步删除带走；先读出来备用。
-    let runId = "";
-    try {
-        runId = readFileSync(E2E_RUN_MARKER_PATH, "utf8").trim();
-    } catch {
-        runId = "";
-    }
+    for (const target of CLEANUP_TARGETS) {
+        // 标记在隔离根之外，正常不会被同步删除带走；先读出来备用。
+        let runId = "";
+        try {
+            runId = readFileSync(target.markerPath, "utf8").trim();
+        } catch {
+            runId = "";
+        }
 
-    const removedNow = await removeIsolatedRootNow();
+        const removedNow = await removeIsolatedRootNow(target.root);
 
-    if (!runId) {
-        process.stderr.write(
-            `[e2e] 找不到本次运行标记（${E2E_RUN_MARKER_PATH}）：同步删除${removedNow ? "已完成" : "未完成"}，跳过延迟清理以免误删。\n`,
+        if (!runId) {
+            process.stderr.write(
+                `[e2e] 找不到本次运行标记（${target.markerPath}）：同步删除${removedNow ? "已完成" : "未完成"}，`
+                + "跳过延迟清理以免误删。\n",
+            );
+            continue;
+        }
+
+        // 无条件派延迟清理：应用此刻通常还活着，删掉的东西会被它写回来。
+        const spawned = spawnDeferredCleanup(target, runId);
+        process.stdout.write(
+            `[e2e] 收尾：同步删除${removedNow ? "已成功" : "未完成"}；`
+            + `延迟清理${spawned ? "已安排（等应用退出后继续删）" : "未安排"}：${target.root}\n`,
         );
-        return;
-    }
-
-    // 无条件派延迟清理：应用此刻通常还活着，删掉的东西会被它写回来。
-    const spawned = spawnDeferredCleanup(runId);
-    process.stdout.write(
-        `[e2e] 收尾：同步删除${removedNow ? "已成功" : "未完成"}；延迟清理${spawned ? "已安排（等应用退出后继续删）" : "未安排"}：${E2E_ROOT}\n`,
-    );
-    if (existsSync(E2E_STATE_ROOT)) {
-        process.stdout.write(`[e2e] 提示：此刻隔离根仍在 ${E2E_STATE_ROOT}（临时目录，下次启动也会重建）\n`);
+        if (existsSync(target.stateRoot)) {
+            process.stdout.write(`[e2e] 提示：此刻隔离根仍在 ${target.stateRoot}（临时目录，下次启动也会重建）\n`);
+        }
     }
 }

@@ -54,12 +54,13 @@ function chunkFrame(id: string, model: string, delta: Record<string, unknown>, f
  * 额外暴露 `GET /e2e-stats`：测试据此**证明应用真的打到了这个模型端点**，
  * 而不是只看到 UI 上的「运行中」就下结论。
  */
-export function startMockLlmServer(): MockLlmServer {
+export function startMockLlmServer(options: {port?: number} = {}): MockLlmServer {
     let chatCompletions = 0;
 
     const server = Bun.serve({
         hostname: E2E_MOCK_LLM_HOST,
-        port: E2E_MOCK_LLM_PORT,
+        // 每个隔离根用各自端口（主根 3499 / 空根 3500）：两个 webServer 同时起时不会撞端口。
+        port: options.port ?? E2E_MOCK_LLM_PORT,
         // 慢速流可能持续数十秒，别让默认 idle 超时掐断。
         idleTimeout: 255,
         async fetch(request: Request): Promise<Response> {
@@ -159,7 +160,9 @@ export function startMockLlmServer(): MockLlmServer {
  * - `agent.defaultProfileKey.novel = leader.default`（系统默认 profile），保证会话能解析到模型。
  * - `models.default` 指向 Mock 模型 key，`resolvePiModelFromConfig` 才会选中它。
  */
-export function writeE2eGlobalConfig(): void {
+export function writeE2eGlobalConfig(options: {configPath?: string; baseUrl?: string} = {}): void {
+    const configPath = options.configPath ?? E2E_GLOBAL_CONFIG_PATH;
+    const mockBaseUrl = options.baseUrl ?? E2E_MOCK_LLM_BASE_URL;
     const config = {
         models: {
             default: E2E_MOCK_MODEL_KEY,
@@ -171,7 +174,7 @@ export function writeE2eGlobalConfig(): void {
                     modelApi: "openai-completions",
                     options: {
                         apiKey: E2E_MOCK_API_KEY,
-                        baseURL: E2E_MOCK_LLM_BASE_URL,
+                        baseURL: mockBaseUrl,
                         proxy: "",
                         timeoutMs: null,
                         requestOptions: {},
@@ -203,7 +206,7 @@ export function writeE2eGlobalConfig(): void {
         },
     };
 
-    mkdirSync(dirname(E2E_GLOBAL_CONFIG_PATH), {recursive: true});
-    writeFileSync(E2E_GLOBAL_CONFIG_PATH, `${JSON.stringify(config, null, 4)}\n`, "utf8");
-    process.stdout.write(`[e2e] 已写入隔离全局配置（Mock Provider）: ${E2E_GLOBAL_CONFIG_PATH}\n`);
+    mkdirSync(dirname(configPath), {recursive: true});
+    writeFileSync(configPath, `${JSON.stringify(config, null, 4)}\n`, "utf8");
+    process.stdout.write(`[e2e] 已写入隔离全局配置（Mock Provider）: ${configPath}\n`);
 }
