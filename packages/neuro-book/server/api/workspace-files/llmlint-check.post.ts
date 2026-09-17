@@ -1,7 +1,7 @@
 import {createError} from "h3";
 import {z} from "zod";
 import {ProjectRootDtoSchema} from "nbook/shared/dto/project.dto";
-import {resolveLlmlintSkillRoot, runLlmlintCheck} from "nbook/server/workspace-files/llmlint-check";
+import {resolveLlmlintSkillRoot, runLlmlintCheck, runLlmlintScan} from "nbook/server/workspace-files/llmlint-check";
 import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
 import {withProjectTargetOperation} from "nbook/server/workspace-files/project-open-guard";
 import {statWorkspacePath} from "nbook/server/workspace-files/workspace-files";
@@ -13,7 +13,7 @@ defineRouteMeta({
         "tags": [
             "Workspace Files",
         ],
-        "summary": "Run llmlint check on a workspace prose file",
+        "summary": "Run llmlint check on a workspace prose file (or recursively scan a directory)",
         "requestBody": {
             "content": {
                 "application/json": {
@@ -86,7 +86,8 @@ const LlmlintCheckBodySchema = z.object({
 });
 
 /**
- * 对指定章节/正文文件运行 llmlint `check`，返回结构化命中列表。
+ * 对指定章节/正文文件运行 llmlint `check`，返回结构化命中列表；
+ * 目标是目录时（T0.4）递归扫描全部 .md/.markdown/.txt，返回聚合报告。
  *
  * 只读：绝不写回被扫描文件（llmlint 的 `check` 自身也永不改写正文）。
  * 通过 spawn CLI 调用，不 import llmlint 内部模块（它没有 exports 契约）。
@@ -97,10 +98,7 @@ export default defineEventHandler(async (event) => {
     const target = await resolveWorkspaceFileTarget(runtimePaths, body);
     return withProjectTargetOperation(target, async () => {
         const node = await statWorkspacePath(target.root, body.path);
-        if (node.isDirectory) {
-            throw createError({statusCode: 400, message: "只能扫描单个文本文件，不能扫描目录"});
-        }
-        if (!node.editable) {
+        if (!node.isDirectory && !node.editable) {
             throw createError({statusCode: 400, message: "该文件不是可读写的文本文件，无法扫描"});
         }
 
@@ -112,6 +110,15 @@ export default defineEventHandler(async (event) => {
         }
 
         try {
+            if (node.isDirectory) {
+                return await runLlmlintScan({
+                    skillRoot,
+                    absoluteDirPath: node.absolutePath,
+                    review: body.review,
+                    minLevel: body.minLevel,
+                    scanAll: body.scanAll,
+                });
+            }
             return await runLlmlintCheck({
                 skillRoot,
                 absoluteFilePath: node.absolutePath,

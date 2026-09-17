@@ -10,9 +10,11 @@ import {
     enrichIssues,
     llmlintSkillRootCandidates,
     parseLlmlintCheckOutput,
+    parseLlmlintScanOutput,
     resolveBunBinary,
     resolveLlmlintSkillRoot,
     runLlmlintCheck,
+    runLlmlintScan,
 } from "nbook/server/workspace-files/llmlint-check";
 
 /**
@@ -108,6 +110,121 @@ describe("llmlint check 报告解析", () => {
             rules: {},
         });
         expect(issues[0]).toMatchObject({ruleId: "unknown", ruleTitle: "unknown", level: "medium", suggestion: null});
+    });
+});
+
+const MULTI_REPORT = JSON.stringify({
+    kind: "check-multi",
+    configPath: null,
+    filter: {review: "all", hiddenByReview: 0, minLevel: "low", hiddenByLevel: 0},
+    registry: {rulesets: ["builtin/default"], totalRules: 360, activeRules: 266, disabledRules: 94},
+    diagnostics: [],
+    rules: {
+        "firstly-secondly": {
+            namespace: "transition",
+            title: "机械过渡",
+            level: "high",
+            review: "agent",
+            fixability: "manual",
+        },
+        "filler-word-actually": {
+            namespace: "filler",
+            title: "删填充词",
+            level: "medium",
+            review: "agent",
+            fixability: "candidate",
+            note: "建议删除。",
+        },
+    },
+    files: [
+        {
+            filePath: "C:/book/manuscript/chapter-001.md",
+            summary: {total: 2, high: 1, medium: 1, low: 0, visibleChars: 100},
+            issues: [
+                {ruleId: "firstly-secondly", line: 3, column: 1, endLine: 3, endColumn: 3, match: "首先", context: {before: "", current: "首先", after: ""}},
+                {ruleId: "filler-word-actually", line: 5, column: 9, endLine: 5, endColumn: 11, match: "其实"},
+            ],
+        },
+        {
+            filePath: "C:/book/manuscript/chapter-002.md",
+            summary: {total: 1, high: 1, medium: 0, low: 0, visibleChars: 200},
+            issues: [
+                {ruleId: "firstly-secondly", line: 2, column: 1, endLine: 2, endColumn: 3, match: "首先", context: {before: "，", current: "首先", after: "我们"}},
+            ],
+        },
+        {
+            filePath: "C:/book/manuscript/chapter-003.md",
+            summary: {total: 0, high: 0, medium: 0, low: 0, visibleChars: 50},
+            issues: [],
+        },
+    ],
+    summary: {total: 3, high: 2, medium: 1, low: 0, visibleChars: 350},
+});
+
+describe("llmlint scan 报告解析（目录模式聚合）", () => {
+    it("check-multi 归一化为三维聚合 DTO：按文件 / 按级别 / 按规则 + top 命中 + 总字数", () => {
+        const result = parseLlmlintScanOutput(MULTI_REPORT, "C:/book/manuscript");
+
+        expect(result.kind).toBe("check-scan");
+        expect(result.rootPath).toBe("C:/book/manuscript");
+        // 级别维度 + 总字数。
+        expect(result.summary).toEqual({total: 3, high: 2, medium: 1, low: 0, visibleChars: 350});
+        expect(result.fileCount).toBe(3);
+        expect(result.filesWithIssues).toBe(2);
+        // 文件维度：命中数降序、同分路径升序；含相对路径。
+        expect(result.files.map((file) => file.relativePath)).toEqual(["chapter-001.md", "chapter-002.md", "chapter-003.md"]);
+        expect(result.files[0]).toMatchObject({total: 2, high: 1, medium: 1, low: 0, visibleChars: 100});
+        // 规则维度：count / fileCount 聚合正确，次数降序。
+        expect(result.rules).toEqual([
+            {ruleId: "firstly-secondly", ruleTitle: "机械过渡", namespace: "transition", level: "high", review: "agent", count: 2, fileCount: 2},
+            {ruleId: "filler-word-actually", ruleTitle: "删填充词", namespace: "filler", level: "medium", review: "agent", count: 1, fileCount: 1},
+        ]);
+        // top 命中：级别降序在前、带归属文件与建议文案；默认有界 20。
+        expect(result.topIssues).toHaveLength(3);
+        expect(result.topIssues[0]).toMatchObject({ruleId: "firstly-secondly", level: "high", filePath: "C:/book/manuscript/chapter-001.md", line: 3, suggestion: null});
+        expect(result.topIssues[1]).toMatchObject({ruleId: "firstly-secondly", filePath: "C:/book/manuscript/chapter-002.md", line: 2});
+        expect(result.topIssues[2]).toMatchObject({ruleId: "filler-word-actually", level: "medium", suggestion: "建议删除。"});
+        expect(result.durationMs).toBe(0);
+    });
+
+    it("topIssuesLimit 有界且 0 表示不要 top 命中", () => {
+        const limited = parseLlmlintScanOutput(MULTI_REPORT, "C:/book/manuscript", {topIssuesLimit: 1});
+        expect(limited.topIssues).toHaveLength(1);
+        const none = parseLlmlintScanOutput(MULTI_REPORT, "C:/book/manuscript", {topIssuesLimit: 0});
+        expect(none.topIssues).toEqual([]);
+        const overflow = parseLlmlintScanOutput(MULTI_REPORT, "C:/book/manuscript", {topIssuesLimit: 9999});
+        expect(overflow.topIssues).toHaveLength(3);
+    });
+
+    it("目录里只有一个文件时 CLI 退化为单文件 check 形态，同样归一化", () => {
+        const single = JSON.stringify({
+            kind: "check",
+            filePath: "C:/book/manuscript/only.md",
+            summary: {total: 1, high: 0, medium: 1, low: 0, visibleChars: 42},
+            filter: {review: "all", hiddenByReview: 0, minLevel: "low", hiddenByLevel: 0},
+            registry: {rulesets: ["builtin/default"], totalRules: 10, activeRules: 8, disabledRules: 2},
+            diagnostics: [],
+            rules: {"filler-word-actually": {namespace: "filler", title: "删填充词", level: "medium", review: "agent", fixability: "candidate"}},
+            issues: [{ruleId: "filler-word-actually", line: 1, column: 1, endLine: 1, endColumn: 3, match: "其实"}],
+        });
+        const result = parseLlmlintScanOutput(single, "C:/book/manuscript", {durationMs: 7});
+        expect(result.kind).toBe("check-scan");
+        expect(result.fileCount).toBe(1);
+        expect(result.filesWithIssues).toBe(1);
+        expect(result.summary).toEqual({total: 1, high: 0, medium: 1, low: 0, visibleChars: 42});
+        expect(result.durationMs).toBe(7);
+        expect(result.topIssues[0]).toMatchObject({ruleId: "filler-word-actually", filePath: "C:/book/manuscript/only.md"});
+    });
+
+    it("kind 既不是 check 也不是 check-multi 时明确报错", () => {
+        expect(() => parseLlmlintScanOutput(JSON.stringify({kind: "fix"}), "dir"))
+            .toThrow("不是扫描形态");
+    });
+
+    it("stdout 混入前后缀噪声时仍能截取 JSON 对象", () => {
+        const noisy = `runtime warning: something\n${MULTI_REPORT}\n`;
+        const result = parseLlmlintScanOutput(noisy, "C:/book/manuscript");
+        expect(result.fileCount).toBe(3);
     });
 });
 
@@ -207,4 +324,38 @@ describe("runLlmlintCheck 真实调用 CLI", () => {
         const {readFile} = await import("node:fs/promises");
         expect(await readFile(filePath, "utf-8")).toBe(original);
     }, 120_000);
+
+    it.skipIf(!LLMLINT_AVAILABLE)("对目录跑扫描，返回三维聚合结果且不写回任何文件", async () => {
+        const root = await mkdtemp(join(tmpdir(), "llmlint-scan-endpoint-"));
+        tempRoots.push(root);
+        const manuscriptDir = join(root, "manuscript");
+        await mkdir(join(manuscriptDir, "vol1"), {recursive: true});
+        await writeFile(join(manuscriptDir, "vol1", "chapter-001.md"), "首先我们要分析问题，其次要制定方案，最后执行。\n", "utf-8");
+        await writeFile(join(manuscriptDir, "vol1", "chapter-002.md"), "夜色渐深，他合上书。\n", "utf-8");
+        await writeFile(join(manuscriptDir, "notes.txt"), "其实只是随手记。\n", "utf-8");
+
+        const before = await (await import("node:fs/promises")).readFile(join(manuscriptDir, "vol1", "chapter-001.md"), "utf-8");
+        const result = await runLlmlintScan({
+            skillRoot: LLMLINT_SKILL_ROOT,
+            absoluteDirPath: manuscriptDir,
+            review: "all",
+            timeoutMs: 120_000,
+        });
+
+        expect(result.kind).toBe("check-scan");
+        expect(result.fileCount).toBe(3);
+        expect(result.fileCount).toBe(result.files.length);
+        // 三维聚合自洽：文件级合计 = 总 summary。
+        const fileTotals = result.files.reduce((sum, file) => sum + file.total, 0);
+        expect(fileTotals).toBe(result.summary.total);
+        const ruleTotals = result.rules.reduce((sum, rule) => sum + rule.count, 0);
+        expect(ruleTotals).toBe(result.summary.total);
+        expect(result.files.some((file) => file.relativePath === "vol1/chapter-001.md")).toBe(true);
+        expect(result.rules.some((rule) => rule.ruleId === "firstly-secondly")).toBe(true);
+        expect(result.summary.visibleChars).toBeGreaterThan(0);
+        expect(result.durationMs).toBeGreaterThanOrEqual(0);
+        // 只读保证：目录内容不变。
+        const after = await (await import("node:fs/promises")).readFile(join(manuscriptDir, "vol1", "chapter-001.md"), "utf-8");
+        expect(after).toBe(before);
+    }, 180_000);
 });

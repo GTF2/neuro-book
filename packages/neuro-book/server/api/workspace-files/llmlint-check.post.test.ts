@@ -22,6 +22,20 @@ const mocks = {
             suggestion: null,
         }],
     })),
+    runLlmlintScan: vi.fn(async () => ({
+        kind: "check-scan" as const,
+        rootPath: "C:/app/workspace/p/manuscript",
+        fileCount: 3,
+        filesWithIssues: 2,
+        summary: {total: 5, high: 2, medium: 3, low: 0, visibleChars: 1200},
+        filter: {review: "all", hiddenByReview: 0, minLevel: "low", hiddenByLevel: 0},
+        registry: {rulesets: ["builtin/default"], totalRules: 1, activeRules: 1, disabledRules: 0},
+        diagnostics: [],
+        files: [],
+        rules: [],
+        topIssues: [],
+        durationMs: 42,
+    })),
 };
 
 type StatResult = {
@@ -79,6 +93,7 @@ describe("POST /api/workspace-files/llmlint-check", () => {
         vi.doMock("nbook/server/workspace-files/llmlint-check", () => ({
             resolveLlmlintSkillRoot: mocks.resolveLlmlintSkillRoot,
             runLlmlintCheck: mocks.runLlmlintCheck,
+            runLlmlintScan: mocks.runLlmlintScan,
         }));
     });
 
@@ -96,12 +111,28 @@ describe("POST /api/workspace-files/llmlint-check", () => {
         expect(result).toMatchObject({kind: "check", summary: {high: 1}});
     });
 
-    it("目录目标返回 400，不调用 runner", async () => {
+    it("目录目标走 scan runner 并返回聚合结果（T0.4）", async () => {
         statResult = {isDirectory: true, editable: false, absolutePath: "C:/app/workspace/p/manuscript"};
         const handler = (await import("nbook/server/api/workspace-files/llmlint-check.post")).default;
+        const result = await handler({} as never);
 
-        await expect(handler({} as never)).rejects.toMatchObject({statusCode: 400});
+        expect(mocks.runLlmlintScan).toHaveBeenCalledWith({
+            skillRoot: "C:/app/../llmlint/skill",
+            absoluteDirPath: "C:/app/workspace/p/manuscript",
+            review: "all",
+            minLevel: "low",
+            scanAll: false,
+        });
         expect(mocks.runLlmlintCheck).not.toHaveBeenCalled();
+        expect(result).toMatchObject({kind: "check-scan", fileCount: 3, summary: {high: 2}});
+    });
+
+    it("scan runner 抛错时返回 502", async () => {
+        statResult = {isDirectory: true, editable: false, absolutePath: "C:/app/workspace/p/manuscript"};
+        mocks.runLlmlintScan.mockRejectedValueOnce(new Error("llmlint scan 未返回可解析的 JSON"));
+        const handler = (await import("nbook/server/api/workspace-files/llmlint-check.post")).default;
+
+        await expect(handler({} as never)).rejects.toMatchObject({statusCode: 502});
     });
 
     it("非文本文件返回 400", async () => {

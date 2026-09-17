@@ -55,6 +55,18 @@ export type LlmlintRawReport = {
     issues?: LlmlintRawIssue[];
 };
 
+/** llmlint check-multi JSON 里的单文件条目。 */
+export type LlmlintRawFileEntry = {
+    filePath?: string;
+    summary?: {total?: number; high?: number; medium?: number; low?: number; visibleChars?: number};
+    issues?: LlmlintRawIssue[];
+};
+
+/** llmlint check-multi JSON 顶层结构（目录/多目标扫描形态）。 */
+export type LlmlintRawMultiReport = LlmlintRawReport & {
+    files?: LlmlintRawFileEntry[];
+};
+
 /** 面向前端的一条命中：把 rules 元数据 join 进逐处命中，并给出人话建议。 */
 export type ProseLintIssue = {
     ruleId: string;
@@ -83,9 +95,62 @@ export type ProseLintCheckResult = {
     issues: ProseLintIssue[];
 };
 
+/** 全稿扫描 DTO：按文件维度。 */
+export type ProseLintFileSummary = {
+    filePath: string;
+    /** 相对扫描根的路径（正斜杠）；无法相对化时与 filePath 相同。 */
+    relativePath: string;
+    total: number;
+    high: number;
+    medium: number;
+    low: number;
+    visibleChars: number;
+};
+
+/** 全稿扫描 DTO：按规则维度。 */
+export type ProseLintRuleAggregate = {
+    ruleId: string;
+    ruleTitle: string;
+    namespace: string;
+    level: LlmlintLevel;
+    review: LlmlintReview;
+    count: number;
+    fileCount: number;
+};
+
+/** 全稿扫描 DTO：top 命中（单条命中 + 归属文件）。 */
+export type ProseLintScanIssue = ProseLintIssue & {filePath: string};
+
+/**
+ * 全稿扫描聚合报告（T0.4）：目录目标递归全部 .md/.markdown/.txt，
+ * 返回按文件/级别/规则三维统计 + top 命中列表 + 总字数（visibleChars）。
+ */
+export type ProseLintScanResult = {
+    kind: "check-scan";
+    rootPath: string;
+    fileCount: number;
+    filesWithIssues: number;
+    summary: {total: number; high: number; medium: number; low: number; visibleChars: number};
+    filter: {review: string; hiddenByReview: number; minLevel: string; hiddenByLevel: number};
+    registry: {rulesets: string[]; totalRules: number; activeRules: number; disabledRules: number};
+    diagnostics: string[];
+    /** 按文件维度：全部被扫描文件，命中数降序、同分路径升序。 */
+    files: ProseLintFileSummary[];
+    /** 按规则维度：命中次数降序、同分 ruleId 升序。 */
+    rules: ProseLintRuleAggregate[];
+    /** 级别维度即 summary 的 high/medium/low。 */
+    topIssues: ProseLintScanIssue[];
+    /** runner 实测耗时（毫秒）；纯解析路径（单测）为 0。 */
+    durationMs: number;
+};
+
 const LLMLINT_BIN_RELATIVE = path.join("bin", "llmlint.ts");
 const LLMLINT_CHECK_TIMEOUT_MS = 60_000;
+const LLMLINT_SCAN_TIMEOUT_MS = 300_000;
 const LLMLINT_MAX_BUFFER = 64 * 1024 * 1024;
+const DEFAULT_SCAN_TOP_ISSUES = 20;
+const MAX_SCAN_TOP_ISSUES = 200;
+const LEVEL_RANK: Record<LlmlintLevel, number> = {high: 3, medium: 2, low: 1};
 
 /**
  * 候选 skill root，按优先级排列（第一个含 `bin/llmlint.ts` 的被选中）：
@@ -196,6 +261,232 @@ export async function runLlmlintCheck(input: {
         const detail = result.stderr.trim() || result.stdout.trim() || (error instanceof Error ? error.message : String(error));
         throw new Error(`llmlint check 未返回可解析的 JSON（exit=${result.code}）：${detail.slice(0, 800)}`);
     }
+}
+
+/**
+ * 运行 `llmlint check <目录> --format json` 并返回全稿聚合结果（T0.4）。
+ *
+ * CLI 对目录会递归收集 .md/.markdown/.txt；命中多个文件时输出 `check-multi`
+ * 形态，只有一个文件时仍是单文件 `check` 形态——两种都归一化成 check-scan DTO。
+ * 与单文件入口同样只读：绝不修改被扫描目录。
+ */
+export async function runLlmlintScan(input: {
+    skillRoot: string;
+    absoluteDirPath: string;
+    review?: LlmlintReviewScope;
+    minLevel?: LlmlintLevel;
+    scanAll?: boolean;
+    topIssuesLimit?: number;
+    timeoutMs?: number;
+    bunBinary?: string;
+    execFileImpl?: typeof execFile;
+}): Promise<ProseLintScanResult> {
+    const startedAt = Date.now();
+    const binPath = path.join(input.skillRoot, LLMLINT_BIN_RELATIVE);
+    const args = [
+        binPath,
+        "check",
+        input.absoluteDirPath,
+        "--format",
+        "json",
+        "--review",
+        input.review ?? "all",
+        "--min-level",
+        input.minLevel ?? "low",
+    ];
+    if (input.scanAll) {
+        args.push("--scan-all");
+    }
+
+    const execFileImpl = input.execFileImpl ?? execFile;
+    const result = await new Promise<{stdout: string; stderr: string; code: number | null}>((resolve, reject) => {
+        execFileImpl(
+            input.bunBinary ?? resolveBunBinary(),
+            args,
+            {
+                cwd: input.skillRoot,
+                env: {...process.env, NO_COLOR: "1"},
+                timeout: input.timeoutMs ?? LLMLINT_SCAN_TIMEOUT_MS,
+                maxBuffer: LLMLINT_MAX_BUFFER,
+                windowsHide: true,
+                killSignal: "SIGKILL",
+            },
+            (error, stdout, stderr) => {
+                const stdoutText = String(stdout ?? "");
+                const stderrText = String(stderr ?? "");
+                // ENOENT / EACCES 这类「根本没跑起来」的错误没有退出码，直接上抛。
+                if (error && typeof (error as {code?: unknown}).code !== "number") {
+                    reject(error);
+                    return;
+                }
+                resolve({
+                    stdout: stdoutText,
+                    stderr: stderrText,
+                    code: error ? Number((error as {code?: unknown}).code) : 0,
+                });
+            },
+        );
+    });
+
+    try {
+        return parseLlmlintScanOutput(result.stdout, input.absoluteDirPath, {
+            topIssuesLimit: input.topIssuesLimit,
+            durationMs: Date.now() - startedAt,
+        });
+    } catch (error) {
+        const detail = result.stderr.trim() || result.stdout.trim() || (error instanceof Error ? error.message : String(error));
+        throw new Error(`llmlint scan 未返回可解析的 JSON（exit=${result.code}）：${detail.slice(0, 800)}`);
+    }
+}
+
+/**
+ * 解析 llmlint 的目录/多文件扫描 JSON，归一化为 check-scan 聚合 DTO。
+ *
+ * 接受两种 CLI 形态：`check-multi`（正常目录扫描）与 `check`（目录里只有一个
+ * 文件时的退化形态）。导出以便单元测试直接喂字符串。
+ */
+export function parseLlmlintScanOutput(
+    stdout: string,
+    rootPath: string,
+    options: {topIssuesLimit?: number; durationMs?: number} = {},
+): ProseLintScanResult {
+    const raw = JSON.parse(extractJson(stdout)) as LlmlintRawMultiReport;
+    if (raw.kind !== "check-multi" && raw.kind !== "check") {
+        throw new Error(`llmlint 输出不是扫描形态（kind=${String(raw.kind)}）`);
+    }
+    const fileEntries: Array<{filePath: string; summary: {total: number; high: number; medium: number; low: number; visibleChars: number}; issues: LlmlintRawIssue[]}> = raw.kind === "check-multi"
+        ? (raw.files ?? []).map((file) => ({
+            filePath: file.filePath ?? "",
+            summary: normalizeSummary(file.summary),
+            issues: file.issues ?? [],
+        })).filter((file) => file.filePath.length > 0)
+        : [{
+            filePath: raw.filePath ?? rootPath,
+            summary: normalizeSummary(raw.summary),
+            issues: raw.issues ?? [],
+        }];
+
+    const rules = raw.rules ?? {};
+    const files: ProseLintFileSummary[] = fileEntries.map((file) => ({
+        filePath: file.filePath,
+        relativePath: toRelativePath(rootPath, file.filePath),
+        ...file.summary,
+    })).sort((left, right) => {
+        if (left.total !== right.total) {
+            return right.total - left.total;
+        }
+        return left.filePath.localeCompare(right.filePath);
+    });
+
+    // 按规则维度聚合：count / fileCount。
+    const ruleStats = new Map<string, {rule: LlmlintRawRule; count: number; fileCount: number}>();
+    for (const file of fileEntries) {
+        const ruleIdsInFile = new Set<string>();
+        for (const issue of file.issues) {
+            ruleIdsInFile.add(issue.ruleId);
+            const existing = ruleStats.get(issue.ruleId);
+            if (existing) {
+                existing.count += 1;
+            } else {
+                ruleStats.set(issue.ruleId, {rule: rules[issue.ruleId] ?? {}, count: 1, fileCount: 0});
+            }
+        }
+        for (const ruleId of ruleIdsInFile) {
+            const entry = ruleStats.get(ruleId);
+            if (entry) {
+                entry.fileCount += 1;
+            }
+        }
+    }
+    const ruleAggregates: ProseLintRuleAggregate[] = [...ruleStats.entries()].map(([ruleId, entry]) => ({
+        ruleId,
+        ruleTitle: entry.rule.title ?? ruleId,
+        namespace: entry.rule.namespace ?? "",
+        level: entry.rule.level ?? "medium",
+        review: entry.rule.review ?? "agent",
+        count: entry.count,
+        fileCount: entry.fileCount,
+    })).sort((left, right) => {
+        if (left.count !== right.count) {
+            return right.count - left.count;
+        }
+        return left.ruleId.localeCompare(right.ruleId);
+    });
+
+    // top 命中：级别降序，再按文件路径/位置稳定排序；有界。enrich 复用单文件 join 逻辑。
+    const topIssuesLimit = Math.min(Math.max(options.topIssuesLimit ?? DEFAULT_SCAN_TOP_ISSUES, 0), MAX_SCAN_TOP_ISSUES);
+    const topIssues: ProseLintScanIssue[] = fileEntries
+        .flatMap((file) => enrichIssues({rules, issues: file.issues}).map((issue) => ({...issue, filePath: file.filePath})))
+        .sort((left, right) => {
+            const levelGap = (LEVEL_RANK[right.level] ?? 0) - (LEVEL_RANK[left.level] ?? 0);
+            if (levelGap !== 0) {
+                return levelGap;
+            }
+            if (left.filePath !== right.filePath) {
+                return left.filePath.localeCompare(right.filePath);
+            }
+            if (left.line !== right.line) {
+                return left.line - right.line;
+            }
+            return left.column - right.column;
+        })
+        .slice(0, topIssuesLimit);
+
+    const summary = raw.kind === "check-multi"
+        ? normalizeSummary(raw.summary)
+        : fileEntries.reduce((sum, file) => ({
+            total: sum.total + file.summary.total,
+            high: sum.high + file.summary.high,
+            medium: sum.medium + file.summary.medium,
+            low: sum.low + file.summary.low,
+            visibleChars: sum.visibleChars + file.summary.visibleChars,
+        }), {total: 0, high: 0, medium: 0, low: 0, visibleChars: 0});
+
+    return {
+        kind: "check-scan",
+        rootPath,
+        fileCount: fileEntries.length,
+        filesWithIssues: fileEntries.filter((file) => file.summary.total > 0).length,
+        summary,
+        filter: {
+            review: raw.filter?.review ?? "agent",
+            hiddenByReview: raw.filter?.hiddenByReview ?? 0,
+            minLevel: raw.filter?.minLevel ?? "low",
+            hiddenByLevel: raw.filter?.hiddenByLevel ?? 0,
+        },
+        registry: {
+            rulesets: raw.registry?.rulesets ?? [],
+            totalRules: raw.registry?.totalRules ?? 0,
+            activeRules: raw.registry?.activeRules ?? 0,
+            disabledRules: raw.registry?.disabledRules ?? 0,
+        },
+        diagnostics: (raw.diagnostics ?? []).map((diagnostic) => (
+            typeof diagnostic === "string" ? diagnostic : JSON.stringify(diagnostic)
+        )),
+        files,
+        rules: ruleAggregates,
+        topIssues,
+        durationMs: options.durationMs ?? 0,
+    };
+}
+
+function normalizeSummary(summary?: {total?: number; high?: number; medium?: number; low?: number; visibleChars?: number}): {total: number; high: number; medium: number; low: number; visibleChars: number} {
+    return {
+        total: summary?.total ?? 0,
+        high: summary?.high ?? 0,
+        medium: summary?.medium ?? 0,
+        low: summary?.low ?? 0,
+        visibleChars: summary?.visibleChars ?? 0,
+    };
+}
+
+/** 扫描根内的文件路径转正斜杠相对路径；相对化失败时原样返回。 */
+function toRelativePath(rootPath: string, filePath: string): string {
+    const relative = path.relative(rootPath, filePath);
+    if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+        return filePath.replaceAll("\\", "/");
+    }
+    return relative.replaceAll("\\", "/");
 }
 
 /**
