@@ -61,6 +61,33 @@
 | 组件层 | `--toolbar-bg` | 顶部工具栏、悬浮工具条、需要轻透明的工具面。 |
 | 组件层 | `--chat-ai-bg` | Agent AI 气泡与 AI 输出块背景。 |
 
+## 设计 token 层（非颜色）
+
+上面那节管**颜色**。排版、间距、圆角、层级、动效这些**不随配色变化**的刻度在另一层：事源 `app/styles/design-tokens.css`，名单见 `app/utils/theme/design-tokens.ts`（63 个）。两边正交——换主题换的是颜色，换密度/观感换的是这一层。
+
+分两块：
+
+- **设计 token（33 个）**：`--text-sm`、`--space-5`、`--radius-control`、`--elevation-popover`、`--motion-base` 这类刻度。回答「这个刻度叫什么」。
+- **主题层基线（30 个）**：`--control-h-md`、`--panel-p`、`--focus-ring`，以及其中的**角色映射**（14 个：`--panel-surface`、`--panel-outline`、`--button-surface`、`--divider` …）。回答「观感能改什么」。
+
+### 怎么用
+
+组件里直接用 `var(...)`，不需要登记：
+
+```html
+<section class="rounded-[var(--radius-panel)] border-[var(--border-w)] border-[var(--panel-outline)] bg-[var(--panel-surface)] p-[var(--panel-p)]">
+```
+
+**角色映射的默认值都指向原来的配色变量**（`--panel-surface` 默认就是 `var(--bg-panel)`，`--panel-outline` 默认就是 `var(--border-color)`），所以从 `var(--bg-panel)` 换成 `var(--panel-surface)` 时**观感零变化**——一次纯粹的命名替换，把隐式约定显性化。这条承诺由 `design-tokens.test.ts` 逐条守着。
+
+价值在替换之后：想让面板退场，只改一处 `--panel-outline: none`，不必去动每个组件。
+
+### 与 nb-ui 的关系
+
+本层名单与取值与 `@notnotype/nb-ui` 的 `src/theme/tokens.ts` / `src/tokens.css` **逐字一致**，分组同构。nb-ui 的口径是「主仓保持零改动，阶段 4 再合流」，本层按同一份取值先行补齐，合流时两边已经一样、直接删一份。
+
+两处对齐关系（颜色 36↔33、token 63↔63）都由测试锁死，任一边漂移立刻报错。
+
 ## 核心色与派生色
 
 自定义主题编辑器以 13 个核心色作为快速调色盘：

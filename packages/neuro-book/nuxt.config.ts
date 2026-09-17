@@ -199,6 +199,7 @@ export default defineNuxtConfig({
     css: [
         "the-new-css-reset/css/reset.css",
         "nbook/app/styles/theme-vars.css",
+        "nbook/app/styles/design-tokens.css",
         "nbook/app/styles/reference-chips.css",
         "nbook/app/styles/focus-mode.css",
         "@vue-flow/core/dist/style.css",
