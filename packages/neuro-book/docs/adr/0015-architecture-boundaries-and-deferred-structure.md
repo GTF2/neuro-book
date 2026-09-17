@@ -31,6 +31,8 @@
 
 重新评估的证据包括：独立 Manager 构建把仓库源码带入产物、独立发布无法解析 `nbook/*` 导入、平台枚举在两个位置发生漂移，或该环在实际宿主/打包流程中造成失败。
 
+**2026-09-17 复核：该环已消解，本条可关闭。** `shared/product-runtime-image-verifier.ts` 已不存在；`PRODUCT_PLATFORMS` 现由独立合同包承载（`packages/neuro-book-contracts/src/platform.ts`），不再经由 Manager 中转。全仓检索 `shared/` 对 `neuro-book-manager` 的运行时导入为零，唯一命中是测试文件对 `@notnotype/neuro-book-manager/test-support` 的引用（test-only，不构成运行时环）。
+
 ### 3. 暂不处理 shared 与 `server/agent` 的循环类型依赖
 
 `shared/dto/agent-session.dto.ts` 当前引用 Agent 内部类型，而 `server/agent/session/types.ts` 又引用 shared DTO。因为两侧都是 type-only import，本轮没有观察到运行时环。它被记录为 P2 结构问题；只有在 shared DTO 需要由另一个宿主独立编译、或者 TypeScript/project reference、生成客户端或打包边界被该环实际阻塞时，才单独设计最小的合同下沉。

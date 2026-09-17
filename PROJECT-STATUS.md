@@ -88,6 +88,6 @@ NeuroBook 当前处于快速开发阶段，产品主线已收敛到 Novel 写作
 - **产品验收**：聚焦测试、typecheck 和构建不能代替浏览器、真实 Project Workspace、真实 Provider/Model 与作者视角写作 smoke。
 - **Desktop**：Windows x64 内部 beta 已有阶段证据；原生 Snap、完整 SSE/WebSocket 断连矩阵、macOS 实包和公开 Desktop 资产仍缺。
 - **写作产品线**：下一阶段是 dogfooding、章节写作与修订反馈、World Engine 体验，以及运行状态是否显式提交等产品决策。
-- **架构债务**：shared/Manager 运行时依赖环、shared 与 `server/agent` 的类型环、大型 Facade 和 OpenAPI 生成物边界仍由 [ADR 0015](packages/neuro-book/docs/adr/0015-architecture-boundaries-and-deferred-structure.md) 与相关 Issue 管理，不是已复现故障。
+- **架构债务**：shared 与 `server/agent` 的类型环、大型 Facade 和 OpenAPI 生成物边界仍由 [ADR 0015](packages/neuro-book/docs/adr/0015-architecture-boundaries-and-deferred-structure.md) 与相关 Issue 管理，不是已复现故障。其中 shared/Manager 运行时依赖环已于 2026-09-17 复核确认消解（`PRODUCT_PLATFORMS` 下沉至 `neuro-book-contracts`），不再计入本条。
 - **事务边界**：文件系统、Project SQLite、History SQLite、Session JSONL 与 Job JSON 不承诺全局原子事务；当前不引入分布式事务框架。
 - **上游依赖**：Nitro dev source-map 临时补丁待上游稳定版本实际包含修复后移除。
