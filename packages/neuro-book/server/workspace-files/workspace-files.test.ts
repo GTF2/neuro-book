@@ -37,6 +37,7 @@ import {getWorkspaceRuntimeRootContextForTest, resolveRuntimeWorkspaceRoot, reso
 import {createIsolatedWorkspaceAssets, withIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
 import {createWorkspaceContentState, createWorkspaceDirectory, readWorkspaceTextFile, scanWorkspaceTree, validateWorkspaceContentNodes, validateWorkspaceTree, writeWorkspaceTextFile} from "nbook/server/workspace-files/workspace-files";
 import {closeProjectForTest, openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
+import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
 import {activateReadyProjectModule, closeAllProjects, openProject, requireReadyModuleHandle, requireReadyProject} from "nbook/server/workspace-files/project-session";
 
 const execFileAsync = promisify(execFile);
@@ -66,7 +67,14 @@ describe("workspace-files", {timeout: 60_000}, () => {
         await fs.mkdir(root, {recursive: true});
     }, 60_000);
 
-    /** Windows 下 SQLite 句柄释放有延迟，rm 可能抛 EBUSY；重试到句柄释放为止。 */
+    /**
+     * Windows 下 SQLite 句柄释放有延迟，rm 可能抛 EBUSY；重试到句柄释放为止。
+     *
+     * libsql 原生句柄只在 GC finalizer 之后释放，且需要多个「GC + 事件循环拍」才真正释放。
+     * 单靠等待重试等不到释放（实测 Project Workspace mutation 用例里 60×100ms 全部 EBUSY，
+     * 报错文件为 `.nbook/history.sqlite`(-wal/-shm)），因此每轮重试前主动驱动一次强制 GC，
+     * 把「稍后才可删」收敛为「句柄释放后即可删」。bounded-retry-then-throw 契约保持不变。
+     */
     async function removeTmpRootWithRetry(target: string): Promise<void> {
         for (let attempt = 0; attempt < 60; attempt += 1) {
             try {
@@ -75,6 +83,7 @@ describe("workspace-files", {timeout: 60_000}, () => {
             } catch (error) {
                 const busy = error instanceof Error && "code" in error && error.code === "EBUSY";
                 if (!busy || attempt === 59) throw error;
+                collectReleasedSqliteHandles({force: true});
                 await new Promise((resolvePromise) => setTimeout(resolvePromise, 100));
             }
         }
