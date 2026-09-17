@@ -103,6 +103,8 @@ export function createVariableTools(): NeuroAgentTool[] {
             name: "variable_patch",
             label: "Variable Patch",
             executionMode: "sequential",
+            // global/project 命名空间的变量落盘到 Workspace 内的变量文件，属变更 Project Workspace 状态。
+            mutatesWorkspace: true,
             description: "Patch one writable registered variable target with RFC 6902 JSON Patch. After important changes, call variable_read to verify.",
             parameters: VariablePatchSchema,
             async execute() {

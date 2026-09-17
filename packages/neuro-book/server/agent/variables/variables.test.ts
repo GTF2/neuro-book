@@ -77,6 +77,13 @@ async function loadCompiledVariableDefinitions(input: Omit<Parameters<typeof loa
 }
 
 describe("Agent variable system", () => {
+    it("variable_patch 声明会变更 Workspace，variable_schema/read 不标（只读模式硬门控依据）", () => {
+        const tools = createVariableTools();
+        expect(tools.find((tool) => tool.key === "variable_patch")?.mutatesWorkspace).toBe(true);
+        expect(tools.find((tool) => tool.key === "variable_schema")?.mutatesWorkspace).not.toBe(true);
+        expect(tools.find((tool) => tool.key === "variable_read")?.mutatesWorkspace).not.toBe(true);
+    });
+
     it("未绑定Project的Session始终使用Workspace Root存储global变量", async () => {
         const workspaceRoot = testHostPath("tmp", "variable-global-root-test", randomUUID());
         await mkdir(workspaceRoot, {recursive: true});

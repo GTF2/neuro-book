@@ -151,6 +151,8 @@ export async function readProfileSource(profiles: AgentProfileCatalog, request: 
             issues: fallbackIssues,
             variables: [],
             toolKeys: [],
+            // 坏 profile 无法解析工具集，无从判定命令执行能力：保守地暴露 false（不误报具备 shell）。
+            includesShellCapability: false,
             initialSchema: {
                 jsonSchema: null,
                 editMode: "source",

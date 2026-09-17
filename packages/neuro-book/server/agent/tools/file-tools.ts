@@ -5,6 +5,7 @@ import {createPatch} from "diff";
 import {Type} from "typebox";
 import type {Static} from "typebox";
 import {spawnOwnedProcess} from "@notnotype/owned-process";
+import {appLogger} from "nbook/server/app-logs/logger";
 import {recordContextAccess} from "nbook/server/agent/context-access/profile-context-access";
 import {detectImageMimeType, firstChangedLine} from "nbook/server/agent/tools/file-tool-utils";
 import {formatSize, DEFAULT_MAX_BYTES, truncateHead, type TruncationResult} from "nbook/server/agent/tools/truncate";
@@ -110,6 +111,16 @@ async function resolveToolFile(
     operation: "read" | "write" | "edit" | "apply_patch",
 ): Promise<ResolvedFileTarget> {
     const authorized = await authorizeFileOperation(context, inputPath, operation);
+    // 越界访问审计留痕：绝对路径落在任何受管根之外（containmentRoot=null、无 Project 归属）时，
+    // 记一条结构化审计事件。这类访问只受宿主文件系统权限约束，必须有可追溯痕迹。
+    if (authorized.target.kind === "absolute" && authorized.target.project === null) {
+        void appLogger.info("agent.file-access.outside-workspace", {
+            sessionId: context.sessionId,
+            profileKey: context.profileKey,
+            operation,
+            path: authorized.target.absolutePath,
+        });
+    }
     return authorized.target;
 }
 
@@ -369,6 +380,8 @@ function createBashTool(): NeuroAgentTool {
         name: "bash",
         label: "bash",
         executionMode: "sequential",
+        // bash 可执行任意命令（写文件、改库等），属变更 Project Workspace 状态：只读模式必须同样注入写审批。
+        mutatesWorkspace: true,
         description: "Execute a bash command in the current Project Workspace, or in the Workspace Root when the session has no Current Project. The agent bin directories are prepended to PATH, with user assets before system assets, so use workspace node ... for content-node CLI tasks. Prefer / path separators in bash commands; quote Windows backslash paths if you must use them. Returns stdout and stderr merged. Output is truncated to the last 2000 lines or 50KB (whichever is hit first). If truncated, the retained output is addressed by a logical bash-output locator and can be read with the read tool while it remains available. Use bash for rg/find/ls/git/tests/build/workspace CLI, not for file reading or editing when a dedicated tool exists.",
         parameters: BashSchema,
         async executeWithContext(
@@ -382,6 +395,13 @@ function createBashTool(): NeuroAgentTool {
             const input = params as BashInput;
             const bash = resolveBashPath();
             const authorizedScope = await authorizeProcessCwd(context);
+            // bash 命令审计留痕：记录命令与 cwd，便于事后追溯 Agent 到底执行了什么。
+            void appLogger.info("agent.bash.command", {
+                sessionId: context.sessionId,
+                profileKey: context.profileKey,
+                command: input.command,
+                cwd: authorizedScope.root,
+            });
             // 后台模式（PLAN-E）：立即返回 jobId，输出以 followup 消息回流；取消经 job signal 直接 kill 进程
             if (input.background) {
                 const {job, jobEventCursor} = context.harness.jobs.spawn({
@@ -471,10 +491,15 @@ function createBashTool(): NeuroAgentTool {
                 }
                 return {
                     content: [{type: "text", text: formatted}],
-                    details: snapshot.truncation.truncated ? normalizeToolResultDetails({
-                        truncation: snapshot.truncation,
-                        fullOutput: snapshot.fullOutput,
-                    }) : undefined,
+                    // 结果 details 始终携带 command 与 cwd：前台 bash 的审计与追溯依据。
+                    details: normalizeToolResultDetails({
+                        command: input.command,
+                        cwd: authorizedScope.root,
+                        ...(snapshot.truncation.truncated ? {
+                            truncation: snapshot.truncation,
+                            fullOutput: snapshot.fullOutput,
+                        } : {}),
+                    }),
                 };
             } finally {
                 try {

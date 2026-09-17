@@ -19,6 +19,8 @@ export function createSqlTool(): NeuroAgentTool {
         name: "execute_sql",
         label: "Execute SQL",
         executionMode: "sequential",
+        // 允许 INSERT/UPDATE/DELETE 作用于当前 Project 的 project.sqlite，属变更 Project Workspace 状态。
+        mutatesWorkspace: true,
         description: buildSqlToolDescription(),
         parameters: ExecuteSqlSchema,
         async execute() {

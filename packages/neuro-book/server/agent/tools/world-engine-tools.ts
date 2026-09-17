@@ -46,6 +46,10 @@ export function createWorldEngineTools(): NeuroAgentTool[] {
                     throw new Error(`世界引擎脚本执行失败：${errorMessage}`, {cause: error});
                 }
             },
+            // execute_sql/execute_world/plot save_* 同属「状态变更工具」（Task 97 D8）：
+            // non-writer profile 下执行 readwrite CodeAct 会在事务内 COMMIT 世界切片写入，
+            // 属变更 Project Workspace 状态，只读模式（discuss/plan）须按 Task 90 机制注入写审批。
+            {mutatesWorkspace: true},
         ),
     ];
 }
@@ -71,12 +75,14 @@ function tool<TSchemaValue extends TSchema>(
     description: string,
     parameters: TSchemaValue,
     execute: (context: ToolExecutionContext, input: Static<TSchemaValue>) => Promise<NeuroToolResult>,
+    options: {mutatesWorkspace?: boolean} = {},
 ): NeuroAgentTool {
     return {
         key,
         name: key,
         label: key,
         executionMode: "sequential",
+        ...(options.mutatesWorkspace ? {mutatesWorkspace: true} : {}),
         description,
         parameters,
         async execute() {

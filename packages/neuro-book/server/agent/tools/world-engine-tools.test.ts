@@ -64,6 +64,11 @@ describe("world engine agent tools", {timeout: 30_000}, () => {
         expect(builtinKeys).not.toContain("delete_world_slice");
     });
 
+    it("execute_world 声明会变更 Workspace（readwrite CodeAct 落库，只读模式须注入写审批）", () => {
+        const tool = createWorldEngineTools().find((item) => item.key === "execute_world");
+        expect(tool?.mutatesWorkspace).toBe(true);
+    });
+
     it("execute_world description 暴露当前 slice 查询和 issue 契约", () => {
         const tool = createWorldEngineTools().find((item) => item.key === "execute_world");
         const description = tool?.description ?? "";

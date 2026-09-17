@@ -997,6 +997,8 @@ function emptyProfileDetail(compileIssues: AgentProfileIssueDto[]): AgentProfile
         issues: compileIssues,
         variables: [],
         toolKeys: [],
+        // 编译失败时无法解析工具集，无从判定命令执行能力：占位返回 false（不改动任何 UI 渲染/交互）。
+        includesShellCapability: false,
         initialSchema: {
             jsonSchema: null,
             editMode: "source",

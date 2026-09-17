@@ -31,6 +31,17 @@ export const AgentProfileOverrideStateSchema = z.enum(["contract_only", "install
 export const AgentProfileSchemaEditModeSchema = z.enum(["locked", "source", "unavailable"]);
 export type AgentProfileSchemaJsonValue = z.infer<ReturnType<typeof z.json>>;
 
+/** 具备「执行任意命令」能力的工具 key。目前只有 bash。 */
+export const AGENT_PROFILE_SHELL_TOOL_KEYS = ["bash"] as const;
+
+/**
+ * 判断一组工具 key 是否包含命令执行能力（bash）。
+ * 供 profile DTO 显式暴露「该 profile 是否能跑 shell」，避免 UI 侧自行推断。
+ */
+export function includesShellCapability(toolKeys: readonly string[]): boolean {
+    return AGENT_PROFILE_SHELL_TOOL_KEYS.some((key) => toolKeys.includes(key));
+}
+
 /**
  * profile 加载、解析与预览统一问题结构。
  */
@@ -138,6 +149,8 @@ export const AgentProfileDetailDtoSchema = z.object({
     issues: z.array(AgentProfileIssueDtoSchema),
     variables: z.array(AgentProfileVariableGroupDtoSchema),
     toolKeys: z.array(z.string()),
+    /** 该 profile 的工具集是否包含命令执行能力（bash）；供 UI 显式告警/标识。 */
+    includesShellCapability: z.boolean(),
     initialSchema: AgentProfileSchemaDetailDtoSchema,
     payloadSchema: AgentProfileSchemaDetailDtoSchema,
     outputSchema: AgentProfileSchemaDetailDtoSchema,

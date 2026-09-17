@@ -24,6 +24,7 @@ import type {
     AgentProfileSchemaDetailDto,
     AgentProfileVariableGroupDto,
 } from "nbook/shared/dto/agent-profile.dto";
+import {includesShellCapability} from "nbook/shared/dto/agent-profile.dto";
 import {reportResultSchemaForProfile} from "nbook/server/agent/profiles/report-result-schema";
 import {resolveRuntimeProfileSettings} from "nbook/server/agent/profiles/profile-settings";
 import {createLayeredProfileHomeFacade, ensureGlobalProfileHome, ensureProfileHome} from "nbook/server/agent/profiles/profile-home";
@@ -68,6 +69,7 @@ export async function readAgentProfileDetail(
     const profile = snapshot.profiles.find((item) => item.key === catalogItem.profileKey);
     const source = profile?.sourcePath ? await readFile(profile.sourcePath, "utf-8") : "";
     const runtimeProfile = catalogItem.loadStatus === "loaded" ? await profiles.get(catalogItem.profileKey) : null;
+    const toolKeys = runtimeProfile ? [...runtimeProfile.rootToolKeys] : [];
 
     return {
         catalogItem,
@@ -83,7 +85,9 @@ export async function readAgentProfileDetail(
         source,
         issues: catalogItem.issues,
         variables: buildProfileVariableGroups(profile),
-        toolKeys: runtimeProfile ? [...runtimeProfile.rootToolKeys] : [],
+        toolKeys,
+        // 显式暴露命令执行能力，避免 UI 侧只凭 toolKeys 自行推断。
+        includesShellCapability: includesShellCapability(toolKeys),
         initialSchema: buildSchemaDetail({
             schema: profile?.initialSchema ?? null,
             locked: catalogItem.schemaLocked,

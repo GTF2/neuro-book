@@ -7,7 +7,8 @@ import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness"
 import {AgentProfileCatalog} from "nbook/server/agent/profiles/catalog";
 import {defineAgentProfile} from "nbook/server/agent/profiles/define-agent-profile";
 import {HistorySet, Message, ProfilePrompt, WorkflowCatalog as WorkflowCatalogPrompt} from "nbook/server/agent/profiles/profile-dsl";
-import {previewAgentProfilePrepare} from "nbook/server/agent/profiles/profile-http-service";
+import {previewAgentProfilePrepare, readAgentProfileDetail} from "nbook/server/agent/profiles/profile-http-service";
+import {profileToolsFromKeys} from "nbook/server/agent/test/profile-tools";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
@@ -220,6 +221,65 @@ describe("Profile prepare preview物理Workspace Root", () => {
             expect(text).toContain("brainstorm-opening");
             expect(text).toContain("项目开篇脑暴");
             expect(text).toContain("项目专用脑暴 workflow");
+        } finally {
+            await harness.dispose();
+        }
+    });
+});
+
+describe("Profile 详情 DTO 暴露命令执行能力", () => {
+    it("含 bash 工具的 profile includesShellCapability=true，不含则为 false", async () => {
+        const fixture = await fixtureRoot();
+        const applicationRoot = absoluteFsPath(path.join(fixture, "application"));
+        const stateRoot = absoluteFsPath(path.join(fixture, "state"));
+        const runtimePaths = createRuntimePaths({applicationRoot, stateRoot});
+        await Promise.all([
+            mkdir(applicationRoot, {recursive: true}),
+            mkdir(runtimePaths.workspaceRoot, {recursive: true}),
+        ]);
+        process.env.NEURO_BOOK_APPLICATION_ROOT = applicationRoot;
+        process.env.NEURO_BOOK_STATE_ROOT = stateRoot;
+        setWorkspaceRuntimeRootContextForTest({workspaceRoot: runtimePaths.workspaceRoot});
+
+        const repo = new JsonlSessionRepository(runtimePaths.workspaceRoot);
+        const harness = new NeuroAgentHarness({
+            runtimePaths,
+            repo,
+            profiles: new AgentProfileCatalog(
+                path.join(fixture, "missing-system-profiles"),
+                undefined,
+                undefined,
+                undefined,
+                (profileRoot: string, rootLabel: string) => resolveProfileArtifactPathContext(profileRoot, rootLabel, path.join(fixture, "application")),
+                {install: "workspace/.nbook/agent/profiles"},
+            ),
+            enableSessionSummarizer: false,
+        });
+        harness.profiles.register(defineAgentProfile({
+            manifest: {key: "test.shell-cap", name: "Shell Cap"},
+            initialSchema: Type.Object({}),
+            tools: profileToolsFromKeys(["read", "bash"]),
+            prepare() {
+                return {};
+            },
+        }), false);
+        harness.profiles.register(defineAgentProfile({
+            manifest: {key: "test.no-shell-cap", name: "No Shell Cap"},
+            initialSchema: Type.Object({}),
+            tools: profileToolsFromKeys(["read", "write"]),
+            prepare() {
+                return {};
+            },
+        }), false);
+
+        try {
+            const withShell = await readAgentProfileDetail(harness.profiles, {profileKey: "test.shell-cap"});
+            expect(withShell.toolKeys).toContain("bash");
+            expect(withShell.includesShellCapability).toBe(true);
+
+            const withoutShell = await readAgentProfileDetail(harness.profiles, {profileKey: "test.no-shell-cap"});
+            expect(withoutShell.toolKeys).not.toContain("bash");
+            expect(withoutShell.includesShellCapability).toBe(false);
         } finally {
             await harness.dispose();
         }

@@ -8,6 +8,7 @@ import {Value} from "typebox/value";
 import {afterEach, beforeAll, beforeEach, describe, expect, it, vi} from "vitest";
 import {AttachmentStore} from "nbook/server/agent/attachments/attachment-store";
 import type {AttachmentBlobAdapter} from "nbook/server/agent/attachments/types";
+import {appLogger} from "nbook/server/app-logs/logger";
 import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
 import {defineAgentProfile} from "nbook/server/agent/profiles/define-agent-profile";
 import {profileToolsFromKeys} from "nbook/server/agent/test/profile-tools";
@@ -780,6 +781,68 @@ describe("v3 file tools", () => {
         const text = result?.content[0]?.type === "text" ? result.content[0].text : "";
         expect(text).toContain("out");
         expect(text).toContain("err");
+    });
+
+    it("bash 声明会变更 Workspace，且结果 details 始终携带 command 与 cwd", async () => {
+        const tool = mustTool("bash", harness);
+        // 只读模式（discuss/plan）写审批注入依赖 mutatesWorkspace；bash 可执行任意命令，必须标注。
+        expect(tool.mutatesWorkspace).toBe(true);
+
+        const result = await tool.executeWithContext?.(context, "bash-audit-details", {
+            command: "echo details-probe",
+            timeout: 10,
+        });
+
+        const details = result?.details as {command?: string; cwd?: string} | undefined;
+        expect(details?.command).toBe("echo details-probe");
+        // 无 Current Project 时 cwd 落在 Workspace Root。
+        expect(details?.cwd?.replaceAll("\\", "/")).toBe(workspaceRoot.replaceAll("\\", "/"));
+    });
+
+    it("越界绝对路径访问写入结构化审计事件 agent.file-access.outside-workspace", async () => {
+        const spy = vi.spyOn(appLogger, "info").mockResolvedValue();
+        try {
+            const externalRoot = join(root, "outside-audit");
+            await mkdir(externalRoot, {recursive: true});
+            const externalFile = join(externalRoot, "notes.md");
+            await writeFile(externalFile, "outside", "utf-8");
+
+            await mustTool("read", harness).executeWithContext?.(context, "read-outside-audit", {
+                path: externalFile,
+            });
+
+            const calls = spy.mock.calls.filter(([event]) => event === "agent.file-access.outside-workspace");
+            expect(calls).toHaveLength(1);
+            const data = calls[0]?.[1] as {
+                sessionId?: number;
+                profileKey?: string;
+                operation?: string;
+                path?: string;
+            } | undefined;
+            expect(data?.sessionId).toBe(context.sessionId);
+            expect(data?.profileKey).toBe("test.file-tools");
+            expect(data?.operation).toBe("read");
+            // 审计记录平台原生绝对路径；跨平台断言统一斜杠。
+            expect(data?.path?.replaceAll("\\", "/")).toBe(externalFile.replaceAll("\\", "/"));
+        } finally {
+            spy.mockRestore();
+        }
+    });
+
+    it("Workspace 内相对路径读取不产生越界审计事件", async () => {
+        const spy = vi.spyOn(appLogger, "info").mockResolvedValue();
+        try {
+            await writeFile(join(workspaceRoot, "inside.md"), "inside", "utf-8");
+
+            await mustTool("read", harness).executeWithContext?.(context, "read-inside-no-audit", {
+                path: "inside.md",
+            });
+
+            const calls = spy.mock.calls.filter(([event]) => event === "agent.file-access.outside-workspace");
+            expect(calls).toHaveLength(0);
+        } finally {
+            spy.mockRestore();
+        }
     });
 
     it("bash长输出只公开逻辑locator，read可分页读取且回收后明确报错", async () => {

@@ -73,6 +73,10 @@ describe("v3 execute_sql tool", () => {
         }
     });
 
+    it("execute_sql 声明会变更 Workspace（INSERT/UPDATE/DELETE 落库，只读模式须注入写审批）", () => {
+        expect(createSqlTool().mutatesWorkspace).toBe(true);
+    });
+
     it("没有具体Current Project时拒绝执行", async () => {
         await expect(executeSqlTool(null, "SELECT 1")).rejects.toThrow(
             "execute_sql 需要当前 session 位于具体 Project Workspace",
