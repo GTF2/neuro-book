@@ -59,9 +59,13 @@ function beatWithScene(input: {id: number; kind: StoryPromiseBeatWithScene["kind
     } as StoryPromiseBeatWithScene;
 }
 
-/** 组装 Promise 详情聚合(deadlineChapter 置空)。 */
-function withBeats(promise: StoryPromiseEntity, beats: StoryPromiseBeatWithScene[]): StoryPromiseWithBeats {
-    return {...promise, beats, deadlineChapter: null};
+/** 组装 Promise 详情聚合(deadlineChapter 缺省为空)。 */
+function withBeats(
+    promise: StoryPromiseEntity,
+    beats: StoryPromiseBeatWithScene[],
+    deadlineChapter: {id: number; name: string; title: string; sortOrder: number} | null = null,
+): StoryPromiseWithBeats {
+    return {...promise, beats, deadlineChapter};
 }
 
 type ServiceFixture = {
@@ -82,6 +86,7 @@ function createService(options: {
     existingBeat?: StoryPromiseBeatWithScene | null;
     /** assertScene 返回的目标场;缺省 active。 */
     scene?: Partial<StoryScene>;
+    latestWrittenChapter?: {id: number; sortOrder: number} | null;
 }): ServiceFixture {
     const beats = options.beats ?? [];
     const repository = {
@@ -92,6 +97,7 @@ function createService(options: {
         deleteBeat: vi.fn(async () => undefined),
         findBeatsByPromise: vi.fn(async () => beats),
         findBeatsByScene: vi.fn(async () => beats.map((beat) => ({...beat, promise: options.promise}))),
+        findLatestWrittenChapterByStory: vi.fn(async () => options.latestWrittenChapter ?? null),
         updatePromise: vi.fn(async () => options.promise),
     };
     const storyService = {
@@ -105,6 +111,7 @@ function createService(options: {
     } as unknown as PlotScopeGuard;
     const service = new PromiseService(
         repository as unknown as PromiseRepository,
+        repository as unknown as import("nbook/server/plot/contracts/plot-repositories").ChapterRepository,
         storyService,
         scopeGuard,
         new PlotDtoAssembler(),
@@ -230,10 +237,12 @@ describe("PromiseService", () => {
         );
         const repository = {
             findPromisesByStory: vi.fn(async () => [paidOff, unplanted, echoed]),
+            findLatestWrittenChapterByStory: vi.fn(async () => null),
         };
         const storyService = {ensureStory: vi.fn(async () => ({id: 10}))} as unknown as StoryService;
         const service = new PromiseService(
             repository as unknown as PromiseRepository,
+            repository as unknown as import("nbook/server/plot/contracts/plot-repositories").ChapterRepository,
             storyService,
             {} as PlotScopeGuard,
             new PlotDtoAssembler(),
@@ -250,5 +259,71 @@ describe("PromiseService", () => {
             beatStats: {plant: 1, advance: 1, setback: 0, payoff: 0, planned: 1, factual: 1, archived: 1},
         });
         expect(result[1]).toMatchObject({derivedStage: "unplanted"});
+    });
+
+    it("listOverdueStoryPromises 以章节 sortOrder 判断同章 deadline，并去重期限章节计数", async () => {
+        const deadline = {id: 99, name: "vol-01-ch-03", title: "第三章", sortOrder: 30};
+        const overdueFirst = withBeats(
+            promiseEntity({id: 8, title: "旧债", deadlineChapterId: 99, importance: "low"}),
+            [],
+            deadline,
+        );
+        const overdueSecond = withBeats(
+            promiseEntity({id: 2, title: "同章另一债", deadlineChapterId: 99, importance: "high"}),
+            [],
+            deadline,
+        );
+        const future = withBeats(
+            promiseEntity({id: 1, title: "未来债", deadlineChapterId: 3}),
+            [],
+            {id: 3, name: "vol-01-ch-04", title: "第四章", sortOrder: 40},
+        );
+        const fulfilled = withBeats(
+            promiseEntity({id: 4, title: "已兑现", status: "fulfilled", deadlineChapterId: 99}),
+            [],
+            deadline,
+        );
+        const withoutDeadline = withBeats(promiseEntity({id: 5, title: "无期限"}), []);
+        const repository = {
+            findPromisesByStory: vi.fn(async () => [future, overdueFirst, fulfilled, overdueSecond, withoutDeadline]),
+            // id 比 deadline 章小，验证服务没有拿数据库 id 比较章序。
+            findLatestWrittenChapterByStory: vi.fn(async () => ({id: 1, sortOrder: 30})),
+        };
+        const service = new PromiseService(
+            repository as unknown as PromiseRepository,
+            repository as unknown as import("nbook/server/plot/contracts/plot-repositories").ChapterRepository,
+            {ensureStory: vi.fn(async () => ({id: 10}))} as unknown as StoryService,
+            {} as PlotScopeGuard,
+            new PlotDtoAssembler(),
+        );
+
+        const result = await service.listOverdueStoryPromises();
+
+        expect(result).toMatchObject({
+            overduePromiseCount: 2,
+            overdueChapterCount: 1,
+            latestWrittenChapterOrder: 30,
+        });
+        expect(result.promises.map((promise) => promise.id)).toEqual(["2", "8"]);
+    });
+
+    it("listOverdueStoryPromises 没有 written 或 revised Scene 时不误报逾期", async () => {
+        const {service, repository} = createService({
+            promise: promiseEntity({deadlineChapterId: 9}),
+            latestWrittenChapter: null,
+        });
+        repository.findPromisesByStory = vi.fn(async () => [withBeats(
+            promiseEntity({deadlineChapterId: 9}),
+            [],
+            {id: 9, name: "vol-01-ch-01", title: "第一章", sortOrder: 1},
+        )]);
+
+        await expect(service.listOverdueStoryPromises()).resolves.toEqual({
+            promises: [],
+            overduePromiseCount: 0,
+            overdueChapterCount: 0,
+            latestWrittenChapterOrder: null,
+        });
+        expect(repository.findPromisesByStory).not.toHaveBeenCalled();
     });
 });

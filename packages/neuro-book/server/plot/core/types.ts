@@ -95,6 +95,9 @@ export type StoryThreadEntity = Omit<StoryThread, "tags"> & {
  */
 export type StoryChapterRef = Pick<StoryChapter, "id" | "name" | "title">;
 
+/** Promise deadline 比较需要章节承载树排序；DTO 仍只公开轻量章节摘要。 */
+export type StoryPromiseDeadlineChapterRef = StoryChapterRef & Pick<StoryChapter, "sortOrder">;
+
 /**
  * 带所属 Chapter 摘要的 Scene 读取模型;`chapter` 为空表示 Scene 未挂章。
  */
@@ -158,7 +161,7 @@ export type StoryPromiseBeatWithScene = StoryPromiseBeat & {
 export type StoryPromiseWithBeats = StoryPromiseEntity & {
     beats: StoryPromiseBeatWithScene[];
     // `deadlineChapter` 为空表示无兑现期限或期限章已被删除(外键 SetNull)。
-    deadlineChapter: StoryChapterRef | null;
+    deadlineChapter: StoryPromiseDeadlineChapterRef | null;
 };
 
 /**

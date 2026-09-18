@@ -449,6 +449,16 @@ export const StoryPromiseDetailDtoSchema = StoryPromiseDtoSchema.extend({
     beats: z.array(StoryPromiseBeatDtoSchema),
 });
 
+/** 逾期承诺查询：只读运行期视图，不持久化 overdue 状态。 */
+export const StoryPromiseOverdueListDtoSchema = z.object({
+    promises: z.array(StoryPromiseDtoSchema),
+    overduePromiseCount: z.number().int().nonnegative(),
+    // 多条承诺共用同一期限章时只计一章。
+    overdueChapterCount: z.number().int().nonnegative(),
+    // null 表示当前 Story 没有已写章节，不能判断任何承诺逾期。
+    latestWrittenChapterOrder: z.number().int().nonnegative().nullable(),
+});
+
 // Decision open 态候选方案条目。
 export const StoryDecisionOptionDtoSchema = z.object({
     option: z.string().trim().min(1, "option 不能为空"),
@@ -1203,6 +1213,7 @@ export type ReorderStoryScenesRequestDto = z.infer<typeof ReorderStoryScenesRequ
 export type CreateStoryPromiseRequestDto = z.infer<typeof CreateStoryPromiseRequestDtoSchema>;
 export type UpdateStoryPromiseRequestDto = z.infer<typeof UpdateStoryPromiseRequestDtoSchema>;
 export type SetPromiseBeatRequestDto = z.infer<typeof SetPromiseBeatRequestDtoSchema>;
+export type StoryPromiseOverdueListDto = z.infer<typeof StoryPromiseOverdueListDtoSchema>;
 export type StoryDecisionStatusDto = z.infer<typeof StoryDecisionStatusSchema>;
 export type StoryDecisionAnchorKindDto = z.infer<typeof StoryDecisionAnchorKindSchema>;
 export type StoryDecisionOptionDto = z.infer<typeof StoryDecisionOptionDtoSchema>;

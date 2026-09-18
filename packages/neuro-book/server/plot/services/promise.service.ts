@@ -1,4 +1,4 @@
-import type {PromiseRepository} from "nbook/server/plot/contracts/plot-repositories";
+import type {ChapterRepository, PromiseRepository} from "nbook/server/plot/contracts/plot-repositories";
 import {throwPlotNotFound} from "nbook/server/plot/core/errors";
 import {PlotDtoAssembler} from "nbook/server/plot/assemblers/plot-dto.assembler";
 import type {
@@ -11,6 +11,7 @@ import {StoryService} from "nbook/server/plot/services/story.service";
 import type {
     StoryPromiseDetailDto,
     StoryPromiseDto,
+    StoryPromiseOverdueListDto,
 } from "nbook/shared/dto/plot.dto";
 
 /** 摘要列表排序权重:open 优先(账本先看未清偿的),再按 importance 高到低。 */
@@ -30,6 +31,7 @@ const IMPORTANCE_ORDER = {high: 0, medium: 1, low: 2} as const;
 export class PromiseService {
     constructor(
         private readonly promiseRepository: PromiseRepository,
+        private readonly chapterRepository: ChapterRepository,
         private readonly storyService: StoryService,
         private readonly scopeGuard: PlotScopeGuard,
         private readonly assembler: PlotDtoAssembler,
@@ -41,13 +43,46 @@ export class PromiseService {
     async listStoryPromises(): Promise<StoryPromiseDto[]> {
         const story = await this.storyService.ensureStory();
         const promises = await this.promiseRepository.findPromisesByStory(story.id);
-        return promises
-            .map((promise) => this.assembler.toStoryPromiseDto(promise))
-            .sort((left, right) => (
-                STATUS_ORDER[left.status] - STATUS_ORDER[right.status]
-                || IMPORTANCE_ORDER[left.importance] - IMPORTANCE_ORDER[right.importance]
-                || Number(left.id) - Number(right.id)
-            ));
+        return this.sortPromiseDtos(promises.map((promise) => this.assembler.toStoryPromiseDto(promise)));
+    }
+
+    /**
+     * 读取当前已逾期的 Promise。Chapter 无独立完成状态，最新已写章从至少拥有一条
+     * written/revised Scene 的 Chapter 推导；没有已写章时不能判定任何条目逾期。
+     */
+    async listOverdueStoryPromises(): Promise<StoryPromiseOverdueListDto> {
+        const story = await this.storyService.ensureStory();
+        const latestWrittenChapter = await this.chapterRepository.findLatestWrittenChapterByStory(story.id);
+        if (!latestWrittenChapter) {
+            return {
+                promises: [],
+                overduePromiseCount: 0,
+                overdueChapterCount: 0,
+                latestWrittenChapterOrder: null,
+            };
+        }
+
+        const promises = await this.promiseRepository.findPromisesByStory(story.id);
+        const overdue = promises.filter((promise) => (
+            promise.status === "open"
+            && promise.deadlineChapter !== null
+            && promise.deadlineChapter.sortOrder <= latestWrittenChapter.sortOrder
+        ));
+        const overdueDtos = this.sortPromiseDtos(overdue.map((promise) => this.assembler.toStoryPromiseDto(promise)));
+        return {
+            promises: overdueDtos,
+            overduePromiseCount: overdueDtos.length,
+            overdueChapterCount: new Set(overdue.map((promise) => promise.deadlineChapterId)).size,
+            latestWrittenChapterOrder: latestWrittenChapter.sortOrder,
+        };
+    }
+
+    private sortPromiseDtos(promises: StoryPromiseDto[]): StoryPromiseDto[] {
+        return promises.sort((left, right) => (
+            STATUS_ORDER[left.status] - STATUS_ORDER[right.status]
+            || IMPORTANCE_ORDER[left.importance] - IMPORTANCE_ORDER[right.importance]
+            || Number(left.id) - Number(right.id)
+        ));
     }
 
     /**

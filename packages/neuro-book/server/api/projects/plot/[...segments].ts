@@ -403,6 +403,9 @@ async function handlePromises(plotFacade: PlotFacade, event: H3Event, method: st
         const body = await validateBody<CreateStoryPromiseRequestDto>(event, CreateStoryPromiseRequestDtoSchema);
         return plotFacade.createStoryPromise(body);
     }
+    if (method === "GET" && matchSegments(segments, ["promises", "overdue"])) {
+        return plotFacade.listOverdueStoryPromises();
+    }
     if (segments.length === 2) {
         const promiseId = parseEntityId("promiseId", segments[1] ?? "");
         if (method === "GET") return plotFacade.getStoryPromiseDetailDto(promiseId);

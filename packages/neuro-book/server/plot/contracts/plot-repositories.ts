@@ -97,6 +97,8 @@ export interface ChapterRepository {
     deleteAct(actId: number): Promise<void>;
     findChapterById(chapterId: number): Promise<StoryChapter | null>;
     findChaptersByStory(storyId: number): Promise<StoryChapter[]>;
+    /** 当前 Story 中至少有一条 written/revised Scene 的最新章节，按 sortOrder 和 id 稳定排序。 */
+    findLatestWrittenChapterByStory(storyId: number): Promise<StoryChapter | null>;
     findUngroupedChapters(storyId: number): Promise<StoryChapter[]>;
     findChapterByName(storyId: number, name: string, excludeChapterId?: number): Promise<StoryChapter | null>;
     createChapter(input: {storyId: number; actId: number | null; sortOrder: number; name: string; title: string; note: string | null} & Partial<ChapterBriefColumns> & Partial<Pick<StoryChapter, "authorOnly">>): Promise<StoryChapter>;

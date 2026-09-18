@@ -115,6 +115,27 @@ export class PrismaChapterRepository implements ChapterRepository {
     }
 
     /**
+     * 取当前 Story 下最新已写章节。章节没有独立完成状态，故以至少一条
+     * written/revised Scene 作为已写证据；archived Scene 不参与判断。
+     */
+    async findLatestWrittenChapterByStory(storyId: number): Promise<StoryChapter | null> {
+        return this.prisma.storyChapter.findFirst({
+            where: {
+                storyId,
+                scenes: {
+                    some: {
+                        status: {in: ["written", "revised"]},
+                    },
+                },
+            },
+            orderBy: [
+                {sortOrder: "desc"},
+                {id: "desc"},
+            ],
+        });
+    }
+
+    /**
      * 查询未归卷的章。
      */
     async findUngroupedChapters(storyId: number): Promise<StoryChapter[]> {

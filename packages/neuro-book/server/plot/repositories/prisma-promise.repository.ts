@@ -32,6 +32,7 @@ const STORY_PROMISE_DETAIL_INCLUDE = {
             id: true,
             name: true,
             title: true,
+            sortOrder: true,
         },
     },
 } satisfies Prisma.StoryPromiseInclude;

@@ -670,6 +670,70 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
         expect(ruled).toMatchObject({status: "overthrown"});
         expect((ruled as {decisionRefId: string}).decisionRefId).toBe(readId(decision));
     });
+    it("GET /promises/overdue 按章节 sortOrder 返回到期未兑现承诺及去重计数", async () => {
+        const projectRootName = await createProject();
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        const thread = await callApi(handler, projectRootName, "POST", "threads", {name: "main", title: "主线"});
+        const deadlineChapter = await callApi(handler, projectRootName, "POST", "chapters", {
+            name: "deadline", title: "期限章",
+        });
+        const latestChapter = await callApi(handler, projectRootName, "POST", "chapters", {
+            name: "latest", title: "已写章",
+        });
+        // 有意令后建的 deadlineChapter 排序更晚，证明比较基于 sortOrder 而非数据库 id。
+        await callApi(handler, projectRootName, "PATCH", `chapters/${readId(deadlineChapter)}`, {sortOrder: 20});
+        await callApi(handler, projectRootName, "PATCH", `chapters/${readId(latestChapter)}`, {sortOrder: 30});
+        await callApi(handler, projectRootName, "POST", "scenes", {
+            threadId: readId(thread), chapterId: readId(latestChapter), title: "已完成场", status: "written",
+        });
+        const overdueFirst = await callApi(handler, projectRootName, "POST", "promises", {
+            name: "old-debt", title: "旧债", deadlineChapterId: readId(deadlineChapter), importance: "low",
+        });
+        const overdueSecond = await callApi(handler, projectRootName, "POST", "promises", {
+            name: "same-deadline", title: "同期限", deadlineChapterId: readId(deadlineChapter), importance: "high",
+        });
+        const futureChapter = await callApi(handler, projectRootName, "POST", "chapters", {
+            name: "future", title: "未来章",
+        });
+        await callApi(handler, projectRootName, "PATCH", `chapters/${readId(futureChapter)}`, {sortOrder: 40});
+        await callApi(handler, projectRootName, "POST", "promises", {
+            name: "future-debt", title: "未来债", deadlineChapterId: readId(futureChapter),
+        });
+        const fulfilled = await callApi(handler, projectRootName, "POST", "promises", {
+            name: "paid-debt", title: "已还债", deadlineChapterId: readId(deadlineChapter),
+        });
+        await callApi(handler, projectRootName, "PATCH", `promises/${readId(fulfilled)}`, {status: "fulfilled"});
+
+        const overdue = await callApi(handler, projectRootName, "GET", "promises/overdue") as {
+            promises: Array<{id: string}>;
+            overduePromiseCount: number;
+            overdueChapterCount: number;
+            latestWrittenChapterOrder: number | null;
+        };
+
+        expect(overdue).toMatchObject({
+            overduePromiseCount: 2,
+            overdueChapterCount: 1,
+            latestWrittenChapterOrder: 30,
+        });
+        expect(overdue.promises.map((promise) => promise.id)).toEqual([readId(overdueSecond), readId(overdueFirst)]);
+    });
+
+    it("GET /promises/overdue 没有已写 Scene 时返回空结果", async () => {
+        const projectRootName = await createProject();
+        const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        const chapter = await callApi(handler, projectRootName, "POST", "chapters", {name: "deadline", title: "期限章"});
+        await callApi(handler, projectRootName, "POST", "promises", {
+            name: "unverified-debt", title: "未验证债", deadlineChapterId: readId(chapter),
+        });
+
+        await expect(callApi(handler, projectRootName, "GET", "promises/overdue")).resolves.toEqual({
+            promises: [],
+            overduePromiseCount: 0,
+            overdueChapterCount: 0,
+            latestWrittenChapterOrder: null,
+        });
+    });
 });
 
 async function createProject(options: {withCalendar?: boolean; calendarSource?: string; open?: boolean} = {}): Promise<string> {

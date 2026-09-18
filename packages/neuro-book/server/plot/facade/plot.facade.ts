@@ -81,6 +81,7 @@ import type {
     StoryPhaseDto,
     StoryPromiseDetailDto,
     StoryPromiseDto,
+    StoryPromiseOverdueListDto,
     StorySceneDetailDto,
     StorySceneWriteResponseDto,
     StoryThreadDetailDto,
@@ -581,6 +582,13 @@ export class PlotFacade {
     }
 
     /**
+     * 查询当前已写章序下仍未兑现的 Promise；不改变常规账本列表契约。
+     */
+    async listOverdueStoryPromises(): Promise<StoryPromiseOverdueListDto> {
+        return (await this.createModule()).promiseService.listOverdueStoryPromises();
+    }
+
+    /**
      * 查询 Promise 详情(含 beats 及各 beat 所在 Scene/章位)。
      */
     async getStoryPromiseDetailDto(promiseId: number): Promise<StoryPromiseDetailDto> {
@@ -1032,6 +1040,7 @@ export class PlotFacade {
         const worldAnchorValidator = new SceneWorldAnchorValidator();
         const promiseService = new PromiseService(
             promiseRepository,
+            chapterRepository,
             storyService,
             scopeGuard,
             assembler,
