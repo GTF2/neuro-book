@@ -107,11 +107,21 @@ export default {
         }
 
         // —— check:回撞校验(逐条撞终点帧的 irreversibleChanges) ——
+        // 2026-09-18 真实运行发现:校验员把全部声明合并成一句总评时,会把叙事内部自洽
+        // 误判为「与截面一致」,漏报计数级硬矛盾;提示词必须强制逐条作业并以截面为事实基准。
         wf.progress({phase: "check"});
         const checker = await wf.agents.create("adhoc", {
             initial: {
                 name: "关键帧回撞校验员",
-                systemPrompt: "你是关键帧回撞校验员,只做事后校验,不事前约束写作:逐条核对补间正文是否兑现终点帧声明的不可逆变化、是否与世界状态截面冲突。只报告有正文证据的冲突,不代写全文,不把写作偏好当冲突。完成后必须用 report_result 返回结构化 data。",
+                systemPrompt: [
+                    "你是关键帧回撞校验员,只做事后校验,不事前约束写作。必须逐条作业,不许把多条声明合并成总评:",
+                    "1) 把终点帧声明的每一条 irreversibleChanges 单独列为一项;",
+                    "2) 对每一项,先在补间正文找兑现证据(引用原文);找不到兑现证据就作为「声明未兑现」上报;",
+                    "3) 对每一项已兑现的,把兑现后的事实与世界状态截面逐项对照:直接矛盾、数量/次数对不上、时间线对不上都算冲突;",
+                    "4) 世界截面是事实基准:叙事内部圆得自洽不等于无冲突,判定对象是声明与正文对照截面的事实一致性;",
+                    "5) 只上报有正文证据的冲突与未兑现,不代写全文,不把写作偏好当冲突。",
+                    "完成后必须用 report_result 返回结构化 data。",
+                ].join("\n"),
                 outputSchema: TweenCheckSchema,
             },
             tags: ["workflow:keyframe-tween-review", "review:tween-check"],
@@ -122,7 +132,7 @@ export default {
         wf.chart.enter("check", {sessionId: checker.id});
         const checkRun = await checker.invoke({
             message: [
-                "回撞校验补间正文,按已声明 schema 汇报。",
+                "回撞校验补间正文,按已声明 schema 汇报。先逐条枚举终点帧声明的每一条 irreversibleChanges,对每一条独立完成「正文兑现证据 → 与世界状态截面对照」两步再汇总;不要合并成一句总评。",
                 `【终点帧声明】\n${toKeyframe.slice(0, SLICE)}`,
                 worldFacts ? `【世界状态截面】\n${worldFacts.slice(0, SLICE)}` : "",
                 `【补间正文】\n${tweenText.slice(0, SLICE)}`,

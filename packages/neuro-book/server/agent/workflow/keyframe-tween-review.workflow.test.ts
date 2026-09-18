@@ -45,6 +45,7 @@ describe("keyframe-tween-review workflow", () => {
         const sessions = new MemorySessionStore();
         const agents = new MockAgentPort(sessions);
         const writerMessages: string[] = [];
+        const checkerMessages: string[] = [];
         agents.register("writer", (turn): {message: string; data: JsonValue} => {
             writerMessages.push(turn.message ?? "");
             return {
@@ -54,6 +55,7 @@ describe("keyframe-tween-review workflow", () => {
         });
         agents.register("adhoc", (turn): {message: string; data: JsonValue} => {
             if (!turn.message?.includes("回撞校验")) throw new Error(`意外的校验 message：${turn.message}`);
+            checkerMessages.push(turn.message ?? "");
             return {
                 message: "回撞完成",
                 data: {overall: "正文兑现了终点帧声明,无冲突。", violations: []},
@@ -97,6 +99,17 @@ describe("keyframe-tween-review workflow", () => {
             .map((record) => parseActivityParamsObject(record) ?? {});
         expect(creates.filter((params) => params.profileKey === "writer")).toMatchObject([{ephemeral: false}]);
         expect(creates.filter((params) => params.profileKey === "adhoc")).toMatchObject([{ephemeral: true}]);
+        // 回撞校验员合同(2026-09-18 实测校准):系统提示词强制逐条作业并以截面为事实基准,
+        // 校验消息要求先枚举每条声明再对照,不允许合并总评——否则计数级硬矛盾会被叙事自洽掩盖。
+        const checkerCreate = creates.find((params) => params.profileKey === "adhoc");
+        const checkerInitial = (checkerCreate?.initial ?? {}) as {systemPrompt?: string};
+        expect(checkerInitial.systemPrompt).toContain("逐条");
+        expect(checkerInitial.systemPrompt).toContain("世界状态截面");
+        expect(checkerInitial.systemPrompt).toContain("声明未兑现");
+        expect(checkerMessages.length).toBeGreaterThan(0);
+        for (const message of checkerMessages) {
+            expect(message).toContain("逐条枚举");
+        }
     });
 
     test("回撞发现冲突:violated 清单进入结果,由 leader 裁决", async () => {
