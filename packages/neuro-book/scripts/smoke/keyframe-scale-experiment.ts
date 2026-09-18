@@ -371,7 +371,13 @@ async function runTween(projectRoot: string, projectDir: string, segment: Segmen
     const startedAt = Date.now();
     const started = await startWorkflowRun(projectRoot, "keyframe-tween-review", args);
     const job = await pollJob(started.jobId, projectRoot);
-    const result = (job.result && typeof job.result === "object" && !Array.isArray(job.result) ? job.result : {}) as {
+    // jobs API 的 result 是 {runId, workflowKey, status, result: <workflow 返回值>, sessions, usage} 包装层；
+    // workflow 返回值在 result.result，兼容扁平旧形状防止包装层再变（2026-09-18 实测确认嵌套形状）。
+    const wrapper = (job.result && typeof job.result === "object" && !Array.isArray(job.result) ? job.result : {}) as {result?: unknown};
+    const inner = wrapper.result !== undefined && typeof wrapper.result === "object" && !Array.isArray(wrapper.result)
+        ? wrapper.result
+        : wrapper;
+    const result = inner as {
         verdict?: string;
         overall?: string;
         violations?: Array<{keyframeName?: string; change?: string; problem?: string; suggestion?: string}>;
