@@ -16,7 +16,7 @@ role: tasker
 - 生成只写待确认建议；不调用 LLM；只有显式 `confirm` 请求才能写 Scene。
 - 确认写入必须保留已有时间、地点和 subjects；同一建议的多 Scene 写入必须原子成功或整体回滚。Scene 事务失败回到 `pending`；若 Scene 已落库但 `confirmed` 队列写入失败，保留 `applying` 恢复状态，重试确认只做幂等合并并收口。
 - 只从无 frontmatter 错误且 `active` 的 lorebook `character` / `location` 条目构造未解析候选；不触碰 UI 热区、`nuxt.config.ts`、`packages/nb-ui/**` 或其他会话文件。
-- 原工作区的未跟踪草稿由本 Task 接管并复制到实现 worktree，原文件不得删除或覆盖。
+- 原工作区的未跟踪草稿已由本 Task 接管并复制到实现 worktree；开发者于 2026-09-18 明确授权把被定稿实现完全取代的原文件归档至主工作区 `.local/archive/world-anchor-suggestion.service.draft.ts`，不删除内容、不覆盖其他在途文件。
 
 ## 验收
 

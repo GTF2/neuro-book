@@ -37,25 +37,36 @@ export default defineEventHandler((event) => withProjectHttpError(async () => {
                 const chapter = await plot.getStoryChapterDto(chapterId);
                 return {id: chapter.id, title: chapter.title, sortOrder: chapter.sortOrder};
             },
-            listPromises: () => plot.listStoryPromises(),
+            listPromises: () => plot.listStoryPromiseDetails(),
             readWorldSliceIds: async ({sliceIds}) => {
                 const slices = await Promise.all(sliceIds.map(async (sliceId) => {
                     try {
                         return await world.getSlice(sliceId);
-                    } catch {
-                        return null;
+                    } catch (error) {
+                        if (isSliceNotFoundError(error)) {
+                            throw new Error(`World 切面凭据不存在：${sliceId}`, {cause: error});
+                        }
+                        throw new Error(`读取 World 切面凭据失败：${sliceId}`, {cause: error});
                     }
                 }));
-                return new Set(slices.flatMap((slice) => slice === null ? [] : [slice.id]));
+                return new Set(slices.map((slice) => slice.id));
             },
             runLint: ({prosePath}) => runLlmlintCheck({
                 skillRoot,
-                absoluteFilePath: prose.absolutePath,
+                absoluteFilePath: prosePath,
                 minLevel: "low",
             }),
         }, {
             ...body,
             chapterId,
+            prosePath: prose.absolutePath,
         });
     });
 }));
+
+function isSliceNotFoundError(error: unknown): boolean {
+    return typeof error === "object"
+        && error !== null
+        && "statusCode" in error
+        && error.statusCode === 404;
+}

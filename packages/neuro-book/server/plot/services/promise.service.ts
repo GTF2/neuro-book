@@ -47,6 +47,15 @@ export class PromiseService {
     }
 
     /**
+     * Promise 详情列表。审计等内部读取需要逐条核对 beat，排序与摘要账本保持一致。
+     */
+    async listStoryPromiseDetails(): Promise<StoryPromiseDetailDto[]> {
+        const story = await this.storyService.ensureStory();
+        const promises = await this.promiseRepository.findPromisesByStory(story.id);
+        return this.sortPromiseDtos(promises.map((promise) => this.assembler.toStoryPromiseDetailDto(promise)));
+    }
+
+    /**
      * 读取当前已逾期的 Promise。Chapter 无独立完成状态，最新已写章从至少拥有一条
      * written/revised Scene 的 Chapter 推导；没有已写章时不能判定任何条目逾期。
      */
@@ -77,7 +86,7 @@ export class PromiseService {
         };
     }
 
-    private sortPromiseDtos(promises: StoryPromiseDto[]): StoryPromiseDto[] {
+    private sortPromiseDtos<T extends StoryPromiseDto>(promises: T[]): T[] {
         return promises.sort((left, right) => (
             STATUS_ORDER[left.status] - STATUS_ORDER[right.status]
             || IMPORTANCE_ORDER[left.importance] - IMPORTANCE_ORDER[right.importance]

@@ -582,6 +582,13 @@ export class PlotFacade {
     }
 
     /**
+     * 查询 Promise 详情列表，供需要按 beat 逐项核对的只读内部能力使用。
+     */
+    async listStoryPromiseDetails(): Promise<StoryPromiseDetailDto[]> {
+        return (await this.createModule()).promiseService.listStoryPromiseDetails();
+    }
+
+    /**
      * 查询当前已写章序下仍未兑现的 Promise；不改变常规账本列表契约。
      */
     async listOverdueStoryPromises(): Promise<StoryPromiseOverdueListDto> {

@@ -182,10 +182,10 @@ packages/nb-ui/**
 #### T1.0 依赖对齐专项（修 `nuxt:build`，G4）
 
 - **执行者**：software-engineer（**独占窗口**：此任务进行期间，其他人不做任何代码提交）
-- **职责**：更新 `bun.lock` 使依赖树满足 Nuxt 4.5.1 期望（Vue 全家桶 ≥3.5.40，连带 `devalue` 等一批）→ `bun install`（本机已修复，秒级）→ 全量验证。
-- **输入**：`bun.lock`；A6 快照的归因记录（`deliverables/stable-admission-a6/`：@vue/shared 3.5.39 vs ^3.5.40 冲突链）。
-- **验收标准**：① `bun run --cwd packages/neuro-book nuxt:build` **EXIT=0**（当前是红的——这是本任务唯一硬指标）；② 全量测试 0 failed；③ e2e 全绿；④ `product-start.test.ts` 绿。四条全过才提交。
-- **风险预案**：若升级引发大面积类型/运行时错误（预计 `@vue/shared` 影响 moderate）——回滚方案：`git checkout bun.lock package.json && bun install --frozen-lockfile`（实测 536ms）。**宁可回滚不硬推**。
+- **职责**：在根 `package.json` 已有的 `overrides` 块中把 `vue`、`@vue/shared` 固定到 3.5.42，并把 `devalue` 固定到 5.9.2，然后更新 `bun.lock` 使依赖树去重 → `bun install` → 全量验证。当前真实分裂是根 3.5.39 与嵌套 3.5.42；`devalue` 的根 5.8.1 也不满足 Nuxt 4.5.1 要求的 `^5.8.2`，它是独立修复链，不是 Vue 升级的附带结果。两个主 `package.json` 均未声明 `vue`，3.5.39 是旧 lock 残留，统一到 3.5.42 不需要改 dependencies 声明范围。
+- **输入**：`bun.lock`；根 `package.json` 的 `overrides` 块；A6 快照归因记录（`deliverables/stable-admission-a6/`：根 `@vue/shared` 3.5.39 与嵌套 3.5.42 的冲突链）。
+- **验收标准**：① `bun run --cwd packages/neuro-book nuxt:build` **EXIT=0**；② `scripts/deploy/product-start.test.ts` 绿（A6 的原始红在此）；③ 全量测试 0 failed；④ e2e 全绿。四条全过才提交；不得重命名 `nuxt:build` script（Dockerfile、CI workflow 与测量合同均有命令字符串断言）。
+- **风险预案**：实际变更是 Vue 家族与 `devalue` 的 patch 级去重，主要风险在 `bun install` 重排 hoisted 树而非框架语义。若升级引发大面积类型/运行时错误，回滚 `package.json` 与 `bun.lock` 后以 frozen lockfile 重装；宁可回滚不硬推。
 - **前置任务**：M1。
 
 ---
@@ -235,7 +235,7 @@ packages/nb-ui/**
 
 - **执行者**：software-engineer（可拆给两个 Agent 并行：A=备份+历史，B=RAG+全稿）
 - **职责**：
-  - A1 备份/恢复 UI：设置区内新页面（发起备份/历史列表/恢复引导三块），调既有 `/api/passport/backups/*`（**注意**：端点已加鉴权，恢复码流程文案要写清）。
+  - A1 备份/恢复入口：从设置或项目工作流新增显眼入口，直达既有 `NovelIdePassportProfilePanel`（发起备份、历史列表、恢复引导三块均已在面板中实现）；调既有 `/api/passport/backups/*`，不重建第二套备份 UI（**注意**：端点已加鉴权，恢复码流程文案要写清）。
   - A2 历史时间线面板：nb-history TimelineEntry 能力的 UI（按时间列出项目事件、删除找回入口），挂 `WorkspaceHistoryInboxDialog` 同族位置。
   - B1 RAG 检查器解禁：翻转 `NovelRagPanel.contract.test.ts` 的「不挂载」断言，把 `NovelRagInspectorDialog` 挂进主 IDE（放「世界」活动域）。
   - B2 llmlint 全稿扫描入口：现有 `NovelProseLintPanel` 加「扫全稿」按钮（调 T0.4 目录模式），结果聚合视图（按文件分组的命中列表 + 统计头）。
@@ -360,12 +360,12 @@ packages/nb-ui/**
 
 | 日期 | 任务 | 执行者 | commit | 验收结果 | 备注 |
 |---|---|---|---|---|---|
-| 2026-09-17 | 计划定稿 | 总设计师 | `796cb4a3` 后本文件提交 | — | 两份调研输入就绪 |
-| 2026-09-17 | T0.8 文案包 | software-product-manager | （见 git log 本条） | 55 条成稿；两处二选一总设计师代决（推倒重来/和 AI 聊） | PM 报告 shell 异常，纯文档任务未受影响 |
-| 2026-09-17 | T0.1 结算表协议 | software-engineer | 01900a91 | 契约 4/4 + e2e 13/13（新 08 用例）+ typecheck 0；主理人独立复验 | 提交时 assets/workspace 需 git add -f（已知坑）；工作区另有 5 张过期证据 png（UI 线界面变化所致，未混入提交，待收口时统一重截） |
-| 2026-09-17 | T0.2 定稿原子提交 | software-engineer | （本条 commit） | 单测 7/7 + plot 92/92 + e2e 13/13 + typecheck 0；主理人复验 7/7 | 自抓 writeSlice 先提交后返回 issues 的真 bug 并加变体锁；测试窗口内改源码的过程偏差已自查并干净重跑 |
-| 2026-09-17 | T0.3 检索自动候选 | software-engineer | （本条 commit） | 工具 12/12 + 契约 17/17 + agent 全量 1522 + typecheck 0；主理人复验 | e2e 有 1 条资源型 flake（ERR_INSUFFICIENT_RESOURCES，单独重跑过，判 13/13 有效）；确认协议双通道供 T1.3 方案卡直接消费 |
-| 2026-09-17 | T0.4 全稿扫描后端 | software-engineer | （本条 commit） | 测试 27/27 + route 29/29 + typecheck 0；主理人复验 | 真稿基线入档：236 文件 1433ms / 3936 命中 / 91 规则（60s 超时下 42 倍余量）；e2e 未跑（route 分支级改动，单文件路径未动）；openapi generate 本机 0 routes 疑需 dev server，待观察 |
-| 2026-09-18 | T0.5 worldAnchor 半自动补齐 | software-engineer | （本条 commit） | 服务 14/14 + Plot API 16/16 + typecheck 0；真稿副本 224 章生成 222 pending / 跳过 2 / 失败 0（1882.5ms），固定 20 章样本 87/87 正文词面证据命中 | 仅显式 confirm 才写 Scene；确认按单条建议事务回滚并保留已有时间。存量正文优先按卷/章节目录键回退，未回写 frontmatter；全量 e2e、全量测试与 nuxt:build 未跑；openapi 生成器在隔离 worktree 0 routes 环境失败。 |
+| 2026-09-17 | 计划定稿 | 总设计师 | `7aaf33d7` | — | 两份调研输入就绪 |
+| 2026-09-17 | T0.8 文案包 | software-product-manager | `a0349dbb` | 55 条成稿；两处二选一总设计师代决（推倒重来/和 AI 聊） | PM 报告 shell 异常，纯文档任务未受影响 |
+| 2026-09-17 | T0.1 结算表协议 | software-engineer | `01900a91` | 契约 4/4 + e2e 13/13（新 08 用例）+ typecheck 0；主理人独立复验 | 提交时 assets/workspace 需 git add -f（已知坑）；工作区另有 5 张过期证据 png（UI 线界面变化所致，未混入提交，待收口时统一重截） |
+| 2026-09-17 | T0.2 定稿原子提交 | software-engineer | `83ba2198` | 单测 7/7 + plot 92/92 + e2e 13/13 + typecheck 0；主理人复验 7/7 | 自抓 writeSlice 先提交后返回 issues 的真 bug 并加变体锁；测试窗口内改源码的过程偏差已自查并干净重跑 |
+| 2026-09-17 | T0.3 检索自动候选 | software-engineer | `609adc00` | 工具 12/12 + 契约 17/17 + agent 全量 1522 + typecheck 0；主理人复验 | e2e 有 1 条资源型 flake（ERR_INSUFFICIENT_RESOURCES，单独重跑过，判 13/13 有效）；确认协议双通道供 T1.3 方案卡直接消费 |
+| 2026-09-17 | T0.4 全稿扫描后端 | software-engineer | `8a1b001b` | 测试 27/27 + route 29/29 + typecheck 0；主理人复验 | 真稿基线入档：236 文件 1433ms / 3936 命中 / 91 规则（60s 超时下 42 倍余量）；e2e 未跑（route 分支级改动，单文件路径未动）；openapi generate 本机 0 routes 疑需 dev server，待观察 |
+| 2026-09-18 | T0.5 worldAnchor 半自动补齐 | software-engineer | `bc48f32a` | 初版服务 14/14 + Plot API 16/16 + typecheck 0；2026-09-18 数据完整性修复后相关 63/63 + typecheck 0；真稿副本 224 章生成 222 pending / 跳过 2 / 失败 0（1882.5ms），固定 20 章样本 87/87 正文词面证据命中 | 仅显式 confirm 才写 Scene；`applying` 重试失败保留恢复线索，重复生成保留未审 pending 并给跳过/失败章节明细；存量正文优先按卷/章节目录键回退，未回写 frontmatter；M0 全量测试 496 文件 / 3854 passed / 2 skipped / 0 failed；E2E 与 nuxt:build 未跑；openapi 生成器在隔离 worktree 0 routes 环境失败。 |
 | 2026-09-18 | T0.6 承诺账本逾期视图后端 | software-engineer | `e76ae918` | Promise 服务 11/11 + Plot API 18/18 + typecheck 0；按 Chapter sortOrder 推导最新已写章，截止当章即逾期 | 新增只读 `/promises/overdue`，不改普通账本数组、不加 migration；逾期章节数按 deadline Chapter 去重；全量测试、E2E 与 nuxt:build 未跑。 |
-| 2026-09-18 | T0.7 一致性审计引擎 v1 | software-engineer | （本条 commit） | 审计服务 4/4 + Plot API 19/19 + typecheck 0 | 三源只读报告；结算自由文本和 World patch 没有结构化映射时明确报不可核对，不自动改稿；全量测试、E2E、nuxt:build 与真实 llmlint CLI API 集成未跑。 |
+| 2026-09-18 | T0.7 一致性审计引擎 v1 | software-engineer | `7a0e2f16` | 初版审计 4/4 + Plot API 19/19 + typecheck 0；2026-09-18 正确性修复后相关 63/63 + typecheck 0 | 三源只读报告；本章 factual payoff 才构成兑现证据，承诺提示维持 warn；自由文本和 World patch 没有结构化映射时明确报不可核对，不自动改稿；M0 全量测试 496 文件 / 3854 passed / 2 skipped / 0 failed，E2E、nuxt:build 与真实 llmlint CLI API 集成未跑。 |

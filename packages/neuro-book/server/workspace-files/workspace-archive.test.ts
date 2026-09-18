@@ -1,6 +1,7 @@
 import {execFile} from "node:child_process";
 import {randomUUID} from "node:crypto";
 import fs from "node:fs/promises";
+import {createRequire} from "node:module";
 import path from "node:path";
 import {setTimeout} from "node:timers/promises";
 import {promisify} from "node:util";
@@ -25,6 +26,15 @@ import {
 } from "nbook/server/workspace-files/project-identity";
 
 const execFileAsync = promisify(execFile);
+
+/**
+ * 不能用 `import.meta.resolve`：vitest 的 module runner 把它代理给宿主运行时，`bun --bun`
+ * 下它不会命中本项目 node_modules，而是回退 auto-install 到全局缓存的 latest（本仓锁
+ * 0.17.4）。该缓存副本不自带 `node_modules`，其传递依赖要再经一次 auto-install 才可用，
+ * 首次拉取或并发拉取时就会 `Cannot find module '@libsql/core/config'`。`createRequire`
+ * 走 CJS 向上查找，稳定命中本项目 node_modules，让子进程不依赖任何网络与全局缓存状态。
+ */
+const libsqlClientEntry = createRequire(import.meta.url).resolve("@libsql/client");
 
 describe("workspace-archive", () => {
     let root: string;
@@ -313,7 +323,7 @@ function corruptArchiveChildScript(): string {
     return `
 import fs from "node:fs/promises";
 import path from "node:path";
-import {createClient} from ${JSON.stringify(import.meta.resolve("@libsql/client"))};
+import {createClient} from ${JSON.stringify(pathToFileURL(libsqlClientEntry).href)};
 import {absoluteFsPath} from ${JSON.stringify(pathToFileURL(path.resolve("server/runtime/paths/file-path.ts")).href)};
 import {createProjectWorkspaceZipStream} from ${JSON.stringify(pathToFileURL(path.resolve("server/workspace-files/workspace-archive.ts")).href)};
 import {toSqliteFileUrl} from ${JSON.stringify(pathToFileURL(path.resolve("server/workspace-files/project-workspace.ts")).href)};

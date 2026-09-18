@@ -173,10 +173,27 @@ export const WorldAnchorSuggestionAppliedSceneDtoSchema = z.object({
     locationSubjectId: NonEmptyStringSchema.nullable(),
     startInstantApplied: z.string().regex(/^\d+$/, "startInstantApplied 必须是非负整数字符串").nullable(),
 });
+export const WorldAnchorSuggestionGenerateIssueReasonSchema = z.enum([
+    "no_active_scene",
+    "anchor_complete",
+    "no_anchor_evidence",
+    "no_matching_prose",
+    "ambiguous_prose_candidates",
+    "empty_prose",
+]);
+export const WorldAnchorSuggestionGenerateIssueDtoSchema = z.object({
+    chapterId: NonEmptyStringSchema,
+    chapterTitle: NonEmptyStringSchema,
+    reason: WorldAnchorSuggestionGenerateIssueReasonSchema,
+    message: NonEmptyStringSchema,
+});
 export const WorldAnchorSuggestionGenerateResultDtoSchema = z.object({
     generated: z.number().int().nonnegative(),
     skipped: z.number().int().nonnegative(),
     failed: z.number().int().nonnegative(),
+    // 新增诊断字段；保留既有计数和 store 响应形态。
+    skippedDetails: z.array(WorldAnchorSuggestionGenerateIssueDtoSchema),
+    failedDetails: z.array(WorldAnchorSuggestionGenerateIssueDtoSchema),
     store: WorldAnchorSuggestionStoreDtoSchema,
 });
 export const WorldAnchorSuggestionConfirmOutcomeDtoSchema = z.object({
@@ -1185,6 +1202,8 @@ export type WorldAnchorSuggestionTimeEstimate = z.infer<typeof WorldAnchorSugges
 export type WorldAnchorSuggestion = z.infer<typeof WorldAnchorSuggestionDtoSchema>;
 export type WorldAnchorSuggestionStore = z.infer<typeof WorldAnchorSuggestionStoreDtoSchema>;
 export type WorldAnchorSuggestionAppliedScene = z.infer<typeof WorldAnchorSuggestionAppliedSceneDtoSchema>;
+export type WorldAnchorSuggestionGenerateIssueReason = z.infer<typeof WorldAnchorSuggestionGenerateIssueReasonSchema>;
+export type WorldAnchorSuggestionGenerateIssue = z.infer<typeof WorldAnchorSuggestionGenerateIssueDtoSchema>;
 export type WorldAnchorSuggestionGenerateResult = z.infer<typeof WorldAnchorSuggestionGenerateResultDtoSchema>;
 export type WorldAnchorSuggestionConfirmResult = z.infer<typeof WorldAnchorSuggestionConfirmResultDtoSchema>;
 export type WorldAnchorSuggestionRejectResult = z.infer<typeof WorldAnchorSuggestionRejectResultDtoSchema>;

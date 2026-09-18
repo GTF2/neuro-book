@@ -121,7 +121,7 @@ export function detectChapterAnchorEvidence(
 }
 
 /**
- * 重新生成 pending 建议。已确认或已拒绝的历史保留，旧 pending 由本轮结果整体替换。
+ * 重新生成 pending 建议。既有队列历史和未决建议均保留；只追加未与未决建议重复的新候选。
  */
 export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestionPorts): Promise<WorldAnchorSuggestionGenerateResult> {
     const [worldSubjects, lorebookNodes, tree, store] = await Promise.all([
@@ -135,18 +135,20 @@ export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestio
     const legacyProseNodes = await ports.listLegacyProseNodes();
     const legacyProseByChapterName = groupLegacyProseByChapterName(legacyProseNodes);
     const legacyProseByTitle = groupLegacyProseByTitle(legacyProseNodes);
-    const history = store.suggestions.filter((suggestion) => suggestion.status !== "pending");
+    const existingUnresolved = new Set(store.suggestions
+        .filter((suggestion) => suggestion.status === "pending" || suggestion.status === "applying")
+        .map(suggestionFingerprint));
     const pending: WorldAnchorSuggestion[] = [];
     const createdAt = ports.now().toISOString();
-    let skipped = 0;
-    let failed = 0;
+    const skippedDetails: WorldAnchorSuggestionGenerateResult["skippedDetails"] = [];
+    const failedDetails: WorldAnchorSuggestionGenerateResult["failedDetails"] = [];
     let lastKnownInstant: {instant: string; chapterTitle: string} | null = null;
 
     for (const {chapter} of chapters) {
         const detail = await ports.getChapterScenes(Number(chapter.id));
         const activeScenes = detail.scenes.filter((scene) => scene.status !== "archived");
         if (activeScenes.length === 0) {
-            skipped += 1;
+            skippedDetails.push(generateIssue(chapter, "no_active_scene", "该章节没有可写入的 active Scene。"));
             continue;
         }
 
@@ -157,10 +159,30 @@ export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestio
             : structuredLegacyProseNodes.length > 0
                 ? structuredLegacyProseNodes
                 : legacyProseByTitle.get(chapter.title) ?? [];
-        const proseNode = proseNodes.length === 1 ? proseNodes[0] ?? null : null;
-        const prose = proseNode ? await ports.readProse(proseNode.indexPath) : null;
-        if (prose === null || prose.trim().length === 0) {
-            failed += 1;
+        if (proseNodes.length === 0) {
+            failedDetails.push(generateIssue(chapter, "no_matching_prose", "未找到与该章节匹配的正文。"));
+            lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
+            continue;
+        }
+        if (proseNodes.length > 1) {
+            failedDetails.push(generateIssue(chapter, "ambiguous_prose_candidates", "匹配到多个正文候选，无法安全消歧。"));
+            lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
+            continue;
+        }
+        const proseNode = proseNodes[0];
+        if (!proseNode) {
+            failedDetails.push(generateIssue(chapter, "no_matching_prose", "未找到与该章节匹配的正文。"));
+            lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
+            continue;
+        }
+        const prose = await ports.readProse(proseNode.indexPath);
+        if (prose === null) {
+            failedDetails.push(generateIssue(chapter, "no_matching_prose", "匹配的正文无法读取。"));
+            lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
+            continue;
+        }
+        if (prose.trim().length === 0) {
+            failedDetails.push(generateIssue(chapter, "empty_prose", "匹配的正文为空。"));
             lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
             continue;
         }
@@ -178,7 +200,12 @@ export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestio
             } satisfies TimeEstimate;
 
         if (!hasMissingAnchorField(activeScenes, subjectIds, locationSubjectId, timeEstimate)) {
-            skipped += 1;
+            skippedDetails.push(generateIssue(chapter, "anchor_complete", "该章节的 active Scene 锚点已完整。"));
+            lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
+            continue;
+        }
+        if (evidence.length === 0 && timeEstimate === null) {
+            skippedDetails.push(generateIssue(chapter, "no_anchor_evidence", "正文中没有可用于补齐 worldAnchor 的主体或时间证据。"));
             lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
             continue;
         }
@@ -199,12 +226,12 @@ export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestio
             notes.push(`已跳过 ${ambiguousIds.join("、")} 等重名 Lorebook 目录候选，需人工补全 World subject 后再确认。`);
         }
 
-        pending.push({
+        const candidate: WorldAnchorSuggestion = {
             suggestionId: `was-${String(store.nextSeq + pending.length)}`,
             chapterId: chapter.id,
             chapterName: chapter.name,
             chapterTitle: chapter.title,
-            chapterPath: proseNode?.path ?? null,
+            chapterPath: proseNode.path,
             sceneCount: activeScenes.length,
             subjectIds,
             locationSubjectId,
@@ -214,17 +241,29 @@ export async function generateWorldAnchorSuggestions(ports: WorldAnchorSuggestio
             status: "pending",
             createdAt,
             resolvedAt: null,
-        });
+        };
+        const fingerprint = suggestionFingerprint(candidate);
+        if (!existingUnresolved.has(fingerprint)) {
+            existingUnresolved.add(fingerprint);
+            pending.push(candidate);
+        }
         lastKnownInstant = advanceLastKnownInstant(activeScenes, chapter.title, lastKnownInstant);
     }
 
     const nextStore: WorldAnchorSuggestionStore = {
         version: "world-anchor-suggestions-v1",
         nextSeq: store.nextSeq + pending.length,
-        suggestions: [...history, ...pending],
+        suggestions: [...store.suggestions, ...pending],
     };
     await ports.writeStore(nextStore);
-    return {generated: pending.length, skipped, failed, store: nextStore};
+    return {
+        generated: pending.length,
+        skipped: skippedDetails.length,
+        failed: failedDetails.length,
+        skippedDetails,
+        failedDetails,
+        store: nextStore,
+    };
 }
 
 /**
@@ -257,6 +296,7 @@ export async function confirmWorldAnchorSuggestions(
             continue;
         }
 
+        const enteredAsApplying = suggestion.status === "applying";
         if (suggestion.status === "pending") {
             const applyingStore = replaceSuggestion(store, suggestionId, {
                 ...suggestion,
@@ -297,6 +337,15 @@ export async function confirmWorldAnchorSuggestions(
                 startInstant: applyingSuggestion.timeEstimate === null ? null : BigInt(applyingSuggestion.timeEstimate.startInstant),
             });
         } catch (error) {
+            if (enteredAsApplying) {
+                outcomes.push({
+                    suggestionId,
+                    status: "failed",
+                    reason: `${errorMessage(error)}；建议已处于 applying，保留恢复线索，请重试确认。`,
+                    appliedScenes: [],
+                });
+                continue;
+            }
             const pendingStore = replaceSuggestion(store, suggestionId, {
                 ...applyingSuggestion,
                 status: "pending",
@@ -545,6 +594,31 @@ function hasMissingAnchorField(
         || (scene.worldAnchor.locationSubjectId === null && locationSubjectId !== null)
         || (scene.worldAnchor.startInstant === null && timeEstimate !== null)
     ));
+}
+
+function suggestionFingerprint(suggestion: WorldAnchorSuggestion): string {
+    return JSON.stringify({
+        chapterId: suggestion.chapterId,
+        subjectIds: [...suggestion.subjectIds].sort(),
+        locationSubjectId: suggestion.locationSubjectId,
+        startInstant: suggestion.timeEstimate?.startInstant ?? null,
+        evidence: suggestion.evidence.map((item) => ({
+            subjectId: item.subjectId,
+            name: item.name,
+            type: item.type,
+            occurrences: item.occurrences,
+            resolved: item.resolved,
+            source: item.source,
+        })),
+    });
+}
+
+function generateIssue(
+    chapter: {id: string; title: string},
+    reason: WorldAnchorSuggestionGenerateResult["failedDetails"][number]["reason"],
+    message: string,
+): WorldAnchorSuggestionGenerateResult["failedDetails"][number] {
+    return {chapterId: chapter.id, chapterTitle: chapter.title, reason, message};
 }
 
 function replaceSuggestion(

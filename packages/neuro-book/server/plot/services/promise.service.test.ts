@@ -261,6 +261,33 @@ describe("PromiseService", () => {
         expect(result[1]).toMatchObject({derivedStage: "unplanted"});
     });
 
+    it("listStoryPromiseDetails 复用摘要排序，并返回每条 Promise 的 beat 详情", async () => {
+        const first = withBeats(
+            promiseEntity({id: 2, title: "低优先级", importance: "low"}),
+            [beatWithScene({id: 21, kind: "plant", sceneId: 20, sceneStatus: "written", promiseId: 2})],
+        );
+        const second = withBeats(
+            promiseEntity({id: 1, title: "高优先级", importance: "high"}),
+            [beatWithScene({id: 11, kind: "payoff", sceneId: 10, sceneStatus: "written", promiseId: 1})],
+        );
+        const repository = {
+            findPromisesByStory: vi.fn(async () => [first, second]),
+        };
+        const service = new PromiseService(
+            repository as unknown as PromiseRepository,
+            repository as unknown as import("nbook/server/plot/contracts/plot-repositories").ChapterRepository,
+            {ensureStory: vi.fn(async () => ({id: 10}))} as unknown as StoryService,
+            {} as PlotScopeGuard,
+            new PlotDtoAssembler(),
+        );
+
+        const result = await service.listStoryPromiseDetails();
+
+        expect(result.map((promise) => promise.id)).toEqual(["1", "2"]);
+        expect(result[0]?.beats).toHaveLength(1);
+        expect(result[0]?.beats[0]).toMatchObject({kind: "payoff", state: "factual"});
+    });
+
     it("listOverdueStoryPromises 以章节 sortOrder 判断同章 deadline，并去重期限章节计数", async () => {
         const deadline = {id: 99, name: "vol-01-ch-03", title: "第三章", sortOrder: 30};
         const overdueFirst = withBeats(

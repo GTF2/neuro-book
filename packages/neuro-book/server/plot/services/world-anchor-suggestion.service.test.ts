@@ -114,6 +114,54 @@ describe("worldAnchorSuggestionService", () => {
         ]);
     });
 
+    it("重复生成保留既有 pending 的 ID 和状态，并只追加新的建议", async () => {
+        const fixture = createFixture();
+        fixture.subjects = [worldSubject("hero", "主角", "character")];
+        fixture.tree = plotTree([chapter("1", "first", "第一章")]);
+        fixture.chapters.set(1, chapterDetail("1", [scene("11")]));
+        fixture.prose.set("first", "主角出门，主角没有回头。");
+
+        const first = await generateWorldAnchorSuggestions(fixture.ports);
+        const original = first.store.suggestions[0];
+        if (!original) throw new Error("测试没有生成首条建议");
+
+        const repeated = await generateWorldAnchorSuggestions(fixture.ports);
+        expect(repeated).toMatchObject({generated: 0, store: {suggestions: [expect.objectContaining({suggestionId: original.suggestionId, status: "pending"})]}});
+
+        fixture.tree = plotTree([chapter("1", "first", "第一章"), chapter("2", "second", "第二章")]);
+        fixture.chapters.set(2, chapterDetail("2", [scene("21")]));
+        fixture.prose.set("second", "主角抵达城门，主角等候同伴。");
+        const extended = await generateWorldAnchorSuggestions(fixture.ports);
+
+        expect(extended.generated).toBe(1);
+        expect(extended.store.suggestions).toEqual(expect.arrayContaining([
+            expect.objectContaining({suggestionId: original.suggestionId, status: "pending", chapterId: "1"}),
+            expect.objectContaining({chapterId: "2", status: "pending"}),
+        ]));
+    });
+
+    it("生成返回可诊断的跳过与失败明细", async () => {
+        const fixture = createFixture();
+        fixture.tree = plotTree([
+            chapter("1", "no-scene", "无场景章"),
+            chapter("2", "no-prose", "无正文章"),
+            chapter("3", "empty", "空正文章"),
+        ]);
+        fixture.chapters.set(1, chapterDetail("1", [scene("11", {status: "archived"})]));
+        fixture.chapters.set(2, chapterDetail("2", [scene("21")]));
+        fixture.chapters.set(3, chapterDetail("3", [scene("31")]));
+        fixture.prose.set("empty", "  \n");
+
+        const result = await generateWorldAnchorSuggestions(fixture.ports);
+
+        expect(result).toMatchObject({generated: 0, skipped: 1, failed: 2});
+        expect(result.skippedDetails).toEqual([expect.objectContaining({chapterId: "1", reason: "no_active_scene", message: expect.stringContaining("active Scene")})]);
+        expect(result.failedDetails).toEqual(expect.arrayContaining([
+            expect.objectContaining({chapterId: "2", chapterTitle: "无正文章", reason: "no_matching_prose"}),
+            expect.objectContaining({chapterId: "3", chapterTitle: "空正文章", reason: "empty_prose"}),
+        ]));
+    });
+
     it("存量正文缺少 chapter 指针时按章节标题唯一回退，不回写正文", async () => {
         const fixture = createFixture();
         fixture.subjects = [worldSubject("hero", "主角", "character")];
@@ -225,6 +273,24 @@ describe("worldAnchorSuggestionService", () => {
         expect(retry.outcomes).toEqual([expect.objectContaining({status: "confirmed"})]);
         expect(fixture.store.suggestions[0]).toMatchObject({status: "confirmed", resolvedAt: "2026-09-18T12:00:00.000Z"});
         expect(fixture.applyCalls).toHaveLength(2);
+    });
+
+    it("applying 重试合并失败时保持 applying，拒绝操作不能改写恢复线索", async () => {
+        const fixture = createFixture();
+        fixture.store.suggestions = [suggestion({status: "applying"})];
+        fixture.applyFailure = new Error("重试合并失败");
+
+        const confirmation = await confirmWorldAnchorSuggestions(fixture.ports, {suggestionIds: ["was-1"]});
+
+        expect(confirmation).toMatchObject({
+            outcomes: [expect.objectContaining({status: "failed", reason: expect.stringContaining("保留恢复线索")})],
+            store: {suggestions: [expect.objectContaining({suggestionId: "was-1", status: "applying"})]},
+        });
+        expect(fixture.writes).toEqual([]);
+
+        const rejection = await rejectWorldAnchorSuggestions(fixture.ports, {suggestionIds: ["was-1"]});
+        expect(rejection).toMatchObject({outcomes: [{suggestionId: "was-1", status: "skipped", reason: expect.stringContaining("applying")}]});
+        expect(fixture.store.suggestions[0]).toMatchObject({status: "applying"});
     });
 
     it("单条建议的 Scene 事务失败时保持 pending，可安全重试", async () => {

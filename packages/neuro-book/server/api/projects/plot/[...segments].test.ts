@@ -541,8 +541,15 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
             "这一章正文没有登记角色姓名。",
         ].join("\n"), "utf8");
 
-        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {generated: number; failed: number};
+        const generated = await callApi(handler, projectRootName, "POST", "world-anchor-suggestions/generate") as {
+            generated: number;
+            failed: number;
+            skippedDetails: Array<{chapterId: string; chapterTitle: string; reason: string; message: string}>;
+            failedDetails: Array<{chapterId: string; chapterTitle: string; reason: string; message: string}>;
+        };
         expect(generated).toEqual(expect.objectContaining({generated: 0, failed: 0}));
+        expect(generated.skippedDetails).toEqual([expect.objectContaining({reason: "anchor_complete", message: expect.any(String)})]);
+        expect(generated.failedDetails).toEqual([]);
     });
 
     it("worldAnchor legacy 回退不读取已明确绑定给其他章节的正文", async () => {

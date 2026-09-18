@@ -204,6 +204,7 @@ PromiseBeat 是 Promise 在某场戏上的推进记录,挂 Scene 不挂 Chapter:
 状态与派生规则:
 
 - Promise 存储态仅 `open / fulfilled / abandoned`(作者意图);`derivedStage` 从有效 beats(所在 Scene 非 archived)派生,结构上不可能漂移:有 payoff=`paid_off`,否则有 advance/setback=`echoed`,否则有 plant=`planted`,否则 `unplanted`。
+- `factual payoff` 是写后审计专用派生证据：仅指 `kind=payoff` 且所在 Scene 为 written/revised 的 beat；它不改变 Promise 的存储态或 `derivedStage`，用于核对本章实际是否已有兑现记录，不能用任意 factual beat 替代。
 - 打 payoff beat 时服务层默认自动置 `fulfilled`;`autoFulfill: false` 可关,用于里程碑式兑现后线仍延续的场合(感情线「在一起」之后还有后续)。
 - 归档/删除 Scene、删除 Thread 或移除 beat 后,若不再存在任何有效 payoff beat,`fulfilled` 自动回退 `open`;多里程碑(多个 payoff beat)删其一不回退,且只回退 fulfilled,不动 abandoned。
 - 计划 beats 经 writer brief 的「本章 Promise 任务」段送达 writer(见 [writer-brief.md](writer-brief.md);archived 场与 abandoned 线不下发)。系统默认 writer 完美执行 brief——Scene 标 written/revised 后计划即视为事实,写后核对交后续 critic。

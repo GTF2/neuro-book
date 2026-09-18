@@ -24,7 +24,7 @@
 | `style-ai-slop` 文风与 AI 味 | 正文 | 重复句式、标签化情绪、翻译腔、总结式收尾 | `warn` | 三维评审（文风） |
 | `pacing-hook` 节奏与钩子 | 正文 | 开头抓力、中段推进、章末钩子 | `warn` | 三维评审（节奏） |
 | `consistency-declared` 正文 vs 声明 | 正文 | 与 World Engine 状态 / 已声明事实是否冲突（位置、伤势、持有物、认知） | `block`（与已确认事实硬冲突）/ `warn`（存疑） | 三维评审（一致性）、`consistency-audit` |
-| `promise-beat` 承诺兑现 | Plot 实体 | 本章该推进的 `PromiseBeat` 是否推进到位、幅度是否按 note 收住 | `warn` | brief 评审视图、`consistency-audit` |
+| `promise-beat` 承诺兑现 | Plot 实体 | 期限正好落在本章的 open Promise，若本章没有所在 Scene 为 written/revised 的 payoff beat，则提示；本章已有 factual payoff 即视为本章兑现证据。幅度仍按 note 收住 | `warn` | brief 评审视图、`consistency-audit` |
 | `keyframe-tween` 关键帧回撞 | Plot 实体 | 补间区间内，帧声明的 `irreversibleChanges` 是否被正文推翻 | `block`（推翻须走裁决留痕，宪法第六条） | `keyframe-tween-review` workflow、三维评审 |
 | `canon-read-back` canon 回读 | canon | 写入的 slice / Plot 实体 / lorebook 是否与确认意图一致（已落地 / 偏离 / 未落地） | `block`（偏离 / 未落地须先处理才能收口） | `phases/02-canon-commit.md` 回读步骤 |
 | `downstream-impact` 下游失效 | Plot 实体 | 本轮新事实是否让未写的 Promise / Scene / 帧失效 | `warn` | `phases/03-chapter-loop.md` 第六步（未来影响分析） |
