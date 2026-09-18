@@ -91,6 +91,18 @@ describe("Nitro runtime module specifier", () => {
         expect(result.source).toContain("../../node_modules/@scope/pkg/dist/index.js#entry");
     });
 
+    it.skipIf(process.platform !== "win32")("跨盘 Product vendor 路径使用 file URL 而不是伪相对路径", async () => {
+        const projectRoot = resolve("C:/build/neuro-book");
+        const serverRoot = resolve("D:/output/server");
+        const importerPath = resolve("C:/build/neuro-book/.output/server/index.mjs");
+        const source = "import pkg from 'file:///C:/build/neuro-book/node_modules/.bun/pkg@1.0.0/node_modules/pkg/index.js?raw#entry';";
+
+        const result = await analyzeRuntimeModuleSource({source, importerPath, serverRoot, projectRoot});
+
+        expect(result.source).toContain("file:///D:/output/server/node_modules/pkg/index.js?raw#entry");
+        expect(result.source).not.toContain("./D:/");
+    });
+
     it("物理包与 hoisted package 版本不一致时 fail closed", async () => {
         const root = await temporaryRoot();
         const serverRoot = join(root, ".output", "server");

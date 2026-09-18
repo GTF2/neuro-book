@@ -248,6 +248,9 @@ function sourcePackageSpecifier(
         ...(reference.packageSubpath ? reference.packageSubpath.split("/") : []),
     );
     const relativePath = relative(dirname(importerPath), target).replaceAll("\\", "/");
+    if (isAbsolute(relativePath) || /^[A-Za-z]:\//u.test(relativePath)) {
+        return `${target.replaceAll("\\", "/")}${reference.suffix}`;
+    }
     const portablePath = relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
     return `${portablePath}${reference.suffix}`;
 }

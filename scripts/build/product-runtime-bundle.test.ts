@@ -137,6 +137,7 @@ describe("Product Runtime bundle", () => {
         expect(source).not.toContain("/.bun/");
         expect(source).not.toContain("/.pnpm/");
         expect(source).not.toContain("file:///_entry.js");
+        expect(source).not.toMatch(/\.\/[A-Za-z]:\//u);
         expect(source).not.toContain('new URL("../../index.mjs"');
         expect(source).toContain("./node_modules/esbuild/lib/main.js");
         expect(source).toContain("./node_modules/jsdom/lib/api.js");
@@ -156,11 +157,11 @@ describe("Product Runtime bundle", () => {
             expect(islands.msvcRuntime).toBeDefined();
             expect(islands.msvcRuntime.dlls).toHaveLength(3);
             expect(islands.msvcRuntime.targets.length).toBeGreaterThan(0);
-            await expect(access(join(serverRoot, "node_modules", "@libsql", "win32-x64-msvc", "vcruntime140.dll"))).resolves.toBeUndefined();
-            await expect(access(join(serverRoot, "node_modules", "@esbuild", "win32-x64", "vcruntime140.dll"))).resolves.toBeUndefined();
+            await expect(access(join(serverRoot, "node_modules", "@libsql", "win32-x64-msvc", "vcruntime140.dll"))).resolves.toBeFalsy();
+            await expect(access(join(serverRoot, "node_modules", "@esbuild", "win32-x64", "vcruntime140.dll"))).resolves.toBeFalsy();
         }
-        await expect(access(join(serverRoot, "node_modules", "jsdom", "package.json"))).resolves.toBeUndefined();
-        await expect(access(join(serverRoot, "node_modules", "typescript", "lib", "typescript.js"))).resolves.toBeUndefined();
+        await expect(access(join(serverRoot, "node_modules", "jsdom", "package.json"))).resolves.toBeFalsy();
+        await expect(access(join(serverRoot, "node_modules", "typescript", "lib", "typescript.js"))).resolves.toBeFalsy();
         const executed = await execFileAsync("bun", ["--no-install", join(serverRoot, "index.mjs")], {
             cwd: outputRoot,
             env: {...process.env, NODE_PATH: ""},

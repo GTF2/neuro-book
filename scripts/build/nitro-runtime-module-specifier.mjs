@@ -1,7 +1,7 @@
 import {access, readFile} from "node:fs/promises";
 import {builtinModules} from "node:module";
 import {dirname, isAbsolute, relative, resolve} from "node:path";
-import {fileURLToPath} from "node:url";
+import {fileURLToPath, pathToFileURL} from "node:url";
 import {init, parse} from "es-module-lexer";
 
 const nodeModulesMarker = "/node_modules/";
@@ -248,6 +248,9 @@ function runtimeVendorSpecifier(importerPath, serverRoot, packageName, packageSu
         ...(packageSubpath ? packageSubpath.split("/") : []),
     );
     const relativePath = relative(dirname(importerPath), targetPath).replaceAll("\\", "/");
+    if (isAbsolute(relativePath) || /^[A-Za-z]:\//u.test(relativePath)) {
+        return `${pathToFileURL(targetPath).href}${suffix}`;
+    }
     const normalized = relativePath.startsWith(".") ? relativePath : `./${relativePath}`;
     return `${normalized}${suffix}`;
 }
