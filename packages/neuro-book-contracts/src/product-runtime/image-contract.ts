@@ -161,15 +161,17 @@ const PRODUCT_RUNTIME_OWNERS: readonly ProductRuntimeImageOwner[] = [
 
 // 2026-08-24：t135 资产安装 runtime 落地后 system-assets 全平台同源增长（442 files）；
 // Windows 行尾差异使 bytes 略高，POSIX 与 darwin 实测均为 5_856_353。
+// 2026-09-18：93af6ebb 在 clean source 上完成 Windows A/B measurement；两次逐文件
+// payload、treeDigest 和 shapeDigest 一致，登记当前稳定 Product Runtime owner inventory。
 const PRODUCT_RUNTIME_OWNER_BASELINES: Partial<Record<ProductPlatform, readonly ProductRuntimeOwnerBaseline[]>> = {
     "windows-x64": [
-        {name: "frontend", files: 177, bytes: 15_272_680},
-        {name: "server-bundle", files: 1, bytes: 12_300_171},
-        {name: "commands", files: 116, bytes: 10_865_638},
-        {name: "authoring-kit", files: 509, bytes: 14_477_260},
-        {name: "native-islands", files: 2_059, bytes: 75_260_630},
-        {name: "system-assets", files: 442, bytes: 5_919_094},
-        {name: "runtime-meta", files: 3, bytes: 4_762},
+        {name: "frontend", files: 229, bytes: 15_486_810},
+        {name: "server-bundle", files: 1, bytes: 12_988_454},
+        {name: "commands", files: 107, bytes: 10_971_175},
+        {name: "authoring-kit", files: 512, bytes: 14_932_217},
+        {name: "native-islands", files: 2_126, bytes: 78_315_609},
+        {name: "system-assets", files: 454, bytes: 5_999_229},
+        {name: "runtime-meta", files: 3, bytes: 5_114},
     ],
     "linux-x64-glibc": [
         {name: "frontend", files: 177, bytes: 15_272_675},
