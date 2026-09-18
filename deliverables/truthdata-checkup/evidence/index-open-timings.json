@@ -1,0 +1,69 @@
+{
+  "copyWorkspace": "C:\\Users\\Administrator\\AppData\\Local\\Temp\\nbook-truthdata\\state\\workspace",
+  "project": "xin-xiao-shuo",
+  "timings": [
+    {
+      "name": "listProjects",
+      "ms": 26.1,
+      "detail": {
+        "projects": 1
+      }
+    },
+    {
+      "name": "run1:openProject",
+      "ms": 245.1
+    },
+    {
+      "name": "run1:fileIndex.read(cold)",
+      "ms": 690.7,
+      "detail": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "run1:fileIndex.read(warm)",
+      "ms": 0
+    },
+    {
+      "name": "run1:readProjectWorkspaceTreeSnapshot",
+      "ms": 0.1,
+      "detail": {
+        "nodes": 583,
+        "issues": 32,
+        "revision": 1
+      }
+    },
+    {
+      "name": "run1:closeAllProjects",
+      "ms": 290.8
+    },
+    {
+      "name": "run2:openProject",
+      "ms": 227.3
+    },
+    {
+      "name": "run2:fileIndex.read(cold)",
+      "ms": 622.6,
+      "detail": {
+        "type": "object"
+      }
+    },
+    {
+      "name": "run2:fileIndex.read(warm)",
+      "ms": 0
+    },
+    {
+      "name": "run2:readProjectWorkspaceTreeSnapshot",
+      "ms": 0,
+      "detail": {
+        "nodes": 583,
+        "issues": 32,
+        "revision": 1
+      }
+    },
+    {
+      "name": "run2:closeAllProjects",
+      "ms": 298.7
+    }
+  ]
+}

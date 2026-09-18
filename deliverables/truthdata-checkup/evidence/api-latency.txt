@@ -1,0 +1,64 @@
+### api warm probe (20:06)
+=== begin 20:06:15 ===
+auth/me run1 200 0.028513 0
+auth/me run2 200 0.028415 0
+auth/me run3 200 0.029062 0
+projects(list) run1 200 0.033053 0
+projects(list) run2 200 0.030030 0
+projects(list) run3 200 0.031112 0
+projects/open run1 200 0.009387 0
+projects/open run2 200 0.007969 0
+projects/open run3 200 0.009842 0
+plot/story run1 200 0.030925 0
+plot/story run2 200 0.028148 0
+plot/story run3 200 0.050345 0
+plot/tree run1 200 0.063953 0
+plot/tree run2 200 0.066676 0
+plot/tree run3 200 0.063406 0
+plot/workbench run1 200 0.060288 0
+plot/workbench run2 200 0.052942 0
+plot/workbench run3 200 0.054155 0
+plot/scenes?none run1 404 0.174786 0
+plot/scenes?none run2 404 0.161233 0
+plot/scenes?none run3 404 0.151472 0
+wf/tree run1 200 0.033064 0
+wf/tree run2 200 0.036904 0
+wf/tree run3 200 0.037776 0
+wf/llmlint-check run1 200 0.094448 0
+wf/llmlint-check run2 200 0.109471 0
+wf/llmlint-check run3 200 0.085737 0
+=== end 20:06:18 ===
+done
+
+### close->cold-open->first-data (20:06)
+=== close ===
+close code=200 t=0.069949 sz=0
+=== cold open ===
+open code=200 t=0.401074 sz=0
+=== first plot/tree (cold incl module+index) ===
+tree#1 code=200 t=0.089840 sz=0
+=== second plot/tree (warm) ===
+tree#2 code=200 t=0.070100 sz=0
+=== first wf/tree (cold) ===
+wf#1 code=200 t=0.991954 sz=0
+=== story body ===
+story code=200 t=0.030475 sz=0
+=== end ===
+done
+
+### body sizes
+=== plot/tree ===
+code=200 t=0.063124 sz=948587
+=== plot/story ===
+code=200 t=0.025416 sz=158
+=== plot/workbench ===
+code=200 t=0.056069 sz=669437
+=== wf/tree ===
+code=200 t=0.034137 sz=819710
+=== ls ===
+-rw-r--r-- 1 Administrator 197121    158 Sep 17 20:06 d:/MyProject/neuro-book/zz_story.json
+-rw-r--r-- 1 Administrator 197121 948587 Sep 17 20:06 d:/MyProject/neuro-book/zz_tree.json
+-rw-r--r-- 1 Administrator 197121 819710 Sep 17 20:06 d:/MyProject/neuro-book/zz_wftree.json
+-rw-r--r-- 1 Administrator 197121 669437 Sep 17 20:06 d:/MyProject/neuro-book/zz_workbench.json
+=== END ===
+done

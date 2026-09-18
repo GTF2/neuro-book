@@ -1,0 +1,735 @@
+{
+  "kind": "llmlint-full-scan-summary",
+  "summary": {
+    "total": 3936,
+    "high": 48,
+    "medium": 3266,
+    "low": 622,
+    "visibleChars": 811985
+  },
+  "files": 236,
+  "registry": {
+    "rulesets": [
+      "builtin/default"
+    ],
+    "totalRules": 360,
+    "activeRules": 266,
+    "disabledRules": 94
+  },
+  "distinctRulesHit": 91,
+  "byRuleDesc": [
+    {
+      "ruleId": "cn.modifier.stacked-degree-adverbs",
+      "count": 902,
+      "title": "删程度副词",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.metaphor.simile-modifier-shell",
+      "count": 504,
+      "title": "删除特定比喻类修饰语",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.measure.specific-measure-word",
+      "count": 368,
+      "title": "删除特定量词",
+      "level": "medium"
+    },
+    {
+      "ruleId": "story-deslop.stage-leak.tier2",
+      "count": 244,
+      "title": "章节元信息泄漏",
+      "level": "medium"
+    },
+    {
+      "ruleId": "story-deslop.long-paragraph",
+      "count": 244,
+      "title": "单段过长",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.sentence.compound.contrastive-turn-preface",
+      "count": 147,
+      "title": "修剪特定转折句",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.punctuation.dash.dash-before-cn-quote",
+      "count": 140,
+      "title": "删中文右引号前破折号",
+      "level": "medium"
+    },
+    {
+      "ruleId": "translationese-for-regard",
+      "count": 109,
+      "title": "对于……而言",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.sentence.compound.ordinary-days-preface",
+      "count": 96,
+      "title": "删参照依赖句壳",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.metaphor.trailing-simile-clause",
+      "count": 80,
+      "title": "删尾部比喻分句",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.sensory-atmosphere-modifier",
+      "count": 76,
+      "title": "删感官氛围修饰",
+      "level": "medium"
+    },
+    {
+      "ruleId": "story-deslop.quote-emphasis",
+      "count": 70,
+      "title": "叙述层短词引号强调",
+      "level": "low"
+    },
+    {
+      "ruleId": "translationese-in-aspect",
+      "count": 69,
+      "title": "在……方面",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.baguwen.vague-amount-noun",
+      "count": 68,
+      "title": "删虚指“一股/那股”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.action-expression.rough-manner-modifier",
+      "count": 59,
+      "title": "删“粗重/粗暴/疯狂”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.sound.once.generic-one-sound",
+      "count": 55,
+      "title": "删发声词后“一声”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.academic-anatomy.academic-body-terms",
+      "count": 46,
+      "title": "删“肌肉/结构/频率”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "adverb-intensifier",
+      "count": 45,
+      "title": "过度副词和强化词",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.proliferation.mixed.repeated-de-pairs",
+      "count": 44,
+      "title": "AA的、BB的、CC的→AA的",
+      "level": "medium"
+    },
+    {
+      "ruleId": "story-deslop.not-is-comparison",
+      "count": 41,
+      "title": "不是A，是B 对比状态机",
+      "level": "high"
+    },
+    {
+      "ruleId": "emphasis-crutch",
+      "count": 39,
+      "title": "强调拐杖",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.excessive-state-simile",
+      "count": 38,
+      "title": "删极端状态修饰",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.optional-mood-modifiers",
+      "count": 32,
+      "title": "删语气氛围修饰",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.regex.advanced.few-degree",
+      "count": 32,
+      "title": "几分→些/些许",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.action-expression.scream-to-whimper",
+      "count": 32,
+      "title": "尖叫→呜咽",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.near-collapse-modifier",
+      "count": 29,
+      "title": "删裸“崩溃”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "transition-summary-vague-degree",
+      "count": 21,
+      "title": "模糊程度过渡",
+      "level": "low"
+    },
+    {
+      "ruleId": "on-one-hand",
+      "count": 21,
+      "title": "机械对比过渡",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.blank-face",
+      "count": 15,
+      "title": "弱化模板化面部描写",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.sound.once.hum-one-sound",
+      "count": 13,
+      "title": "哼了一声→轻哼",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.sentence.compound.single-negative-contrast",
+      "count": 13,
+      "title": "删单层否定对比前半句",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.mouth-corner",
+      "count": 12,
+      "title": "嘴角→嘴唇",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.metaphor.whole-sentence-stone-simile",
+      "count": 12,
+      "title": "整句删投石类比喻",
+      "level": "medium"
+    },
+    {
+      "ruleId": "jargon-engineer-violent",
+      "count": 12,
+      "title": "暴力动作 / 问诊腔",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.modifier.measure.subject-measure-word",
+      "count": 11,
+      "title": "删除主语的量词",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.body-formal",
+      "count": 10,
+      "title": "身躯→身体",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.eye-corner-lid",
+      "count": 10,
+      "title": "眼角/眼皮→眼睛",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.baguwen.shell-noun",
+      "count": 10,
+      "title": "删抽象“外壳”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.absolute-claim-modifier",
+      "count": 10,
+      "title": "删“不容质疑的”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "transition-summary-essence",
+      "count": 10,
+      "title": "本质式拔高过渡",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.awkward-fit-judgment",
+      "count": 8,
+      "title": "弱化抽象评断词",
+      "level": "medium"
+    },
+    {
+      "ruleId": "empty-expression",
+      "count": 8,
+      "title": "空洞抽象表达",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.back-spine",
+      "count": 8,
+      "title": "脊背→背/后背",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.action-expression.calm-voice-shell",
+      "count": 8,
+      "title": "删“声音平稳”壳",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.back-head",
+      "count": 8,
+      "title": "后脑勺→头/脑袋",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.color-description.purple-dark-color-modifier",
+      "count": 8,
+      "title": "删紫黑色修饰",
+      "level": "medium"
+    },
+    {
+      "ruleId": "translationese-through-to",
+      "count": 7,
+      "title": "通过……来……",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.sound.once.laugh-one-sound",
+      "count": 6,
+      "title": "笑了一声→笑了笑",
+      "level": "medium"
+    },
+    {
+      "ruleId": "tier2-pseudo-praise",
+      "count": 5,
+      "title": "虚化评价副词",
+      "level": "low"
+    },
+    {
+      "ruleId": "jargon-business-extra",
+      "count": 5,
+      "title": "商业黑话候选（扩展）",
+      "level": "low"
+    },
+    {
+      "ruleId": "jargon-engineer-debug",
+      "count": 4,
+      "title": "工程师 / 调试腔",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.modifier.hard-to-notice-modifier",
+      "count": 4,
+      "title": "删“不可察觉的”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.torso-formal",
+      "count": 4,
+      "title": "躯体→身体",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.flesh-skin",
+      "count": 4,
+      "title": "皮肉→皮肤/肌肤",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.oral-cavity",
+      "count": 4,
+      "title": "口腔→小嘴/嘴",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.skull-head",
+      "count": 4,
+      "title": "头颅→头/脑袋",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.modifier.barely-perceptible-modifier",
+      "count": 4,
+      "title": "删“几不可察的”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.baguwen.extreme-degree",
+      "count": 3,
+      "title": "删“到了极致”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.spine-column",
+      "count": 3,
+      "title": "脊椎/脊柱→脊梁",
+      "level": "medium"
+    },
+    {
+      "ruleId": "story-deslop.negation-parade.repeated-none",
+      "count": 3,
+      "title": "没有X，没有Y 否定排比",
+      "level": "high"
+    },
+    {
+      "ruleId": "story-deslop.reverse-not-is",
+      "count": 3,
+      "title": "反序不是对比",
+      "level": "high"
+    },
+    {
+      "ruleId": "opening-cliche-moreover",
+      "count": 2,
+      "title": "更重要的是 / 具体来说",
+      "level": "low"
+    },
+    {
+      "ruleId": "translationese-based-on",
+      "count": 2,
+      "title": "基于……，",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.action-expression.teasing-modifier",
+      "count": 2,
+      "title": "删修饰语“戏谑”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.vocabulary.body.finger-bone",
+      "count": 2,
+      "title": "指骨→手指",
+      "level": "medium"
+    },
+    {
+      "ruleId": "assistant-pushy",
+      "count": 2,
+      "title": "助手主动出击腔",
+      "level": "low"
+    },
+    {
+      "ruleId": "rhetorical-setup",
+      "count": 2,
+      "title": "公式化设问",
+      "level": "medium"
+    },
+    {
+      "ruleId": "transition-summary-process",
+      "count": 1,
+      "title": "过程填充语",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.baguwen.death-grip-adverb",
+      "count": 1,
+      "title": "删“得死死的”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.hand-color-clause",
+      "count": 1,
+      "title": "删除句子中各处分句",
+      "level": "medium"
+    },
+    {
+      "ruleId": "business-jargon",
+      "count": 1,
+      "title": "商务黑话候选",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.baguwen.inertia-cause",
+      "count": 1,
+      "title": "删“因为惯性”",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.punctuation.dash.cn-quote-before-dash",
+      "count": 1,
+      "title": "删中文左引号后破折号",
+      "level": "medium"
+    },
+    {
+      "ruleId": "jargon-social-extra",
+      "count": 1,
+      "title": "自媒体腔（补充）",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.gaze-emotion-container",
+      "count": 1,
+      "title": "删眼神情绪总结壳",
+      "level": "medium"
+    },
+    {
+      "ruleId": "sycophantic-praise",
+      "count": 1,
+      "title": "谄媚式夸奖",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.quote-meta-as-if",
+      "count": 1,
+      "title": "仿佛在说→在说",
+      "level": "medium"
+    },
+    {
+      "ruleId": "dated-opening",
+      "count": 1,
+      "title": "喉舌式时代开头",
+      "level": "medium"
+    },
+    {
+      "ruleId": "structure-dramatic-fragment",
+      "count": 1,
+      "title": "戏剧化碎句",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.sound.once.sigh-one-sound",
+      "count": 1,
+      "title": "叹了一声→叹口气",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.color-description.purple-red-color-result",
+      "count": 1,
+      "title": "成紫红色→起",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.trailing-sound-clause",
+      "count": 1,
+      "title": "删尾部音效分句",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.cliche.quote-meta-like",
+      "count": 1,
+      "title": "像是在说→在说",
+      "level": "medium"
+    },
+    {
+      "ruleId": "jargon-social-media",
+      "count": 1,
+      "title": "自媒体 / 小红书 AI 腔",
+      "level": "low"
+    },
+    {
+      "ruleId": "cn.cliche.vague-transition-phrase",
+      "count": 1,
+      "title": "删特定词汇或短语",
+      "level": "medium"
+    },
+    {
+      "ruleId": "jargon-engineer-extra",
+      "count": 1,
+      "title": "工程师腔（补充）",
+      "level": "low"
+    },
+    {
+      "ruleId": "story-deslop.negation-parade.only-turn",
+      "count": 1,
+      "title": "先否定后只是收肯定",
+      "level": "high"
+    },
+    {
+      "ruleId": "cn.cliche.body-reaction.controlling-gaze",
+      "count": 1,
+      "title": "审视的目光→打量",
+      "level": "medium"
+    },
+    {
+      "ruleId": "meta-announcement",
+      "count": 1,
+      "title": "元叙述式公告",
+      "level": "low"
+    },
+    {
+      "ruleId": "inflation-novelty",
+      "count": 1,
+      "title": "新颖性通胀",
+      "level": "medium"
+    },
+    {
+      "ruleId": "cn.regex.advanced.parenthetical-example",
+      "count": 1,
+      "title": "删括号举例",
+      "level": "medium"
+    }
+  ],
+  "perFileTop": [
+    {
+      "path": "009-vol-xia-zhimo/024-chapter/index.md",
+      "total": 70,
+      "high": 2,
+      "medium": 62,
+      "low": 6,
+      "visibleChars": 9268
+    },
+    {
+      "path": "009-vol-xia-zhimo/023-chapter/index.md",
+      "total": 48,
+      "high": 0,
+      "medium": 44,
+      "low": 4,
+      "visibleChars": 3999
+    },
+    {
+      "path": "008-vol-banmianzhuang/032-chapter/index.md",
+      "total": 39,
+      "high": 0,
+      "medium": 29,
+      "low": 10,
+      "visibleChars": 6253
+    },
+    {
+      "path": "002-vol-zai-lushang/026-chapter/index.md",
+      "total": 38,
+      "high": 0,
+      "medium": 34,
+      "low": 4,
+      "visibleChars": 4011
+    },
+    {
+      "path": "008-vol-banmianzhuang/037-chapter/index.md",
+      "total": 36,
+      "high": 3,
+      "medium": 30,
+      "low": 3,
+      "visibleChars": 7043
+    },
+    {
+      "path": "009-vol-xia-zhimo/017-chapter/index.md",
+      "total": 35,
+      "high": 3,
+      "medium": 26,
+      "low": 6,
+      "visibleChars": 5676
+    },
+    {
+      "path": "006-vol-jianghai-yishi/010-chapter/index.md",
+      "total": 34,
+      "high": 0,
+      "medium": 27,
+      "low": 7,
+      "visibleChars": 5669
+    },
+    {
+      "path": "008-vol-banmianzhuang/030-chapter/index.md",
+      "total": 33,
+      "high": 0,
+      "medium": 27,
+      "low": 6,
+      "visibleChars": 5846
+    },
+    {
+      "path": "009-vol-xia-zhimo/022-chapter/index.md",
+      "total": 33,
+      "high": 0,
+      "medium": 30,
+      "low": 3,
+      "visibleChars": 6835
+    },
+    {
+      "path": "006-vol-jianghai-yishi/019-chapter/index.md",
+      "total": 32,
+      "high": 1,
+      "medium": 15,
+      "low": 16,
+      "visibleChars": 6034
+    },
+    {
+      "path": "008-vol-banmianzhuang/017-chapter/index.md",
+      "total": 31,
+      "high": 0,
+      "medium": 27,
+      "low": 4,
+      "visibleChars": 4149
+    },
+    {
+      "path": "009-vol-xia-zhimo/019-chapter/index.md",
+      "total": 31,
+      "high": 0,
+      "medium": 29,
+      "low": 2,
+      "visibleChars": 2927
+    },
+    {
+      "path": "006-vol-jianghai-yishi/011-chapter/index.md",
+      "total": 30,
+      "high": 0,
+      "medium": 26,
+      "low": 4,
+      "visibleChars": 4570
+    },
+    {
+      "path": "003-vol-xiaoyuanpian/009-chapter/index.md",
+      "total": 29,
+      "high": 0,
+      "medium": 23,
+      "low": 6,
+      "visibleChars": 3253
+    },
+    {
+      "path": "006-vol-jianghai-yishi/017-chapter/index.md",
+      "total": 29,
+      "high": 0,
+      "medium": 27,
+      "low": 2,
+      "visibleChars": 4866
+    },
+    {
+      "path": "007-vol-renjian/018-chapter/index.md",
+      "total": 29,
+      "high": 0,
+      "medium": 23,
+      "low": 6,
+      "visibleChars": 4033
+    },
+    {
+      "path": "010-vol-taifengyan/002-chapter/index.md",
+      "total": 29,
+      "high": 0,
+      "medium": 25,
+      "low": 4,
+      "visibleChars": 4978
+    },
+    {
+      "path": "003-vol-xiaoyuanpian/017-chapter/index.md",
+      "total": 28,
+      "high": 0,
+      "medium": 26,
+      "low": 2,
+      "visibleChars": 4027
+    },
+    {
+      "path": "004-vol-liulangji/024-chapter/index.md",
+      "total": 28,
+      "high": 0,
+      "medium": 27,
+      "low": 1,
+      "visibleChars": 3334
+    },
+    {
+      "path": "007-vol-renjian/001-chapter/index.md",
+      "total": 28,
+      "high": 0,
+      "medium": 24,
+      "low": 4,
+      "visibleChars": 3641
+    }
+  ],
+  "perFileStats": {
+    "min": 2,
+    "max": 70,
+    "medianVisibleChars": 3260
+  }
+}

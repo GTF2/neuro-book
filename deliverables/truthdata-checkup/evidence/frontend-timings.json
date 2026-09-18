@@ -1,0 +1,49 @@
+{
+  "base": "http://127.0.0.1:3460",
+  "project": "xin-xiao-shuo",
+  "repeats": 3,
+  "metrics": {
+    "navToTreeReadyMs": {
+      "runs": [
+        3558.5,
+        1542.1,
+        1113.7
+      ],
+      "min": 1113.7,
+      "max": 3558.5,
+      "median": 1542.1
+    },
+    "treeToEditorMs": {
+      "runs": [
+        338.8,
+        359.3,
+        360.2
+      ],
+      "min": 338.8,
+      "max": 360.2,
+      "median": 359.3
+    },
+    "workbenchRenderMs": {
+      "runs": [
+        107.6,
+        244.1,
+        249.9
+      ],
+      "min": 107.6,
+      "max": 249.9,
+      "median": 244.1
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:3460/_nuxt/pages/index.vue",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)",
+    "Failed to load resource: the server responded with a status of 504 (Outdated Optimize Dep)"
+  ]
+}
