@@ -14,6 +14,8 @@ import type { z } from "zod";
 // ─── Plot DTOs ───────────────────────────────────────────────────
 import {
     ChapterPlotDetailDtoSchema,
+    ChapterConsistencyAuditReportDtoSchema,
+    ChapterConsistencyAuditRequestDtoSchema,
     ChapterWriterBriefDtoSchema,
     CreateStoryDecisionRequestDtoSchema,
     CreateStoryPhaseRequestDtoSchema,
@@ -703,6 +705,17 @@ export const routeMetaMap: RouteMetaEntry[] = [
         tags: ["Config"],
         summary: "Read the NeuroBook provider template library",
         responseBody: ProviderTemplateLibraryDtoSchema,
+    },
+
+    // ═══ Project Plot: Consistency Audit ═══
+    {
+        file: "projects/plot/consistency-audit.post.ts",
+        method: "post",
+        tags: ["Plot Consistency"],
+        summary: "Run a read-only chapter consistency audit against settlement, World evidence, and llmlint",
+        queryParams: ProjectPlotProjectQuerySchema,
+        requestBody: ChapterConsistencyAuditRequestDtoSchema,
+        responseBody: ChapterConsistencyAuditReportDtoSchema,
     },
 
     // ═══ Project RAG ═══

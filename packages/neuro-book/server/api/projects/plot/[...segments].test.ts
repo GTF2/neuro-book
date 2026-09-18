@@ -670,6 +670,27 @@ describe("/api/projects/plot", {timeout: 30_000}, () => {
         expect(ruled).toMatchObject({status: "overthrown"});
         expect((ruled as {decisionRefId: string}).decisionRefId).toBe(readId(decision));
     });
+    it("POST /consistency-audit 对明确正文生成只读三源报告", async () => {
+        const projectRootName = await createProject();
+        const handler = (await import("nbook/server/api/projects/plot/consistency-audit.post")).default;
+        const plotHandler = (await import("nbook/server/api/projects/plot/[...segments]")).default;
+        const chapter = await callApi(plotHandler, projectRootName, "POST", "chapters", {name: "opening", title: "开篇"});
+
+        const report = await callApi(handler, projectRootName, "POST", "", {
+            chapterId: readId(chapter),
+            settlementText: ["## 本章结算", "### 新增事实", "- 无"].join("\n"),
+            prosePath: "manuscript/001/001-opening/index.md",
+            finalizedWorldSliceIds: [],
+        }) as {chapterId: string; promise: {ok: boolean}; world: {availability: string}; text: {availability: string}};
+
+        expect(report).toMatchObject({
+            chapterId: readId(chapter),
+            promise: {ok: true},
+            world: {availability: "ok"},
+            text: {availability: "ok"},
+        });
+    });
+
     it("GET /promises/overdue 按章节 sortOrder 返回到期未兑现承诺及去重计数", async () => {
         const projectRootName = await createProject();
         const handler = (await import("nbook/server/api/projects/plot/[...segments]")).default;

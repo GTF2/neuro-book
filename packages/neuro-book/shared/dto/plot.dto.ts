@@ -459,6 +459,31 @@ export const StoryPromiseOverdueListDtoSchema = z.object({
     latestWrittenChapterOrder: z.number().int().nonnegative().nullable(),
 });
 
+export const ChapterConsistencyAuditAvailabilitySchema = z.enum(["ok", "unknown", "unavailable"]);
+export const ChapterConsistencyAuditRequestDtoSchema = z.object({
+    chapterId: z.string().trim().regex(/^\d+$/, "chapterId 必须是正整数"),
+    settlementText: z.string().max(100_000, "settlementText 过长"),
+    prosePath: z.string().trim().min(1, "prosePath 不能为空").max(1024, "prosePath 过长"),
+    finalizedWorldSliceIds: z.array(z.string().trim().min(1, "worldSliceId 不能为空").max(160, "worldSliceId 过长"))
+        .max(64, "worldSliceId 过多")
+        .refine((ids) => new Set(ids).size === ids.length, "worldSliceId 不能重复"),
+});
+export const ChapterConsistencyAuditReportDtoSchema = z.object({
+    chapterId: z.string(),
+    title: z.string(),
+    subtitle: z.string(),
+    promise: z.object({title: z.string(), availability: ChapterConsistencyAuditAvailabilitySchema, ok: z.boolean(), issues: z.array(z.string())}),
+    world: z.object({title: z.string(), availability: ChapterConsistencyAuditAvailabilitySchema, ok: z.boolean(), issues: z.array(z.string())}),
+    text: z.object({
+        title: z.string(),
+        availability: ChapterConsistencyAuditAvailabilitySchema,
+        ok: z.boolean(),
+        issues: z.array(z.object({line: z.number().int().positive(), excerpt: z.string(), ruleName: z.string()})),
+        summary: z.string().nullable(),
+    }),
+    advice: z.string(),
+});
+
 // Decision open 态候选方案条目。
 export const StoryDecisionOptionDtoSchema = z.object({
     option: z.string().trim().min(1, "option 不能为空"),
@@ -1214,6 +1239,9 @@ export type CreateStoryPromiseRequestDto = z.infer<typeof CreateStoryPromiseRequ
 export type UpdateStoryPromiseRequestDto = z.infer<typeof UpdateStoryPromiseRequestDtoSchema>;
 export type SetPromiseBeatRequestDto = z.infer<typeof SetPromiseBeatRequestDtoSchema>;
 export type StoryPromiseOverdueListDto = z.infer<typeof StoryPromiseOverdueListDtoSchema>;
+export type ChapterConsistencyAuditAvailabilityDto = z.infer<typeof ChapterConsistencyAuditAvailabilitySchema>;
+export type ChapterConsistencyAuditRequestDto = z.infer<typeof ChapterConsistencyAuditRequestDtoSchema>;
+export type ChapterConsistencyAuditReportDto = z.infer<typeof ChapterConsistencyAuditReportDtoSchema>;
 export type StoryDecisionStatusDto = z.infer<typeof StoryDecisionStatusSchema>;
 export type StoryDecisionAnchorKindDto = z.infer<typeof StoryDecisionAnchorKindSchema>;
 export type StoryDecisionOptionDto = z.infer<typeof StoryDecisionOptionDtoSchema>;
