@@ -85,6 +85,12 @@ describe("keyframe-tween-review workflow", () => {
             expect(message).not.toContain("必须隐藏");
             expect(message).not.toContain("【禁写");
         }
+        // 落盘模式下消息必须显式索要 report_result.data.summary:
+        // writer profile 默认 data 不填,不索要则真实模型只回 result 文本,校验必然失败。
+        for (const message of writerMessages) {
+            expect(message).toContain("report_result.data");
+            expect(message).toContain("\"summary\"");
+        }
         // 参与者:1 个非 ephemeral writer + 1 个 ephemeral 回撞校验员。
         const creates = view.journal
             .filter((record) => record.kind === "agents.create")
@@ -96,10 +102,14 @@ describe("keyframe-tween-review workflow", () => {
     test("回撞发现冲突:violated 清单进入结果,由 leader 裁决", async () => {
         const sessions = new MemorySessionStore();
         const agents = new MockAgentPort(sessions);
-        agents.register("writer", (): {message: string; data: JsonValue} => ({
-            message: "补间演化完成",
-            data: {summary: "项链还在她手里", text: "薇洛丝握紧项链,没有任何失去。"},
-        }));
+        const writerMessages: string[] = [];
+        agents.register("writer", (turn): {message: string; data: JsonValue} => {
+            writerMessages.push(turn.message ?? "");
+            return {
+                message: "补间演化完成",
+                data: {summary: "项链还在她手里", text: "薇洛丝握紧项链,没有任何失去。"},
+            };
+        });
         agents.register("adhoc", (): {message: string; data: JsonValue} => ({
             message: "回撞完成",
             data: {
@@ -127,6 +137,12 @@ describe("keyframe-tween-review workflow", () => {
             verdict: "violated",
             violations: [{keyframeName: "k-necklace-lost", change: "薇洛丝失去项链"}],
         });
+        // 不落盘模式下消息同样必须显式索要 data.summary 与 data.text。
+        expect(writerMessages.length).toBeGreaterThan(0);
+        for (const message of writerMessages) {
+            expect(message).toContain("\"summary\"");
+            expect(message).toContain("\"text\"");
+        }
     });
 
     test("缺少帧声明:在创建任何 agent 前失败", async () => {

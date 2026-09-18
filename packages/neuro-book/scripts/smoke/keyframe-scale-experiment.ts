@@ -14,8 +14,9 @@
  * - K4 声明里埋一条 writingTask 明确排除的变化(「芥末隔门传话」vs 任务「只写派出所交接」)
  *   → 回撞报「声明未兑现」→ 走路径 A。
  *
- * 素材全部临时(name 前缀 k-scale- / d-scale-),跑完自动 DELETE 还原;不落盘正文
- * (不传 chapterPath),manuscript 零污染。模型走 dev server 已配置的 Provider(脚本不碰密钥)。
+ * 素材全部临时(name 前缀 k-scale- / d-scale-),跑完自动 DELETE 还原;补间正文落到
+ * Project Workspace 内临时目录 .contrast/keyframe-scale/segment-N.md,finally 随全程删除,
+ * manuscript 零污染。模型走 dev server 已配置的 Provider(脚本不碰密钥)。
  *
  * 前提:dev server 已启动(bun run dev),项目已 open(脚本会重开)。
  *
@@ -340,8 +341,8 @@ const SEGMENT_3_RETRY: Segment = {
 // ── 补间执行 ──
 
 /**
- * 带重试的补间:writer 偶发不守 output contract(实测「未返回 summary」),
- * 失败自动重跑同一区间,最多 2 次;两次都失败才向上抛。
+ * 带重试的补间:writer 未满足 output contract(如未返回 data.summary)时,
+ * 自动重跑同一区间,最多 2 次;两次都失败才向上抛。
  */
 async function runTweenWithRetry(projectRoot: string, projectDir: string, segment: Segment, segIndex: number): Promise<TweenRunOutcome> {
     let lastError: unknown;

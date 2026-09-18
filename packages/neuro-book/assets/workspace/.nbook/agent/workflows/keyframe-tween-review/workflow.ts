@@ -64,6 +64,9 @@ export default {
         wf.chart.node("tween", "补间演化");
         wf.chart.enter("tween", {sessionId: writer.id});
 
+        // writer profile 的默认交付协议是「data 不填，除非调用方明确需要结构化结果」；
+        // 调用方必须在消息里显式索要 data.summary，否则真实模型按 profile 只回 result 文本，
+        // 下面的严格校验必然失败（2026-09-18 整章尺度 smoke 实测两次复现）。
         const tweenMessage = [
             "请完成关键帧补间写作任务(写作宪法第三条:人定帧,模型补间)。",
             "你拿到的只有起点帧状态、终点帧声明与世界状态截面——全部是此刻的事实,没有因果链,也没有信息控制或禁写指令。",
@@ -74,8 +77,15 @@ export default {
             worldFacts ? `【世界状态截面】\n${worldFacts.slice(0, SLICE)}` : "",
             writingTask ? `【写作任务】\n${writingTask.slice(0, SLICE)}` : "",
             chapterPath
-                ? `补间正文写入 ${chapterPath}。`
-                : "补间正文不写入文件,完成后用 report_result 返回 summary 与正文全文(output.text)。",
+                ? [
+                    `补间正文写入 ${chapterPath}。`,
+                    "完成后用 report_result 提交:result 按你的默认交付协议(写入路径+润色说明+剧情总结+结算块);",
+                    "并在 report_result.data 附 {\"summary\": \"2-3 句补间摘要,说明区间内发生的关键变化\"}——调用方明确需要该结构化字段,不要把正文全文放进 data。",
+                ].join("\n")
+                : [
+                    "补间正文不写入文件。",
+                    "完成后用 report_result 提交:report_result.data 必须是 {\"summary\": \"2-3 句补间摘要\", \"text\": \"补间正文全文\"}——调用方明确需要这两个结构化字段。",
+                ].join("\n"),
         ].filter(Boolean).join("\n\n");
         const tweenRun = await writer.invoke({
             message: tweenMessage,
