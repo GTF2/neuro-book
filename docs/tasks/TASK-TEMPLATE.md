@@ -6,12 +6,21 @@
 ```markdown
 # 任务NNN-短名
 
+## 运行配置（开工前设置，本节由前线填写完整）
+
+- **本会话模型**：（完整 ID，如 `account:bigmodel-individual-coding-plan/GLM-5.3-Flash`）+ 推理档位（如 high）。若当前会话未在此配置，开工第一句先提醒用户切换。
+- **模式**：（目标模式/计划模式/工作流模式/普通+完全访问 之一 + 一句理由）
+- **给用户的现成命令**（让用户直接粘贴，省得他想）：
+  - 目标模式示例：`/goal 任务NNN-短名：完成 <一句话目标>，按任务书验收标准交付`
+  - 工作流示例：`/workflow 按 docs/tasks/任务NNN-短名.md 并行执行，子代理用 GLM-5.3-Flash$high`
+- **工作流子代理模型**（仅工作流模式需要，写全）：`subagent_model: "GLM-5.3-Flash$<档位>"`——完整 ID + $档位后缀，缺一不可，简写"Flash+high"无法直接设置。
+
 ## 目标
 （一句话：要达成什么，为什么）
 
 ## 开工前置
 1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节（绝对路径，worktree 内向上搜索可能读不到）
-2. 读本任务书全文
+2. 读本任务书全文（含运行配置，确认模式/模型已就位）
 3. 确认自己在 `.worktree/task-NNN` 目录内（`git rev-parse --show-toplevel` 验证）
 
 ## 范围与边界
