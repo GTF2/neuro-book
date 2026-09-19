@@ -138,7 +138,7 @@ neuro-book/
 
 - 代码审查：ocr CLI（Delegation 模式，见 `~/.zcode/skills/ocr-review/`）；UI 反模式：`npx impeccable detect`（必须在仓库目录外运行，本仓库 npm overrides 会致 EOVERRIDE）。
 - UI 好坏三层评判：Impeccable 61 条硬规则扫代码 → visual-judge 视觉子代理审截图 → 真人任务测试（给用户一个真实任务，能走通才算好）。
-- 大规模扫描/批量试验优先排 ZCode 闲时任务，不占主额度。
+- 大规模扫描/批量试验优先排 ZCode 闲时任务，不占主额度。**闲时任务由前线指挥部创建**（在其会话内执行，带项目上下文）；参谋部只做讨论规划，不排执行类任务。
 
 ### 环境坑位（实测记录，继承自前任运行档案）
 
