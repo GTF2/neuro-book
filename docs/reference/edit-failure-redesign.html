@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>编辑失败卡片 · 重设计原型</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e8eaee;
+    --border-strong: #dfe2e8;
+    --text: #1f2329;
+    --text-2: #646a73;
+    --text-3: #8f959e;
+    --green: #2ea44f;
+    --green-dark: #1a9e51;
+    --green-bg: #e9f7ef;
+    --green-border: #cdeeda;
+    --red: #d5493c;
+    --red-dark: #b03a2e;
+    --red-bg: #fdeeed;
+    --red-border: #f5cfca;
+    --blue: #3370ff;
+    --amber-bg: #fff8e6;
+    --amber-border: #ffe1a3;
+    --amber-text: #ad6800;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  /* ===== 顶部版本切换 ===== */
+  .version-switch {
+    position: fixed;
+    top: 12px; right: 16px;
+    z-index: 100;
+    display: flex;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .version-switch button {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--text-2);
+    padding: 4px 12px; border-radius: 6px;
+    font-family: inherit;
+  }
+  .version-switch button.active { background: var(--text); color: #fff; }
+
+  /* ===== 应用框架 ===== */
+  .app { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 4px 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+  .topbar .logo {
+    width: 20px; height: 20px; border-radius: 5px;
+    background: linear-gradient(135deg, #3370ff, #7aa5ff);
+    flex: none;
+  }
+  .topbar .title { font-size: 13px; font-weight: 600; }
+  .topbar .subtitle { font-size: 11px; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .hintbar {
+    font-size: 11px; color: var(--text-3);
+    padding: 6px 4px 2px;
+  }
+
+  /* ===== 工具行 ===== */
+  .row {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 6px;
+    overflow: hidden;
+  }
+  .row-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .row-head:hover { background: #fafbfc; }
+  .status {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: none; font-size: 11px; font-weight: 700;
+  }
+  .status.ok { background: var(--green-bg); color: var(--green); }
+  .status.err { background: var(--red-bg); color: var(--red); }
+  .tool { font-weight: 600; font-size: 13px; }
+  .tool-tag { font-size: 10px; color: var(--text-3); letter-spacing: .5px; }
+  .tool-desc { font-size: 12px; color: var(--text-2); }
+  .spacer { flex: 1; }
+  .chev { color: var(--text-3); transition: transform .25s; font-size: 11px; }
+  .row.expanded .chev { transform: rotate(180deg); }
+
+  /* 折叠态右侧的失败汇总 pill */
+  .fail-pill {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    color: var(--red);
+    font-size: 11px;
+    border-radius: 20px;
+    padding: 1px 9px;
+    white-space: nowrap;
+  }
+
+  /* ===== 新版：展开详情 ===== */
+  .detail {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s ease;
+  }
+  .detail > .detail-inner { overflow: hidden; }
+  .row.expanded .detail { grid-template-rows: 1fr; }
+  .detail-inner {
+    border-top: 1px solid var(--border);
+    padding: 14px;
+    background: #fcfcfd;
+  }
+
+  .file-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .file-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #eef2f7;
+    border: 1px solid #e0e6ee;
+    border-radius: 6px;
+    padding: 3px 10px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #345;
+  }
+  .file-pill svg { flex: none; }
+  .count-pill {
+    background: #f1f2f4; color: var(--text-2);
+    font-size: 11px; border-radius: 20px; padding: 2px 10px;
+  }
+
+  .warn-banner {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: var(--amber-text);
+    font-size: 12.5px;
+    margin-bottom: 14px;
+  }
+  .warn-banner b { color: #874d00; }
+
+  .sec-title {
+    font-size: 11px; color: var(--text-3);
+    margin: 12px 0 6px;
+    letter-spacing: .3px;
+  }
+
+  /* 改动清单 */
+  .edit-list { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .edit-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 12px;
+    font-size: 12.5px;
+    border-bottom: 1px solid #f1f2f4;
+  }
+  .edit-item:last-child { border-bottom: 0; }
+  .edit-item .dot {
+    width: 15px; height: 15px; border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .dot.ok { background: var(--green-bg); color: var(--green); }
+  .dot.err { background: var(--red-bg); color: var(--red); }
+  .edit-item.failed { background: #fffafa; }
+  .edit-item .lineno { color: var(--text-3); font-family: var(--mono); font-size: 11px; }
+  .edit-item .fail-text { color: var(--red); font-weight: 600; }
+
+  /* 失败 diff：红色虚线框 */
+  .diff-wrap {
+    border: 1.5px dashed var(--red);
+    border-radius: 10px;
+    padding: 10px;
+    background: #fff;
+  }
+  .diff-fail-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--red); font-size: 11px; font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .diff-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 640px) { .diff-grid { grid-template-columns: 1fr; } }
+  .diff-panel { border-radius: 8px; overflow: hidden; font-size: 12px; }
+  .diff-panel .diff-head { font-size: 10px; letter-spacing: 1px; padding: 5px 10px; font-weight: 700; }
+  .diff-panel .diff-body { padding: 8px 10px; font-family: var(--mono); line-height: 1.7; word-break: break-all; }
+  .diff-old { border: 1px solid var(--red-border); }
+  .diff-old .diff-head { background: #fdeeee; color: #cf513d; }
+  .diff-old .diff-body { background: #fdf3f2; color: #a34; text-decoration: line-through; }
+  .diff-new { border: 1px solid var(--green-border); }
+  .diff-new .diff-head { background: var(--green-bg); color: var(--green-dark); }
+  .diff-new .diff-body { background: #f2faf5; color: #1a7f43; }
+
+  /* 排查提示 */
+  .hint-box {
+    margin-top: 10px;
+    background: #f4f8ff;
+    border: 1px solid #d6e4ff;
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-size: 12px;
+    color: #2c4a8a;
+  }
+  .hint-box .hint-label { font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+  .hint-box .current-content {
+    font-family: var(--mono); font-size: 11.5px;
+    background: #fff; border: 1px solid #e3ecfb;
+    border-radius: 6px; padding: 6px 8px;
+    margin: 5px 0; color: #345; word-break: break-all;
+  }
+  .hint-box mark { background: #ffe58f; padding: 0 2px; border-radius: 2px; }
+  .hint-box .hint-note { color: #5a7099; font-size: 11.5px; }
+
+  /* 操作按钮 */
+  .actions { display: flex; gap: 8px; margin-top: 14px; }
+  .btn {
+    font-family: inherit; font-size: 12.5px;
+    border-radius: 7px; padding: 6px 16px;
+    cursor: pointer; border: 1px solid transparent;
+  }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #295fe0; }
+  .btn-ghost { background: #fff; border-color: var(--border-strong); color: var(--text-2); }
+  .btn-ghost:hover { background: #f5f6f8; }
+
+  /* 技术详情折叠 */
+  details.tech {
+    margin-top: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card);
+  }
+  details.tech summary {
+    list-style: none; cursor: pointer;
+    padding: 8px 12px;
+    font-size: 12px; color: var(--text-2);
+    display: flex; align-items: center; gap: 6px;
+    user-select: none;
+  }
+  details.tech summary::-webkit-details-marker { display: none; }
+  details.tech summary::before {
+    content: "▸"; color: var(--text-3); font-size: 10px;
+    transition: transform .2s; display: inline-block;
+  }
+  details.tech[open] summary::before { transform: rotate(90deg); }
+  details.tech pre {
+    border-top: 1px solid var(--border);
+    padding: 10px 12px;
+    font-family: var(--mono); font-size: 11.5px;
+    color: var(--red-dark);
+    background: #fdf3f2;
+    overflow-x: auto;
+    border-radius: 0 0 8px 8px;
+  }
+
+  /* ===== 旧版复刻 ===== */
+  .old-error-block {
+    background: #fdeeee;
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #8a3630;
+    line-height: 1.8;
+  }
+  .row-old-bash { background: #fdf0ef; border: 1px solid var(--red-border); }
+  .old-note {
+    font-size: 11px; color: var(--red);
+    background: var(--red-bg); border: 1px solid var(--red-border);
+    border-radius: 8px; padding: 6px 12px; margin-bottom: 10px;
+  }
+
+  /* ===== 底部输入栏 mock ===== */
+  .inputbar { margin-top: 16px; }
+  .input-field {
+    background: var(--card); border: 1px solid var(--border-strong);
+    border-radius: 12px; padding: 12px 14px;
+    color: var(--text-3); font-size: 13px;
+  }
+  .input-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 8px; padding: 0 4px;
+    font-size: 11px; color: var(--text-3);
+  }
+  .send-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--blue); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  .hidden { display: none !important; }
+
+  /* toast */
+  .toast {
+    position: fixed; left: 50%; bottom: 40px;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(0,0,0,.82); color: #fff;
+    font-size: 12.5px; padding: 9px 18px; border-radius: 8px;
+    opacity: 0; pointer-events: none;
+    transition: all .25s ease; z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="version-switch">
+  <button id="btnNew" class="active" onclick="switchVersion('new')">新版设计</button>
+  <button id="btnOld" onclick="switchVersion('old')">旧版设计</button>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"></div>
+    <div>
+      <div class="title">拆解《异化》：书目结构与目标待确认</div>
+      <div class="subtitle">用户上传《异化》全文，希望拆解为项目故事 · 已转码确认…</div>
+    </div>
+  </div>
+  <div class="hintbar">高保真原型 · 点击条目可折叠 / 展开 · 右上角可切换新旧版对比</div>
+
+  <!-- ================= 新版 ================= -->
+  <div id="v-new">
+    <div class="row">
+      <div class="row-head">
+        <span class="status ok">✓</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row-head">
+        <span class="status ok">✓</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row-head">
+        <span class="status ok">✓</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+
+    <!-- 失败的编辑：默认展开 -->
+    <div class="row expanded" id="failRow">
+      <div class="row-head" onclick="toggleFail()">
+        <span class="status err">✕</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span>
+        <span class="fail-pill">⚠ 1/5 处未匹配</span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="detail">
+        <div class="detail-inner">
+
+          <div class="file-head">
+            <span class="file-pill">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 1h7l3 3v11H3V1z" stroke="#669" fill="#fff"/><path d="M10 1v3h3" stroke="#669" fill="none"/></svg>
+              lorebook/note/cast-roster/index.md
+            </span>
+            <span class="count-pill">5 edits</span>
+          </div>
+
+          <div class="warn-banner">
+            ⚠️ <b>5 处改动全部未写入</b>：第 1 处找不到目标文本。为避免文件只改一半，本次批量编辑已整体取消。
+          </div>
+
+          <div class="sec-title">改动清单</div>
+          <div class="edit-list">
+            <div class="edit-item failed">
+              <span class="dot err">✕</span>
+              <span>第 1 处</span>
+              <span class="fail-text">未找到目标文本</span>
+            </div>
+            <div class="edit-item">
+              <span class="dot ok">✓</span>
+              <span>第 2 处</span>
+              <span class="lineno">第 55 行</span>
+            </div>
+            <div class="edit-item">
+              <span class="dot ok">✓</span>
+              <span>第 3 处</span>
+              <span class="lineno">第 104 行</span>
+            </div>
+            <div class="edit-item">
+              <span class="dot ok">✓</span>
+              <span>第 4 处</span>
+              <span class="lineno">第 105 行</span>
+            </div>
+            <div class="edit-item">
+              <span class="dot ok">✓</span>
+              <span>第 5 处</span>
+              <span class="lineno">第 123 行</span>
+            </div>
+          </div>
+
+          <div class="sec-title">失败改动对比</div>
+          <div class="diff-wrap">
+            <div class="diff-fail-tag">✕ 第 1 处 · 未匹配</div>
+            <div class="diff-grid">
+              <div class="diff-panel diff-old">
+                <div class="diff-head">OLD STRING</div>
+                <div class="diff-body">| 潘多拉 | 222 | 待核 | 香港大战的对手级人物、真理之门当年为杀"头盖骨"出动几十人、以她为尊，2002-08 新贺大战被蓝梓击杀（集9) |</div>
+              </div>
+              <div class="diff-panel diff-new">
+                <div class="diff-head">NEW STRING</div>
+                <div class="diff-body">| 潘多拉 | 222 | 真理之门欧洲第二号人物（五级）：1997 在港国杀蓝梓、被方少白重创：2002-08 新贺大战被蓝梓击杀（集9) |</div>
+              </div>
+            </div>
+            <div class="hint-box">
+              <div class="hint-label">💡 该区域文件当前内容</div>
+              <div class="current-content">| 潘多拉 | 222 | 待核 | 香港大战的对手级人物、真理之门当年为杀<mark>'头盖骨'</mark>出动几十人、以她为尊，2002-08 新贺大战被蓝梓击杀（集9) |</div>
+              <div class="hint-note">可能是引号不一致：期望弯引号" "，文件中实际为直引号' '</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn btn-primary" onclick="event.stopPropagation();showToast('原型演示：重试前会自动重读文件，再重新生成改动')">重新尝试</button>
+            <button class="btn btn-ghost" onclick="event.stopPropagation();showToast('原型演示：跳过此处，继续执行后续步骤')">跳过此次编辑</button>
+          </div>
+
+          <details class="tech">
+            <summary>技术详情（原始报错）</summary>
+            <pre>Edit preflight failed for lorebook/note/cast-roster/index.md. No changes were written.
+Matched edits:
+- edits[2] matched lines 55-55.
+- edits[3] matched lines 104-104.
+- edits[1] matched lines 105-105.
+- edits[4] matched lines 123-123.
+Failed edits:
+- edits[0] failed: oldText was not found. It must match exactly.</pre>
+          </details>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="row-head">
+        <span class="status err">✕</span>
+        <span class="tool">bash</span><span class="tool-tag">TOOL CALL</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 旧版（复刻现状） ================= -->
+  <div id="v-old" class="hidden">
+    <div class="old-note">旧版：原始报错平铺 ×2、零基索引 edits[0]、无下一步指引</div>
+
+    <div class="row">
+      <div class="row-head">
+        <span class="status ok">✓</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row-head">
+        <span class="status ok">✓</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+
+    <div class="row expanded">
+      <div class="row-head">
+        <span class="status err">✕</span>
+        <span class="tool">edit</span><span class="tool-tag">EDIT</span><span class="tool-desc">编辑文件</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+      <div class="detail" style="grid-template-rows:1fr">
+        <div class="detail-inner">
+
+          <div class="file-head">
+            <span class="file-pill">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M3 1h7l3 3v11H3V1z" stroke="#669" fill="#fff"/><path d="M10 1v3h3" stroke="#669" fill="none"/></svg>
+              lorebook/note/cast-roster/index.md
+            </span>
+            <span class="count-pill">5 edits</span>
+          </div>
+
+          <div class="diff-grid">
+            <div class="diff-panel diff-old">
+              <div class="diff-head">OLD STRING</div>
+              <div class="diff-body">| 潘多拉 | 222 | 待核 | 香港大战的对手级人物、真理之门当年为杀"头盖骨"出动几十人、以她为尊，2002-08 新贺大战被蓝梓击杀（集9) |</div>
+            </div>
+            <div class="diff-panel diff-new">
+              <div class="diff-head">NEW STRING</div>
+              <div class="diff-body">| 潘多拉 | 222 | 真理之门欧洲第二号人物（五级）：1997 在港国杀蓝梓、被方少白重创：2002-08 新贺大战被蓝梓击杀（集9) |</div>
+            </div>
+          </div>
+
+          <div class="old-error-block">
+            Edit preflight failed for lorebook/note/cast-roster/index.md. No changes were written.<br>
+            Matched edits:<br>
+            - edits[2] matched lines 55-55.<br>
+            - edits[3] matched lines 104-104.<br>
+            - edits[1] matched lines 105-105.<br>
+            - edits[4] matched lines 123-123.<br>
+            Failed edits:<br>
+            - edits[0] failed: oldText was not found. It must match exactly.
+          </div>
+
+          <div class="old-error-block">
+            Edit preflight failed for lorebook/note/cast-roster/index.md. No changes were written.<br>
+            Matched edits:<br>
+            - edits[2] matched lines 55-55.<br>
+            - edits[3] matched lines 104-104.<br>
+            - edits[1] matched lines 105-105.<br>
+            - edits[4] matched lines 123-123.<br>
+            Failed edits:<br>
+            - edits[0] failed: oldText was not found. It must match exactly.
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-old-bash">
+      <div class="row-head">
+        <span class="status err">✕</span>
+        <span class="tool">bash</span><span class="tool-tag">TOOL CALL</span>
+        <span class="spacer"></span><span class="chev">▾</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部输入栏 mock -->
+  <div class="inputbar">
+    <div class="input-field">输入消息…</div>
+    <div class="input-meta">
+      <span>DeepSeek/deepseek-flash ⌄</span>
+      <span class="send-btn">➤</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function toggleFail() {
+    document.getElementById('failRow').classList.toggle('expanded');
+  }
+  function switchVersion(v) {
+    document.getElementById('v-new').classList.toggle('hidden', v !== 'new');
+    document.getElementById('v-old').classList.toggle('hidden', v !== 'old');
+    document.getElementById('btnNew').classList.toggle('active', v === 'new');
+    document.getElementById('btnOld').classList.toggle('active', v === 'old');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+</script>
+</body>
+</html>

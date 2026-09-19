@@ -106,3 +106,45 @@ neuro-book/
 当前仓库状态以 [`PROJECT-STATUS.md`](PROJECT-STATUS.md) 为准；运行期 Reference 以 [`packages/neuro-book/assets/reference/`](packages/neuro-book/assets/reference/) 为准。`RELEASE.md` 和 `WATCHDOG.md` 是机器与审查入口，不属于普通产品规范。
 
 `CLAUDE.md` 仅兼容指向本文件。`WATCHDOG.md` 是 advisor 复核清单，不进入主 Agent 普通上下文。`RELEASE.md` 是发布程序消费的当前版本载荷；完整发布规则见 [`scripts/release/AGENTS.md`](scripts/release/AGENTS.md)。
+
+---
+
+## 本 Fork 工作规矩（GTF2 定制，2026-09-19 起）
+
+本节由 fork 所有者 GTF2 定制，覆盖上方与本文冲突的条目；上游规范其余部分继续生效。本 fork 中"开发者"一律指 GTF2。
+
+### 用户背景与沟通
+
+- 用户是编程小白，借 AI 能力开发本 fork。所有决策类回复必须：结论先行、大白话解释选项和取舍、不甩术语；执行类任务完成后用截图或可操作步骤汇报。
+- 不确定用户意图时问一句再动手，不要猜。
+
+### 多窗口架构与文件总线
+
+- 三个 ZCode 窗口分工：**参谋部**（default 工作区，只讨论不干活）、**前线指挥部**（本仓库主窗口，架构/拆任务/审查/合并）、**工程队**（GLM-5.3-Flash 独立额度窗口，按任务书干体力活）。
+- 窗口间信息只走文件：任务板 `docs/tasks/BOARD.md`、任务书、git 分支、本 AGENTS.md。用户只传一句话指针（"任务X 待审"）。聊天里不贴大段代码、不转述长输出——提醒用户走文件。
+- 任务命名：中文短名+序号（如 `任务004-环境验证`），禁用 T0/T1 类代号。
+
+### 任务协议
+
+- 前线指挥部把任务写成 `docs/tasks/任务NNN-短名.md`：目标、边界（能改/禁改的文件与包）、验收标准、参考材料路径。
+- 工程队守则：开工先读任务书与本文件 → 在 `.worktree/任务NNN` 里建分支干活（遵循上游 worktree 惯例）→ 交付时在任务书追加交付报告（做了什么/为什么/自测结果/遗留问题），状态改为"待审" → 关窗之前把本窗口会话 ID 写进任务书。
+- 前线审查：读交付报告+diff，跑确定性检查（见下），通过才合并；打回写返工意见。
+- 禁止：绕过任务板直接派活；工程队动 master；任何窗口 force push。
+
+### 质量与评判
+
+- 代码审查：ocr CLI（Delegation 模式，见 `~/.zcode/skills/ocr-review/`）；UI 反模式：`npx impeccable detect`（必须在仓库目录外运行，本仓库 npm overrides 会致 EOVERRIDE）。
+- UI 好坏三层评判：Impeccable 61 条硬规则扫代码 → visual-judge 视觉子代理审截图 → 真人任务测试（给用户一个真实任务，能走通才算好）。
+- 大规模扫描/批量试验优先排 ZCode 闲时任务，不占主额度。
+
+### 环境坑位（实测记录，继承自前任运行档案）
+
+- dev server 启动：`cd packages/neuro-book && bun run dev`，访问必须用 `127.0.0.1:3000`（localhost 解析 IPv6 会失败）。
+- Agent 沙箱会拦截子进程导致前端空白渲染——遇到时先关沙箱再判断代码问题。
+- Bun `--cwd` 必须放在 `run` 之后。
+- 前任完整运行档案（含 275 测试基线、API 实测记录）见 `docs/reference/NEXT-PLAN.md` 与 `docs/reference/MOVE-NOTES.md`；6 份 UI 重设计参考稿在 `docs/reference/*.html`。这些是参考资产，不是当前代码依据。
+
+### 同步策略
+
+- master 定期 rebase upstream/master（建议每周）；所有开发在分支上进行，main 永远保持"上游镜像+本文件"的最小领先。
+- 本 fork 定位：纯自玩，不与上游作者协商；跟进其节奏，做自己的方向。上游即将上线的新 UI 先评测（三层评判）再定重构方向。

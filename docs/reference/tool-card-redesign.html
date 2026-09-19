@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工具卡片 · 重设计原型</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e8eaee;
+    --border-strong: #dfe2e8;
+    --text: #1f2329;
+    --text-2: #646a73;
+    --text-3: #8f959e;
+    --green: #2ea44f;
+    --green-dark: #1a9e51;
+    --green-bg: #e9f7ef;
+    --red: #d5493c;
+    --red-bg: #fdeeed;
+    --red-border: #f5cfca;
+    --blue: #3370ff;
+    --blue-bg: #eef3ff;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 13px; line-height: 1.6;
+  }
+  .version-switch {
+    position: fixed; top: 12px; right: 16px; z-index: 100;
+    display: flex; background: var(--card);
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .version-switch button {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--text-2); padding: 4px 12px; border-radius: 6px;
+    font-family: inherit;
+  }
+  .version-switch button.active { background: var(--text); color: #fff; }
+
+  .app { max-width: 780px; margin: 0 auto; padding: 0 16px 60px; }
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 4px 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px;
+  }
+  .topbar .logo { width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(135deg, #3370ff, #7aa5ff); flex: none; }
+  .topbar .title { font-size: 13px; font-weight: 600; }
+  .hintbar { font-size: 11px; color: var(--text-3); padding: 6px 4px 10px; }
+
+  /* ===== 卡片通用 ===== */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 8px; overflow: hidden;
+  }
+  .card-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px;
+  }
+  .status {
+    width: 18px; height: 18px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex: none;
+  }
+  .status.ok { background: var(--green-bg); color: var(--green); }
+  .card-title { font-weight: 600; font-size: 13px; }
+  .card-tag { font-size: 10px; color: var(--text-3); letter-spacing: .5px; }
+  .head-meta { font-size: 11.5px; color: var(--text-3); }
+  .head-meta b { color: var(--green-dark); }
+  .spacer { flex: 1; }
+  .chev { color: var(--text-3); font-size: 11px; }
+  .card-body { padding: 0 14px 14px; }
+
+  /* ===== 新版元素 ===== */
+  .ai-summary {
+    background: var(--blue-bg); border: 1px solid #d9e5ff;
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 12.5px; color: #2c4a8a;
+    margin-bottom: 10px;
+    display: flex; gap: 6px; align-items: flex-start;
+  }
+  .ai-summary .tag {
+    flex: none; font-size: 10px; color: var(--blue);
+    border: 1px solid #bcd3ff; border-radius: 4px; padding: 0 5px;
+    margin-top: 2px; background: #fff;
+  }
+
+  .block-label {
+    font-size: 10px; letter-spacing: 1px; color: var(--text-3);
+    margin: 10px 0 5px; display: flex; align-items: center; gap: 8px;
+  }
+  .copy-btn {
+    border: 1px solid var(--border-strong); background: #fff;
+    font-size: 10.5px; color: var(--text-2); border-radius: 5px;
+    padding: 1px 8px; cursor: pointer; font-family: inherit; letter-spacing: 0;
+  }
+  .copy-btn:hover { background: #f5f6f8; }
+
+  .sql-block {
+    background: #f8f9fb; border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+  }
+  .sql-block pre {
+    padding: 10px 12px; font-family: var(--mono); font-size: 12px;
+    line-height: 1.75; overflow-x: auto; color: #345;
+  }
+  .kw { color: #d73a49; font-weight: 600; }
+  .fn { color: #005cc5; }
+  .str { color: #032f62; background: #ddf0ff; border-radius: 3px; padding: 0 3px; }
+  .ident { color: #6f42c1; }
+
+  .stats { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .stat {
+    background: #f8f9fb; border: 1px solid var(--border);
+    border-radius: 8px; padding: 6px 12px; min-width: 96px;
+  }
+  .stat .k { font-size: 10.5px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
+  .stat .v { font-size: 14px; font-weight: 700; margin-top: 1px; }
+  .stat .v.good { color: var(--green-dark); }
+  .stat .v.dim { color: var(--text-2); font-weight: 600; font-size: 13px; }
+  .info-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 13px; height: 13px; border-radius: 50%;
+    border: 1px solid var(--text-3); color: var(--text-3); font-size: 9px; cursor: help;
+  }
+
+  details.raw { margin-top: 10px; border: 1px solid var(--border); border-radius: 8px; background: #fcfcfd; }
+  details.raw summary {
+    list-style: none; cursor: pointer; padding: 7px 12px;
+    font-size: 12px; color: var(--text-2);
+    display: flex; align-items: center; gap: 6px; user-select: none;
+  }
+  details.raw summary::-webkit-details-marker { display: none; }
+  details.raw summary::before { content: "▸"; color: var(--text-3); font-size: 10px; display: inline-block; transition: transform .2s; }
+  details.raw[open] summary::before { transform: rotate(90deg); }
+  details.raw pre {
+    border-top: 1px solid var(--border); padding: 10px 12px;
+    font-family: var(--mono); font-size: 11.5px; color: var(--text-2);
+    overflow-x: auto; background: #fff; border-radius: 0 0 8px 8px;
+  }
+
+  /* 命令输出 */
+  .cmd-line {
+    font-family: var(--mono); font-size: 12px;
+    background: #f8f9fb; border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 12px; color: #345; margin-top: 4px;
+  }
+  .cmd-line .prompt { color: var(--green-dark); font-weight: 700; }
+  .out-tail {
+    font-family: var(--mono); font-size: 11.5px;
+    background: #1e2126; color: #c9d1d9;
+    border-radius: 8px; padding: 10px 12px; margin-top: 6px;
+    line-height: 1.7;
+  }
+  .out-tail .ok { color: #7ee787; }
+
+  /* 按需 AI 解释 */
+  .tpl-summary {
+    display: flex; align-items: center; gap: 8px;
+    background: #f8f9fb; border: 1px dashed var(--border-strong);
+    border-radius: 8px; padding: 7px 12px; margin-bottom: 10px;
+    font-size: 12px; color: var(--text-2);
+  }
+  .tpl-summary .tpl-text { flex: 1; font-family: var(--mono); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .explain-btn {
+    flex: none; border: 1px solid #bcd3ff; background: #fff; color: var(--blue);
+    font-size: 11.5px; border-radius: 6px; padding: 3px 10px;
+    cursor: pointer; font-family: inherit;
+  }
+  .explain-btn:hover { background: var(--blue-bg); }
+  .ai-summary.loading { color: #2c4a8a; align-items: center; }
+  .spinner { width: 12px; height: 12px; border-radius: 50%; flex: none; border: 2px solid #bcd3ff; border-top-color: var(--blue); animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .re-btn { flex: none; border: 0; background: transparent; color: var(--text-3); cursor: pointer; font-size: 12px; padding: 2px 4px; }
+  .re-btn:hover { color: var(--blue); }
+
+  /* ===== 旧版复刻 ===== */
+  .old-label { font-size: 10px; letter-spacing: 1.5px; color: var(--text-3); margin: 10px 0 5px; }
+  .old-toolbar { display: flex; gap: 2px; margin-bottom: 5px; align-items: center; }
+  .old-toolbar .ic {
+    width: 24px; height: 22px; border-radius: 4px; background: #f1f2f4;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--text-3);
+  }
+  .old-json {
+    background: #f8f9fb; border: 1px solid var(--border); border-radius: 6px;
+    padding: 10px 12px; font-family: var(--mono); font-size: 11.5px;
+    color: #4a5568; overflow-x: auto; line-height: 1.7; white-space: pre;
+  }
+  .old-json .key { color: #0550ae; }
+  .old-note {
+    font-size: 11px; color: var(--red);
+    background: var(--red-bg); border: 1px solid var(--red-border);
+    border-radius: 8px; padding: 6px 12px; margin-bottom: 10px;
+  }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="version-switch">
+  <button id="btnNew" class="active" onclick="switchVersion('new')">新版设计</button>
+  <button id="btnOld" onclick="switchVersion('old')">旧版设计</button>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"></div>
+    <div>
+      <div class="title">拆解《异化》：书目结构与目标待确认</div>
+      <div class="subtitle" style="font-size:11px;color:var(--text-3)">224/224 全部落位！现在做排序归一——把 224 章按原书顺序重排</div>
+    </div>
+  </div>
+  <div class="hintbar">原型 3 · 工具卡片重设计 · 右上角切换新旧版对比</div>
+
+  <!-- ================= 新版 ================= -->
+  <div id="v-new">
+
+    <!-- SQL 卡片 -->
+    <div class="card">
+      <div class="card-head">
+        <span class="status ok">✓</span>
+        <span class="card-title">执行 SQL</span>
+        <span class="card-tag">execute_sql</span>
+        <span class="spacer"></span>
+        <span class="head-meta">写入 · <b>224 行受影响</b> · 0.3s</span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="summary-zone" id="sumSql">
+          <div class="tpl-summary">
+            <span class="tpl-text">UPDATE "StoryChapter" · 影响 224 行 · WHERE name LIKE 'vol.%ch.%'</span>
+            <button class="explain-btn" onclick="askAI('sumSql')">✨ AI 解释这步</button>
+          </div>
+        </div>
+
+        <div class="block-label">SQL <button class="copy-btn" onclick="showToast('已复制 SQL')">复制</button></div>
+        <div class="sql-block"><pre><span class="kw">UPDATE</span> <span class="ident">"StoryChapter"</span>
+<span class="kw">SET</span>    <span class="ident">"sortOrder"</span>  = (<span class="fn">CAST</span>(<span class="fn">substr</span>(name, <span class="str">5</span>, <span class="str">2</span>) <span class="kw">AS INTEGER</span>) - <span class="str">1</span>) * <span class="str">1000</span>
+                     + <span class="fn">CAST</span>(<span class="fn">substr</span>(name, <span class="str">11</span>, <span class="str">2</span>) <span class="kw">AS INTEGER</span>),
+       <span class="ident">"updatedAt"</span> = <span class="kw">CURRENT_TIMESTAMP</span>
+<span class="kw">WHERE</span>  name <span class="kw">LIKE</span> <span class="str">'vol.%ch.%'</span></pre></div>
+
+        <div class="block-label">结果</div>
+        <div class="stats">
+          <div class="stat"><div class="k">影响行数</div><div class="v good">224 ✓</div></div>
+          <div class="stat"><div class="k">操作</div><div class="v dim">UPDATE</div></div>
+          <div class="stat"><div class="k">返回行</div><div class="v dim">0</div></div>
+          <div class="stat">
+            <div class="k">章节树刷新 <span class="info-dot" title="前端缓存标志：false 表示界面无需刷新，属内部实现细节">?</span></div>
+            <div class="v dim">不需要</div>
+          </div>
+        </div>
+
+        <details class="raw">
+          <summary>原始参数（JSON）</summary>
+          <pre>{"sql": "UPDATE \"StoryChapter\" SET \"sortOrder\" = (CAST(substr(name, 5, 2) AS INTEGER) - 1) * 1000 + CAST(substr(name, 11, 2) AS INTEGER), \"updatedAt\" = CURRENT_TIMESTAMP WHERE name LIKE 'vol.%ch.%'"}</pre>
+        </details>
+        <details class="raw">
+          <summary>原始结果（JSON）</summary>
+          <pre>{"mode": "write", "command": "UPDATE", "rowCount": 224, "rows": [], "effects": {"refreshChapterTree": false}}</pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- bash 卡片（展示同套规则） -->
+    <div class="card">
+      <div class="card-head">
+        <span class="status ok">✓</span>
+        <span class="card-title">执行命令</span>
+        <span class="card-tag">bash</span>
+        <span class="spacer"></span>
+        <span class="head-meta">退出码 <b>0</b> · 1.2s</span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="summary-zone" id="sumBash">
+          <div class="tpl-summary">
+            <span class="tpl-text">node scripts/lint-frontmatter.mjs --all · 退出码 0</span>
+            <button class="explain-btn" onclick="askAI('sumBash')">✨ AI 解释这步</button>
+          </div>
+        </div>
+        <div class="block-label">命令</div>
+        <div class="cmd-line"><span class="prompt">$</span> node scripts/lint-frontmatter.mjs --all</div>
+        <div class="block-label">输出 <span style="letter-spacing:0;font-size:10.5px;color:var(--text-3)">（末尾 3 行）</span></div>
+        <div class="out-tail">checked 224 chapters
+<span class="ok">✓ 224 passed, 0 failed, 0 warnings</span>
+done in 1.18s</div>
+        <details class="raw">
+          <summary>完整输出（47 行）</summary>
+          <pre>…（完整终端输出折叠在这里）…</pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- 通用规则说明 -->
+    <div class="card" style="background:#fcfcfd;">
+      <div class="card-body" style="padding:12px 14px;">
+        <div class="block-label" style="margin-top:2px;">这套渲染规则覆盖所有工具类型</div>
+        <div style="font-size:12.5px;color:var(--text-2);line-height:2;">
+          SQL → 格式化高亮 + 影响行数 &nbsp;·&nbsp; 文件 → 路径 + diff 摘要 &nbsp;·&nbsp; 命令 → 命令行 + 退出码 + 输出末尾 N 行<br>
+          网络请求 → 方法 + URL + 状态码 &nbsp;·&nbsp; 未知工具 → 关键字段摘要 + 原始 JSON 折叠
+        </div>
+        <div style="font-size:12px;color:var(--text-3);margin-top:6px;border-top:1px dashed var(--border-strong);padding-top:8px;">
+          摘要策略：默认只给零成本的模板摘要（结构化字段直接拼装）；用户点「✨ AI 解释这步」才发起旁路请求生成人话解释——不占主对话 token，不拖慢 Agent 执行，生成结果就地缓存。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 旧版 ================= -->
+  <div id="v-old" class="hidden">
+    <div class="old-note">旧版：转义 JSON 直出、内部字段 jargon、无摘要、双排版工具图标</div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="status ok">✓</span>
+        <span class="card-title">execute_sql</span>
+        <span class="card-tag">TOOL CALL</span>
+        <span class="spacer"></span>
+        <span class="chev">▾</span>
+      </div>
+      <div class="card-body">
+        <div class="old-label">ARGUMENTS</div>
+        <div class="old-toolbar">
+          <span class="ic">⧉</span><span class="ic">{ }</span><span class="ic">▦</span>
+          <span class="spacer"></span>
+          <span class="ic">⧉</span><span class="ic">⇳</span><span class="ic">⇲</span>
+        </div>
+        <div class="old-json">{
+  <span class="key">"sql"</span>: "UPDATE \"StoryChapter\" SET \"sortOrder\" = (CAST(substr(name, 5, 2) AS INTEGER) - 1) * 1000 + CAST(substr(name, 11, 2) AS INTEGER), \"updatedAt\" = CURRENT_TIMESTAMP WHERE name LIKE 'vol.%ch.%'"
+}</div>
+
+        <div class="old-label">RESULT</div>
+        <div class="old-toolbar">
+          <span class="ic">⧉</span><span class="ic">{ }</span><span class="ic">▦</span>
+          <span class="spacer"></span>
+          <span class="ic">⧉</span><span class="ic">⇳</span><span class="ic">⇲</span>
+        </div>
+        <div class="old-json">{
+  <span class="key">"mode"</span>: "write",
+  <span class="key">"command"</span>: "UPDATE",
+  <span class="key">"rowCount"</span>: 224,
+  <span class="key">"rows"</span>: [],
+  <span class="key">"effects"</span>: {
+    <span class="key">"refreshChapterTree"</span>: false
+  }
+}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" style="position:fixed;left:50%;bottom:40px;transform:translateX(-50%) translateY(20px);background:rgba(0,0,0,.82);color:#fff;font-size:12.5px;padding:9px 18px;border-radius:8px;opacity:0;pointer-events:none;transition:all .25s ease;z-index:200;"></div>
+
+<script>
+  function switchVersion(v) {
+    document.getElementById('v-new').classList.toggle('hidden', v !== 'new');
+    document.getElementById('v-old').classList.toggle('hidden', v !== 'old');
+    document.getElementById('btnNew').classList.toggle('active', v === 'new');
+    document.getElementById('btnOld').classList.toggle('active', v === 'old');
+    window.scrollTo({ top: 0 });
+  }
+  const aiTexts = {
+    sumSql: '把 224 章按原书顺序重排：从章节名解析卷号（vol）与章号（ch）计算 sortOrder，并刷新更新时间戳。',
+    sumBash: '校验 224 章 frontmatter 字段完整性，全部通过。'
+  };
+  function askAI(id) {
+    const zone = document.getElementById(id);
+    zone.innerHTML = '<div class="ai-summary loading"><span class="spinner"></span><span>正在生成解释…</span></div>';
+    setTimeout(() => {
+      zone.innerHTML = '<div class="ai-summary"><span>✨</span><span>' + aiTexts[id] + '</span><span class="tag">AI 解释</span><button class="re-btn" title="重新生成" onclick="askAI(\'' + id + '\')">↻</button></div>';
+    }, 900);
+  }
+  let timer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(() => t.classList.remove('show'), 2000);
+  }
+</script>
+</body>
+</html>

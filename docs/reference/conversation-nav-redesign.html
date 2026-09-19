@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>对话导航 · 重设计原型</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e8eaee;
+    --border-strong: #dfe2e8;
+    --text: #1f2329;
+    --text-2: #646a73;
+    --text-3: #8f959e;
+    --green: #2ea44f;
+    --green-bg: #e9f7ef;
+    --red: #d5493c;
+    --red-bg: #fdeeed;
+    --red-border: #f5cfca;
+    --blue: #3370ff;
+    --blue-bg: #eef3ff;
+    --amber-bg: #fff8e6;
+    --amber-border: #ffe1a3;
+    --amber-text: #ad6800;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 13px; line-height: 1.6;
+  }
+
+  /* 导航面板开关 */
+  .nav-switch {
+    position: fixed; top: 12px; right: 16px; z-index: 100;
+    display: flex; background: var(--card);
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    padding: 3px; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .nav-switch button {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--text-2); padding: 4px 12px; border-radius: 6px;
+    font-family: inherit;
+  }
+  .nav-switch button.active { background: var(--text); color: #fff; }
+
+  .app { max-width: 1080px; margin: 0 auto; padding: 0 16px 60px; }
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 14px 4px 10px; border-bottom: 1px solid var(--border); margin-bottom: 10px;
+  }
+  .topbar .logo { width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(135deg, #3370ff, #7aa5ff); flex: none; }
+  .topbar .title { font-size: 13px; font-weight: 600; }
+  .hintbar { font-size: 11px; color: var(--text-3); padding: 6px 4px 10px; }
+
+  .layout { display: flex; gap: 16px; align-items: flex-start; }
+  .timeline { flex: 1; min-width: 0; max-width: 760px; }
+
+  /* ===== 用户消息 ===== */
+  .msg-user { margin: 18px 0 10px; scroll-margin-top: 16px; }
+  .msg-user .who { font-size: 11px; color: var(--text-3); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+  .msg-user .who .time { font-weight: 400; }
+  .msg-user .bubble {
+    background: #eef3ff; border: 1px solid #d9e5ff;
+    border-radius: 10px; padding: 10px 14px;
+    font-size: 13.5px; width: fit-content; max-width: 90%;
+  }
+
+  /* ===== 分组块 ===== */
+  .group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; margin-bottom: 6px; overflow: hidden;
+    scroll-margin-top: 16px;
+  }
+  .group-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 14px; cursor: pointer; user-select: none;
+  }
+  .group-head:hover { background: #fafbfc; }
+  .gicon {
+    width: 20px; height: 20px; border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; flex: none;
+  }
+  .gicon.gray { background: #f1f2f4; }
+  .gicon.red { background: var(--red-bg); }
+  .gicon.blue { background: var(--blue-bg); }
+  .g-summary { font-weight: 600; font-size: 13px; }
+  .g-meta { font-size: 11px; color: var(--text-3); }
+  .g-meta.bad { color: var(--red); font-weight: 600; }
+  .g-meta.good { color: var(--green); }
+  .spacer { flex: 1; }
+  .chev { color: var(--text-3); transition: transform .25s; font-size: 11px; }
+  .group.expanded .chev { transform: rotate(180deg); }
+
+  .gbody { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .gbody > .gbody-inner { overflow: hidden; }
+  .group.expanded .gbody { grid-template-rows: 1fr; }
+  .gbody-inner { padding: 0 10px 10px; }
+
+  /* 组内的单个工具行 */
+  .tool-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; font-size: 12.5px;
+    border-top: 1px solid #f3f4f6;
+  }
+  .tool-row .status {
+    width: 16px; height: 16px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; flex: none;
+  }
+  .status.ok { background: var(--green-bg); color: var(--green); }
+  .status.err { background: var(--red-bg); color: var(--red); }
+  .tool-row .t-name { font-weight: 600; }
+  .tool-row .t-tag { font-size: 10px; color: var(--text-3); }
+  .tool-row .t-desc { color: var(--text-2); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .mini-pill {
+    background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red);
+    font-size: 11px; border-radius: 20px; padding: 0 8px; white-space: nowrap;
+  }
+  .file-pill {
+    display: inline-flex; align-items: center;
+    background: #eef2f7; border: 1px solid #e0e6ee; border-radius: 6px;
+    padding: 2px 8px; font-family: var(--mono); font-size: 11px; color: #345;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 260px;
+  }
+  .more-note { font-size: 11.5px; color: var(--text-3); padding: 6px 10px 2px; }
+
+  /* 组内嵌的失败摘要（复用方案一的样式语言） */
+  .mini-fail {
+    margin: 6px 0 4px; border: 1px solid var(--amber-border); background: var(--amber-bg);
+    border-radius: 8px; padding: 8px 12px; font-size: 12px; color: var(--amber-text);
+  }
+  .mini-fail b { color: #874d00; }
+
+  /* 运行中的 spinner */
+  .spinner {
+    width: 12px; height: 12px; border-radius: 50%; flex: none;
+    border: 2px solid #bcd3ff; border-top-color: var(--blue);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .running-text { color: var(--blue); font-weight: 600; }
+
+  /* ===== Agent 回答 ===== */
+  .msg-agent {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; margin: 10px 0;
+    scroll-margin-top: 16px;
+  }
+  .msg-agent .who { font-size: 11px; color: var(--text-3); margin-bottom: 8px; }
+  .msg-agent p { margin: 6px 0; font-size: 13px; }
+  .msg-agent table { border-collapse: collapse; margin: 10px 0; font-size: 12.5px; }
+  .msg-agent th, .msg-agent td { border: 1px solid var(--border); padding: 5px 12px; text-align: left; }
+  .msg-agent th { background: #f7f8fa; font-weight: 600; }
+  .stars { color: #f0a020; letter-spacing: 2px; }
+
+  /* ===== 右侧大纲 ===== */
+  .outline {
+    width: 250px; flex: none; position: sticky; top: 12px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; max-height: calc(100vh - 24px);
+    display: flex; flex-direction: column;
+  }
+  .ol-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 12px; border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600; flex: none;
+  }
+  .ol-head .ol-tools { display: flex; gap: 4px; }
+  .ol-head .ol-tools button {
+    border: 0; background: transparent; color: var(--text-3); cursor: pointer;
+    font-size: 11px; font-family: inherit; padding: 2px 6px; border-radius: 4px;
+  }
+  .ol-head .ol-tools button:hover { background: #f1f2f4; color: var(--text-2); }
+  .ol-list { overflow-y: auto; padding: 6px 0; }
+
+  .ol-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 5px 10px 5px 12px; font-size: 12px; color: var(--text-2);
+    cursor: pointer; border-left: 2px solid transparent;
+  }
+  .ol-item:hover { background: #f7f8fa; }
+  .ol-item.active { background: var(--blue-bg); border-left-color: var(--blue); color: var(--text); }
+  .ol-item .ol-icon { flex: none; font-size: 11px; width: 16px; text-align: center; }
+  .ol-item .ol-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ol-item .ol-flag { flex: none; font-size: 10px; }
+  .ol-item.user { font-weight: 600; color: var(--text); margin-top: 4px; }
+  .ol-item.user .ol-flag { color: var(--text-3); font-weight: 400; }
+  .ol-flag.bad { color: var(--red); font-weight: 700; }
+  .ol-flag.good { color: var(--green); }
+  .ol-flag.run { color: var(--blue); }
+
+  /* 跳转闪烁 */
+  @keyframes flash { 0% { box-shadow: 0 0 0 3px rgba(51,112,255,.45); } 100% { box-shadow: 0 0 0 0 transparent; } }
+  .flash { animation: flash 1.2s ease; border-radius: 10px; }
+
+  .inputbar { margin-top: 20px; max-width: 760px; }
+  .input-field {
+    background: var(--card); border: 1px solid var(--border-strong);
+    border-radius: 12px; padding: 12px 14px; color: var(--text-3); font-size: 13px;
+  }
+  .input-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; padding: 0 4px; font-size: 11px; color: var(--text-3); }
+  .send-btn { width: 28px; height: 28px; border-radius: 8px; background: var(--blue); color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+
+  .layout.no-nav .outline { display: none; }
+</style>
+</head>
+<body>
+
+<div class="nav-switch">
+  <button id="btnOn" class="active" onclick="toggleNav(true)">导航面板 · 开</button>
+  <button id="btnOff" onclick="toggleNav(false)">关</button>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"></div>
+    <div>
+      <div class="title">拆解《异化》：书目结构与目标待确认</div>
+      <div class="subtitle" style="font-size:11px;color:var(--text-3)">用户上传《异化》全文，希望拆解为项目故事 · 已转码确认…</div>
+    </div>
+  </div>
+  <div class="hintbar">原型 2 · 对话导航重设计 · 滚动页面看右侧大纲联动高亮，点击大纲可跳转定位；分组块可折叠</div>
+
+  <div class="layout" id="layout">
+    <!-- ============ 主时间线 ============ -->
+    <div class="timeline">
+
+      <!-- 回合 1 · 用户提问 -->
+      <div class="msg-user" id="sec-q1">
+        <div class="who">YOU 提问 <span class="time">· 10:24</span></div>
+        <div class="bubble">帮我把《异化》拆成分卷结构，人物按设定分级整理进 lorebook，格式沿用现有模板</div>
+      </div>
+
+      <!-- 思考（默认折叠） -->
+      <div class="group" id="sec-think">
+        <div class="group-head" onclick="toggleGroup(this)">
+          <span class="gicon gray">💭</span>
+          <span class="g-summary">思考过程</span>
+          <span class="g-meta">1 分 12 秒 · 已折叠</span>
+          <span class="spacer"></span><span class="chev">▾</span>
+        </div>
+        <div class="gbody"><div class="gbody-inner">
+          <div class="tool-row"><span class="t-desc" style="white-space:normal">分析全书 41 章结构，识别出 4 条主线；人物出场 27 人，按戏份与设定强度分为 5 档……（内容略）</span></div>
+        </div></div>
+      </div>
+
+      <!-- 勘察（默认折叠） -->
+      <div class="group" id="sec-read">
+        <div class="group-head" onclick="toggleGroup(this)">
+          <span class="gicon gray">📖</span>
+          <span class="g-summary">勘察</span>
+          <span class="g-meta">读取 14 个文件 · 0.9s</span>
+          <span class="spacer"></span><span class="chev">▾</span>
+        </div>
+        <div class="gbody"><div class="gbody-inner">
+          <div class="tool-row">
+            <span class="status ok">✓</span><span class="t-name">read</span><span class="t-tag">READ</span>
+            <span class="file-pill">lorebook/note/cast-roster/index.md</span>
+          </div>
+          <div class="tool-row">
+            <span class="status ok">✓</span><span class="t-name">read</span><span class="t-tag">READ</span>
+            <span class="file-pill">lorebook/正文/volume-01/第一章·黑月悬城.md</span>
+          </div>
+          <div class="tool-row">
+            <span class="status ok">✓</span><span class="t-name">read</span><span class="t-tag">READ</span>
+            <span class="file-pill">lorebook/REFERENCE.md</span>
+          </div>
+          <div class="more-note">… 还有 11 个读取，均已成功</div>
+        </div></div>
+      </div>
+
+      <!-- 编辑（含失败，默认展开） -->
+      <div class="group expanded" id="sec-edit">
+        <div class="group-head" onclick="toggleGroup(this)">
+          <span class="gicon red">✏️</span>
+          <span class="g-summary">编辑</span>
+          <span class="g-meta">6 个文件</span>
+          <span class="spacer"></span>
+          <span class="g-meta bad">1 处失败</span>
+          <span class="chev">▾</span>
+        </div>
+        <div class="gbody"><div class="gbody-inner">
+          <div class="tool-row">
+            <span class="status ok">✓</span><span class="t-name">edit</span><span class="t-tag">EDIT</span>
+            <span class="file-pill">lorebook/SYSTEM_REMINDER.md</span>
+          </div>
+          <div class="tool-row">
+            <span class="status ok">✓</span><span class="t-name">edit</span><span class="t-tag">EDIT</span>
+            <span class="file-pill">lorebook/正文/_meta.md</span>
+          </div>
+          <div class="tool-row">
+            <span class="status err">✕</span><span class="t-name">edit</span><span class="t-tag">EDIT</span>
+            <span class="file-pill">lorebook/note/cast-roster/index.md</span>
+            <span class="spacer"></span>
+            <span class="mini-pill">⚠ 1/5 处未匹配</span>
+          </div>
+          <div style="padding: 2px 10px 6px 34px;">
+            <div class="mini-fail">⚠ <b>5 处改动全部未写入</b>：第 1 处找不到目标文本，已整体取消。
+              <button style="margin-left:8px;border:0;background:var(--blue);color:#fff;font-size:11px;border-radius:5px;padding:2px 10px;cursor:pointer;font-family:inherit;">重新尝试</button>
+            </div>
+          </div>
+          <div class="more-note">… 还有 3 个编辑，均已成功</div>
+        </div></div>
+      </div>
+
+      <!-- 校验命令（默认折叠） -->
+      <div class="group" id="sec-bash">
+        <div class="group-head" onclick="toggleGroup(this)">
+          <span class="gicon gray">🔨</span>
+          <span class="g-summary">校验</span>
+          <span class="g-meta">node scripts/lint-frontmatter.mjs · 退出码 0</span>
+          <span class="spacer"></span><span class="g-meta good">通过</span>
+          <span class="chev">▾</span>
+        </div>
+        <div class="gbody"><div class="gbody-inner">
+          <div class="tool-row"><span class="t-desc" style="white-space:normal;font-family:var(--mono);font-size:11.5px">✓ 41 章 frontmatter 校验通过，无缺失字段</span></div>
+        </div></div>
+      </div>
+
+      <!-- Agent 回答 -->
+      <div class="msg-agent" id="sec-ans">
+        <div class="who">ASSISTANT · 10:31</div>
+        <p>拆解完成。《异化》全书 41 章已归入 3 卷，人物按设定分级整理如下，档案已写入 <code style="font-family:var(--mono);background:#f1f2f4;padding:1px 5px;border-radius:4px;font-size:12px;">lorebook/note/cast-roster/</code>：</p>
+        <table>
+          <tr><th>人物</th><th>设定分级</th></tr>
+          <tr><td>蓝梓</td><td><span class="stars">★★★★★</span> · 主角</td></tr>
+          <tr><td>潘多拉</td><td><span class="stars">★★★★★</span> · 主角级</td></tr>
+          <tr><td>齐末</td><td><span class="stars">★★★★★</span> · 主角级</td></tr>
+          <tr><td>释空</td><td><span class="stars">★★★★</span> · 核心</td></tr>
+        </table>
+        <p>有一处编辑未生效（人物表第 1 处改动未匹配），可以点击上方失败条目重试。</p>
+      </div>
+
+      <!-- 回合 2 -->
+      <div class="msg-user" id="sec-q2">
+        <div class="who">YOU 提问 <span class="time">· 10:41</span></div>
+        <div class="bubble">继续，接下来干的活，如果不是必须让我处理的话，你就直接干就行了</div>
+      </div>
+
+      <div class="group expanded" id="sec-run">
+        <div class="group-head">
+          <span class="spinner"></span>
+          <span class="g-summary running-text">正在执行</span>
+          <span class="g-meta">批量重命名 14 个章节文件…</span>
+          <span class="spacer"></span>
+          <span class="g-meta run" style="color:var(--blue)">运行中</span>
+        </div>
+      </div>
+
+      <div class="inputbar">
+        <div class="input-field">输入消息…</div>
+        <div class="input-meta"><span>DeepSeek/deepseek-flash ⌄</span><span class="send-btn">➤</span></div>
+      </div>
+    </div>
+
+    <!-- ============ 右侧大纲 ============ -->
+    <div class="outline">
+      <div class="ol-head">
+        <span>大纲</span>
+        <span class="ol-tools">
+          <button onclick="setAllGroups(true)">全部展开</button>
+          <button onclick="setAllGroups(false)">收起</button>
+        </span>
+      </div>
+      <div class="ol-list" id="olList">
+        <div class="ol-item user" data-target="sec-q1"><span class="ol-icon">💬</span><span class="ol-text">把《异化》拆成分卷结构…</span><span class="ol-flag">10:24</span></div>
+        <div class="ol-item" data-target="sec-think"><span class="ol-icon">💭</span><span class="ol-text">思考过程</span><span class="ol-flag">1分12秒</span></div>
+        <div class="ol-item" data-target="sec-read"><span class="ol-icon">📖</span><span class="ol-text">勘察 · 读取 14 个文件</span><span class="ol-flag good">✓</span></div>
+        <div class="ol-item" data-target="sec-edit"><span class="ol-icon">✏️</span><span class="ol-text">编辑 · 6 个文件</span><span class="ol-flag bad">✕ 1</span></div>
+        <div class="ol-item" data-target="sec-bash"><span class="ol-icon">🔨</span><span class="ol-text">校验 frontmatter</span><span class="ol-flag good">✓</span></div>
+        <div class="ol-item" data-target="sec-ans"><span class="ol-icon">🤖</span><span class="ol-text">回答：分卷与人物分级…</span></div>
+        <div class="ol-item user" data-target="sec-q2"><span class="ol-icon">💬</span><span class="ol-text">继续，接下来干的活…</span><span class="ol-flag">10:41</span></div>
+        <div class="ol-item" data-target="sec-run"><span class="ol-icon">🔵</span><span class="ol-text">批量重命名章节文件…</span><span class="ol-flag run">●</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleGroup(head) {
+    head.parentElement.classList.toggle('expanded');
+  }
+  function toggleNav(on) {
+    document.getElementById('layout').classList.toggle('no-nav', !on);
+    document.getElementById('btnOn').classList.toggle('active', on);
+    document.getElementById('btnOff').classList.toggle('active', !on);
+  }
+  function setAllGroups(expand) {
+    document.querySelectorAll('.group').forEach(g => g.classList.toggle('expanded', expand));
+  }
+
+  // 大纲点击跳转 + 闪烁
+  document.querySelectorAll('.ol-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const el = document.getElementById(item.dataset.target);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.classList.remove('flash');
+      setTimeout(() => el.classList.add('flash'), 350);
+    });
+  });
+
+  // 滚动联动高亮
+  const spy = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.ol-item').forEach(i => i.classList.toggle('active', i.dataset.target === e.target.id));
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+  ['sec-q1','sec-think','sec-read','sec-edit','sec-bash','sec-ans','sec-q2','sec-run'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) spy.observe(el);
+  });
+</script>
+</body>
+</html>

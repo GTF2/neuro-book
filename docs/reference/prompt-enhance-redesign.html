@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>增强提示词 · 重设计原型</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e8eaee;
+    --border-strong: #dfe2e8;
+    --text: #1f2329;
+    --text-2: #646a73;
+    --text-3: #8f959e;
+    --green: #2ea44f;
+    --green-bg: #e9f7ef;
+    --green-border: #cdeeda;
+    --red: #d5493c;
+    --red-bg: #fdeeed;
+    --red-border: #f5cfca;
+    --blue: #3370ff;
+    --blue-bg: #eef3ff;
+    --blue-border: #d9e5ff;
+    --amber-bg: #fff8e6;
+    --amber-border: #ffe1a3;
+    --amber-text: #ad6800;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 13px; line-height: 1.6;
+  }
+  .hidden { display: none !important; }
+  .spacer { flex: 1; }
+  .ic {
+    width: 14px; height: 14px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* 顶部控制条 */
+  .controls {
+    position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+    z-index: 100; display: flex; align-items: center; gap: 8px;
+    background: var(--card); border: 1px solid var(--border-strong);
+    border-radius: 10px; padding: 4px; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+  }
+  .seg { display: flex; background: #f1f2f4; border-radius: 7px; padding: 2px; }
+  .seg button {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--text-2); padding: 4px 11px;
+    border-radius: 6px; font-family: inherit; white-space: nowrap;
+  }
+  .seg button.active { background: var(--text); color: #fff; }
+  .ghost-btn {
+    border: 1px solid var(--border-strong); background: #fff; cursor: pointer;
+    font-size: 12px; color: var(--text-2); padding: 4px 11px;
+    border-radius: 6px; font-family: inherit;
+  }
+  .ghost-btn.on { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue); }
+
+  .app { max-width: 780px; margin: 0 auto; padding: 64px 14px 60px; }
+  .topbar { display: flex; align-items: center; gap: 8px; padding: 10px 4px 8px; }
+  .topbar .logo { width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(135deg, #3370ff, #7aa5ff); flex: none; }
+  .topbar .title { font-size: 13px; font-weight: 600; }
+  .topbar .caption { font-size: 11px; color: var(--text-3); }
+
+  .shell {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .shell-head {
+    display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+    border-bottom: 1px solid var(--border); background: #fbfbfc;
+  }
+  .shell-head .s-title { font-size: 13px; font-weight: 600; }
+  .shell-head .s-sub { font-size: 11px; color: var(--text-3); }
+
+  .flow { padding: 14px 16px 6px; }
+  .msg-user { margin-bottom: 10px; }
+  .msg-user .who { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .msg-user .bubble {
+    background: var(--blue-bg); border: 1px solid var(--blue-border);
+    border-radius: 10px; padding: 8px 12px; font-size: 13px;
+    width: fit-content; max-width: 92%;
+  }
+  .msg-ai .who { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .msg-ai .ai-body { font-size: 13px; margin-bottom: 12px; }
+  .run-indicator { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-2); padding-bottom: 8px; }
+  .spinner {
+    width: 12px; height: 12px; flex: none;
+    border: 2px solid var(--blue-border); border-top-color: var(--blue);
+    border-radius: 50%; animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== 输入框区域（核心） ===== */
+  .composer { padding: 0 14px 10px; }
+  .composer-box {
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: #fff;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .composer-box:focus-within { border-color: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+
+  .composer-body { padding: 10px 13px 6px; }
+  .composer-text { font-size: 13px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+  .composer-text.is-empty { color: var(--text-3); }
+  .composer-text mark {
+    background: #ece5ff; color: #4c2fa8; border-radius: 3px; padding: 0 2px;
+  }
+  .composer-caret { display: inline-block; width: 1px; height: 14px; background: var(--text); vertical-align: -2px; margin-left: 1px; }
+
+  .composer-bar { display: flex; align-items: center; gap: 6px; padding: 4px 10px 8px; }
+  .tool-btn {
+    width: 24px; height: 24px; border-radius: 6px; border: 0; background: transparent;
+    color: var(--text-muted, var(--text-3)); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .tool-btn:hover { background: var(--bg); color: var(--text-2); }
+  .tool-btn:disabled { cursor: not-allowed; opacity: .4; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border); background: #fafbfc;
+    border-radius: 20px; padding: 1px 9px; font-size: 10.5px; color: var(--text-2);
+  }
+  /* 与右侧发送键同款：同尺寸、同底色、同悬停/禁用反馈，只换图标 */
+  .enhance-btn {
+    width: 26px; height: 26px; border-radius: 7px; border: 0; cursor: pointer;
+    background: var(--blue-bg); color: var(--blue);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: opacity .15s;
+  }
+  .enhance-btn:hover:not(:disabled) { opacity: .8; }
+  .enhance-btn:disabled { cursor: not-allowed; opacity: .5; }
+  .enhance-btn .ic { width: 13px; height: 13px; }
+  .spin { animation: spin .9s linear infinite; }
+  .send-btn {
+    width: 26px; height: 26px; border-radius: 7px; border: 0;
+    background: var(--blue-bg); color: var(--blue); cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .statusline { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 2px 14px 12px; }
+  .statusline .chip { font-size: 9.5px; }
+
+  /* ===== 说明区 ===== */
+  .docs { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .doc-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+  .doc-card h3 { font-size: 13.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+  .doc-card h3 .n {
+    width: 18px; height: 18px; border-radius: 5px; background: var(--text); color: #fff;
+    font-size: 11px; display: inline-flex; align-items: center; justify-content: center; flex: none;
+  }
+  .doc-card p, .doc-card li { font-size: 12.5px; color: var(--text-2); }
+  .doc-card ul { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+  .doc-card b { color: var(--text); }
+  .doc-card code { font-family: var(--mono); font-size: 11.5px; background: #f1f2f4; border-radius: 4px; padding: 0 4px; }
+  .rule-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .rule-table th, .rule-table td {
+    text-align: left; font-size: 12px; padding: 6px 8px;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .rule-table th { color: var(--text-3); font-weight: 600; font-size: 11px; }
+  .rule-table td { color: var(--text-2); }
+  .rule-table td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .todo-list { counter-reset: q; padding-left: 0; list-style: none; }
+  .todo-list li { counter-increment: q; position: relative; padding-left: 24px; }
+  .todo-list li::before {
+    content: "Q" counter(q); position: absolute; left: 0; top: 1px;
+    font-size: 10px; font-weight: 700; color: var(--blue);
+    background: var(--blue-bg); border-radius: 4px; padding: 0 5px; line-height: 16px;
+  }
+  .diff-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .diff-table td { font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-2); }
+  .diff-table td:first-child { width: 50%; }
+  .diff-table .dt-head { font-size: 11px; color: var(--text-3); font-weight: 600; }
+
+  .toast {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--text); color: #fff; font-size: 12.5px; border-radius: 9px;
+    padding: 8px 16px; opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s; z-index: 200; max-width: 80vw;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M12 3.5l1.7 4.8 4.8 1.7-4.8 1.7L12 16.5l-1.7-4.8L5.5 10l4.8-1.7z"/><path d="M18.5 15.5l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12h13"/><path d="m12 6 6 6-6 6"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17 4.5-4.5 3 3L15 13l4 4"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/></symbol>
+  <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="m14 6 4 4"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 10H4V5"/><path d="M4 10a8 8 0 1 1 3 6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-loader" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-opacity=".25"/><path d="M21 12a9 9 0 0 0-9-9"/></symbol>
+</svg>
+
+<div class="controls">
+  <span class="seg" style="padding:0 4px;background:transparent"><span style="font-size:12px;color:var(--text-3)">演示状态：</span></span>
+  <div class="seg">
+    <button id="stIdle" class="active" onclick="setState('idle')">有输入（可增强）</button>
+    <button id="stEnhancing" onclick="setState('enhancing')">增强中</button>
+    <button id="stEnhanced" onclick="setState('enhanced')">已增强</button>
+    <button id="stEmpty" onclick="setState('empty')">输入为空</button>
+  </div>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"></div>
+    <div>
+      <div class="title">NeuroBook · Agent 输入框</div>
+      <div class="caption">「增强提示词」重设计原型（可交互 · 点 ✨ 按钮试试）</div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div class="shell-head">
+      <span class="s-title">拆解《异化》：书目结构与目录</span>
+      <span class="s-sub">主线 · Agent 会话</span>
+      <span class="spacer"></span>
+      <span style="font-size:11px;color:var(--green)">● 已连接</span>
+    </div>
+
+    <div class="flow">
+      <div class="msg-user">
+        <div class="who">你 · 20:41</div>
+        <div class="bubble">拆解《异化》：先给出书目结构，再分批产出章节简报。</div>
+      </div>
+      <div class="msg-ai">
+        <div class="who">Agent · 20:44</div>
+        <div class="ai-body">第一批已跑完。继续派第二批（vol-06~10）：</div>
+      </div>
+      <div class="run-indicator"><span class="spinner"></span><span>正在处理：拆解 vol-06…</span></div>
+    </div>
+
+    <!-- 输入框（核心演示区） -->
+    <div class="composer">
+      <div class="composer-box" id="composerBox">
+        <div class="composer-body">
+          <div class="composer-text" id="composerText"></div>
+        </div>
+
+        <div class="composer-bar">
+          <span class="chip">DeepSeek / deepseek-flash</span>
+          <button class="tool-btn" title="插入图片" disabled><svg class="ic"><use href="#i-image"/></svg></button>
+          <button class="tool-btn" title="放大编辑框" disabled><svg class="ic"><use href="#i-expand"/></svg></button>
+          <button class="tool-btn" title="切换模式（normal / discuss / plan）" disabled><svg class="ic"><use href="#i-pencil"/></svg></button>
+          <span class="spacer"></span>
+          <button class="enhance-btn" id="enhanceBtn" onclick="onEnhanceClick()" title="增强提示词（不改原意，只补全信息）">
+            <svg class="ic"><use href="#i-sparkles"/></svg>
+          </button>
+          <button class="send-btn" title="发送（Enter）"><svg class="ic"><use href="#i-send"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusline">
+      <span class="chip">上下文 18.6k · 9%</span>
+      <span class="chip">↓64k ↑8k ⚡41k</span>
+      <span class="chip">运行中</span>
+    </div>
+  </div>
+
+  <!-- 说明区 -->
+  <div class="docs">
+    <div class="doc-card">
+      <h3><span class="n">1</span>这个功能做什么</h3>
+      <ul>
+        <li><b>一句话</b>：输入框右下角、发送键左边，加一个跟发送键同款的小按钮，图标是一颗星星。点一下，把你随手写的一句话补全成「对象清楚、动作清楚、产出清楚」的指令，直接替换回输入框，你再决定发不发。</li>
+        <li><b>按钮本身就是状态（三态）</b>：<b>星星</b> = 可以增强；<b>转圈</b> = 正在增强（此时不可点）；<b>返回箭头</b> = 已增强，点它就是还原成原文。没有额外的状态条、文字和弹窗。</li>
+        <li><b>不做的事</b>：不替你想剧情、不新增任务、不改你的语气；只补全你<b>没说全</b>的部分（哪一卷、什么顺序、按什么依据、要什么产出）。</li>
+        <li><b>空的输入框</b>：按钮置灰不可点（没有内容就没有增强对象）。</li>
+        <li><b>能看出改了什么</b>：增强补上的部分在输入框里用浅紫底色标出，不用逐字对比。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">2</span>增强时具体补什么（写作场景的四要素）</h3>
+      <table class="diff-table">
+        <tr>
+          <td class="dt-head">你写的（原型里的示例）</td>
+          <td class="dt-head">增强后</td>
+        </tr>
+        <tr>
+          <td>继续,场景、章节简报如果能提前的话,提到前面</td>
+          <td>继续当前的拆书任务。<b>如果场景简报、章节简报可以提前产出</b>，请把它们的顺序提到前面——先给场景与章节简报，再继续正文拆解。</td>
+        </tr>
+      </table>
+      <ul style="margin-top:8px">
+        <li><b>对象</b>：把「继续」落到具体任务上（当前拆书任务）。</li>
+        <li><b>动作</b>：把「提到前面」说成「先给 A、再给 B」的明确顺序。</li>
+        <li><b>约束</b>：只用你原话里已经出现的信息（「如果能提前」保留成条件句），不替你加「必须」「一定要」。</li>
+        <li><b>产出</b>：说清要的是简报而不是正文。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">3</span>技术怎么做（好消息：不用新造轮子）</h3>
+      <ul>
+        <li><b>已有现成样板</b>：项目里的「AI 解释这步」就是同一个套路——单独调一次模型、<b>不建会话、不写对话历史</b>（`tool-explanation.ts` + 对应接口）。增强提示词照抄这条路即可，不会污染你的对话，也不会让 Agent 因为增强文本而改变行为。</li>
+        <li><b>需要新增</b>：一个纯逻辑模块（提示词模板 + 调用）、一个接口（<code>prompt-enhance</code>）、输入框上的一个按钮，加上中英文文案。</li>
+        <li><b>为什么不走「新建一个 Agent」</b>：那会多出一条会话、多花一份上下文，而我们只要一段文本，属于杀鸡用牛刀。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">4</span>一条必须守住的边界（项目写作宪法）</h3>
+      <ul>
+        <li>项目有份「写作宪法」，其中一条明确禁止<b>把「意义类指令」喂进写手的动笔前上下文</b>（不然会变成「人逐句指挥 AI 写正文」）。</li>
+        <li>所以这个功能的增强结果<b>只回到你的输入框</b>——它是你说给 Agent 的话，怎么用由 Agent 决定；功能本身不会绕过流程往写手上下文里塞东西。</li>
+        <li>这一条我会在正式的设计文档里写成「与宪法条款的对照答复」，改代码前先过这道关。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">5</span>还没定的地方（确认原型后我再问你）</h3>
+      <ul class="todo-list">
+        <li>还原方式：再点一下同一个按钮就还原（当前原型会不会太"隐晦"，需要一次说明？）</li>
+        <li>要不要「增强强度」选项（保守 / 详细）？我倾向先只做一种，用起来看反馈再加。</li>
+        <li>增强失败时（模型报错 / 超时）按钮怎么表现：保持星星 + 弹一条错误提示，还是短暂显示红色警示？</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  const ORIGINAL = '继续,场景、章节简报如果能提前的话,提到前面';
+  const ENHANCED = '继续当前的拆书任务。如果场景简报、章节简报可以提前产出，请把它们的顺序提到前面——先给场景与章节简报，再继续正文拆解。';
+  const ENHANCED_MARKS = ['如果场景简报、章节简报可以提前产出', '请把它们的顺序提到前面', '先给场景与章节简报，再继续正文拆解'];
+
+  let state = { phase: 'idle' };
+  let toastTimer;
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  /** 把增强文本里的新增标出来，让人一眼看出「补了什么」 */
+  function renderEnhancedText() {
+    let html = ENHANCED;
+    ENHANCED_MARKS.forEach((part) => { html = html.replace(part, '<mark>' + part + '</mark>'); });
+    return html;
+  }
+
+  /** 按钮图标就是状态：星星（可增强）→ 转圈（增强中）→ 返回（已增强，点它还原）。 */
+  function renderEnhanceButton() {
+    const btn = document.getElementById('enhanceBtn');
+    const icon = state.phase === 'enhancing' ? 'i-loader'
+      : state.phase === 'enhanced' ? 'i-undo' : 'i-sparkles';
+    btn.innerHTML = '<svg class="ic' + (state.phase === 'enhancing' ? ' spin' : '') + '"><use href="#' + icon + '"/></svg>';
+    btn.disabled = state.phase === 'empty' || state.phase === 'enhancing';
+    btn.title = state.phase === 'enhancing' ? '正在增强…'
+      : state.phase === 'enhanced' ? '点一下还原成你原来的输入'
+        : state.phase === 'empty' ? '先输入内容再增强'
+          : '增强提示词（不改原意，只补全信息）';
+  }
+
+  function render() {
+    const text = document.getElementById('composerText');
+    if (state.phase === 'empty') {
+      text.className = 'composer-text is-empty';
+      text.textContent = '给 Agent 发消息…';
+    } else if (state.phase === 'enhanced') {
+      text.className = 'composer-text';
+      text.innerHTML = renderEnhancedText() + '<span class="composer-caret"></span>';
+    } else {
+      text.className = 'composer-text';
+      text.innerHTML = ORIGINAL + '<span class="composer-caret"></span>';
+    }
+    renderEnhanceButton();
+
+    document.getElementById('stIdle').classList.toggle('active', state.phase === 'idle');
+    document.getElementById('stEnhancing').classList.toggle('active', state.phase === 'enhancing');
+    document.getElementById('stEnhanced').classList.toggle('active', state.phase === 'enhanced');
+    document.getElementById('stEmpty').classList.toggle('active', state.phase === 'empty');
+  }
+
+  function setState(phase) {
+    state.phase = phase;
+    render();
+  }
+
+  /** 一个按钮承担全部：待增强时点它增强；已增强时点它还原。 */
+  function onEnhanceClick() {
+    if (state.phase === 'enhanced') {
+      undoEnhance();
+      return;
+    }
+    if (state.phase !== 'idle') {
+      return;
+    }
+    runEnhance();
+  }
+
+  function runEnhance() {
+    state.phase = 'enhancing';
+    render();
+    setTimeout(() => {
+      state.phase = 'enhanced';
+      render();
+      showToast('已增强 · 想还原就点同一个按钮');
+    }, 1300);
+  }
+
+  function undoEnhance() {
+    state.phase = 'idle';
+    render();
+    showToast('已还原为你原来的输入');
+  }
+
+  render();
+</script>
+</body>
+</html>

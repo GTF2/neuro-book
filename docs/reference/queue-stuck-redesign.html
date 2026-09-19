@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:,">
+<title>队列卡住 · 重设计原型</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card: #ffffff;
+    --border: #e8eaee;
+    --border-strong: #dfe2e8;
+    --text: #1f2329;
+    --text-2: #646a73;
+    --text-3: #8f959e;
+    --green: #2ea44f;
+    --green-bg: #e9f7ef;
+    --green-border: #cdeeda;
+    --red: #d5493c;
+    --red-bg: #fdeeed;
+    --red-border: #f5cfca;
+    --blue: #3370ff;
+    --blue-bg: #eef3ff;
+    --blue-border: #d9e5ff;
+    --amber-bg: #fff8e6;
+    --amber-border: #ffe1a3;
+    --amber-text: #ad6800;
+    --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .hidden { display: none !important; }
+  .spacer { flex: 1; }
+  .ic {
+    width: 14px; height: 14px; flex: none;
+    fill: none; stroke: currentColor; stroke-width: 1.8;
+    stroke-linecap: round; stroke-linejoin: round;
+  }
+
+  /* ===== 顶部控制条 ===== */
+  .controls {
+    position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    padding: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.10);
+    max-width: min(96vw, 900px);
+  }
+  .seg { display: flex; background: #f1f2f4; border-radius: 7px; padding: 2px; }
+  .seg button, .ghost-btn, .demo-btn {
+    border: 0; background: transparent; cursor: pointer;
+    font-size: 12px; color: var(--text-2);
+    padding: 4px 11px; border-radius: 6px;
+    font-family: inherit; white-space: nowrap;
+  }
+  .seg button.active { background: var(--text); color: #fff; }
+  .ghost-btn { border: 1px solid var(--border-strong); background: #fff; }
+  .ghost-btn:hover { background: #f5f6f8; }
+  .ghost-btn.on { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue); }
+  .demo-btn { background: var(--blue); color: #fff; font-weight: 600; }
+  .demo-btn:hover { background: #295fe0; }
+  .seg-label { font-size: 11px; color: var(--text-3); padding: 0 4px 0 8px; }
+
+  /* ===== 应用框架 ===== */
+  .app { max-width: 780px; margin: 0 auto; padding: 64px 14px 60px; }
+  .topbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 4px 8px;
+  }
+  .topbar .logo { width: 20px; height: 20px; border-radius: 5px; background: linear-gradient(135deg, #3370ff, #7aa5ff); flex: none; }
+  .topbar .title { font-size: 13px; font-weight: 600; }
+  .topbar .caption { font-size: 11px; color: var(--text-3); }
+
+  /* ===== 会话面板 ===== */
+  .shell {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .shell-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: #fbfbfc;
+  }
+  .shell-head .s-title { font-size: 13px; font-weight: 600; }
+  .shell-head .s-sub { font-size: 11px; color: var(--text-3); }
+  .conn { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: var(--green); }
+  .conn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+
+  /* ===== 消息流 ===== */
+  .flow { padding: 14px 16px 4px; }
+  .msg-user { margin-bottom: 10px; }
+  .msg-user .who { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .msg-user .bubble {
+    background: var(--blue-bg); border: 1px solid var(--blue-border);
+    border-radius: 10px; padding: 8px 12px;
+    font-size: 13px; width: fit-content; max-width: 92%;
+  }
+  .group {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 9px; margin-bottom: 10px; overflow: hidden;
+  }
+  .group-head { display: flex; align-items: center; gap: 8px; padding: 7px 12px; }
+  .gicon {
+    width: 18px; height: 18px; border-radius: 5px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f1f2f4; font-size: 10px; color: var(--text-2); flex: none;
+  }
+  .g-summary { font-weight: 600; font-size: 12.5px; }
+  .g-meta { font-size: 11px; color: var(--text-3); }
+  .msg-ai { margin-bottom: 12px; }
+  .msg-ai .who { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+  .msg-ai .ai-body { font-size: 13px; color: var(--text); }
+
+  /* 运行中指示 */
+  .run-indicator {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 12px; color: var(--text-2);
+    padding: 8px 2px 10px;
+  }
+  .spinner {
+    width: 12px; height: 12px; flex: none;
+    border: 2px solid var(--blue-border);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* 送达后的系统消息 */
+  .msg-sys {
+    display: flex; gap: 8px; align-items: flex-start;
+    background: #fafbfc;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    animation: msgIn .45s ease;
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .msg-sys .sys-icon {
+    width: 18px; height: 18px; border-radius: 5px; flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: #f1f2f4; color: var(--text-2);
+    margin-top: 2px;
+  }
+  .msg-sys .sys-title { font-size: 12.5px; }
+  .msg-sys .sys-meta { font-size: 11px; color: var(--text-3); margin-top: 1px; }
+
+  /* ===== Workflow 待处理面板（mock，另一个组件） ===== */
+  .wf-panel {
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    padding: 10px 14px;
+  }
+  .wf-head { display: flex; align-items: center; gap: 7px; }
+  .wf-head .wf-title { font-size: 12.5px; font-weight: 600; }
+  .wf-count {
+    background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber-text);
+    font-size: 10px; border-radius: 20px; padding: 0 7px; line-height: 16px;
+  }
+  .wf-desc { font-size: 11px; color: var(--text-3); margin-left: auto; }
+  .wf-ask {
+    margin-top: 8px;
+    border: 1px solid var(--amber-border);
+    background: var(--amber-bg);
+    border-radius: 8px;
+    padding: 8px 11px;
+    font-size: 12px;
+    color: var(--amber-text);
+  }
+  .wf-ask .wf-ask-title { font-weight: 600; }
+  .wf-row { display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
+  .wf-opt {
+    font-size: 11px; border-radius: 20px; padding: 2px 10px;
+    border: 1px solid var(--border-strong); background: #fff; color: var(--text-2);
+  }
+
+  /* ===== 队列区（核心） ===== */
+  .queue-zone { padding: 0 14px; }
+
+  /* --- 旧版复刻（现状） --- */
+  .old-chips { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 0 6px; }
+  .old-chip {
+    display: inline-flex; max-width: 100%; align-items: center; gap: 4px;
+    border: 1px solid var(--border); background: #fafbfc;
+    border-radius: 6px; padding: 1px 6px;
+    font-size: 10px; color: var(--text-2);
+  }
+  .old-chip .oc-icon { color: var(--blue); font-size: 10px; flex: none; }
+  .old-chip .oc-label { font-weight: 600; flex: none; }
+  .old-chip .oc-text {
+    color: var(--text-3); max-width: 340px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .old-note {
+    font-size: 11px; color: var(--red);
+    background: var(--red-bg); border: 1px solid var(--red-border);
+    border-radius: 8px; padding: 6px 11px; margin: 2px 0 8px;
+  }
+
+  /* --- 新版折叠条 --- */
+  .qbar {
+    display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--border-strong);
+    background: #fafbfc;
+    border-radius: 9px;
+    padding: 7px 11px;
+    margin: 4px 0 8px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s;
+  }
+  .qbar:hover { background: #f4f5f7; }
+  .qbar .qb-icon { flex: none; display: inline-flex; color: var(--text-2); }
+  .qbar .qb-main { font-size: 12.5px; font-weight: 600; }
+  .qbar .qb-sub { font-size: 11px; color: var(--text-3); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .qb-toggle {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; color: var(--text-2);
+    border: 1px solid var(--border-strong); background: #fff;
+    border-radius: 6px; padding: 2px 8px; flex: none;
+  }
+  .qbar:hover .qb-toggle { border-color: #c9ced6; color: var(--text); }
+  .qb-toggle .chev { font-size: 9px; color: var(--text-3); transition: transform .2s; }
+  .qb-toggle .chev.up { transform: rotate(180deg); }
+  .qbar.state-paused { background: var(--amber-bg); border-color: var(--amber-border); }
+  .qbar.state-paused:hover { background: #fff3d6; }
+  .qbar.state-paused .qb-main { color: var(--amber-text); }
+  .qbar.state-paused .qb-sub { color: #b97e1e; }
+  .qbar.state-retrying { background: var(--blue-bg); border-color: var(--blue-border); }
+  .qbar.state-retrying .qb-main { color: #2c4a8a; }
+  .qbar.state-exhausted { background: var(--red-bg); border-color: var(--red-border); }
+  .qbar.state-exhausted .qb-main { color: #a33; }
+  .qbar.state-exhausted .qb-sub { color: #b2564d; }
+  .qb-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+
+  /* --- 新版展开面板 --- */
+  .qpanel {
+    border: 1px solid var(--border-strong);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    animation: msgIn .3s ease;
+  }
+  .qpanel.state-paused { border-color: var(--amber-border); }
+  .qpanel.state-exhausted { border-color: var(--red-border); }
+  .qpanel-body {
+    padding: 8px; background: #fcfcfd;
+    display: flex; flex-direction: column; gap: 6px;
+    max-height: 240px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .qpanel-body::-webkit-scrollbar { width: 8px; }
+  .qpanel-body::-webkit-scrollbar-thumb { background: #d8dbe0; border-radius: 4px; }
+  .qpanel-body::-webkit-scrollbar-thumb:hover { background: #c3c7cd; }
+  .qpanel-body::-webkit-scrollbar-track { background: transparent; }
+
+  /* 底部拖拽把手：调整队列窗口高度（双击恢复默认） */
+  .qresize {
+    height: 12px; cursor: ns-resize;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--card);
+    border-top: 1px solid var(--border);
+  }
+  .qresize:hover { background: #f5f6f8; }
+  .qresize span { width: 34px; height: 3px; border-radius: 2px; background: #d8dbe0; }
+  .qresize:hover span { background: #b9bec6; }
+
+  /* --- 队列条目卡 --- */
+  .qitem {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 10px;
+    display: flex; gap: 8px; align-items: flex-start;
+  }
+  .qitem.pinned { border-color: var(--blue-border); background: #fcfdff; }
+  .qitem .qi-avatar {
+    width: 22px; height: 22px; border-radius: 6px; flex: none;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .qi-avatar.src-user { background: var(--blue-bg); color: var(--blue); }
+  .qi-avatar.src-system { background: #f1f2f4; color: var(--text-2); }
+  .qitem .qi-main { flex: 1; min-width: 0; }
+  /* 第一行：来源 + 标题 …… 右侧时间 / 原文 / 操作（与折叠条右上角一致） */
+  .qi-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .qi-seq { font-size: 10px; color: var(--text-3); flex: none; }
+  .src-badge {
+    font-size: 10px; border-radius: 4px; padding: 0 6px; line-height: 16px;
+    border: 1px solid transparent; flex: none;
+  }
+  .src-badge.src-user { background: var(--blue-bg); border-color: var(--blue-border); color: var(--blue); }
+  .src-badge.src-system { background: #f1f2f4; border-color: #e4e6eb; color: var(--text-2); }
+  .pin-badge {
+    font-size: 10px; border-radius: 4px; padding: 0 6px; line-height: 16px;
+    background: var(--blue-bg); border: 1px solid var(--blue-border); color: var(--blue); flex: none;
+  }
+  .qi-title { font-size: 12.5px; flex: 1 1 auto; min-width: 0; word-break: break-word; }
+  .qi-tools { display: flex; align-items: center; gap: 6px; margin-left: auto; flex: none; }
+  .qi-time { font-size: 11px; color: var(--text-3); flex: none; }
+  .qi-sub { font-size: 11.5px; color: var(--text-3); margin-top: 2px; }
+  .qi-link {
+    border: 0; background: transparent; padding: 0 2px; font-family: inherit;
+    font-size: 11px; color: var(--text-3); cursor: pointer; user-select: none;
+    display: inline-flex; align-items: center; gap: 3px;
+  }
+  .qi-link:hover { color: var(--text-2); }
+  .qi-link .tri { font-size: 9px; transition: transform .2s; display: inline-block; }
+  .qi-link.open .tri { transform: rotate(90deg); }
+  .qi-raw {
+    margin-top: 5px;
+    background: #f7f8fa;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 9px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-2);
+    white-space: pre-wrap; word-break: break-all;
+  }
+  /* --- 按钮 --- */
+  .btn {
+    font-family: inherit; font-size: 11.5px;
+    border-radius: 6px; padding: 3px 11px;
+    cursor: pointer; border: 1px solid transparent;
+    display: inline-flex; align-items: center; gap: 4px;
+    transition: background .15s;
+  }
+  .btn .ic { width: 12px; height: 12px; }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { background: #295fe0; }
+  .btn-ghost { background: #fff; border-color: var(--border-strong); color: var(--text-2); }
+  .btn-ghost:hover { background: #f5f6f8; }
+  .btn-ghost-danger { background: #fff; border-color: var(--border-strong); color: var(--text-3); }
+  .btn-ghost-danger:hover { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+  .btn-amber { background: var(--amber-text); color: #fff; }
+  .btn-amber:hover { background: #8f5600; }
+  .btn-sm { font-size: 11px; padding: 2px 9px; }
+
+  .qpanel-foot {
+    display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+    padding: 5px 12px;
+    border-top: 1px solid var(--border);
+    background: var(--card);
+    flex-wrap: wrap;
+  }
+  .tech-toggle {
+    border: 0; background: transparent; font-family: inherit;
+    font-size: 11px; color: var(--text-3); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px; padding: 0;
+  }
+  .tech-toggle:hover { color: var(--text-2); }
+  .tech-toggle .tri { font-size: 9px; transition: transform .2s; display: inline-block; }
+  .tech-toggle.open .tri { transform: rotate(90deg); }
+  .tech-body {
+    font-family: var(--mono); font-size: 11px; color: var(--text-2);
+    background: #f7f8fa; border-top: 1px solid var(--border);
+    padding: 7px 12px; white-space: pre-wrap;
+  }
+
+  /* ===== 输入框 mock ===== */
+  .composer { padding: 0 14px 8px; }
+  .composer-box {
+    border: 1px solid var(--border-strong);
+    border-radius: 12px;
+    background: #fff;
+  }
+  .composer-input {
+    padding: 10px 13px 4px;
+    font-size: 13px; color: var(--text-3);
+  }
+  .composer-bar {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 10px 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--border); background: #fafbfc;
+    border-radius: 20px; padding: 1px 9px;
+    font-size: 10.5px; color: var(--text-2);
+  }
+  .send-btn {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--blue-bg); color: var(--blue);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .statusline {
+    display: flex; flex-wrap: wrap; gap: 5px; justify-content: center;
+    padding: 4px 14px 12px;
+  }
+  .statusline .chip { font-size: 9.5px; }
+
+  /* ===== 设计标注 ===== */
+  .anno {
+    display: inline-flex; align-items: flex-start; gap: 5px;
+    font-size: 11px; color: var(--blue);
+    background: var(--blue-bg);
+    border: 1px dashed var(--blue);
+    border-radius: 7px;
+    padding: 3px 9px;
+    margin: 4px 0;
+    max-width: 100%;
+  }
+  .anno-wrap { padding: 0 14px; }
+
+  /* ===== 说明区 ===== */
+  .docs { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+  .doc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .doc-card h3 { font-size: 13.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+  .doc-card h3 .n {
+    width: 18px; height: 18px; border-radius: 5px; background: var(--text); color: #fff;
+    font-size: 11px; display: inline-flex; align-items: center; justify-content: center; flex: none;
+  }
+  .doc-card p, .doc-card li { font-size: 12.5px; color: var(--text-2); }
+  .doc-card ul { padding-left: 18px; display: flex; flex-direction: column; gap: 5px; }
+  .doc-card b { color: var(--text); }
+  .doc-card code {
+    font-family: var(--mono); font-size: 11.5px;
+    background: #f1f2f4; border-radius: 4px; padding: 0 4px;
+  }
+  .rule-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .rule-table th, .rule-table td {
+    text-align: left; font-size: 12px; padding: 6px 8px;
+    border-bottom: 1px solid var(--border); vertical-align: top;
+  }
+  .rule-table th { color: var(--text-3); font-weight: 600; font-size: 11px; }
+  .rule-table td { color: var(--text-2); }
+  .rule-table td:first-child { color: var(--text); font-weight: 600; white-space: nowrap; }
+  .todo-list { counter-reset: q; padding-left: 0; list-style: none; }
+  .todo-list li {
+    counter-increment: q; position: relative; padding-left: 24px;
+  }
+  .todo-list li::before {
+    content: "Q" counter(q);
+    position: absolute; left: 0; top: 1px;
+    font-size: 10px; font-weight: 700; color: var(--blue);
+    background: var(--blue-bg); border-radius: 4px; padding: 0 5px; line-height: 16px;
+  }
+
+  /* ===== toast ===== */
+  .toast {
+    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(10px);
+    background: var(--text); color: #fff;
+    font-size: 12.5px; border-radius: 9px; padding: 8px 16px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    z-index: 200; max-width: 80vw;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- SVG 图标库 -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 4 2.8 19.5h18.4L12 4z"/><path d="M12 10v4.2"/><path d="M12 17.2v.3"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M4 12h13"/><path d="m12 6 6 6-6 6"/></symbol>
+  <symbol id="i-retry" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="m8 9.5 3 3-3 3"/><path d="M13.5 15.5H17"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c0-3.8 3.4-5.7 7.5-5.7s7.5 1.9 7.5 5.7"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 13.5h4l1.6 2.6h4.8l1.6-2.6h4"/><path d="M5.5 5h13l1.5 8.5v3.5a2 2 0 0 1-2 2h-12a2 2 0 0 1-2-2v-3.5L5.5 5z"/></symbol>
+  <symbol id="i-route" viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8 16.5c2.5-1 2-4.5 4.5-5.5S16 8 15.9 7.6"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 16.5V21"/><path d="m6 8.5 6-5 6 5-2.6 1.4v5.1H8.6V9.9L6 8.5z"/></symbol>
+</svg>
+
+<!-- 顶部控制条 -->
+<div class="controls">
+  <span class="seg-label">版本</span>
+  <div class="seg">
+    <button id="btnOld" onclick="switchVersion('old')">旧版实现</button>
+    <button id="btnNew" class="active" onclick="switchVersion('new')">新版设计</button>
+  </div>
+  <span class="seg-label">情景</span>
+  <div class="seg">
+    <button id="scPaused" class="active" onclick="switchScenario('paused')">卡住（你遇到的）</button>
+    <button id="scRunning" onclick="switchScenario('running')">运行中排队</button>
+    <button id="scIdle" onclick="switchScenario('idle')">空闲待送达</button>
+    <button id="scMany" onclick="switchScenario('many')">大量积压</button>
+  </div>
+  <button class="demo-btn hidden" id="btnDemo" onclick="demoAutoRetry()">▶ 演示自愈</button>
+  <button class="demo-btn hidden" id="btnDemoFail" onclick="demoExhausted()">▶ 演示：重试超限</button>
+  <button class="ghost-btn on" id="btnAnno" onclick="toggleAnno()">设计标注：开</button>
+</div>
+
+<div class="app">
+  <div class="topbar">
+    <div class="logo"></div>
+    <div>
+      <div class="title">NeuroBook · Agent 会话</div>
+      <div class="caption">队列「卡住」问题 · 重设计原型（可交互）</div>
+    </div>
+  </div>
+
+  <!-- 会话面板 -->
+  <div class="shell">
+    <div class="shell-head">
+      <span class="s-title">第三卷时间线梳理</span>
+      <span class="s-sub">Agent 会话 #12</span>
+      <span class="spacer"></span>
+      <span class="conn"><span class="dot"></span>已连接</span>
+    </div>
+
+    <div class="flow" id="flow">
+      <div class="msg-user">
+        <div class="who">你 · 14:02</div>
+        <div class="bubble">把第三卷的章节按时间线重新排一下，顺便检查有没有漏掉的伏笔。</div>
+      </div>
+      <div class="group">
+        <div class="group-head">
+          <span class="gicon">▸</span>
+          <span class="g-summary">勘察</span>
+          <span class="g-meta">读取 12 个文件 · 2.1s</span>
+        </div>
+      </div>
+      <div class="msg-ai">
+        <div class="who">Agent · 14:03</div>
+        <div class="ai-body">我检查了第三卷的 24 个章节，发现 3 处时间线冲突，其中第 7 章和第 12 章冲突比较明显……</div>
+      </div>
+      <div class="run-indicator hidden" id="runIndicator">
+        <span class="spinner"></span>
+        <span>正在处理：核对第 12 章的时间戳…</span>
+      </div>
+    </div>
+
+    <!-- Workflow 待处理面板（mock：另一个组件，用于区分对比） -->
+    <div class="wf-panel">
+      <div class="wf-head">
+        <svg class="ic" style="color:var(--text-2)"><use href="#i-inbox"/></svg>
+        <span class="wf-title">Workflow 待处理</span>
+        <span class="wf-count">1</span>
+        <span class="wf-desc">每个流程独立展示</span>
+      </div>
+      <div class="wf-ask">
+        <div class="wf-ask-title">第 7 章与第 12 章的时间戳冲突，保留哪个？</div>
+        <div class="wf-row">
+          <span class="wf-opt">保留 3 月 12 日</span>
+          <span class="wf-opt">保留 3 月 5 日</span>
+          <span class="wf-opt">两处都改成 3 月 12 日</span>
+          <span class="spacer"></span>
+          <button class="btn btn-amber btn-sm" onclick="showToast('原型演示：这里不是队列，是等你回答的流程')">提交并继续</button>
+        </div>
+      </div>
+      <div class="anno">
+        <svg class="ic" style="margin-top:2px"><use href="#i-alert"/></svg>
+        <span>这是<b>另一个组件</b>「Workflow 待处理」：它等的是你的回答，不是消息队列。它和队列条挨在一起、都带「待处理」意味，很容易混淆——本次不改它，只把两者说清楚。</span>
+      </div>
+    </div>
+
+    <!-- 队列区：由脚本渲染 -->
+    <div class="queue-zone" id="queueZone"></div>
+    <div class="anno-wrap" id="queueAnno"></div>
+
+    <!-- 输入框 mock -->
+    <div class="composer">
+      <div class="composer-box">
+        <div class="composer-input">给 Agent 发消息…</div>
+        <div class="composer-bar">
+          <span class="chip">DeepSeek V4.1</span>
+          <span class="chip">normal 模式</span>
+          <span class="spacer"></span>
+          <span class="chip" style="border-style:dashed">运行中：Enter 引导 · Ctrl+Enter 排队</span>
+          <span class="send-btn"><svg class="ic"><use href="#i-send"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusline">
+      <span class="chip">上下文 42.3k · 21%</span>
+      <span class="chip">↓128k ↑12k ⚡96k</span>
+      <span class="chip" id="statusChip">空闲</span>
+    </div>
+  </div>
+
+  <!-- 说明区 -->
+  <div class="docs">
+    <div class="doc-card">
+      <h3><span class="n">1</span>这个设计解决什么</h3>
+      <ul>
+        <li><b>看得见</b>：队列条直接回答两个问题——「<b>谁发的</b>」（你 / 后台任务 / 系统）和「<b>为什么没送达</b>」（暂停原因用人话说）。现在这两行只显示 <code>&lt;system-reminder&gt; agent #26 返回…</code> 这种机器原文，你看不出它是什么、为什么在这。</li>
+        <li><b>能操作</b>：每条都有「立即送达」和「忽略」；暂停时还可以「全部送达 / 全部忽略」，不用再靠「先发一条消息、再按 Ctrl+Enter」这种绕路。</li>
+        <li><b>能自愈</b>：队列暂停后，会话空闲时会自动重试（最多 3 次，间隔逐渐拉长）；还不行就明说「需要手动处理」并给你一个重试按钮。现在一旦暂停，只有你主动发「排队」消息才会恢复。</li>
+        <li><b>默认折叠，不占地</b>：平时只占一行——琥珀条说明「暂停了、几条没送达」，<b>批量操作全在折叠条右上角</b>（全部忽略 / 全部送达 / 详情），不展开也能处理；条目的单个操作也都排在各自那一行的右上角。</li>
+        <li><b>展开也不顶屏</b>：展开的窗口限高约 240px、内容在其中滚动（切「大量积压」情景可看到效果），底部把手可拖动调整高度、双击恢复默认。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">2</span>交互规则（点上面的原型试试）</h3>
+      <table class="rule-table">
+        <tr><th>操作</th><th>会话空闲时</th><th>会话运行中</th></tr>
+        <tr><td>送达</td><td>马上把这条消息交给 Agent，并出现在对话里；按钮随即置灰为「已送达」</td><td>当前这一轮插不进去，所以是「排到本轮结束后第一个送出」；按钮同样置灰为「已送达」，不打断当前工作</td></tr>
+        <tr><td>忽略</td><td colspan="2">放弃这条消息，不再送达（系统通知丢弃后就看不到了，所以「全部忽略」会二次确认）</td></tr>
+        <tr><td>批量（右上角）</td><td colspan="2">「全部送达」= 解除暂停 + 按时间顺序逐条送达；「全部忽略」= 丢弃全部（点两次确认）</td></tr>
+        <tr><td>调整窗口</td><td colspan="2">拖动展开窗口底部的把手可改高度（120px ～ 视口 60%），双击恢复默认 240px</td></tr>
+      </table>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">3</span>后端要配合什么（大白话）</h3>
+      <ul>
+        <li><b>补一个「来源」字段</b>：服务端每条排队消息其实都记着来源（你 / 子任务 / 系统），但发给界面时被去掉了。补上它，界面才能显示「后台任务 #26」而不是一串 JSON。</li>
+        <li><b>补三个接口</b>：「送达单条」「忽略单条」「解除暂停」。现在只有一个「停止时清空队列」的开关，所以界面完全没有办法处理卡住的条目。</li>
+        <li><b>投递正文改成结构化</b>：后台任务完成的通知，现在是 <code>{"status":"completed"}</code> 这种机器格式，建议生成时直接写成「后台任务 #26 已完成 · 任务标题」，界面不用猜。</li>
+        <li><b>自愈逻辑放进队列本身</b>：暂停后空闲时自动重试（3 次、退避），失败超限才等人工。目前没有超时和重试。</li>
+      </ul>
+    </div>
+
+    <div class="doc-card">
+      <h3><span class="n">4</span>还没定的小问题（确认原型后我再问你）</h3>
+      <ul class="todo-list">
+        <li>运行中点「立即送达」：现在是「置顶、本轮结束后第一个送」；也可以做成「立刻打断当前轮送进去」。你更想要哪种？</li>
+        <li>自动重试 3 次、间隔约 10 秒 / 30 秒 / 2 分钟——这个节奏合适吗？</li>
+        <li>「忽略」直接生效（有提示）；「全部忽略」二次确认。这样够不够？</li>
+        <li>下面的「Workflow 待处理」和这个队列条挨在一起、容易混淆，要不要以后统一整理成一个「待处理区」？（本次先不动它）</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== 数据 =====
+  const SYS_26 = {
+    id: 's26', kind: 'system',
+    title: '#26 子任务已完成',
+    subtitle: '任务：检查第三卷时间线',
+    raw: '<system-reminder>\nagent #26 返回: {"status": "completed"}\n</system-reminder>',
+    deliveredTitle: '后台任务 #26 已完成 · 检查第三卷时间线',
+    time: '2 分钟前',
+  };
+  const SYS_23 = {
+    id: 's23', kind: 'system',
+    title: '#23 任务已取消',
+    subtitle: '任务：检索第三卷伏笔',
+    raw: '<system-reminder>\n[后台任务已取消] invoke agent #23：任务「检索第三卷伏笔」\n</system-reminder>',
+    deliveredTitle: '后台任务 #23 已取消 · 检索第三卷伏笔',
+    time: '2 分钟前',
+  };
+  const USER_1 = {
+    id: 'u1', kind: 'user',
+    title: '等一下，先把第 7 章的时间戳改成 3 月 12 日',
+    subtitle: '',
+    raw: '',
+    deliveredTitle: '等一下，先把第 7 章的时间戳改成 3 月 12 日',
+    time: '刚刚',
+  };
+  const SYS_12 = {
+    id: 's12', kind: 'system',
+    title: '#12 子任务已完成',
+    subtitle: '任务：整理第三卷伏笔清单',
+    raw: '<system-reminder>\nagent #12 返回: {"status": "completed"}\n</system-reminder>',
+    deliveredTitle: '后台任务 #12 已完成 · 整理第三卷伏笔清单',
+    time: '18 分钟前',
+  };
+  const SYS_19 = {
+    id: 's19', kind: 'system',
+    title: '#19 子任务已完成',
+    subtitle: '任务：生成第三卷人物关系表',
+    raw: '<system-reminder>\nagent #19 返回: {"status": "completed"}\n</system-reminder>',
+    deliveredTitle: '后台任务 #19 已完成 · 生成第三卷人物关系表',
+    time: '12 分钟前',
+  };
+  const USER_2 = {
+    id: 'u2', kind: 'user',
+    title: '把第 12 章的回溯改成 3 月 5 日',
+    subtitle: '',
+    raw: '',
+    deliveredTitle: '把第 12 章的回溯改成 3 月 5 日',
+    time: '8 分钟前',
+  };
+  const SYS_24 = {
+    id: 's24', kind: 'system',
+    title: '#24 子任务失败',
+    subtitle: '任务：核对第 12 章时间戳 · 模型输出超长被截断',
+    raw: '<system-reminder>\n[后台任务失败] invoke agent #24：模型输出超长被截断\n</system-reminder>',
+    deliveredTitle: '后台任务 #24 失败 · 核对第 12 章时间戳',
+    time: '5 分钟前',
+  };
+
+  // ===== 状态 =====
+  let state = {
+    version: 'new',        // old | new
+    scenario: 'paused',    // paused | running | idle
+    queueStatus: 'paused', // ready | paused | retrying | exhausted
+    retryAttempt: 0,
+    running: false,
+    expanded: true,
+    items: [],
+    pinnedId: null,
+    anno: true,
+    ignoreAllArmed: false,
+    panelHeight: 240,
+  };
+
+  // ===== 工具 =====
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  let toastTimer;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+  function setScenarioData(scenario) {
+    state.scenario = scenario;
+    state.pinnedId = null;
+    state.retryAttempt = 0;
+    if (scenario === 'paused') {
+      state.items = [SYS_26, SYS_23];
+      state.queueStatus = 'paused';
+      state.running = false;
+      state.expanded = false;
+    } else if (scenario === 'running') {
+      state.items = [USER_1, SYS_26];
+      state.queueStatus = 'ready';
+      state.running = true;
+      state.expanded = false;
+    } else if (scenario === 'many') {
+      state.items = [SYS_12, SYS_19, USER_2, SYS_24, SYS_26, SYS_23];
+      state.queueStatus = 'paused';
+      state.running = false;
+      state.expanded = true;
+    } else {
+      state.items = [SYS_26, SYS_23];
+      state.queueStatus = 'ready';
+      state.running = false;
+      state.expanded = false;
+    }
+  }
+
+  // ===== 队列区渲染 =====
+  function srcOf(item) {
+    return item.kind === 'user'
+      ? { cls: 'src-user', badge: '你', icon: 'i-user' }
+      : { cls: 'src-system', badge: '后台任务', icon: 'i-terminal' };
+  }
+
+  function renderOld() {
+    const chips = state.items.map((item) => {
+      const label = '队列';
+      const icon = item.kind === 'user' ? 'i-send' : 'i-inbox';
+      const text = item.kind === 'user' ? item.title : item.raw.replace(/\n/g, ' ');
+      return '<span class="old-chip">'
+        + '<svg class="ic oc-icon" style="width:11px;height:11px"><use href="#' + icon + '"/></svg>'
+        + '<span class="oc-label">' + label + '</span>'
+        + '<span class="oc-text">' + esc(text) + '</span>'
+        + '</span>';
+    }).join('');
+    const note = state.queueStatus === 'paused'
+      ? '<div class="old-note">队列已暂停，这 ' + state.items.length + ' 条通知不会自动送达——但界面上没有任何提示和补救入口，只能看到上面这几行机器文本。</div>'
+      : '';
+    return '<div class="old-chips">' + chips + '</div>' + note;
+  }
+
+  function renderNew() {
+    if (state.items.length === 0) {
+      return '<div style="height:6px"></div>';
+    }
+    const n = state.items.length;
+    const st = state.queueStatus;
+    let barIcon = 'i-clock', main = '', sub = '', extraAction = '';
+    if (st === 'paused') {
+      barIcon = 'i-pause';
+      main = '队列已暂停 · ' + n + ' 条消息没有送达';
+      sub = '上一轮运行被中断。可以手动送达，或等系统自动重试。';
+      extraAction = '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();deliverAll()"><svg class="ic"><use href="#i-send"/></svg>全部送达</button>';
+    } else if (st === 'retrying') {
+      barIcon = 'i-retry';
+      main = '正在自动重试送达（第 ' + state.retryAttempt + '/3 次）…';
+      sub = '会话已空闲，系统正在重新投递这 ' + n + ' 条消息。';
+    } else if (st === 'exhausted') {
+      barIcon = 'i-alert';
+      main = '队列已暂停 · 自动重试 3 次仍未成功';
+      sub = '原因：投递通道暂不可用。需要你手动重试，或忽略这些消息。';
+      extraAction = '<button class="btn btn-amber btn-sm" onclick="event.stopPropagation();retryManual()"><svg class="ic"><use href="#i-retry"/></svg>手动重试</button>';
+    } else if (state.running) {
+      barIcon = 'i-clock';
+      const pinned = state.pinnedId ? ' · 1 条已送达' : '';
+      main = n + ' 条将在本轮结束后送达' + pinned;
+      sub = '当前这一轮还在运行；不需要处理，它们会按顺序自动送达。';
+    } else {
+      barIcon = 'i-clock';
+      main = n + ' 条待送达';
+      sub = '会话空闲，现在就可以送达。';
+      extraAction = '<button class="btn btn-primary btn-sm" onclick="event.stopPropagation();deliverAll()"><svg class="ic"><use href="#i-send"/></svg>全部送达</button>';
+    }
+    const bar = '<div class="qbar state-' + st + (state.expanded ? ' expanded' : '') + '" onclick="toggleExpand()">'
+      + '<span class="qb-icon"><svg class="ic"><use href="#' + barIcon + '"/></svg></span>'
+      + '<div style="min-width:0"><div class="qb-main">' + main + '</div><div class="qb-sub">' + sub + '</div></div>'
+      + '<span class="spacer"></span>'
+      + '<span class="qb-actions">'
+      + (n > 1 ? '<button class="btn btn-ghost-danger btn-sm" id="ignoreAllBtn" title="放弃队列里的全部消息" onclick="event.stopPropagation();ignoreAll()">全部忽略</button>' : '')
+      + extraAction
+      + '<span class="qb-toggle">' + (state.expanded ? '收起' : '详情') + '<span class="chev' + (state.expanded ? ' up' : '') + '">▾</span></span>'
+      + '</span>'
+      + '</div>';
+    if (!state.expanded) return bar;
+
+    // 展开面板：条数与原因已由上方折叠条表达，这里不再重复
+    const ordered = state.pinnedId
+      ? [...state.items].sort((a, b) => (b.id === state.pinnedId ? 1 : 0) - (a.id === state.pinnedId ? 1 : 0))
+      : state.items;
+
+    const rows = ordered.map((item, i) => {
+      const src = srcOf(item);
+      const pinned = state.pinnedId === item.id;
+      const actions = '<button class="btn btn-primary btn-sm" title="现在就把它交给 Agent" onclick="deliverItem(\'' + item.id + '\')"><svg class="ic"><use href="#i-send"/></svg>送达</button>'
+        + '<button class="btn btn-ghost-danger btn-sm" title="从队列移除，不再送达" onclick="ignoreItem(\'' + item.id + '\')"><svg class="ic"><use href="#i-x"/></svg>忽略</button>';
+      const rawLink = item.kind === 'system'
+        ? '<button class="qi-link" id="raw-' + item.id + '" title="查看这条通知的原始内容" onclick="toggleRaw(\'' + item.id + '\')">原文<span class="tri">▸</span></button>'
+        : '';
+      const rawBox = item.kind === 'system'
+        ? '<div class="qi-raw hidden" id="rawbox-' + item.id + '">' + esc(item.raw) + '</div>'
+        : '';
+      return '<div class="qitem' + (pinned ? ' pinned' : '') + '">'
+        + '<span class="qi-avatar ' + src.cls + '"><svg class="ic"><use href="#' + src.icon + '"/></svg></span>'
+        + '<div class="qi-main">'
+        + '<div class="qi-head">'
+        + '<span class="src-badge ' + src.cls + '">' + src.badge + '</span>'
+        + (pinned ? '<span class="pin-badge" title="已交给 Agent">已送达</span>' : '<span class="qi-seq">第 ' + (i + 1) + ' 条</span>')
+        + '<span class="qi-title">' + esc(item.title) + '</span>'
+        + '<span class="qi-tools">'
+        + '<span class="qi-time">' + item.time + '</span>'
+        + rawLink
+        + actions
+        + '</span>'
+        + '</div>'
+        + (item.subtitle ? '<div class="qi-sub">' + esc(item.subtitle) + '</div>' : '')
+        + rawBox
+        + '</div>'
+        + '</div>';
+    }).join('');
+
+    const foot = '<div class="qpanel-foot">'
+      + '<button class="tech-toggle" id="techToggle" onclick="toggleTech()"><span class="tri">▸</span>技术详情（暂停原因 / 内部状态）</button>'
+      + '</div>'
+      + '<div class="tech-body hidden" id="techBody">status: ' + st + (st === 'exhausted' || st === 'retrying' ? '\nretryAttempt: ' + state.retryAttempt + ' / 3' : '')
+      + (st === 'paused' || st === 'exhausted' ? '\npausedBy.reason: interrupted\npausedBy.message: 应用重启后未自动恢复' : '')
+      + '\nitems: ' + state.items.length + ' 条待送达' + '</div>';
+
+    return bar
+      + '<div class="qpanel state-' + st + '">'
+      + '<div class="qpanel-body" id="qpanelBody" style="max-height:' + state.panelHeight + 'px">' + rows + '</div>'
+      + foot
+      + '<div class="qresize" onmousedown="startResize(event)" ondblclick="resetPanelHeight()" title="拖动可调整队列窗口高度（双击恢复默认）"><span></span></div>'
+      + '</div>';
+  }
+
+  function render() {
+    const zone = document.getElementById('queueZone');
+    zone.innerHTML = state.version === 'old' ? renderOld() : renderNew();
+    document.getElementById('statusChip').textContent = state.running ? '运行中' : '空闲';
+    document.getElementById('runIndicator').classList.toggle('hidden', !state.running);
+    state.ignoreAllArmed = false;
+    const demoVisible = state.version === 'new' && state.queueStatus === 'paused';
+    document.getElementById('btnDemo').classList.toggle('hidden', !demoVisible);
+    document.getElementById('btnDemoFail').classList.toggle('hidden', !demoVisible);
+  }
+
+  // ===== 交互 =====
+  function switchVersion(v) {
+    state.version = v;
+    document.getElementById('btnOld').classList.toggle('active', v === 'old');
+    document.getElementById('btnNew').classList.toggle('active', v === 'new');
+    render();
+    renderAnno();
+  }
+  function switchScenario(s) {
+    setScenarioData(s);
+    document.getElementById('scPaused').classList.toggle('active', s === 'paused');
+    document.getElementById('scRunning').classList.toggle('active', s === 'running');
+    document.getElementById('scIdle').classList.toggle('active', s === 'idle');
+    document.getElementById('scMany').classList.toggle('active', s === 'many');
+    render();
+  }
+  /** 拖拽底部把手调整队列窗口高度；双击恢复默认。 */
+  function startResize(e) {
+    e.preventDefault();
+    const startY = e.clientY;
+    const startH = state.panelHeight;
+    const onMove = (ev) => {
+      state.panelHeight = Math.max(120, Math.min(Math.round(window.innerHeight * 0.6), startH + (ev.clientY - startY)));
+      const body = document.getElementById('qpanelBody');
+      if (body) body.style.maxHeight = state.panelHeight + 'px';
+    };
+    const onUp = () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  }
+  function resetPanelHeight() {
+    state.panelHeight = 240;
+    const body = document.getElementById('qpanelBody');
+    if (body) body.style.maxHeight = '240px';
+  }
+  function toggleExpand() { state.expanded = !state.expanded; render(); }
+  function toggleRaw(id) {
+    const box = document.getElementById('rawbox-' + id);
+    const btn = document.getElementById('raw-' + id);
+    box.classList.toggle('hidden');
+    btn.classList.toggle('open');
+  }
+  function toggleTech() {
+    document.getElementById('techBody').classList.toggle('hidden');
+    document.getElementById('techToggle').classList.toggle('open');
+  }
+  function toggleAnno() {
+    state.anno = !state.anno;
+    const btn = document.getElementById('btnAnno');
+    btn.textContent = '设计标注：' + (state.anno ? '开' : '关');
+    btn.classList.toggle('on', state.anno);
+    document.querySelectorAll('.anno').forEach((el) => { el.style.display = state.anno ? '' : 'none'; });
+    renderAnno();
+  }
+
+  function insertDelivered(item) {
+    const flow = document.getElementById('flow');
+    const node = document.createElement('div');
+    node.className = 'msg-sys';
+    const icon = item.kind === 'user' ? 'i-user' : 'i-terminal';
+    node.innerHTML = '<span class="sys-icon"><svg class="ic"><use href="#' + icon + '"/></svg></span>'
+      + '<div><div class="sys-title">' + esc(item.deliveredTitle) + '</div>'
+      + '<div class="sys-meta">' + (item.kind === 'user' ? '你排队的消息 · 刚刚送达' : '系统通知 · 刚刚送达') + '</div></div>';
+    flow.appendChild(node);
+  }
+
+  function deliverItem(id) {
+    const item = state.items.find((x) => x.id === id);
+    if (!item) return;
+    if (state.running) {
+      state.pinnedId = id;
+      showToast('已置顶：本轮结束后第一个送达');
+      render();
+      return;
+    }
+    state.items = state.items.filter((x) => x.id !== id);
+    if (state.pinnedId === id) state.pinnedId = null;
+    if (state.items.length === 0) state.queueStatus = 'ready';
+    render();
+    insertDelivered(item);
+    showToast('已送达：「' + item.title + '」出现在对话里');
+  }
+
+  function ignoreItem(id) {
+    const item = state.items.find((x) => x.id === id);
+    if (!item) return;
+    state.items = state.items.filter((x) => x.id !== id);
+    if (state.pinnedId === id) state.pinnedId = null;
+    render();
+    showToast('已忽略，这条消息不会再送达');
+  }
+
+  function deliverAll() {
+    if (state.items.length === 0) return;
+    if (state.running) { showToast('本轮结束后会自动全部送达，无需操作'); return; }
+    const items = [...state.items];
+    state.items = [];
+    state.queueStatus = 'ready';
+    state.pinnedId = null;
+    state.expanded = true;
+    render();
+    items.forEach((item, i) => {
+      setTimeout(() => insertDelivered(item), 220 * i);
+    });
+    showToast('正在按顺序送达 ' + items.length + ' 条消息…');
+  }
+
+  function ignoreAll() {
+    if (!state.ignoreAllArmed) {
+      state.ignoreAllArmed = true;
+      const btn = document.getElementById('ignoreAllBtn');
+      if (btn) btn.textContent = '再点一次，确认忽略';
+      showToast('忽略后不再送达，再点一次确认');
+      return;
+    }
+    state.ignoreAllArmed = false;
+    const n = state.items.length;
+    state.items = [];
+    state.pinnedId = null;
+    render();
+    showToast('已忽略全部 ' + n + ' 条消息');
+  }
+
+  function retryManual() {
+    showToast('正在重新投递…');
+    setTimeout(() => deliverAll(), 500);
+  }
+
+  function demoAutoRetry() {
+    if (state.queueStatus !== 'paused') return;
+    state.queueStatus = 'retrying';
+    state.retryAttempt = 1;
+    state.expanded = true;
+    render();
+    showToast('模拟：本轮运行结束，队列开始自动重试（第 1 次）');
+    setTimeout(() => {
+      if (state.queueStatus !== 'retrying') return;
+      state.retryAttempt = 2;
+      render();
+      showToast('第 1 次重试未成功，30 秒后重试（第 2 次）…');
+    }, 1400);
+    setTimeout(() => {
+      if (state.queueStatus !== 'retrying') return;
+      const items = [...state.items];
+      state.queueStatus = 'ready';
+      state.retryAttempt = 0;
+      state.items = [];
+      render();
+      showToast('重试成功，' + items.length + ' 条通知已送达');
+      items.forEach((item, i) => setTimeout(() => insertDelivered(item), 260 * i));
+    }, 2800);
+  }
+
+  function demoExhausted() {
+    if (state.queueStatus !== 'paused') return;
+    state.queueStatus = 'retrying';
+    state.retryAttempt = 1;
+    state.expanded = true;
+    render();
+    showToast('模拟：自动重试中（第 1/3 次）…');
+    setTimeout(() => {
+      if (state.queueStatus !== 'retrying') return;
+      state.queueStatus = 'exhausted';
+      state.retryAttempt = 3;
+      render();
+      showToast('重试 3 次仍失败：转为手动处理，等你决定');
+    }, 1300);
+  }
+
+  // ===== 设计标注 =====
+  function renderAnno() {
+    const wrap = document.getElementById('queueAnno');
+    if (!state.anno) { wrap.innerHTML = ''; return; }
+    if (state.version === 'old') {
+      wrap.innerHTML = '<div class="anno"><svg class="ic" style="margin-top:2px"><use href="#i-alert"/></svg>'
+        + '<span><b>旧版的问题</b>：这行小字就是你看到的「队列」——只有机器原文，看不出谁发的、为什么没送达，也没有任何操作入口，所以卡住时无从下手。</span></div>';
+      return;
+    }
+    wrap.innerHTML =
+      '<div class="anno"><svg class="ic" style="margin-top:2px"><use href="#i-inbox"/></svg>'
+      + '<span><b>看得见</b>：来源徽标回答「谁发的」（你 / 后台任务），暂停说明回答「为什么没送达」；原文收进「查看原文」，默认不怼脸。</span></div>'
+      + '<div class="anno"><svg class="ic" style="margin-top:2px"><use href="#i-send"/></svg>'
+      + '<span><b>能操作</b>：每条都能「送达 / 忽略」；点送达后按钮立即置灰，不会重复操作；暂停时还能一键全部处理。</span></div>'
+      + '<div class="anno"><svg class="ic" style="margin-top:2px"><use href="#i-retry"/></svg>'
+      + '<span><b>能自愈</b>：暂停后在会话空闲时自动重试（点上方「▶ 演示自愈」看完整流程）；重试超限才转为「手动重试」。</span></div>';
+  }
+
+  // ===== 初始化 =====
+  setScenarioData('paused');
+  render();
+  renderAnno();
+</script>
+</body>
+</html>
