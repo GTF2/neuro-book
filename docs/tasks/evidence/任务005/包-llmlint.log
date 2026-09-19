@@ -1,0 +1,354 @@
+$ bun run registry:build && bun run test:vitest && bun run test:bun
+$ cd web && bun scripts/build-registry.ts
+未找到 D:\MyProject\neuro-book\packages\llmlint\evals\report\report.json，跳过 verdict 烘焙（消费端降级为仅 fixability 过滤）。
+registry.json 已生成：245 条 regex 规则、7 条 density 规则、6 条 handler 规则、8 条 semantic 规则、266/360 active，engine 3.0.0+r74d91053，verdict 未烘焙（降级口径）。；profile creative-writing@1 纳入 245 条。
+rules-report.json 已生成（降级：report.json 缺失，rules 为空）。
+$ vitest run --exclude tests/agent-invocation-revision-migration.test.ts
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90mD:/MyProject/neuro-book/packages/llmlint[39m
+
+ [31m❯[39m tests/repair-draft.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/contribute-workspace.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/neuro-agent-harness-review-projector.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/report.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [31m❯[39m tests/revision-text-workspace.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/check-report.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/density.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [31m❯[39m tests/agent-chat-projection.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/user-state.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/handler-rules.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/scan-context.test.ts [2m([22m[2m22 tests[22m[2m)[22m[32m 169[2mms[22m[39m
+ [31m❯[39m tests/llm-merge.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/agent-chat-flow.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/guide.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+ [32m✓[39m tests/calibration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 280[2mms[22m[39m
+ [31m❯[39m tests/agent-sse-lifecycle.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/detect.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [31m❯[39m tests/neuro-agent-harness-pi-runtime.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/neuro-agent-harness-analysis-capability.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/contribute.test.ts [2m([22m[2m18 tests[22m[2m)[22m[33m 351[2mms[22m[39m
+ [31m❯[39m tests/agent-analysis-contract.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/rule-profile.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/style-review.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m tests/rule-model-doc.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/rule-titles.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+ [31m❯[39m tests/llmlint.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/analysis-score.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/neuro-agent-harness-prisma-store.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/llm-fix-agent.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/llm-risk-score.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/auth-mode.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/agent-session-rebuild.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/neuro-agent-harness-adapter.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/neuro-agent-harness-profile.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/agent-abort-state.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m tests/agent-markdown.test.ts [2m([22m[2m0 test[22m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 24 [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/agent-abort-state.test.ts[2m [ tests/agent-abort-state.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/agent-abort-state.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/agent-abort-state.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-analysis-contract.test.ts[2m [ tests/agent-analysis-contract.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/analysis-contract.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/analysis-contract.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-chat-flow.test.ts[2m [ tests/agent-chat-flow.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/agent-chat-flow.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/agent-chat-flow.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-chat-projection.test.ts[2m [ tests/agent-chat-projection.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/agent-chat-projection.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/agent-chat-projection.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-markdown.test.ts[2m [ tests/agent-markdown.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/agent-markdown.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/agent-markdown.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-session-rebuild.test.ts[2m [ tests/agent-session-rebuild.test.ts ][22m
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-adapter.test.ts[2m [ tests/neuro-agent-harness-adapter.test.ts ][22m
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-review-projector.test.ts[2m [ tests/neuro-agent-harness-review-projector.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/database/prisma.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/database/prisma.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/agent-sse-lifecycle.test.ts[2m [ tests/agent-sse-lifecycle.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/sse-lifecycle.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/sse-lifecycle.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/analysis-score.test.ts[2m [ tests/analysis-score.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/shared/analysis.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/shared/analysis.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/auth-mode.test.ts[2m [ tests/auth-mode.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/utils/auth-mode.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/utils/auth-mode.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/contribute-workspace.test.ts[2m [ tests/contribute-workspace.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/contribute-workspace.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/contribute-workspace.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/llm-fix-agent.test.ts[2m [ tests/llm-fix-agent.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/utils/llm-fix-agent.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/utils/llm-fix-agent.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/llm-merge.test.ts[2m [ tests/llm-merge.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/llm-merge.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/llm-merge.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/llm-risk-score.test.ts[2m [ tests/llm-risk-score.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/llm-risk-score.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/llm-risk-score.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/llmlint.test.ts[2m [ tests/llmlint.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/i18n/messages.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/i18n/messages.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-analysis-capability.test.ts[2m [ tests/neuro-agent-harness-analysis-capability.test.ts ][22m
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-prisma-store.test.ts[2m [ tests/neuro-agent-harness-prisma-store.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/database/prisma.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/database/prisma.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+[90m [2m❯[22m fetchModule ../../node_modules/vite/dist/node/chunks/node.js:[2m33534:15[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-pi-runtime.test.ts[2m [ tests/neuro-agent-harness-pi-runtime.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/neuro-agent-harness/pi-runtime.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/neuro-agent-harness/pi-runtime.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/neuro-agent-harness-profile.test.ts[2m [ tests/neuro-agent-harness-profile.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/neuro-agent-harness/profile.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/neuro-agent-harness/profile.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/repair-draft.test.ts[2m [ tests/repair-draft.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/app/utils/repair-draft.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/app/utils/repair-draft.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/revision-text-workspace.test.ts[2m [ tests/revision-text-workspace.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/agent/neuro-agent-harness/revision-text-workspace.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/agent/neuro-agent-harness/revision-text-workspace.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/rule-profile.test.ts[2m [ tests/rule-profile.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/shared/rule-profile.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/shared/rule-profile.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/24]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/style-review.test.ts[2m [ tests/style-review.test.ts ][22m
+[31m[1mError[22m: Transform failed with 1 error:
+
+[31m[TSCONFIG_ERROR] [0mFailed to load tsconfig for 'web/server/utils/style-review.ts': Tsconfig not found
+[39m
+  Plugin: [35mvite:oxc[39m
+  File: [36mD:/MyProject/neuro-book/packages/llmlint/web/server/utils/style-review.ts[39m
+[90m [2m❯[22m transformWithOxc ../../node_modules/vite/dist/node/chunks/node.js:[2m4017:19[22m[39m
+[90m [2m❯[22m TransformPluginContext.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m4088:26[22m[39m
+[90m [2m❯[22m EnvironmentPluginContainer.transform ../../node_modules/vite/dist/node/chunks/node.js:[2m30151:51[22m[39m
+[90m [2m❯[22m loadAndTransform ../../node_modules/vite/dist/node/chunks/node.js:[2m20098:26[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/24]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m24 failed[39m[22m[2m | [22m[1m[32m12 passed[39m[22m[90m (36)[39m
+[2m      Tests [22m [1m[32m119 passed[39m[22m[90m (119)[39m
+[2m   Start at [22m 01:59:53
+[2m   Duration [22m 1.40s[2m (transform 7.30s, setup 0ms, import 3.38s, tests 1.04s, environment 3ms)[22m
+
+error: script "test:vitest" exited with code 1
+error: script "test" exited with code 1

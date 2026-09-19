@@ -1,0 +1,107 @@
+$ bun test
+bun test v1.4.2 (744846f84)
+
+tests\bm25.test.ts:
+(pass) tokenize > CJK 拆字 bigram，ASCII 串整词小写 [0.19ms]
+(pass) 字面融合 > 语义无区分度时专名靠 BM25 召回，且 tick 过滤不放行未来事实 [1.95ms]
+
+tests\index-store.test.ts:
+(pass) 存储实现差分 > 任意过滤组合下 SQLite 与内存实现结果逐位一致 [315.08ms]
+(pass) 存储实现差分 > 扩展字段声明与否只影响下推，不影响结果 [425.95ms]
+(pass) 存储实现差分 > 条目字段跨 SQLite roundtrip 无损（含 bigint 与扩展字段） [201.39ms]
+(pass) 向量持久化 > 重开复用已落盘向量，不重新嵌入 [210.51ms]
+(pass) 向量持久化 > 换 embedding 模型：清空向量渐进重嵌，不报错也不清空记忆 [289.53ms]
+(pass) 真实盘上路径（FsStorage jsonl + SQLite 索引） > 跨进程重开：jsonl 重放 + 向量复用；删掉 sqlite 后从 jsonl 重建 [417.04ms]
+(pass) 延迟嵌入的优雅降级 > 向量未就绪时字面路照常召回，补齐后语义路加入 [265.52ms]
+
+tests\ingest-raw.test.ts:
+(pass) 分块 > paragraph：按空行切后贪心装箱到上限 [0.16ms]
+(pass) 分块 > heading：只在标题处断开，块内仍贪心装箱 [0.06ms]
+(pass) 分块 > turns：按对话轮切 [0.04ms]
+(pass) 分块 > chars：超长无分隔文本也能切开（兜底） [0.01ms]
+(pass) 分块 > overlap：每块前置上一块尾部 [0.04ms]
+(pass) 分块 > 自定义 split 完全接管 [0.15ms]
+(pass) 分块 > 空文本返回空数组
+(pass) 视角化抽取 > character 视角把视角角色写进提示词，且要求跳过不在场的场景 [0.34ms]
+(pass) 视角化抽取 > omniscient 视角要求覆盖不在场情节，判据换成「读者知道了没有」 [0.14ms]
+(pass) 视角化抽取 > character 视角缺 povSubject 直接抛错，不猜 [0.05ms]
+(pass) 视角化抽取 > 跨块携带：注册表快照与上一块尾部都进下一块上下文 [0.12ms]
+(pass) 视角化抽取 > 单块输出非法：重试后跳过该块，其余块照常，不中断整轮 [0.14ms]
+(pass) ingestRaw 全链路 > 原文留档 + 抽取 + 消解，tick 由库统一分配 [1.32ms]
+(pass) ingestRaw 全链路 > 第二篇的 tick 接着第一篇往下排，不重号 [0.25ms]
+(pass) ingestRaw 全链路 > 没有 llm 时直接抛错，而不是静默只落 episode [0.09ms]
+
+tests\nb-memory.test.ts:
+(pass) jsonl roundtrip > facts / 注册表 / 状态写入后重开完全等价 [0.55ms]
+(pass) 注册表 alias as-of 解析 > sinceTick 之前视作未知实体，之后可解析 [0.17ms]
+(pass) 状态层失效语义 > activeAt：as-of 看到当时有效的旧状态，当前口径只看未失效 [0.17ms]
+(pass) 检索过滤 > tick<=asOf 过滤：截止点之后的事实不召回 [0.44ms]
+(pass) 检索过滤 > 失效 state 不进当前认知，as-of 期间内可见 [0.28ms]
+(pass) 检索过滤 > subjectIds 过滤：只召回涉及给定主体的条目 [0.16ms]
+
+tests\plan.test.ts:
+(pass) 启发式规划（方案 C） > 无名指称 + 日历表达 → 两跳计划 [0.48ms]
+(pass) 启发式规划（方案 C） > 点了名就不做多跳，只把时间窗口带上 [0.16ms]
+(pass) 启发式规划（方案 C） > 没有故事时间轴时，日历表达如实记入 unresolved 而不硬映射成 tick 窗口 [0.15ms]
+(pass) 启发式规划（方案 C） > 「最近」问的就是摄入序，纯 tick 模式下也能解析 [0.12ms]
+(pass) 启发式规划（方案 C） > 既无时间线索也无无名指称 → 与不用规划器完全等价 [0.12ms]
+(pass) 计划执行 > 两跳真的解出主体并检索到第二跳证据 [0.82ms]
+(pass) 计划执行 > 对照：朴素检索没有主体锚点，会带进无关主体的档案与陈年事实 [0.38ms]
+(pass) 计划执行 > 主体锚点解为空时跳过该步，而不是退化成全库检索 [0.12ms]
+(pass) 计划执行 > 多步命中按 refId 去重，先出现的保留 [0.34ms]
+(pass) 计划执行 > describePlan 给出可读摘要 [0.18ms]
+(pass) 便宜模型规划（方案 B） > 解析合法计划，instant 按十进制字符串还原 [0.65ms]
+(pass) 便宜模型规划（方案 B） > 输出不是 JSON → 降级为朴素计划且如实报告 [0.16ms]
+(pass) 便宜模型规划（方案 B） > 调用抛错 → 同样降级，不把错误抛给调用方 [0.16ms]
+(pass) 便宜模型规划（方案 B） > 坏步骤被丢掉，好步骤保留 [0.15ms]
+(pass) 便宜模型规划（方案 B） > describedAs 被解析并保留（空串丢弃） [0.15ms]
+(pass) 便宜模型规划（方案 B） > 全部步骤非法 → 降级 [0.12ms]
+(pass) 按描述解主体 > 查询不含专名时，描述能解出主体——而字面匹配解不出 [0.34ms]
+(pass) 按描述解主体 > 解出的主体可作为第二跳锚点，召回本来打不中的事实 [0.27ms]
+(pass) 按描述解主体 > 结构约束与描述取交：解出的主体必须同时满足类型约束 [0.31ms]
+(pass) 按描述解主体 > 主体描述条目不进普通检索结果 [0.22ms]
+(pass) 按描述解主体 > as-of：只有该时点生效的描述版本可见 [0.35ms]
+(pass) 按描述解主体 > 存活集非空时总有结果——相似度下限尚未实现 [0.21ms]
+(pass) search 描述兜底 > 开关改变主体锚点：无专名查询下开与关的结果不同 [0.42ms]
+(pass) search 描述兜底 > 开启后解出主体，主体卡随之注入 [0.25ms]
+(pass) search 描述兜底 > 补齐锚点时保留字面路已解出的主体 [0.21ms]
+(pass) search 描述兜底 > as-of：兜底不靠尚未形成的描述版本解主体 [0.33ms]
+(pass) 主体卡注入 > 给了 sources 也照常注入主体卡 [0.24ms]
+(pass) 主体卡注入 > 内部解主体的检索不注入主体卡 [0.14ms]
+
+tests\resolve.test.ts:
+(pass) ingestBatch 联合消解 > 登记 + 别名 sinceTick 收敛 + name 引用归一 [0.30ms]
+(pass) ingestBatch 联合消解 > LLM 输出非法：3 次重试后跳过本批，事实照常落库 [0.14ms]
+(pass) ingestBatch 联合消解 > 未注入 llm：跳过消解直接落库（S1 口径） [0.08ms]
+(pass) 分身修复合并 > 引擎不变式：register 与 alias 同批到达的分身被自动合并 [0.34ms]
+(pass) 分身修复合并 > merge 后：名字归并为别名、all 不再列分身、旧标注 facts 经等价 id 可查、as-of 合并前仍是两实体 [0.61ms]
+(pass) 审查修复回归 > merge 后再登记不撞 id（allocateId 基于历史总数） [0.18ms]
+(pass) 审查修复回归 > registeredTick 取首次引用事实的 tick，而非批首 tick [0.13ms]
+(pass) 审查修复回归 > op 应用段异常只跳过本批，不炸摄入 [0.46ms]
+(pass) 状态提案（S3） > 同 topic 提案：旧认知失效被取代，as-of 仍可见旧认知，检索确定性注入在效状态 [0.71ms]
+(pass) 主体卡 as-of > 登记前不可见；别名按 sinceTick 裁剪；ontology 取当时版本 [0.13ms]
+(pass) 主体卡 as-of > 检索注入：问题提及别名时返回主体卡，as-of 早于合并则不注入 [0.27ms]
+(pass) 摄入路径灌入故事时间 > 登记 / 别名 / 状态的 instant 由对应 tick 的事实推导 [0.23ms]
+(pass) 摄入路径灌入故事时间 > 语料没有故事时间轴时，instant 一律留空而不是编一个 [0.15ms]
+(pass) 摄入路径灌入故事时间 > 状态取代时，失效与新生效在两条轴上都对齐 [0.33ms]
+
+tests\temporal.test.ts:
+(pass) 双时间轴 > 倒叙：摄入序递增而故事时间回退，两轴各自成立 [0.60ms]
+(pass) 双时间轴 > 两轴同时给出时按 AND 约束 [0.18ms]
+(pass) 双时间轴 > 故事时间轴对无 instant 条目 fail-closed [0.17ms]
+(pass) 双时间轴 > 窗口过滤：tickRange / instantRange 取闭区间 [0.18ms]
+(pass) 双时间轴 > 状态层有效区间在故事时间轴上同样成立 [0.15ms]
+(pass) 双时间轴 > 别名双轴：故事时间上尚未得知同一性时不可解析 [0.13ms]
+(pass) 双时间轴 > bigint 故事时间 jsonl roundtrip [0.23ms]
+(pass) 扩展字段 > 等值过滤与 any-of 过滤 [0.28ms]
+(pass) 扩展字段 > 条目缺该 key 时不通过——「没标记」不等于「标记为假」 [0.16ms]
+(pass) 扩展字段 > 扩展字段随 jsonl roundtrip 保留 [0.09ms]
+(pass) subjectsIn：多跳第一跳 > 按时间窗口解出主体，再按主体发第二跳 [0.35ms]
+(pass) subjectsIn：多跳第一跳 > 共现约束：只返回与指定主体同现的其他主体 [0.13ms]
+(pass) subjectsIn：多跳第一跳 > as-of 已知口径：该时点尚未登记的主体不返回 [0.09ms]
+(pass) subjectsIn：多跳第一跳 > subjectTypes：门面按类型展开成主体过滤 [0.26ms]
+
+ 86 pass
+ 0 fail
+ 464 expect() calls
+Ran 86 tests across 7 files. [2.17s]

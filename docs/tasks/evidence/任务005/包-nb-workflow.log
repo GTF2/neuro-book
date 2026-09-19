@@ -1,0 +1,136 @@
+$ bun test
+bun test v1.4.2 (744846f84)
+
+test\activity-runtime.test.ts:
+(pass) generic Workflow activities > callAction replays from the journal across Runner instances [3.40ms]
+(pass) generic Workflow activities > query is journaled and does not observe newer state during replay [0.63ms]
+(pass) generic Workflow activities > time, random values, and budget remain stable during replay [0.77ms]
+(pass) generic Workflow activities > large activity output is content-addressed and replayed through ValueStore [1.05ms]
+(pass) generic Workflow activities > large activity output fails explicitly when ValueStore is absent [0.39ms]
+(pass) generic Workflow activities > large Run input and terminal result are referenced in Backend state [0.33ms]
+(pass) generic Workflow activities > checkpoint and emitted events survive waiting without duplicate publication [1.87ms]
+(pass) generic Workflow activities > all uses a bounded concurrency policy and preserves input order [10.20ms]
+(pass) generic Workflow activities > parallel failures select the lowest input index, not completion timing [11.39ms]
+(pass) generic Workflow activities > parallel concurrency above the Runner ceiling is rejected before branches run [0.32ms]
+(pass) generic Workflow activities > non-JSON activity input is rejected before reaching the executor [0.37ms]
+(pass) generic Workflow activities > unknown activity options are rejected before reaching the executor [0.31ms]
+
+test\backend-conformance.test.ts:
+(pass) MemoryWorkflowBackend conformance > create/load returns isolated snapshots [0.14ms]
+(pass) MemoryWorkflowBackend conformance > duplicate run creation is rejected [0.11ms]
+(pass) MemoryWorkflowBackend conformance > compare-and-swap increments revision [0.24ms]
+(pass) MemoryWorkflowBackend conformance > stale compare-and-swap is rejected [0.13ms]
+(pass) MemoryWorkflowBackend conformance > immutable identity fields cannot change [0.07ms]
+(pass) MemoryWorkflowBackend conformance > extension start context is immutable [0.06ms]
+(pass) MemoryWorkflowBackend conformance > list returns creation order and isolated snapshots [0.16ms]
+(pass) MemoryWorkflowBackend conformance > runner replays completed activity across instances [0.56ms]
+(pass) MemoryWorkflowBackend conformance > runner resumes persisted wait across instances [0.56ms]
+(pass) MemoryWorkflowBackend conformance > truthfully declares in-process-only durability [0.10ms]
+(pass) MemoryWorkflowBackend conformance > rejects unmet requirements before execution [0.06ms]
+(pass) MemoryValueStore conformance > content addressing deduplicates equal JSON [0.09ms]
+(pass) MemoryValueStore conformance > get returns isolated values [0.06ms]
+(pass) MemoryValueStore conformance > tampered reference is rejected [0.09ms]
+
+test\fingerprint.test.ts:
+(pass) Workflow JSON identity > an own __proto__ property remains part of canonical identity [0.05ms]
+(pass) Workflow JSON identity > ignores non-enumerable schema metadata while retaining JSON identity [0.03ms]
+(pass) Workflow JSON identity > params side channel wins while SHA-256 fingerprints stay opaque [0.07ms]
+(pass) Workflow JSON identity > legacy inline JSON fingerprints remain readable only without params [0.03ms]
+(pass) Workflow JSON identity > array index accessors are rejected without being invoked [0.04ms]
+(pass) Workflow JSON identity > array symbol keys are rejected [0.03ms]
+(pass) Workflow JSON identity > error messages escape control characters in payload key names [0.04ms]
+(pass) Workflow JSON identity > error messages cap the length of payload key names [0.05ms]
+
+test\kernel.test.ts:
+(pass) journal 内核 > 不同 Runner 实例分配的 Run ID 不重用 [0.37ms]
+(pass) journal 内核 > waiting run 取消后立即成为 cancelled，且不能 resume 或 rerun [0.53ms]
+(pass) journal 内核 > 最后一个 activity 运行期间取消，迟到成功不能覆盖 cancelled [2.60ms]
+(pass) journal 内核 > Run cancel 将同一个 signal 传给当前 Agent activity 并有界收口 [1.91ms]
+(pass) journal 内核 > Run cancel 同时取消 wf.all 的全部并发 Agent activity [1.08ms]
+(pass) journal 内核 > 崩溃后 rerun：已完成 Activity 命中缓存不重跑 [0.69ms]
+(pass) journal 内核 > 参数变化：该路径从不匹配处后缀失效 [0.77ms]
+(pass) journal 内核 > 参数变化会从 journal 中移除不再执行的同路径后缀 [0.98ms]
+(pass) journal 内核 > map：并发上限生效，分支路径 seq 与完成顺序无关 [23.02ms]
+(pass) journal 内核 > map 输入缩短后会移除已不存在分支的 journal [1.62ms]
+(pass) journal 内核 > ask：挂起 → resume 应答进 journal → 续跑不重跑前缀 [0.91ms]
+(pass) journal 内核 > excursion：异常也恢复游标，旁支留在树上 [1.21ms]
+
+test\port-contracts.test.ts:
+(pass) stable Port contracts > Signal publish is idempotent and conflicting reuse is rejected [0.28ms]
+(pass) stable Port contracts > same definition key/version cannot silently change manifest [0.14ms]
+(pass) stable Port contracts > definition key and version tuples cannot collide [0.03ms]
+(pass) stable Port contracts > valueReferences requirement needs both Backend support and ValueStore [0.28ms]
+(pass) stable Port contracts > durableSignals requirement also needs a configured SignalStore [0.08ms]
+(pass) stable Port contracts > every capability intersection rejects without its Port [0.09ms]
+(pass) stable Port contracts > ask specs are validated before entering the pending projection [0.20ms]
+(pass) stable Port contracts > emit rejects non-envelope values with a structured error [0.19ms]
+
+test\projection.test.ts:
+(pass) 三种投影 > 投影一：声明骨架 [0.05ms]
+(pass) 三种投影 > 投影二：AST 近似 CFG 识别编排调用点与控制结构 [99.02ms]
+(pass) 三种投影 > 投影三：journal trace 是精确执行图，含分支派生与汇合边 [1.74ms]
+(pass) 三种投影 > 投影三：嵌套 map 分支按真实父路径解析派生与汇合边 [0.09ms]
+
+test\public-api.test.ts:
+(pass) public package API > Core Workflow runs without Agent or Session ports [0.38ms]
+(pass) public package API > Agent Workflow is an explicit extension type [0.02ms]
+(pass) public package API > typed actions need no casts and optional input schemas are enforced [0.51ms]
+
+test\runner-backend.test.ts:
+(pass) WorkflowRunner Backend integration > unmet Backend requirements reject before creating or executing a Run [0.09ms]
+(pass) WorkflowRunner Backend integration > a new Runner resumes persisted journal without repeating completed activities [0.75ms]
+(pass) WorkflowRunner Backend integration > Agent extension start context survives resume on a different Runner [0.64ms]
+(pass) WorkflowRunner Backend integration > read-only views survive a definition change but replay requires the exact manifest [0.32ms]
+(pass) WorkflowRunner Backend integration > awaiting cancel waits until a waiting Run is durably cancelled [0.47ms]
+(pass) WorkflowRunner Backend integration > a Run can be cancelled while its initial Backend create is pending [0.30ms]
+(pass) WorkflowRunner Backend integration > a running cancellation request is persisted before its activity settles [0.45ms]
+(pass) WorkflowRunner Backend integration > an external AbortSignal reports cancellation persistence failure without an unhandled rejection [0.61ms]
+(pass) WorkflowRunner Backend integration > cancellation during terminal ValueStore write cannot be overwritten by completion [0.32ms]
+(pass) WorkflowRunner Backend integration > cancellation during Activity ValueStore write cannot journal a late success [0.32ms]
+(pass) WorkflowRunner Backend integration > cancellation during checkpoint ValueStore write cannot advance the checkpoint [0.25ms]
+(pass) WorkflowRunner Backend integration > Run views are isolated snapshots that cannot mutate Runner state [0.22ms]
+(pass) WorkflowRunner Backend integration > an observation callback failure cannot change Workflow execution [0.21ms]
+(pass) WorkflowRunner Backend integration > Run input is snapshotted at begin and isolated from workflow mutation [0.26ms]
+(pass) WorkflowRunner Backend integration > Backend write failure rejects execution instead of faking a workflow failure [0.18ms]
+(pass) WorkflowRunner Backend integration > Backend failure while journaling an Activity rejects instead of persisting a business failure [0.26ms]
+(pass) WorkflowRunner Backend integration > resume validates every pending answer before changing the journal [0.47ms]
+(pass) WorkflowRunner Backend integration > rerun persists a clean running projection before workflow code resumes [0.38ms]
+(pass) WorkflowRunner Backend integration > rerun rejects a waiting Run instead of discarding pending asks [0.28ms]
+(pass) WorkflowRunner Backend integration > rerun rejects a running Run when the Backend has no processRestart capability [0.40ms]
+(pass) WorkflowRunner Backend integration > rerun allows a running Run when the Backend declares processRestart [1000.63ms]
+(pass) WorkflowRunner Backend integration > checkpoint projection is deterministic across concurrent branches and replay [0.87ms]
+(pass) WorkflowRunner Backend integration > ephemeral sessions are archived on failed and cancelled runs [0.65ms]
+(pass) WorkflowRunner Backend integration > agents.invoke preserves missing versus explicit null input before reaching the AgentPort [0.63ms]
+(pass) WorkflowRunner Backend integration > concurrent acquire of the same tag creates a single session [0.95ms]
+(pass) WorkflowRunner Backend integration > a workflow cannot swallow a persistence failure into a completed run [0.31ms]
+(pass) WorkflowRunner Backend integration > begin validates callerSessionId and defaultModel synchronously [0.09ms]
+(pass) WorkflowRunner Backend integration > control paths re-assert Backend requirements after hydration [0.38ms]
+(pass) WorkflowRunner Backend integration > ask replay decode honors a cancellation during ValueStore read [0.74ms]
+(pass) WorkflowRunner Backend integration > view and loadView stay consistent after a persistence failure [0.28ms]
+(pass) WorkflowRunner Backend integration > a cancelled status event is emitted only after persistence [0.31ms]
+(pass) WorkflowRunner Backend integration > resume rejects while the waiting terminal persist is settling [0.29ms]
+
+test\scenario-rp.test.ts:
+(pass) 场景：RP 持久参与者 > 两轮 workflow + 轮间用户直聊：session 跨 run 复用且历史连续 [2.65ms]
+
+test\scenario-sidecar.test.ts:
+(pass) 场景：sidecar 旁路 > excursion 检索 + 主线 append，caller 主线不被旁支污染 [0.93ms]
+
+test\scenario-split-book.test.ts:
+(pass) 场景：拆书 > 全流程：并发摘要 → 分析 → 挂起圈选 → resume 提风格，摘要不重跑 [3.78ms]
+
+test\scenario-write-pipeline.test.ts:
+(pass) 场景：写作流水线 > writer↔critic 循环收敛，worldUpdater 恰好一次 [1.36ms]
+(pass) 场景：写作流水线 > 子代理 waiting 转发给用户，followup 续跑 [0.80ms]
+
+test\wait-runtime.test.ts:
+(pass) recoverable Workflow waits > a signal resumes a waiting Run from a different Runner instance [0.72ms]
+(pass) recoverable Workflow waits > timer replay keeps the original due time and completes only after it [0.81ms]
+(pass) recoverable Workflow waits > a waiting Child Workflow binds one child Run and replays its result [0.76ms]
+(pass) recoverable Workflow waits > cancelling a parent propagates to a waiting Child Workflow [0.66ms]
+(pass) recoverable Workflow waits > cancelling while a Child Workflow start is in flight does not leave an orphan [0.47ms]
+
+ 103 pass
+ 0 fail
+ 294 expect() calls
+Ran 103 tests across 13 files. [1223.00ms]

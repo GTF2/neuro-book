@@ -1,0 +1,84 @@
+$ bun test
+bun test v1.4.2 (744846f84)
+
+tests\cursor.test.ts:
+(pass) session cursor > T6: 多会话重开——重开的老会话看到别人的变更,不含自己的;新会话干净 [275.15ms]
+(pass) session cursor > 游标未初始化抛错;游标单调不回退 [260.30ms]
+
+tests\handles.test.ts:
+(pass) handle release > T12a: close 之后库文件可直接删除(含 -wal/-shm) [252.55ms]
+(pass) handle release > T12b: 两个先后进程依次打开同一库,不报 SQLITE_BUSY [537.89ms]
+
+tests\inbox.test.ts:
+(pass) inbox > T3: agent 两次修改 → 收件箱一组;accept 清空;再改出新段 [266.19ms]
+(pass) inbox > T4: agent→user→agent 交错编辑,单组三条如实归因,基准正确 [266.76ms]
+(pass) inbox > 仅 user / external 条目不触发收件箱;system 条目触发 [254.79ms]
+(pass) inbox > rename 归组:改名后收件箱归并到现名,accept 现名生效 [2080.41ms]
+(pass) inbox > 条件式 accept 与 acceptAll 在写锁内拒绝过期 revision [265.47ms]
+
+tests\limits.test.ts:
+(pass) snapshot limits > T9: 超限文件只记事件不存 body;diff 报缺失;restore 明确报错 [253.08ms]
+(pass) snapshot limits > T9: 二进制文件(含 NUL)只记事件;diff 报 binary;restore 报错 [259.00ms]
+(pass) snapshot limits > 正常小文本不受影响:body 可取,diff 可用 [256.98ms]
+
+tests\observed-write.test.ts:
+(pass) registerObservedWrite > 首写记 create,内容与账面末态相同返回 null(吸收回声) [255.30ms]
+(pass) registerObservedWrite > 后续写入记 edit,beforeHash = 账面末态 hash(构造性链连续) [256.98ms]
+(pass) registerObservedWrite > 删除后重新出现记 create(账面上是 deleted) [258.82ms]
+(pass) registerObservedWrite > 账面上 rename 走的名字重新出现记 create [259.68ms]
+(pass) registerObservedWrite > 收件箱与 unseen 正常归因(agent 条目触发收件箱) [258.33ms]
+(pass) registerObservedWrite > 超大 / 二进制末态:beforeHash 仍取自账面(无需字节,快照行已在库) [256.45ms]
+(pass) absolute path form > open 不传 resolvePath,path 直接是磁盘路径(绝对路径) [861.26ms]
+(pass) absolute path form > 绝对路径 + registerObservedWrite 直通(DSH 场景形态:宿主已落盘,模块只补记账) [256.99ms]
+(pass) absolute path form > 空路径与 NUL 字节被拒绝 [252.73ms]
+
+tests\path-purge.test.ts:
+(pass) purgePaths > 原子删除匹配 path/rename/acceptance，GC 独占快照并保留共享快照 [271.05ms]
+(pass) purgePaths > 保留 cursor 标量位点，清理后仍能看到未来有效条目 [264.33ms]
+(pass) purgePaths > rename 的 toPath 命中时删除整条 rename，并保留旧名下未命中的历史 [260.56ms]
+(pass) purgePaths > predicate 抛错时不产生部分删除 [256.04ms]
+(pass) purgePaths > snapshot GC 中途失败时 operation、acceptance 与 snapshot 全部回滚 [261.58ms]
+(pass) purgePaths > predicate 只检查去重路径，不随同一路径的历史条目数增长 [404.26ms]
+
+tests\perf.test.ts:
+P1 performWrite(30KB) 中位 2.97ms / 平均 3.12ms
+(pass) performance smoke > P1: 单次 performWrite(30KB 文本) 平均 ≤ 20ms [428.18ms]
+P2 unseenChanges(5000 条未见): best 14.2ms [18.8, 16.9, 14.8, 14.2, 15.9], 50 组
+P2 inbox(已审 90/100,余 10 组待审): best 7.0ms [7.0, 7.2, 7.1, 7.1, 8.3], 10 组
+P2 inbox 最坏情况(u2 零接受全扫): best 28.4ms [29.6, 31.7, 28.6, 31.0, 28.4]
+P2 timeline(100 版): best 1.1ms [1.4, 1.2, 1.2, 1.1, 1.1], 100 条
+(pass) performance smoke > P2: 1 万条目 + 3 千快照库上 unseen/inbox/timeline 各 ≤ 50ms [2633.16ms]
+P3 体积: db=3.01MB wal=0.00MB (快照原文理论值≈2.86MB,101 版全文快照)
+(pass) performance smoke > P3: 单文件 100 版 × 30KB 的库体积报告(全文快照,无增量) [617.79ms]
+
+tests\prune.test.ts:
+(pass) prune (R12) > T10a: 窗口外按日稀疏,每 path 末条保留,快照引用计数 GC,时间线仍可渲染 [270.57ms]
+(pass) prune (R12) > T10b: 未接受的 agent 收件箱段整段保护;已接受的段正常稀疏 [275.40ms]
+(pass) prune (R12) > T10c: 活跃游标位点之后的条目不稀疏;过老游标不阻止 [267.37ms]
+(pass) prune (R12) > 窗口内条目全量保留(不稀疏) [260.96ms]
+
+tests\reconcile.test.ts:
+(pass) reconcile > T7: 外部改 / 删 / 建 → 补 external 条目;同内容再对账 no-op(回声抑制) [263.69ms]
+(pass) reconcile > T8: 崩溃模拟——盘上已写、账未记 → 写入口内建对账补 external,链不断 [255.39ms]
+(pass) reconcile > perform 删除 / 改名前同样内建对账 [258.39ms]
+
+tests\revert.test.ts:
+(pass) revert > T5: agent 新建文件 → user 还原 → 文件删除,agent 会话能看到 revert [260.06ms]
+(pass) revert > 还原编辑段:回到已接受基线,revertedEntryIds 覆盖整段 [269.40ms]
+(pass) revert > 没有待还原的收件箱变更时抛错 [253.93ms]
+(pass) revert > 条件式 revert 拒绝过期 revision 与未记账的磁盘变化 [256.98ms]
+
+tests\timeline.test.ts:
+(pass) timeline > T1: create→edit→edit→rename→edit→delete 时间线完整,跨改名,每版内容可取 [270.04ms]
+(pass) timeline > T11: 多级 rename 链 a→b→c 后 timeline(c) 含全部历史;历代同名不混入 [269.84ms]
+(pass) timeline > 历代同名分界:旧文件让出的名字被全新 create 占用后,时间线不缝合旧化身 [266.51ms]
+(pass) timeline > rename 环 a→b→a:回溯终止且分段完整 [262.19ms]
+(pass) timeline > 路径校验(R1 通用化):只拒绝空路径与 NUL 字节;绝对路径 / 反斜杠 / .. 不再受限(语义由宿主决定) [260.37ms]
+(pass) deleted files & restore > T2: 删除后可列出、可恢复,时间线延续 [265.14ms]
+(pass) deleted files & restore > restore 恢复任意早期版本(非删除场景) [262.78ms]
+(pass) deleted files & restore > liveFiles: 账面存活文件 = 末态 exists(删除与 renamed-away 不算,rename 到达算现名) [269.37ms]
+
+ 49 pass
+ 0 fail
+ 200 expect() calls
+Ran 49 tests across 11 files. [18.59s]

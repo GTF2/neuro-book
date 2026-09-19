@@ -1,0 +1,39 @@
+$ nuxt prepare playground && vitest run
+│
+◆  Types generated in [36mplayground/.nuxt[39m.
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90mD:/MyProject/neuro-book/packages/nb-ui[39m
+
+ [32m✓[39m src/icon-registration.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m playground/app/component-lab/lab-overrides.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/theme/semver-range.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/components/token-consumption.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 44[2mms[22m[39m
+ [32m✓[39m src/theme/tokens.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/colorway/colorway.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m playground/app/component-lab/lab-url.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m src/theme/theme-loader.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m src/components/navigation/file-tree.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m src/utils/api-error.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m themes/macos/components/time-picker-wheel.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+ [32m✓[39m src/theme/theme-packages.test.ts [2m([22m[2m36 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+[90mstderr[2m | src/components/form/time-picker.contract.test.ts[2m > [22m[2mtheme component override[2m > [22m[2mrenders the theme implementation when one is registered
+[22m[39m[Vue warn]: Vue received a Component that was made a reactive object. This can lead to unnecessary performance overhead and should be avoided by marking the component with `markRaw` or using `shallowRef` instead of `ref`. 
+Component that was made reactive:  { name: [32m'MarkerTimePicker'[39m, setup: [36m[Function: setup][39m } 
+  at <TimePicker modelValue="09:00" ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | src/components/form/time-picker.contract.test.ts[2m > [22m[2mtheme component override[2m > [22m[2mkeeps returning a renderable component when the override map empties
+[22m[39m[Vue warn]: Vue received a Component that was made a reactive object. This can lead to unnecessary performance overhead and should be avoided by marking the component with `markRaw` or using `shallowRef` instead of `ref`. 
+Component that was made reactive:  { name: [32m'MarkerTimePicker'[39m, setup: [36m[Function: setup][39m } 
+  at <Anonymous ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m src/components/form/time-picker.contract.test.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 70[2mms[22m[39m
+ [32m✓[39m src/components/form/form-controls.contract.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 91[2mms[22m[39m
+ [32m✓[39m src/components/components.test.ts [2m([22m[2m96 tests[22m[2m)[22m[33m 460[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m15 passed[39m[22m[90m (15)[39m
+[2m      Tests [22m [1m[32m243 passed[39m[22m[90m (243)[39m
+[2m   Start at [22m 01:59:51
+[2m   Duration [22m 2.44s[2m (transform 3.32s, setup 0ms, import 6.22s, tests 923ms, environment 8.70s)[22m
+

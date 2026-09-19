@@ -1,0 +1,647 @@
+bun test v1.4.2 (744846f84) 1x PARALLEL
+
+tests\abort-boundary.test.ts:
+(pass) bounded abort completion > abortGraceMs 拒绝负数和非有限值 [0.33ms]
+(pass) bounded abort completion > 永不 resolve 的 Model 在 grace 后有界完成并释放 owner [27.13ms]
+(pass) bounded abort completion > forced abort terminal commit 未完成前，不提前结算 unknown result [2.31ms]
+(pass) bounded abort completion > waitInvocation durable 后同步 abort 不提前结算 waiting，并以 aborted 收口 [2.04ms]
+(pass) bounded abort completion > forced finish 遇到瞬时 Store conflict 后仍必须 durable 完成 [1.11ms]
+(pass) bounded abort completion > forced finish conflict 耗尽时不伪造 aborted terminal [0.88ms]
+(pass) bounded abort completion > 重复 abort 只触发一次强制完成，并允许 retry [1.80ms]
+(pass) bounded abort completion > waiting → abort 只产生一个终态 agent_end [1.05ms]
+(pass) bounded abort completion > waiting abort 遇到瞬时 Store conflict 后重试并发布 aborted event [1.06ms]
+(pass) bounded abort completion > waiting abort 连续三次 Store conflict 耗尽时返回 AbortBoundaryError 且保留 waiting owner [0.91ms]
+(pass) bounded abort completion > 永不 resolve 的 sequential Tool 在 grace 后有界完成且不写迟到结果 [21.84ms]
+(pass) bounded abort completion > dispose 只等待 completion boundary，不等待永不 resolve 的 Model [21.76ms]
+(pass) bounded abort completion > forced abort 与迟到正常完成只发布一个 terminal agent_end [16.87ms]
+(pass) bounded abort completion > normal finish 先赢时，abort 不把 completed 改写成 aborted [16.83ms]
+
+tests\aborted-invocation-error-redaction.test.ts:
+(pass) aborted Invocation error redaction > cooperative abort 保留本地诊断，但不把 provider error 写入 durable Snapshot [1.66ms]
+(pass) aborted Invocation error redaction > forced abort 不把 Harness 的强制终止说明写入 durable Snapshot 或恢复结果 [6.97ms]
+(pass) aborted Invocation error redaction > waiting Invocation 的 durable owner CAS abort 不保存 approval 取消说明 [0.89ms]
+(pass) aborted Invocation error redaction > failed Invocation 继续持久化 provider error [0.60ms]
+(pass) aborted Invocation error redaction > legacy aborted Snapshot 的恢复 projection 也隐藏旧 error [0.16ms]
+
+tests\active-profile-steer-admission.test.ts:
+(pass) Active Profile steer admission > Registry replacement 不改变 running attempt 的 steer payload parser [2.19ms]
+(pass) Active Profile steer admission > same-version replacement parser 拒绝输入时，running attempt 仍按已捕获 parser 接受 steer [2.55ms]
+(pass) Active Profile steer admission > approval resume 建立的 running attempt 使用 resume admission 捕获的 steer parser [2.32ms]
+(pass) Active Profile steer admission > captured active parser 拒绝 steer 时不写 queue、事件或 durable message [1.01ms]
+
+tests\append-entries-api.test.ts:
+(pass) appendEntries 便捷 API > 追加宿主条目并返回快照与游标（Memory Store） [0.63ms]
+(pass) appendEntries 便捷 API > 空 drafts 拒绝 [0.29ms]
+(pass) appendEntries 便捷 API > Core-owned kind 被写 admission 拒绝 [0.16ms]
+(pass) appendEntries 便捷 API > expectedVersion 过期以 SessionConflictError 失败 [0.33ms]
+(pass) appendEntries 便捷 API > JSONL：listSessionIds 枚举 + appendEntries 条目在新实例恢复 [16.54ms]
+(pass) appendEntries 便捷 API > expectedActiveInvocationId 透传：idle null 通过，幽灵 owner 抛 InvocationOwnershipError [0.23ms]
+(pass) appendEntries 便捷 API > listSessionIds 忽略非规范文件名并按数值升序返回 [9.68ms]
+
+tests\approval.test.ts:
+(pass) approval lifecycle > Harness 持久化 waiting，获批后用同一 Invocation 恢复 Tool batch [2.69ms]
+(pass) approval lifecycle > 拒绝 approval 产生 Tool error result，不执行 Tool [1.30ms]
+(pass) approval lifecycle > 独立 Harness 并发 resume 只能一个 durable claim 成功，Tool 不重复执行 [42.24ms]
+(pass) approval lifecycle > 重复 resolution ID 不伪装成完整集合，且在 durable claim 与 Tool 前拒绝 [11.63ms]
+(pass) approval lifecycle > durable waiting Invocation 可以由 Harness abort [0.85ms]
+
+tests\attachment-content-blocks.test.ts:
+(pass) attachment 引用内容块 seam > userMessageText：字符串原样，块数组拼接并降级 attachment 为 marker [0.12ms]
+(pass) attachment 引用内容块 seam > attachment 块经 JSONL 往返恢复并经 sessionMessages 投影，不读 blob [8.15ms]
+(pass) attachment 引用内容块 seam > prepareWrites 块贡献自动注入模型请求（ADR-0039 组合） [2.02ms]
+(pass) attachment 引用内容块 seam > fork 复制块内容，compactor.estimate 在窗口守卫中收到块消息 [1.31ms]
+
+tests\auto-inject-prepare-writes.test.ts:
+(pass) prepareWrites 自动注入范围 > agent.message 注入同轮请求，custom 事实不注入 [1.96ms]
+(pass) prepareWrites 自动注入范围 > Tool writePlans 同轮不注入，下一 Invocation 可见（维持第九十一轮合同） [1.78ms]
+
+tests\canonical-schema-value-admission.test.ts:
+(pass) canonical schema value admission > direct invoke 只解析一次 raw initial/payload，并在 durable、prepare 与 provider 复用 Parsed Value [1.72ms]
+(pass) canonical schema value admission > durable follow-up consume 后保持 queue 已接受的 Parsed Value [2.57ms]
+(pass) canonical schema value admission > retry 创建新 Invocation 时复用 prior durable Parsed Value [1.00ms]
+(pass) canonical schema value admission > approval resume 在 durable claim 与副作用前拒绝损坏的 Parsed Value [0.85ms]
+(pass) canonical schema value admission > SessionEntryCodec projection 只验证 draft 已保存的 Parsed Value [0.08ms]
+(pass) canonical schema value admission > defineSchema object form 为非幂等 decoder 显式提供 Parsed Value validator [0.04ms]
+(pass) canonical schema value admission > 无 validateParsed 的不稳定 parser 在 Invocation durable mutation 前 fail closed [0.25ms]
+(pass) canonical schema value admission > JSONL restart 后 follow-up 仍消费 durable Parsed Value，不重新 decode [28.45ms]
+(pass) canonical schema value admission > 普通 invoke 在 durable start 前验证 current Profile 是否接受 Session initial [0.65ms]
+(pass) canonical schema value admission > Tool dispatch 在执行副作用前拒绝不稳定的 arguments parser [0.86ms]
+(pass) canonical schema value admission > approval request 不接受无法形成稳定 Parsed Value 的 Tool arguments [0.76ms]
+(pass) canonical schema value admission > Parsed Value validation 保留自定义 schema method receiver [0.61ms]
+(pass) canonical schema value admission > follow-up 由 compatible replacement Profile 验证旧 Parsed Value，而不重新 decode [1.63ms]
+(pass) canonical schema value admission > follow-up 被 incompatible replacement 拒绝时不 consume queue 或启动 Invocation [1.19ms]
+(pass) canonical schema value admission > explicit output decoder 只转换一次并持久化 Parsed Value [0.57ms]
+(pass) canonical schema value admission > approval prompt 与 resume Tool execution 分别从同一 durable raw arguments decode [2.93ms]
+(pass) canonical schema value admission > pre-ADR-0030 ResolvedProfile shape 无 validator 时仍可运行 [0.59ms]
+(pass) canonical schema value admission > fork 默认继承 Parsed initial，不重复执行 initial parser [0.19ms]
+
+tests\closed-tool-call-admission.test.ts:
+(pass) closed Tool Call start admission > forced abort 留下的悬挂 Tool Call 使 retry 显式失败 [22.86ms]
+(pass) closed Tool Call start admission > forced abort 留下的悬挂 Tool Call 使新 invoke 显式失败 [21.39ms]
+(pass) closed Tool Call start admission > 干净 transcript 的新 Invocation 不受影响 [1.38ms]
+
+tests\commit-observer.test.ts:
+(pass) SessionCommitObserver > materialized view 在 durable commit 后同步更新，observer 失败不回滚事实 [1.79ms]
+(pass) SessionCommitObserver > 无 shutdown 时 public write 仍等待 async observer [0.43ms]
+(pass) SessionCommitObserver > approval claim 后 observer 重入 abort 不得放行 Tool [1.46ms]
+
+tests\compact-session.test.ts:
+(pass) compactSession > idle Session 上折叠历史：写 entry、投影更新、不创建 Invocation、不发 runtime 事件 [3.07ms]
+(pass) compactSession > instructions 原样传给 summarize [1.09ms]
+(pass) compactSession > 空窗口时返回 compacted false 且不写 entry [0.51ms]
+(pass) compactSession > active Invocation 存在时抛 InvocationConflictError [0.56ms]
+(pass) compactSession > 未配置 ContextCompactor 时明确失败 [0.12ms]
+(pass) compactSession > 非法 keepRecentTokens 拒绝 [0.14ms]
+(pass) compactSession > 悬挂 Tool Call 使手动压缩 fail closed [2.72ms]
+(pass) compactSession > 摘要失败时抛错且不写 entry [0.93ms]
+(pass) compactSession > summarize 返回空 summary 时抛错且不写 entry [0.79ms]
+(pass) compactSession > summarize 后 signal 中止使手动压缩可见失败 [0.67ms]
+(pass) compactSession > JSONL 重启后手动压缩的投影可恢复 [28.95ms]
+
+tests\compaction-events.test.ts:
+(pass) compaction runtime 事件 > 触发 compaction 时先发 compaction_start，摘要落盘后发 compaction_end [2.76ms]
+
+tests\compaction-splitting.test.ts:
+(pass) compaction splitting contract > 二次压缩：previousSummary 传入，从 boundary 之后切分，firstKeptEntryId 指向真实 entry [3.71ms]
+(pass) compaction splitting contract > keepRecent 落在 toolResult 上时 cut 前移到匹配 assistant，投影不出现半截 toolResult [2.80ms]
+(pass) compaction splitting contract > keepRecent 覆盖全部可见 token 时跳过压缩（不写 entry） [0.47ms]
+(pass) compaction splitting contract > 非法 compaction settings（keepRecent >= trigger）使 Invocation 明确失败 [0.55ms]
+(pass) compaction splitting contract > 悬挂 firstKeptEntryId 在投影时 fail closed [0.21ms]
+(pass) compaction splitting contract > prepareWrites 贡献与 compaction 组合：贡献进入摘要窗口，cut 映射不漂移 [1.11ms]
+
+tests\compaction.test.ts:
+(pass) Harness compaction > Harness 决定触发和切分，Adapter 只生成 summary [2.42ms]
+(pass) Harness compaction > 摘要失败时不写 compaction entry，并使 Invocation 明确失败 [1.25ms]
+(pass) Harness compaction > summarize 返回空 summary 时 Invocation 明确失败且不写 entry [1.01ms]
+(pass) Harness compaction > 自动压缩摘要期间 follow-up 写入不应使当前 Invocation 失败 [1.84ms]
+
+tests\context-lifecycle.test.ts:
+(pass) Context lifecycle adapter > canonical message draft 保留 owner/branch/identity，并拒绝非法 turn [0.14ms]
+(pass) Context lifecycle adapter > stable History 只写一次，每个 Invocation 的 Appending contribution 单源注入恰好一次 [2.87ms]
+(pass) Context lifecycle adapter > beforeTurn write plan 提交后，ContextProvider 从最新 Snapshot 读取本轮事实 [1.08ms]
+(pass) Context lifecycle adapter > JSONL waiting restart 重建 prepare 时 Appending 恰好恢复一次，model-only context 只生成最新一份 [24.02ms]
+(pass) Context lifecycle adapter > 仅 prepareWrites 的贡献同 Invocation 立即可见且恰好一次，顺序先于当前用户消息 [1.18ms]
+
+tests\context-provider-capability.test.ts:
+(pass) ContextProvider Capability boundary > 多 turn 共用一个 Invocation-scoped Capability，并在结束时 close [2.34ms]
+(pass) ContextProvider Capability boundary > ContextProvider Capability 失败发生在 model call 前，不持久化动态 context，并仍 close [1.11ms]
+
+tests\context-settlement-adapter.test.ts:
+(pass) Context settlement adapter boundary > 宿主只在 completed 后 settle，failed 保留新增 unseen cursor [4.12ms]
+(pass) Context settlement adapter boundary > waiting/restart 在可继续前不 settle，公开 resume 完成后才 settle 并保留投影 [20.96ms]
+(pass) Context settlement adapter boundary > aborted Invocation 不触发宿主 History settlement [0.91ms]
+
+tests\context.test.ts:
+(pass) Provider-neutral context sections > 按 history → transcript → modelContext → modelContextAppending → appending 组装，并保留旧扁平 runtime messages [3.05ms]
+(pass) Provider-neutral context sections > 合并 sections 时同名分区按来源顺序追加 [0.06ms]
+(pass) Provider-neutral context sections > 多 turn 中 beforeTurn 只作用于当前 turn，afterTurn 进入下一 turn，并保持旧 runtimeMessages 位置 [1.68ms]
+(pass) Provider-neutral context sections > contextProviders 按顺序读取每轮最新 Snapshot，结果只进入当前 request [1.07ms]
+(pass) Provider-neutral context sections > approval resume 不重放 prepareRun effect，但重建 PreparedRun context 并运行新的 beforeTurn [1.34ms]
+(pass) Provider-neutral context sections > approval waiting 不运行 afterTurn，resume 完成后续 Tool turn 才运行 afterTurn [1.30ms]
+(pass) Provider-neutral context sections > contextProvider 失败发生在 model call 前并使 Invocation 失败 [0.59ms]
+
+tests\coordination.test.ts:
+(pass) Invocation Coordinator > steer 在当前 Invocation 的下一安全 turn 注入并持久化 [2.06ms]
+(pass) Invocation Coordinator > follow-up durable 入队，当前 Invocation 完成后自动启动新 Invocation [7.38ms]
+(pass) Invocation Coordinator > follow-up pause/cancel/reorder 控制面由 durable ledger 恢复 [19.09ms]
+
+tests\core-owned-entry-admission.test.ts:
+(pass) Core-owned entry admission > public write cannot forge an agent.compaction projection fact [2.22ms]
+(pass) Core-owned entry admission > Profile effect cannot forge an agent.compaction projection fact [1.34ms]
+(pass) Core-owned entry admission > abort during compaction commit cannot persist a late compaction fact [1.89ms]
+
+tests\cosmos-agent-action-conformance.test.ts:
+(pass) Cosmos-style Agent Action conformance > Workflow 组合旁路 Agent：host context、anchor、projection、回写与 JSONL restart 均保持可逆 [19.00ms]
+
+tests\cosmos-consumer-compatibility.test.ts:
+(pass) Cosmos consumer compatibility > Cosmos 风格 Agent Action 可注入 read、恢复 Session 并消费 cursor 事件 [19.21ms]
+(pass) Cosmos consumer compatibility > Invocation-scoped structured output 可由普通 Tool 表达并在 JSONL 重启后恢复 [30.60ms]
+
+tests\cosmos-consumer-v3.test.ts:
+(pass) Cosmos 编排消费 v3：手动压缩 → fork → 锚定回写 > 长会话手动压缩后 fork（无 compaction 残留）并在分支回写 [5.21ms]
+(pass) Cosmos 编排消费 v3：手动压缩 → fork → 锚定回写 > 手动压缩后 follow-up 坏项自动 pause → cancel → 好项 resume → JSONL 重启恢复 [72.38ms]
+
+tests\cosmos-orchestration-consumer.test.ts:
+(pass) Cosmos 编排消费：fork → 投影 → 锚定回写 > 主会话派生探索分支，投影分支结果后以 CAS 回写主会话 [4.24ms]
+(pass) Cosmos 编排消费：重启恢复（新 Store 实例）投影与 fork > 重启后从 Snapshot 投影终态并派生恢复分支 [24.28ms]
+
+tests\entry-codec.test.ts:
+(pass) SessionEntryCodec > NeuroBook host entry 保持强类型并在投影时重新验证 [0.07ms]
+
+tests\event-cursor-epoch-admission.test.ts:
+(pass) EventCursor epoch admission > non-zero after without eventEpoch must require Snapshot recovery [0.18ms]
+(pass) EventCursor epoch admission > after=0 无 epoch 与空 cursor 仍保持合法初始订阅语义 [0.13ms]
+
+tests\event-publisher-coverage.test.ts:
+(pass) runtime 事件发布覆盖 > 真实流程发布核心 runtime 事件类型 [2.60ms]
+
+tests\events.test.ts:
+(pass) SessionEventHub > event memory hard limits 只接受正整数 [0.08ms]
+(pass) SessionEventHub > explicit close 停止接收新事件，并 graceful drain 已排队的 live events [0.18ms]
+(pass) SessionEventHub > Async Iterator return 结束订阅并拒绝后续 live events [0.12ms]
+(pass) SessionEventHub > Event Subscription 自身就是可直接 return 的 Async Iterator [0.11ms]
+(pass) SessionEventHub > for await break 自动关闭 Event Subscription [0.16ms]
+(pass) SessionEventHub > Async Iterator throw 保留原错误并关闭 Event Subscription [0.08ms]
+(pass) SessionEventHub > 并发 next 按调用顺序各接收一个 live event [0.13ms]
+(pass) SessionEventHub > close 结算全部并发 pending next [0.07ms]
+(pass) SessionEventHub > publish 与调用方后续修改隔离，并 replay 同一份稳定事件 [0.08ms]
+(pass) SessionEventHub > published event 递归冻结，消费者不能改写 replay [0.12ms]
+(pass) SessionEventHub > 不可序列化 event 失败时不推进 seq 或留下 replay [0.36ms]
+(pass) SessionEventHub > 慢消费者超过 live queue count 时 fail closed 并释放事件 [0.10ms]
+(pass) SessionEventHub > slow-consumer overflow 不影响同 Session 的快速订阅 [0.15ms]
+(pass) SessionEventHub > 慢消费者超过 live queue serialized bytes 时 fail closed [0.07ms]
+(pass) SessionEventHub > 单个事件超过 live queue 字节预算即 fail closed（per-event 边界） [0.05ms]
+(pass) SessionEventHub > queue overflow 的 abort listener 重入 publish 不得倒置 seq [0.18ms]
+(pass) SessionEventHub > replay serialized-byte hard limit 让过旧 cursor 明确要求 Snapshot [0.12ms]
+(pass) SessionEventHub > 单个超大事件立即触发 replay 字节预算的 Snapshot 要求 [0.05ms]
+(pass) SessionEventHub > pending replay 与 live queue 分离并保持单调交付顺序 [0.22ms]
+(pass) SessionEventHub > metrics 只统计 Hub 当前持有的 replay 与 active subscriptions [0.12ms]
+(pass) SessionEventHub > Hub close 中止全部订阅、释放状态并拒绝新工作 [0.19ms]
+(pass) SessionEventHub > Harness dispose 关闭自己创建的 Event Hub [0.30ms]
+(pass) SessionEventHub > Harness dispose 不关闭宿主注入的共享 Event Hub [0.23ms]
+(pass) SessionEventHub > 按 Session seq replay 并检测无效 cursor [0.12ms]
+
+tests\extensions.test.ts:
+(pass) NeuroBook extension fixture > 通过 Host Context、Capability、Facet、Caller 与 WritePlan 承载产品概念 [1.87ms]
+
+tests\follow-up-admission-jsonl.test.ts:
+(pass) JSONL follow-up admission race > 独立 JSONL Harness 可以向另一个 Harness 的 active Invocation durable queue follow-up [31.64ms]
+(pass) JSONL follow-up admission race > 独立 JSONL Harness 可以向 durable waiting Invocation queue follow-up [17.53ms]
+(pass) JSONL follow-up admission race > cross-Harness follow-up 在 observed Invocation 已 terminal 时拒绝孤立 queue item [13.07ms]
+(pass) JSONL follow-up admission race > 独立 JSONL Harness cancel 队首后拒绝旧 admission，并可继续消费新队首 [33.66ms]
+(pass) JSONL follow-up admission race > 独立 JSONL Harness reorder 队首后拒绝旧 admission，并可继续消费 B [47.72ms]
+
+tests\follow-up-admission-race.test.ts:
+(pass) follow-up admission race > 队首 admission 已提交时，stale cancel 不得谎报取消成功 [3.18ms]
+(pass) follow-up admission race > 队首 admission 已提交时，stale reorder 不得接受旧 permutation [1.97ms]
+(pass) follow-up admission race > cancel 队首 A 后，不应启动已取消的旧 A [1.45ms]
+(pass) follow-up admission race > 重排队首为 B 后，不应启动旧队首 A [1.04ms]
+
+tests\follow-up-auto-pause.test.ts:
+(pass) follow-up auto-pause > 自动启动失败后自动 pause 携带 pausedBy，cancel 后可 resume [2.63ms]
+(pass) follow-up auto-pause > pausedBy message 按 UTF-8 字节截断到 500 [0.07ms]
+(pass) follow-up auto-pause > 自动 watcher admission 过期时不得暂停替换后的新队首 [1.53ms]
+
+tests\follow-up-consume-recovery.test.ts:
+(pass) durable follow-up consume/start recovery > active transcript 连续跨 queue 与 pause ledger write 有界收敛 [2.07ms]
+(pass) durable follow-up consume/start recovery > active transcript 的三次连续 follow-up conflict 有界失败 [1.13ms]
+(pass) durable follow-up consume/start recovery > active transcript 不跨 unrelated Session mutation rebase [2.19ms]
+(pass) durable follow-up consume/start recovery > start Invocation 在 consume commit 后失败时不永久丢失 queue item [1.27ms]
+
+tests\follow-up-events.test.ts:
+(pass) follow-up session 事件 > followUp 入队发布 follow_up_queued，完成后自动启动同一 item [54.13ms]
+
+tests\follow-up-process.test.ts:
+(pass) 跨进程 follow-up 注入与自动启动（真实子进程） > worker 在 waiting 期间入队的 follow-up 由主进程 resume 后自动消费 [116.62ms]
+
+tests\follow-up-reserved-facts.test.ts:
+(pass) reserved follow-up coordination entries > public write cannot forge follow-up coordination entries [0.65ms]
+(pass) reserved follow-up coordination entries > Profile effect cannot forge follow-up coordination state [1.54ms]
+
+tests\fork-recovery-process.test.ts:
+(pass) 跨进程 fork/恢复（真实子进程） > worker 完成运行后，主进程投影终态、fork 会话并继续 [93.51ms]
+
+tests\fork-session.test.ts:
+(pass) forkSession > 复制 active path 的 agent.message 与宿主条目，丢弃 Core-owned 内部事实 [11.66ms]
+(pass) forkSession > 真实运行后 fork 得到干净副本，不复制旧 Invocation 状态 [2.45ms]
+(pass) forkSession > fork 支持覆盖 profileKey/initial/hostContext/title [0.18ms]
+(pass) forkSession > JSONL fork 可持久化并由新 Store 实例读取 [16.30ms]
+(pass) forkSession > 空 Session fork 返回干净副本 [0.13ms]
+(pass) forkSession > 未知源 Session fail closed [0.09ms]
+
+tests\harness-dispose.test.ts:
+(pass) NeuroAgentHarness shutdown barrier > 并发 dispose 共享同一 Promise 并等待 Store cleanup [0.32ms]
+(pass) NeuroAgentHarness shutdown barrier > abort listener 重入共享 barrier，injected Hub 在 barrier 后才由宿主关闭 [1.53ms]
+(pass) NeuroAgentHarness shutdown barrier > Store dispose rejection 由所有 shutdown caller 共享 [0.13ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待已进入的 public write 与 durable publication [0.61ms]
+(pass) NeuroAgentHarness shutdown barrier > Store commit 同步触发 dispose 时 barrier 仍等待 write publication [0.31ms]
+(pass) NeuroAgentHarness shutdown barrier > async commit observer 等待重入 dispose 时不阻塞 admitted write publication [0.44ms]
+(pass) NeuroAgentHarness shutdown barrier > async observer error reporter 等待重入 dispose 时不阻塞 publication [0.37ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待已进入的 createSession 并返回创建结果 [0.21ms]
+(pass) NeuroAgentHarness shutdown barrier > initial validator 重入 dispose 后 createSession 不开始 Store mutation [0.17ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 delayed steer 不写入已终止 active queue 或迟到发布 [1.01ms]
+(pass) NeuroAgentHarness shutdown barrier > steer payload validator 重入 dispose 后不写入 active queue [0.68ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 delayed followUp 不在 barrier 后追加 durable queue [0.37ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待已进入的 pauseFollowUps commit 与 state publication [0.46ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 delayed cancelFollowUp 不追加 cancelled fact [0.37ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 delayed reorderFollowUps 不追加 ordered fact [0.35ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 delayed durable abort 不在 barrier 后 terminalize owner [0.35ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待已进入但尚未注册 active 的 Invocation admission [0.64ms]
+(pass) NeuroAgentHarness shutdown barrier > shutdown 中的 follow-up read 不启动新 Invocation 或发布错误 [1.14ms]
+(pass) NeuroAgentHarness shutdown barrier > follow-up payload validation 重入 dispose 不发布虚假错误 [1.72ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待 public resumeFollowUps admission，shutdown 后不解除暂停 [0.80ms]
+(pass) NeuroAgentHarness shutdown barrier > dispose 等待尚未注册 active 的 approval resume admission [1.03ms]
+
+tests\harness.test.ts:
+(pass) NeuroAgentHarness > 完成工具循环，并在下一 turn 前持久化 toolResult [4.14ms]
+(pass) NeuroAgentHarness > hook 通过 Effect 合并，不获得 Store [0.86ms]
+(pass) NeuroAgentHarness > 自然停止原因通过公开结果和持久快照恢复 [0.51ms]
+(pass) NeuroAgentHarness > maxTurns 进入 settleRun 并允许 Profile 产出部分结果 [0.74ms]
+(pass) NeuroAgentHarness > Tool terminate 使用 tool_terminate 原因完成 [0.65ms]
+(pass) NeuroAgentHarness > abort 结束为 aborted，retry 创建新 Invocation 并记录 retryOf [1.38ms]
+(pass) NeuroAgentHarness > Invocation 冲突和不可重试状态使用可识别错误 [0.63ms]
+(pass) NeuroAgentHarness > 缺失 Capability 在模型调用前失败 [0.37ms]
+(pass) NeuroAgentHarness > abort 时 settleFailure 可以持久化部分 output [0.43ms]
+
+tests\host-error-events.test.ts:
+(pass) host 错误事件发布 > abort.request 持久化失败发布 abort_request_error，且强制收口仍完成 [1.50ms]
+(pass) host 错误事件发布 > abort.request 的 CAS 类失败不发布 abort_request_error（静默吞掉） [0.93ms]
+(pass) host 错误事件发布 > follow-up 自动启动失败发布 follow_up_error，队列保留 [13.02ms]
+
+tests\invocation-ownership.test.ts:
+(pass) Invocation ownership fence > SessionWritePlan owner CAS 区分精确 owner、null 和字段省略 [0.43ms]
+(pass) Invocation ownership fence > 组合 startInvocation plan 不能绕过已有 owner CAS [0.12ms]
+(pass) Invocation ownership fence > reconcileInterrupted 后旧 Invocation-owned plan 被拒绝 [0.21ms]
+(pass) Invocation ownership fence > JSONL reconcileInterrupted 也拒绝旧 owner [9.53ms]
+(pass) Invocation ownership fence > 取消后非合作式 Model 的迟到消息与 runtime event 不进入 Session [1.54ms]
+(pass) Invocation ownership fence > Invocation terminal 后 Model 产生的迟到 runtime event 被丢弃 [1.08ms]
+(pass) Invocation ownership fence > 固定 Invocation ID 在 raw run 清理前拒绝重入，清理后可由新 Session 复用 [2.93ms]
+(pass) Invocation ownership fence > 取消后 sequential Tool 的迟到 write plan 与 toolResult 不进入 Session [0.86ms]
+(pass) Invocation ownership fence > Invocation-owned Tool write 不能跨 Session，即使显式要求空 owner [0.69ms]
+(pass) Invocation ownership fence > active admission 释放后，迟到 settleFailure 仍不能跨 Session 写入 [11.39ms]
+(pass) Invocation ownership fence > forced abort seal 后，owner 检查与 effect commit 之间的迟到 settleFailure 不进入 Store [37.69ms]
+(pass) Invocation ownership fence > 取消后 parallel Tool batch 的迟到结果不进入 Session [0.93ms]
+(pass) Invocation ownership fence > 取消后 Hook 的迟到 effect 不进入 Session [0.55ms]
+(pass) Invocation ownership fence > 取消后 ContextProvider 的迟到结果不触发 Model call [0.69ms]
+(pass) Invocation ownership fence > 取消后 Compactor 的迟到 summary 不写入 compaction entry [1.27ms]
+(pass) Invocation ownership fence > 取消后 Approval request 的迟到结果不进入 waiting [0.75ms]
+(pass) Invocation ownership fence > 取消后迟到 Capability open 会关闭已创建资源 [0.42ms]
+(pass) Invocation ownership fence > settleFailure await 期间 owner 丢失时不应用迟到 effect [16.40ms]
+(pass) Invocation ownership fence > 旧 Harness 在 reconcileInterrupted 后不能写迟到结果，新 Harness 可以 retry [18.26ms]
+
+tests\invocation-result-durability.test.ts:
+(pass) Invocation result persistence and usage > invalid Provider token usage fails before transcript persistence [1.75ms]
+(pass) Invocation result persistence and usage > durable completed-turn usage survives a later provider failure [1.55ms]
+(pass) Invocation result persistence and usage > assistant commit failure persists terminal usage independently from transcript [0.83ms]
+(pass) Invocation result persistence and usage > terminal commit failure marks the in-process result persistence unknown [0.50ms]
+(pass) Invocation result persistence and usage > cleanup failure cannot replace the original error when terminal persistence is unknown [0.54ms]
+(pass) Invocation result persistence and usage > Capability close failure cannot overwrite a durable completed result or skip other cleanup [0.62ms]
+(pass) Invocation result persistence and usage > Capability close failure preserves a durable waiting result [1.17ms]
+(pass) Invocation result persistence and usage > Capability close failure preserves the original durable failure [0.43ms]
+(pass) Invocation result persistence and usage > forced abort atomically persists durable prior-turn usage [0.90ms]
+(pass) Invocation result persistence and usage > cross-Harness abort wins a delayed approval resume without duplicating terminal usage [1.05ms]
+(pass) Invocation result persistence and usage > legacy strict finishInvocation shape accepts terminal usage as an append-only fact [0.54ms]
+(pass) Invocation result persistence and usage > host writes cannot forge the reserved Invocation usage fact [0.13ms]
+(pass) Invocation result persistence and usage > JSONL restart preserves terminal usage independently from the live Harness [12.37ms]
+
+tests\invocation-result-projection.test.ts:
+(pass) invocationResultFromSnapshot 纯投影 > completed 返回完整终态投影，不携带 pendingApprovals [0.09ms]
+(pass) invocationResultFromSnapshot 纯投影 > failed 携带 error，aborted 按 redaction 规则排除 error [0.05ms]
+(pass) invocationResultFromSnapshot 纯投影 > usage fact 与 failed partial fact 投影 [0.11ms]
+(pass) invocationResultFromSnapshot 纯投影 > waiting 返回 pendingApprovals 投影 [0.03ms]
+(pass) invocationResultFromSnapshot 纯投影 > running / interrupted / 缺失返回 undefined [0.02ms]
+(pass) invocationResultFromSnapshot 恢复场景 > Memory：真实运行完成后从 Snapshot 投影完整结果 [1.48ms]
+(pass) invocationResultFromSnapshot 恢复场景 > JSONL：重启后新 Store read 可投影旁路 Invocation 终态 [12.36ms]
+(pass) invocationResultFromSnapshot 恢复场景 > JSONL：waiting Invocation 可从 Snapshot 投影 pendingApprovals [11.90ms]
+
+tests\jsonl-checkpoint-delta.test.ts:
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > 按间隔交替写 delta 与 checkpoint，读取恢复完整状态 [11.68ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > torn delta 尾残片由下一次 commit 修复且不丢已确认 entry [13.95ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > torn checkpoint 尾残片由下一次 commit 修复 [14.24ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > 中段损坏 fail closed，不把损坏前缀当作真相 [10.37ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > delta 模式 reconcileInterrupted 把 running Invocation 收口为 interrupted [9.18ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > running Invocation + torn delta 尾残片仍可 reconcile [9.63ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > 写入模式与读取模式解耦：checkpointEvery=2 写入可由 checkpointEvery=1 读取 [10.25ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > 同一目录两个 Store 实例在 delta 模式下并发提交都成功且最终状态一致 [31.94ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > delta replay 发现 entry ID 重复时 fail closed [9.76ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > checkpoint version 跳跃 fail closed [8.58ms]
+(pass) JSONL delta + checkpoint 实验模式（checkpointEvery > 1） > 非法 checkpointEvery 在构造时拒绝 [0.93ms]
+
+tests\jsonl-lock-crash-phases.test.ts:
+(pass) JsonlSessionLock crash phases > root/owner/metadata/heartbeat/append 各阶段退出都 fail closed，append facts 仍可恢复 [25275.83ms]
+
+tests\jsonl-lock.test.ts:
+(pass) JsonlSessionLock lifecycle > owner 在 acquire 后崩溃时，后续 commit fail closed 为 busy [5062.35ms]
+(pass) JsonlSessionLock lifecycle > 原 owner 晚释放时不会删除 contender 的 lock [3.35ms]
+(pass) JsonlSessionLock lifecycle > 正常 release 可幂等调用且不留下 lock root [1.64ms]
+(pass) JsonlSessionLock lifecycle > owner token 丢失时 assertOwnedOnDisk 分类为 JsonlLockLostError [1.66ms]
+(pass) JsonlSessionLock lifecycle > Windows metadata sharing violation 不伪装成 ownership lost [961.53ms]
+(pass) JsonlSessionLock lifecycle > Windows heartbeat sharing violation 保留 JsonlLockIoError taxonomy [2113.46ms]
+(pass) JsonlSessionLock lifecycle > 未知 lock 条目和多个 owner 分类为 JsonlLockCorruptError [2.14ms]
+(pass) JsonlSessionLock lifecycle > release 原始错误被归一化，并保留 operationCompleted 语义 [3.13ms]
+
+tests\jsonl-replay-graph-admission.test.ts:
+(pass) JSONL 跨 record replay 图 admission > 跨 record 重复 Entry ID 在 replay 边界 fail closed [1.85ms]
+(pass) JSONL 跨 record replay 图 admission > 同一 commit record 内的重复 Entry ID 由全图校验 fail closed [1.08ms]
+(pass) JSONL 跨 record replay 图 admission > 跨 record 组成的 Entry 环由全图校验 fail closed [1.00ms]
+(pass) JSONL 跨 record replay 图 admission > 跨 record 引入的悬挂 parent 由全图校验 fail closed [0.89ms]
+
+tests\jsonl-store.test.ts:
+(pass) JsonlSessionStore > 满足公共 Store 合同 [42.72ms]
+(pass) JsonlSessionStore > reconcileInterrupted 在 sessions 目录尚不存在时返回空列表 [0.37ms]
+(pass) JsonlSessionStore > reconcileInterrupted 不吞掉 sessions 路径类型错误 [0.59ms]
+(pass) JsonlSessionStore > 两个独立 Store 的并发重启协调收敛到一次 interrupted transition [33.94ms]
+(pass) JsonlSessionStore > 重启协调在独立 Store 的同一 owner 写入后刷新 Snapshot 并重试 [11.05ms]
+(pass) JsonlSessionStore > 两个独立 Store 并发自动创建分配不同 ID 且都可恢复 [30.14ms]
+(pass) JsonlSessionStore > 两个独立 Store 并发创建相同显式 ID 时只有一个成功且不会覆盖 [29.85ms]
+(pass) JsonlSessionStore > 损坏的 Session sequence fail closed 且不重置为 0 [1.94ms]
+(pass) JsonlSessionStore > 非法或耗尽的 Session sequence value fail closed [11.66ms]
+(pass) JsonlSessionStore > 显式 Session ID 推进 sequence，后续自动创建不会回撞 [6.96ms]
+(pass) JsonlSessionStore > 自动创建跳过有效但落后的 sequence candidate [10.74ms]
+(pass) JsonlSessionStore > Bun 与 Node ESM 子进程并发自动创建分配不同 ID 且都可恢复 [165.04ms]
+(pass) JsonlSessionStore > Bun 与 Node ESM 子进程并发创建相同显式 ID 时只有一个成功 [159.22ms]
+(pass) JsonlSessionStore > 进程重建后从 JSONL 恢复 Snapshot [5.79ms]
+(pass) JsonlSessionStore > 忽略崩溃留下的损坏尾行 [3.98ms]
+(pass) JsonlSessionStore > 人工清理 crashed owner 后的首个 commit 会修复损坏尾行并保持后续恢复 [9.56ms]
+(pass) JsonlSessionStore > 完整尾记录只缺换行时保留该记录并在下一次 commit 前补 separator [5.62ms]
+(pass) JsonlSessionStore > tail repair truncate 完成后、append 前退出仍留下可继续提交的合法前缀 [5.71ms]
+(pass) JsonlSessionStore > 同版本并发 commit 只允许一个成功 [6.98ms]
+(pass) JsonlSessionStore > 两个独立 JsonlSessionStore 实例竞争同一版本时只允许一个成功 [32.09ms]
+(pass) JsonlSessionStore > 独立进程竞争同一版本时只允许一个成功并可继续恢复 [75.78ms]
+(pass) JsonlSessionStore > Node ESM 子进程竞争同一版本时只允许一个成功并可继续恢复 [100.15ms]
+(pass) JsonlSessionStore > 损坏的跨进程 lock 不伪装成 SessionConflictError [4.72ms]
+(pass) JsonlSessionStore > 有效但不连续的 JSONL 尾记录不会被忽略 [4.01ms]
+(pass) JsonlSessionStore > 可选 delta + checkpoint 格式恢复一致，并减少重复 Snapshot [48.07ms]
+
+tests\memory-store.test.ts:
+(pass) MemorySessionStore > 满足公共 Store 合同 [0.68ms]
+(pass) MemorySessionStore > 支持 string Session ID Adapter [0.07ms]
+(pass) MemorySessionStore > 重启协调将 running Invocation 标记为 interrupted [0.20ms]
+(pass) MemorySessionStore > 并发重启协调收敛到一次 interrupted transition [0.21ms]
+(pass) MemorySessionStore > 重启协调在同一 owner 的并发写入后刷新 Snapshot 并重试 [0.24ms]
+(pass) MemorySessionStore > 一个 benign recovery race 不阻止继续协调后续 Session [0.31ms]
+(pass) MemorySessionStore > 持续的同 owner version 冲突有界失败且不伪造 reconciliation 成功 [0.41ms]
+
+tests\message-committed-event.test.ts:
+(pass) message_committed runtime event > 正常运行按序发布 user（turn 0）与 assistant（turn N）消息 [1.78ms]
+(pass) message_committed runtime event > message_committed 在 durable commit 之后发布 [1.17ms]
+(pass) message_committed runtime event > 宿主 write 的非消息条目不发布 message_committed [0.85ms]
+(pass) message_committed runtime event > 宿主 write 的 agent.message 条目不发布 message_committed（仅 Harness 发起的提交发布） [0.86ms]
+(pass) message_committed runtime event > sequential Tool 结果发布 toolResult 角色消息 [0.93ms]
+(pass) message_committed runtime event > approval resume 恢复的 Tool 结果也发布消息 [1.53ms]
+
+tests\message-identity-legacy-jsonl.test.ts:
+(pass) raw legacy JSONL message identity > 缺字段的 invocation、agent.message 和 follow-up 可读取并实际恢复 [11.65ms]
+
+tests\message-identity.test.ts:
+(pass) Caller and durable message identity > system identity is durable without changing provider-visible user role [1.58ms]
+(pass) Caller and durable message identity > system follow-up keeps queue caller and identity across JSONL restart and drain [23.88ms]
+(pass) Caller and durable message identity > steer carries caller and identity into the durable next-turn user message [1.08ms]
+(pass) Caller and durable message identity > legacy queue, message and invocation records default missing identity to user [1.16ms]
+(pass) Caller and durable message identity > invokeAt and retry preserve explicit identity, while nested AgentCallRequest exposes the same option [1.04ms]
+
+tests\model-context-window.test.ts:
+(pass) Model contextWindow 保护 > 声明 contextWindow 且估计超窗时在模型调用前 fail closed [1.51ms]
+(pass) Model contextWindow 保护 > 估计在窗口内时正常调用模型并完成 [0.96ms]
+(pass) Model contextWindow 保护 > 未声明 contextWindow 时不启用守卫 [0.70ms]
+(pass) Model contextWindow 保护 > 声明 contextWindow 但未配置 compactor 时守卫跳过（Core 无内置 tokenizer） [0.44ms]
+(pass) Model contextWindow 保护 > 构造时拒绝非法 contextWindow [0.08ms]
+
+tests\model-event-publisher.test.ts:
+(pass) model_event 发布路径 > runTurn 的 onEvent 逐条转发为 model_event，且不进入 durable transcript [3.50ms]
+(pass) model_event 发布路径 > tool_call_delta 流式事件精确转发（五种 ModelRuntimeEvent 全覆盖） [1.09ms]
+
+tests\model-turn-error.test.ts:
+(pass) ModelTurnError failure usage > typed failure usage is durable and survives JSONL restart [12.73ms]
+(pass) ModelTurnError failure usage > completed and failed turn usage are each aggregated once [1.59ms]
+(pass) ModelTurnError failure usage > terminal persistence failure keeps observed usage local and marks it unknown [0.71ms]
+(pass) ModelTurnError failure usage > cooperative abort persists typed failure usage inside the grace period [0.82ms]
+(pass) ModelTurnError failure usage > forced abort winner ignores a late typed failure usage update [12.29ms]
+(pass) ModelTurnError failure usage > an ad-hoc usage property on a plain Error is ignored [0.50ms]
+(pass) ModelTurnError failure usage > the stable brand recognizes a typed error from another package copy [0.46ms]
+(pass) ModelTurnError failure usage > invalid typed failure usage is rejected at construction [0.05ms]
+
+tests\model-turn-partial.test.ts:
+(pass) terminal partial model output > failed partial and usage are atomic and survive JSONL restart without entering transcript [12.86ms]
+(pass) terminal partial model output > terminal commit failure keeps partial local and persistence unknown [0.84ms]
+(pass) terminal partial model output > Snapshot reread confirms partial after terminal acknowledgement is lost [0.71ms]
+(pass) terminal partial model output > legacy strict finishInvocation shape accepts partial and usage as terminal facts [0.68ms]
+(pass) terminal partial model output > retry Provider request excludes the durable partial fact [1.17ms]
+(pass) terminal partial model output > host partial projection remains recoverable without entering Core transcript or retry input [21.00ms]
+(pass) terminal partial model output > Invocation-addressed partial remains recoverable after the active branch rewinds [0.55ms]
+(pass) terminal partial model output > compaction summary input excludes the durable partial fact [1.06ms]
+(pass) terminal partial model output > cooperative abort persists partial inside the grace period [0.87ms]
+(pass) terminal partial model output > forced abort winner ignores a late partial [11.34ms]
+(pass) terminal partial model output > host writes cannot forge partial facts and invalid partials fail closed [0.20ms]
+(pass) terminal partial model output > malformed newest persisted partial fact fails closed [0.52ms]
+(pass) terminal partial model output > persisted partial turn must match the terminal Invocation turn [0.51ms]
+(pass) terminal partial model output > completed Invocation cannot expose a persisted partial fact [0.48ms]
+
+tests\nb-terminal-parity.test.ts:
+(pass) NeuroBook 黑盒终态语义吸收 > failed 终态自动暂停 follow-up，pausedBy 携带 invocationId 与 reason error [7.74ms]
+(pass) NeuroBook 黑盒终态语义吸收 > aborted 终态自动暂停 follow-up，pausedBy 携带 invocationId 与 reason aborted [6.63ms]
+(pass) NeuroBook 黑盒终态语义吸收 > 终态时 follow-up 队列为空不写 pause 事实 [0.61ms]
+(pass) NeuroBook 黑盒终态语义吸收 > 终态 pausedBy 经 JSONL 重启恢复并可 resume 继续消费 [23.91ms]
+(pass) NeuroBook 黑盒终态语义吸收 > Tool 抛异常按可恢复 error toolResult 提交并让模型继续（显式 terminate 才致命） [0.87ms]
+(pass) NeuroBook 黑盒终态语义吸收 > failed 终态后未消费 steer 不再注入模型或 transcript [0.52ms]
+(pass) NeuroBook 黑盒终态语义吸收 > 强制取消后 settleRun 迟到恢复的 writePlans 不得写入 Session [33.93ms]
+(pass) NeuroBook 黑盒终态语义吸收 > interrupted 收口后队列保持未暂停且宿主可 resume（NB 未实现 interrupted pause） [24.69ms]
+
+tests\package-consumer-usability.test.ts:
+(pass) 安装后 package consumer usability > 同一个公开 consumer 在 Bun/Node tarball 安装后完成完整组合并可从 JSONL 重启恢复 [2286.79ms]
+
+tests\parallel-tools.test.ts:
+(pass) parallel Tool scheduling > Tool 并发执行，但 toolResult 按 provider call 顺序原子提交 [8.96ms]
+(pass) parallel Tool scheduling > parallel Tool 返回 SessionWritePlan 会失败并提示改为 sequential [1.04ms]
+
+tests\persistence-events.test.ts:
+(pass) durable event ordering > snapshot 读取期间发布的 durable entry 不会被返回 cursor 跳过 [0.94ms]
+(pass) durable event ordering > createSession 返回值不会让创建窗口内的 durable entry 同时逃出 Snapshot 与 replay [0.48ms]
+(pass) durable event ordering > write 返回值不会让较新的并发 durable entry 同时逃出 Snapshot 与 replay [0.49ms]
+(pass) durable event ordering > 共享 EventHub 检测到 durable version 倒退时整批 fail closed 为 snapshot_required [0.34ms]
+(pass) durable event ordering > durable version forward gap 可 replay snapshot_required，恢复后继续连续增量 [0.60ms]
+(pass) durable event ordering > 共享 EventHub 不把不同 Store 的同名 Session 拼成连续 durable stream [0.39ms]
+(pass) durable event ordering > 共享 EventHub 不把同一 Store 对象重用的 Session ID 当成旧 generation 连续流 [0.54ms]
+(pass) durable event ordering > Session recreation 超越旧 commit return 时不发布旧 generation 事实 [0.42ms]
+(pass) durable event ordering > recreation pending 期间捕获的旧 commit 不冒充新 generation [0.32ms]
+(pass) durable event ordering > 失败的 Session recreation fence 不会永久污染原 generation [0.47ms]
+(pass) durable event ordering > durable batch 序列化失败不发布前缀，并要求 Snapshot 后恢复连续增量 [0.76ms]
+(pass) durable event ordering > commit 失败时不发布未持久化的 session_entry [1.06ms]
+
+tests\pi-adapter-consumer.test.ts:
+(pass) host-local Pi-like ModelRuntime Adapter > maps multi-turn success, Tool calls, thinking and token totals without provider metadata [3.60ms]
+(pass) host-local Pi-like ModelRuntime Adapter > maps an error event plus rejected result to durable failure usage without partial transcript [12.90ms]
+(pass) host-local Pi-like ModelRuntime Adapter > uses the last cumulative partial when the async iterator itself throws [0.70ms]
+(pass) host-local Pi-like ModelRuntime Adapter > maps signal-driven error/result rejection to cooperative aborted usage [0.99ms]
+
+tests\profile-context-delivery-parity.test.ts:
+(pass) Profile dynamic context delivery parity > successful transcript ingest settles before approval waiting, and resume uses the next History item [26.28ms]
+(pass) Profile dynamic context delivery parity > model failure keeps the materialized History unseen and retries the same durable delivery without duplication [1.62ms]
+(pass) Profile dynamic context delivery parity > assistant transcript ingest failure does not settle delivery, then a later successful ingest can settle it [1.34ms]
+
+tests\profile-model-replacement-retry.test.ts:
+(pass) Profile/Model replacement 与 public retry > Memory consumer contract：retry 绑定 replacement 时的 Profile/Model 语义 [2.73ms]
+(pass) Profile/Model replacement 与 public retry > JSONL restart contract：retry 绑定 replacement 时的 Profile/Model 语义 [21.76ms]
+
+tests\profile-registry.test.ts:
+(pass) ProfileRegistry > 宿主 watcher 可替换 Profile，后续 Invocation 使用新版本 [2.26ms]
+
+tests\profile-version-approval-admission.test.ts:
+(pass) durable Profile Version approval admission > 旧 Profile 的 approval 不应在 replacement 后执行新版 Tool [1.91ms]
+(pass) durable Profile Version approval admission > JSONL restart 后用持久化版本拒绝新版 Profile [13.18ms]
+(pass) durable Profile Version approval admission > legacy JSONL waiting approval 按版本 1 恢复，只拒绝当前版本 2 [30.41ms]
+(pass) durable Profile Version approval admission > same-version replacement 明确接管 waiting approval [1.18ms]
+(pass) durable Profile Version approval admission > 版本校验后发生 replacement 时，本次 resume 使用已校验的 Profile [1.13ms]
+(pass) durable Profile Version approval admission > retry 创建新 Invocation 并绑定当前 Profile Version [1.15ms]
+(pass) durable Profile Version approval admission > 非法 manifest 与 durable Profile Version 都 fail closed [11.91ms]
+
+tests\read-capability.test.ts:
+(pass) Host-neutral ReadCapability > 传递 opaque reference 和分页参数，并保留 provenance/truncated 事实 [2.11ms]
+(pass) Host-neutral ReadCapability > Provider 拒绝资源时只产生 Tool error，不伪造 read content [1.16ms]
+
+tests\read-tool-factory.test.ts:
+(pass) opt-in Read Tool Adapter > 显式 CapabilityToken 的 read factory 透传 request 并映射所有 ReadResult details [2.23ms]
+(pass) opt-in Read Tool Adapter > factory 的基础 schema 拒绝无 reference/非 finite pagination，并保留 EOF 的空 details [0.18ms]
+(pass) opt-in Read Tool Adapter > ReadCapability provider failure follows ordinary Tool error path [1.16ms]
+
+tests\recovery.test.ts:
+(pass) JSONL process recovery > durable aborting owner 在重启协调时收口为 aborted [0.38ms]
+(pass) JSONL process recovery > JSONL forced abort terminal 可由新 Harness 恢复 [16.56ms]
+(pass) JSONL process recovery > 失败进程留下的 durable follow-up 可由新 Harness 继续 [21.89ms]
+(pass) JSONL process recovery > waiting approval 在新 Harness 实例中恢复同一 Invocation [19.68ms]
+(pass) JSONL process recovery > 独立 JSONL Harness 并发 resume 只有一个 durable claim，获胜结果可恢复 [46.30ms]
+(pass) JSONL process recovery > JSONL waiting resume 区分 prepare Snapshot 与 approval resolution 后的 ContextProvider Snapshot [17.60ms]
+(pass) JSONL process recovery > compaction Snapshot 在新 Harness 实例中继续作为 transcript 真相源 [26.84ms]
+
+tests\retry-api.test.ts:
+(pass) retry options 与错误面 > 旧重载保持可用：retry(id, inv) 与 retry(id, inv, caller, messageIdentity) [2.78ms]
+(pass) retry options 与错误面 > retry options.signal 在运行中取消复用 bounded abort [21.99ms]
+(pass) retry options 与错误面 > pre-aborted signal 不创建新的 durable Invocation [0.54ms]
+(pass) retry options 与错误面 > 公共 admission 失败抛导出的 HarnessAdmissionError（message 不变） [0.21ms]
+
+tests\run-stage-phase.test.ts:
+(pass) InvocationError phase 归因 > model 阶段失败归因为 phase model [1.32ms]
+(pass) InvocationError phase 归因 > compaction 阶段失败归因为 phase compaction [1.56ms]
+(pass) InvocationError phase 归因 > settleRun 阶段失败归因为 phase settleRun [0.65ms]
+(pass) InvocationError phase 归因 > transcript 提交失败归因为 phase ingest [0.49ms]
+(pass) InvocationError phase 归因 > ingest 包装内 SessionConflictError 保留 name/retryable [0.49ms]
+(pass) InvocationError phase 归因 > 未包装阶段（beforeTurn hook）保持粗粒度 phase run [0.44ms]
+
+tests\session-entry-parent-admission.test.ts:
+(pass) Session Entry parent reference admission > public write rejects a dangling parent before changing the Session [0.69ms]
+(pass) Session Entry parent reference admission > an existing parent creates a new selected branch [0.50ms]
+(pass) Session Entry parent reference admission > an inactive branch entry can serve as an explicit parent [0.29ms]
+(pass) Session Entry parent reference admission > an explicit null parent starts a root branch [0.21ms]
+(pass) Session Entry parent reference admission > an omitted parent follows the current active leaf [0.20ms]
+(pass) Session Entry parent reference admission > a dangling current active leaf is rejected before append admission [0.05ms]
+(pass) Session Entry parent reference admission > blank parent and blank generated Entry IDs are rejected [0.05ms]
+(pass) Session Entry parent reference admission > an invalid parent in prepareWrites produces no earlier durable append [0.79ms]
+(pass) Session Entry parent reference admission > Memory Store and JSONL Store share parent admission and recovery behavior [11.43ms]
+(pass) Session Entry parent reference admission > active path rejects cycles and duplicate historical Entry IDs [0.15ms]
+(pass) Session Entry parent reference admission > JSONL read fails closed for a historical malformed parent graph [1.07ms]
+(pass) Session Entry parent reference admission > same-batch generated Entry IDs remain unique [0.07ms]
+
+tests\session-graph-scale-bounded.test.ts:
+(pass) 大 Session 图校验有界 > 10000 条链式 Entry 的读、路径与提交保持线性 [76.03ms]
+
+tests\session-invocation-coherence.test.ts:
+(pass) Session Invocation coherence admission > 重复 Invocation ID 拒绝 [0.19ms]
+(pass) Session Invocation coherence admission > 悬挂 activeInvocationId 拒绝 [0.05ms]
+(pass) Session Invocation coherence admission > active Invocation 指向 terminal 状态拒绝 [0.02ms]
+(pass) Session Invocation coherence admission > Session running 但无 active Invocation 拒绝 [0.01ms]
+(pass) Session Invocation coherence admission > Session idle 配 running Invocation 拒绝 [0.02ms]
+(pass) Session Invocation coherence admission > Session waiting 与 running active Invocation 矛盾拒绝 [0.12ms]
+(pass) Session Invocation coherence admission > Session aborting 必须指向 running/waiting active Invocation [0.02ms]
+(pass) Session Invocation coherence admission > 两个 running Invocation 拒绝（非 active 僵尸） [0.02ms]
+(pass) Session Invocation coherence admission > 缺失 activeInvocationId 按 null 归一，不报误导消息 [0.06ms]
+(pass) Session Invocation coherence admission > 合法状态组合全部通过 [0.11ms]
+(pass) Session Invocation coherence admission > JSONL read 对矛盾 Invocation 状态 fail closed，且合法状态可读 [2.22ms]
+(pass) Approval fact coherence admission > waiting 且 pendingApprovals 显式为空数组拒绝（审批门禁绕过） [0.04ms]
+(pass) Approval fact coherence admission > waiting 且缺失 pendingApprovals 拒绝（同一绕过面） [0.04ms]
+(pass) Approval fact coherence admission > pendingApprovals 内重复 toolCallId 拒绝 [0.02ms]
+(pass) Approval fact coherence admission > waiting turnCount 低于自身已提交最大 turn 拒绝 [0.06ms]
+(pass) Approval fact coherence admission > waiting turnCount 缺失或负数拒绝 [0.07ms]
+(pass) Approval fact coherence admission > 合法 waiting 组合通过 [0.04ms]
+(pass) Approval fact coherence admission > JSONL read 与 harness.resume 对空 pendingApprovals fail closed，不执行 Tool [3.10ms]
+(pass) waitInvocation 写侧 admission > 重复 toolCallId 在写边界拒绝 [0.13ms]
+(pass) waitInvocation 写侧 admission > turnCount 回退与负数在写边界拒绝 [0.11ms]
+(pass) waitInvocation 写侧 admission > 合法 waiting plan 通过并投影 waiting [0.05ms]
+(pass) 第三方 Store 防御性归一化 > 未归一化的空 approvals Snapshot 在 resume 边界 fail closed [0.34ms]
+
+tests\sse-http-transport.test.ts:
+(pass) 真实 HTTP SSE Transport 边界（fixture 驱动） > 首连全量 + Last-Event-ID 续传只收新事件 [1181.89ms]
+
+tests\sse-serialization.test.ts:
+(pass) SSE 帧序列化 > event/id/retry/data 字段顺序与多行 data 拆分 [0.08ms]
+(pass) SSE 帧序列化 > 仅 data 的最简帧与空 data 行 [0.02ms]
+(pass) SSE 帧序列化 > comment 帧与非法输入拒绝 [0.09ms]
+(pass) SSE 帧序列化 > JSON 便捷面往返：宿主可解析回原值 [0.05ms]
+
+tests\sse-transport-consumer.test.ts:
+(pass) SSE Transport 消费：游标续传 > 宿主序列化事件帧，用 lastSeq 游标续传只收到新事件 [2.77ms]
+(pass) SSE Transport 消费：snapshotRequired 恢复循环 > 陈旧 cursor 收到 snapshotRequired，宿主用 snapshot 重新同步后继续 [0.65ms]
+(pass) SSE Transport 消费：snapshotRequired 恢复循环 > 慢消费者 overflow 关闭后，宿主经 snapshot 重同步继续接收 [1.04ms]
+
+tests\steer-events.test.ts:
+(pass) steer session 事件 > steer 入队与注入发布 steer_queued / steer_drained，内容进入 transcript [53.26ms]
+
+tests\streaming-model-runtime-partial-consumer.test.ts:
+(pass) streaming ModelRuntime consumer tracer > provider stream abort 可由现有 ModelTurnError.partial seam 恢复，无需 Core stream API [1.92ms]
+
+tests\tool-call-identity.test.ts:
+(pass) Tool Call identity admission > 同一 assistant message 的重复 Tool Call ID 在副作用和持久化前失败 [1.46ms]
+(pass) Tool Call identity admission > 重复 Tool Call ID 失败仍保留已发生的 Model usage [1.01ms]
+(pass) Tool Call identity admission > parallel Tool batch 的重复 ID 也在调度前失败 [0.54ms]
+(pass) Tool Call identity admission > 当前可见 transcript 中跨 turn 复用 Tool Call ID 在新 approval 前失败 [1.10ms]
+(pass) Tool Call identity admission > 空 Tool Call ID 在副作用和持久化前失败 [0.61ms]
+(pass) Tool Call identity admission > 非字符串 Tool Call ID 在副作用和持久化前失败 [0.76ms]
+(pass) Tool Call identity admission > legacy waiting transcript 按 occurrence 匹配复用 ID 并执行新的已批准 Tool [1.02ms]
+(pass) Tool Call identity admission > legacy duplicate occurrence 不能用一个旧 result 闭合悬挂 call（启动期拒绝） [0.32ms]
+
+tests\tool-definition-admission.test.ts:
+(pass) PreparedRun Tool identity admission > 普通 invoke 在 Model 前拒绝同名 Tool，不选择第一份 handler [1.36ms]
+(pass) PreparedRun Tool identity admission > approval resume 在 Tool 前拒绝新 Profile 返回的同名 Tool [1.61ms]
+
+tests\tool-write-plan-batch-admission.test.ts:
+(pass) Tool writePlans batch admission > 多 plan 内部版本冲突在任意 durable 写入前拒绝 [1.76ms]
+(pass) Tool writePlans batch admission > 多 plan 合法序列全部提交且 toolResult 正常持久化 [1.41ms]
+(pass) Tool writePlans batch admission > 多 plan 中投影非法的操作不产生部分写入 [0.98ms]
+(pass) Tool writePlans batch admission > 首个 plan 的 expectedVersion 过期时整批在任何写入前拒绝 [0.83ms]
+(pass) Tool writePlans batch admission > 空 writePlans 数组视为无写入并正常持久化 toolResult [1.03ms]
+(pass) Tool writePlans batch admission > approval resume 的多 plan 同样在任意 durable 写入前拒绝 [1.18ms]
+
+tests\turn-end-waiting.test.ts:
+(pass) turn_end waiting 语义 > waiting 轮发布 turn_end(waiting)，resume 后新 turn 以 completed 闭合 [2.71ms]
+
+tests\turn-failure-events.test.ts:
+(pass) failed turn runtime event boundary > Model 抛错时先闭合 started turn，再发布 failed Invocation terminal [1.49ms]
+(pass) failed turn runtime event boundary > Profile prepare 在首个 turn 前失败时不伪造 turn_end [0.62ms]
+(pass) failed turn runtime event boundary > beforeTurn Hook 失败也闭合当前 turn，且不调用 Model [0.60ms]
+(pass) failed turn runtime event boundary > failed terminal commit 未确认时不伪造 agent_end [0.62ms]
+(pass) failed turn runtime event boundary > settleRun 失败不把已 completed 的 turn 重写为 failed [0.68ms]
+
+tests\wait-follow-up-drain.test.ts:
+(pass) waitForFollowUpQueueDrain > follow-up 链全部完成后返回空队列 [53.05ms]
+(pass) waitForFollowUpQueueDrain > 暂停队列视为稳定态直接返回 [1.14ms]
+(pass) waitForFollowUpQueueDrain > waiting（审批待决）视为稳定态返回 [26.12ms]
+(pass) waitForFollowUpQueueDrain > 运行中链超时抛 FollowUpDrainTimeoutError [81.13ms]
