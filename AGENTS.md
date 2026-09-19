@@ -127,8 +127,8 @@ neuro-book/
 
 ### 任务协议
 
-- 前线指挥部把任务写成 `docs/tasks/任务NNN-短名.md`：**必须基于 `docs/tasks/TASK-TEMPLATE.md` 模板创建，"运行配置"节必填**（模式 + 完整模型 ID + 推理档位 + 给用户的现成可粘贴命令；工作流任务须写全子代理模型格式 `GLM-5.3-Flash$<档位>`），目标、边界（能改/禁改的文件与包）、验收标准、参考材料路径照模板填写；**写完任务书立即执行 `git worktree add .worktree/task-NNN -b task-NNN`** 把工作目录准备好（分支与 worktree 目录用英文 `task-NNN`，避免 GBK 代码页下中文参数的编码问题；任务书文件名保持中文），然后告知用户可开工程队窗口。模型/模式选型依据见 `docs/tasks/BOARD.md` 表头说明。
-- 工程队守则：ZCode 窗口直接打开 `.worktree/task-NNN` 目录开工。**注意：worktree 的 git 根是它自身，向上搜索可能读不到仓库根的 AGENTS.md——开工第一件事是读取 `D:\MyProject\neuro-book\AGENTS.md`（绝对路径）的"本 Fork 工作规矩"节**，然后读任务书 → 只在该目录内改动 → 交付时在任务书追加交付报告（做了什么/为什么/自测结果/遗留问题），状态改为"待审" → 关窗之前把本窗口会话 ID 写进任务书。
+- 前线指挥部把任务写成 `docs/tasks/任务NNN-短名.md`：**必须基于 `docs/tasks/TASK-TEMPLATE.md` 模板创建，"运行配置"节必填**（模式 + 完整模型 ID + 推理档位 + 给用户的现成可粘贴命令；工作流任务须写全子代理模型格式 `GLM-5.3-Flash$<档位>`），目标、边界（能改/禁改的文件与包）、验收标准、参考材料路径照模板填写；**写完任务书立即执行 `git worktree add ../worktrees/task-NNN -b task-NNN`**（从仓库根的上一级创建，即 `D:\MyProject\worktrees\task-NNN`；**不要用仓库内的 `.worktree/`——点开头的隐藏目录在 ZCode 工作区选择器里选不了**）把工作目录准备好（分支与 worktree 目录用英文 `task-NNN`，避免 GBK 代码页下中文参数的编码问题；任务书文件名保持中文），然后告知用户可开工程队窗口。模型/模式选型依据见 `docs/tasks/BOARD.md` 表头说明。
+- 工程队守则：ZCode 窗口直接打开 `D:\MyProject\worktrees\task-NNN` 目录开工。**注意：worktree 的 git 根是它自身，向上搜索可能读不到仓库根的 AGENTS.md——开工第一件事是读取 `D:\MyProject\neuro-book\AGENTS.md`（绝对路径）的"本 Fork 工作规矩"节**，然后读任务书 → 只在该目录内改动 → 交付时在任务书追加交付报告（做了什么/为什么/自测结果/遗留问题），状态改为"待审" → 关窗之前把本窗口会话 ID 写进任务书。
 - 前线审查：读交付报告+diff，跑确定性检查（见下），通过才合并；打回写返工意见。
 - **完成定义（硬标准）**：任务完成 = 产出文件已写入仓库 + 交付报告已填 + BOARD 状态已更新 +（涉代码时）分支已提交。**仅在聊天中报告结果不算完成**；工程队交活前必须自查这四项，缺一项就还没完成。
 - 禁止：绕过任务板直接派活；工程队动 master；任何窗口 force push。
