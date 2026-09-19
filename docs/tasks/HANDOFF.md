@@ -14,7 +14,7 @@ NeuroBook：AI 长篇小说创作 IDE（Vue 3.5 + Nuxt 4 + Tailwind 4 + reka-ui 
 
 - **三窗口**：参谋部（只讨论）/ 前线指挥部（本窗口：架构、拆任务、审查、合并）/ 工程队（GLM-5.3-Flash 独立 3 亿额度窗口，干体力活）。
 - **文件总线**：窗口间只走 `docs/tasks/`（任务板+任务书）与 git 分支；用户只传一句话指针。
-- **任务协议**：中文短名+序号（任务004-环境验证）；工程队在 `.worktree/任务NNN` 建分支干活，交付写报告，关窗前留会话 ID。
+- **任务协议**：中文短名+序号（任务004-环境验证）；前线写任务书时同步建好 worktree（`git worktree add .worktree/任务NNN -b 任务NNN`），工程队窗口直接打开该目录开工，交付写报告，关窗前留会话 ID。
 - **质量门**：ocr Delegation 审查 / Impeccable detect（**必须在仓库外目录运行**，本仓库 npm overrides 会让 npx 报 EOVERRIDE）/ UI 三层评判（硬规则→visual-judge 截图→真人任务测试）。
 - **额度纪律**：主订阅 5 小时限量很贵——批量/扫描/调研类活走工程队或 ZCode 闲时任务；前线只做判断和审查。
 
