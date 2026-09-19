@@ -58,4 +58,14 @@
 
 ## 交付报告（工程队填写）
 
-（空。格式：做了什么/为什么/自测结果/遗留问题/本窗口会话 ID）
+**做了什么**：产出 `docs/knowledge/tiptap-notes.md`：三套编辑器装配总览（Markdown Studio 主编辑器/纯文本引用输入器/Agent composer + llmlint web 一处）、官方扩展 13 项与自定义扩展 18 项清单表（含 priority 与文件路径）、装配代码地图、"新增扩展"7 步清单（含本项目特有的 tokenizer priority<1390 约束与 dialect/UI 两层扩展组的选择规则）、v3 升级注意 4 条（官方 @tiptap/markdown、StarterKit 收编 Link/Underline、去 lockstep 版本，均注官方链接）。
+
+**为什么**：为将来编辑器功能开发省掉重新摸索成本；本项目 TipTap 用法相当深度（Markdown 方言 tokenizer + 双层扩展组 + 测试 schema 共用），不做记录极易踩坑。
+
+**自测结果**：扩展清单与 grep `@tiptap/` 结果一一对应（主应用 30+ 文件全部归类）；装配文件路径均真实存在且已打开核对（markdown-editor-extensions.ts 全文、markdown-dialect-extensions.ts 全文、plain-reference-text-extensions.ts 全文、AgentHardBreak/AgentSkillNode 开头）；priority 数字（1500/1390/1400/1190/1185/1180/1175/1150）摘自源码；官方说法 4 条标注来源链接。全程只读。
+
+**遗留问题**：`InlineAiReferenceHighlight.ts` 与 `Comment.ts` 的插件细节未逐行读（清单层面已覆盖，深度开发时再读）。
+
+**状态**：**待审**。
+
+**本窗口会话 ID**：sess_f7630ad3-9078-4e74-b751-945479569d6e
