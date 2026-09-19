@@ -1,0 +1,28 @@
+{
+  "run_id": "security-audit-20260920",
+  "repo": "neuro-book (fork: GTF2/neuro-book, upstream: notnotype/neuro-book)",
+  "target": "D:/MyProject/neuro-book",
+  "source_ref": "550ec8388e320078192fdce25f302bbd0951691d (master, 含 upstream 快照 45906272 = 0.10.3-canary 2026-09-14 + 20 个 fork 文档提交；工作区仅 docs/tasks/BOARD.md 有前线在办改动，未纳入审计范围)",
+  "profile": "quick",
+  "scope_paths": ["packages/**", "desktop/**", "scripts/**", "docs/**", ".github/**", ".agents/**", "patches/**", "vitepress/**"],
+  "budget": null,
+  "execution_policy": "read-only-source-audit",
+  "execution_policy_note": "任务铁律禁止执行目标代码与安装依赖：全部发现为源码级证据（静态阅读 + 只读检查命令），confirmed 记录的 execution 均如实标注未动态复现。未启动 dev server、未运行构建/测试。",
+  "companion_files": ["ATTACK-CLASSES.md", "WEB-PROTOCOL-AND-AUTH.md", "CLIENT-SIDE.md", "DESKTOP-MOBILE-AND-LOCAL-IPC.md", "SUPPLY-CHAIN-AND-RELEASE.md", "DATA-ISOLATION-AND-LIFECYCLE.md"],
+  "prior_runs": [],
+  "shared_file_owners": {
+    "findings.json": "parent",
+    "REPORT.md": "parent",
+    "SUMMARY.md": "parent"
+  },
+  "hunter_agents": [
+    "agent_ded92f79 (敏感信息泄露，git 跟踪文件全扫)",
+    "agent_90ee474b (服务端注入面与访问控制)",
+    "agent_a8b065b7 (代码执行面与前端注入)",
+    "agent_68ffcb7f (llmlint 补扫——唯一多用户部署组件)"
+  ],
+  "validation_note": "候选记录经父代理亲自读源码复核关键证据行（workflow-catalog.ts:119-124、codeact-sandbox.ts:77-103、middleware/auth.ts:53、file-tools.ts:219/664/717、harness:5549、utils/auth.ts:29）；quick 档位下候选验证与最终记录核由父代理一并承担。",
+  "run_status": "complete_with_gaps",
+  "incomplete_reason": "依赖漏洞审计因环境网络阻断未执行（见 findings: dependency-vulnerability-audit-blocked）；git 历史仅做文件名级抽查，未做内容级全历史回溯；neuro-book-manager、file-snapshot-cache、test-support、CORS 配置、生产 Dockerfile/compose 未深扫。",
+  "generated_at": "2026-09-20"
+}
