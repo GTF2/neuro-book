@@ -14,6 +14,13 @@
   - 目标模式示例：`/goal 任务NNN-短名：完成 <一句话目标>，按任务书验收标准交付`
   - 工作流示例：`/workflow 按 docs/tasks/任务NNN-短名.md 并行执行，子代理用 GLM-5.3-Flash$high`
 - **工作流子代理模型**（仅工作流模式需要，写全）：`subagent_model: "GLM-5.3-Flash$<档位>"`——完整 ID + $档位后缀，缺一不可，简写"Flash+high"无法直接设置。
+- **对口技能与命令**（必填；没有合适的写"无"）：列出本任务用得上的已装技能名 + 触发时机，让工程队直接调用而不是手工摸索。常用对照：
+  - 代码/diff 审查 → `ocr-review`；过度工程检查 → `ponytail-review`
+  - UI 设计/评审/打磨 → `impeccable`（detect 命令在仓库外跑）；UI/UX 方案检索 → `ui-ux-pro-max`
+  - 安全相关 → `security-audit`
+  - dev server 页面验证/截图 → `browser-use:control-browser` 或 `web-gui-tester`
+  - GitHub 操作（PR/issue/release/Actions）→ `github:pr` / `github:issue` / `github:release` / `github:workflow-run`
+  - 长任务自主跑 → `/goal`；多路并行编排 → `/workflow`
 
 ## 目标
 （一句话：要达成什么，为什么）
@@ -21,7 +28,7 @@
 ## 开工前置
 1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节（绝对路径，worktree 内向上搜索可能读不到）
 2. 读本任务书全文（含运行配置，确认模式/模型已就位）
-3. 确认自己在 `.worktree/task-NNN` 目录内（`git rev-parse --show-toplevel` 验证）
+3. 确认自己在 `D:\MyProject\worktrees\task-NNN` 目录内（`git rev-parse --show-toplevel` 验证；无 worktree 的文档任务跳过本条）
 
 ## 范围与边界
 - 允许改动：（文件/目录清单，尽量精确）
