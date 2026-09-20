@@ -57,14 +57,19 @@ const setItemRef = (el: unknown, index: number): void => {
 };
 
 let hoverIndex: number | null = null;
+// 悬停高亮由组件管理而非 CSS :hover——键盘移动选中后 CSS hover 仍停留在鼠标处，
+// 会与键盘选中双灰并存；键盘驱动时清掉悬停高亮，保证任意时刻只有一块高亮。
+const internalHover = ref<number | null>(null);
 const onItemMouseEnter = (index: number): void => {
     hoverIndex = index;
+    internalHover.value = index;
     emit("hover", index);
 };
 
 watch(() => props.activeIndex, async (value) => {
     const fromHover = value === hoverIndex;
     hoverIndex = null;
+    if (!fromHover) internalHover.value = null;
     if (fromHover) return;
     await nextTick();
     itemRefs[value]?.scrollIntoView({block: "nearest"});
@@ -150,7 +155,7 @@ if (import.meta.client) {
             <span class="text-[var(--text-secondary)]" :class="props.density === 'compact' ? 'text-[11px]' : 'text-xs'">{{ props.title }}</span>
         </div>
 
-        <div class="min-h-0 flex-1 overflow-y-auto custom-scrollbar" :class="props.density === 'compact' ? 'p-1.5' : 'p-2'">
+        <div class="min-h-0 flex-1 overflow-y-auto custom-scrollbar" :class="props.density === 'compact' ? 'p-1.5' : 'p-2'" @mouseleave="internalHover = null">
             <template v-for="section in props.sections" :key="section.id">
                 <div v-if="section.title" class="font-semibold text-[var(--text-muted)]" :class="props.density === 'compact' ? 'px-2 pb-1 pt-2 text-[10px]' : 'px-2 py-1 text-[10px] uppercase tracking-[0.18em]'">
                     {{ section.title }}
@@ -162,7 +167,7 @@ if (import.meta.client) {
                     :ref="(el) => setItemRef(el, resolveItemIndex(item.id))"
                     type="button"
                     class="mb-0.5 flex w-full items-start text-left transition-colors last:mb-0"
-                    :class="[props.density === 'compact' ? 'gap-2 rounded-lg px-2 py-1.5' : 'gap-3 rounded-xl px-3 py-2', item.disabled ? 'cursor-not-allowed text-[var(--text-muted)] opacity-55' : resolveItemIndex(item.id) === props.activeIndex ? 'bg-[var(--bg-hover)] text-[var(--text-main)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]']"
+                    :class="[props.density === 'compact' ? 'gap-2 rounded-lg px-2 py-1.5' : 'gap-3 rounded-xl px-3 py-2', item.disabled ? 'cursor-not-allowed text-[var(--text-muted)] opacity-55' : resolveItemIndex(item.id) === props.activeIndex || resolveItemIndex(item.id) === internalHover ? 'bg-[var(--bg-hover)] text-[var(--text-main)]' : 'text-[var(--text-secondary)]']"
                     :disabled="item.disabled"
                     @mouseenter="!item.disabled && onItemMouseEnter(resolveItemIndex(item.id))"
                     @mousedown.prevent="!item.disabled && emit('select', item.id)"
