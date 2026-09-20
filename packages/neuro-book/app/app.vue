@@ -8,7 +8,7 @@ import {provideWorkbenchChrome} from "nbook/app/composables/useWorkbenchChrome";
 provideWorkbenchChrome();
 
 if (import.meta.client) {
-    // 移除 dev 启动 loader（nuxt.config 的 devBootLoaderPlugin 注入，仅 dev 存在）。
+    // 移除 dev 启动 loader（server/plugins/dev-boot-loader.ts 注入，仅 dev 存在）。
     onMounted(() => document.getElementById("nbook-boot-loader")?.remove());
     const dialog = useDialog();
     const notification = useNotification();

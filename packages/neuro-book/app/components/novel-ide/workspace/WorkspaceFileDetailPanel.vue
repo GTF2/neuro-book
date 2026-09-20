@@ -393,7 +393,7 @@ function basename(filePath: string): string {
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.total") }}</div>
                         <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.totalWords }}</div>
-                        <div v-if="readableTotalWords" class="text-[9px] leading-3 text-[var(--text-muted)]">{{ readableTotalWords }}</div>
+                        <div v-if="readableTotalWords" class="text-[11px] text-[var(--text-muted)]">{{ readableTotalWords }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.size") }}</div>
