@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroBook UI 走查 v1</title>
+<style>
+  :root { --ok:#16a34a; --warn:#d97706; --block:#dc2626; --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --bg:#f8fafc; }
+  * { box-sizing:border-box; }
+  body { font-family:"Segoe UI","Microsoft YaHei",sans-serif; margin:0; background:var(--bg); color:var(--ink); }
+  header { position:sticky; top:0; z-index:9; background:#fff; border-bottom:1px solid var(--line); padding:14px 24px; }
+  header h1 { margin:0 0 6px; font-size:20px; }
+  .summary { display:flex; gap:16px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--muted); }
+  .summary b { color:var(--ink); }
+  .pill { padding:2px 10px; border-radius:99px; color:#fff; font-weight:600; }
+  .pill.ok{background:var(--ok)} .pill.warn{background:var(--warn)} .pill.block{background:var(--block)}
+  button.act { border:1px solid var(--line); background:#fff; border-radius:8px; padding:6px 14px; cursor:pointer; font-size:13px; }
+  button.act:hover { background:#f1f5f9; }
+  main { max-width:1200px; margin:0 auto; padding:20px 24px 80px; }
+  section.group { margin-top:36px; }
+  section.group > h2 { font-size:17px; border-left:4px solid #3b82f6; padding-left:10px; }
+  section.group > p.note { color:var(--muted); font-size:13px; margin:6px 0 14px; }
+  .screen { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:20px; }
+  .screen .head { display:flex; justify-content:space-between; gap:10px; align-items:baseline; flex-wrap:wrap; }
+  .screen .head .name { font-weight:700; font-size:15px; }
+  .screen .head .wid { color:var(--muted); font-size:12px; font-family:monospace; }
+  .screen img { width:100%; border:1px solid var(--line); border-radius:8px; margin:10px 0; }
+  .meta { font-size:13px; margin:6px 0; }
+  .meta .k { color:var(--muted); margin-right:6px; }
+  .file { font-family:monospace; font-size:12px; color:#2563eb; }
+  .placeholder { border:2px dashed #cbd5e1; border-radius:8px; padding:28px; text-align:center; color:var(--muted); margin:10px 0; font-size:14px; background:#f8fafc; }
+  .fb { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; align-items:center; }
+  .fb input[type=text] { flex:1; min-width:240px; border:1px solid var(--line); border-radius:8px; padding:7px 10px; font-size:13px; }
+  .fb .mark { border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 12px; cursor:pointer; font-size:13px; }
+  .fb .mark[data-m="可以"].on { background:var(--ok); color:#fff; border-color:var(--ok); }
+  .fb .mark[data-m="待改"].on { background:var(--warn); color:#fff; border-color:var(--warn); }
+  .fb .mark[data-m="阻塞"].on { background:var(--block); color:#fff; border-color:var(--block); }
+  .status-line { font-size:12px; color:var(--muted); margin-top:6px; }
+  pre.export { background:#0f172a; color:#e2e8f0; padding:14px; border-radius:8px; font-size:12px; overflow:auto; display:none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>NeuroBook UI 流程走查 · v1（editorial 主题 / master @ 走查当日）</h1>
+  <div class="summary">
+    <span>进度：<b id="s-done">0</b> / <b id="s-total">0</b> 屏已评</span>
+    <span class="pill ok">可以 <b id="s-ok">0</b></span>
+    <span class="pill warn">待改 <b id="s-warn">0</b></span>
+    <span class="pill block">阻塞 <b id="s-block">0</b></span>
+    <span style="flex:1"></span>
+    <button class="act" onclick="exportMD()">导出 Markdown</button>
+    <button class="act" onclick="exportJSON()">导出 JSON</button>
+    <button class="act" onclick="resetAll()">清空本页反馈</button>
+  </div>
+  <div class="status-line">反馈自动保存于浏览器 localStorage；截图与本页同目录（相对路径引用）。</div>
+</header>
+<main id="app"></main>
+<pre class="export" id="export-out"></pre>
+
+<script>
+const DATA = [
+  { g:1, title:"组1 · 首次打开与进入", note:"从双击/dev 启动到看到书架的第一段体验。", screens:[
+    { id:"g1-1", name:"dev 首开加载态", status:"文字占位（未截）", how:"bun run dev 后首次访问 127.0.0.1:3000，Vite 预打包约 20s 白屏", file:null, ph:"白屏期约 20 秒后出现书架；本屏为进程启动瞬态，走查时服务已热，无法稳定复现截图。" },
+    { id:"g1-2", name:"书架首页（editorial 米色未登录视图）", status:"正常", how:"访问 http://127.0.0.1:3000/", file:"walk-g1-2-书架首页.png" },
+    { id:"g1-3", name:"书卡 hover 浮层（设置封面/删除）", status:"正常", how:"鼠标悬停书卡上沿", file:"walk-g1-3-卡片hover浮层.png" },
+    { id:"g1-4", name:"「需要确认的会话」提示区展开", status:"正常（空态：共 0 个）", how:"点击书架下方提示条", file:"walk-g1-4-需要确认的会话.png" }
+  ]},
+  { g:2, title:"组2 · 新建项目（主流程①）", note:"新建书籍入口 → 表单 → 回书架。", screens:[
+    { id:"g2-1", name:"新建书籍表单", status:"正常", how:"书架右上「新建书籍」", file:"walk-g2-1-新建书籍表单.png" },
+    { id:"g2-2", name:"书名留空直接点「创建」", status:"行为发现：无必填校验", how:"不填书名直接创建 → 以默认名「新小说」直接建书并进入工作台", file:"walk-g2-2-必填校验态.png", issue:"未出现错误提示；与旧书重名（旧书原名即「新小说」）" },
+    { id:"g2-3", name:"新建成功回书架（新卡片 + 共 2 本）", status:"正常", how:"创建后返回书架", file:"walk-g2-3-新建成功回书架.png" }
+  ]},
+  { g:3, title:"组3 · 进入工作台与大项目加载（主流程②）", note:"打开 224 章项目 xin-xiao-shuo；加载静默期见坑清单。", screens:[
+    { id:"g3-1", name:"大项目加载态（Vite 二次预打包静默期）", status:"文字占位（未截）", how:"点开大项目后 URL 变 ?project=… 但画面停留旧页约 30-40s，需手动刷新", file:null, ph:"服务端日志出现 New dependencies found 触发二次预打包；页面无任何进度提示，属可感知问题，已在报告坑清单记录。" },
+    { id:"g3-2", name:"工作台主界面全貌", status:"正常", how:"点书卡打开项目（必要时刷新一次）", file:"walk-g3-2-工作台主界面.png" },
+    { id:"g3-3", name:"侧栏章节目录树（正文卷展开）", status:"正常", how:"文件树点「正文」左侧箭头", file:"walk-g3-3-章节目录树.png" },
+    { id:"g3-4", name:"角色/世界观档案面板", status:"正常（8 个角色卡 + DRAFT 徽标）", how:"Activity Bar 人形图标", file:"walk-g3-4b-角色档案面板.png" },
+    { id:"g3-5", name:"Agent 会话面板默认态", status:"正常（空态：请选择一个对话）", how:"欢迎页「打开 Agent」卡片", file:"walk-g3-5-Agent会话面板默认态.png" },
+    { id:"g3-6", name:"剧情面板（Thread/Scene/剧本工作台）", status:"正常（额外补充屏）", how:"Activity Bar 分支图标", file:"walk-g3-5b-剧情面板.png" }
+  ]},
+  { g:4, title:"组4 · 写一章（主流程③）", note:"新建章节 → 输入 → 工具栏 → 保存/统计。写作内容建在测试章节 new-chapter，走查后已从 UI 删除还原。", screens:[
+    { id:"g4-1", name:"新建章节入口与路径对话框", status:"正常（UX 发现：需手填文件路径）", how:"欢迎页「新建章节」", file:"walk-g4-1-新建章节入口.png" },
+    { id:"g4-2", name:"编辑器空态（占位符「请输入 Markdown 内容…」）", status:"正常", how:"对话框确定后自动打开", file:"walk-g4-2-编辑器空态.png" },
+    { id:"g4-3", name:"输入中文正文态（顶部橙点=未保存）", status:"正常", how:"编辑器内直接打字", file:"walk-g4-2b-输入中文正文态.png" },
+    { id:"g4-4", name:"选区浮动工具栏", status:"正常（AI 引用/格式/表格/图片等）", how:"双击选中一个词", file:"walk-g4-3-选区工具栏.png" },
+    { id:"g4-5", name:"评论面板空态", status:"正常（当前文件还没有评论）", how:"顶栏评论图标", file:"walk-g4-4-评论面板空态.png" },
+    { id:"g4-6", name:"字数统计与保存面板（Manuscript）", status:"正常（总计 1,902,372 字 / 236 章；「未保存」+保存按钮可见）", how:"打开正文卷 index.md 时左下自动展开", file:"walk-g4-5-字数统计与保存面板.png" }
+  ]},
+  { g:5, title:"组5 · 查错（主流程④）", note:"llmlint 检查在本产品中经 Agent 工具（lint_check）触发，无独立 UI 入口。", screens:[
+    { id:"g5-1", name:"检查入口/检查中/结果列表/点击定位", status:"文字占位（无独立 UI 入口）", how:"对 Agent 说「检查本章」→ Agent 调 lint_check → 结果以会话消息返回", file:null, ph:"四态均在 Agent 会话流内呈现，需要真实模型调用才能复现（本次走查未获真实模型授权，未执行）。建议 v2 在配置好模型后补截。" }
+  ]},
+  { g:6, title:"组6 · Agent 协作流", note:"不实际调用真实模型；历史会话与文件变更审查 UI 可静态截取。", screens:[
+    { id:"g6-1", name:"会话发起与流式回复态", status:"文字占位（需真实 Provider 调用，未授权）", how:"Agent 面板选择模型后发消息", file:null, ph:"流式渲染行为未验证；当前配置的 deepseek key health-check 返回 401 Invalid token（见组10 Pi 请求记录截图）。" },
+    { id:"g6-2", name:"文件变更收件箱（Agent 改动审查：接受/还原）", status:"正常（.contrast 5 条历史变更）", how:"进入工作台欢迎页自动弹出，或 Activity Bar 收件箱图标", file:"walk-g6-2-文件变更收件箱.png" },
+    { id:"g6-3", name:"Agent 面板 + Workflow 待处理条", status:"正常（文件变更 5 · 接受全部 / 请选择一个对话后继续）", how:"右侧 Agent 面板底部", file:"walk-g6-3-会话历史列表.png" },
+    { id:"g6-4", name:"只读模式写操作审批弹窗（任务017 回归点）", status:"文字占位（需会话处于 discuss/plan 模式并触发写工具）", how:"writer profile 下让 Agent 执行写操作 → 应弹审批", file:null, ph:"需先有可用模型会话才能走到写审批一步；本次未复现。任务017 已把 bash 纳入 mutatesWorkspace 审批体系。" }
+  ]},
+  { g:7, title:"组7 · 设置与模型配置", note:"配置中心经左下齿轮打开。", screens:[
+    { id:"g7-1", name:"配置中心 · 模型连接设置", status:"正常", how:"左下齿轮 → 全局配置 → 模型设置", file:"walk-g7-1-配置中心模型设置.png" },
+    { id:"g7-2", name:"Provider 配置校验态（误加空 Provider 的警告条）", status:"正常（校验提示：「Provider custom 缺少必填的默认 PI API」+ 一键修复）", how:"新增 Provider → +添加（未填 key 时顶部出现黄色警告条）", file:"walk-g7-2-Provider配置表单.png", issue:"「+添加」立即写入前端配置态并弹「已新增」toast，无二次确认；未点「保存设定」则不落盘" },
+    { id:"g7-3", name:"文风预设选择界面（writer 50+ styles）", status:"文字占位（入口未定位）", how:"预期在 Agent Profile 或写作偏好设置内", file:null, ph:"在配置中心与工作台可见面板中未发现文风预设入口；可能在 Agent Profile 深层或需会话内指令触发。留待 v2 定位补截。" }
+  ]},
+  { g:8, title:"组8 · 管理后台", note:"无需登录可直达（本机 Boot Config 鉴权关闭）。", screens:[
+    { id:"g8-1", name:"/admin 用户管理（空态，editorial 主题）", status:"正常（确认 018 发现：空列表无空态设计）", how:"直接访问 /admin（重定向到 /admin/users）", file:"walk-g8-1-admin用户管理空态.png" }
+  ]},
+  { g:9, title:"组9 · 关键预览页抽查", note:"14 个 *.preview 路由是开发沙箱（非用户路径），每页 1 张薄截。", screens:[
+    { id:"g9-1", name:"world-engine.workbench-preview（editorial 主题唯一落地页 · 008 口径对照物）", status:"正常", how:"直接访问路由", file:"walk-g9-1-world-engine预览.png" },
+    { id:"g9-2", name:"plot-workbench.preview", status:"正常", how:"直接访问路由", file:"walk-g9-2-plot-workbench预览.png" },
+    { id:"g9-3", name:"workflow.preview", status:"正常", how:"直接访问路由", file:"walk-g9-3-workflow预览.png" },
+    { id:"g9-4", name:"plot-tree.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4a-plot-tree预览.png" },
+    { id:"g9-5", name:"plot-thread.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4b-plot-thread预览.png" },
+    { id:"g9-6", name:"plot-timeline.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4c-plot-timeline预览.png" },
+    { id:"g9-7", name:"diff-workbench.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4d-diff-workbench预览.png" },
+    { id:"g9-8", name:"dnd.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4e-dnd预览.png" },
+    { id:"g9-9", name:"model-settings.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4f-model-settings预览.png" },
+    { id:"g9-10", name:"plot.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4g-plot预览.png" },
+    { id:"g9-11", name:"structured-text-editor.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4h-structured-text-editor预览.png" },
+    { id:"g9-12", name:"subject-state-viewer.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4i-subject-state-viewer预览.png" },
+    { id:"g9-13", name:"tsx-profile-editor.preview", status:"正常（开发沙箱）", how:"直接访问路由", file:"walk-g9-4j-tsx-profile-editor预览.png" }
+  ]},
+  { g:10, title:"组10 · 异常与边界", note:"登录相关受本机鉴权开关影响，以文字占位。", screens:[
+    { id:"g10-1", name:"/login 登录页", status:"文字占位（被重定向）", how:"直接访问 /login", file:null, ph:"本机鉴权关闭时 /login 重定向到书架，登录表单无法呈现。开启鉴权后可补截。" },
+    { id:"g10-2", name:"登录错误密码提示态", status:"文字占位（同上）", how:"需先开启鉴权并建用户", file:null, ph:"依赖 /login 可达，本轮未复现。" },
+    { id:"g10-3", name:"Pi 请求记录 · 模型报错态（health-check 401 Invalid token）", status:"正常（真实报错态）", how:"Activity Bar 波形图标（Pi 请求 trace 面板）", file:"walk-g10-3-Pi请求记录-模型报错态.png" },
+    { id:"g10-4", name:"404 页面", status:"正常（Nuxt 默认 404）", how:"访问不存在路由 /no-such-page", file:"walk-g10-4-404页面.png" }
+  ]}
+];
+
+const LS = id => "walkthrough-v1-feedback-" + id;
+const app = document.getElementById("app");
+let total = 0;
+
+DATA.forEach(group => {
+  const sec = document.createElement("section");
+  sec.className = "group";
+  sec.innerHTML = `<h2>${group.title}</h2><p class="note">${group.note}</p>`;
+  group.screens.forEach(s => {
+    total++;
+    const d = document.createElement("div");
+    d.className = "screen";
+    d.setAttribute("data-walk-id", "v1-" + s.id);
+    const imgHtml = s.file
+      ? `<img src="${s.file}" alt="${s.name}" loading="lazy"><div class="meta"><span class="k">截图文件</span><span class="file">${s.file}</span></div>`
+      : `<div class="placeholder">📷 截图占位 —— ${s.ph}</div>`;
+    d.innerHTML = `
+      <div class="head"><span class="name">${s.name}</span><span class="wid">v1-${s.id}</span></div>
+      ${imgHtml}
+      <div class="meta"><span class="k">当前状态</span>${s.status}</div>
+      <div class="meta"><span class="k">复现方式</span>${s.how}</div>
+      ${s.issue ? `<div class="meta"><span class="k">⚠ 走查发现</span>${s.issue}</div>` : ""}
+      <div class="fb">
+        <input type="text" placeholder="反馈/备注（自动保存）" data-fb="v1-${s.id}">
+        <button class="mark" data-m="可以" data-id="v1-${s.id}">可以</button>
+        <button class="mark" data-m="待改" data-id="v1-${s.id}">待改</button>
+        <button class="mark" data-m="阻塞" data-id="v1-${s.id}">阻塞</button>
+      </div>
+      <div class="status-line" data-st="v1-${s.id}"></div>`;
+    sec.appendChild(d);
+  });
+  const gf = document.createElement("div");
+  gf.className = "screen";
+  gf.setAttribute("data-walk-id", "v1-g" + group.g + "-group");
+  gf.innerHTML = `
+    <div class="head"><span class="name">${group.title} · 整组反馈</span><span class="wid">v1-g${group.g}-group</span></div>
+    <div class="fb">
+      <input type="text" placeholder="整组流程反馈（自动保存）" data-fb="v1-g${group.g}-group">
+      <button class="mark" data-m="可以" data-id="v1-g${group.g}-group">可以</button>
+      <button class="mark" data-m="待改" data-id="v1-g${group.g}-group">待改</button>
+      <button class="mark" data-m="阻塞" data-id="v1-g${group.g}-group">阻塞</button>
+    </div>
+    <div class="status-line" data-st="v1-g${group.g}-group"></div>`;
+  sec.appendChild(gf);
+  total++;
+  app.appendChild(sec);
+});
+
+function save(id, patch) {
+  const prev = JSON.parse(localStorage.getItem(LS(id)) || "{}");
+  localStorage.setItem(LS(id), JSON.stringify(Object.assign(prev, patch)));
+  refresh(id);
+}
+function load(id) { return JSON.parse(localStorage.getItem(LS(id)) || "{}"); }
+function refresh(id) {
+  const st = load(id);
+  document.querySelectorAll(`[data-st="${id}"]`).forEach(el => {
+    el.textContent = st.mark ? `已标：${st.mark}` + (st.text ? ` · ${st.text}` : "") : (st.text ? `有备注未评级` : "");
+  });
+  const input = document.querySelector(`input[data-fb="${id}"]`);
+  if (input && input.value !== (st.text || "")) input.value = st.text || "";
+  document.querySelectorAll(`.mark[data-id="${id}"]`).forEach(b => b.classList.toggle("on", b.dataset.m === st.mark));
+  summary();
+}
+function summary() {
+  let done = 0, ok = 0, warn = 0, block = 0;
+  document.querySelectorAll("[data-walk-id]").forEach(el => {
+    const st = load(el.getAttribute("data-walk-id"));
+    if (st.mark || st.text) done++;
+    if (st.mark === "可以") ok++;
+    if (st.mark === "待改") warn++;
+    if (st.mark === "阻塞") block++;
+  });
+  document.getElementById("s-done").textContent = done;
+  document.getElementById("s-total").textContent = total;
+  document.getElementById("s-ok").textContent = ok;
+  document.getElementById("s-warn").textContent = warn;
+  document.getElementById("s-block").textContent = block;
+}
+document.addEventListener("input", e => { if (e.target.dataset.fb) save(e.target.dataset.fb, { text: e.target.value }); });
+document.addEventListener("click", e => {
+  if (e.target.classList.contains("mark")) {
+    const id = e.target.dataset.id, cur = load(id).mark;
+    save(id, { mark: cur === e.target.dataset.m ? null : e.target.dataset.m, at: new Date().toISOString() });
+  }
+});
+function collect() {
+  const out = [];
+  document.querySelectorAll("[data-walk-id]").forEach(el => {
+    const id = el.getAttribute("data-walk-id");
+    const name = (el.querySelector(".name") || {}).textContent || "";
+    const fileEl = el.querySelector(".file");
+    const st = load(id);
+    out.push({ walkId: id, page: name, screenshot: fileEl ? fileEl.textContent : null,
+      mark: st.mark || null, feedback: st.text || "", markedAt: st.at || null });
+  });
+  return out;
+}
+function download(name, content, type) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([content], { type }));
+  a.download = name; a.click();
+}
+function exportJSON() {
+  const rows = collect();
+  const counts = { "可以": 0, "待改": 0, "阻塞": 0 };
+  rows.forEach(r => { if (r.mark in counts) counts[r.mark]++; });
+  download("走查-v1-反馈.json", JSON.stringify({
+    version: "v1", exportedAt: new Date().toISOString(),
+    progress: { total: rows.length, reviewed: rows.filter(r => r.mark || r.feedback).length, counts },
+    screens: rows
+  }, null, 2), "application/json");
+}
+function exportMD() {
+  const rows = collect();
+  const counts = { "可以": 0, "待改": 0, "阻塞": 0 };
+  rows.forEach(r => { if (r.mark in counts) counts[r.mark]++; });
+  const lines = [
+    `# NeuroBook UI 走查反馈 v1`, ``,
+    `- 导出时间：${new Date().toLocaleString()}`,
+    `- 进度：已评 ${rows.filter(r => r.mark || r.feedback).length} / 共 ${rows.length} 屏`,
+    `- 三档计数：可以 ${counts["可以"]} · 待改 ${counts["待改"]} · 阻塞 ${counts["阻塞"]}`, ``,
+    `| walkId | 页面 | 截图 | 标记 | 反馈 |`, `|---|---|---|---|---|`
+  ];
+  rows.forEach(r => lines.push(`| ${r.walkId} | ${r.page} | ${r.screenshot || "—"} | ${r.mark || ""} | ${r.feedback || ""} |`));
+  download("走查-v1-反馈.md", lines.join("\n"), "text/markdown");
+}
+function resetAll() {
+  if (!confirm("清空本页全部反馈与标记？（不可恢复）")) return;
+  document.querySelectorAll("[data-walk-id]").forEach(el => localStorage.removeItem(LS(el.getAttribute("data-walk-id"))));
+  document.querySelectorAll("[data-walk-id]").forEach(el => refresh(el.getAttribute("data-walk-id")));
+}
+document.querySelectorAll("[data-walk-id]").forEach(el => refresh(el.getAttribute("data-walk-id")));
+</script>
+</body>
+</html>
