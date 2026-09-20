@@ -4,7 +4,7 @@
 
 - **本会话模型**：`account:bigmodel-individual-coding-plan/GLM-5.3-Flash`，推理档位 **high**。若当前会话未在此配置，开工第一句先提醒用户切换。
 - **模式**：**目标模式 + 完全访问**——缺口明确（web/ 缺 tsconfig 致 24 个测试文件无法收集）、验收客观（测试可收集且通过），小任务自主连跑。
-- **工作区**：worktree `D:\MyProject\worktrees\task-016`（分支 `task-016`，涉码任务不豁免）。
+- **工作区**：主仓库 `D:\MyProject\neuro-book`，开工先 `git checkout task-016`（分支已建好；2026-09-20 起串行代码任务用主仓库普通分支，不用 worktree）。
 - **给用户的现成命令**（直接粘贴）：
   ```
   /goal 任务016-llmlint测试补齐：按任务书补齐 web tsconfig 使 24 个测试文件可收集并通过，写交付报告
@@ -16,9 +16,9 @@
 
 ## 开工前置
 
-1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节（绝对路径，worktree 内向上搜索可能读不到）
-2. 读本任务书全文；确认在 `D:\MyProject\worktrees\task-016`（`git rev-parse --show-toplevel` 验证）
-3. worktree 环境三步：`bun install` → `bun run --cwd packages/neuro-book nuxt:prepare` → `bun run --cwd packages/neuro-book generate`（llmlint test 链路可能依赖主应用生成物，按需执行）
+1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节
+2. 读本任务书全文；确认当前分支为 `task-016`（`git branch --show-current` 验证；checkout 前先确认工作区干净）
+3. 主仓库环境已就绪（node_modules 共享，任务004 已装；主应用生成物已生成），无需环境三步
 
 ## 范围与边界
 
