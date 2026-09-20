@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroBook 架构导览（写给项目主人的大白话版）</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --panel: #ffffff;
+    --ink: #2b2724;
+    --ink-soft: #6b6259;
+    --line: #e8e2da;
+    --accent: #b4551e;
+    --accent-soft: #fdf0e7;
+    --accent-deep: #8a3f14;
+    --teal: #2f6f6a;
+    --teal-soft: #e9f3f2;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Microsoft YaHei", "PingFang SC", "Segoe UI", system-ui, sans-serif;
+    line-height: 1.75;
+    font-size: 16px;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ===== 头部 ===== */
+  header {
+    padding: 64px 0 40px;
+    text-align: center;
+  }
+  header .kicker {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 13px;
+    padding: 4px 14px;
+    border-radius: 999px;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+  }
+  header h1 { font-size: 34px; letter-spacing: 1px; }
+  header h1 .en { color: var(--accent); }
+  header .sub {
+    margin-top: 14px;
+    color: var(--ink-soft);
+    font-size: 17px;
+  }
+  header .sub strong { color: var(--ink); }
+
+  /* ===== 导航 ===== */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(250, 248, 245, 0.95);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(4px);
+  }
+  nav .nav-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 14px;
+    padding: 10px 14px;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ===== 通用节 ===== */
+  section { padding-top: 56px; }
+  .sec-tag {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 3px;
+    margin-bottom: 6px;
+  }
+  h2 { font-size: 26px; margin-bottom: 20px; }
+  h3 { font-size: 18px; margin: 22px 0 10px; }
+  p { margin-bottom: 12px; }
+  .muted { color: var(--ink-soft); font-size: 14px; }
+  .hl { background: linear-gradient(transparent 62%, var(--accent-soft) 62%); font-weight: 600; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+
+  /* ===== ① 旅程图 ===== */
+  .journey {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 18px 0 6px;
+  }
+  .j-stage {
+    display: flex;
+    gap: 16px;
+  }
+  .j-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40px;
+    flex-shrink: 0;
+  }
+  .j-dot {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .j-line { width: 2px; flex: 1; background: var(--line); min-height: 20px; }
+  .j-body { padding-bottom: 26px; }
+  .j-body:last-child .j-line { display: none; }
+  .j-body h3 { margin-top: 4px; }
+  .j-body .steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .j-step {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 14px;
+    font-size: 14px;
+  }
+  .j-step.loop { border-style: dashed; border-color: var(--accent); color: var(--accent-deep); }
+  .loop-note {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--accent-deep);
+  }
+
+  /* ===== ② 开场白示例 ===== */
+  .chat-examples { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .chat-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .chat-card .scene {
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .chat-card .bubble {
+    background: var(--teal-soft);
+    border-radius: 12px 12px 12px 4px;
+    padding: 10px 14px;
+    font-size: 15px;
+  }
+  .chat-card .reply { margin-top: 8px; font-size: 13px; color: var(--ink-soft); }
+
+  /* ===== 幕后八步 ===== */
+  details.backstage { margin-top: 16px; }
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 12px;
+  }
+  .flow .node {
+    background: var(--accent-soft);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: var(--accent-deep);
+    font-weight: 600;
+  }
+  .flow .arrow { color: var(--ink-soft); font-size: 14px; }
+  .mode-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+  .mode-card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+  .mode-card b { display: block; margin-bottom: 4px; }
+  .mode-card .gate { margin-top: 6px; font-size: 13px; color: var(--accent-deep); }
+
+  /* ===== ③ 角色卡片 ===== */
+  .roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; }
+  .role {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .role .emoji { font-size: 26px; }
+  .role b { display: block; margin: 6px 0 2px; font-size: 15px; }
+  .role .duty { font-size: 13.5px; color: var(--ink-soft); }
+  .role.lead { border: 2px solid var(--accent); background: var(--accent-soft); }
+
+  /* ===== ④ 流水线手风琴 ===== */
+  details.pipe {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+  }
+  details.pipe summary {
+    cursor: pointer;
+    padding: 15px 18px;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  details.pipe summary::-webkit-details-marker { display: none; }
+  details.pipe summary::before {
+    content: "+";
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  details.pipe[open] summary::before { content: "−"; }
+  details.pipe .pipe-body { padding: 0 18px 16px 50px; }
+  .pipe-use { margin-top: 8px; font-size: 14px; color: var(--teal); }
+
+  /* ===== ⑤ 房间标签页 ===== */
+  .tabs { position: relative; }
+  .tabs input { display: none; }
+  .tabs .tab-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: -1px; }
+  .tabs label {
+    cursor: pointer;
+    padding: 9px 18px;
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    background: #f2eee8;
+    color: var(--ink-soft);
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .tabs .tab-panel {
+    display: none;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 0 var(--radius) var(--radius) var(--radius);
+    padding: 22px 24px;
+  }
+  #tab1:checked ~ .tab-btns label[for="tab1"],
+  #tab2:checked ~ .tab-btns label[for="tab2"],
+  #tab3:checked ~ .tab-btns label[for="tab3"],
+  #tab4:checked ~ .tab-btns label[for="tab4"],
+  #tab5:checked ~ .tab-btns label[for="tab5"] {
+    background: var(--panel);
+    color: var(--accent-deep);
+    border-color: var(--line);
+    box-shadow: 0 2px 0 0 var(--panel);
+  }
+  #tab1:checked ~ .p1, #tab2:checked ~ .p2, #tab3:checked ~ .p3,
+  #tab4:checked ~ .p4, #tab5:checked ~ .p5 { display: block; }
+  .room-what { margin-bottom: 8px; }
+  .room-metaphor {
+    margin-top: 12px;
+    background: var(--teal-soft);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+  }
+
+  /* ===== ⑥ 毛病 ===== */
+  .flaws { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+  .flaw {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .flaw b { display: block; margin-bottom: 6px; }
+  .flaw .fix {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--teal);
+    background: var(--teal-soft);
+    border-radius: 8px;
+    padding: 4px 10px;
+    display: inline-block;
+  }
+
+  footer {
+    margin-top: 72px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-size: 13px;
+  }
+
+  @media (max-width: 640px) {
+    header h1 { font-size: 26px; }
+    .roles { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .chat-examples { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">写给项目主人的大白话版</span>
+    <h1>NeuroBook <span class="en">架构导览</span></h1>
+    <p class="sub">这是一台装在你电脑里的<strong>"AI 长篇小说工作室"</strong>。<br>
+    这一页用说人话的方式，带你把整个软件逛一遍——不出现吓人的技术词，出现的地方都配了比喻。</p>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-wrap">
+    <a href="#s1">① 这是什么</a>
+    <a href="#s2">② 你只需要会一件事</a>
+    <a href="#s3">③ 14 个 AI 助手</a>
+    <a href="#s4">④ 7 条流水线</a>
+    <a href="#s5">⑤ 房间导览</a>
+    <a href="#s6">⑥ 现在的毛病</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ ① ============ -->
+<section id="s1">
+  <div class="sec-tag">PART 1</div>
+  <h2>这是个什么软件？</h2>
+
+  <div class="card">
+    <p><span class="hl">一句话：它是为你一个人服务的"AI 写作剧组"。</span>你出想法，它出一整套人马——有人管剧情、有人动笔写、有人管设定、有人挑毛病——把一部几十万字的长篇小说从头到尾陪你写出来。</p>
+    <p>它<strong>不是网页</strong>，是装在你自己电脑里的软件。你写的每一个字、每一个设定，都存在你自己的电脑上，不放在别人服务器里——相当于剧组在你家现场干活，剧本稿子不出你家门。</p>
+  </div>
+
+  <h3>一部小说的完整旅程</h3>
+  <p class="muted">从"我有个模糊的点子"到"全书完稿"，软件把旅程切成了三段，每段都有对应的 AI 助手接手：</p>
+
+  <div class="journey">
+    <div class="j-stage">
+      <div class="j-rail"><div class="j-dot">1</div><div class="j-line"></div></div>
+      <div class="j-body">
+        <h3>🌱 灵感探索 —— 先聊出个故事来</h3>
+        <p>你只有一个模糊念头（比如"想写个修仙的"），AI 用轻提问帮你把念头聊成型：主角是谁？世界什么样？看点在哪？聊完你会得到一份<strong>故事概述</strong>。</p>
+      </div>
+    </div>
+    <div class="j-stage">
+      <div class="j-rail"><div class="j-dot">2</div><div class="j-line"></div></div>
+      <div class="j-body">
+        <h3>🏗️ 建书四阶段 —— 打地基</h3>
+        <p>概述变成一本有骨架的书，按顺序走四步，每步都由你拍板：</p>
+        <div class="steps">
+          <span class="j-step">① 定位（这本书写给谁看、什么调性）</span>
+          <span class="j-step">② 世界书（世界观规则）</span>
+          <span class="j-step">③ 角色（人物档案）</span>
+          <span class="j-step">④ 世界引擎（设定入库）</span>
+        </div>
+      </div>
+    </div>
+    <div class="j-stage">
+      <div class="j-rail"><div class="j-dot">3</div><div class="j-line"></div></div>
+      <div class="j-body">
+        <h3>✍️ 写作循环 —— 一章一章往前滚</h3>
+        <p>正文生产是一条循环流水线，开局重点是"黄金三章"（把读者留住的前三章）：</p>
+        <div class="steps">
+          <span class="j-step loop">设计本章</span><span class="j-step loop">你拍板落库</span><span class="j-step loop">写正文</span><span class="j-step loop">评审</span><span class="j-step loop">修订</span>
+        </div>
+        <p class="loop-note">↻ 这五步转一圈 = 一章完稿，然后滚向下一章。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ② ============ -->
+<section id="s2">
+  <div class="sec-tag">PART 2</div>
+  <h2>你只需要会一件事：聊天框说话</h2>
+
+  <div class="card">
+    <p>软件虽大，但你的入口只有一个——<span class="hl">像发微信一样，用大白话跟它说你想干嘛</span>。不用背指令、不用点层层菜单。你说完，"总指挥"会听懂、拆活、派给对应的助手，干完回来汇报。</p>
+  </div>
+
+  <h3>三条现成的开场白（复制就能用）</h3>
+  <div class="chat-examples">
+    <div class="chat-card">
+      <div class="scene">场景一：我有个点子，还很模糊</div>
+      <div class="bubble">"我想写个修仙故事，主角是个社畜穿越的，帮我聊聊方向。"</div>
+      <div class="reply">→ 灵感探索接手，几个轻问题把点子聊成故事概述。</div>
+    </div>
+    <div class="chat-card">
+      <div class="scene">场景二：概述有了，开始建书</div>
+      <div class="bubble">"按这个概述建书：女频宫斗，基调轻松带爽点。"</div>
+      <div class="reply">→ 建书四阶段依次走：定位 → 世界书 → 角色 → 世界引擎。</div>
+    </div>
+    <div class="chat-card">
+      <div class="scene">场景三：开写正文</div>
+      <div class="bubble">"开始写第一章，节奏快点，结尾留个钩子。"</div>
+      <div class="reply">→ 写作循环启动：设计 → 你拍板 → 写 → 评 → 改。</div>
+    </div>
+  </div>
+
+  <details class="backstage">
+    <summary><strong>幕后：你说完一句话，软件里发生了什么？（主链八步）</strong></summary>
+    <div class="card" style="margin-top:10px;">
+      <p class="muted">你只管说话，幕后有一条固定传动带在跑。看不懂每一步没关系，感受一下"你一句话背后有多少人在动"就行：</p>
+      <div class="flow">
+        <span class="node">你说一句话</span><span class="arrow">→</span>
+        <span class="node">总指挥接单</span><span class="arrow">→</span>
+        <span class="node">听懂你想干嘛（意图路由）</span><span class="arrow">→</span>
+        <span class="node">你拍板，设定存进"世界引擎"</span><span class="arrow">→</span>
+        <span class="node">剧情档案更新</span><span class="arrow">→</span>
+        <span class="node">打包"写作任务书"（简报）</span><span class="arrow">→</span>
+        <span class="node">写手开写</span><span class="arrow">→</span>
+        <span class="node">写完回补记录（防忘事）</span>
+      </div>
+    </div>
+  </details>
+
+  <h3>三种"档位"（模式）</h3>
+  <p class="muted">AI 帮你干活有三种力度，像汽车的挡位：</p>
+  <div class="mode-row">
+    <div class="mode-card">
+      <b>💬 讨论挡（discuss）</b>
+      只动嘴不动手：光跟你聊想法，绝不碰你的稿子和设定。
+    </div>
+    <div class="mode-card">
+      <b>📋 计划挡（plan）</b>
+      先列计划给你看："我打算这么干"，你点头了才动手。
+    </div>
+    <div class="mode-card">
+      <b>⚡ 干活挡（normal）</b>
+      直接动手改稿子、改设定，干完汇报。
+    </div>
+  </div>
+  <p class="card" style="margin-top:12px;"><span class="hl">防翻车设计：</span>挡位之间切换需要你审批，AI 不能自己悄悄换挡——它想从"光聊"变成"动手"，必须先问你。</p>
+</section>
+
+<!-- ============ ③ ============ -->
+<section id="s3">
+  <div class="sec-tag">PART 3</div>
+  <h2>住在软件里的 14 个 AI 助手</h2>
+  <p class="muted">一个剧组的不同工种。你不用记全——记得住"总指挥"就够了，其余的它帮你派。</p>
+
+  <div class="roles">
+    <div class="role lead">
+      <div class="emoji">🎧</div>
+      <b>默认指挥（总调度）</b>
+      <div class="duty">你说的话都先到它这。听完拆活、分派给其他助手、收结果。像酒店礼宾兼管家，你只跟它打交道。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🎬</div>
+      <b>剧情导演</b>
+      <div class="duty">管"故事接下来怎么走"：主线往哪推、冲突怎么起。像片场讲戏的导演。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">✍️</div>
+      <b>正文写作</b>
+      <div class="duty">真正动笔写正文的执笔人。简报给它，章节从它手里出来。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🌍</div>
+      <b>世界引擎</b>
+      <div class="duty">世界观规则的管理员兼"物理老师"：这个世界上什么能发生、什么不能，它说了算、它来记账。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🧠</div>
+      <b>记忆整理</b>
+      <div class="duty">把写过的内容整理成记忆卡片，防止 AI 写到 200 章忘了第 3 章埋的伏笔。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🔎</div>
+      <b>联网研究</b>
+      <div class="duty">外勤调研员：需要现实世界资料时出门上网查。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">📚</div>
+      <b>内容检索</b>
+      <div class="duty">图书馆管理员：在你自己的书稿和资料库里翻东西，查"上次那句话写的是啥"。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">📝</div>
+      <b>摘要</b>
+      <div class="duty">把长的压成短的：十章攒成一段梗概，方便回顾和喂给写手。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🗂️</div>
+      <b>资产助手</b>
+      <div class="duty">道具间管理员：角色卡、地点卡、设定集这些"家当"归它管。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🖊️</div>
+      <b>行内编辑</b>
+      <div class="duty">坐在你旁边润色的编辑：正文字里行间选中几句就能让它改。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🎲</div>
+      <b>跑团主持</b>
+      <div class="duty">文字跑团的游戏主持人：带你即兴玩互动故事。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🎭</div>
+      <b>跑团写作</b>
+      <div class="duty">跑团的场记兼代笔：把大家的即兴演出整理成文。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🫅</div>
+      <b>角色模拟</b>
+      <div class="duty">扮成你书里的角色跟你对话，帮你"试戏"：角色这么说话对不对味。</div>
+    </div>
+    <div class="role">
+      <div class="emoji">🧪</div>
+      <b>世界模拟</b>
+      <div class="duty">沙盘推演参谋：推演"如果剧情这样改，这个世界会跟着发生什么"。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ④ ============ -->
+<section id="s4">
+  <div class="sec-tag">PART 4</div>
+  <h2>7 条流水线各干嘛</h2>
+  <p class="muted">流水线 = 预设好的"标准工序"。单干的是某个助手，流水线是一队助手按流程接力。点开看详情：</p>
+
+  <details class="pipe">
+    <summary>💡 多角度脑暴</summary>
+    <div class="pipe-body">
+      <p>同一个问题，从好几个角度各出一版想法摆在你面前。比如"女主为什么离开家族"，它能给你情感线、利益线、秘密线三个不同答案。</p>
+      <div class="pipe-use">什么时候用：卡文、想法单一、想找新角度的时候。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>🔄 写评修循环</summary>
+    <div class="pipe-body">
+      <p>写完就评、评完就改，转几圈直到过关。像"写手写、编辑评、改完再评"的小型流水线。</p>
+      <div class="pipe-use">什么时候用：任何稿子想提质，不限于整章。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>🏭 章级闭环（一章的完整生产线）</summary>
+    <div class="pipe-body">
+      <p>从设计到定稿一条龙，出厂前过<strong>三道质检</strong>：</p>
+      <p>① <strong>一致性</strong>——防止角色突然"全知全能"（明明不知道的事却知道）、前后设定打架；<br>
+      ② <strong>节奏钩子</strong>——读着不困，章尾让人想翻页；<br>
+      ③ <strong>文风 AI 味</strong>——把"作为一个 AI"式的机器腔挑出来改掉。</p>
+      <div class="pipe-use">什么时候用：正式生产每一章时的主力流水线。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>🩺 全书一致性体检</summary>
+    <div class="pipe-body">
+      <p>全书完稿（或写到一大段）后整体查一遍：时间线有没有穿帮、人设前后是否一致、世界观规则有没有被自己打脸。</p>
+      <div class="pipe-use">什么时候用：几十万字之后，你记不住、AI 也容易忘的时候。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>💰 商业拆书</summary>
+    <div class="pipe-body">
+      <p>把市场上成功的书拆开看"它为什么卖"：卖点、节奏、读者情绪点怎么铺的。是学习用的"逆向工程"。</p>
+      <div class="pipe-use">什么时候用：想对标某本热门书、找商业感觉。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>🦴 结构拆书</summary>
+    <div class="pipe-body">
+      <p>比商业拆书更"骨科"：按故事骨架拆——三幕结构、章节节拍、伏笔布点。看它的骨头长什么样，不管卖不卖。</p>
+      <div class="pipe-use">什么时候用：想学一本经典的结构设计。</div>
+    </div>
+  </details>
+
+  <details class="pipe">
+    <summary>🗣️ 角色问答扇出</summary>
+    <div class="pipe-body">
+      <p>同一串问题，同时发给多个角色各答一遍，像记者群访——快速收集不同视角的反应。比如问五个角色"你怎么看主角的决定"，一次拿回五份答案。</p>
+      <div class="pipe-use">什么时候用：写群戏前收集各角色立场、检验角色区分度。</div>
+    </div>
+  </details>
+</section>
+
+<!-- ============ ⑤ ============ -->
+<section id="s5">
+  <div class="sec-tag">PART 5</div>
+  <h2>主要房间导览</h2>
+  <p class="muted">把软件想成一间工作室，你常去的就这五个房间。点标签切换：</p>
+
+  <div class="tabs">
+    <input type="radio" name="room" id="tab1" checked>
+    <input type="radio" name="room" id="tab2">
+    <input type="radio" name="room" id="tab3">
+    <input type="radio" name="room" id="tab4">
+    <input type="radio" name="room" id="tab5">
+    <div class="tab-btns">
+      <label for="tab1">📚 书架</label>
+      <label for="tab2">✒️ 工作台</label>
+      <label for="tab3">🎧 Agent 面板</label>
+      <label for="tab4">⚙️ 设置</label>
+      <label for="tab5">🌍 世界引擎</label>
+    </div>
+    <div class="tab-panel p1">
+      <div class="room-what">
+        <b>这是什么：</b>你所有作品的家。每本书在这是独立的一个"项目"，点开就进入那本书的世界。
+        <p><b>你会在这干嘛：</b>新建书、翻旧作、决定今天写哪本。</p>
+      </div>
+      <div class="room-metaphor">📖 比喻：书房里那面书架墙——每本书一个格子，互不打扰。稿子都放在你自己家里，不外借。</div>
+    </div>
+    <div class="tab-panel p2">
+      <div class="room-what">
+        <b>这是什么：</b>写正文的主战场。左边章节树，中间稿纸，边上各类辅助面板（剧情、角色、AI 聊天）。
+        <p><b>你会在这干嘛：</b>跟 AI 一起产正文、选中几句话让"行内编辑"润色、看本章进度。</p>
+      </div>
+      <div class="room-metaphor">🏭 比喻：剧组的主片场。你大部分时间都在这间屋里。</div>
+    </div>
+    <div class="tab-panel p3">
+      <div class="room-what">
+        <b>这是什么：</b>AI 团队的"指挥室+监控屏"。聊天框在这，各助手的对话记录和干活进度也在这。
+        <p><b>你会在这干嘛：</b>说话下指令、翻看 AI 之前的对话、审批它的申请（比如换挡位）。</p>
+      </div>
+      <div class="room-metaphor">🎧 比喻：导演的监视器+对讲机台。PART 2 说的"聊天框说话"就发生在这里。</div>
+    </div>
+    <div class="tab-panel p4">
+      <div class="room-what">
+        <b>这是什么：</b>软件的配电房：接哪个 AI 服务、用哪个模型、各种参数都在这调。
+        <p><b>你会在这干嘛：</b>老实说——大部分时候什么都不用干。配好一次之后很少回来。</p>
+      </div>
+      <div class="room-metaphor">⚙️ 比喻：配电房。重要，但你不该天天进。（现在的问题：这个房间太挤、标签太多是英文，见 PART 6。）</div>
+    </div>
+    <div class="tab-panel p5">
+      <div class="room-what">
+        <b>这是什么：</b>你这本书的世界观总账房：世界规则、势力、地理、历史，都作为"设定"存在这，AI 写作时随时来查账。
+        <p><b>你会在这干嘛：</b>建书阶段存设定；写作阶段看 AI 有没有守规矩；改设定做"如果这样会怎样"的推演。</p>
+      </div>
+      <div class="room-metaphor">🌍 比喻：这个世界的"物理法则登记处"。设定进来了，全剧组都必须遵守——这就是防"前后矛盾"的地基。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ⑥ ============ -->
+<section id="s6">
+  <div class="sec-tag">PART 6</div>
+  <h2>现在的毛病（诚实清单）</h2>
+  <p class="muted">软件好用与否，用真实任务说话。目前这些地方别扭——好消息是每一处都已登记在案、有对应的改进盘点。</p>
+
+  <div class="flaws">
+    <div class="flaw">
+      <b>🚪 开门黑：没有新手引导</b>
+      打开软件直接就是一个大工作台，第一步该点哪全靠自己猜。"我想开始写书"没有一个显眼的大按钮带你走。
+      <div class="fix">改进方向已记录</div>
+    </div>
+    <div class="flaw">
+      <b>🌀 所有功能挤在一扇门后</b>
+      整个主界面塞在同一个"大房间"里靠切换面板变化——没有网址变化、没有面包屑、不能"后退"、不能把某个界面收藏或发给别人定位。像一套没有门牌号、没有走廊的房间。
+      <div class="fix">改进方向已记录（数据：主界面占前端代码 73%，是重构主战场）</div>
+    </div>
+    <div class="flaw">
+      <b>⚙️ 设置过载</b>
+      配置 AI 的地方选项又多又密，还有不少英文单词，不看文档不知道每个开关管什么。
+      <div class="fix">改进方向已记录</div>
+    </div>
+    <div class="flaw">
+      <b>🔤 界面英文多</b>
+      核心创作流程中文，但设置、部分面板和报错信息里英文不少，对非技术用户不友好。
+      <div class="fix">改进方向已记录</div>
+    </div>
+    <div class="flaw">
+      <b>🧪 开发者调试页混在正式页面里</b>
+      有 14 个给开发者看效果的"试衣间"页面和正式页面排在同一层——对开发者是便利，对用户是杂音。
+      <div class="fix">改进方向已记录</div>
+    </div>
+    <div class="flaw">
+      <b>🏠 个别"房间"超载</b>
+      有些界面文件大得离谱（最大的一个相当于一部中篇小说的字数），说明功能全糊在一处——改一处容易碰坏另一处，这是上面几条毛病的病根。
+      <div class="fix">改进方向已记录（病根在信息架构，不在视觉）</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>NeuroBook 架构导览 · 2026-09-20 生成 · 给项目主人的非技术版</p>
+  <p class="muted">材料来源：docs/knowledge/模块地图.md + 主链/skill/角色/流水线盘点。本页为单文件网页，不依赖网络，双击即开。作品数据均在本地电脑，不出门。</p>
+</footer>
+
+</div>
+</body>
+</html>
