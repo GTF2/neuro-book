@@ -25,7 +25,7 @@
 | 012 | llmlint 中文素材整理 | 工程队·常驻窗口 | Flash + high | 目标模式 + 完全访问 | **完成**（夜间巡查验收 2026-09-20：一页说明含可复核规则统计+素材清单 15 项带路径+外部资料 7 条带链接+术语表 16 条） | ✅ 已建：`任务012-llmlint中文素材.md`（文档类，无 worktree） |
 | 013 | 全仓安全审计 | 临时工程队 | Flash + high | 闲时改派直接执行（详见历史决议 2026-09-20） | **完成**（夜间巡查验收 + 前线终审 2026-09-20：三块覆盖齐、SUMMARY 大白话三档分级；依赖审计断网后已补跑实测——81 项（1 critical @nuxt/devtools、undici 7.28.0 带 5 条公告），原始输出存档 `bun-audit-raw.json`。修复排期已定 → 任务015） | 产出：`docs/security-audit-20260920/`（SUMMARY+REPORT+5 分册+findings.json） |
 | 014 | 上游动向调研 | 临时工程队 | Flash + high | 闲时改派直接执行（详见历史决议 2026-09-20） | **完成**（夜间巡查验收 + 前线终审 2026-09-20：新 UI 进展专节（Task 146 shadcn-vue 五阶段）与发布节奏齐；网络复核已执行；**issue #191/#192/#195 三件套已确认为任务008 跟踪锚点**，已升级为盯梢判据） | 产出：`docs/knowledge/上游动向调研.md` |
-| 015 | 依赖安全修复（undici ≥7.29.0 必修 + @nuxt/devtools 处置） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，worktree `../worktrees/task-015`） | 待办 | ✅ 已建：`任务015-依赖安全修复.md` |
+| 015 | 依赖安全修复（undici ≥7.29.0 必修 + @nuxt/devtools 处置） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，主仓库普通分支 task-015） | **待审**（2026-09-20：undici ^7.29.0 实落 7.29.1；devtools 走 A 线 override 实落 3.4.2，critical 清零；audit 30→28 且余量均为拍板不处理噪音；回归 79 条全绿+冒烟 200） | ✅ 已建：`任务015-依赖安全修复.md` |
 | 016 | llmlint 测试补齐（web/ tsconfig，24 文件收集失败） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，worktree `../worktrees/task-016`） | 待办 | ✅ 已建：`任务016-llmlint测试补齐.md` |
 
 ## 状态规则
