@@ -26,7 +26,7 @@
 | 013 | 全仓安全审计 | 临时工程队 | Flash + high | 闲时改派直接执行（详见历史决议 2026-09-20） | **完成**（夜间巡查验收 + 前线终审 2026-09-20：三块覆盖齐、SUMMARY 大白话三档分级；依赖审计断网后已补跑实测——81 项（1 critical @nuxt/devtools、undici 7.28.0 带 5 条公告），原始输出存档 `bun-audit-raw.json`。修复排期已定 → 任务015） | 产出：`docs/security-audit-20260920/`（SUMMARY+REPORT+5 分册+findings.json） |
 | 014 | 上游动向调研 | 临时工程队 | Flash + high | 闲时改派直接执行（详见历史决议 2026-09-20） | **完成**（夜间巡查验收 + 前线终审 2026-09-20：新 UI 进展专节（Task 146 shadcn-vue 五阶段）与发布节奏齐；网络复核已执行；**issue #191/#192/#195 三件套已确认为任务008 跟踪锚点**，已升级为盯梢判据） | 产出：`docs/knowledge/上游动向调研.md` |
 | 015 | 依赖安全修复（undici ≥7.29.0 必修 + @nuxt/devtools 处置） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-015`） | **完成**（2026-09-20 前线审合：undici ^7.29.0 实落 7.29.1、devtools A 线 override 实落 3.4.2；前线分支实测 `bun audit --audit-level=critical` 清零、undici 无条目；回归 79 全绿+冒烟 200。剩余 28 high 为拍板不处理的开发依赖噪音） | ✅ 已建：`任务015-依赖安全修复.md` |
-| 016 | llmlint 测试补齐（web/ tsconfig，24 文件收集失败） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-016`） | 待办 | ✅ 已建：`任务016-llmlint测试补齐.md` |
+| 016 | llmlint 测试补齐（web/ tsconfig，24 文件收集失败） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-016`） | **完成**（2026-09-20 前线审合：根因是 web 两个生成步骤缺失而非缺 tsconfig，repo 零改动；前线重跑实测 vitest 346 + bun test 80 全绿；固化方案=README 一行，见任务书裁决） | ✅ 已建：`任务016-llmlint测试补齐.md` |
 | 017 | 严重漏洞最小修复（S1 `.nbook` 保留路径 + S2/S3 围栏标志位） | 工程队 | Flash + high | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-017`） | **完成**（2026-09-20 前线审合：S1 保留路径两路拦截+S2/S3 标志位落地，4 新用例+回归 79+file-tools 50 全绿，ocr 0 blocking、ponytail Lean；遗留：Windows 尾点规约边界与删除/移动端点登记后续加固） | ✅ 已建：`任务017-严重漏洞最小修复.md` |
 
 ## 状态规则

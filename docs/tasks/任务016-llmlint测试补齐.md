@@ -55,8 +55,21 @@
 
 ## 疑问区（工程队填写）
 
-（空）
+1. **根因与任务书预期不符**：`web/tsconfig.json` 一直存在且正确（extends `.nuxt/tsconfig.json` 是 Nuxt 标准模式）；TSCONFIG_ERROR 的根因是 web 子项目的两个**本机生成步骤**缺失——`cd web && bun install`（web 有独立 bun.lock，装 diff-match-patch 等 818 包）与 `bun x nuxt prepare`（生成 `.nuxt/tsconfig.json`）。两者均为 gitignore 生成物，**本任务 repo 零文件改动**。
+2. **持久化建议（请前线定夺）**：新 clone/CI 直接跑 `bun run --cwd packages/llmlint test` 仍会复现收集失败。如需固化，最小改法是把 `cd web && bun install && bun x nuxt prepare` 挂进 llmlint test 链或 README 开发前置节——因涉及 test script 与第三方包安装行为，超出"零配置改动"的实测结论，未擅自落地。
 
 ## 交付报告（工程队填写）
 
-（空。格式：做了什么/为什么/自测结果/遗留问题/本窗口会话 ID）
+**做了什么**：诊断 24 文件 TSCONFIG_ERROR 的真实根因（web/tsconfig.json extends 生成物 `.nuxt/tsconfig.json` 断链 + web/node_modules 缺失致 diff-match-patch 找不到），在本机补齐两个生成步骤（`cd web && bun install` 818 包、`bun x nuxt prepare` 生成类型），验证全部测试恢复。**repo 零文件改动**（skill/ 零改动佐证边界遵守；web/bun.lock 无变化）。
+
+**为什么**：修复任务005 登记的 llmlint 测试收集缺口。
+
+**自测结果（前后对比）**：
+- 前（任务005 基线）：36 文件中 24 个 TSCONFIG_ERROR 收集失败，仅 12 文件 119 条可跑。
+- 后：`bun run --cwd packages/llmlint test` 完整链（registry:build → test:vitest → test:bun）全通——**vitest 36/36 文件、346 条全绿；bun test 80 条全绿**；无 TSCONFIG_ERROR、无 FAIL。
+
+**遗留问题**：疑问区 2（持久化固化方案待前线定夺）；新基线数字（346+80）建议前线更新任务005 基线报告口径。
+
+**状态**：**待审**。
+
+**本窗口会话 ID**：sess_f7630ad3-9078-4e74-b751-945479569d6e
