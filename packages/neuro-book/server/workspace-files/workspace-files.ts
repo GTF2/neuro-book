@@ -239,15 +239,17 @@ export function resolveWorkspacePath(root: AbsoluteFsPath, inputPath: string): A
 }
 
 /**
- * 拒绝写入路径中任何位置的 `.nbook` 段。`.nbook/` 是 Workspace 系统目录
+ * 拒绝变更路径中任何位置的 `.nbook` 段。`.nbook/` 是 Workspace 系统目录
  * （agent workflow 编译源、变量存储、恢复区等，内容会被宿主加载或求值），
- * 写端点与上传面必须拦截，防止恶意项目包导入即向系统目录投毒。
- * 保留名比对对齐 normalizeProjectRoot 的小写口径。
+ * 写入、创建、移动、删除等变更操作都必须拦截，防止恶意项目包导入后向系统目录
+ * 投毒或破坏既有系统文件。保留名比对对齐 normalizeProjectRoot 的小写口径；
+ * 段尾点/空格必须剥离后比对——Win32 打开路径时会规约掉段尾点空格
+ * （`.nbook.` 实际命中 `.nbook`），而 JS path.resolve 不做该规约。
  */
 export function assertNotReservedWorkspaceWritePath(filePath: string): void {
     const segments = filePath.replaceAll("\\", "/").split("/").filter(Boolean);
-    if (segments.some((segment) => segment.toLocaleLowerCase("en-US") === ".nbook")) {
-        throw new Error(`路径包含系统保留目录 .nbook，禁止写入: ${filePath}`);
+    if (segments.some((segment) => segment.replace(/[. ]+$/u, "").toLocaleLowerCase("en-US") === ".nbook")) {
+        throw new Error(`路径包含系统保留目录 .nbook，禁止变更: ${filePath}`);
     }
 }
 
@@ -359,6 +361,7 @@ export async function workspacePathExists(rootInput: AbsoluteFsPath, filePath: s
  * 创建新文本文件，已存在时拒绝覆盖。
  */
 export async function createWorkspaceFile(input: WorkspaceNewFileInput): Promise<WorkspaceFileNode> {
+    assertNotReservedWorkspaceWritePath(input.filePath);
     const root = await resolveWorkspaceOperationRoot(input.root, true);
     const absolutePath = await resolveWorkspaceContentPath(root, input.filePath);
     if (!isEditableTextPath(absolutePath)) {
@@ -381,6 +384,7 @@ export async function createWorkspaceFile(input: WorkspaceNewFileInput): Promise
  * 创建目录，可选同时创建 index.md 与 state.md。
  */
 export async function createWorkspaceDirectory(input: WorkspaceNewDirectoryInput): Promise<WorkspaceFileNode> {
+    assertNotReservedWorkspaceWritePath(input.dirPath);
     const root = await resolveWorkspaceOperationRoot(input.root, true);
     const absolutePath = await resolveWorkspaceContentPath(root, input.dirPath);
     if (await pathExists(absolutePath)) {
@@ -406,6 +410,7 @@ export async function createWorkspaceDirectory(input: WorkspaceNewDirectoryInput
  * 给已有内容节点目录创建 state.md，已存在时拒绝覆盖。
  */
 export async function createWorkspaceContentState(input: WorkspaceContentStateCreateInput): Promise<WorkspaceFileNode> {
+    assertNotReservedWorkspaceWritePath(input.dirPath);
     const root = await resolveWorkspaceOperationRoot(input.root, false);
     const absolutePath = await resolveWorkspaceContentPath(root, input.dirPath);
     const stat = await fs.stat(absolutePath);
@@ -493,6 +498,9 @@ export async function convertWorkspaceFileToDirectory(input: WorkspaceFileToDire
  * 移动或重命名文件/目录，目标存在时拒绝覆盖。
  */
 export async function renameWorkspacePath(rootInput: AbsoluteFsPath, fromPath: string, toPath: string): Promise<WorkspaceFileNode> {
+    // 移入 .nbook 等于写入系统目录，移出等于抽走系统文件，源与目标都要拦。
+    assertNotReservedWorkspaceWritePath(fromPath);
+    assertNotReservedWorkspaceWritePath(toPath);
     const root = await resolveWorkspaceOperationRoot(rootInput, false);
     const fromAbsolutePath = await resolveWorkspaceContentPath(root, fromPath);
     const toAbsolutePath = await resolveWorkspaceEntryPath(root, toPath);
@@ -516,6 +524,7 @@ export async function renameWorkspacePath(rootInput: AbsoluteFsPath, fromPath: s
  * 删除工作区路径。
  */
 export async function deleteWorkspacePath(rootInput: AbsoluteFsPath, filePath: string, recursive: boolean): Promise<void> {
+    assertNotReservedWorkspaceWritePath(filePath);
     const root = await resolveWorkspaceOperationRoot(rootInput, false);
     const absolutePath = await resolveWorkspaceEntryPath(root, filePath);
     if (!await pathExists(absolutePath)) {
