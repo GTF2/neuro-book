@@ -71,7 +71,8 @@ describe("Workspace文件操作真实路径范围", () => {
 
         await expect(deleteWorkspacePath(root, ".nbook/system.md", false))
             .rejects.toThrow("系统保留目录 .nbook");
-        await expect(access(path.join(projectRoot, ".nbook", "system.md"))).resolves.toBeUndefined();
+        // Bun on Windows 的 access 成功时 resolve null 而非 undefined，裸 await 断言"文件还在"
+        await access(path.join(projectRoot, ".nbook", "system.md"));
 
         await expect(renameWorkspacePath(root, ".nbook/system.md", "stolen.md"))
             .rejects.toThrow("系统保留目录 .nbook");
