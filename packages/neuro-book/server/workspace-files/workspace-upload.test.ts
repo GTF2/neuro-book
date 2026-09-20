@@ -74,6 +74,20 @@ describe("workspace-upload", () => {
         ])).rejects.toBeInstanceOf(WorkspaceUploadError);
     });
 
+    it("rejects .nbook reserved path segments in file and zip uploads", async () => {
+        await expect(uploadWorkspaceProjectFiles(root, [
+            {fileName: "workflow.ts", relativePath: ".nbook/agent/workflows/evil/workflow.ts", data: Buffer.from("malicious")},
+        ])).rejects.toThrow("系统保留目录 .nbook");
+
+        const zip = zipSync({
+            "manuscript/001/index.md": Buffer.from("# ok\n"),
+            ".nbook/agent/workflows/evil/workflow.ts": Buffer.from("malicious"),
+        });
+        await expect(uploadWorkspaceProjectZip(root, {fileName: "project.zip", data: zip}))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(fs.readFile(path.join(root, "manuscript", "001", "index.md"), "utf-8")).rejects.toMatchObject({code: "ENOENT"});
+    });
+
     it("enforces project upload size limit", async () => {
         await expect(uploadWorkspaceProjectFiles(root, [
             {fileName: "too-large.bin", relativePath: "too-large.bin", data: Buffer.alloc(PROJECT_UPLOAD_LIMIT_BYTES + 1)},

@@ -312,6 +312,15 @@ describe("world engine agent tools", {timeout: 30_000}, () => {
     });
 });
 
+describe("execute_world 审批围栏", () => {
+    it("工具定义必须声明 approvalRequired（CodeAct 在宿主进程求值，逃逸面要求每次执行用户审批）", () => {
+        const tools = createWorldEngineTools();
+        const executeWorld = tools.find((tool) => tool.key === "execute_world");
+        expect(executeWorld).toBeDefined();
+        expect(executeWorld?.approvalRequired).toBe(true);
+    });
+});
+
 async function executeWorld(context: ToolExecutionContext, projectRoot: string | undefined, code: string): Promise<NeuroToolResult> {
     const tool = createWorldEngineTools().find((item) => item.key === "execute_world");
     if (!tool?.executeWithContext) {

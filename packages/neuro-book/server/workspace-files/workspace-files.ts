@@ -239,6 +239,19 @@ export function resolveWorkspacePath(root: AbsoluteFsPath, inputPath: string): A
 }
 
 /**
+ * 拒绝写入路径中任何位置的 `.nbook` 段。`.nbook/` 是 Workspace 系统目录
+ * （agent workflow 编译源、变量存储、恢复区等，内容会被宿主加载或求值），
+ * 写端点与上传面必须拦截，防止恶意项目包导入即向系统目录投毒。
+ * 保留名比对对齐 normalizeProjectRoot 的小写口径。
+ */
+export function assertNotReservedWorkspaceWritePath(filePath: string): void {
+    const segments = filePath.replaceAll("\\", "/").split("/").filter(Boolean);
+    if (segments.some((segment) => segment.toLocaleLowerCase("en-US") === ".nbook")) {
+        throw new Error(`路径包含系统保留目录 .nbook，禁止写入: ${filePath}`);
+    }
+}
+
+/**
  * 建立Workspace文件操作使用的真实root。
  *
  * root本身先受State Root约束；写操作可按旧合同安全创建缺失root，但不会穿过
@@ -320,6 +333,7 @@ export async function readWorkspaceTextFile(rootInput: AbsoluteFsPath, filePath:
  * 覆盖写入工作区内文本文件。
  */
 export async function writeWorkspaceTextFile(rootInput: AbsoluteFsPath, filePath: string, content: string): Promise<void> {
+    assertNotReservedWorkspaceWritePath(filePath);
     const root = await resolveWorkspaceOperationRoot(rootInput, true);
     const absolutePath = await resolveWorkspaceContentPath(root, filePath);
     if (!isEditableTextPath(absolutePath)) {

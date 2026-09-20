@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import {unzipSync} from "fflate";
 import {
+    assertNotReservedWorkspaceWritePath,
     pathExists,
     resolveWorkspacePath,
 } from "nbook/server/workspace-files/workspace-files";
@@ -141,6 +142,7 @@ function normalizeUploadPath(inputPath: string): string {
     if (segments.some((segment) => !segment || segment === "." || segment === "..")) {
         throw new WorkspaceUploadError(`上传路径包含非法片段: ${inputPath}`);
     }
+    assertNotReservedWorkspaceWritePath(normalizedPath);
     return segments.join("/");
 }
 

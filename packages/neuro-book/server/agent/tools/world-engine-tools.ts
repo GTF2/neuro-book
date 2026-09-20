@@ -77,6 +77,9 @@ function tool<TSchemaValue extends TSchema>(
         name: key,
         label: key,
         executionMode: "sequential",
+        // CodeAct 沙箱无法完全隔离全局对象（LLM 输出的代码在宿主进程求值），每次执行必须用户审批；
+        // 对齐 workflow-tools.ts run_workflow 的先例，中期方案是迁往真隔离执行环境。
+        approvalRequired: true,
         description,
         parameters,
         async execute() {
