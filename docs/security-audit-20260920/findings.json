@@ -1,469 +1,951 @@
 [
-  {
-    "verdict": "confirmed",
-    "fingerprint": "workspace-workflow-new-function-exec",
-    "title": "项目 Workspace 内的 workflow/配置文件被 new Function 求值：导入恶意项目即在宿主进程执行任意代码",
-    "description": "WorkflowCatalog 将项目 <projectRoot>/.nbook/agent/workflows/*/workflow.ts 的源码 TS 转译后用 new Function 在宿主主进程求值；restrictedRequire 只拦截 require，不隔离 process/globalThis/动态 import。list()/get() 即触发求值，而 catalog 列表在 HTTP 端点 /api/agent/workflow/catalog、list_workflows 工具与 harness 会话打开路径上被调用。workspace 写端点与 zip 项目导入（upload-project）未见对 .nbook 系统目录的写入保留拦截（两路独立猎手交叉确认，父代理复核 write.put.ts 无保留名规则）。组合后果：导入或打开含恶意 workflow.ts / world-engine 配置（calendar.ts、schema/index.ts，经 runtime-artifact-import.ts:49 的 new Function 动态 import 同类通路）的项目 = 静默任意代码执行。",
-    "root_cause": "把不可信 workspace 文件当代码在宿主进程求值，且求值触发点（列表/打开项目）没有审批门；写路径未把 .nbook 系统目录列为保留区。",
-    "intended_behavior": "不可信 workspace 内容不得在宿主进程获得代码执行能力；workflow 求值应发生在隔离边界（子进程+无网+权限收口）或至少要求显式审批，且系统目录 .nbook 应对通用文件写端点保留。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/api/agent/workflow/catalog.get.ts", "line": 25, "scope": "HTTP", "description": "catalog 列表端点调用 workflows.list()（harness 会话打开与 list_workflows 工具同为触发点，猎手定位 harness:3003/4046/5188 未逐行复核）"},
-      {"kind": "propagation", "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts", "line": 55, "scope": "文件系统", "description": "项目 workflow 根 = projectRoot/.nbook/agent/workflows，loadItem 对每个 workflow.ts 读源码求值（项目源不缓存，重复触发）"},
-      {"kind": "propagation", "file": "packages/neuro-book/server/api/workspace-files/write.put.ts", "line": 1, "scope": "HTTP", "description": "workspace 文件写端点按 containment 只限制在项目根内，.nbook 子目录可写；upload-project zip 导入同理"},
-      {"kind": "sink", "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts", "line": 123, "scope": "宿主进程", "description": "new Function(exports, module, require, Type, js) 求值转译后的 workflow 顶层代码，require 被替换但全局对象可达"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts", "line": 123, "description": "const factory = new Function(\"exports\", \"module\", \"require\", \"Type\", js); factory(...)（父代理亲自复核）"},
-      {"file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts", "line": 119, "description": "restrictedRequire 仅抛错拦截 require，未隔离 process/fetch/globalThis"},
-      {"file": "packages/neuro-book/server/utils/runtime-artifact-import.ts", "line": 49, "description": "new Function(\"specifier\", \"return import(specifier)\") 动态 import 编译产物（world-engine 配置/profile 同类通路）"},
-      {"file": "packages/neuro-book/server/workspace-files/project-identity.ts", "line": 181, "description": "normalizeProjectRoot 仅约束 projectRoot 单段名，不约束项目内 .nbook 子路径写入"}
-    ],
-    "conditions": [
-      {"kind": "data_state", "description": "攻击者需能写入目标机器上某项目的 .nbook/agent/workflows（如诱导导入/克隆恶意分享项目、或借助 agent 写工具），或已是本机可调用 API 的进程"},
-      {"kind": "authentication_level", "description": "鉴权关闭（开发默认）时本机任意进程可直接调用 API 打开项目触发；鉴权开启时需登录会话"}
-    ],
-    "execution": {
-      "attacker_perspective": "恶意项目作者：分享一个内含 .nbook/agent/workflows/backdoor/workflow.ts 的小说项目；受害者导入并打开该项目即触发。",
-      "payloads": [
-        "workflow.ts 顶层：const proc = ({}).constructor.constructor('return process')(); proc.mainModule.require('node:fs').writeFileSync('./pwned.txt','rce')"
-      ],
-      "instructions": [
-        "静态复核：读 workflow-catalog.ts:109-124 确认 new Function 求值与 require 拦截范围",
-        "动态复核（本次未执行，任务约束只读）：在测试 State Root 放入上述 workflow.ts，打开项目后观察 catalog 列表是否执行顶层代码产生 pwned.txt"
-      ],
-      "observed_result": "本次为源码级确认（未动态复现）：求值点、触发链与写通路均经两路独立猎手与父代理读源码交叉证实；new Function 运行于宿主主进程全局作用域为 JS 语义事实。"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "workspace-workflow-new-function-exec",
+        "title": "项目 Workspace 内的 workflow/配置文件被 new Function 求值：导入恶意项目即在宿主进程执行任意代码",
+        "description": "WorkflowCatalog 将项目 <projectRoot>/.nbook/agent/workflows/*/workflow.ts 的源码 TS 转译后用 new Function 在宿主主进程求值；restrictedRequire 只拦截 require，不隔离 process/globalThis/动态 import。list()/get() 即触发求值，而 catalog 列表在 HTTP 端点 /api/agent/workflow/catalog、list_workflows 工具与 harness 会话打开路径上被调用。workspace 写端点与 zip 项目导入（upload-project）未见对 .nbook 系统目录的写入保留拦截（两路独立猎手交叉确认，父代理复核 write.put.ts 无保留名规则）。组合后果：导入或打开含恶意 workflow.ts / world-engine 配置（calendar.ts、schema/index.ts，经 runtime-artifact-import.ts:49 的 new Function 动态 import 同类通路）的项目 = 静默任意代码执行。",
+        "root_cause": "把不可信 workspace 文件当代码在宿主进程求值，且求值触发点（列表/打开项目）没有审批门；写路径未把 .nbook 系统目录列为保留区。",
+        "intended_behavior": "不可信 workspace 内容不得在宿主进程获得代码执行能力；workflow 求值应发生在隔离边界（子进程+无网+权限收口）或至少要求显式审批，且系统目录 .nbook 应对通用文件写端点保留。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/api/agent/workflow/catalog.get.ts",
+                "line": 25,
+                "scope": "HTTP",
+                "description": "catalog 列表端点调用 workflows.list()（harness 会话打开与 list_workflows 工具同为触发点，猎手定位 harness:3003/4046/5188 未逐行复核）"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts",
+                "line": 55,
+                "scope": "文件系统",
+                "description": "项目 workflow 根 = projectRoot/.nbook/agent/workflows，loadItem 对每个 workflow.ts 读源码求值（项目源不缓存，重复触发）"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/server/api/workspace-files/write.put.ts",
+                "line": 1,
+                "scope": "HTTP",
+                "description": "workspace 文件写端点按 containment 只限制在项目根内，.nbook 子目录可写；upload-project zip 导入同理"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts",
+                "line": 123,
+                "scope": "宿主进程",
+                "description": "new Function(exports, module, require, Type, js) 求值转译后的 workflow 顶层代码，require 被替换但全局对象可达"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts",
+                "line": 123,
+                "description": "const factory = new Function(\"exports\", \"module\", \"require\", \"Type\", js); factory(...)（父代理亲自复核）"
+            },
+            {
+                "file": "packages/neuro-book/server/agent/workflow/workflow-catalog.ts",
+                "line": 119,
+                "description": "restrictedRequire 仅抛错拦截 require，未隔离 process/fetch/globalThis"
+            },
+            {
+                "file": "packages/neuro-book/server/utils/runtime-artifact-import.ts",
+                "line": 49,
+                "description": "new Function(\"specifier\", \"return import(specifier)\") 动态 import 编译产物（world-engine 配置/profile 同类通路）"
+            },
+            {
+                "file": "packages/neuro-book/server/workspace-files/project-identity.ts",
+                "line": 181,
+                "description": "normalizeProjectRoot 仅约束 projectRoot 单段名，不约束项目内 .nbook 子路径写入"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "data_state",
+                "description": "攻击者需能写入目标机器上某项目的 .nbook/agent/workflows（如诱导导入/克隆恶意分享项目、或借助 agent 写工具），或已是本机可调用 API 的进程"
+            },
+            {
+                "kind": "authentication_level",
+                "description": "鉴权关闭（开发默认）时本机任意进程可直接调用 API 打开项目触发；鉴权开启时需登录会话"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "恶意项目作者：分享一个内含 .nbook/agent/workflows/backdoor/workflow.ts 的小说项目；受害者导入并打开该项目即触发。",
+            "payloads": [
+                "workflow.ts 顶层：const proc = ({}).constructor.constructor('return process')(); proc.mainModule.require('node:fs').writeFileSync('./pwned.txt','rce')"
+            ],
+            "instructions": [
+                "静态复核：读 workflow-catalog.ts:109-124 确认 new Function 求值与 require 拦截范围",
+                "动态复核（本次未执行，任务约束只读）：在测试 State Root 放入上述 workflow.ts，打开项目后观察 catalog 列表是否执行顶层代码产生 pwned.txt"
+            ],
+            "observed_result": "本次为源码级确认（未动态复现）：求值点、触发链与写通路均经两路独立猎手与父代理读源码交叉证实；new Function 运行于宿主主进程全局作用域为 JS 语义事实。"
+        },
+        "remediation": {
+            "strategy": "三选一按成本递进：① 立即止血——通用文件写端点与 zip 导入把 .nbook/ 列为保留路径拒绝写入；② 把 workflow/config 求值移入无网子进程（Bun.spawn + 空环境 + 工作目录白名单），宿主只接收数据；③ 至少在项目源 workflow 首次加载时要求用户审批并在列表路径只解析元数据不执行顶层代码。",
+            "code_changes": [
+                {
+                    "file_name": "packages/neuro-book/server/runtime/paths/file-path.ts",
+                    "fixed_code": "在 resolveContainedFilePath/assertRealPathContained 之后追加保留段校验：路径首段或任一中间段等于 .nbook 时拒绝（写端点专用，读端点可保留放行策略）"
+                }
+            ]
+        },
+        "severity": {
+            "likelihood": {
+                "score": "medium",
+                "reason": "需要导入/打开恶意项目或本机 API 访问权；正常单机自用不触发"
+            },
+            "impact": {
+                "score": "high",
+                "reason": "宿主进程任意代码执行，可读写用户全部小说数据、配置与 provider key 所在文件"
+            },
+            "overall_severity": "high"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "三处证据行经父代理亲自读取复核，触发链两路独立猎手一致"
+        }
     },
-    "remediation": {
-      "strategy": "三选一按成本递进：① 立即止血——通用文件写端点与 zip 导入把 .nbook/ 列为保留路径拒绝写入；② 把 workflow/config 求值移入无网子进程（Bun.spawn + 空环境 + 工作目录白名单），宿主只接收数据；③ 至少在项目源 workflow 首次加载时要求用户审批并在列表路径只解析元数据不执行顶层代码。",
-      "code_changes": [
-        {"file_name": "packages/neuro-book/server/runtime/paths/file-path.ts", "fixed_code": "在 resolveContainedFilePath/assertRealPathContained 之后追加保留段校验：路径首段或任一中间段等于 .nbook 时拒绝（写端点专用，读端点可保留放行策略）"}
-      ]
+    {
+        "verdict": "confirmed",
+        "fingerprint": "codeact-sandbox-escape",
+        "title": "CodeAct 假沙箱可一行逃逸：checkAccess 为死代码，execute_world 工具无审批直达宿主任意代码执行",
+        "description": "codeact-sandbox.ts 用 new Function 参数遮蔽法构造\"沙箱\"，但未遮蔽 Function/Reflect/globalThis，(1).constructor.constructor(...) 即可取回真实 Function 构造器访问 process/fetch/Bun；文件内定义的 checkAccess 黑名单从未被调用（死代码），文件头注释自认\"无法完全隔离全局对象\"。入口 execute_world 是 Agent 工具（LLM 生成 code），未设 approvalRequired，非 writer profile 默认 readwrite 模式。",
+        "root_cause": "以参数遮蔽模拟沙箱但未建立 realm 隔离；防护函数未接线；工具层无审批。",
+        "intended_behavior": "Agent 生成的查询代码只能访问 world API；或该工具需审批并在真隔离（isolated VM/子进程）中执行。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/agent/tools/world-engine-tools.ts",
+                "line": 41,
+                "scope": "Agent 工具调用",
+                "description": "facade.executeCodeActWorld(input.code, mode)，code 为 LLM 输出"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/server/agent/tools/world-engine-tools.ts",
+                "line": 92,
+                "scope": "工具默认值",
+                "description": "非 writer profile 默认 readwrite 模式；工具未设 approvalRequired/mutatesWorkspace"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts",
+                "line": 100,
+                "scope": "宿主进程",
+                "description": "return (async () => { ${code} })() —— 用户代码插入函数体，全局对象未遮蔽"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts",
+                "line": 92,
+                "description": "checkAccess 定义后从未被调用（父代理复核）"
+            },
+            {
+                "file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts",
+                "line": 15,
+                "description": "文件头自认：⚠️ 无法完全隔离全局对象（fetch / Bun / process 仍可访问）"
+            },
+            {
+                "file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts",
+                "line": 77,
+                "description": "new Function 参数表仅遮蔽 Array/Object/String/Number/Boolean/Math/Date/JSON/console，未含 Function/globalThis"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "data_state",
+                "description": "需要 LLM 输出恶意 code：典型前提是章节文本/网页/工作区内容实施提示注入，或用户主动诱导"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "提示注入者：在小说素材/网页中埋指令，诱导 Agent 调 execute_world 并生成逃逸代码。",
+            "payloads": [
+                "(1).constructor.constructor('return process')().exit(0)"
+            ],
+            "instructions": [
+                "静态复核：读 codeact-sandbox.ts:77-103 核对参数遮蔽清单与死代码",
+                "动态复核（本次未执行）：向只读世界注入上述 payload，观察进程是否退出"
+            ],
+            "observed_result": "源码级确认（未动态复现）：遮蔽清单缺 Function/globalThis 为客观事实；逃逸表达式为标准 JS 语义；文件头注释为作者自认限制。"
+        },
+        "remediation": {
+            "strategy": "短期：给 execute_world 加 approvalRequired（至少 readwrite 模式）；把 checkAccess 删除或真正接线并默认拒绝未知全局。中期：迁往 node:vm + 裸上下文或 Bun 隔离子进程，只序列化传回 world 查询结果。",
+            "code_changes": [
+                {
+                    "file_name": "packages/neuro-book/server/agent/tools/world-engine-tools.ts",
+                    "fixed_code": "为 execute_world 工具定义追加 approvalRequired: true（对齐 workflow-tools.ts:70 的既有审批先例）"
+                }
+            ]
+        },
+        "severity": {
+            "likelihood": {
+                "score": "medium",
+                "reason": "依赖提示注入成功；产品大量处理不可信小说文本与网页内容，注入面真实存在"
+            },
+            "impact": {
+                "score": "high",
+                "reason": "逃逸后等同宿主进程权限（读写文件、env、网络）"
+            },
+            "overall_severity": "high"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "证据行为父代理亲自复核；作者注释自认限制"
+        }
     },
-    "severity": {
-      "likelihood": {"score": "medium", "reason": "需要导入/打开恶意项目或本机 API 访问权；正常单机自用不触发"},
-      "impact": {"score": "high", "reason": "宿主进程任意代码执行，可读写用户全部小说数据、配置与 provider key 所在文件"},
-      "overall_severity": "high"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "bash-tool-no-gate-readonly-bypass",
+        "title": "Agent bash 工具无审批无命令过滤，且未标 mutatesWorkspace 导致只读模式写审批被绕过；宿主全量环境变量下传",
+        "description": "bash 工具接受任意命令字符串经 bash -lc 执行（spawnOwnedProcess，shell 全量），无白名单/黑名单/危险模式拦截，无 approvalRequired；mutatesWorkspace 仅标在 write/edit/apply_patch（file-tools.ts:219/256/317），而只读模式写审批门按 mutatesWorkspace 判定（server/agent/harness/neuro-agent-harness.ts:5549），故 discuss/plan 只读模式下 bash 仍可免审批执行任意命令（含写文件副作用）。cwd 虽被 containment 限制为项目/工作区根，但命令本身可 cd/绝对路径越界。子进程环境为 {...process.env} 全量展开。",
+        "root_cause": "危险能力标记不全：bash 的实际副作用能力远大于其 mutatesWorkspace 声明；命令内容无任何策略层。",
+        "intended_behavior": "只读模式应阻断或审批 bash；任何模式下 bash 应有最小命令策略；子进程环境应白名单化。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                "line": 367,
+                "scope": "Agent 工具调用",
+                "description": "bash 工具定义：command 为任意字符串，无 approvalRequired/mutatesWorkspace"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/server/agent/harness/neuro-agent-harness.ts",
+                "line": 5549,
+                "scope": "审批门",
+                "description": "只读模式注入写审批的条件是 tool.mutatesWorkspace && !approvalRequired —— bash 不满足前件，直通（父代理复核）"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                "line": 716,
+                "scope": "子进程",
+                "description": "spawnOwnedProcess({command: input.bash, args: [\"-lc\", command], env}) —— 全量 shell 执行"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                "line": 717,
+                "description": "args: [\"-lc\", command] 无任何过滤（父代理复核）"
+            },
+            {
+                "file": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                "line": 664,
+                "description": "createBashEnvironment 返回 {...process.env, ...} 全量下传（父代理复核）"
+            },
+            {
+                "file": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                "line": 219,
+                "description": "mutatesWorkspace: true 仅出现在 219/256/317（write/edit/apply_patch），bash 无此标记（父代理复核）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "data_state",
+                "description": "需要 Agent 会话被提示注入或 LLM 自行越权；只读模式下的豁免使\"只讨论\"会话也不安全"
+            },
+            {
+                "kind": "authorization_role",
+                "description": "cwd containment 只限制起始目录，不限制命令内绝对路径访问"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "提示注入者：诱导只读模式会话调用 bash 执行写命令。",
+            "payloads": [
+                "echo pwned > ./agent-written.txt"
+            ],
+            "instructions": [
+                "动态复核（本次未执行）：在 discuss 只读会话让 Agent 执行上述命令，观察是否无审批产生文件"
+            ],
+            "observed_result": "源码级确认（未动态复现）：bash 无 mutatesWorkspace 标记与审批门按该标记判定均为父代理亲自复核的代码事实；只读模式下 bash 直通的推断由此两事实直接得出。"
+        },
+        "remediation": {
+            "strategy": "① bash 工具补 mutatesWorkspace: true（对齐其真实能力，最小改动）；② 只读模式从工具集中剔除 bash 或强制审批；③ 中期引入命令策略层（工作区内文件写入走专用工具而非 shell 重定向）与环境白名单。",
+            "code_changes": [
+                {
+                    "file_name": "packages/neuro-book/server/agent/tools/file-tools.ts",
+                    "fixed_code": "bash 工具定义追加 mutatesWorkspace: true（位置：bash 工具 def，约 :367）"
+                }
+            ]
+        },
+        "severity": {
+            "likelihood": {
+                "score": "medium",
+                "reason": "同提示注入前提；只读模式的豁免扩大暴露面"
+            },
+            "impact": {
+                "score": "high",
+                "reason": "任意命令执行 = 全用户数据与进程权限"
+            },
+            "overall_severity": "high"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "三个关键证据行均经父代理亲自读取"
+        }
     },
-    "confidence": {"score": "high", "reason": "三处证据行经父代理亲自读取复核，触发链两路独立猎手一致"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "codeact-sandbox-escape",
-    "title": "CodeAct 假沙箱可一行逃逸：checkAccess 为死代码，execute_world 工具无审批直达宿主任意代码执行",
-    "description": "codeact-sandbox.ts 用 new Function 参数遮蔽法构造\"沙箱\"，但未遮蔽 Function/Reflect/globalThis，(1).constructor.constructor(...) 即可取回真实 Function 构造器访问 process/fetch/Bun；文件内定义的 checkAccess 黑名单从未被调用（死代码），文件头注释自认\"无法完全隔离全局对象\"。入口 execute_world 是 Agent 工具（LLM 生成 code），未设 approvalRequired，非 writer profile 默认 readwrite 模式。",
-    "root_cause": "以参数遮蔽模拟沙箱但未建立 realm 隔离；防护函数未接线；工具层无审批。",
-    "intended_behavior": "Agent 生成的查询代码只能访问 world API；或该工具需审批并在真隔离（isolated VM/子进程）中执行。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/agent/tools/world-engine-tools.ts", "line": 41, "scope": "Agent 工具调用", "description": "facade.executeCodeActWorld(input.code, mode)，code 为 LLM 输出"},
-      {"kind": "propagation", "file": "packages/neuro-book/server/agent/tools/world-engine-tools.ts", "line": 92, "scope": "工具默认值", "description": "非 writer profile 默认 readwrite 模式；工具未设 approvalRequired/mutatesWorkspace"},
-      {"kind": "sink", "file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts", "line": 100, "scope": "宿主进程", "description": "return (async () => { ${code} })() —— 用户代码插入函数体，全局对象未遮蔽"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts", "line": 92, "description": "checkAccess 定义后从未被调用（父代理复核）"},
-      {"file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts", "line": 15, "description": "文件头自认：⚠️ 无法完全隔离全局对象（fetch / Bun / process 仍可访问）"},
-      {"file": "packages/neuro-book/server/world-engine/codeact-sandbox.ts", "line": 77, "description": "new Function 参数表仅遮蔽 Array/Object/String/Number/Boolean/Math/Date/JSON/console，未含 Function/globalThis"}
-    ],
-    "conditions": [
-      {"kind": "data_state", "description": "需要 LLM 输出恶意 code：典型前提是章节文本/网页/工作区内容实施提示注入，或用户主动诱导"}
-    ],
-    "execution": {
-      "attacker_perspective": "提示注入者：在小说素材/网页中埋指令，诱导 Agent 调 execute_world 并生成逃逸代码。",
-      "payloads": [
-        "(1).constructor.constructor('return process')().exit(0)"
-      ],
-      "instructions": [
-        "静态复核：读 codeact-sandbox.ts:77-103 核对参数遮蔽清单与死代码",
-        "动态复核（本次未执行）：向只读世界注入上述 payload，观察进程是否退出"
-      ],
-      "observed_result": "源码级确认（未动态复现）：遮蔽清单缺 Function/globalThis 为客观事实；逃逸表达式为标准 JS 语义；文件头注释为作者自认限制。"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "auth-off-default-and-bindable-host",
+        "title": "鉴权关闭为开发默认且全站无端点级兜底，绑定地址可被环境变量改到非回环，组合成局域网全权暴露",
+        "description": "全站守卫在 isAuthEnabled() 为假时直接放行一切 API（含 admin），requireAdminAccess 同样短路；isAuthEnabled 未配置时开发环境关闭。dev 默认绑定 127.0.0.1 但尊重 HOST/NITRO_HOST 覆盖。若以 NITRO_HOST=0.0.0.0 启动且未配 auth，同网段任意主机可完全控制应用（读写小说数据、调用 agent、触发代码执行面）。亮点：恢复码导出在鉴权关闭时硬拒绝（409），shutdown 端点有 loopback+一次性 token 双门。",
+        "root_cause": "以\"部署形态约定\"代替端点级防线；不安全组合（暴露+无鉴权）无启动期告警或阻止。",
+        "intended_behavior": "绑定非回环地址而鉴权未配置时，应启动失败或强制告警；admin 面应有独立兜底。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/middleware/auth.ts",
+                "line": 53,
+                "scope": "HTTP 全站",
+                "description": "if (!isAuthEnabled()) return; —— 全部端点放行（父代理复核）"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/server/utils/auth.ts",
+                "line": 181,
+                "scope": "admin 守卫",
+                "description": "requireAdminAccess 同样短路（父代理复核）"
+            },
+            {
+                "kind": "propagation",
+                "file": "scripts/cli/source-dev.ts",
+                "line": 85,
+                "scope": "启动配置",
+                "description": "默认 HOST=127.0.0.1 但 configuredHost 优先，可被环境变量改为非回环"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/middleware/auth.ts",
+                "line": 53,
+                "description": "鉴权全局旁路（父代理复核）"
+            },
+            {
+                "file": "packages/neuro-book/server/utils/auth.ts",
+                "line": 29,
+                "description": "isAuthEnabled 注释：未配置时开发环境关闭、其他环境开启（父代理复核）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "system_configuration",
+                "description": "需要运维把服务绑定到非回环地址且保持鉴权关闭；单机默认形态不受影响"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "同网段攻击者：直接调用无鉴权 API。",
+            "payloads": [
+                "GET /api/projects 列举全部项目"
+            ],
+            "instructions": [
+                "动态复核（本次未执行）：以 NITRO_HOST=0.0.0.0 启动并关 auth，从局域网另一主机访问 API"
+            ],
+            "observed_result": "源码级确认（未动态复现）：旁路与可配置绑定均为父代理亲自复核的代码事实。"
+        },
+        "remediation": {
+            "strategy": "启动期校验：非回环绑定 + 鉴权未启用 = 拒绝启动或显著告警；为 admin 面增加独立回环校验兜底。",
+            "code_changes": [
+                {
+                    "file_name": "packages/neuro-book/scripts/cli/source-dev.ts",
+                    "fixed_code": "configuredHost 非 127.0.0.1/localhost 且 auth 未启用时 console.warn 或 process.exit(1)"
+                }
+            ]
+        },
+        "severity": {
+            "likelihood": {
+                "score": "low",
+                "reason": "默认形态安全；需要非默认配置组合"
+            },
+            "impact": {
+                "score": "high",
+                "reason": "局域网全权访问，并可进一步触达代码执行面"
+            },
+            "overall_severity": "medium"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "证据行父代理亲自复核"
+        }
     },
-    "remediation": {
-      "strategy": "短期：给 execute_world 加 approvalRequired（至少 readwrite 模式）；把 checkAccess 删除或真正接线并默认拒绝未知全局。中期：迁往 node:vm + 裸上下文或 Bun 隔离子进程，只序列化传回 world 查询结果。",
-      "code_changes": [
-        {"file_name": "packages/neuro-book/server/agent/tools/world-engine-tools.ts", "fixed_code": "为 execute_world 工具定义追加 approvalRequired: true（对齐 workflow-tools.ts:70 的既有审批先例）"}
-      ]
+    {
+        "verdict": "confirmed",
+        "fingerprint": "markdown-sanitizer-async-window-and-bypass-branch",
+        "title": "Agent 气泡 markdown 渲染的 DOMPurify 为异步后挂载，存在消毒前窗口与 props.html 直通旁路",
+        "description": "renderMarkdown 支持 sanitizeHtml 回调但缺省透传原始 HTML；marked 不消毒。唯一生产调用点 AgentChatSurface 在 onMounted 异步 import('dompurify') 后才 provide sanitizer，导入完成前的渲染窗口内不消毒；AgentMarkdownContent 的 props.html 分支完全不经过 sanitizer。输入是 LLM 输出（提示注入可控）。Electron renderer 有 sandbox+contextIsolation，直接后果为 renderer 内脚本执行与同源本地 API/IPC 调用权，非直接 RCE。",
+        "root_cause": "消毒器可用性与渲染时机解耦；组件存在绕过消毒的直通分支。",
+        "intended_behavior": "消毒能力同步可用（构建期静态引入）；所有 html 渲染分支强制消毒。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/app/components/agent/AgentChatSurface.vue",
+                "line": 3777,
+                "scope": "前端",
+                "description": "onMounted 异步加载 DOMPurify 后才 provide sanitizer（猎手定位）"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/app/utils/markdown/render.ts",
+                "line": 266,
+                "scope": "渲染链",
+                "description": "renderMarkdown(content, sanitizeHtml?) —— sanitize 缺省时原样返回"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/app/components/agent/AgentMarkdownContent.vue",
+                "line": 114,
+                "scope": "DOM",
+                "description": "v-html=renderedHtml；另有 props.html 直通分支（:25）绕过消毒"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/app/utils/markdown/render.ts",
+                "line": 273,
+                "description": "return sanitizeHtml ? sanitizeHtml(html) : html"
+            },
+            {
+                "file": "packages/neuro-book/app/components/agent/AgentMarkdownContent.vue",
+                "line": 25,
+                "description": "props.html 直通分支不经 sanitizeHtml（猎手复核）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "timing_dependency",
+                "description": "窗口期极短（bundle 内动态 import），首条流式消息落在 provide 前才触发"
+            },
+            {
+                "kind": "data_state",
+                "description": "props.html 分支当前无生产调用者（休眠旁路）"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "提示注入者：让 LLM 输出携带 <img onerror> 的 markdown。",
+            "payloads": [
+                "![x](data:image/svg+xml;base64,...) 与 <img src=x onerror=alert(1)>"
+            ],
+            "instructions": [
+                "动态复核（本次未执行）：禁网/延迟 dompurify chunk 后发送含 payload 的首条消息，观察是否执行"
+            ],
+            "observed_result": "源码级确认（未动态复现）：消毒缺省透传与旁路分支为代码事实；实际触发依赖时序。"
+        },
+        "remediation": {
+            "strategy": "把 dompurify 改为构建期静态依赖，模块加载即初始化 sanitizer；删除或消毒 props.html 分支；NotificationViewport 的 item.html 注入点补充 sanitize 通道或改为结构化字段。",
+            "code_changes": [
+                {
+                    "file_name": "packages/neuro-book/app/components/agent/AgentChatSurface.vue",
+                    "fixed_code": "import DOMPurify from 'dompurify' 顶层静态导入，provide 在 setup 同步完成"
+                }
+            ]
+        },
+        "severity": {
+            "likelihood": {
+                "score": "low",
+                "reason": "窗口极短且旁路当前休眠"
+            },
+            "impact": {
+                "score": "medium",
+                "reason": "renderer 内脚本执行可调同源本地 API 与过校验的 IPC，非直接 RCE"
+            },
+            "overall_severity": "medium"
+        },
+        "confidence": {
+            "score": "medium",
+            "reason": "渲染链证据充分；触发时序未动态验证"
+        }
     },
-    "severity": {
-      "likelihood": {"score": "medium", "reason": "依赖提示注入成功；产品大量处理不可信小说文本与网页内容，注入面真实存在"},
-      "impact": {"score": "high", "reason": "逃逸后等同宿主进程权限（读写文件、env、网络）"},
-      "overall_severity": "high"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "public-infra-disclosure-in-docs",
+        "title": "生产服务器公网 IP 与部署拓扑写入仓库文档（4 文件 66 行）",
+        "description": "nbook.notnotype.com 解析 IP 64.186.225.48、局域网测试机地址、/srv 部署路径、systemd 与内存/磁盘规格等出现在任务文档与 PROJECT-STATUS 中。仓库为公开 GitHub 仓库时，扩大定向侦察面。不涉及凭据。",
+        "root_cause": "运维细节进入长期保留的任务文档。",
+        "intended_behavior": "基础设施细节不入公开仓库，或以占位符表述。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": ".agents/tasks/128-neuro-book-site-deployment/README.md",
+                "line": 82,
+                "scope": "文档",
+                "description": "A 记录 64.186.225.48 TTL 300"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/llmlint/PROJECT-STATUS.md",
+                "line": 82,
+                "scope": "文档",
+                "description": "llmlint.notnotype.com 当前解析为 64.186.225.48 及部署规格"
+            }
+        ],
+        "evidence": [
+            {
+                "file": ".agents/tasks/128-neuro-book-site-deployment/walkthroughs/2026-07-27-implementation.md",
+                "line": 57,
+                "description": "SSH 局域网地址 192.168.1.18（猎手定位，父代理以 rg -c 证实全仓 66 行提及该 IP 于 4 文件）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "network_routing",
+                "description": "仓库公开（origin 为 GitHub 公开仓）即可读"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "侦察者：克隆仓库 grep IP 即获目标拓扑。",
+            "payloads": [
+                "rg -n '64\\.186\\.225\\.48'"
+            ],
+            "instructions": [
+                "复现：在仓库根执行上述 rg 命令（本次已执行，命中 4 文件 66 行）"
+            ],
+            "observed_result": "rg -c 实测：packages/llmlint/PROJECT-STATUS.md 等 4 个文件共 66 行包含该 IP。"
+        },
+        "remediation": {
+            "strategy": "后续提交中移除或泛化（example.com/203.0.113.x），历史清理可选（fork 自用风险有限）。",
+            "code_changes": []
+        },
+        "severity": {
+            "likelihood": {
+                "score": "informational",
+                "reason": "信息已在仓库，获取零成本"
+            },
+            "impact": {
+                "score": "low",
+                "reason": "增大侦察面，无直接危害"
+            },
+            "overall_severity": "low"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "rg 实测命中"
+        }
     },
-    "confidence": {"score": "high", "reason": "证据行为父代理亲自复核；作者注释自认限制"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "bash-tool-no-gate-readonly-bypass",
-    "title": "Agent bash 工具无审批无命令过滤，且未标 mutatesWorkspace 导致只读模式写审批被绕过；宿主全量环境变量下传",
-    "description": "bash 工具接受任意命令字符串经 bash -lc 执行（spawnOwnedProcess，shell 全量），无白名单/黑名单/危险模式拦截，无 approvalRequired；mutatesWorkspace 仅标在 write/edit/apply_patch（file-tools.ts:219/256/317），而只读模式写审批门按 mutatesWorkspace 判定（server/agent/harness/neuro-agent-harness.ts:5549），故 discuss/plan 只读模式下 bash 仍可免审批执行任意命令（含写文件副作用）。cwd 虽被 containment 限制为项目/工作区根，但命令本身可 cd/绝对路径越界。子进程环境为 {...process.env} 全量展开。",
-    "root_cause": "危险能力标记不全：bash 的实际副作用能力远大于其 mutatesWorkspace 声明；命令内容无任何策略层。",
-    "intended_behavior": "只读模式应阻断或审批 bash；任何模式下 bash 应有最小命令策略；子进程环境应白名单化。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/agent/tools/file-tools.ts", "line": 367, "scope": "Agent 工具调用", "description": "bash 工具定义：command 为任意字符串，无 approvalRequired/mutatesWorkspace"},
-      {"kind": "propagation", "file": "packages/neuro-book/server/agent/harness/neuro-agent-harness.ts", "line": 5549, "scope": "审批门", "description": "只读模式注入写审批的条件是 tool.mutatesWorkspace && !approvalRequired —— bash 不满足前件，直通（父代理复核）"},
-      {"kind": "sink", "file": "packages/neuro-book/server/agent/tools/file-tools.ts", "line": 716, "scope": "子进程", "description": "spawnOwnedProcess({command: input.bash, args: [\"-lc\", command], env}) —— 全量 shell 执行"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/agent/tools/file-tools.ts", "line": 717, "description": "args: [\"-lc\", command] 无任何过滤（父代理复核）"},
-      {"file": "packages/neuro-book/server/agent/tools/file-tools.ts", "line": 664, "description": "createBashEnvironment 返回 {...process.env, ...} 全量下传（父代理复核）"},
-      {"file": "packages/neuro-book/server/agent/tools/file-tools.ts", "line": 219, "description": "mutatesWorkspace: true 仅出现在 219/256/317（write/edit/apply_patch），bash 无此标记（父代理复核）"}
-    ],
-    "conditions": [
-      {"kind": "data_state", "description": "需要 Agent 会话被提示注入或 LLM 自行越权；只读模式下的豁免使\"只讨论\"会话也不安全"},
-      {"kind": "authorization_role", "description": "cwd containment 只限制起始目录，不限制命令内绝对路径访问"}
-    ],
-    "execution": {
-      "attacker_perspective": "提示注入者：诱导只读模式会话调用 bash 执行写命令。",
-      "payloads": [
-        "echo pwned > ./agent-written.txt"
-      ],
-      "instructions": [
-        "动态复核（本次未执行）：在 discuss 只读会话让 Agent 执行上述命令，观察是否无审批产生文件"
-      ],
-      "observed_result": "源码级确认（未动态复现）：bash 无 mutatesWorkspace 标记与审批门按该标记判定均为父代理亲自复核的代码事实；只读模式下 bash 直通的推断由此两事实直接得出。"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "ci-plaintext-smoke-passwords",
+        "title": "CI/发布脚本中的明文一次性冒烟口令与其机制暴露",
+        "description": "release-container.yml 与 scripts/release/ 下以明文写入 AUTH_ADMIN_PASSWORD（release-update-password 等）。核实为 CI 内一次性、仅绑定 127.0.0.1 的临时安装冒烟口令，用完即销毁，非共享凭据；但公开了\"管理员可经环境变量非交互创建\"的机制，照抄到真实部署即危险。",
+        "root_cause": "冒烟口令硬编码且无\"勿用于生产\"标注集中于 README。",
+        "intended_behavior": "口令随机生成于 CI 运行期；文档标注非生产用途。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": ".github/workflows/release-container.yml",
+                "line": 1143,
+                "scope": "CI",
+                "description": "$env:AUTH_ADMIN_PASSWORD = \"release-update-password\""
+            },
+            {
+                "kind": "sink",
+                "file": "scripts/release/verify-public-ghcr.sh",
+                "line": 79,
+                "scope": "发布脚本",
+                "description": "AUTH_ADMIN_PASSWORD=\"release-ghcr-password\""
+            }
+        ],
+        "evidence": [
+            {
+                "file": "scripts/release/verify-windows-portable-restart.ts",
+                "line": 19,
+                "description": "ADMIN_PASSWORD = \"release-auth-smoke-password\"（猎手定位）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "system_configuration",
+                "description": "仅在运维把口令照抄到真实部署时造成危害"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "不适用（误报可能性大，登记为低风险备案）。",
+            "payloads": [
+                "不适用"
+            ],
+            "instructions": [
+                "复核：读取上述三处确认口令用途为一次性冒烟"
+            ],
+            "observed_result": "源码核实：三处口令均为 CI 内临时安装的 admin 创建参数，非共享凭据。"
+        },
+        "remediation": {
+            "strategy": "CI 中改为随机生成（openssl rand -hex 16）；脚本注释标注非生产。",
+            "code_changes": []
+        },
+        "severity": {
+            "likelihood": {
+                "score": "low",
+                "reason": "需要人为误用"
+            },
+            "impact": {
+                "score": "low",
+                "reason": "误用时等同于公开默认口令"
+            },
+            "overall_severity": "low"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "猎手全文精读 CI 段落"
+        }
     },
-    "remediation": {
-      "strategy": "① bash 工具补 mutatesWorkspace: true（对齐其真实能力，最小改动）；② 只读模式从工具集中剔除 bash 或强制审批；③ 中期引入命令策略层（工作区内文件写入走专用工具而非 shell 重定向）与环境白名单。",
-      "code_changes": [
-        {"file_name": "packages/neuro-book/server/agent/tools/file-tools.ts", "fixed_code": "bash 工具定义追加 mutatesWorkspace: true（位置：bash 工具 def，约 :367）"}
-      ]
+    {
+        "verdict": "confirmed",
+        "fingerprint": "provider-key-plaintext-config-json",
+        "title": "provider apiKey 明文存储于 .nbook/config.json（设计取舍，防护链完整，残余为文件级泄露面）",
+        "description": "全局/项目配置以明文 JSON 持久化，provider apiKey 一并存内。出站面防护完整：API 返回掩码（首4+尾4）、saved credential 回填有连接身份校验、日志统一脱敏（sk- 正则 + SENSITIVE_KEY_PATTERN）、provider 错误先消毒、desktop 端 stdin 传递。残余：任何能读到该文件的进程/备份/云同步可获取全部 LLM key；maskedValue 泄漏首尾共 8 字符。",
+        "root_cause": "本地优先应用的常规取舍：密钥随配置文件落盘，依赖 OS 文件权限。",
+        "intended_behavior": "可选：DPAPI/keytar 级加密；maskedValue 减到 ≤4 字符。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/config/config-service.ts",
+                "line": 88,
+                "scope": "配置层",
+                "description": "全局配置 = 用户根 .nbook/config.json，fs.writeFile 明文写入"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/server/config/config-service.ts",
+                "line": 1291,
+                "scope": "出站掩码",
+                "description": "maskSecret 保留首4+尾4"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/utils/sensitive-text.ts",
+                "line": 20,
+                "description": "redactSensitiveText 对 sk-[A-Za-z0-9_-]{8,} 打码（猎手复核，防护侧证据）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "environmental_dependency",
+                "description": "文件权限、备份与同步策略决定实际暴露面"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "本机恶意进程或拿到备份的人。",
+            "payloads": [
+                "不适用（信息性记录）"
+            ],
+            "instructions": [
+                "复核：读 config-service.ts:88/1563 确认明文持久化"
+            ],
+            "observed_result": "源码确认：明文 JSON 持久化，属信息性设计观察而非可利用漏洞。"
+        },
+        "remediation": {
+            "strategy": "登记为已知取舍；如需加固接入 OS 级凭据保护；备份与云同步文档中提醒含密钥。",
+            "code_changes": []
+        },
+        "severity": {
+            "likelihood": {
+                "score": "informational",
+                "reason": "本地单机常规形态"
+            },
+            "impact": {
+                "score": "informational",
+                "reason": "记录设计取舍与加固路径"
+            },
+            "overall_severity": "informational"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "两路猎手与父代理交叉确认"
+        }
     },
-    "severity": {
-      "likelihood": {"score": "medium", "reason": "同提示注入前提；只读模式的豁免扩大暴露面"},
-      "impact": {"score": "high", "reason": "任意命令执行 = 全用户数据与进程权限"},
-      "overall_severity": "high"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "llmlint-no-inbound-rate-limit",
+        "title": "llmlint 公网站点无入站限速/配额，已登录用户可无节制消耗存储与 LLM 配额",
+        "description": "全站无入站 throttler（rg rateLimit 仅命中出站 ProviderGate）；每次新建文本同步触发正则扫描 + 3 个异步 LLM/外部检测任务，历史端点显式不分页；SQLite 单文件可被异步任务队列写爆。当前为受控众包站，风险取决于用户规模。",
+        "root_cause": "缺少入站配额层。",
+        "intended_behavior": "按用户/IP 的基础限速与每日配额。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/llmlint/web/server/api/texts.post.ts",
+                "line": 53,
+                "scope": "HTTP",
+                "description": "创建文本即排 3 个异步检测任务（猎手定位）"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/llmlint/web/server/api/texts.get.ts",
+                "line": 29,
+                "scope": "HTTP",
+                "description": "历史查询显式不分页（注释：内网量小不分页）"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/llmlint/web/server/utils/detect.ts",
+                "line": 17,
+                "description": "rateLimit 概念仅存在于出站 ProviderGate（猎手全库 rg）"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "authentication_level",
+                "description": "需已登录（NeuroBook OAuth SSO）"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "已登录用户脚本化刷文本。",
+            "payloads": [
+                "循环 POST /api/texts 60k 字符正文"
+            ],
+            "instructions": [
+                "动态复核（勿在生产）：测试环境以并发脚本定量观察任务队列增长"
+            ],
+            "observed_result": "源码确认：无入站限速层；实际滥用未观测。"
+        },
+        "remediation": {
+            "strategy": "加每用户每日文本数与字符数配额 + 任务队列深度上限；对 auth 起点端点加 IP 级限速。",
+            "code_changes": []
+        },
+        "severity": {
+            "likelihood": {
+                "score": "medium",
+                "reason": "公网可达且无限速"
+            },
+            "impact": {
+                "score": "low",
+                "reason": "资源消耗与配额损失，无数据危害"
+            },
+            "overall_severity": "low"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "专项猎手逐端点通读 25 个 API"
+        }
     },
-    "confidence": {"score": "high", "reason": "三个关键证据行均经父代理亲自读取"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "auth-off-default-and-bindable-host",
-    "title": "鉴权关闭为开发默认且全站无端点级兜底，绑定地址可被环境变量改到非回环，组合成局域网全权暴露",
-    "description": "全站守卫在 isAuthEnabled() 为假时直接放行一切 API（含 admin），requireAdminAccess 同样短路；isAuthEnabled 未配置时开发环境关闭。dev 默认绑定 127.0.0.1 但尊重 HOST/NITRO_HOST 覆盖。若以 NITRO_HOST=0.0.0.0 启动且未配 auth，同网段任意主机可完全控制应用（读写小说数据、调用 agent、触发代码执行面）。亮点：恢复码导出在鉴权关闭时硬拒绝（409），shutdown 端点有 loopback+一次性 token 双门。",
-    "root_cause": "以\"部署形态约定\"代替端点级防线；不安全组合（暴露+无鉴权）无启动期告警或阻止。",
-    "intended_behavior": "绑定非回环地址而鉴权未配置时，应启动失败或强制告警；admin 面应有独立兜底。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/middleware/auth.ts", "line": 53, "scope": "HTTP 全站", "description": "if (!isAuthEnabled()) return; —— 全部端点放行（父代理复核）"},
-      {"kind": "propagation", "file": "packages/neuro-book/server/utils/auth.ts", "line": 181, "scope": "admin 守卫", "description": "requireAdminAccess 同样短路（父代理复核）"},
-      {"kind": "propagation", "file": "scripts/cli/source-dev.ts", "line": 85, "scope": "启动配置", "description": "默认 HOST=127.0.0.1 但 configuredHost 优先，可被环境变量改为非回环"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/middleware/auth.ts", "line": 53, "description": "鉴权全局旁路（父代理复核）"},
-      {"file": "packages/neuro-book/server/utils/auth.ts", "line": 29, "description": "isAuthEnabled 注释：未配置时开发环境关闭、其他环境开启（父代理复核）"}
-    ],
-    "conditions": [
-      {"kind": "system_configuration", "description": "需要运维把服务绑定到非回环地址且保持鉴权关闭；单机默认形态不受影响"}
-    ],
-    "execution": {
-      "attacker_perspective": "同网段攻击者：直接调用无鉴权 API。",
-      "payloads": ["GET /api/projects 列举全部项目"],
-      "instructions": ["动态复核（本次未执行）：以 NITRO_HOST=0.0.0.0 启动并关 auth，从局域网另一主机访问 API"],
-      "observed_result": "源码级确认（未动态复现）：旁路与可配置绑定均为父代理亲自复核的代码事实。"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "dependency-vulnerability-audit-results",
+        "title": "依赖漏洞审计实测：81 项（1 critical / 29 high / 44 moderate / 7 low）；critical 为 @nuxt/devtools 3.2.4 未认证 RPC 开发者主机 RCE，undici 7.28.0 为运行时直接依赖带 5 条公告",
+        "description": "网络恢复后 bun audit 补跑成功（原始输出存档 bun-audit-raw.json）。critical：@nuxt/devtools@3.2.4（GHSA-279x-mwfv-vcqv，<3.3.1 未认证 DevTools RPC 允许在开发者主机执行任意命令），经 packages/nb-ui 的 nuxt ^4.3.1 传递引入，暴露面限 `bun run dev` 开发服务器场景。运行时直接依赖 undici@7.28.0（packages/neuro-book，声明 ^7.19.2）带 5 条公告：high 跨用户信息泄露/解析崩溃 + moderate CRLF 注入等（<7.29.0 区间）。其余 high 集中在构建/测试工具链（svgo、tar、vitest 4.1.10 路径穿越等），不进产品运行时。patches/ 两个依赖补丁经通读复核为正经 bug 修复（nitropack source-map consumer 泄漏清理、proper-lockfile mtime 精度错误处理），无恶意注入。",
+        "root_cause": "nuxt ^4.3.1 依赖树携带 @nuxt/devtools 3.2.4（漏洞区间 <3.3.1）；undici 声明 ^7.19.2 锁定到 7.28.0（漏洞区间 <7.29.0）。",
+        "intended_behavior": "@nuxt/devtools ≥3.3.1；undici ≥7.29.0；vitest ≥4.1.11（路径穿越修复）。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/nb-ui/package.json",
+                "line": 29,
+                "scope": "依赖声明",
+                "description": "nuxt ^4.3.1 → 传递引入 @nuxt/devtools 3.2.4（nb-ui 与主应用同声明）"
+            },
+            {
+                "kind": "propagation",
+                "file": "packages/neuro-book/package.json",
+                "line": 160,
+                "scope": "依赖声明",
+                "description": "undici ^7.19.2 直接依赖，锁到 7.28.0（漏洞区间 >=7.0.0 <7.29.0）"
+            },
+            {
+                "kind": "sink",
+                "file": "docs/security-audit-20260920/bun-audit-raw.json",
+                "line": 1,
+                "scope": "供应链",
+                "description": "81 项漏洞完整机读存档（bun audit --json 实测输出）"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "docs/security-audit-20260920/bun-audit-raw.json",
+                "line": 1,
+                "description": "bun audit --json 实测存档"
+            },
+            {
+                "file": "patches/nitropack@2.13.4.patch",
+                "line": 1,
+                "description": "通读复核：错误堆栈解析加 consumer 缓存与 destroy 清理，正经修复"
+            },
+            {
+                "file": "patches/proper-lockfile@4.1.2.patch",
+                "line": 1,
+                "description": "通读复核：precisionUnsupported 错误提前回调，正经修复"
+            }
+        ],
+        "conditions": [
+            {
+                "kind": "system_configuration",
+                "description": "critical 条目仅在开发服务器（bun run dev）运行且 DevTools 面板可达时暴露；默认绑定 127.0.0.1"
+            },
+            {
+                "kind": "third_party_dependency",
+                "description": "undici 各公告需特定响应/缓存指令条件触发；vitest 路径穿越仅测试环境"
+            }
+        ],
+        "execution": {
+            "attacker_perspective": "开发场景：本机恶意页面/进程访问运行中的 DevTools RPC 端点即获命令执行；运行场景：undici 公告需服务端处理恶意构造的响应/缓存头。",
+            "payloads": [
+                "不适用（依赖公告，非手工构造漏洞）"
+            ],
+            "instructions": [
+                "复现：仓库根执行 bun audit 与 bun audit --audit-level=critical（本次已执行）"
+            ],
+            "observed_result": "实测输出：81 vulnerabilities (1 critical, 29 high, 44 moderate, 7 low)；critical 条目为 @nuxt/devtools@3.2.4 GHSA-279x-mwfv-vcqv。"
+        },
+        "remediation": {
+            "strategy": "① `bun audit fix` 处理声明范围内的升级；② undici 显式升 ≥7.29.0；③ nuxt 升级或 bun overrides 强制 @nuxt/devtools ≥3.3.1；④ vitest ≥4.1.11。升级属源码改动，留给前线排任务（工程队铁律不改源码）。",
+            "code_changes": []
+        },
+        "severity": {
+            "likelihood": {
+                "score": "medium",
+                "reason": "critical 条目限开发场景；undici 运行时条目需特定第三方响应条件"
+            },
+            "impact": {
+                "score": "high",
+                "reason": "若触发：开发者主机命令执行 / 跨用户信息泄露"
+            },
+            "overall_severity": "medium"
+        },
+        "confidence": {
+            "score": "high",
+            "reason": "审计工具实测输出，非推断"
+        }
     },
-    "remediation": {
-      "strategy": "启动期校验：非回环绑定 + 鉴权未启用 = 拒绝启动或显著告警；为 admin 面增加独立回环校验兜底。",
-      "code_changes": [
-        {"file_name": "packages/neuro-book/scripts/cli/source-dev.ts", "fixed_code": "configuredHost 非 127.0.0.1/localhost 且 auth 未启用时 console.warn 或 process.exit(1)"}
-      ]
+    {
+        "verdict": "ruled_out",
+        "fingerprint": "provider-discover-error-message-key-leak",
+        "title": "provider-discover 带 code 的错误回传未过消毒器，上游错误原文可能携带含 key 的 URL 回显",
+        "description": "provider-discover.post.ts 在带 discovery code 时回传 error.message 原文（models/discovery.ts 的 normalizeDiscoveryError 输出），未过 sanitizeProviderErrorMessage。若某 provider adapter 把 apiKey 放 URL query 且上游错误文本含完整 URL，key 可能随消息回显到客户端。【2026-09-20 复验（前线，正规额度）】 验证结论：威胁链不成立。discovery.ts 所有 ProviderDiscoveryError 构造点（:137/:144/:149/:170/:268/:593 等）仅插值 provider.name、timeoutMs 数字、HTTP 状态码，均为无害固定文案；非预期错误（网络 fetch 等，可能含 URL）经 normalizeDiscoveryError→mergeErrorMessage（discovery.ts:570-573）替换为 discoveryErrorDefaultMessage 固定文案，原文不透传。回传点 provider-discover.post.ts:529 直通 error.message 属实，但内容源已证明无害。加固备注：未来新增 adapter 若在错误消息拼接 URL/响应体，需引入 sanitizeProviderErrorMessage。",
+        "claimed_root_cause": "错误回传路径绕过了既有消毒管线。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/api/config/models/provider-discover.post.ts",
+                "line": 523,
+                "scope": "HTTP",
+                "description": "message: code && error instanceof Error ? error.message : 兜底文案"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/server/api/config/models/provider-discover.post.ts",
+                "line": 529,
+                "scope": "HTTP 响应",
+                "description": "原文回传，未过 sanitizer"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/models/discovery.ts",
+                "line": 184,
+                "description": "error?.message 进入 normalizeDiscoveryError（猎手定位）"
+            },
+            {
+                "file": "packages/neuro-book/server/utils/model-settings.ts",
+                "line": 260,
+                "description": "对照：健康检查失败消息确实使用了消毒器，discover 路径未使用"
+            }
+        ],
+        "blockers": [
+            "需核实各 provider adapter 的 URL 构造是否将 key 放入 query",
+            "需核实 normalizeDiscoveryError 是否已截断/清洗 URL"
+        ],
+        "validation_plan": {
+            "local": "构造指向本地回环 echo 服务（返回含完整请求 URL 的错误）的 provider 配置，调用 discover，检查响应 message 是否含 key。",
+            "deployment": "无需部署级验证。"
+        }
     },
-    "severity": {
-      "likelihood": {"score": "low", "reason": "默认形态安全；需要非默认配置组合"},
-      "impact": {"score": "high", "reason": "局域网全权访问，并可进一步触达代码执行面"},
-      "overall_severity": "medium"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "llmlint-cookie-secure-forwarded-proto",
+        "title": "llmlint 会话 cookie 的 Secure 标志依赖运行时协议探测（含 X-Forwarded-Proto），反代配置不明",
+        "description": "llmlint web 的 session cookie secure 标志由 getRequestProtocol(event) === 'https' 决定，h3 默认信任 X-Forwarded-Proto。若边缘代理不剥离/规范化该头，登录响应可被诱导下发无 Secure 的 cookie。反向代理配置不在仓库内，无法静态定论。【2026-09-20 复验（前线，正规额度）】 验证结论：行为链查实但风险重定性。实测 h3（node_modules/h3/dist/index.mjs:319-324）getRequestProtocol 默认信任 x-forwarded-proto: https（opts.xForwardedProto 未传即启用），llmlint web 无 trustProxy 配置。真实风险方向与原描述相反：不是伪造头诱导无 Secure cookie（伪造 XFP:https 只会使 cookie 带 Secure 并在 http 页面被浏览器拒收，无实害），而是【https 反代若不传递 X-Forwarded-Proto，后端判定为 http，生产环境将下发无 Secure 标志的会话 cookie】——属部署配置陷阱而非代码漏洞，降为 low。部署要求：反代必须原样传递该头（或剥离后按真实协议重写）。",
+        "claimed_root_cause": "安全属性依赖可被客户端影响的转发头。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/llmlint/web/server/utils/auth.ts",
+                "line": 90,
+                "scope": "HTTP 响应",
+                "description": "secure: getRequestProtocol(event) === \"https\""
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/llmlint/web/server/utils/auth.ts",
+                "line": 90,
+                "description": "协议探测写法（专项猎手定位；h3 对 X-Forwarded-Proto 的具体行为因该包依赖未安装无法本地核实）"
+            }
+        ],
+        "blockers": [
+            "h3 getRequestProtocol 对 X-Forwarded-Proto 的信任行为未核实（node_modules 未装）",
+            "生产反代（Caddy/Nginx）是否剥离该头不在仓库内"
+        ],
+        "validation_plan": {
+            "local": "阅读本地安装的 h3 源码 getRequestProtocol 实现，确认默认是否信任转发头。",
+            "deployment": "在 DMIT 服务器检查反代配置：确保 set X-Forwarded-Proto $scheme（覆盖而非透传）；用 curl -H 'X-Forwarded-Proto: http' 请求登录并检查 Set-Cookie 是否缺 Secure。"
+        }
     },
-    "confidence": {"score": "high", "reason": "证据行父代理亲自复核"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "markdown-sanitizer-async-window-and-bypass-branch",
-    "title": "Agent 气泡 markdown 渲染的 DOMPurify 为异步后挂载，存在消毒前窗口与 props.html 直通旁路",
-    "description": "renderMarkdown 支持 sanitizeHtml 回调但缺省透传原始 HTML；marked 不消毒。唯一生产调用点 AgentChatSurface 在 onMounted 异步 import('dompurify') 后才 provide sanitizer，导入完成前的渲染窗口内不消毒；AgentMarkdownContent 的 props.html 分支完全不经过 sanitizer。输入是 LLM 输出（提示注入可控）。Electron renderer 有 sandbox+contextIsolation，直接后果为 renderer 内脚本执行与同源本地 API/IPC 调用权，非直接 RCE。",
-    "root_cause": "消毒器可用性与渲染时机解耦；组件存在绕过消毒的直通分支。",
-    "intended_behavior": "消毒能力同步可用（构建期静态引入）；所有 html 渲染分支强制消毒。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/app/components/agent/AgentChatSurface.vue", "line": 3777, "scope": "前端", "description": "onMounted 异步加载 DOMPurify 后才 provide sanitizer（猎手定位）"},
-      {"kind": "propagation", "file": "packages/neuro-book/app/utils/markdown/render.ts", "line": 266, "scope": "渲染链", "description": "renderMarkdown(content, sanitizeHtml?) —— sanitize 缺省时原样返回"},
-      {"kind": "sink", "file": "packages/neuro-book/app/components/agent/AgentMarkdownContent.vue", "line": 114, "scope": "DOM", "description": "v-html=renderedHtml；另有 props.html 直通分支（:25）绕过消毒"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/app/utils/markdown/render.ts", "line": 273, "description": "return sanitizeHtml ? sanitizeHtml(html) : html"},
-      {"file": "packages/neuro-book/app/components/agent/AgentMarkdownContent.vue", "line": 25, "description": "props.html 直通分支不经 sanitizeHtml（猎手复核）"}
-    ],
-    "conditions": [
-      {"kind": "timing_dependency", "description": "窗口期极短（bundle 内动态 import），首条流式消息落在 provide 前才触发"},
-      {"kind": "data_state", "description": "props.html 分支当前无生产调用者（休眠旁路）"}
-    ],
-    "execution": {
-      "attacker_perspective": "提示注入者：让 LLM 输出携带 <img onerror> 的 markdown。",
-      "payloads": ["![x](data:image/svg+xml;base64,...) 与 <img src=x onerror=alert(1)>"],
-      "instructions": ["动态复核（本次未执行）：禁网/延迟 dompurify chunk 后发送含 payload 的首条消息，观察是否执行"],
-      "observed_result": "源码级确认（未动态复现）：消毒缺省透传与旁路分支为代码事实；实际触发依赖时序。"
+    {
+        "verdict": "confirmed",
+        "fingerprint": "readonly-mode-toolset-composition",
+        "title": "discuss/plan 只读模式是否在工具集层剔除 bash 未验证（若剔除则 F3 的只读绕过不成立）",
+        "description": "只读模式写审批按 mutatesWorkspace 判定已证实；但若 harness 在只读模式下根本不把 bash 放进工具集，则 bash 只读绕过仅在 readwrite 模式相关。本轮未逐点核验工具集组装逻辑。【2026-09-20 复验（前线，正规额度）】 验证结论：证实，且已由任务017 修复闭合。isReadonlyMode 在 neuro-agent-harness.ts 全文件仅两处使用：:5549 执行循环按 mutatesWorkspace 注入只读写审批（Task 90 机制本体）与 :8333 注释——工具集组装层无任何按模式剔除工具的逻辑，bash 在只读模式下始终在工具集内。因此 017 修复前（bash 无 mutatesWorkspace 标志）只读模式写审批被绕过成立；017 合并（665b8eae）补标志后 bash 进入审批门，绕过闭合。无进一步行动项。",
+        "claimed_root_cause": "工具集组装路径未读。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "packages/neuro-book/server/agent/harness/neuro-agent-harness.ts",
+                "line": 5549,
+                "scope": "审批门",
+                "description": "按 mutatesWorkspace 注入写审批（父代理复核）"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/server/agent/tools/tool-registry.ts",
+                "line": 69,
+                "description": "存在按 mutatesWorkspace 过滤的工具集合构造，语义待读（猎手定位）"
+            }
+        ],
+        "blockers": [
+            "需要通读工具集组装与 agentMode 的交互逻辑（预计半小时）"
+        ],
+        "validation_plan": {
+            "local": "阅读 neuro-agent-harness.ts 工具集组装函数，确认 isReadonlyMode 时 bash 是否保留；或直接在 discuss 会话观察 Agent 可用工具列表。",
+            "deployment": "无需。"
+        }
     },
-    "remediation": {
-      "strategy": "把 dompurify 改为构建期静态依赖，模块加载即初始化 sanitizer；删除或消毒 props.html 分支；NotificationViewport 的 item.html 注入点补充 sanitize 通道或改为结构化字段。",
-      "code_changes": [
-        {"file_name": "packages/neuro-book/app/components/agent/AgentChatSurface.vue", "fixed_code": "import DOMPurify from 'dompurify' 顶层静态导入，provide 在 setup 同步完成"}
-      ]
-    },
-    "severity": {
-      "likelihood": {"score": "low", "reason": "窗口极短且旁路当前休眠"},
-      "impact": {"score": "medium", "reason": "renderer 内脚本执行可调同源本地 API 与过校验的 IPC，非直接 RCE"},
-      "overall_severity": "medium"
-    },
-    "confidence": {"score": "medium", "reason": "渲染链证据充分；触发时序未动态验证"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "public-infra-disclosure-in-docs",
-    "title": "生产服务器公网 IP 与部署拓扑写入仓库文档（4 文件 66 行）",
-    "description": "nbook.notnotype.com 解析 IP 64.186.225.48、局域网测试机地址、/srv 部署路径、systemd 与内存/磁盘规格等出现在任务文档与 PROJECT-STATUS 中。仓库为公开 GitHub 仓库时，扩大定向侦察面。不涉及凭据。",
-    "root_cause": "运维细节进入长期保留的任务文档。",
-    "intended_behavior": "基础设施细节不入公开仓库，或以占位符表述。",
-    "trace": [
-      {"kind": "entrypoint", "file": ".agents/tasks/128-neuro-book-site-deployment/README.md", "line": 82, "scope": "文档", "description": "A 记录 64.186.225.48 TTL 300"},
-      {"kind": "sink", "file": "packages/llmlint/PROJECT-STATUS.md", "line": 82, "scope": "文档", "description": "llmlint.notnotype.com 当前解析为 64.186.225.48 及部署规格"}
-    ],
-    "evidence": [
-      {"file": ".agents/tasks/128-neuro-book-site-deployment/walkthroughs/2026-07-27-implementation.md", "line": 57, "description": "SSH 局域网地址 192.168.1.18（猎手定位，父代理以 rg -c 证实全仓 66 行提及该 IP 于 4 文件）"}
-    ],
-    "conditions": [
-      {"kind": "network_routing", "description": "仓库公开（origin 为 GitHub 公开仓）即可读"}
-    ],
-    "execution": {
-      "attacker_perspective": "侦察者：克隆仓库 grep IP 即获目标拓扑。",
-      "payloads": ["rg -n '64\\.186\\.225\\.48'"],
-      "instructions": ["复现：在仓库根执行上述 rg 命令（本次已执行，命中 4 文件 66 行）"],
-      "observed_result": "rg -c 实测：packages/llmlint/PROJECT-STATUS.md 等 4 个文件共 66 行包含该 IP。"
-    },
-    "remediation": {
-      "strategy": "后续提交中移除或泛化（example.com/203.0.113.x），历史清理可选（fork 自用风险有限）。",
-      "code_changes": []
-    },
-    "severity": {
-      "likelihood": {"score": "informational", "reason": "信息已在仓库，获取零成本"},
-      "impact": {"score": "low", "reason": "增大侦察面，无直接危害"},
-      "overall_severity": "low"
-    },
-    "confidence": {"score": "high", "reason": "rg 实测命中"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "ci-plaintext-smoke-passwords",
-    "title": "CI/发布脚本中的明文一次性冒烟口令与其机制暴露",
-    "description": "release-container.yml 与 scripts/release/ 下以明文写入 AUTH_ADMIN_PASSWORD（release-update-password 等）。核实为 CI 内一次性、仅绑定 127.0.0.1 的临时安装冒烟口令，用完即销毁，非共享凭据；但公开了\"管理员可经环境变量非交互创建\"的机制，照抄到真实部署即危险。",
-    "root_cause": "冒烟口令硬编码且无\"勿用于生产\"标注集中于 README。",
-    "intended_behavior": "口令随机生成于 CI 运行期；文档标注非生产用途。",
-    "trace": [
-      {"kind": "entrypoint", "file": ".github/workflows/release-container.yml", "line": 1143, "scope": "CI", "description": "$env:AUTH_ADMIN_PASSWORD = \"release-update-password\""},
-      {"kind": "sink", "file": "scripts/release/verify-public-ghcr.sh", "line": 79, "scope": "发布脚本", "description": "AUTH_ADMIN_PASSWORD=\"release-ghcr-password\""}
-    ],
-    "evidence": [
-      {"file": "scripts/release/verify-windows-portable-restart.ts", "line": 19, "description": "ADMIN_PASSWORD = \"release-auth-smoke-password\"（猎手定位）"}
-    ],
-    "conditions": [
-      {"kind": "system_configuration", "description": "仅在运维把口令照抄到真实部署时造成危害"}
-    ],
-    "execution": {
-      "attacker_perspective": "不适用（误报可能性大，登记为低风险备案）。",
-      "payloads": ["不适用"],
-      "instructions": ["复核：读取上述三处确认口令用途为一次性冒烟"],
-      "observed_result": "源码核实：三处口令均为 CI 内临时安装的 admin 创建参数，非共享凭据。"
-    },
-    "remediation": {
-      "strategy": "CI 中改为随机生成（openssl rand -hex 16）；脚本注释标注非生产。",
-      "code_changes": []
-    },
-    "severity": {
-      "likelihood": {"score": "low", "reason": "需要人为误用"},
-      "impact": {"score": "low", "reason": "误用时等同于公开默认口令"},
-      "overall_severity": "low"
-    },
-    "confidence": {"score": "high", "reason": "猎手全文精读 CI 段落"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "provider-key-plaintext-config-json",
-    "title": "provider apiKey 明文存储于 .nbook/config.json（设计取舍，防护链完整，残余为文件级泄露面）",
-    "description": "全局/项目配置以明文 JSON 持久化，provider apiKey 一并存内。出站面防护完整：API 返回掩码（首4+尾4）、saved credential 回填有连接身份校验、日志统一脱敏（sk- 正则 + SENSITIVE_KEY_PATTERN）、provider 错误先消毒、desktop 端 stdin 传递。残余：任何能读到该文件的进程/备份/云同步可获取全部 LLM key；maskedValue 泄漏首尾共 8 字符。",
-    "root_cause": "本地优先应用的常规取舍：密钥随配置文件落盘，依赖 OS 文件权限。",
-    "intended_behavior": "可选：DPAPI/keytar 级加密；maskedValue 减到 ≤4 字符。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/config/config-service.ts", "line": 88, "scope": "配置层", "description": "全局配置 = 用户根 .nbook/config.json，fs.writeFile 明文写入"},
-      {"kind": "sink", "file": "packages/neuro-book/server/config/config-service.ts", "line": 1291, "scope": "出站掩码", "description": "maskSecret 保留首4+尾4"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/utils/sensitive-text.ts", "line": 20, "description": "redactSensitiveText 对 sk-[A-Za-z0-9_-]{8,} 打码（猎手复核，防护侧证据）"}
-    ],
-    "conditions": [
-      {"kind": "environmental_dependency", "description": "文件权限、备份与同步策略决定实际暴露面"}
-    ],
-    "execution": {
-      "attacker_perspective": "本机恶意进程或拿到备份的人。",
-      "payloads": ["不适用（信息性记录）"],
-      "instructions": ["复核：读 config-service.ts:88/1563 确认明文持久化"],
-      "observed_result": "源码确认：明文 JSON 持久化，属信息性设计观察而非可利用漏洞。"
-    },
-    "remediation": {
-      "strategy": "登记为已知取舍；如需加固接入 OS 级凭据保护；备份与云同步文档中提醒含密钥。",
-      "code_changes": []
-    },
-    "severity": {
-      "likelihood": {"score": "informational", "reason": "本地单机常规形态"},
-      "impact": {"score": "informational", "reason": "记录设计取舍与加固路径"},
-      "overall_severity": "informational"
-    },
-    "confidence": {"score": "high", "reason": "两路猎手与父代理交叉确认"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "llmlint-no-inbound-rate-limit",
-    "title": "llmlint 公网站点无入站限速/配额，已登录用户可无节制消耗存储与 LLM 配额",
-    "description": "全站无入站 throttler（rg rateLimit 仅命中出站 ProviderGate）；每次新建文本同步触发正则扫描 + 3 个异步 LLM/外部检测任务，历史端点显式不分页；SQLite 单文件可被异步任务队列写爆。当前为受控众包站，风险取决于用户规模。",
-    "root_cause": "缺少入站配额层。",
-    "intended_behavior": "按用户/IP 的基础限速与每日配额。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/llmlint/web/server/api/texts.post.ts", "line": 53, "scope": "HTTP", "description": "创建文本即排 3 个异步检测任务（猎手定位）"},
-      {"kind": "sink", "file": "packages/llmlint/web/server/api/texts.get.ts", "line": 29, "scope": "HTTP", "description": "历史查询显式不分页（注释：内网量小不分页）"}
-    ],
-    "evidence": [
-      {"file": "packages/llmlint/web/server/utils/detect.ts", "line": 17, "description": "rateLimit 概念仅存在于出站 ProviderGate（猎手全库 rg）"}
-    ],
-    "conditions": [
-      {"kind": "authentication_level", "description": "需已登录（NeuroBook OAuth SSO）"}
-    ],
-    "execution": {
-      "attacker_perspective": "已登录用户脚本化刷文本。",
-      "payloads": ["循环 POST /api/texts 60k 字符正文"],
-      "instructions": ["动态复核（勿在生产）：测试环境以并发脚本定量观察任务队列增长"],
-      "observed_result": "源码确认：无入站限速层；实际滥用未观测。"
-    },
-    "remediation": {
-      "strategy": "加每用户每日文本数与字符数配额 + 任务队列深度上限；对 auth 起点端点加 IP 级限速。",
-      "code_changes": []
-    },
-    "severity": {
-      "likelihood": {"score": "medium", "reason": "公网可达且无限速"},
-      "impact": {"score": "low", "reason": "资源消耗与配额损失，无数据危害"},
-      "overall_severity": "low"
-    },
-    "confidence": {"score": "high", "reason": "专项猎手逐端点通读 25 个 API"}
-  },
-  {
-    "verdict": "confirmed",
-    "fingerprint": "dependency-vulnerability-audit-results",
-    "title": "依赖漏洞审计实测：81 项（1 critical / 29 high / 44 moderate / 7 low）；critical 为 @nuxt/devtools 3.2.4 未认证 RPC 开发者主机 RCE，undici 7.28.0 为运行时直接依赖带 5 条公告",
-    "description": "网络恢复后 bun audit 补跑成功（原始输出存档 bun-audit-raw.json）。critical：@nuxt/devtools@3.2.4（GHSA-279x-mwfv-vcqv，<3.3.1 未认证 DevTools RPC 允许在开发者主机执行任意命令），经 packages/nb-ui 的 nuxt ^4.3.1 传递引入，暴露面限 `bun run dev` 开发服务器场景。运行时直接依赖 undici@7.28.0（packages/neuro-book，声明 ^7.19.2）带 5 条公告：high 跨用户信息泄露/解析崩溃 + moderate CRLF 注入等（<7.29.0 区间）。其余 high 集中在构建/测试工具链（svgo、tar、vitest 4.1.10 路径穿越等），不进产品运行时。patches/ 两个依赖补丁经通读复核为正经 bug 修复（nitropack source-map consumer 泄漏清理、proper-lockfile mtime 精度错误处理），无恶意注入。",
-    "root_cause": "nuxt ^4.3.1 依赖树携带 @nuxt/devtools 3.2.4（漏洞区间 <3.3.1）；undici 声明 ^7.19.2 锁定到 7.28.0（漏洞区间 <7.29.0）。",
-    "intended_behavior": "@nuxt/devtools ≥3.3.1；undici ≥7.29.0；vitest ≥4.1.11（路径穿越修复）。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/nb-ui/package.json", "line": 29, "scope": "依赖声明", "description": "nuxt ^4.3.1 → 传递引入 @nuxt/devtools 3.2.4（nb-ui 与主应用同声明）"},
-      {"kind": "propagation", "file": "packages/neuro-book/package.json", "line": 160, "scope": "依赖声明", "description": "undici ^7.19.2 直接依赖，锁到 7.28.0（漏洞区间 >=7.0.0 <7.29.0）"},
-      {"kind": "sink", "file": "docs/security-audit-20260920/bun-audit-raw.json", "line": 1, "scope": "供应链", "description": "81 项漏洞完整机读存档（bun audit --json 实测输出）"}
-    ],
-    "evidence": [
-      {"file": "docs/security-audit-20260920/bun-audit-raw.json", "line": 1, "description": "bun audit --json 实测存档"},
-      {"file": "patches/nitropack@2.13.4.patch", "line": 1, "description": "通读复核：错误堆栈解析加 consumer 缓存与 destroy 清理，正经修复"},
-      {"file": "patches/proper-lockfile@4.1.2.patch", "line": 1, "description": "通读复核：precisionUnsupported 错误提前回调，正经修复"}
-    ],
-    "conditions": [
-      {"kind": "system_configuration", "description": "critical 条目仅在开发服务器（bun run dev）运行且 DevTools 面板可达时暴露；默认绑定 127.0.0.1"},
-      {"kind": "third_party_dependency", "description": "undici 各公告需特定响应/缓存指令条件触发；vitest 路径穿越仅测试环境"}
-    ],
-    "execution": {
-      "attacker_perspective": "开发场景：本机恶意页面/进程访问运行中的 DevTools RPC 端点即获命令执行；运行场景：undici 公告需服务端处理恶意构造的响应/缓存头。",
-      "payloads": ["不适用（依赖公告，非手工构造漏洞）"],
-      "instructions": ["复现：仓库根执行 bun audit 与 bun audit --audit-level=critical（本次已执行）"],
-      "observed_result": "实测输出：81 vulnerabilities (1 critical, 29 high, 44 moderate, 7 low)；critical 条目为 @nuxt/devtools@3.2.4 GHSA-279x-mwfv-vcqv。"
-    },
-    "remediation": {
-      "strategy": "① `bun audit fix` 处理声明范围内的升级；② undici 显式升 ≥7.29.0；③ nuxt 升级或 bun overrides 强制 @nuxt/devtools ≥3.3.1；④ vitest ≥4.1.11。升级属源码改动，留给前线排任务（工程队铁律不改源码）。",
-      "code_changes": []
-    },
-    "severity": {
-      "likelihood": {"score": "medium", "reason": "critical 条目限开发场景；undici 运行时条目需特定第三方响应条件"},
-      "impact": {"score": "high", "reason": "若触发：开发者主机命令执行 / 跨用户信息泄露"},
-      "overall_severity": "medium"
-    },
-    "confidence": {"score": "high", "reason": "审计工具实测输出，非推断"}
-  },
-  {
-    "verdict": "needs_validation",
-    "fingerprint": "provider-discover-error-message-key-leak",
-    "title": "provider-discover 带 code 的错误回传未过消毒器，上游错误原文可能携带含 key 的 URL 回显",
-    "description": "provider-discover.post.ts 在带 discovery code 时回传 error.message 原文（models/discovery.ts 的 normalizeDiscoveryError 输出），未过 sanitizeProviderErrorMessage。若某 provider adapter 把 apiKey 放 URL query 且上游错误文本含完整 URL，key 可能随消息回显到客户端。",
-    "claimed_root_cause": "错误回传路径绕过了既有消毒管线。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/api/config/models/provider-discover.post.ts", "line": 523, "scope": "HTTP", "description": "message: code && error instanceof Error ? error.message : 兜底文案"},
-      {"kind": "sink", "file": "packages/neuro-book/server/api/config/models/provider-discover.post.ts", "line": 529, "scope": "HTTP 响应", "description": "原文回传，未过 sanitizer"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/models/discovery.ts", "line": 184, "description": "error?.message 进入 normalizeDiscoveryError（猎手定位）"},
-      {"file": "packages/neuro-book/server/utils/model-settings.ts", "line": 260, "description": "对照：健康检查失败消息确实使用了消毒器，discover 路径未使用"}
-    ],
-    "blockers": [
-      "需核实各 provider adapter 的 URL 构造是否将 key 放入 query",
-      "需核实 normalizeDiscoveryError 是否已截断/清洗 URL"
-    ],
-    "validation_plan": {
-      "local": "构造指向本地回环 echo 服务（返回含完整请求 URL 的错误）的 provider 配置，调用 discover，检查响应 message 是否含 key。",
-      "deployment": "无需部署级验证。"
+    {
+        "verdict": "ruled_out",
+        "fingerprint": "desktop-settings-merge-and-hyperlink-sinks",
+        "title": "两处低危未闭合点：patchDesktopSettings 合并实现未定位；mermaid 渲染未显式 securityLevel",
+        "description": "① Electron IPC patchDesktopSettings(desktopSettings, patch) 接收 renderer 提供的 patch，合并实现未定位到文件，若为递归 merge 存在原型污染面（影响仅桌面 settings）。② WorkflowMermaid.vue v-html 渲染 SVG，render-mermaid.ts 初始化未显式 securityLevel:'strict'，依赖 mermaid 默认行为。【2026-09-20 复验（前线，正规额度）】 验证结论：两点均不成立。① patchDesktopSettings 实现于 neuro-book-contracts/src/desktop-contract.ts:650-655：白名单三个字段（zoomFactor/trayEnabled/closeBehavior），未知字段直接抛错（JSON.parse 产物的 __proto__ 自有键会被白名单拒绝）；{...current, ...patch} 为一层浅展开（DefineOwnProperty 语义，不改原型）；结果再经 parseDesktopSettings 严格重解析（exactKeys+类型+zoomFactor 范围 0.75-2）。IPC 入口（main.ts:1123）另有 assertTrustedFrame origin 校验。无原型污染面。② render-mermaid.ts:16 未显式设置 securityLevel 属实，但 mermaid 11.x 默认 securityLevel='strict'（文本消毒+禁 click 回调），风险不成立；显式声明 securityLevel:'strict' 属一行加固机会，非漏洞。",
+        "claimed_root_cause": "实现位置未定位 / 配置未显式化。",
+        "trace": [
+            {
+                "kind": "entrypoint",
+                "file": "desktop/electron/src/main.ts",
+                "line": 1228,
+                "scope": "IPC",
+                "description": "assertTrustedFrame 之后的 settings patch 处理（合并体未定位）"
+            },
+            {
+                "kind": "sink",
+                "file": "packages/neuro-book/app/components/workflow-preview/WorkflowMermaid.vue",
+                "line": 26,
+                "scope": "DOM",
+                "description": "v-html=result.svg"
+            }
+        ],
+        "evidence": [
+            {
+                "file": "packages/neuro-book/app/utils/render-mermaid.ts",
+                "line": 16,
+                "description": "初始化未显式 securityLevel（猎手定位）"
+            }
+        ],
+        "blockers": [
+            "patchDesktopSettings 实现文件未定位",
+            "mermaid 当前版本默认 securityLevel 行为未核实"
+        ],
+        "validation_plan": {
+            "local": "rg -n 'patchDesktopSettings' desktop/ 定位实现并审合并逻辑；查 mermaid 文档确认默认 securityLevel 并显式设 strict。",
+            "deployment": "无需。"
+        }
     }
-  },
-  {
-    "verdict": "needs_validation",
-    "fingerprint": "llmlint-cookie-secure-forwarded-proto",
-    "title": "llmlint 会话 cookie 的 Secure 标志依赖运行时协议探测（含 X-Forwarded-Proto），反代配置不明",
-    "description": "llmlint web 的 session cookie secure 标志由 getRequestProtocol(event) === 'https' 决定，h3 默认信任 X-Forwarded-Proto。若边缘代理不剥离/规范化该头，登录响应可被诱导下发无 Secure 的 cookie。反向代理配置不在仓库内，无法静态定论。",
-    "claimed_root_cause": "安全属性依赖可被客户端影响的转发头。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/llmlint/web/server/utils/auth.ts", "line": 90, "scope": "HTTP 响应", "description": "secure: getRequestProtocol(event) === \"https\""}
-    ],
-    "evidence": [
-      {"file": "packages/llmlint/web/server/utils/auth.ts", "line": 90, "description": "协议探测写法（专项猎手定位；h3 对 X-Forwarded-Proto 的具体行为因该包依赖未安装无法本地核实）"}
-    ],
-    "blockers": [
-      "h3 getRequestProtocol 对 X-Forwarded-Proto 的信任行为未核实（node_modules 未装）",
-      "生产反代（Caddy/Nginx）是否剥离该头不在仓库内"
-    ],
-    "validation_plan": {
-      "local": "阅读本地安装的 h3 源码 getRequestProtocol 实现，确认默认是否信任转发头。",
-      "deployment": "在 DMIT 服务器检查反代配置：确保 set X-Forwarded-Proto $scheme（覆盖而非透传）；用 curl -H 'X-Forwarded-Proto: http' 请求登录并检查 Set-Cookie 是否缺 Secure。"
-    }
-  },
-  {
-    "verdict": "needs_validation",
-    "fingerprint": "readonly-mode-toolset-composition",
-    "title": "discuss/plan 只读模式是否在工具集层剔除 bash 未验证（若剔除则 F3 的只读绕过不成立）",
-    "description": "只读模式写审批按 mutatesWorkspace 判定已证实；但若 harness 在只读模式下根本不把 bash 放进工具集，则 bash 只读绕过仅在 readwrite 模式相关。本轮未逐点核验工具集组装逻辑。",
-    "claimed_root_cause": "工具集组装路径未读。",
-    "trace": [
-      {"kind": "entrypoint", "file": "packages/neuro-book/server/agent/harness/neuro-agent-harness.ts", "line": 5549, "scope": "审批门", "description": "按 mutatesWorkspace 注入写审批（父代理复核）"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/server/agent/tools/tool-registry.ts", "line": 69, "description": "存在按 mutatesWorkspace 过滤的工具集合构造，语义待读（猎手定位）"}
-    ],
-    "blockers": ["需要通读工具集组装与 agentMode 的交互逻辑（预计半小时）"],
-    "validation_plan": {
-      "local": "阅读 neuro-agent-harness.ts 工具集组装函数，确认 isReadonlyMode 时 bash 是否保留；或直接在 discuss 会话观察 Agent 可用工具列表。",
-      "deployment": "无需。"
-    }
-  },
-  {
-    "verdict": "needs_validation",
-    "fingerprint": "desktop-settings-merge-and-hyperlink-sinks",
-    "title": "两处低危未闭合点：patchDesktopSettings 合并实现未定位；mermaid 渲染未显式 securityLevel",
-    "description": "① Electron IPC patchDesktopSettings(desktopSettings, patch) 接收 renderer 提供的 patch，合并实现未定位到文件，若为递归 merge 存在原型污染面（影响仅桌面 settings）。② WorkflowMermaid.vue v-html 渲染 SVG，render-mermaid.ts 初始化未显式 securityLevel:'strict'，依赖 mermaid 默认行为。",
-    "claimed_root_cause": "实现位置未定位 / 配置未显式化。",
-    "trace": [
-      {"kind": "entrypoint", "file": "desktop/electron/src/main.ts", "line": 1228, "scope": "IPC", "description": "assertTrustedFrame 之后的 settings patch 处理（合并体未定位）"},
-      {"kind": "sink", "file": "packages/neuro-book/app/components/workflow-preview/WorkflowMermaid.vue", "line": 26, "scope": "DOM", "description": "v-html=result.svg"}
-    ],
-    "evidence": [
-      {"file": "packages/neuro-book/app/utils/render-mermaid.ts", "line": 16, "description": "初始化未显式 securityLevel（猎手定位）"}
-    ],
-    "blockers": ["patchDesktopSettings 实现文件未定位", "mermaid 当前版本默认 securityLevel 行为未核实"],
-    "validation_plan": {
-      "local": "rg -n 'patchDesktopSettings' desktop/ 定位实现并审合并逻辑；查 mermaid 文档确认默认 securityLevel 并显式设 strict。",
-      "deployment": "无需。"
-    }
-  }
 ]
