@@ -72,6 +72,17 @@ const manuscriptStatusOptions = computed<SelectOption[]>(() => [
 const isMarkdownFile = computed(() => Boolean(props.node?.editable && props.node.path.toLowerCase().endsWith(".md")));
 const isContentIndexFile = computed(() => Boolean(isMarkdownFile.value && props.node?.contentNode && props.node.path.toLowerCase().endsWith("/index.md")));
 const isManuscriptIndexFile = computed(() => Boolean(isContentIndexFile.value && props.node?.path.startsWith("manuscript/")));
+// 万字以下精确数字已可读，不追加单位标注。
+const readableTotalWords = computed(() => {
+    const words = manuscriptStats.value.totalWords;
+    if (words >= 100_000_000) {
+        return t("ide.workspace.fileDetail.readableYi", {count: (words / 100_000_000).toFixed(1)});
+    }
+    if (words >= 10_000) {
+        return t("ide.workspace.fileDetail.readableWan", {count: Math.round(words / 10_000)});
+    }
+    return "";
+});
 const isDirectoryWithoutIndex = computed(() => Boolean(props.node?.isDirectory && !props.node.hasIndex));
 const isContentDirectoryWithoutIndex = computed(() => Boolean(props.node?.isDirectory && !props.node.hasIndex && isWorkspaceContentScopePath(props.node.path)));
 const canEditFrontmatter = computed(() => Boolean(isContentIndexFile.value && !isManuscriptIndexFile.value && !localFrontmatterError.value && !props.node?.frontmatterError));
@@ -382,6 +393,7 @@ function basename(filePath: string): string {
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.total") }}</div>
                         <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.totalWords }}</div>
+                        <div v-if="readableTotalWords" class="text-[11px] text-[var(--text-muted)]">{{ readableTotalWords }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.size") }}</div>

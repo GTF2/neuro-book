@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>009 重构方向 · 线框图 v1（三图八变体）</title>
+<style>
+  /* 低保真线框文档：黑白灰三阶，零依赖单文件 */
+  :root{
+    --ink:#1a1a1a; --ink2:#555; --ink3:#6b6b6b;
+    --line:#cfcfcf; --line2:#e6e6e6; --bg:#fafafa; --panel:#f2f2f2; --panel2:#e8e8e8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.7}
+  main{max-width:1240px;margin:0 auto;padding:28px 28px 100px}
+  header.doc{border-bottom:2px solid var(--ink);padding:26px 28px 18px;background:#fff}
+  header.doc h1{font-size:22px;letter-spacing:.5px}
+  header.doc .sub{color:var(--ink2);font-size:13px;margin-top:6px}
+  .howto{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ink);padding:14px 18px;margin:22px 0;border-radius:6px;font-size:14px}
+  .howto b{background:var(--panel2);padding:0 6px;border-radius:3px}
+  nav.jump{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+  nav.jump a{color:var(--ink);text-decoration:none;border:1px solid var(--ink);padding:4px 14px;border-radius:20px;font-size:13px;background:#fff}
+  nav.jump a:hover{background:var(--panel2)}
+  button.act{border:1px solid var(--ink);background:#fff;border-radius:6px;padding:6px 16px;cursor:pointer;font-size:13px}
+  button.act:hover{background:var(--panel2)}
+  /* ====== 图块 ====== */
+  section.fig{margin-top:56px}
+  section.fig > h2{font-size:19px;border-left:5px solid var(--ink);padding-left:12px}
+  section.fig .goal{color:var(--ink2);font-size:14px;margin:8px 0 4px}
+  section.fig .basis{font-size:13px;color:var(--ink3);margin-bottom:8px}
+  /* ====== 变体卡 ====== */
+  .variant{background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:26px;overflow:hidden}
+  .variant > .vhead{display:flex;align-items:baseline;gap:12px;padding:14px 18px 10px;border-bottom:1px dashed var(--line)}
+  .variant > .vhead .vid{font-weight:700;font-size:16px}
+  .variant > .vhead .vname{font-size:14px;color:var(--ink2)}
+  .variant .vbody{padding:18px}
+  .variant .pick{display:flex;gap:10px;align-items:center;padding:12px 18px;border-top:1px dashed var(--line);background:var(--panel);flex-wrap:wrap}
+  .variant .pick textarea{flex:1;min-width:260px;min-height:44px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical}
+  .variant .pick .choose{border:1.5px solid var(--ink);background:#fff;border-radius:6px;padding:7px 18px;cursor:pointer;font-size:13px}
+  .variant .pick .choose.on{background:var(--ink);color:#fff}
+  .picked-tag{font-size:12px;color:var(--ink3)}
+  /* ====== 线框画布 ====== */
+  .wf{border:1.5px solid var(--ink);background:#fff;position:relative;border-radius:4px;overflow:hidden}
+  .wf .lbl{position:absolute;font-size:11.5px;color:var(--ink3);background:#fff;padding:0 4px;letter-spacing:.5px}
+  .note{border:1.5px dashed var(--ink3);border-radius:6px;padding:8px 12px;font-size:12.5px;color:var(--ink2);background:var(--bg);margin-top:10px}
+  .note b{color:var(--ink)}
+  .ph-line{height:8px;background:var(--line2);border-radius:2px;margin:5px 0}
+  .btnw{display:inline-block;border:1.5px solid var(--ink);border-radius:4px;padding:3px 12px;font-size:12.5px;background:#fff}
+  .btnw.dark{background:var(--ink);color:#fff}
+  .btnw.ghost{border-style:dashed;color:var(--ink2)}
+  .boxline{border:1px solid var(--line);border-radius:4px;padding:10px 12px;font-size:12.5px}
+  /* 工作台骨架（图1/2 共用） */
+  .wt{display:flex;height:430px;font-size:12.5px}
+  .wt .ab{width:38px;background:var(--panel);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;padding-top:10px;gap:12px}
+  .wt .ab .ic{width:20px;height:20px;border:1.5px solid var(--ink2);border-radius:4px;background:#fff}
+  .wt .ab .ic.on{background:var(--ink2)}
+  .wt .side{width:185px;background:#fff;border-right:1px solid var(--line);padding:10px;overflow:hidden}
+  .wt .mid{flex:1;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;overflow:hidden}
+  .wt .agent{width:295px;background:var(--panel);display:flex;flex-direction:column;overflow:hidden}
+  .treetitle{font-weight:700;font-size:12.5px;padding:2px 0 6px;color:var(--ink)}
+  .treeleaf{padding:2px 0 2px 10px;color:var(--ink2);font-size:12px;border-left:1px solid var(--line);margin-left:4px}
+  .tabbar{display:flex;gap:2px;border-bottom:1px solid var(--line);padding:6px 8px 0;background:var(--panel)}
+  .tab{border:1px solid var(--line);border-bottom:none;background:#fff;border-radius:5px 5px 0 0;padding:3px 12px;font-size:12px}
+  .tab.on{font-weight:700}
+  .tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#999;margin-left:5px}
+  /* 聊天元素 */
+  .msg-u{align-self:flex-end;max-width:55%;background:var(--panel2);border-radius:10px 10px 2px 10px;padding:7px 12px;margin:5px 10px 5px 0}
+  .msg-a{align-self:flex-start;max-width:68%;background:#fff;border:1px solid var(--line);border-radius:10px 10px 10px 2px;padding:7px 12px;margin:5px 0 5px 10px}
+  .hoverop{font-size:12px;color:var(--ink3);border:1px dashed var(--ink3);border-radius:3px;padding:1px 6px;margin:0 2px}
+  .think{border-left:3px solid var(--line);background:var(--bg);padding:8px 10px;font-size:12px;color:var(--ink2);border-radius:0 4px 4px 0}
+  .refcard{border:1px solid var(--line);border-radius:5px;padding:8px 10px;font-size:11.5px;background:var(--bg);margin:4px 0}
+  .refcard .rt{font-weight:700}
+  .refcard .rt .tag{font-weight:400;color:var(--ink3);margin-left:6px;font-size:11.5px}
+  .busy{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink2);padding:6px 12px}
+  .spin{width:13px;height:13px;border:2px solid var(--line);border-top-color:var(--ink2);border-radius:50%}
+  .metabtn{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:2px 10px;font-size:12px;color:var(--ink2);background:#fff}
+  .scale{width:14px;background:var(--panel2);border-right:1px solid var(--line);position:relative}
+  .scale .tick{position:absolute;left:3px;width:8px;height:2px;background:var(--ink3);border-radius:1px}
+  .scale .tick.on{background:var(--ink);height:8px;width:3px}
+  /* 审批卡 */
+  .approve{border:2px solid var(--ink);border-radius:8px;background:#fff;margin:8px 10px;padding:10px 12px;box-shadow:3px 3px 0 var(--panel2)}
+  .approve .t{font-weight:700;font-size:13px}
+  .approve .kv{font-size:12.5px;color:var(--ink2);margin:4px 0 8px}
+  .approve .btns{display:flex;gap:10px}
+  .doneline{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:7px 10px;margin:6px 10px;font-size:12px;color:var(--ink2)}
+  .reject2{display:flex;gap:8px;align-items:center;margin-top:8px;border-top:1px dashed var(--line);padding-top:8px;font-size:12px}
+  /* 对照视图 */
+  .duo{flex:1;display:flex;min-height:0}
+  .duo .col{flex:1;padding:12px;overflow:hidden;border-right:1px solid var(--line)}
+  .duo .col:last-child{border-right:none;background:var(--bg)}
+  .diffrow{font-family:Consolas,monospace;font-size:11.5px;line-height:1.55;white-space:pre-wrap}
+  .diffrow.add{background:#e0e0e0;border-radius:3px;padding:0 4px}
+  .diffrow.del{color:var(--ink3);text-decoration:line-through;padding:0 4px}
+  .sumcard{border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-bottom:10px;background:#fff}
+  .sumcard.on{border:2px solid var(--ink)}
+  /* 收件箱条目 */
+  .inboxrow{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:10px 12px;margin-bottom:8px;background:#fff}
+  .badge{display:inline-block;min-width:18px;text-align:center;border:1.5px solid var(--ink);border-radius:9px;font-size:11.5px;padding:0 5px;background:#fff}
+  /* 创世向导 */
+  .wizard-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:#fff}
+  .bigtitle{font-size:21px;font-weight:700;letter-spacing:1px}
+  .bigsub{color:var(--ink2);font-size:14px;margin:10px 0 22px;text-align:center}
+  .idea-input{width:min(560px,90%);border:2px solid var(--ink);border-radius:8px;padding:12px 16px;font-size:14px;background:#fff;display:flex;gap:10px;align-items:center}
+  .idea-input .cur{color:var(--ink3);font-size:13px}
+  .dir3{display:flex;gap:14px;width:min(840px,95%);margin-top:8px}
+  .dircard{flex:1;border:1.5px solid var(--ink);border-radius:8px;background:#fff;padding:12px 14px;position:relative}
+  .dircard.on{background:var(--panel);box-shadow:4px 4px 0 var(--panel2)}
+  .dircard .dn{font-weight:700;font-size:14px}
+  .dircard .dd{font-size:12px;color:var(--ink2);margin:6px 0 10px}
+  .stepdots{display:flex;gap:8px;align-items:center;justify-content:center;font-size:12px;color:var(--ink2);margin-bottom:18px}
+  .stepdots .sd{display:flex;gap:6px;align-items:center}
+  .stepdots .sdc{width:22px;height:22px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fff;font-size:12px}
+  .stepdots .sdc.on{background:var(--ink);color:#fff}
+  .stepdots .sdc.done{background:var(--panel2);color:var(--ink2)}
+  .checklist{font-size:13px;color:var(--ink2);margin:14px 0}
+  .checklist .ck{display:flex;gap:8px;align-items:center;padding:3px 0}
+  .empty-cta{border:2px dashed var(--ink3);border-radius:8px;text-align:center;padding:18px 10px;color:var(--ink2);font-size:12.5px;background:var(--bg)}
+  .empty-cta .zero{font-size:12px;color:var(--ink3);margin-bottom:8px;letter-spacing:2px}
+  /* 对照表 */
+  table.map{width:100%;border-collapse:collapse;margin-top:14px;background:#fff;font-size:13px}
+  table.map th,table.map td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  table.map th{background:var(--panel);font-size:12.5px;letter-spacing:.5px}
+  table.map td .src{display:inline-block;font-size:11px;border:1px solid var(--line);border-radius:3px;padding:0 6px;color:var(--ink2);margin-left:6px;white-space:nowrap}
+  table.map td .src.now{border-color:var(--ink);color:var(--ink)}
+  table.map td .src.req{border-style:dashed}
+  footer.doc{margin-top:70px;border-top:1px solid var(--line);padding-top:14px;color:var(--ink3);font-size:12px}
+  pre.export{display:none;background:#fff;border:1px solid var(--ink);border-radius:8px;padding:14px;font-size:12.5px;margin-top:16px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <h1>009 重构方向 · 线框图 v1</h1>
+  <div class="sub">低保真黑白灰 · 三张图八个变体 · 全部元素基于现有软件改造（出处见末尾对照表）· 2026-09-20 前线指挥部</div>
+  <nav class="jump">
+    <a href="#fig1">图1 落库审查流</a>
+    <a href="#fig2">图2 Agent 面板</a>
+    <a href="#fig3">图3 创世向导</a>
+    <a href="#map">对照表</a>
+    <a href="#" onclick="exportPick();return false">汇总我的选择</a>
+  </nav>
+</header>
+<main>
+
+<div class="howto">
+  <b>怎么用</b>：每张图有 2-3 个变体，选一个最顺眼的点【选这个】，不顺的地方写在旁边框里挑毛病（自动保存，刷新不丢）。全看完点顶部【汇总我的选择】复制结果发给参谋部。
+  <b>黑白灰是故意的</b>：这轮只定布局和机制，颜色字体是后面的事。
+  <div class="sub" style="color:var(--ink3);font-size:12.5px;margin-top:4px">所有变体共用的骨架 = 现有工作台四栏：左侧图标条 Activity Bar → 侧栏（文件树/档案）→ 中间编辑区 → 右侧 Agent 面板。位置和大小画的是示意，不是像素承诺。</div>
+</div>
+
+<!-- ================= 图1 ================= -->
+<section class="fig" id="fig1">
+  <h2>图1 · 落库审查流：四个入口收拢成一个正门</h2>
+  <div class="goal">现在 AI 写入档案要看着四个地方：聊天流里的审批弹窗、欢迎页自动弹的文件变更收件箱、Agent 面板底部的待处理条、开发沙箱里的 diff 对照窗。三个变体都把它们收拢成<b>一个正门</b>，区别在"正门开在哪"。</div>
+  <div class="basis">共同保留（三种变体都有）：审批人话卡文案（"AI 想把【张三设定卡】写入档案｜新增：住所=城南旧宅、身份=赘婿"）、接受/拒绝成对、拒绝后选"让 AI 重来 / 我自己改"、批完留痕收成一行（✅ 已批准：张三设定卡 14:32）、详情在中间编辑区打开左摘要右 diff 对照视图、审完一键回正文。</div>
+
+  <!-- 1A -->
+  <div class="variant" data-fig="图1" data-vid="1A 会话内正门">
+    <div class="vhead"><span class="vid">变体 1A</span><span class="vname">会话内正门 —— 审批卡长在聊天流里，顺手就批</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="lbl" style="top:4px;left:46%">Agent 面板（右栏）</div>
+        <div class="wt">
+          <div class="ab"><div class="ic"></div><div class="ic on"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div></div>
+          <div class="side">
+            <div class="treetitle">正文</div>
+            <div class="treeleaf">001 卷</div>
+            <div class="treeleaf">001 章</div>
+            <div class="treeleaf">002 章</div>
+            <div class="treetitle" style="margin-top:8px">档案（侧栏档案面板）</div>
+            <div class="treeleaf">张三 <span class="badge">1</span></div>
+            <div class="treeleaf">李四</div>
+            <div class="empty-cta" style="margin-top:14px;padding:10px"><div class="zero">0 条待沉淀</div>张三设定卡待审 1 条</div>
+          </div>
+          <div class="mid">
+            <div class="tabbar"><div class="tab">第五章 index.md</div><div class="tab on">审查对照·张三设定卡</div></div>
+            <div class="duo">
+              <div class="col">
+                <div style="font-weight:700;margin-bottom:8px">左：人话摘要（每条变更一张卡）</div>
+                <div class="sumcard on"><b>张三设定卡 · 新增 2 项</b><br>住所 = 城南旧宅<br>身份 = 赘婿</div>
+                <div class="sumcard">第五章正文 · 改 1 处<br>「推开门」→「推开仓库的门」</div>
+                <div class="doneline" style="margin:6px 0">✅ 已批准：张三设定卡 14:32 ｜ <u>查看对照</u></div>
+              </div>
+              <div class="col">
+                <div style="font-weight:700;margin-bottom:8px">右：diff 对照（diff-workbench 机制移入编辑区）</div>
+                <div class="diffrow">--- 张三/character.md</div>
+                <div class="diffrow"> 身份：散修</div>
+                <div class="diffrow del">- 住所：不明</div>
+                <div class="diffrow add">+ 住所：城南旧宅</div>
+                <div class="diffrow add">+ 身份：赘婿（原「散修」改）</div>
+                <div style="margin-top:14px"><span class="btnw dark">接受写入</span> <span class="btnw">拒绝</span></div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 12px;display:flex;justify-content:space-between"><span style="color:var(--ink3);font-size:12px">审完一键回正文</span><span class="btnw">← 返回正文编辑</span></div>
+          </div>
+          <div class="agent">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line)">
+              <b>写作 Agent</b><span style="font-size:11.5px;color:var(--ink3)">审查历史（收件箱降级为归档）</span>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 0">
+              <div class="msg-u" style="max-width:60%">把张三的设定补全一下，他现在是赘婿</div>
+              <div class="msg-a">好，我从第五章里提取了张三的新设定，想写入他的档案：</div>
+              <div class="approve">
+                <div class="t">AI 想把【张三设定卡】写入档案</div>
+                <div class="kv">新增：住所 = 城南旧宅、身份 = 赘婿</div>
+                <div class="btns"><span class="btnw dark">接受</span><span class="btnw">拒绝</span></div>
+                <div class="reject2">拒绝后：<span class="btnw ghost">让 AI 重来</span><span class="btnw ghost">我自己改</span></div>
+              </div>
+              <div class="doneline">✅ 已批准：张三设定卡 14:32 ｜ <u>查看对照</u></div>
+              <div class="msg-a">已写入。李四的事件我也有个建议，要看看吗？</div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 10px">
+              <div style="border:1.5px solid var(--ink);border-radius:6px;padding:6px 10px;color:var(--ink3);font-size:12.5px">输入框（喂什么：第五章 ｜ 怎么配：writer）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：AI 消息后直接跟审批人话卡（不再弹窗、也不跳收件箱）——现有 017 审批体系从"弹窗"改为"聊天流内嵌卡"；批完卡收成一行留痕，点「查看对照」在中间编辑区开左摘要右 diff 的对照 Tab（diff-workbench 机制移入编辑区），审完一键回正文。收件箱不再自动弹，降级为面板顶部"审查历史"入口。侧栏档案上出现待审徽标。<b>适合</b>：改一条批一条的日常节奏，聊天不断流。<b>代价</b>：一次攒了十条时要逐条回聊天里找。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <!-- 1B -->
+  <div class="variant" data-fig="图1" data-vid="1B 对照优先">
+    <div class="vhead"><span class="vid">变体 1B</span><span class="vname">对照优先 —— 聊天里只报个数，审阅都在正文边上做</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt">
+          <div class="ab"><div class="ic"></div><div class="ic on"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div></div>
+          <div class="side">
+            <div class="treetitle">正文</div>
+            <div class="treeleaf">001 卷 · 001 章</div>
+            <div class="treetitle" style="margin-top:8px">档案</div>
+            <div class="treeleaf">张三 <span class="badge">2</span></div>
+            <div class="treeleaf">李四 <span class="badge">1</span></div>
+          </div>
+          <div class="mid">
+            <div class="tabbar"><div class="tab">第五章 index.md</div><div class="tab on">待审 3 · 审查对照</div></div>
+            <div class="duo">
+              <div class="col">
+                <div style="font-weight:700;margin-bottom:8px">左：待审清单（一条一卡，就地批）</div>
+                <div class="sumcard on"><b>张三设定卡 · 新增 2 项</b><br>住所 = 城南旧宅、身份 = 赘婿<div style="margin-top:6px"><span class="btnw dark">接受</span> <span class="btnw">拒绝</span></div><div class="reject2"><span class="btnw ghost">让 AI 重来</span><span class="btnw ghost">我自己改</span></div></div>
+                <div class="sumcard"><b>李四事件卡 · 新建</b><br>雨夜仓库初遇 …</div>
+                <div class="sumcard"><b>第五章正文 · 改 1 处</b></div>
+              </div>
+              <div class="col">
+                <div style="font-weight:700;margin-bottom:8px">右：选中条目的 diff</div>
+                <div class="diffrow">--- 张三/character.md</div>
+                <div class="diffrow del">- 住所：不明</div>
+                <div class="diffrow add">+ 住所：城南旧宅</div>
+                <div class="diffrow add">+ 身份：赘婿</div>
+                <div class="doneline" style="margin-top:10px">✅ 已批准：张三设定卡 14:32</div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 12px;display:flex;justify-content:space-between"><span style="color:var(--ink3);font-size:12px">批完一条自动跳下一条</span><span class="btnw">← 审完回正文</span></div>
+          </div>
+          <div class="agent">
+            <div style="padding:10px 12px;border-bottom:1px solid var(--line)"><b>写作 Agent</b></div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 0">
+              <div class="msg-u" style="max-width:60%">把这章里张三的新设定记进档案</div>
+              <div class="msg-a">我改了 3 处，都等你过目。<div style="margin-top:6px"><span class="btnw dark">去审查（3）</span></div></div>
+            </div>
+            <div style="border-top:1px solid var(--line);background:#fff;padding:8px 12px;display:flex;gap:8px;align-items:center">
+              <span class="badge">3</span><span style="font-size:12.5px">文件变更待审 · 张三设定卡 / 李四事件 / 第五章正文</span>
+            </div>
+            <div style="padding:0 12px 10px;background:#fff"><span class="btnw" style="width:100%;text-align:center;display:block">开始逐条审查</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：聊天流只留一句"我改了 3 处"+跳转按钮，不打断；Agent 面板底部的待处理条（现有"文件变更 5 · 接受全部"那条）升级为待审清单入口；真正的审批在中间编辑区的对照 Tab 里——左列逐条人话卡就地接受/拒绝（拒绝弹出"让 AI 重来/我自己改"），右列显示选中条 diff，批完自动跳下一条，全部审完回正文。<b>适合</b>：想先看内容语境再拍板的认真审；批量。<b>代价</b>：比 1A 多一次跳转，"聊着聊着顺手批"做不到。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <!-- 1C -->
+  <div class="variant" data-fig="图1" data-vid="1C 收件箱正门">
+    <div class="vhead"><span class="vid">变体 1C</span><span class="vname">收件箱正门 —— 现有收件箱升格为唯一门，集中批</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt">
+          <div class="ab"><div class="ic"></div><div class="ic on"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div></div>
+          <div class="side">
+            <div class="treetitle">正文 · 档案</div>
+            <div class="treeleaf">001 卷 / 001 章 …</div>
+            <div class="treeleaf">张三 / 李四 …</div>
+          </div>
+          <div class="mid">
+            <div class="tabbar"><div class="tab">第五章 index.md</div><div class="tab on">审查收件箱（3）</div></div>
+            <div style="flex:1;padding:14px;overflow:hidden">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><b style="font-size:14px">AI 写入待审 · 3 条</b><span class="btnw">全部接受</span></div>
+              <div class="inboxrow"><b style="min-width:96px">张三设定卡</b><span style="flex:1;color:var(--ink2)">新增：住所=城南旧宅、身份=赘婿</span><span class="btnw dark">接受</span><span class="btnw">拒绝</span><u style="font-size:12px;color:var(--ink3)">对照</u></div>
+              <div class="inboxrow" style="opacity:.55"><b style="min-width:96px">李四事件卡</b><span style="flex:1;color:var(--ink2)">新建：雨夜仓库初遇</span><span style="font-size:12px;color:var(--ink3)">✅ 已批准 14:18</span><u style="font-size:12px;color:var(--ink3)">对照</u></div>
+              <div class="inboxrow"><b style="min-width:96px">第五章正文</b><span style="flex:1;color:var(--ink2)">改 1 处：「推开门」→「推开仓库的门」</span><span class="btnw dark">接受</span><span class="btnw">拒绝</span><u style="font-size:12px;color:var(--ink3)">对照</u></div>
+              <div class="reject2" style="margin-top:10px">拒绝任意一条时：<span class="btnw ghost">让 AI 重来</span><span class="btnw ghost">我自己改</span></div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 12px"><span class="btnw">← 审完回正文</span></div>
+          </div>
+          <div class="agent">
+            <div style="padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><b>写作 Agent</b><span style="font-size:11.5px;border:1.5px solid var(--ink);border-radius:10px;padding:0 8px">待审 3</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 0">
+              <div class="msg-u" style="max-width:60%">把这章里张三的新设定记进档案</div>
+              <div class="msg-a">已提交 3 条写入申请，都在收件箱等你（纯文字提及，不嵌卡）。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：现有"文件变更收件箱"（欢迎页自动弹的那个）升格为唯一正门，但搬进编辑区当 Tab，不再突袭弹窗；面板顶部常驻"待审 3"徽标；聊天流彻底干净只留文字提及。收件箱每行直接展开人话摘要+接受/拒绝，点「对照」才开左右 diff。<b>适合</b>：攒一批集中审、要求聊天绝对不被打断。<b>代价</b>：轻量改一条也要离开聊天去收件箱，路径最长；AI 说了什么改动在聊天里看不见。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 图2 ================= -->
+<section class="fig" id="fig2">
+  <h2>图2 · Agent 面板全套</h2>
+  <div class="goal">三个变体共用一套<b>对话规范</b>（对齐/宽度/收纳原则），区别在"状态信息放哪、会话分支怎么进"。以下规范三变体通用：用户消息右对齐最大 55% 宽、AI 左对齐 65-70%，气泡按内容收缩不撑满；操作按钮平时藏起来，悬停消息才浮现（AI 贴左下角、用户贴右下角）；思考默认只露一两行实时滚动，点开看全文；引用一条一卡显示前几行字，悬停预览全文。</div>
+  <div class="basis">本图画的是 Agent 面板（右栏）放大后的样子，左下的工作台骨架仅供位置参照。悬停效果用「hover 时」小图示意。</div>
+
+  <!-- 2A -->
+  <div class="variant" data-fig="图2" data-vid="2A 纯净对话">
+    <div class="vhead"><span class="vid">变体 2A</span><span class="vname">纯净对话 —— 一切收纳，悬停才现</span></div>
+    <div class="vbody">
+      <div style="display:flex;gap:14px;align-items:stretch">
+        <div class="wf" style="flex:1">
+          <div class="wt" style="height:460px">
+            <div class="ab"><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic on"></div><div class="ic"></div></div>
+            <div class="side" style="width:120px"><div class="treetitle">工作台骨架</div><div class="treeleaf">（仅位置参照）</div><div class="treeleaf">编辑区 →</div></div>
+            <div class="mid" style="border-right:none;background:var(--panel)">
+              <div style="display:flex;flex:1">
+                <div class="scale" title="24px 会话刻度条"><div class="tick on" style="top:40px"></div><div class="tick" style="top:120px"></div><div class="tick" style="top:200px"></div><div class="tick" style="top:300px"></div></div>
+                <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+                  <div style="padding:8px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;background:#fff">
+                    <b style="font-size:13px">会话 · 第五章修改</b>
+                    <span class="metabtn">ⓘ 悬停看：模型 writer-5.3 · 已工作 3 分钟</span>
+                  </div>
+                  <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:6px 0;overflow:hidden">
+                    <div class="msg-u">把张三的设定补全一下</div>
+                    <div class="msg-a">好。我先读第五章和现有档案。</div>
+                    <div class="think" style="margin:4px 10px">正在想：张三在第五章自称赘婿，但档案里还是散修，住所没提… <u>展开全文</u></div>
+                    <div class="refcard"><span class="rt">第五章 index.md<span class="tag">引用 · 悬停预览全文</span></span><br>蓝梓推开仓库的门，雨声忽然远了。旧剑横在木箱上…</div>
+                    <div class="msg-a">设定已核对完，提交写入申请：<br>新增：住所=城南旧宅、身份=赘婿</div>
+                    <div class="busy" style="padding:6px 10px"><span class="spin"></span>正在写入档案（状态过渡：思考 → 调工具 → 完成）</div>
+                  </div>
+                  <div style="border-top:1px solid var(--line);padding:8px 10px;background:#fff">
+                    <div style="display:flex;gap:6px;align-items:center">
+                      <span class="metabtn">＋喂什么</span>
+                      <div style="flex:1;border:1.5px solid var(--ink);border-radius:6px;padding:6px 10px;color:var(--ink3);font-size:12.5px">输入消息…</div>
+                      <span class="metabtn">怎么配 ⚙</span>
+                    </div>
+                    <div style="font-size:11px;color:var(--ink3);margin-top:5px">左=喂什么（选中章节/世界书/文风）　右=怎么配（模型/模式）——均收纳为小按钮，悬停出选项</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="wf" style="width:250px;align-self:flex-start;padding:10px">
+          <div class="lbl" style="top:3px;right:8px">hover 时</div>
+          <div style="font-size:12px;color:var(--ink3);margin-bottom:6px">悬停 AI 消息（操作贴左下）：</div>
+          <div class="msg-a" style="max-width:100%">设定已核对完…<div style="margin-top:6px"><span class="hoverop">复制</span><span class="hoverop">重发</span><span class="hoverop">引用</span></div></div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 6px">悬停用户消息（操作贴右下）：</div>
+          <div class="msg-u" style="max-width:100%;margin-right:0"><div>把张三的设定补全一下</div><div style="margin-top:6px;text-align:right"><span class="hoverop">编辑</span><span class="hoverop">删除</span></div></div>
+          <div style="font-size:12px;color:var(--ink3);margin:10px 0 6px">悬停左侧刻度条：</div>
+          <div style="border:1px solid var(--line);border-radius:6px;background:#fff;font-size:11.5px;padding:6px 8px;line-height:2">▸ 主线（当前）<br>　分支 · 改成悬疑向<br>　分支 · 只改对话<br><span style="color:var(--ink3)">（悬停展开会话分支，点击切换）</span></div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：最干净的聊天——一切状态收纳：模型名/工作时长收进 ⓘ 小按钮，工具配置收进输入框两侧小按钮，会话分支收进左侧 24px 刻度条（平时只是细条上的刻度点，悬停展开）。<b>适合</b>：把 Agent 面板当对话用、讨厌干扰的人。<b>代价</b>：想知道"它到底在干嘛/用的什么模型"必须悬停，第一次上手有学习成本。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <!-- 2B -->
+  <div class="variant" data-fig="图2" data-vid="2B 状态外显">
+    <div class="vhead"><span class="vid">变体 2B</span><span class="vname">状态外显 —— 模型/时长/正在干嘛常驻可见</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt" style="height:460px">
+          <div class="ab"><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic on"></div><div class="ic"></div></div>
+          <div class="side" style="width:120px"><div class="treetitle">工作台骨架</div><div class="treeleaf">（仅位置参照）</div></div>
+          <div class="mid" style="border-right:none">
+            <div style="padding:0 12px;border-bottom:1px solid var(--line);background:var(--panel)">
+              <div style="display:flex;gap:8px;align-items:center;padding:7px 0;font-size:12px">
+                <b>第五章修改</b>
+                <select style="font-size:11.5px;border:1px solid var(--line);border-radius:4px;padding:1px 4px"><option>会话：第五章修改 ▾</option></select>
+                <span style="flex:1"></span>
+                <span style="border:1px solid var(--line);border-radius:10px;padding:0 8px;font-size:11px;background:#fff">writer-5.3</span>
+                <span style="border:1px solid var(--line);border-radius:10px;padding:0 8px;font-size:11px;background:#fff">已工作 3 分钟</span>
+              </div>
+              <div class="busy" style="padding:4px 0 6px"><span class="spin"></span>正在调用工具：read_file（第五章 index.md）　<u style="font-size:11px">收起</u></div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:6px 10px;overflow:hidden">
+              <div class="msg-u">把张三的设定补全一下</div>
+              <div class="msg-a">好，先读第五章。</div>
+              <div class="think" style="margin:4px 10px">正在想：档案里张三还是散修… <u>展开全文</u></div>
+              <div class="msg-a">提交写入申请：新增 住所=城南旧宅、身份=赘婿</div>
+              <div class="refcard"><span class="rt">张三设定卡<span class="tag">引用</span></span><br>身份：赘婿（原散修）…</div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 10px;background:#fff">
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:6px;font-size:11.5px">
+                <span style="border:1px solid var(--ink);border-radius:10px;padding:1px 8px;background:var(--panel)">喂：第五章 ×</span>
+                <span style="border:1px solid var(--line);border-radius:10px;padding:1px 8px">＋喂什么</span>
+                <span style="flex:1"></span>
+                <span style="border:1px solid var(--ink);border-radius:10px;padding:1px 8px;background:var(--panel)">writer-5.3 · 快速</span>
+                <span style="border:1px solid var(--line);border-radius:10px;padding:1px 8px">怎么配 ⚙</span>
+              </div>
+              <div style="border:1.5px solid var(--ink);border-radius:6px;padding:6px 10px;color:var(--ink3);font-size:12.5px">输入消息…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：同一套对话规范（对齐/气泡/hover 操作/思考预览/引用卡都保留），但把 2A 收起来的东西全部摆到明面：顶部固定状态带（会话下拉+模型名+已工作时长+正在调用的工具名），输入区上一行常显"喂了什么、用什么模型"的标签条，点标签即改。<b>适合</b>：随时想知道 AI 在干嘛、喂了什么的人；状态一目了然零学习成本。<b>代价</b>：面板顶部和底部各占一行，可视聊天区变矮；信息对老手是噪音。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <!-- 2C -->
+  <div class="variant" data-fig="图2" data-vid="2C 分支导航">
+    <div class="vhead"><span class="vid">变体 2C</span><span class="vname">分支导航 —— 会话树常驻左侧，过程分组折叠</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt" style="height:460px">
+          <div class="ab"><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic on"></div><div class="ic"></div></div>
+          <div style="width:120px;border-right:1px solid var(--line);padding:10px 8px;font-size:11.5px;background:var(--panel)">
+            <div class="treetitle" style="font-size:12px">工作台骨架</div>
+            <div class="treeleaf">（仅位置参照）</div>
+          </div>
+          <div class="mid" style="border-right:none">
+            <div style="display:flex;flex:1;min-height:0">
+              <div style="width:150px;border-right:1px solid var(--line);padding:10px 8px;font-size:11.5px;background:var(--panel)">
+                <div style="font-weight:700;margin-bottom:6px">会话树</div>
+                <div style="border-left:2px solid var(--ink);padding-left:8px;margin-left:2px;line-height:2.1">
+                  <b>主线 · 第五章修改</b><br>
+                  <span style="color:var(--ink2)">└ 分支 · 改成悬疑向</span><br>
+                  <span style="color:var(--ink2)">└ 分支 · 只改对话</span><br>
+                  <span style="color:var(--ink3)">旧会话 · 第四章…</span>
+                </div>
+                <div style="color:var(--ink3);margin-top:8px">＝ 2A 的 24px 刻度条<br>加宽常显（56px）</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
+                <div style="padding:8px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center"><b style="font-size:13px">主线 · 第五章修改</b><span class="metabtn">ⓘ 模型 · 已工作 3 分钟</span></div>
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:6px 10px;overflow:hidden;font-size:12.5px">
+                  <div class="msg-u">把张三的设定补全一下</div>
+                  <div style="border-left:3px solid var(--line);margin:6px 0 6px 10px;font-size:11.5px;color:var(--ink2)">
+                    <div style="padding:2px 8px">▸ 思考全文（已折叠）</div>
+                    <div style="padding:2px 8px">▸ 工具调用 ×3 · read_file / lint_check / write_apply</div>
+                    <div style="padding:2px 8px">▸ 引用 ×2 · 第五章 / 张三设定卡</div>
+                  </div>
+                  <div class="msg-a">提交写入申请：新增 住所=城南旧宅、身份=赘婿</div>
+                  <div class="busy" style="padding:6px 10px"><span class="spin"></span>正在写入档案</div>
+                </div>
+                <div style="border-top:1px solid var(--line);padding:8px 10px;background:#fff">
+                  <div style="display:flex;gap:6px;align-items:center">
+                    <span class="metabtn">＋喂什么</span>
+                    <div style="flex:1;border:1.5px solid var(--ink);border-radius:6px;padding:6px 10px;color:var(--ink3);font-size:12.5px">输入消息…</div>
+                    <span class="metabtn">怎么配 ⚙</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：2A 的 24px 刻度条加宽成 56px 常驻分支栏（主线/分支/旧会话树状可见，当前高亮）；聊天流里的思考/工具/引用不再按条散落，而是<b>按过程分组折叠成时间线行</b>（▸ 工具调用 ×3 …），点开看明细。<b>适合</b>：会话多、爱开分支试不同改法、要回看"刚才它做了什么"的人。<b>代价</b>：面板内再切走 56px 宽；轻用户永远用不到分支树。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 图3 ================= -->
+<section class="fig" id="fig3">
+  <h2>图3 · 创世向导开场：新书第一次打开</h2>
+  <div class="goal">现在新建书只有"填个书名"的表单，进去就是空工作台。两个变体都把开场改成<b>对话式引导</b>：说一句点子 → AI 出三个方向选择卡 → 点选确认 → 自动落档 → 直进正文黄金三章。区别在"这场引导长什么样"。</div>
+  <div class="basis">画面为新书首次打开后的<b>中间编辑区</b>（右侧 Agent 面板此时还没有会话，走查实测它显示"请选择一个对话"空态）。侧栏空状态两变体都含：「0 条沉淀」+「创建你的第一个世界」式 CTA。</div>
+
+  <!-- 3A -->
+  <div class="variant" data-fig="图3" data-vid="3A 对话式向导">
+    <div class="vhead"><span class="vid">变体 3A</span><span class="vname">对话式向导 —— 整场引导就是一次聊天</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt" style="height:470px">
+          <div class="ab"><div class="ic"></div><div class="ic on"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div></div>
+          <div class="side">
+            <div class="treetitle">新小说（未命名）</div>
+            <div class="empty-cta" style="margin-top:6px"><div class="zero">0 条沉淀</div>创建你的第一个世界<br><span class="btnw" style="margin-top:6px">从向导开始 →</span></div>
+          </div>
+          <div class="mid">
+            <div class="tabbar"><div class="tab on">创世向导</div></div>
+            <div class="wizard-mid">
+              <div class="bigtitle">欢迎开始你的新书</div>
+              <div class="bigsub">跟我说一句你的点子就行，剩下的我来。</div>
+              <div class="idea-input"><span class="cur">比如：一个赘婿在修仙界搞工业化的故事</span><span class="btnw dark">开始</span></div>
+              <div style="width:min(860px,95%);margin-top:22px;display:flex;flex-direction:column;gap:6px">
+                <div class="msg-u" style="align-self:flex-start;max-width:80%;background:var(--panel);border:none">一个赘婿在修仙界搞工业化的故事</div>
+                <div class="msg-a" style="max-width:92%">这个点子有三个吃法，选一个：</div>
+                <div class="dir3">
+                  <div class="dircard"><div class="dn">修仙工业流</div><div class="dd">种田基建+体系碾压，爽点密集，适合长跑</div><span class="btnw">选这个</span></div>
+                  <div class="dircard on"><div class="dn">家族权谋流</div><div class="dd">赘婿身份做局，商战+修真双线，冲突性强</div><span class="btnw dark">选这个 ✓</span></div>
+                  <div class="dircard"><div class="dn">苟道求生流</div><div class="dd">低调发育苟到最后，日常向，节奏舒缓</div><span class="btnw">选这个</span></div>
+                </div>
+                <div class="msg-a" style="max-width:92%">好，就写<b>家族权谋流</b>。我先把世界搭起来：</div>
+                <div class="checklist" style="align-self:flex-start;margin-left:10px">
+                  <div class="ck">✓ 世界观骨架已建（灵气规则/势力版图）</div>
+                  <div class="ck">✓ 张三 · 主角设定卡已建</div>
+                  <div class="ck">✓ 第一章大纲已列</div>
+                  <div style="margin-top:10px"><span class="btnw dark" style="font-size:13.5px;padding:5px 18px">直接开始黄金三章 →</span>　<span class="btnw ghost">先看看搭了什么</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="agent"><div style="padding:10px 12px;color:var(--ink3);font-size:12px;border-bottom:1px solid var(--line)"><b style="color:var(--ink)">Agent</b>（本向导暂不用右侧面板）</div><div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:12px">请选择一个对话</div></div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：向导就是中间编辑区里的一场对话（AI 消息+方向选择卡+落档进度打勾），一屏顺到底；「直接开始黄金三章」跳过一切客套直进正文编辑；「先看看搭了什么」去侧栏看落档结果。侧栏同时给「0 条沉淀」空态和 CTA，落档完成后 CTA 消失换成真实文件树。<b>适合</b>：喜欢跟 AI 聊着把事情办了的人；点子模糊时可以多聊几句再选。<b>代价</b>：对话是线性的，想回头改"点子"那一步得从头再来。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <!-- 3B -->
+  <div class="variant" data-fig="图3" data-vid="3B 分步卡式向导">
+    <div class="vhead"><span class="vid">变体 3B</span><span class="vname">分步卡式向导 —— 居中大卡三步走，右侧实时预览落档</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="wt" style="height:470px">
+          <div class="ab"><div class="ic"></div><div class="ic on"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div><div class="ic"></div></div>
+          <div class="side">
+            <div class="treetitle">新小说（未命名）</div>
+            <div class="empty-cta" style="margin-top:6px"><div class="zero">0 条沉淀</div>创建你的第一个世界<br><span class="btnw" style="margin-top:6px">从向导开始 →</span></div>
+          </div>
+          <div class="mid">
+            <div class="tabbar"><div class="tab on">创世向导</div></div>
+            <div class="wizard-mid" style="flex-direction:row;gap:18px;align-items:stretch;padding:18px">
+              <div style="flex:1.5;display:flex;flex-direction:column;justify-content:center">
+                <div class="stepdots">
+                  <span class="sd"><span class="sdc done">✓</span> 点子</span>—
+                  <span class="sd"><span class="sdc on">2</span> 方向</span>—
+                  <span class="sd"><span class="sdc">3</span> 开写</span>
+                </div>
+                <div class="bigtitle" style="font-size:18px">你的点子适合哪个吃法？</div>
+                <div class="bigsub" style="margin:8px 0 14px;font-size:13px">「一个赘婿在修仙界搞工业化的故事」</div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <div class="dircard" style="display:flex;gap:10px;align-items:center"><input type="radio" checked><div style="flex:1"><div class="dn">修仙工业流</div><div class="dd" style="margin:2px 0 0">种田基建+体系碾压，爽点密集，适合长跑</div></div></div>
+                  <div class="dircard on" style="display:flex;gap:10px;align-items:center"><input type="radio" checked><div style="flex:1"><div class="dn">家族权谋流</div><div class="dd" style="margin:2px 0 0">赘婿身份做局，商战+修真双线，冲突性强</div></div></div>
+                  <div class="dircard" style="display:flex;gap:10px;align-items:center"><input type="radio"><div style="flex:1"><div class="dn">苟道求生流</div><div class="dd" style="margin:2px 0 0">低调发育苟到最后，日常向，节奏舒缓</div></div></div>
+                </div>
+                <div style="margin-top:16px;display:flex;gap:10px"><span class="btnw">← 上一步（改点子）</span><span class="btnw dark">下一步：确认落档</span></div>
+              </div>
+              <div style="width:230px;border-left:1px solid var(--line);padding:14px 12px;background:var(--bg);font-size:12px">
+                <div style="font-weight:700;margin-bottom:8px">落档预览（实时）</div>
+                <div style="line-height:2;color:var(--ink2)">
+                  manuscript/<br>　001 卷/001 章<br>lorebook/<br>　世界观 · 灵气规则<br>　张三 · 主角卡<br>outline/<br>　第一章 · 大纲
+                </div>
+                <div class="checklist" style="font-size:11.5px;margin-top:10px"><div class="ck">✓ 世界观骨架</div><div class="ck">✓ 主角设定卡</div><div class="ck">✓ 第一章大纲</div></div>
+                <span class="btnw dark" style="margin-top:6px;width:100%;text-align:center;display:block">开始黄金三章</span>
+              </div>
+            </div>
+          </div>
+          <div class="agent"><div style="padding:10px 12px;color:var(--ink3);font-size:12px"><b style="color:var(--ink)">Agent</b>（向导期间右侧面板闲置）</div></div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：居中大卡+三步进度点（点子 → 方向 → 开写），方向选择改成竖排单选卡；右侧栏实时预览"AI 将要落的档"（文件树骨架+完成打勾），所见即所得；「上一步」随时回退改点子。最后一步「开始黄金三章」。<b>适合</b>：要掌控感的人——每一步看得见、退得回；落档前先过目。<b>代价</b>：比对话式多一层"步骤"的仪式感，点子模糊时不适合长聊（卡里只有一个输入框）。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 对照表 ================= -->
+<section class="fig" id="map">
+  <h2>对照表 · 图里每个元素从哪来</h2>
+  <div class="goal">规则：每个元素要么是<b>现有软件里的东西</b>（挪了位置/换了样子，出处=走查页屏号 walk-gX），要么是<b>一条改造需求</b>（出处=本次任务书）。两者都不是的元素不许出现——下表即核对清单。</div>
+
+  <table class="map">
+    <tr><th style="width:32%">图1 元素</th><th>出处</th></tr>
+    <tr><td>四栏骨架（图标条/侧栏/编辑区/Agent 面板）</td><td>现有 g3-2 工作台主界面<span class="src now">现有</span></td></tr>
+    <tr><td>审批人话卡（"AI 想把【张三设定卡】写入档案｜新增：住所=城南旧宅、身份=赘婿"）</td><td>任务书图1：审批人话卡<span class="src req">改造需求</span>；机制承接 017 写审批体系（g6-4 记录：discuss/plan 模式写操作需审批，原为弹窗）</td></tr>
+    <tr><td>接受/拒绝成对按钮</td><td>任务书图1<span class="src req">改造需求</span>；动作语义=现有收件箱"接受/还原"（g6-2）</td></tr>
+    <tr><td>拒绝后"让 AI 重来 / 我自己改"</td><td>任务书图1<span class="src req">改造需求</span></td></tr>
+    <tr><td>"✅ 已批准：张三设定卡 14:32" 留痕一行</td><td>任务书图1：批完留痕<span class="src req">改造需求</span></td></tr>
+    <tr><td>中间编辑区对照视图（左摘要右 diff、审完一键回正文）</td><td>任务书图1<span class="src req">改造需求</span>；diff 机制=现有 diff-workbench 预览（g9-4d，从开发沙箱移入编辑区）；Tab 形态=现有编辑区多 Tab（g3-2）</td></tr>
+    <tr><td>文件变更收件箱（1C 正门 / 1A 降级为审查历史）</td><td>现有 g6-2 文件变更收件箱<span class="src now">现有</span>（欢迎页自动弹+Activity Bar 图标，接受/还原）</td></tr>
+    <tr><td>待处理条（1B 升级入口）</td><td>现有 g6-3 底部"文件变更 5 · 接受全部"横条<span class="src now">现有</span></td></tr>
+    <tr><td>聊天流内嵌审批卡（1A）</td><td>任务书图1"正门"<span class="src req">改造需求</span>；位置=现有 Agent 聊天流（g3-5/g6-3）</td></tr>
+    <tr><td>侧栏档案徽标（待审数）</td><td>现有 g3-4b 角色档案面板<span class="src now">现有</span> + 徽标计数<span class="src req">改造需求</span></td></tr>
+    <tr><td>"全部接受"批量按钮（1C）</td><td>现有 g6-2/g6-3"接受全部"<span class="src now">现有</span></td></tr>
+    <tr><td>未保存橙点 Tab（工作台底图）</td><td>现有 g4-3 顶部橙点<span class="src now">现有</span></td></tr>
+  </table>
+
+  <table class="map">
+    <tr><th style="width:32%">图2 元素</th><th>出处</th></tr>
+    <tr><td>用户消息右对齐 ≤55% / AI 左对齐 65-70%、气泡按内容收缩</td><td>任务书图2 对话规范<span class="src req">改造需求</span>；现有面板为通栏消息（g3-5/g6-3）</td></tr>
+    <tr><td>操作按钮 hover 浮现贴锚定边（AI 左下/用户右下）</td><td>任务书图2<span class="src req">改造需求</span></td></tr>
+    <tr><td>思考一两行实时预览+点开全文</td><td>任务书图2<span class="src req">改造需求</span>；上游同题 issue #135（统一折叠层级）可参照作者动向</td></tr>
+    <tr><td>忙碌转圈+状态过渡</td><td>任务书图2<span class="src req">改造需求</span>；现有忙碌态=018 发现"大项目静默卡顿"反面（无任何状态提示）</td></tr>
+    <tr><td>引用卡一条一卡+前几行字+悬停预览</td><td>任务书图2<span class="src req">改造需求</span>；引用对象=现有文件（manuscript/lorebook，g3-3/g3-4b）</td></tr>
+    <tr><td>工具条左=喂什么（章节/世界书/文风）右=怎么配（模型/模式）</td><td>任务书图2<span class="src req">改造需求</span>；模型配置=现有配置中心模型设置（g7-1）；文风=50+ styles 预设体系（g7-3 记录入口未定位，属 009 弹药）</td></tr>
+    <tr><td>元信息收纳 ⓘ（悬停看模型+已工作 N 分钟）</td><td>任务书图2<span class="src req">改造需求</span></td></tr>
+    <tr><td>左侧 24px 刻度条悬停展开会话分支</td><td>任务书图2<span class="src req">改造需求</span>；会话本体=现有会话历史列表（g6-3）</td></tr>
+    <tr><td>会话树常驻栏（2C）</td><td>任务书图2 刻度条的加宽形态<span class="src req">改造需求</span></td></tr>
+    <tr><td>"请选择一个对话"空态</td><td>现有 g3-5 Agent 面板默认态原文<span class="src now">现有</span></td></tr>
+    <tr><td>工作台骨架底图（图标条/侧栏）</td><td>现有 g3-2<span class="src now">现有</span></td></tr>
+  </table>
+
+  <table class="map">
+    <tr><th style="width:32%">图3 元素</th><th>出处</th></tr>
+    <tr><td>新书首次打开的引导（欢迎+"跟我说一句你的点子"）</td><td>任务书图3<span class="src req">改造需求</span>；上游同题 issue #152（产品内教程）作者已在做同类事</td></tr>
+    <tr><td>新建书入口与表单</td><td>现有 g2-1 新建书籍表单<span class="src now">现有</span>（本轮顺带修 g2-2 无必填校验问题：向导中点子框空时不可下一步）</td></tr>
+    <tr><td>AI 出三个方向选择卡</td><td>任务书图3<span class="src req">改造需求</span>（需真实模型调用）</td></tr>
+    <tr><td>点选确认→自动落档（世界观/角色卡/大纲）</td><td>任务书图3<span class="src req">改造需求</span>；落档物=现有项目结构（manuscript/lorebook/outline，g3-3 文件树）</td></tr>
+    <tr><td>直进正文黄金三章</td><td>任务书图3<span class="src req">改造需求</span>；正文编辑=现有编辑器（g4-2/g4-3）</td></tr>
+    <tr><td>侧栏空状态"0 条沉淀+创建你的第一个世界"CTA</td><td>任务书图3 空状态设计<span class="src req">改造需求</span>；反面参照=现有 g8-1 admin 空列表无空态（018 发现）</td></tr>
+    <tr><td>右侧 Agent 面板闲置态</td><td>现有 g3-5 空态原文<span class="src now">现有</span></td></tr>
+    <tr><td>分步进度点/上一步回退（3B）</td><td>任务书图3 变体形态<span class="src req">改造需求</span></td></tr>
+    <tr><td>落档预览文件树（3B）</td><td>现有 g3-3 章节目录树形态<span class="src now">现有</span> + 实时预览<span class="src req">改造需求</span></td></tr>
+  </table>
+
+  <div class="note" style="margin-top:18px"><b>没画进图里的现有功能</b>（三图都是改造局部、不删功能）：文件树全部操作、剧情面板、llmlint 检查（经 Agent 工具）、配置中心、admin、14 个预览沙箱。若某变体让它们没地方进，属于设计事故，请在挑毛病框里点名。</div>
+</section>
+
+<footer class="doc">
+  素材：docs/tasks/evidence/走查-v1.html（38 张实截）｜机制出处逐条见上方对照表｜反馈自动存 localStorage（键 009-wireframe-v1-*）｜汇总导出可直接粘贴给参谋部
+</footer>
+</main>
+<pre class="export" id="export-out"></pre>
+
+<script>
+var KEY='009-wireframe-v1';
+function pick(btn){
+  var v=btn.closest('.variant'), fig=v.dataset.fig, others=v.parentElement.querySelectorAll('.variant');
+  others.forEach(function(o){
+    if(o!==v && o.dataset.fig===fig){o.querySelector('.choose').classList.remove('on');setPick(o,null);}
+  });
+  var on=!btn.classList.contains('on');
+  btn.classList.toggle('on',on);
+  v.querySelector('.picked-tag').textContent=on?'已选 ✓':'';
+  localStorage.setItem(KEY+'-pick-'+fig,on?v.dataset.vid:'');
+}
+function setPick(v,val){v.querySelector('.picked-tag').textContent=val||'';}
+function taKey(ta){return KEY+'-ta-'+ta.closest('.variant').dataset.vid;}
+document.querySelectorAll('.variant textarea').forEach(function(ta){
+  ta.value=localStorage.getItem(taKey(ta))||'';
+  ta.addEventListener('input',function(){localStorage.setItem(taKey(ta),ta.value)});
+});
+// 恢复已选
+document.querySelectorAll('.variant').forEach(function(v){
+  var saved=localStorage.getItem(KEY+'-pick-'+v.dataset.fig);
+  if(saved===v.dataset.vid){v.querySelector('.choose').classList.add('on');setPick(v,saved);}
+});
+function exportPick(){
+  var out=['009 线框图 v1 · 我的选择',''];
+  document.querySelectorAll('section.fig').forEach(function(s){
+    var fig=s.querySelector('h2').textContent;
+    if(fig.indexOf('对照表')>=0)return;
+    out.push('【'+fig+'】');
+    s.querySelectorAll('.variant').forEach(function(v){
+      var on=v.querySelector('.choose').classList.contains('on');
+      var ta=v.querySelector('textarea').value.trim();
+      if(on||ta)out.push('- '+(on?'✅ 已选 ':'　 未选 ')+v.dataset.vid+(ta?'｜意见：'+ta:''));
+    });
+    out.push('');
+  });
+  out.push('（未选且无意见的变体已省略；空白=整图都没选）');
+  var el=document.getElementById('export-out');
+  el.textContent=out.join('\n');el.style.display='block';
+  if(navigator.clipboard)navigator.clipboard.writeText(el.textContent).catch(function(){});
+  el.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

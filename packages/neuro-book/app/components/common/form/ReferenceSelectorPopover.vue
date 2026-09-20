@@ -48,6 +48,17 @@ const {
 const resolveItemIndex = (itemId: string): number => flatItems.value.findIndex((item) => item.id === itemId);
 const viewportVersion = ref(0);
 
+// 键盘上下移动高亮时让选中项保持可见；nearest 只在滚出可视区时才滚动，避免每键必跳。
+const itemRefs: (HTMLElement | null)[] = [];
+const setItemRef = (el: unknown, index: number): void => {
+    itemRefs[index] = el instanceof HTMLElement ? el : null;
+};
+
+watch(() => props.activeIndex, async () => {
+    await nextTick();
+    itemRefs[props.activeIndex]?.scrollIntoView({block: "nearest"});
+});
+
 /**
  * 光标触发的菜单使用 Tiptap clientRect 做 fixed 定位，避免被编辑器容器撑到屏幕外。
  */
@@ -137,6 +148,7 @@ if (import.meta.client) {
                 <button
                     v-for="item in section.items"
                     :key="item.id"
+                    :ref="(el) => setItemRef(el, resolveItemIndex(item.id))"
                     type="button"
                     class="mb-0.5 flex w-full items-start text-left transition-colors last:mb-0"
                     :class="[props.density === 'compact' ? 'gap-2 rounded-lg px-2 py-1.5' : 'gap-3 rounded-xl px-3 py-2', item.disabled ? 'cursor-not-allowed text-[var(--text-muted)] opacity-55' : resolveItemIndex(item.id) === props.activeIndex ? 'bg-[var(--bg-hover)] text-[var(--text-main)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]']"

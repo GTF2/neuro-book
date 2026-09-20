@@ -1268,6 +1268,8 @@ const zhCN = {
                 updateStats: "更新统计",
                 current: "Current",
                 total: "Total",
+                readableWan: "约 {count} 万字",
+                readableYi: "约 {count} 亿字",
                 size: "Size",
                 chapters: "Chapters",
                 files: "Files",

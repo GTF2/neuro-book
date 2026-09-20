@@ -1270,6 +1270,8 @@ const enUS = {
                 updateStats: "Update Stats",
                 current: "Current",
                 total: "Total",
+                readableWan: "≈ {count}0k words",
+                readableYi: "≈ {count}00M words",
                 size: "Size",
                 chapters: "Chapters",
                 files: "Files",
