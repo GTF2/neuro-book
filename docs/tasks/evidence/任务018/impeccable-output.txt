@@ -1,0 +1,71 @@
+
+Nuxt project detected (nuxt.config.ts).
+Start the dev server and scan via URL for best results:
+  npx impeccable detect http://localhost:3000
+
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\markdown-studio\TipTapMarkdownEditor.vue
+  line 1442: [side-tab] border-left: 3px solid color-mix(in srgb, var(--accent-main) 56%, var(--border-color))
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+  line 1561: [side-tab] border-left: 3px solid var(--status-warning)
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\NovelIdeSettingsDialog.vue
+  line 1323: [bounce-easing] cubic-bezier(0.34, 1.15, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\agent\AgentMarkdownContent.vue
+  line 181: [side-tab] border-left: 3px solid var(--accent-main)
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\agent\AgentWorkspaceChanges.vue
+  line 327: [layout-transition] transition: height
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\plot\workbench\PlotWorkbenchDialog.vue
+  line 473: [layout-transition] transition: margin-right
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\rag\NovelRagInspectorDialog.vue
+  line 409: [layout-transition] transition: margin-right
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\settings\NovelIdeAgentProfileModelSettingsPanel.vue
+  line 694: [bounce-easing] cubic-bezier(0.34, 1.15, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\settings\NovelIdeModelSettingsPanel.vue
+  line 706: [bounce-easing] cubic-bezier(0.34, 1.15, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\workspace\WorkspaceFileNode.vue
+  line 348: [layout-transition] transition: height
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\novel-ide\world-engine\WorldEngineWorkbenchDialog.vue
+  line 2194: [layout-transition] transition: margin-right
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\profile-template-editor\ProfileTemplateNodeView.vue
+  line 477: [side-tab] .node-card::before — absolute 3px pseudo-element stripe (left: 0)
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\components\workflow-preview\WorkflowRunVisuals.vue
+  line 86: [border-accent-on-rounded] border-b-2
+    → Thick accent border on a rounded card — the border clashes with the rounded corners. Remove the border or the border-radius.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\pages\index.vue
+  line 2785: [layout-transition] transition: width
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\pages\world-engine.workbench-preview.vue
+  line 972: [layout-transition] transition: margin-right
+    → Animating width, height, padding, or margin causes layout thrash and janky performance. Use transform and opacity instead, or grid-template-rows for height animations.
+
+D:\MyProject\neuro-book\packages\neuro-book\app\styles\markdown-themes.css
+  line 114: [side-tab] border-left: 4px solid var(--accent-main, #3b82f6)
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+  line 132: [side-tab] border-left: 4px solid var(--border-color)
+    → Thick colored border on one side of a card — the most recognizable tell of AI-generated UIs. Use a subtler accent or remove it entirely.
+
+17 anti-patterns found.
