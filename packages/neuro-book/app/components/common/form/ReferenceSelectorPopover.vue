@@ -49,14 +49,25 @@ const resolveItemIndex = (itemId: string): number => flatItems.value.findIndex((
 const viewportVersion = ref(0);
 
 // 键盘上下移动高亮时让选中项保持可见；nearest 只在滚出可视区时才滚动，避免每键必跳。
+// hover 联动 activeIndex 是既有设计（回车选中悬停项），但悬停不需要程序代滚——鼠标用户自己有滚轮，
+// 且滚动会改变鼠标相对位置、可能连锁触发相邻项悬停。只有 activeIndex 变成非悬停值（键盘）时才滚。
 const itemRefs: (HTMLElement | null)[] = [];
 const setItemRef = (el: unknown, index: number): void => {
     itemRefs[index] = el instanceof HTMLElement ? el : null;
 };
 
-watch(() => props.activeIndex, async () => {
+let hoverIndex: number | null = null;
+const onItemMouseEnter = (index: number): void => {
+    hoverIndex = index;
+    emit("hover", index);
+};
+
+watch(() => props.activeIndex, async (value) => {
+    const fromHover = value === hoverIndex;
+    hoverIndex = null;
+    if (fromHover) return;
     await nextTick();
-    itemRefs[props.activeIndex]?.scrollIntoView({block: "nearest"});
+    itemRefs[value]?.scrollIntoView({block: "nearest"});
 });
 
 /**
@@ -153,7 +164,7 @@ if (import.meta.client) {
                     class="mb-0.5 flex w-full items-start text-left transition-colors last:mb-0"
                     :class="[props.density === 'compact' ? 'gap-2 rounded-lg px-2 py-1.5' : 'gap-3 rounded-xl px-3 py-2', item.disabled ? 'cursor-not-allowed text-[var(--text-muted)] opacity-55' : resolveItemIndex(item.id) === props.activeIndex ? 'bg-[var(--bg-hover)] text-[var(--text-main)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]']"
                     :disabled="item.disabled"
-                    @mouseenter="!item.disabled && emit('hover', resolveItemIndex(item.id))"
+                    @mouseenter="!item.disabled && onItemMouseEnter(resolveItemIndex(item.id))"
                     @mousedown.prevent="!item.disabled && emit('select', item.id)"
                 >
                     <span class="mt-0.5 shrink-0 text-[var(--text-muted)]" :class="[props.density === 'compact' ? 'h-3.5 w-3.5' : 'h-4 w-4', item.iconClass]"></span>
