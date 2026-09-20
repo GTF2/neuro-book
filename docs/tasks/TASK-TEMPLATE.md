@@ -28,7 +28,7 @@
 ## 开工前置
 1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节（绝对路径，worktree 内向上搜索可能读不到）
 2. 读本任务书全文（含运行配置，确认模式/模型已就位）
-3. 确认自己在 `D:\MyProject\worktrees\task-NNN` 目录内（`git rev-parse --show-toplevel` 验证；无 worktree 的文档任务跳过本条）
+3. 确认工作位置正确（按任务书指定模式二选一）：worktree 模式→在 `D:\MyProject\worktrees\task-NNN` 目录内（`git rev-parse --show-toplevel` 验证，仅多窗口并行场景）；主仓库分支模式→`git branch --show-current` 输出任务书指定分支（串行默认）；无 worktree 的文档任务跳过本条
 
 ## 范围与边界
 - 允许改动：（文件/目录清单，尽量精确）
