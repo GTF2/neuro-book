@@ -348,26 +348,42 @@
     "confidence": {"score": "high", "reason": "专项猎手逐端点通读 25 个 API"}
   },
   {
-    "verdict": "needs_validation",
-    "fingerprint": "dependency-vulnerability-audit-blocked",
-    "title": "依赖漏洞审计未能执行：本环境 npm registry TLS 全断，无法查询漏洞库",
-    "description": "bun audit（Bun 1.4.2 可用）查询 registry.npmjs.org bulk advisory 端点失败：UNKNOWN_CERTIFICATE_VERIFICATION_ERROR；git fetch upstream 与 gh api 同样 TLS 失败（schannel/EOF），curl 出站 000。bun.lock（单一锁文件，workspace 全覆盖）与 node_modules 本地存在，审计输入齐备，仅漏洞库查询被网络阻断。patches/ 下 nitropack@2.13.4.patch、proper-lockfile@4.1.2.patch 两个依赖补丁内容亦未复核。",
-    "claimed_root_cause": "环境级网络阻断，非仓库问题。",
+    "verdict": "confirmed",
+    "fingerprint": "dependency-vulnerability-audit-results",
+    "title": "依赖漏洞审计实测：81 项（1 critical / 29 high / 44 moderate / 7 low）；critical 为 @nuxt/devtools 3.2.4 未认证 RPC 开发者主机 RCE，undici 7.28.0 为运行时直接依赖带 5 条公告",
+    "description": "网络恢复后 bun audit 补跑成功（原始输出存档 bun-audit-raw.json）。critical：@nuxt/devtools@3.2.4（GHSA-279x-mwfv-vcqv，<3.3.1 未认证 DevTools RPC 允许在开发者主机执行任意命令），经 packages/nb-ui 的 nuxt ^4.3.1 传递引入，暴露面限 `bun run dev` 开发服务器场景。运行时直接依赖 undici@7.28.0（packages/neuro-book，声明 ^7.19.2）带 5 条公告：high 跨用户信息泄露/解析崩溃 + moderate CRLF 注入等（<7.29.0 区间）。其余 high 集中在构建/测试工具链（svgo、tar、vitest 4.1.10 路径穿越等），不进产品运行时。patches/ 两个依赖补丁经通读复核为正经 bug 修复（nitropack source-map consumer 泄漏清理、proper-lockfile mtime 精度错误处理），无恶意注入。",
+    "root_cause": "nuxt ^4.3.1 依赖树携带 @nuxt/devtools 3.2.4（漏洞区间 <3.3.1）；undici 声明 ^7.19.2 锁定到 7.28.0（漏洞区间 <7.29.0）。",
+    "intended_behavior": "@nuxt/devtools ≥3.3.1；undici ≥7.29.0；vitest ≥4.1.11（路径穿越修复）。",
     "trace": [
-      {"kind": "entrypoint", "file": "bun.lock", "line": 1, "scope": "供应链", "description": "唯一锁文件，审计输入"},
-      {"kind": "sink", "file": "patches/nitropack@2.13.4.patch", "line": 1, "scope": "供应链", "description": "依赖补丁未复核（proper-lockfile@4.1.2.patch 同）"}
+      {"kind": "entrypoint", "file": "packages/nb-ui/package.json", "line": 29, "scope": "依赖声明", "description": "nuxt ^4.3.1 → 传递引入 @nuxt/devtools 3.2.4（nb-ui 与主应用同声明）"},
+      {"kind": "propagation", "file": "packages/neuro-book/package.json", "line": 160, "scope": "依赖声明", "description": "undici ^7.19.2 直接依赖，锁到 7.28.0（漏洞区间 >=7.0.0 <7.29.0）"},
+      {"kind": "sink", "file": "docs/security-audit-20260920/bun-audit-raw.json", "line": 1, "scope": "供应链", "description": "81 项漏洞完整机读存档（bun audit --json 实测输出）"}
     ],
     "evidence": [
-      {"file": "bun.lock", "line": 1, "description": "bun audit 报 UNKNOWN_CERTIFICATE_VERIFICATION_ERROR（本次运行实测）"}
+      {"file": "docs/security-audit-20260920/bun-audit-raw.json", "line": 1, "description": "bun audit --json 实测存档"},
+      {"file": "patches/nitropack@2.13.4.patch", "line": 1, "description": "通读复核：错误堆栈解析加 consumer 缓存与 destroy 清理，正经修复"},
+      {"file": "patches/proper-lockfile@4.1.2.patch", "line": 1, "description": "通读复核：precisionUnsupported 错误提前回调，正经修复"}
     ],
-    "blockers": [
-      "无出站网络：npm registry、GitHub API、OSV 均不可达（curl 实测 000）",
-      "任务铁律禁止安装依赖，无法离线生成 package-lock 供 npm audit"
+    "conditions": [
+      {"kind": "system_configuration", "description": "critical 条目仅在开发服务器（bun run dev）运行且 DevTools 面板可达时暴露；默认绑定 127.0.0.1"},
+      {"kind": "third_party_dependency", "description": "undici 各公告需特定响应/缓存指令条件触发；vitest 路径穿越仅测试环境"}
     ],
-    "validation_plan": {
-      "local": "在网络可用窗口于仓库根执行：bun audit --json > 依赖审计原始输出；bun outdated 对照。预计 1-2 分钟。",
-      "deployment": "无（本地审计即可）；补丁复核：git log -- patches/ 溯源 + 阅读两个 .patch 内容确认无恶意注入。"
-    }
+    "execution": {
+      "attacker_perspective": "开发场景：本机恶意页面/进程访问运行中的 DevTools RPC 端点即获命令执行；运行场景：undici 公告需服务端处理恶意构造的响应/缓存头。",
+      "payloads": ["不适用（依赖公告，非手工构造漏洞）"],
+      "instructions": ["复现：仓库根执行 bun audit 与 bun audit --audit-level=critical（本次已执行）"],
+      "observed_result": "实测输出：81 vulnerabilities (1 critical, 29 high, 44 moderate, 7 low)；critical 条目为 @nuxt/devtools@3.2.4 GHSA-279x-mwfv-vcqv。"
+    },
+    "remediation": {
+      "strategy": "① `bun audit fix` 处理声明范围内的升级；② undici 显式升 ≥7.29.0；③ nuxt 升级或 bun overrides 强制 @nuxt/devtools ≥3.3.1；④ vitest ≥4.1.11。升级属源码改动，留给前线排任务（工程队铁律不改源码）。",
+      "code_changes": []
+    },
+    "severity": {
+      "likelihood": {"score": "medium", "reason": "critical 条目限开发场景；undici 运行时条目需特定第三方响应条件"},
+      "impact": {"score": "high", "reason": "若触发：开发者主机命令执行 / 跨用户信息泄露"},
+      "overall_severity": "medium"
+    },
+    "confidence": {"score": "high", "reason": "审计工具实测输出，非推断"}
   },
   {
     "verdict": "needs_validation",
