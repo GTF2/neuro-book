@@ -2238,6 +2238,7 @@ const enUS = {
         },
         textBubble: {
             steer: "Steer",
+            you: "You",
             collapse: "Collapse",
             editPlaceholder: "Edit message...",
             cancel: "Cancel",

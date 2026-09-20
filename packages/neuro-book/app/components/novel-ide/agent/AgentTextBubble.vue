@@ -168,7 +168,7 @@ const messageAuthorLabel = computed(() => {
     if (props.node.message.type === "ai") {
         return "Assistant";
     }
-    return isSteerMessage.value ? t("agent.textBubble.steer") : "You";
+    return isSteerMessage.value ? t("agent.textBubble.steer") : t("agent.textBubble.you");
 });
 
 /** 系统消息展示类型。 */

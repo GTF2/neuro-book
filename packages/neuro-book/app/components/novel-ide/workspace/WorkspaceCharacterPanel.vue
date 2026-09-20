@@ -7,6 +7,7 @@ import {useNotification} from "nbook/app/composables/useNotification";
 import {buildWorkspacePathCopyText, type WorkspacePathCopyMode} from "nbook/app/utils/workspace-path-copy";
 import {useNovelIdeStore, type WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import {isWorkspaceLorebookEntry} from "nbook/app/components/novel-ide/workspace/workspace-file-tree";
+import {getWorkspaceLorebookStatusLabel, readWorkspaceLorebookStatus} from "nbook/app/components/novel-ide/workspace/workspace-entry-meta";
 
 const store = useNovelIdeStore();
 const {confirm, prompt} = useDialog();
@@ -277,7 +278,7 @@ onMounted(() => {
                 <span class="min-w-0 flex-1">
                     <span class="flex min-w-0 items-center gap-2">
                         <span class="truncate text-sm font-semibold">{{ displayTitle(node) }}</span>
-                        <span v-if="node.status" class="shrink-0 rounded border border-[var(--border-color)] px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-[var(--text-muted)]">{{ node.status }}</span>
+                        <span v-if="node.status" class="shrink-0 rounded border border-[var(--border-color)] px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-[var(--text-muted)]">{{ getWorkspaceLorebookStatusLabel(readWorkspaceLorebookStatus(node.status)) }}</span>
                     </span>
                     <span class="mt-0.5 block truncate text-[10px] font-mono text-[var(--text-muted)]">{{ node.path.replace(/\/index\.md$/i, "") }}</span>
                     <span v-if="node.summary" class="mt-1 line-clamp-2 block text-[11px] leading-4 text-[var(--text-secondary)]">{{ node.summary }}</span>
