@@ -6,8 +6,12 @@ import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
 import {resolveNovelWorkspaceTarget} from "nbook/server/workspace-files/novel-workspace";
 import {
+    createWorkspaceContentState,
+    createWorkspaceDirectory,
+    createWorkspaceFile,
     deleteWorkspacePath,
     readWorkspaceTextFile,
+    renameWorkspacePath,
     scanWorkspaceTree,
     writeWorkspaceTextFile,
 } from "nbook/server/workspace-files/workspace-files";
@@ -56,6 +60,58 @@ describe("Workspace文件操作真实路径范围", () => {
 
         await writeWorkspaceTextFile(root, "manuscript/001/chapter.md", "# 正文\n");
         await expect(readWorkspaceTextFile(root, "manuscript/001/chapter.md")).resolves.toBe("# 正文\n");
+    });
+
+    it("创建、移动、删除拒绝 .nbook 保留路径段", async () => {
+        const fixture = await fixtureRoot();
+        const projectRoot = path.join(fixture, "state", "workspace", "project-a");
+        await mkdir(path.join(projectRoot, ".nbook"), {recursive: true});
+        await writeFile(path.join(projectRoot, ".nbook", "system.md"), "system", "utf8");
+        const root = absoluteFsPath(projectRoot);
+
+        await expect(deleteWorkspacePath(root, ".nbook/system.md", false))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(access(path.join(projectRoot, ".nbook", "system.md"))).resolves.toBeUndefined();
+
+        await expect(renameWorkspacePath(root, ".nbook/system.md", "stolen.md"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(renameWorkspacePath(root, "notes.md", ".nbook/evil.md"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(createWorkspaceFile({root, filePath: ".nbook/agent/workflows/evil/workflow.ts", content: "malicious"}))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(createWorkspaceDirectory({root, dirPath: ".nbook/agent/workflows/evil"}))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(createWorkspaceContentState({root, dirPath: ".nbook/evil", stateContent: "---\nstatus: draft\n---\n"}))
+            .rejects.toThrow("系统保留目录 .nbook");
+
+        await expect(access(path.join(projectRoot, ".nbook", "agent"))).rejects.toMatchObject({code: "ENOENT"});
+        await expect(access(path.join(projectRoot, "stolen.md"))).rejects.toMatchObject({code: "ENOENT"});
+
+        await createWorkspaceFile({root, filePath: "notes.md", content: "# ok\n"});
+        await renameWorkspacePath(root, "notes.md", "renamed.md");
+        await deleteWorkspacePath(root, "renamed.md", false);
+        await expect(access(path.join(projectRoot, "renamed.md"))).rejects.toMatchObject({code: "ENOENT"});
+    });
+
+    it("保留路径比对剥掉段尾点与空格，挡住 Win32 规约变体", async () => {
+        const fixture = await fixtureRoot();
+        const projectRoot = path.join(fixture, "state", "workspace", "project-a");
+        await mkdir(projectRoot, {recursive: true});
+        const root = absoluteFsPath(projectRoot);
+
+        // Win32 打开 ".nbook./x.md" 时实际命中 ".nbook/x.md"，字符串层必须同样规约后再比对。
+        await expect(writeWorkspaceTextFile(root, ".nbook./x.md", "malicious"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(writeWorkspaceTextFile(root, ".NBOOK./x.md", "malicious"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(writeWorkspaceTextFile(root, ".nbook ./x.md", "malicious"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(deleteWorkspacePath(root, ".nbook./x.md", false))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(createWorkspaceDirectory({root, dirPath: ".nbook./agent"}))
+            .rejects.toThrow("系统保留目录 .nbook");
+
+        await expect(access(path.join(projectRoot, ".nbook"))).rejects.toMatchObject({code: "ENOENT"});
     });
 
     it("Project Workspace根链接到State Root外时Target Adapter拒绝授权", async () => {
