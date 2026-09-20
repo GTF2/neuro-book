@@ -42,6 +42,22 @@ describe("Workspace文件操作真实路径范围", () => {
         await expect(access(path.join(projectRoot, "escape"))).rejects.toMatchObject({code: "ENOENT"});
     });
 
+    it("写入拒绝 .nbook 保留路径段，正常路径不受影响", async () => {
+        const fixture = await fixtureRoot();
+        const projectRoot = path.join(fixture, "state", "workspace", "project-a");
+        await mkdir(projectRoot, {recursive: true});
+        const root = absoluteFsPath(projectRoot);
+
+        await expect(writeWorkspaceTextFile(root, ".nbook/agent/workflows/evil/workflow.ts", "malicious"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(writeWorkspaceTextFile(root, "manuscript/.NBOOK/config.ts", "malicious"))
+            .rejects.toThrow("系统保留目录 .nbook");
+        await expect(access(path.join(projectRoot, ".nbook"))).rejects.toMatchObject({code: "ENOENT"});
+
+        await writeWorkspaceTextFile(root, "manuscript/001/chapter.md", "# 正文\n");
+        await expect(readWorkspaceTextFile(root, "manuscript/001/chapter.md")).resolves.toBe("# 正文\n");
+    });
+
     it("Project Workspace根链接到State Root外时Target Adapter拒绝授权", async () => {
         const fixture = await fixtureRoot();
         const stateRoot = path.join(fixture, "state");

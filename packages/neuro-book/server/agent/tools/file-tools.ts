@@ -368,6 +368,9 @@ function createBashTool(): NeuroAgentTool {
         name: "bash",
         label: "bash",
         executionMode: "sequential",
+        // bash 可写任意路径（命令无白名单），必须进入只读模式写审批体系；
+        // 判定点在 harness 按 mutatesWorkspace 标记（Task 90），对齐 write/edit/apply_patch。
+        mutatesWorkspace: true,
         description: "Execute a bash command in the current Project Workspace, or in the Workspace Root when the session has no Current Project. The agent bin directories are prepended to PATH, with user assets before system assets, so use workspace node ... for content-node CLI tasks. Prefer / path separators in bash commands; quote Windows backslash paths if you must use them. Returns stdout and stderr merged. Output is truncated to the last 2000 lines or 50KB (whichever is hit first). If truncated, the retained output is addressed by a logical bash-output locator and can be read with the read tool while it remains available. Use bash for rg/find/ls/git/tests/build/workspace CLI, not for file reading or editing when a dedicated tool exists.",
         parameters: BashSchema,
         async executeWithContext(

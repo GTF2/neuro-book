@@ -1013,6 +1013,11 @@ describe("v3 file tools", () => {
         expect(bash.description).toContain("rg/find/ls/git/tests/build/workspace CLI");
         expect(bash.description).toContain("not for file reading or editing");
     });
+
+    it("bash 必须标记 mutatesWorkspace（命令可写任意路径，只读模式写审批依赖此标志）", () => {
+        const bash = mustTool("bash", harness);
+        expect(bash.mutatesWorkspace).toBe(true);
+    });
 });
 
 function patchInput(lines: string[]): {patch: string} {
