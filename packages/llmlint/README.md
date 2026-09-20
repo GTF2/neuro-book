@@ -121,6 +121,8 @@ bun run verify         # 一键：typecheck + test + CLI 冒烟（--version / ru
 bun run eval:fixture   # 用 fixture 语料跑一遍评测，输出到 .agent/evals/fixture-report
 ```
 
+`bun run test`（完整链含 web 测试）首次运行前需先在 `web/` 内装依赖并生成类型，否则 web 侧测试文件报 TSCONFIG_ERROR：`cd web && bun install && bun x nuxt prepare`。
+
 检测网站——`web/` 目录内直接起，或回仓库根用透传脚本：
 
 ```bash
