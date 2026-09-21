@@ -3,6 +3,8 @@ import type { AgentMessage, AgentMessageSwitcherState, AgentToolCall, ChatNode }
 import { toChatNodes } from "nbook/app/components/novel-ide/agent/agent-message";
 import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubble.vue";
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
+import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
+import {groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -99,6 +101,9 @@ const chatNodes = computed(() => {
     return toChatNodes(props.messages);
 });
 
+/** 主时间线渲染单元：连续同类工具节点聚成工作块（009单C批次1），其余为单节点。 */
+const flowItems = computed(() => groupChatNodesIntoBlocks(chatNodes.value));
+
 /** 轻量追踪最后一条消息的渲染尺寸变化，避免 deep watch 扫描整棵消息树。 */
 const messageScrollSignature = computed(() => {
     const lastMessage = props.messages.at(-1);
@@ -121,6 +126,14 @@ const getNodeKey = (node: ReturnType<typeof toChatNodes>[0]) => {
     return `${node.message.id}-text`;
 };
 
+/** 渲染单元 key：块用首尾工具 id 稳定标识，节点沿用消息 id 组合。 */
+const getFlowItemKey = (item: ChatFlowItem) => {
+    if (item.kind === "block") {
+        return `block-${item.id}`;
+    }
+    return getNodeKey(item.node);
+};
+
 /** 判断文本节点是否包含正文。 */
 const hasTextBubbleContent = (node: ChatNode): boolean => {
     if (node.kind !== "text") {
@@ -129,35 +142,32 @@ const hasTextBubbleContent = (node: ChatNode): boolean => {
     return Boolean(node.message.content.trim() || node.message.contentBlocks?.length || node.message.attachments?.length);
 };
 
-/** 计算节点间距，避免“仅思维链 + tool”之间出现过大空白。 */
-const nodeSpacingClass = (index: number): string => {
+/**
+ * 渲染单元间距：块视作 tool 类参与判断（块内首节点消息即块消息）；
+ * 块与紧邻同消息文本（无正文）贴近，避免思维链后工作块悬空。
+ */
+const flowItemSpacingClass = (index: number): string => {
+    const items = flowItems.value;
     if (index === 0) {
         return "";
     }
-
-    const previousNode = chatNodes.value[index - 1];
-    const currentNode = chatNodes.value[index];
-    if (!previousNode || !currentNode) {
+    const previous = items[index - 1];
+    const current = items[index];
+    if (!previous || !current) {
         return "mt-6";
     }
-
-    if (
-        previousNode.kind === "text"
-        && currentNode.kind === "tool"
-        && previousNode.message.id === currentNode.message.id
-        && !hasTextBubbleContent(previousNode)
-    ) {
-        return "mt-1";
-    }
-
-    if (
-        previousNode.kind === "tool"
-        && currentNode.kind === "tool"
-        && previousNode.message.id === currentNode.message.id
-    ) {
+    if (previous.kind === "block" && current.kind === "block" && previous.nodes[0]?.message.id === current.nodes[0]?.message.id) {
         return "mt-2";
     }
-
+    if (previous.kind === "block" && current.kind === "node" && current.node.kind === "tool"
+        && previous.nodes[0]?.message.id === current.node.message.id) {
+        return "mt-2";
+    }
+    if (previous.kind === "node" && current.kind === "block"
+        && previous.node.kind === "text" && !hasTextBubbleContent(previous.node)
+        && previous.node.message.id === current.nodes[0]?.message.id) {
+        return "mt-1";
+    }
     return "mt-6";
 };
 
@@ -344,13 +354,19 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
         </div>
         <template v-if="props.messages.length > 0">
             <div
-                v-for="(node, index) in chatNodes"
-                :key="getNodeKey(node)"
-                :class="nodeSpacingClass(index)"
+                v-for="(item, index) in flowItems"
+                :key="getFlowItemKey(item)"
+                :class="flowItemSpacingClass(index)"
             >
+                <AgentWorkBlock
+                    v-if="item.kind === 'block'"
+                    :block="item"
+                    :session-id="props.sessionId"
+                    @copy="emit('copy-tool', $event)"
+                />
                 <AgentTextBubble
-                    v-if="node.kind === 'text'"
-                    :node="node"
+                    v-else-if="item.node.kind === 'text'"
+                    :node="item.node"
                     :session-id="props.sessionId"
                     :editing-message-id="props.editingMessageId"
                     :editing-content="props.editingMessageText"
@@ -363,7 +379,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     :project-root="props.projectRoot"
                     :model-supports-images="props.modelSupportsImages"
                     :attachment-insert-request="props.attachmentInsertRequest"
-                    :branch-switcher="props.branchSwitcherStateByMessageId?.[node.message.id]"
+                    :branch-switcher="props.branchSwitcherStateByMessageId?.[item.node.message.id]"
                     :menu-refresh-key="props.menuRefreshKey"
                     :resolve-menu="props.resolveEditorMenu"
                     :on-skill-trigger-start="props.onEditorSkillTriggerStart"
@@ -382,8 +398,8 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     @dismiss-unknown="emit('dismiss-unknown', $event)"
                 />
                 <AgentToolBubble
-                    v-else-if="node.kind === 'tool'"
-                    :tool-call="node.toolCall"
+                    v-else-if="item.node.kind === 'tool'"
+                    :tool-call="item.node.toolCall"
                     :session-id="props.sessionId"
                     @copy="emit('copy-tool', $event)"
                 />
