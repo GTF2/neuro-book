@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>009 重构方向 · 线框图 v2.1（六块补图，用户已拍板）</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --ink2:#555; --ink3:#6b6b6b;
+    --line:#cfcfcf; --line2:#e6e6e6; --bg:#fafafa; --panel:#f2f2f2; --panel2:#e8e8e8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC","Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.7}
+  main{max-width:1240px;margin:0 auto;padding:28px 28px 100px}
+  header.doc{border-bottom:2px solid var(--ink);padding:26px 28px 18px;background:#fff}
+  header.doc h1{font-size:22px;letter-spacing:.5px}
+  header.doc .sub{color:var(--ink2);font-size:13px;margin-top:6px}
+  .howto{background:#fff;border:1px solid var(--line);border-left:4px solid var(--ink);padding:14px 18px;margin:22px 0;border-radius:6px;font-size:14px}
+  .howto b{background:var(--panel2);padding:0 6px;border-radius:3px}
+  nav.jump{display:flex;gap:10px;margin:18px 0 6px;flex-wrap:wrap}
+  nav.jump a{color:var(--ink);text-decoration:none;border:1px solid var(--ink);padding:4px 14px;border-radius:20px;font-size:13px;background:#fff}
+  nav.jump a:hover{background:var(--panel2)}
+  button.act{border:1px solid var(--ink);background:#fff;border-radius:6px;padding:6px 16px;cursor:pointer;font-size:13px}
+  button.act:hover{background:var(--panel2)}
+  section.fig{margin-top:56px}
+  section.fig > h2{font-size:19px;border-left:5px solid var(--ink);padding-left:12px}
+  section.fig .goal{color:var(--ink2);font-size:14px;margin:8px 0 4px}
+  section.fig .basis{font-size:13px;color:var(--ink3);margin-bottom:8px}
+  .variant{background:#fff;border:1px solid var(--line);border-radius:10px;margin-top:26px;overflow:hidden}
+  .variant > .vhead{display:flex;align-items:baseline;gap:12px;padding:14px 18px 10px;border-bottom:1px dashed var(--line)}
+  .variant > .vhead .vid{font-weight:700;font-size:16px}
+  .variant > .vhead .vname{font-size:14px;color:var(--ink2)}
+  .variant .vbody{padding:18px}
+  .variant .pick{display:flex;gap:10px;align-items:center;padding:12px 18px;border-top:1px dashed var(--line);background:var(--panel);flex-wrap:wrap}
+  .variant .pick textarea{flex:1;min-width:260px;min-height:44px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit;resize:vertical}
+  .variant .pick .choose{border:1.5px solid var(--ink);background:#fff;border-radius:6px;padding:7px 18px;cursor:pointer;font-size:13px}
+  .variant .pick .choose.on{background:var(--ink);color:#fff}
+  .picked-tag{font-size:12px;color:var(--ink3)}
+  .wf{border:1.5px solid var(--ink);background:#fff;position:relative;border-radius:4px;overflow:hidden}
+  .wf .lbl{position:absolute;font-size:11.5px;color:var(--ink3);background:#fff;padding:0 4px;letter-spacing:.5px;z-index:2}
+  .note{border:1.5px dashed var(--ink3);border-radius:6px;padding:8px 12px;font-size:12.5px;color:var(--ink2);background:var(--bg);margin-top:10px}
+  .note b{color:var(--ink)}
+  .btnw{display:inline-block;border:1.5px solid var(--ink);border-radius:4px;padding:3px 12px;font-size:12.5px;background:#fff}
+  .btnw.dark{background:var(--ink);color:#fff}
+  .btnw.ghost{border-style:dashed;color:var(--ink2)}
+  .btnw.on{background:var(--panel2);box-shadow:2px 2px 0 var(--panel2)}
+  /* 消息流元素 */
+  .m-u{align-self:flex-end;max-width:55%;background:var(--panel2);border-radius:10px 10px 2px 10px;padding:7px 12px}
+  .m-a{align-self:flex-start;max-width:96%;background:#fff;border:1px solid var(--line);border-left:none;border-radius:0 10px 10px 0;padding:7px 12px 7px 14px;position:relative}
+  .m-a::before{content:"";position:absolute;left:-14px;top:10px;width:14px;height:2px;background:var(--ink2)}
+  .m-a::after{content:"";position:absolute;left:-18px;top:6px;width:8px;height:8px;border:1.5px solid var(--ink2);border-radius:50%;background:var(--panel)}
+  .msglist{display:flex;flex-direction:column;gap:10px;padding:8px 12px}
+  .hoverop{font-size:11.5px;color:var(--ink3);border:1px dashed var(--ink3);border-radius:3px;padding:1px 6px;margin:0 2px}
+  .metabtn{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:2px 10px;font-size:11.5px;color:var(--ink2);background:#fff}
+  .spin{width:12px;height:12px;border:2px solid var(--line);border-top-color:var(--ink2);border-radius:50%;flex-shrink:0;display:inline-block;vertical-align:-2px}
+  .conf{font-size:11.5px;color:var(--ink3);margin-left:6px}
+  .conf.hi{color:var(--ink2)}
+  /* 选择题按钮组 */
+  .quiz{display:flex;flex-direction:column;gap:6px;margin:8px 0 2px;max-width:420px}
+  .quiz .opt{display:flex;align-items:center;gap:8px;border:1.5px solid var(--ink);border-radius:7px;padding:6px 12px;background:#fff;font-size:12.5px;cursor:default}
+  .quiz .opt.on{background:var(--panel);box-shadow:3px 3px 0 var(--panel2)}
+  /* 流转步骤 */
+  .flow{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+  .step{flex:1;min-width:180px;border:1.5px solid var(--ink);border-radius:8px;background:#fff;overflow:hidden;position:relative}
+  .step .sh{font-size:12px;font-weight:700;background:var(--panel);padding:5px 10px;border-bottom:1px solid var(--line)}
+  .step .sb{padding:10px;font-size:11.5px;color:var(--ink2)}
+  .step .sb .k{color:var(--ink)}
+  .arrownext{align-self:center;font-size:16px;color:var(--ink3)}
+  /* 上下文条 */
+  .ctxbar{display:flex;gap:10px;align-items:center;border:1.5px solid var(--ink);border-radius:8px;background:#fff;padding:5px 12px;font-size:12px}
+  .ctxbar .where{font-weight:700}
+  /* 刻度条/会话树 */
+  .scalecol{width:24px;background:var(--panel2);border-right:1px solid var(--line);position:relative;flex-shrink:0}
+  .scalecol .tick{position:absolute;left:4px;width:7px;height:2px;background:var(--ink3)}
+  .scalecol .tick.main{background:var(--ink);height:9px;width:4px}
+  .scalecol .tick.act{background:var(--ink2);height:6px;width:6px}
+  .treefly{width:190px;background:#fff;border:1.5px solid var(--ink);border-radius:8px;padding:10px 8px;font-size:11.5px;box-shadow:3px 3px 0 var(--panel2)}
+  .treefly .tr{border-left:2px solid var(--ink);padding-left:8px;margin-left:3px;line-height:2}
+  .treefly .cur{background:var(--panel);border:1.5px solid var(--ink);border-radius:5px;padding:0 6px;font-weight:700;display:inline-block}
+  .treefly .sunk{color:var(--ink3);text-decoration:none}
+  /* 任务胶囊 */
+  .pill{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--ink);border-radius:16px;background:#fff;padding:3px 14px;font-size:12px;box-shadow:2px 2px 0 var(--panel2)}
+  .proccard{border:1.5px solid var(--ink);border-radius:8px;background:#fff;padding:8px 12px;max-width:360px;font-size:12px}
+  .proccard .ph{display:flex;align-items:center;gap:8px;font-weight:700;font-size:12.5px}
+  .mile{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink2);padding:2px 0}
+  .mile .done{font-weight:700;color:var(--ink)}
+  /* 收编箭头图 */
+  .remap{display:grid;grid-template-columns:1fr 44px 1fr;gap:8px 0;align-items:center;font-size:12px;margin-top:10px}
+  .remap .from{border:1px solid var(--line);border-radius:6px;background:var(--bg);padding:5px 10px;text-align:right;color:var(--ink2)}
+  .remap .to{border:1.5px solid var(--ink);border-radius:6px;background:#fff;padding:5px 10px;font-weight:700}
+  .remap .ar{text-align:center;color:var(--ink3)}
+  table.map{width:100%;border-collapse:collapse;margin-top:14px;background:#fff;font-size:13px}
+  table.map th,table.map td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  table.map th{background:var(--panel);font-size:12.5px;letter-spacing:.5px}
+  table.map td .src{display:inline-block;font-size:11.5px;border:1px solid var(--line);border-radius:3px;padding:0 6px;color:var(--ink2);margin-left:6px;white-space:nowrap}
+  table.map td .src.now{border-color:var(--ink);color:var(--ink)}
+  table.map td .src.req{border-style:dashed}
+  footer.doc{margin-top:70px;border-top:1px solid var(--line);padding-top:14px;color:var(--ink3);font-size:12px}
+  pre.export{display:none;background:#fff;border:1px solid var(--ink);border-radius:8px;padding:14px;font-size:12.5px;margin-top:16px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+
+<header class="doc">
+  <h1>009 重构方向 · 线框图 v2.1（六块补图）</h1>
+  <div class="sub">用户已拍板 · 低保真黑白灰 · 单文件零依赖 · 2026-09-21 前线指挥部 · 承接 v2 已定前提（大面板=唯一会话中枢、消息卡片规范、会话树一级公民）</div>
+  <nav class="jump">
+    <a href="#f1">① AI 出选择题</a>
+    <a href="#f2">② 选区提问+支线</a>
+    <a href="#f3">③ 面板单栏式</a>
+    <a href="#f4">④ 会话树内嵌</a>
+    <a href="#f5">⑤ 任务胶囊</a>
+    <a href="#f6">＋思考流分级</a>
+    <a href="#map">对照表</a>
+    <a href="#" onclick="exportPick();return false">汇总我的选择</a>
+  </nav>
+</header>
+<main>
+
+<div class="howto">
+  <b>怎么用</b>：六块补图均为 v2 定稿前提下的组件级细化。有多变体的块选一个点【选这个】，毛病写框里（自动保存），全看完点顶部汇总发参谋部。块②③④⑤＋思考流为单一方案（用户口令已拍板形态），只挑毛病不做选择。
+</div>
+
+<!-- ================= ① ================= -->
+<section class="fig" id="f1">
+  <h2>① AI 出选择题组件</h2>
+  <div class="goal">AI 提问消息内直接带可点选项按钮组——点选即自动发送该答案，不用手打字。每项带置信度小标：<b>✓高置信=从已有设定推导</b>（跟着走基本不会错）；<b>？低置信=AI 拍的，待你定</b>。配套规则：<b>AI 凡要填低置信设定，一律自动变成这种选择题</b>，不再自作主张写进档案。</div>
+
+  <div class="variant" data-fig="①选择题" data-vid="1A 纯按钮组">
+    <div class="vhead"><span class="vid">变体 1A</span><span class="vname">纯按钮组 —— 三选项点选即发</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div class="lbl" style="top:4px;right:10px">面板消息流（局部）</div>
+        <div style="padding:14px 16px 10px">
+          <div class="msglist" style="padding:0">
+            <div class="m-u" style="max-width:60%">继续写，张三今晚住哪交代一下</div>
+            <div class="m-a">
+              第五章只写了"进城"，住所没落。三个选项：<span class="conf hi">✓高置信=从已有设定推导</span>
+              <div class="quiz">
+                <div class="opt"><b>城南旧宅</b><span class="conf hi">✓ 第三章买过宅子，高置信</span></div>
+                <div class="opt"><b>城北客栈</b><span class="conf">？没有前文依据，AI 拍的</span></div>
+                <div class="opt on"><b>暂不交代，留白</b><span class="conf hi">✓ 原文风格允许，高置信</span></div>
+              </div>
+              <div style="font-size:11.5px;color:var(--ink3);margin-top:6px">点任意选项=自动发送该答案（如"选暂不交代"）；高置信项可直接连点确认</div>
+            </div>
+            <div class="m-u" style="max-width:60%">选暂不交代</div>
+            <div class="m-a">好，第 12 章按"留白"写，不提住所。<span class="hoverop">复制</span><span class="hoverop">模型</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：选项按钮长在 AI 提问消息气泡里，每项右侧小标注明置信度与依据来源；点选=自动发送（消息流里出现你的选择，AI 接着走）。<b>配套硬规则</b>：低置信设定必须走选择题，对应 021 项4 已落地的"Pending Questions 双通道"升级版——从"逐项文字提问"进化为"逐项选择题"。<b>适合</b>：快节奏确认。<b>代价</b>：答案超纲时（三个都不对）只能手打字。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+
+  <div class="variant" data-fig="①选择题" data-vid="1B 按钮组+其他自由输入">
+    <div class="vhead"><span class="vid">变体 1B</span><span class="vname">按钮组 +"其他…" —— 三个都不对时当场改答案</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div style="padding:14px 16px 10px">
+          <div class="msglist" style="padding:0">
+            <div class="m-a">
+              张三的住所三个选项：
+              <div class="quiz">
+                <div class="opt"><b>城南旧宅</b><span class="conf hi">✓ 高置信</span></div>
+                <div class="opt"><b>城北客栈</b><span class="conf">？ 低置信</span></div>
+                <div class="opt" style="border-style:dashed;display:flex;align-items:center;gap:8px"><span class="btnw ghost" style="padding:1px 10px;font-size:11.5px">其他…</span><span style="flex:1;border:none;border-bottom:1.5px solid var(--ink);background:transparent;font-size:12px;color:var(--ink3);padding:2px 6px">自己写：城西岳父家的柴房</span><span class="btnw dark" style="padding:1px 10px;font-size:11.5px">发送</span></div>
+              </div>
+              <div style="font-size:11.5px;color:var(--ink3);margin-top:6px">"其他…"展开一行自由输入，写完发送（同样是自动发送语义）</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：同 1A，末尾多一个虚线"其他…"项——点击/聚焦展开自由输入行，答案不受限。<b>适合</b>：AI 三个候选经常不贴你心意的场景，省一次跳出手打。<b>代价</b>：选项区略高一行；多数时候用不到。</div>
+    </div>
+    <div class="pick">
+      <button class="choose" onclick="pick(this)">选这个</button>
+      <span class="picked-tag"></span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ② ================= -->
+<section class="fig" id="f2">
+  <h2>② 选区提问 + 支线流转（全链五步）</h2>
+  <div class="goal">v2 图2 3C 的"选区引用提问"细化成完整流转：正文选中 → 问 AI → 支线<b>自动开、自动切</b> → 改动走审批卡（与对话解耦）→ 就地快批 → 支线沉入历史。全程主线不被污染。</div>
+
+  <div class="variant" data-fig="②支线流转" data-vid="② 全链五步（单一方案）">
+    <div class="vhead"><span class="vid">方案</span><span class="vname">五步流转（用户口令已拍板形态，只挑毛病）</span></div>
+    <div class="vbody">
+      <div class="flow">
+        <div class="step">
+          <div class="sh">1 · 选中+浮层</div>
+          <div class="sb">
+            <div style="border:2px solid var(--ink);border-radius:3px;padding:2px 4px;display:inline">雨声忽然远了。</div>
+            <div style="border:2px solid var(--ink);border-radius:8px;background:#fff;padding:8px 10px;margin-top:8px;box-shadow:2px 2px 0 var(--panel2)">
+              <div style="border-left:4px solid var(--ink2);background:var(--bg);padding:3px 8px;font-size:11.5px;margin-bottom:6px">「 雨声忽然远了。… 」引用条</div>
+              <div style="display:flex;gap:6px"><b style="font-size:12px">问 AI</b><span style="flex:1;border:1.5px solid var(--ink);border-radius:5px;padding:3px 8px;font-size:11.5px;color:var(--ink3)">这段是不是太轻了？</span><span class="btnw dark" style="font-size:11.5px">发送</span></div>
+            </div>
+            <div class="k">极简浮层=输入框+引用条（v2 已定）</div>
+          </div>
+        </div>
+        <div class="arrownext">→</div>
+        <div class="step">
+          <div class="sh">2 · 支线自动开+切</div>
+          <div class="sb">无需确认：<div class="treefly" style="width:auto;margin:6px 0"><div class="tr"><div>主线 · 第 12 章</div><div class="cur">└ 选段提问（新建）✈已切换</div></div></div>面板立即显示支线对话；<span class="k">主线只读不动</span></div>
+        </div>
+        <div class="arrownext">→</div>
+        <div class="step">
+          <div class="sh">3 · 支线态上下文条</div>
+          <div class="sb">
+            <div class="ctxbar"><span class="where">正在修改：第 12 章·该段</span><span style="flex:1"></span><span class="btnw ghost" style="font-size:11.5px">← 回主线</span></div>
+            <div style="margin-top:6px">常驻面板顶部；<span class="k">同章续支线</span>（改本段）vs <span class="k">跨章新开</span>（影响别章时 AI 提示另开，避免一支线摊子过大）</div>
+          </div>
+        </div>
+        <div class="arrownext">→</div>
+        <div class="step">
+          <div class="sh">4 · 审批卡+就地快批</div>
+          <div class="sb">AI 改动产出审批卡（<span class="k">与对话解耦</span>：不在聊天里刷 diff，直接出卡）：<div style="border:1.5px solid var(--ink);border-radius:6px;padding:6px 10px;margin-top:6px;background:#fff"><b>第 12 章改 2 处</b><div style="font-size:11.5px;color:var(--ink2)">影响：第 12 章、"雨声"意象</div><span class="btnw dark" style="font-size:11.5px">接受</span> <span class="btnw" style="font-size:11.5px">拒绝</span></div><div style="font-size:11.5px;color:var(--ink3);margin-top:4px">1-2 处变更就地快批（图1 定稿路由）；3+ 走收件箱</div></div>
+        </div>
+        <div class="arrownext">→</div>
+        <div class="step">
+          <div class="sh">5 · 支线沉入历史</div>
+          <div class="sb">答完/批完不自动并主线：<div class="treefly" style="width:auto;margin:6px 0"><div class="tr"><div>主线 · 第 12 章</div><div>└ 选段提问（灰）已沉入历史 ↩可回看/再开</div></div></div>采纳进正文才落主线（走第 4 步审批卡）</div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：五步一屏读完。核心拍板点：支线<b>自动开自动切</b>（不打断问句心流）、支线态顶部<b>上下文条</b>（知道自己在改哪+一键回主线）、改动走<b>审批卡与对话解耦</b>（图1 定稿机制复用）、<b>同章续/跨章新开</b>的分界由 AI 提示。<b>与 v2 3C 的差异</b>：3C 只画了浮层+分支树，本块补全中间的上下文条、审批、沉入三态。</div>
+    </div>
+    <div class="pick">
+      <span class="picked-tag">单一方案（不做选择）</span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ③ ================= -->
+<section class="fig" id="f3">
+  <h2>③ 面板一整块（ZCode 单栏式）</h2>
+  <div class="goal">右侧 Agent 面板收敛为"一整块"：顶栏只留三件套，工具条全部收进输入框，文件变更条内嵌消息流。仿 ZCode 单栏的克制。<b>附"顶栏七按钮收编去向"箭头图</b>——现有顶部七组按钮各去哪，一个不丢。</div>
+
+  <div class="variant" data-fig="③面板单栏" data-vid="③ 一整块（单一方案）">
+    <div class="vhead"><span class="vid">方案</span><span class="vname">顶栏三件套+纯消息流+输入区一体（用户口令已拍板）</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div style="display:flex;height:430px;font-size:12.5px">
+          <div class="scalecol"><div class="tick main" style="top:30px"></div><div class="tick act" style="top:120px"></div><div class="tick" style="top:220px"></div><div class="tick" style="top:300px"></div></div>
+          <div style="flex:1;display:flex;flex-direction:column;background:var(--panel);overflow:hidden">
+            <div style="display:flex;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);background:#fff">
+              <b style="font-size:13px">主线 · 第 12 章修改</b>
+              <span class="metabtn">ⓘ</span>
+              <span style="flex:1"></span>
+              <span class="btnw" style="font-size:11.5px">＋新建</span>
+              <span class="btnw ghost" style="font-size:11.5px">✕关闭</span>
+            </div>
+            <div style="flex:1;overflow:hidden;padding:6px 0">
+              <div class="msglist">
+                <div class="m-a">第 12 章改好了，2 处变更待你批：<div style="border:1.5px solid var(--ink);border-radius:6px;padding:5px 10px;margin-top:6px;background:#fff;display:flex;gap:8px;align-items:center"><span style="font-size:11.5px"><b>第 12 章</b> 改 2 处</span><span class="btnw dark" style="font-size:11.5px">接受</span><span class="btnw" style="font-size:11.5px">拒绝</span><span style="font-size:11.5px;color:var(--ink3)">撤销=拒绝即还原</span></div></div>
+                <div class="m-u" style="max-width:60%">接受了，继续</div>
+                <div class="m-a">好，接写第 13 章开头。<span class="hoverop">复制</span><span class="hoverop">模型</span></div>
+              </div>
+            </div>
+            <div style="border-top:1px solid var(--line);padding:8px 10px;background:#fff">
+              <div style="border:1.5px solid var(--ink);border-radius:8px;padding:8px 10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+                <span style="flex:1 100%;font-size:12.5px;color:var(--ink3)">输入消息…（@ 引用 · $ 技能 · / 命令）</span>
+                <span class="btnw ghost" style="font-size:11.5px">📎 附件（左下）</span>
+                <span style="flex:1"></span>
+                <span class="metabtn">模型 ▾</span>
+                <span class="btnw dark" style="font-size:11.5px">发送 ↵</span>
+              </div>
+              <div style="font-size:11.5px;color:var(--ink3);margin-top:4px">工具条收进输入框：左下=附件，右下=模型/发送——面板再无游离按钮</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="remap">
+        <div class="from">顶栏：新建会话</div><div class="ar">→</div><div class="to">留顶栏（＋新建）</div>
+        <div class="from">顶栏：关闭会话</div><div class="ar">→</div><div class="to">留顶栏（✕关闭）</div>
+        <div class="from">顶栏：附件/图片</div><div class="ar">→</div><div class="to">输入框左下 📎</div>
+        <div class="from">顶栏：会话树</div><div class="ar">→</div><div class="to">左缘 24px 刻度条（见④）</div>
+        <div class="from">顶栏：会话列表</div><div class="ar">→</div><div class="to">同上，刻度条展开态</div>
+        <div class="from">顶栏：系统提示词</div><div class="ar">→</div><div class="to">ⓘ 高级配置内</div>
+        <div class="from">顶栏：LinkedAgent</div><div class="ar">→</div><div class="to">ⓘ 会话详情内</div>
+        <div class="from">摘要器徽标</div><div class="ar">→</div><div class="to">ⓘ 元信息内</div>
+      </div>
+      <div class="note"><b>读法</b>：顶栏=会话名+ⓘ+新建+关闭（ⓘ 承接一切元信息：模型/耗时/系统提示词/LinkedAgent/摘要器——hover 展开或点开面板）；输入框一体成型；<b>文件变更条内嵌消息流</b>（AI 消息里直接出变更卡，接受/拒绝即批，拒绝=自动撤销——对应图1"1-2 条聊天流快批"）。</div>
+    </div>
+    <div class="pick">
+      <span class="picked-tag">单一方案（不做选择）</span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ④ ================= -->
+<section class="fig" id="f4">
+  <h2>④ 会话树内嵌（刻度条展开）</h2>
+  <div class="goal">v2 图2"会话树一级公民"与③"树收进刻度条"的合流：面板左缘 24px 刻度条是树的常驻形态，<b>悬停/点击在面板内部展开会话列表（覆盖式浮出，不推挤正文）</b>。主线/活跃支线/沉入历史三种会话在树里各有形态。</div>
+
+  <div class="variant" data-fig="④会话树内嵌" data-vid="④ 覆盖式展开（单一方案）">
+    <div class="vhead"><span class="vid">方案</span><span class="vname">24px 刻度条 → 覆盖式树（用户口令已拍板）</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div style="display:flex;height:330px;font-size:12.5px;position:relative">
+          <div class="scalecol" style="width:26px">
+            <div class="tick main" style="top:36px" title="主线"></div>
+            <div class="tick act" style="top:130px" title="活跃支线"></div>
+            <div class="tick" style="top:230px" title="历史"></div>
+            <div class="tick" style="top:275px"></div>
+            <div class="lbl" style="left:2px;top:2px;font-size:10px">刻度条</div>
+          </div>
+          <!-- 覆盖式树（悬停态示意） -->
+          <div class="treefly" style="position:absolute;left:34px;top:24px;z-index:3;min-width:230px">
+            <div style="font-weight:700;margin-bottom:4px">会话树（悬停/点击展开，覆盖不推挤）</div>
+            <div class="tr">
+              <div><b>█ 主线 · 第 12 章修改</b>（粗刻度=主线）</div>
+              <div>├ <span style="background:var(--panel);border:1px solid var(--ink2);border-radius:4px;padding:0 5px">▶ 选段提问·雨声（当前）</span> <span style="font-size:11.5px;color:var(--ink2)">活跃支线=中刻度</span></div>
+              <div>├ <span class="sunk">悬疑向试写（沉入历史）</span> <span style="font-size:11.5px;color:var(--ink3)">细刻度，点击回看/再开</span></div>
+              <div>├ <span class="sunk">拆解《异化》（旧会话）</span></div>
+              <div style="color:var(--ink3);font-size:11.5px">＋ 新建会话（底部）</div>
+            </div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;background:var(--panel)">
+            <div style="padding:8px 12px;border-bottom:1px solid var(--line);background:#fff;display:flex;gap:8px;align-items:center"><b>支线 · 选段提问·雨声</b><span class="ctxbar" style="padding:1px 8px;font-size:11.5px"><span class="where">正在修改：第 12 章·该段</span></span><span style="flex:1"></span><span class="btnw ghost" style="font-size:11.5px">回主线</span></div>
+            <div style="flex:1;padding:8px 12px;color:var(--ink3);font-size:11.5px">（消息流被树覆盖一层，正文不被推挤）</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：三种形态——<b>主线</b>=最粗刻度+树中粗体；<b>活跃支线</b>=中刻度+▶ 标记（当前所在高亮）；<b>沉入历史</b>=细刻度+灰字（可回看可再开，见②第 5 步）。悬停展开浮层<b>盖在消息流上</b>（不是把正文挤窄），移开即收；点击刻度=钉住树。<b>与 v2 2A 的差异</b>：2A 是常驻 150px 树栏（占宽），本方案树平时只有 24px，想要常驻可点刻度钉住——两档合一。</div>
+    </div>
+    <div class="pick">
+      <span class="picked-tag">单一方案（不做选择）</span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ⑤ ================= -->
+<section class="fig" id="f5">
+  <h2>⑤ 任务胶囊 + 进程卡（分工）</h2>
+  <div class="goal">长任务（写一章/拆书/审查）不能只靠聊天流刷屏看进度：<b>右上角全局任务胶囊</b>随时瞄一眼，<b>消息流内进程卡</b>承载对话上下文里的任务——两者分工明确。</div>
+
+  <div class="variant" data-fig="⑤任务胶囊" data-vid="⑤ 胶囊+进程卡（单一方案）">
+    <div class="vhead"><span class="vid">方案</span><span class="vname">全局胶囊（右上角）+ 消息流进程卡（用户口令已拍板）</span></div>
+    <div class="vbody">
+      <div class="wf">
+        <div style="padding:14px 16px">
+          <!-- 全局胶囊（工作台右上角） -->
+          <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+            <div>
+              <div style="font-size:11.5px;color:var(--ink3);text-align:right;margin-bottom:3px">工作台右上角（全局，任何页面可见）</div>
+              <div class="pill"><span class="spin"></span>第 3 章·写作中 ▸</div>
+              <div style="border:1.5px solid var(--ink);border-radius:8px;background:#fff;padding:8px 12px;margin-top:6px;font-size:11.5px;box-shadow:2px 2px 0 var(--panel2);max-width:280px">
+                <b>▸ 点开进度</b>：大纲 ✓ → 正文 1320/3000 字 → 评审待开始<br><span style="color:var(--ink3)">完成时胶囊变通知（"第 3 章 ✓ 已完成，点击查看"）——不在聊天里刷屏报完成</span>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px dashed var(--line);padding-top:12px">
+            <div style="font-size:11.5px;color:var(--ink3);margin-bottom:6px">消息流内进程卡（对话上下文中）</div>
+            <div class="msglist" style="padding:0">
+              <div class="m-u" style="max-width:55%">写第 3 章，按大纲来</div>
+              <div class="proccard">
+                <div class="ph"><span class="spin"></span>第 3 章 · 写作中<span style="margin-left:auto;font-weight:400;color:var(--ink3)">已工作 4 分 12 秒</span></div>
+                <div style="margin-top:6px">
+                  <div class="mile"><span class="done">✓ 大纲完成</span>（12:03）</div>
+                  <div class="mile"><span class="done">✓ 正文初稿</span>（12:06）</div>
+                  <div class="mile"><span class="spin"></span>正文润色中…</div>
+                  <div class="mile" style="color:var(--ink3)">○ 评审</div>
+                </div>
+                <div style="font-size:11.5px;color:var(--ink3);margin-top:6px">消息流里的它=这个对话的任务档案；点卡片可展开详情（同胶囊点开）</div>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px dashed var(--line);margin-top:14px;padding-top:10px;font-size:12px">
+            <b>分工</b>：胶囊=<b>全局</b>（你切到别的书/页面也知道它在跑；完成变通知，不依赖你还在这个对话）；进程卡=<b>对话内</b>（回顾"这次对话让它干了什么、到哪步"；新进对话的人看卡即懂上下文）。同一任务两处显示，数据同源。
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：胶囊文案格式"对象·状态▸"（第 3 章·写作中）；点开=进度清单（里程碑节点）；完成=胶囊转通知一次。进程卡=消息流一等的卡片组件，含计时+里程碑（与"外加思考流分级"的已批计划态同构——那边是思考的里程碑，这边是任务的里程碑）。</div>
+    </div>
+    <div class="pick">
+      <span class="picked-tag">单一方案（不做选择）</span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ＋ ================= -->
+<section class="fig" id="f6">
+  <h2>＋ 思考流分级（无计划 vs 已批计划）</h2>
+  <div class="goal">v2 图2 定稿的思考三态组件再分两级：<b>无计划/探索阶段</b>=实时滚动摘要（让你看见它在想）；<b>已批准计划后的执行阶段</b>=安静模式（不刷流，只报里程碑）——想得多的时候吵，做得多的时候静。</div>
+
+  <div class="variant" data-fig="＋思考流分级" data-vid="＋ 两级形态（单一方案）">
+    <div class="vhead"><span class="vid">方案</span><span class="vname">探索级=滚动 3-4 行 / 执行级=安静+里程碑（用户口令已拍板）</span></div>
+    <div class="vbody">
+      <div class="flow">
+        <div class="step" style="min-width:280px">
+          <div class="sh">探索级（无计划 / 计划未批）</div>
+          <div class="sb">
+            <div class="think" style="border:1px dashed var(--ink3);border-radius:6px;background:var(--bg);padding:8px 10px;font-size:11.5px;color:var(--ink2)">
+              <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><span class="spin"></span><span>已工作 12s</span></div>
+              正在想：张三在第五章自称赘婿，档案里还是散修…<br>查前文住所描写…<br>三个候选里"留白"最贴原文风格…
+            </div>
+            <div class="k" style="margin-top:6px">3-4 行实时滚动（v2 定稿组件原样）；探索期就该让你看见它在想什么</div>
+          </div>
+        </div>
+        <div class="arrownext">用户批准计划后 →</div>
+        <div class="step" style="min-width:300px">
+          <div class="sh">执行级（已批计划）</div>
+          <div class="sb">
+            <div style="border:1.5px solid var(--ink);border-radius:6px;background:#fff;padding:8px 10px;font-size:11.5px">
+              <div style="display:flex;gap:8px;align-items:center"><span class="spin"></span><b>执行中 · 已工作 4 分 12 秒</b><span style="margin-left:auto;color:var(--ink3)">静音模式</span></div>
+              <div style="margin-top:6px;color:var(--ink2)">
+                <div class="mile"><span class="done">✓ 大纲完成</span></div>
+                <div class="mile"><span class="spin"></span>第 1 章写作中…</div>
+                <div class="mile" style="color:var(--ink3)">○ 评审 → ○ 修订</div>
+              </div>
+            </div>
+            <div class="k" style="margin-top:6px">不再滚思考流（已批准=你已知它在干嘛）；只在<b>里程碑节点</b>更新一行；点开可看全程流水（需要时）</div>
+          </div>
+        </div>
+      </div>
+      <div class="note"><b>读法</b>：两级的切换点是<b>计划获批</b>（对应审批卡/任务胶囊体系）；执行级与⑤进程卡的里程碑同构（一个组件两种挂载位置）。<b>完成态</b>沿用 v2 定稿：自动折叠"已思考 Ns"+展开。<b>技术参考</b>：Vercel AI SDK useChat reasoning part / LobeChat 思维链折叠（v2 已记，实现期不造轮子）。</div>
+    </div>
+    <div class="pick">
+      <span class="picked-tag">单一方案（不做选择）</span>
+      <textarea placeholder="挑毛病：哪里不对劲、看不懂、缺什么……"></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 对照表 ================= -->
+<section class="fig" id="map">
+  <h2>对照表 · v2.1 每个元素从哪来</h2>
+  <div class="goal">规则同 v1/v2：每个元素要么是现有软件里的东西，要么对应一条改造需求（本 v2.1 口令/承接 v2 定稿）。两者都不是的元素不许出现。</div>
+
+  <table class="map">
+    <tr><th style="width:30%">块</th><th>元素 → 出处</th></tr>
+    <tr><td>① 选择题组件</td><td>按钮组长在 AI 消息内<span class="src req">v2.1 口令①</span>；触发规则"低置信自动变选择题"=021 项4 已落地"Pending Questions 双通道+候选方向"的组件化升级<span class="src now">现有 skill 行为</span>；点选=自动发送=消息流发送机制<span class="src now">现有</span></td></tr>
+    <tr><td>① 置信度小标</td><td>✓/？置信分级<span class="src req">v2.1 口令①</span>；依据来源=档案/正文检索（世界书引用机制）<span class="src now">现有</span></td></tr>
+    <tr><td>② 选中+浮层</td><td>选区浮层=v2 图2 3C 定稿<span class="src req">v2 口令</span>；选区交互=现有选区浮动工具栏（g4-3）<span class="src now">现有</span></td></tr>
+    <tr><td>② 支线自动开/切、沉入历史</td><td>支线机制=现有会话分支（AgentBranchSwitcher/会话恢复）<span class="src now">现有</span>；自动开切+沉入三态<span class="src req">v2.1 口令②</span></td></tr>
+    <tr><td>② 上下文条（正在修改/回主线）</td><td><span class="src req">v2.1 口令②</span>；"回主线"=会话切换机制<span class="src now">现有</span></td></tr>
+    <tr><td>② 审批卡+就地快批+撤销</td><td>图1 定稿：数量自适应路由（1-2 条聊天流快批）+拒绝即还原<span class="src req">图1 定稿</span>；接受/还原动作=现有收件箱（g6-2）<span class="src now">现有</span></td></tr>
+    <tr><td>③ 顶栏三件套</td><td>会话名/新建/关闭=现有面板头部功能重排<span class="src now">现有</span>（g6-3 会话列表+新建对话）；收编方案<span class="src req">v2.1 口令③</span></td></tr>
+    <tr><td>③ 工具条收进输入框</td><td>附件=现有图片/附件机制<span class="src now">现有</span>；左下附件+右下模型/发送布局<span class="src req">v2.1 口令③</span>；模型选择=现有 Session 模型选择<span class="src now">现有</span></td></tr>
+    <tr><td>③ 文件变更条内嵌消息流</td><td>=图1 定稿"1-2 条聊天流快批卡"<span class="src req">图1 定稿</span>；变更数据=现有文件变更收件箱（g6-2）<span class="src now">现有</span></td></tr>
+    <tr><td>③ ⓘ 收编系统提示词/LinkedAgent/摘要器</td><td>系统提示词面板（AgentSystemPromptPanel）、LinkedAgent 面板、摘要器=现有功能<span class="src now">现有</span>；归入 ⓘ 详情<span class="src req">v2.1 口令③</span></td></tr>
+    <tr><td>④ 刻度条+覆盖式树</td><td>刻度条=v2 图2 24px 会话刻度条定稿<span class="src req">v2 口令</span>；覆盖式展开+三形态<span class="src req">v2.1 口令④</span>；会话列表数据=现有（g6-3）<span class="src now">现有</span></td></tr>
+    <tr><td>⑤ 任务胶囊</td><td>右上角全局胶囊+点开进度+完成变通知<span class="src req">v2.1 口令⑤</span>；任务对象=Agent job 体系（jobs 目录/任务中心上游 issue #134 同题）<span class="src now">现有 job 机制</span></td></tr>
+    <tr><td>⑤ 进程卡</td><td>消息流内卡片+里程碑<span class="src req">v2.1 口令⑤</span>；与 v2 图2 消息卡片规范同构<span class="src req">v2 定稿</span></td></tr>
+    <tr><td>＋ 思考流分级</td><td>探索级=v2 定稿思考三态组件（3-4 行滚动）<span class="src req">v2 定稿</span>；执行级安静+里程碑<span class="src req">v2.1 口令外加</span>；计划获批切换点=审批卡体系<span class="src req">图1 定稿</span>；技术参考 Vercel AI SDK reasoning / LobeChat<span class="src req">v2 口令</span></td></tr>
+  </table>
+
+  <div class="note" style="margin-top:18px"><b>没画进图里的现有功能</b>（同系列红线）：文件树全部操作、剧情面板、llmlint、配置中心、admin、预览沙箱；被收编的顶栏七按钮功能一个不删（见③箭头图，全部有去向）。</div>
+</section>
+
+<footer class="doc">
+  素材：v2.1 用户口令（2026-09-21 拍板）+ v2/v1 定稿前提 + 走查-v1.html 实截 · 反馈自动存 localStorage（键 009-wireframe-v21-*）· 汇总导出可直接发参谋部
+</footer>
+</main>
+<pre class="export" id="export-out"></pre>
+
+<script>
+var KEY='009-wireframe-v21';
+function pick(btn){
+  var v=btn.closest('.variant'), fig=v.dataset.fig, others=v.parentElement.querySelectorAll('.variant');
+  others.forEach(function(o){
+    if(o!==v && o.dataset.fig===fig){o.querySelector('.choose')&&o.querySelector('.choose').classList.remove('on');setPick(o,null);}
+  });
+  var on=!btn.classList.contains('on');
+  btn.classList.toggle('on',on);
+  v.querySelector('.picked-tag').textContent=on?'已选 ✓':'';
+  localStorage.setItem(KEY+'-pick-'+fig,on?v.dataset.vid:'');
+}
+function setPick(v,val){v.querySelector('.picked-tag').textContent=val||'';}
+function taKey(ta){return KEY+'-ta-'+ta.closest('.variant').dataset.vid;}
+document.querySelectorAll('.variant textarea').forEach(function(ta){
+  ta.value=localStorage.getItem(taKey(ta))||'';
+  ta.addEventListener('input',function(){localStorage.setItem(taKey(ta),ta.value)});
+});
+document.querySelectorAll('.variant').forEach(function(v){
+  var saved=localStorage.getItem(KEY+'-pick-'+v.dataset.fig);
+  if(saved===v.dataset.vid&&v.querySelector('.choose')){v.querySelector('.choose').classList.add('on');setPick(v,saved);}
+});
+function exportPick(){
+  var out=['009 线框图 v2.1 · 我的选择与意见',''];
+  document.querySelectorAll('section.fig').forEach(function(s){
+    var fig=s.querySelector('h2').textContent;
+    if(fig.indexOf('对照表')>=0)return;
+    out.push('【'+fig+'】');
+    s.querySelectorAll('.variant').forEach(function(v){
+      var c=v.querySelector('.choose');
+      var on=c?c.classList.contains('on'):null;
+      var ta=v.querySelector('textarea').value.trim();
+      if(on===true)out.push('- ✅ 已选 '+v.dataset.vid+(ta?'｜意见：'+ta:''));
+      else if(on===false&&ta)out.push('- 未选 '+v.dataset.vid+'｜意见：'+ta);
+      else if(on===null&&ta)out.push('- 单一方案｜意见：'+ta);
+    });
+    out.push('');
+  });
+  var el=document.getElementById('export-out');
+  el.textContent=out.join('\n');el.style.display='block';
+  if(navigator.clipboard)navigator.clipboard.writeText(el.textContent).catch(function(){});
+  el.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
