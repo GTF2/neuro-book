@@ -414,6 +414,9 @@ describe("runSessionLoadAttempt", () => {
         });
 
         expect(result).toEqual({status: "failed", error: archivedError});
+        if (result.status !== "failed") {
+            throw new Error(`expected failed, got ${result.status}`);
+        }
         expect(isRememberedSessionArchivedError(result.error)).toBe(true);
         expect(isRememberedSessionArchivedError(new Error("普通错误"))).toBe(false);
     });
