@@ -1853,6 +1853,13 @@ const enUS = {
             cycleModeTitle: "Current {mode}. Click or Shift+Tab to cycle modes",
             discussPlaceholder: "Discuss mode (read-only): ask, analyze, compare options... (type {'@'} to reference, $ skills, / commands)",
             planPlaceholder: "Plan mode (read-only): plan first, then implement... (type {'@'} to reference, $ skills, / commands)",
+            cacheRingTitle: "Cache hit overview",
+            thinkingLevel: {
+                low: "Low",
+                mid: "Medium",
+                high: "High",
+            },
+            scaleBarViewAll: "View full session tree",
         },
         attachments: {
             title: "Session Attachments",

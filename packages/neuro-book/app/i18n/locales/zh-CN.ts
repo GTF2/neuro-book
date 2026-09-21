@@ -1851,6 +1851,13 @@ const zhCN = {
             cycleModeTitle: "当前{mode}，点击或 Shift+Tab 切换模式",
             discussPlaceholder: "讨论模式（只读）：提问、分析、对比方案... (输入 {'@'} 引用, $ 技能, / 命令)",
             planPlaceholder: "计划模式（只读）：先制定计划再实现... (输入 {'@'} 引用, $ 技能, / 命令)",
+            cacheRingTitle: "缓存命中概览",
+            thinkingLevel: {
+                low: "低",
+                mid: "中",
+                high: "高",
+            },
+            scaleBarViewAll: "查看全部会话",
         },
         attachments: {
             title: "Session 附件",
