@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Dialog from "nbook/app/components/common/Dialog.vue";
 import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
 import AgentMarkdownContent from "nbook/app/components/novel-ide/agent/AgentMarkdownContent.vue";
 import {useAgentJobsFeed} from "nbook/app/composables/useAgentJobsFeed";
@@ -234,6 +235,9 @@ async function submitRun(runId: string): Promise<void> {
     }
 }
 
+/** 009C1R2 件7c：待应答收编为徽标+弹层；应答逻辑零改动只动容器。 */
+const pendingDialogOpen = ref(false);
+
 onBeforeUnmount(() => {
     disposed = true;
     resetRunState();
@@ -241,16 +245,31 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <section v-if="waitingCount || feed.error" class="border-t border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-3">
-        <div class="flex items-center justify-between gap-2">
-            <div class="flex min-w-0 items-center gap-2 text-sm font-semibold text-[var(--text-main)]">
-                <span class="i-lucide-inbox h-4 w-4 shrink-0 text-[var(--status-warning)]"></span>
-                <span>Workflow 待处理</span>
-                <span v-if="waitingCount" class="rounded-full bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[10px] text-[var(--status-warning)]">{{ waitingCount }}</span>
-            </div>
-            <span class="text-[10px] text-[var(--text-muted)]">每个流程分别应答</span>
-        </div>
+    <!-- 009C1R2 件7c：默认收起=一行紧凑徽标；点击弹居中 Dialog 承载应答卡（原逻辑原样） -->
+    <section v-if="waitingCount || feed.error" class="border-t border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-2">
+        <button
+            type="button"
+            class="flex w-fit items-center gap-1.5 rounded px-1 py-0.5 text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+            @click="pendingDialogOpen = true"
+        >
+            <span class="i-lucide-inbox h-3.5 w-3.5 shrink-0 text-[var(--status-warning)]"></span>
+            <span>{{ waitingCount }} 个流程等应答</span>
+            <span class="rounded-full bg-[var(--status-warning-bg)] px-1.5 text-[9px] font-semibold text-[var(--status-warning)]">{{ waitingCount }}</span>
+        </button>
 
+        <Dialog
+            :model-value="pendingDialogOpen"
+            title="Workflow 待处理"
+            width="min(560px, calc(100vw - 16px))"
+            body-class="!gap-0 !overflow-y-auto !bg-[var(--bg-panel)]"
+            :show-footer="false"
+            @update:model-value="pendingDialogOpen = $event"
+        >
+            <div class="flex items-center justify-between gap-2 px-4 pt-3 text-[10px] text-[var(--text-muted)]">
+                <span>每个流程分别应答</span>
+                <span v-if="waitingCount" class="rounded-full bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[var(--status-warning)]">{{ waitingCount }}</span>
+            </div>
+            <div class="px-4 pb-4 pt-2">
         <div v-for="job in waitingJobs" :key="job.jobId" class="mt-3 border-t border-[var(--border-color)] pt-3 first:mt-2 first:border-t-0 first:pt-0">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex min-w-0 items-center gap-2">
@@ -301,5 +320,7 @@ onBeforeUnmount(() => {
             <div v-else class="mt-2 text-xs text-[var(--text-muted)]">正在读取 workflow 问题…</div>
         </div>
         <div v-if="feed.error" class="mt-2 text-xs text-[var(--status-danger)]">{{ feed.error }}</div>
+            </div>
+        </Dialog>
     </section>
 </template>

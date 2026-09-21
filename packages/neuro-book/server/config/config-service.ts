@@ -593,6 +593,7 @@ function listRawEnabledModels(global: StoredGlobalConfig): ConfigModelSettingsDt
                 modelId: model.id,
                 input: model.input ?? ["text"],
                 contextWindowTokens: model.contextWindowTokens,
+                thinkingLevelMap: model.thinkingLevelMap ?? null,
             });
         }
     }

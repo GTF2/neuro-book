@@ -43,6 +43,10 @@ const props = defineProps<{
     openReference?: (target: string) => void;
     costDisplayOptions: CostDisplayOptions;
     costExchangeRateSuffix?: string;
+    /** 009C1R2 件3：轮块模式控制位——身份行只在块头（suppress）、思考行随轮展开态、按钮组只在块尾。 */
+    suppressIdentity?: boolean;
+    showThinking?: boolean;
+    suppressActions?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -363,7 +367,7 @@ const endSwipe = (event: PointerEvent): void => {
     <!-- 用户 / Assistant 消息 -->
     <div v-else class="group flex min-w-0 w-full flex-col" :class="isUserMessage ? 'items-end' : 'items-start'">
         <!-- AI 身份锚定行：左侧引出箭头+弱化元信息；用户消息无头像无名字（009单C 总纲） -->
-        <div v-if="!isUserMessage" class="mb-1 ml-1 flex w-full items-center gap-2 text-[var(--text-muted)]">
+        <div v-if="!isUserMessage && !props.suppressIdentity" class="mb-1 ml-1 flex w-full items-center gap-2 text-[var(--text-muted)]">
             <span class="i-lucide-corner-down-right h-3 w-3 shrink-0 text-[var(--accent-text)]/70"></span>
             <span class="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--text-muted)]/80">
                 {{ messageAuthorLabel }}
@@ -383,7 +387,7 @@ const endSwipe = (event: PointerEvent): void => {
         </div>
 
         <!-- Assistant 思维链 -->
-        <div v-if="hasThinking" class="mb-1 w-full pl-4">
+        <div v-if="hasThinking && props.showThinking !== false" class="mb-1 w-full pl-4">
             <div class="px-0.5 py-0.5">
                 <button
                     class="flex w-full items-center gap-1.5 text-left text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]/90 transition-colors hover:text-[var(--text-main)]"
@@ -410,7 +414,7 @@ const endSwipe = (event: PointerEvent): void => {
         <div
             v-if="hasMessageContent"
             class="min-w-0 touch-pan-y"
-            :class="isUserMessage ? 'w-[65%]' : 'w-full'"
+            :class="isUserMessage ? 'w-fit max-w-[65%]' : 'w-full'"
             @pointerdown="startSwipe"
             @pointerup="endSwipe"
             @pointercancel="swipeStart = null"
@@ -499,6 +503,7 @@ const endSwipe = (event: PointerEvent): void => {
 
         <!-- 功能按钮排：hover 显示；用户右下角 / AI 左下角（009单C 总纲）；unknown 投递常显 -->
         <div
+            v-if="!props.suppressActions"
             class="mr-4 mt-0.5 flex items-center gap-1 text-[var(--text-muted)]"
             :class="[
                 isUserMessage ? 'self-end' : 'self-start',

@@ -83,10 +83,10 @@ const parsedResult = computed<unknown | null>(() => {
             class="flex w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
             @click="emit('toggle')"
         >
+            <span class="i-lucide-chevron-right h-3 w-3 shrink-0"></span>
             <span :class="[displayedStatusIcon, rowIconClass, isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
             <span class="shrink-0 font-mono">{{ props.toolCall.name }}</span>
             <span v-if="rowSummary" class="min-w-0 flex-1 truncate opacity-75">{{ rowSummary }}</span>
-            <span class="i-lucide-chevron-right h-3 w-3 shrink-0"></span>
         </button>
         <!-- 展开态头部：卡片头部（点击收起） -->
         <button v-else class="flex w-full items-center justify-between px-3 py-1.5 text-left transition-colors hover:bg-[var(--bg-hover)]" @click="emit('toggle')">

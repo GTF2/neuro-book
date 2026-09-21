@@ -43,6 +43,8 @@ const props = defineProps<{
     sessionThinkingLevel?: ThinkingLevelDto | null;
     /** Profile 解析后的实际生效档，档位件跟随 Profile 时标注 */
     sessionEffectiveThinkingLevel?: ThinkingLevelDto | null;
+    /** 当前选中模型档位映射（009C1R2 件4）：档位件按此过滤；空回退全量七档 */
+    sessionThinkingLevelMap?: Record<string, string | null> | null;
     agentMode: AgentMode;
     canContinueWithoutInput: boolean;
     contextUsageExactLabel: string;
@@ -433,47 +435,6 @@ function handleImageFileSelection(event: Event): void {
     input.value = "";
 }
 
-const IMPORT_TEXT_EXTENSIONS = new Set([".txt", ".md", ".markdown", ".csv", ".json"]);
-
-/** 「+」通用导入（009C1R 微调7）：图片挂附件，文本读入输入框，其余类型明示不支持。 */
-function selectImportFiles(): void {
-    if (!composerReadonly.value) {
-        imageFileInputRef.value?.click();
-    }
-}
-
-async function handleImportFileSelection(event: Event): Promise<void> {
-    const input = event.target as HTMLInputElement;
-    const files = Array.from(input.files ?? []);
-    input.value = "";
-    const notification = useNotification();
-    const imagesToQueue: File[] = [];
-    for (const file of files) {
-        if (file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp)$/iu.test(file.name)) {
-            imagesToQueue.push(file);
-            continue;
-        }
-        const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
-        if (file.type.startsWith("text/") || IMPORT_TEXT_EXTENSIONS.has(extension)) {
-            if (file.size > 512 * 1024) {
-                notification.warning(`${file.name}：文本文件超过 512 KB，未导入。`, {title: t("agent.composer.importTitle")});
-                continue;
-            }
-            try {
-                const text = await file.text();
-                emit("update:inputText", `${props.inputText}${props.inputText ? "\n\n" : ""}<!-- 导入自 ${file.name} -->\n${text}`);
-            } catch {
-                notification.warning(`${file.name}：读取失败，未导入。`, {title: t("agent.composer.importTitle")});
-            }
-            continue;
-        }
-        notification.warning(`${file.name}：当前版本支持图片与文本导入，PDF 等格式将在后续批次支持。`, {title: t("agent.composer.importTitle")});
-    }
-    if (imagesToQueue.length > 0) {
-        queueImageFiles({files: imagesToQueue});
-    }
-}
-
 function notifyImageFilesBlocked(): void {
     images.notifyBlocked();
 }
@@ -682,20 +643,22 @@ defineExpose({focus, insertAttachment});
 
             <div class="flex min-w-0 items-center gap-2 border-t border-[var(--border-color)]/50 px-2 py-2">
                 <div class="flex min-w-0 flex-1 items-center gap-2">
-                    <!-- 「+」通用导入（009C1R 微调7）：图片挂附件、文本读入输入框；📎 附件入口已收编进顶栏 ⓘ -->
+                    <!-- 图片按钮（009C1R2 件7a）：工具条最左第一位；「+」通用导入已删（PDF 归后续小单） -->
+                    <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp" @change="handleImageFileSelection" />
                     <button
                         type="button"
-                        class="flex shrink-0 items-center gap-1 rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40"
-                        :class="'text-[var(--text-muted)] hover:text-[var(--text-main)]'"
+                        class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="!canRegisterImages"
-                        :title="t('agent.composer.importTitle')"
-                        @click="selectImportFiles"
+                        title="选择图片（可多选，也可拖拽或粘贴）"
+                        @click="selectImageFiles"
                     >
-                        <span class="i-lucide-file-plus h-3.5 w-3.5"></span>
+                        <span class="i-lucide-image-plus h-3.5 w-3.5"></span>
                     </button>
-                    <!-- 缓存绿环（009C1R 必修C）：环=已缓存/上下文容量比例，hover 自制面板与底部统计条同源 -->
+                    <!-- 缓存绿环（009C1R2 件1）：环=上下文占用/模型窗口比例（同底部 gauge 源），hover 面板首行上下文占用 -->
                     <AgentCacheRing
-                        :cache-ratio="props.cacheRingRatio ?? null"
+                        :ring-ratio="props.cacheRingRatio ?? null"
+                        :context-usage-label="props.contextUsageCompactLabel"
+                        :context-percent-label="props.contextPercentCompactLabel"
                         :cached-label="props.cumulativeCacheCompactLabel"
                         :limit-label="props.cacheLimitLabel ?? '-'"
                         :input-label="props.cumulativeInputCompactLabel"
@@ -718,20 +681,11 @@ defineExpose({focus, insertAttachment});
                     <AgentThinkingLevelSelect
                         :model-value="props.sessionThinkingLevel ?? null"
                         :effective-level="props.sessionEffectiveThinkingLevel ?? null"
+                        :thinking-level-map="props.sessionThinkingLevelMap ?? null"
                         :disabled="composerReadonly || props.running"
                         @update:model-value="emit('update-session-thinking-level', $event)"
                     />
 
-                    <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp,text/plain,.md,.markdown,.txt,.csv,.json" @change="handleImportFileSelection" />
-                    <button
-                        type="button"
-                        class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"
-                        :disabled="!canRegisterImages"
-                        title="选择图片（可多选，也可拖拽或粘贴）"
-                        @click="selectImageFiles"
-                    >
-                        <span class="i-lucide-image-plus h-3.5 w-3.5"></span>
-                    </button>
 
                     <button
                         class="rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)]"
@@ -765,7 +719,7 @@ defineExpose({focus, insertAttachment});
         </div>
 
         <!-- token 与运行状态 -->
-        <div class="mt-1.5 flex flex-wrap items-center justify-center gap-1 text-[9px] text-[var(--text-muted)]">
+        <div class="flex flex-wrap items-center justify-end gap-1 px-2 pb-1.5 text-[9px] text-[var(--text-muted)]">
             <!-- gauge 芯片：点击打开上下文检查面板（Task 126） -->
             <button :title="props.contextUsageExactLabel" class="inline-flex max-w-full items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5 transition-colors hover:bg-[var(--bg-hover)]" @click="emit('open-context-inspector')">
                 <span class="i-lucide-gauge h-3 w-3 shrink-0"></span>

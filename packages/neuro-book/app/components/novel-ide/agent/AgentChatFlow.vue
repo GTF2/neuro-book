@@ -5,8 +5,7 @@ import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubbl
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
 import AgentSessionScaleBar, {type AgentSessionScaleSegment} from "nbook/app/components/novel-ide/agent/AgentSessionScaleBar.vue";
-import AgentScaleOutlinePanel, {type AgentScaleOutlineRow} from "nbook/app/components/novel-ide/agent/AgentScaleOutlinePanel.vue";
-import {CHAT_WORK_BLOCK_META, groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {groupChatNodesIntoBlocks, isFoldableToolNode, type ChatFlowItem, type ChatRoundItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -84,7 +83,7 @@ const emit = defineEmits<{
     (e: "attachment-registered", item: AgentSessionAttachmentItemDto): void;
     (e: "resend-unknown", message: AgentMessage): void;
     (e: "dismiss-unknown", message: AgentMessage): void;
-    /** 刻度条「查看全部」：宿主打开完整会话树（009单C批次1 §2.3 覆盖式三形态）。 */
+    /** 刻度条「查看全部」：宿主打开完整会话树。 */
     (e: "expand-session-tree"): void;
 }>();
 
@@ -105,15 +104,80 @@ const chatNodes = computed(() => {
     return toChatNodes(props.messages);
 });
 
-/** 主时间线渲染单元：连续同类工具节点聚成工作块（009单C批次1），其余为单节点。 */
+/** 主时间线渲染单元：相邻 user 消息之间的全部节点聚成轮次块（009C1R2 件3）。 */
 const flowItems = computed(() => groupChatNodesIntoBlocks(chatNodes.value));
 
+/** 轮展开态（件3b）：历史轮默认收起过程行，运行中/失败轮默认展开；用户 toggle 后固定。 */
+const roundExpandedOverrides = ref<Record<string, boolean>>({});
+const isRoundExpanded = (round: ChatRoundItem): boolean => {
+    const overridden = roundExpandedOverrides.value[round.id];
+    if (typeof overridden === "boolean") {
+        return overridden;
+    }
+    return round.isRunning || round.hasFailure;
+};
+const toggleRound = (round: ChatRoundItem): void => {
+    roundExpandedOverrides.value = {...roundExpandedOverrides.value, [round.id]: !isRoundExpanded(round)};
+};
+
+/** 注入收拢行展开态（件3g）。 */
+const injectionsOpenMap = ref<Record<string, boolean>>({});
+const isInjectionsOpen = (item: {id: string}): boolean => Boolean(injectionsOpenMap.value[item.id]);
+const toggleInjections = (item: {id: string}): void => {
+    injectionsOpenMap.value = {...injectionsOpenMap.value, [item.id]: !injectionsOpenMap.value[item.id]};
+};
+
+/** 判断文本节点是否包含正文。 */
+const hasTextBubbleContent = (node: ChatNode): boolean => {
+    if (node.kind !== "text") {
+        return false;
+    }
+    return Boolean(node.message.content.trim() || node.message.contentBlocks?.length || node.message.attachments?.length);
+};
+
+/** 轮收起态可见节点：正文与非折叠交互卡保留，折叠类工具行与思考行随展开态出现（件3b/h）。 */
+const visibleRoundNodes = (round: ChatRoundItem): ChatNode[] => {
+    if (isRoundExpanded(round)) {
+        return round.nodes;
+    }
+    return round.nodes.filter((node) => {
+        if (node.kind === "tool") {
+            return !isFoldableToolNode(node);
+        }
+        return true;
+    });
+};
+
+/** 悬浮按钮组只在轮尾最后一段正文后渲染一次（件3c）。 */
+const isActionsHost = (round: ChatRoundItem, node: ChatNode): boolean => {
+    const host = [...round.nodes].reverse().find((candidate) => candidate.kind === "text" && hasTextBubbleContent(candidate));
+    return host === node;
+};
+
 /**
- * 刻度条格序列（009单C批次1 §2.3）：flowItems 均分聚合封顶 50 格；
- * anchorIndex=格首 flowItem 序号（ScaleBar seek 直接发回该值定位）；
- * summary=格内首个文本消息的标题/首行截断。
+ * 刻度条格序列：flowItems 均分聚合封顶 50 格；anchorIndex=格首 flowItem 序号；
+ * summary=格内首个可读文本；weight=体量（轮内节点数），驱动刻度线长短分级（件2a）。
  */
 const SCALE_SEGMENT_LIMIT = 50;
+const flowItemSummary = (item: ChatFlowItem): string => {
+    if (item.kind === "round") {
+        const first = item.nodes.find((node) => node.kind === "text" && node.message.content.trim());
+        return first ? first.message.content.trim().replace(/\s+/gu, " ").slice(0, 40) : "";
+    }
+    if (item.kind === "injections") {
+        return t("agent.workBlock.injections", {count: item.nodes.length});
+    }
+    if (item.node.kind === "text") {
+        return item.node.message.content.trim().replace(/\s+/gu, " ").slice(0, 40);
+    }
+    return "";
+};
+const flowItemWeight = (item: ChatFlowItem): number => {
+    if (item.kind === "round" || item.kind === "injections") {
+        return item.nodes.length;
+    }
+    return 1;
+};
 const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
     const items = flowItems.value;
     if (items.length === 0 || props.mode !== "main") {
@@ -124,88 +188,27 @@ const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
     for (let start = 0; start < items.length; start += perSegment) {
         const anchorIndex = start;
         let summary = "";
-        for (let probe = start; probe < Math.min(start + perSegment, items.length) && !summary; probe += 1) {
+        let weight = 0;
+        for (let probe = start; probe < Math.min(start + perSegment, items.length); probe += 1) {
             const item = items[probe];
-            if (item?.kind === "node" && item.node.kind === "text") {
-                const raw = item.node.message.content.trim();
-                if (raw) {
-                    summary = raw.slice(0, 40);
-                }
+            if (!item) {
+                continue;
+            }
+            weight += flowItemWeight(item);
+            if (!summary) {
+                summary = flowItemSummary(item);
             }
         }
         if (!summary) {
             summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, items.length)});
         }
-        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex});
+        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex, weight});
     }
     return segments;
 });
 /** 可视区首个 flowItem 序号；滚动时节流更新供刻度条高亮。 */
 const visibleFlowIndex = ref(0);
 let visibleAnchorScanAt = 0;
-
-/** 中面板（009C1R 必修B 三形态之二）：点击刻度格打开该格覆盖范围的大纲行。 */
-const outlineGridIndex = ref<number | null>(null);
-
-/** 中面板行投影：该格覆盖的 flowItems → prompt/answer/work 三类摘要行。 */
-const outlineRows = computed<AgentScaleOutlineRow[]>(() => {
-    const gridIndex = outlineGridIndex.value;
-    if (gridIndex === null) {
-        return [];
-    }
-    const items = flowItems.value;
-    const perSegment = Math.max(1, Math.ceil(items.length / SCALE_SEGMENT_LIMIT));
-    const start = Math.min(gridIndex * perSegment, items.length);
-    const end = Math.min(start + perSegment, items.length);
-    const rows: AgentScaleOutlineRow[] = [];
-    for (let index = start; index < end; index += 1) {
-        const item = items[index];
-        if (!item) {
-            continue;
-        }
-        if (item.kind === "block") {
-            const meta = CHAT_WORK_BLOCK_META[item.blockKind];
-            rows.push({
-                id: `block-${item.id}`,
-                kind: "work",
-                label: `${t(meta.labelKey)} · ${t("agent.workBlock.stepCount", {count: item.count})}`,
-                flowIndex: index,
-            });
-            continue;
-        }
-        if (item.node.kind === "tool") {
-            rows.push({id: `tool-${item.node.toolCall.id}`, kind: "work", label: item.node.toolCall.name, flowIndex: index});
-            continue;
-        }
-        const message = item.node.message;
-        const raw = message.content.trim();
-        if (!raw) {
-            continue;
-        }
-        rows.push({
-            id: `text-${message.id}-${index}`,
-            kind: message.type === "user" ? "prompt" : "answer",
-            label: raw.replace(/\s+/gu, " ").slice(0, 60),
-            flowIndex: index,
-        });
-    }
-    return rows;
-});
-
-/** 刻度格点击 → 中面板打开并滚到该格行列表头。 */
-function openOutline(gridIndex: number): void {
-    outlineGridIndex.value = gridIndex;
-}
-
-function closeOutline(): void {
-    outlineGridIndex.value = null;
-}
-
-/** 中面板行点击 → 定位正文后自动收起。 */
-function seekFromOutline(flowIndex: number): void {
-    closeOutline();
-    scrollToFlowItem(flowIndex);
-}
 
 /** 轻量追踪最后一条消息的渲染尺寸变化，避免 deep watch 扫描整棵消息树。 */
 const messageScrollSignature = computed(() => {
@@ -229,49 +232,20 @@ const getNodeKey = (node: ReturnType<typeof toChatNodes>[0]) => {
     return `${node.message.id}-text`;
 };
 
-/** 渲染单元 key：块用首尾工具 id 稳定标识，节点沿用消息 id 组合。 */
+/** 渲染单元 key：轮/收拢行用首尾 id 稳定标识，节点沿用消息 id 组合。 */
 const getFlowItemKey = (item: ChatFlowItem) => {
-    if (item.kind === "block") {
-        return `block-${item.id}`;
+    if (item.kind === "round") {
+        return `round-${item.id}`;
+    }
+    if (item.kind === "injections") {
+        return `inj-${item.id}`;
     }
     return getNodeKey(item.node);
 };
 
-/** 判断文本节点是否包含正文。 */
-const hasTextBubbleContent = (node: ChatNode): boolean => {
-    if (node.kind !== "text") {
-        return false;
-    }
-    return Boolean(node.message.content.trim() || node.message.contentBlocks?.length || node.message.attachments?.length);
-};
-
-/**
- * 渲染单元间距：块视作 tool 类参与判断（块内首节点消息即块消息）；
- * 块与紧邻同消息文本（无正文）贴近，避免思维链后工作块悬空。
- */
+/** 渲染单元间距（件3e）：轮与轮/用户消息之间 16px，收拢行并入同档，轮内节点间距由轮体循环控制（8px）。 */
 const flowItemSpacingClass = (index: number): string => {
-    const items = flowItems.value;
-    if (index === 0) {
-        return "";
-    }
-    const previous = items[index - 1];
-    const current = items[index];
-    if (!previous || !current) {
-        return "mt-6";
-    }
-    if (previous.kind === "block" && current.kind === "block" && previous.nodes[0]?.message.id === current.nodes[0]?.message.id) {
-        return "mt-2";
-    }
-    if (previous.kind === "block" && current.kind === "node" && current.node.kind === "tool"
-        && previous.nodes[0]?.message.id === current.node.message.id) {
-        return "mt-2";
-    }
-    if (previous.kind === "node" && current.kind === "block"
-        && previous.node.kind === "text" && !hasTextBubbleContent(previous.node)
-        && previous.node.message.id === current.nodes[0]?.message.id) {
-        return "mt-1";
-    }
-    return "mt-6";
+    return index === 0 ? "" : "mt-4";
 };
 
 /** 是否接近底部。 */
@@ -364,7 +338,7 @@ function updateVisibleFlowIndex(): void {
     }
 }
 
-/** 刻度条 seek 定位：滚动到指定 flowItem（009单C批次1 §2.3 可点击定位）。 */
+/** 刻度条 seek 定位：滚动到指定 flowItem（点击格=直接定位，件2b 无中间层）。 */
 function scrollToFlowItem(flowIndex: number): void {
     const container = scrollRef.value;
     if (!container) {
@@ -474,7 +448,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
 </script>
 
 <template>
-    <!-- 通用对话流容器：消息列 + 右缘会话刻度条（009单C批次1 §2.3） -->
+    <!-- 通用对话流容器：消息列 + 右缘会话刻度条（点击格直接定位） -->
     <div class="relative flex min-h-0 flex-1">
         <div ref="scrollRef" class="flex min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
         <!-- 更早历史局部状态；失败不会遮断当前已加载对话。 -->
@@ -499,14 +473,9 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                 :class="flowItemSpacingClass(index)"
                 :data-flow-index="index"
             >
-                <AgentWorkBlock
-                    v-if="item.kind === 'block'"
-                    :block="item"
-                    :session-id="props.sessionId"
-                    @copy="emit('copy-tool', $event)"
-                />
+                <!-- user / system 单条消息 -->
                 <AgentTextBubble
-                    v-else-if="item.node.kind === 'text'"
+                    v-if="item.kind === 'node' && item.node.kind === 'text'"
                     :node="item.node"
                     :session-id="props.sessionId"
                     :editing-message-id="props.editingMessageId"
@@ -538,12 +507,94 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     @resend-unknown="emit('resend-unknown', $event)"
                     @dismiss-unknown="emit('dismiss-unknown', $event)"
                 />
-                <AgentToolBubble
-                    v-else-if="item.node.kind === 'tool'"
-                    :tool-call="item.node.toolCall"
-                    :session-id="props.sessionId"
-                    @copy="emit('copy-tool', $event)"
-                />
+                <!-- 注入收拢行（件3g）：连续 system 注入一行灰小字，点击展开明细 -->
+                <div v-else-if="item.kind === 'injections'" class="space-y-1">
+                    <button
+                        type="button"
+                        class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+                        @click="toggleInjections(item)"
+                    >
+                        <span :class="isInjectionsOpen(item) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                        <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
+                        <span>{{ t("agent.workBlock.injections", {count: item.nodes.length}) }}</span>
+                    </button>
+                    <template v-if="isInjectionsOpen(item)">
+                        <AgentTextBubble
+                            v-for="node in item.nodes"
+                            :key="node.message.id"
+                            :node="node"
+                            :session-id="props.sessionId"
+                            :action-disabled="props.messageActionDisabled"
+                            :run-action-disabled="props.runActionDisabled"
+                            :session-attachments="props.sessionAttachments"
+                            :can-register-attachments="props.canRegisterAttachments"
+                            :can-insert-attachments="props.canInsertAttachments"
+                            :project-root="props.projectRoot"
+                            :model-supports-images="props.modelSupportsImages"
+                            :attachment-insert-request="props.attachmentInsertRequest"
+                            :menu-refresh-key="props.menuRefreshKey"
+                            :resolve-menu="props.resolveEditorMenu"
+                            :on-skill-trigger-start="props.onEditorSkillTriggerStart"
+                            :open-reference="props.openReference"
+                            :cost-display-options="props.costDisplayOptions"
+                            :cost-exchange-rate-suffix="props.costExchangeRateSuffix"
+                            @copy="emit('copy', $event)"
+                            @attachment-registered="emit('attachment-registered', $event)"
+                        />
+                    </template>
+                </div>
+                <!-- 一轮工作块（件3）：块头=唯一身份标记；正文恒显，过程行/思考行随展开态 -->
+                <template v-else-if="item.kind === 'round'">
+                    <AgentWorkBlock :round="item" :expanded="isRoundExpanded(item)" @toggle="toggleRound(item)" />
+                    <div
+                        v-for="(node, nodeIndex) in visibleRoundNodes(item)"
+                        :key="getNodeKey(node)"
+                        :class="nodeIndex > 0 ? 'mt-2' : ''"
+                    >
+                        <AgentTextBubble
+                            v-if="node.kind === 'text'"
+                            :node="node"
+                            :session-id="props.sessionId"
+                            :editing-message-id="props.editingMessageId"
+                            :editing-content="props.editingMessageText"
+                            :action-disabled="props.messageActionDisabled"
+                            :run-action-disabled="props.runActionDisabled"
+                            :saving-edit="props.savingEdit"
+                            :session-attachments="props.sessionAttachments"
+                            :can-register-attachments="props.canRegisterAttachments"
+                            :can-insert-attachments="props.canInsertAttachments"
+                            :project-root="props.projectRoot"
+                            :model-supports-images="props.modelSupportsImages"
+                            :attachment-insert-request="props.attachmentInsertRequest"
+                            :branch-switcher="props.branchSwitcherStateByMessageId?.[node.message.id]"
+                            :menu-refresh-key="props.menuRefreshKey"
+                            :resolve-menu="props.resolveEditorMenu"
+                            :on-skill-trigger-start="props.onEditorSkillTriggerStart"
+                            :open-reference="props.openReference"
+                            :cost-display-options="props.costDisplayOptions"
+                            :cost-exchange-rate-suffix="props.costExchangeRateSuffix"
+                            suppress-identity
+                            :show-thinking="isRoundExpanded(item)"
+                            :suppress-actions="!isActionsHost(item, node)"
+                            @copy="emit('copy', $event)"
+                            @start-edit="emit('start-edit', $event)"
+                            @cancel-edit="emit('cancel-edit', $event)"
+                            @save-edit="emit('save-edit', $event)"
+                            @retry="emit('retry', $event)"
+                            @branch-from-here="emit('branch-from-here', $event)"
+                            @cycle-branch="emit('cycle-branch', $event)"
+                            @attachment-registered="emit('attachment-registered', $event)"
+                            @resend-unknown="emit('resend-unknown', $event)"
+                            @dismiss-unknown="emit('dismiss-unknown', $event)"
+                        />
+                        <AgentToolBubble
+                            v-else
+                            :tool-call="node.toolCall"
+                            :session-id="props.sessionId"
+                            @copy="emit('copy-tool', $event)"
+                        />
+                    </div>
+                </template>
             </div>
         </template>
 
@@ -578,24 +629,14 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
             </template>
         </div>
         </div>
-        <!-- 会话刻度条（009C1R 必修B）：滚动容器外的固定右缘列，不随消息滚动；
-             hover=预览卡、点击格=中面板、底部「查看全部」=完整树，三形态递进 -->
+        <!-- 会话刻度条（009C1R2 件2）：滚动容器外右缘固定；点格直接定位、hover 预览、底部开完整树 -->
         <AgentSessionScaleBar
             v-if="scaleSegments.length > 0"
             class="h-full"
             :segments="scaleSegments"
             :active-index="visibleFlowIndex"
             @seek="scrollToFlowItem"
-            @open-outline="openOutline"
             @expand="emit('expand-session-tree')"
-        />
-        <!-- 中面板（三形态之二）：右缘滑入，列该格覆盖的 prompt/answer/work 摘要行 -->
-        <AgentScaleOutlinePanel
-            v-if="outlineGridIndex !== null && outlineRows.length > 0"
-            :rows="outlineRows"
-            @seek="seekFromOutline"
-            @view-all="closeOutline(); emit('expand-session-tree')"
-            @close="closeOutline"
         />
     </div>
 </template>

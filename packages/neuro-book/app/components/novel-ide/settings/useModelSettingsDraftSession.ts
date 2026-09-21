@@ -291,7 +291,7 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
 
     const defaultModelOptions = computed<EnabledModelOptionDto[]>(() => draft.value.providers.flatMap((provider) => provider.models
         .filter((model) => model.id.trim() && validationState.value.runnableModelKeys.has(`${provider.id.trim()}/${model.id.trim()}`))
-        .map((model) => ({key: `${provider.id}/${model.id.trim()}`, label: `${provider.name} / ${model.name || model.id}`, providerId: provider.id, modelId: model.id.trim(), input: parseModelInput(model.input) ?? ["text"], contextWindowTokens: parseDraftInteger(model.contextWindowTokens)})))
+        .map((model) => ({key: `${provider.id}/${model.id.trim()}`, label: `${provider.name} / ${model.name || model.id}`, providerId: provider.id, modelId: model.id.trim(), input: parseModelInput(model.input) ?? ["text"], contextWindowTokens: parseDraftInteger(model.contextWindowTokens), thinkingLevelMap: null})))
         .sort((left, right) => left.label.localeCompare(right.label)));
 
     const enabledModelGroups = computed(() => {

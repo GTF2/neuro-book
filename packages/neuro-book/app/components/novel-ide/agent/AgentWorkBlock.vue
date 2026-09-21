@@ -1,90 +1,79 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
-import type {AgentToolCall} from "nbook/app/components/novel-ide/agent/agent-message";
-import {
-    CHAT_WORK_BLOCK_META,
-    isFailedToolCall,
-    type ChatFlowItem,
-} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {CHAT_WORK_BLOCK_META, WORK_DETAIL_LIMIT, type ChatRoundItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 
 /**
- * 工作块：连续同类工具调用收拢成一行过程行（灰色小字+摘要），点击展开细节。
- * 009单C批次1「工作块折叠人化」最终形态（行为规格源自旧库 44eeb913 按新库重写）。
+ * 轮块头（009C1R2 件3b）：「已工作 X 分 X 秒 ˅」灰小字行——整轮唯一身份标记，
+ * 替代逐段 ASSISTANT 徽标；箭头行首（件3f 统一约定），收起态拼工作摘要（件6 计数形态）。
+ * 行为图纸=旧库 44eeb913 按新库重写；轮体渲染归 AgentChatFlow。
  */
 const props = defineProps<{
-    block: Extract<ChatFlowItem, {kind: "block"}>;
-    sessionId?: number | null;
-    actionDisabled?: boolean;
-    runActionDisabled?: boolean;
-    /** 上层指定的强制展开（例如全对话最后一个失败块）。 */
-    autoExpand?: boolean;
+    round: ChatRoundItem;
+    expanded: boolean;
 }>();
 
 const emit = defineEmits<{
-    (e: "copy", toolCall: AgentToolCall): void;
+    (e: "toggle"): void;
 }>();
 
-const { t } = useI18n();
+const {t} = useI18n();
 
-const meta = computed(() => CHAT_WORK_BLOCK_META[props.block.blockKind]);
-const fileCount = computed(() => props.block.filePaths.length);
-const failedCount = computed(() => props.block.nodes.filter((node) => isFailedToolCall(node.toolCall)).length);
+const DURATION_MINUTE_MS = 60_000;
 
-/** 摘要完全由工具元数据拼装：不调用 AI，因此零延迟、零成本、不会编造。 */
-const summary = computed(() => {
-    const parts: string[] = [];
-    parts.push(fileCount.value > 0
-        ? t("agent.workBlock.fileCount", {count: fileCount.value})
-        : t("agent.workBlock.stepCount", {count: props.block.count}));
-    if (failedCount.value > 0) {
-        parts.push(t("agent.workBlock.failedCount", {count: failedCount.value}));
+/** 块头时长：秒级轮「X 秒」，分钟级「X 分 X 秒」。 */
+const durationLabel = computed(() => {
+    if (props.round.isRunning) {
+        const seconds = props.round.durationMs !== null ? Math.max(1, Math.round(props.round.durationMs / 1000)) : 0;
+        return t("agent.workBlock.working", {seconds});
+    }
+    if (props.round.durationMs === null) {
+        return t("agent.workBlock.worked", {duration: ""}).trim();
+    }
+    const totalSeconds = Math.max(1, Math.round(props.round.durationMs / 1000));
+    if (totalSeconds < 60) {
+        return t("agent.workBlock.workedSeconds", {seconds: totalSeconds});
+    }
+    const minutes = Math.floor(totalSeconds / 60);
+    return t("agent.workBlock.worked", {duration: t("agent.workBlock.minutesSeconds", {minutes, seconds: totalSeconds % 60})});
+});
+
+/** 收起态工作摘要：「查阅 3 · 改稿 1 · 2 个文件」类别人话+计数（≤3 类）；细分与目标名入 title。 */
+const summaryLabel = computed(() => {
+    if (props.round.toolCount === 0) {
+        return "";
+    }
+    const parts = props.round.workByKind.slice(0, WORK_DETAIL_LIMIT).map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`);
+    const overflow = props.round.workByKind.length - parts.length;
+    if (overflow > 0) {
+        parts.push(t("agent.workBlock.moreKinds", {count: overflow}));
+    }
+    if (props.round.fileCount > 0) {
+        parts.push(t("agent.workBlock.fileCount", {count: props.round.fileCount}));
     }
     return parts.join(" · ");
 });
 
-/**
- * 默认收拢，但三种情况例外，否则会把用户必须看到的东西藏起来：
- * 块内有失败、块还在跑、上层指定展开。
- */
-const startsExpanded = computed(() => props.block.hasFailure || props.block.isRunning || Boolean(props.autoExpand));
-const expanded = ref(startsExpanded.value);
-let userToggled = false;
-
-watch(startsExpanded, (value) => {
-    // 用户手动收起后不再自动干预；只在「需要展开」这一刻跃迁上补展开。
-    if (value && !userToggled) {
-        expanded.value = true;
-    }
+/** 悬停明细：按工具细分计数（≤3 项+等 N 次）与首个目标名。 */
+const summaryTitle = computed(() => {
+    const details = props.round.toolCounts.slice(0, WORK_DETAIL_LIMIT)
+        .map(({toolName, count}) => `${t(`agent.workBlock.tool.${toolName}`)} ×${count}`)
+        .join("，");
+    const overflow = props.round.toolCount - Math.min(props.round.toolCounts.length, WORK_DETAIL_LIMIT);
+    const tail = overflow > 0 ? `，${t("agent.workBlock.moreCalls", {count: props.round.toolCount})}` : "";
+    const target = props.round.firstTarget ? `\n${t("agent.workBlock.target")}: ${props.round.firstTarget}` : "";
+    return details + tail + target;
 });
-
-const toggle = (): void => {
-    userToggled = true;
-    expanded.value = !expanded.value;
-};
 </script>
 
 <template>
-    <div class="w-full">
-        <!-- 过程行：灰色小字（图标+一行摘要），可点击展开 -->
-        <button
-            type="button"
-            class="flex w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
-            @click="toggle"
-        >
-            <span :class="[meta.icon, props.block.isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
-            <span class="shrink-0">{{ t(meta.labelKey) }}</span>
-            <span class="min-w-0 flex-1 truncate text-[var(--text-muted)]/75">{{ summary }}</span>
-            <span :class="expanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
-        </button>
-        <div v-if="expanded" class="mt-1 space-y-1 pl-4">
-            <AgentToolBubble
-                v-for="node in props.block.nodes"
-                :key="node.toolCall.id"
-                :tool-call="node.toolCall"
-                :session-id="props.sessionId"
-                @copy="emit('copy', $event)"
-            />
-        </div>
-    </div>
+    <button
+        type="button"
+        class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+        :title="props.round.toolCount > 0 ? summaryTitle : undefined"
+        @click="emit('toggle')"
+    >
+        <span :class="props.expanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+        <span class="shrink-0 font-medium">{{ durationLabel }}</span>
+        <span v-if="props.round.modelLabel" class="shrink-0 rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1 text-[9px] text-[var(--text-muted)]/80">{{ props.round.modelLabel }}</span>
+        <span v-if="!props.expanded && summaryLabel" class="min-w-0 truncate text-[var(--text-muted)]/75">{{ summaryLabel }}</span>
+    </button>
 </template>

@@ -43,6 +43,12 @@ const selectOptions = computed<SelectOption[]>(() => {
     }, ...options];
 });
 
+/** 009C1R2 件4c：触发器只显模型名（modelId）；下拉列表保留完整「厂商/模型」。 */
+const triggerDisplayLabel = computed(() => {
+    const model = props.models.find((item) => item.key === props.modelValue);
+    return model?.modelId ?? "";
+});
+
 const selectedValue = computed(() => {
     if (props.allowDefault && !props.modelValue) {
         return DEFAULT_OPTION_VALUE;
@@ -69,7 +75,9 @@ function handleUpdate(value: string): void {
     <div :class="props.disabled ? 'pointer-events-none opacity-60' : ''">
         <FormSelect
             :model-value="selectedValue"
+            :display-label="triggerDisplayLabel"
             :options="selectOptions"
+            bare
             :placeholder="props.placeholder || t('settings.panels.modelSelect.placeholder')"
             :dropdown-direction="props.dropdownDirection"
             @update:model-value="handleUpdate"

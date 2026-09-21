@@ -129,6 +129,7 @@ const modelOptions = computed<EnabledModelOptionDto[]>(() => {
         modelId: modelId || "invalid",
         input: ["text"],
         contextWindowTokens: null,
+        thinkingLevelMap: null,
     }, ...props.enabledModels];
 });
 

@@ -101,6 +101,8 @@ export const EnabledModelOptionDtoSchema = z.object({
     modelId: ModelIdSchema,
     input: z.array(ModelInputKindSchema).min(1).default(["text"]),
     contextWindowTokens: ContextWindowTokensSchema,
+    /** 009C1R2 件4：档位映射透传，前端按当前模型过滤思考档选项；null=回退全量七档。 */
+    thinkingLevelMap: PiThinkingLevelMapSchema,
 });
 
 /**

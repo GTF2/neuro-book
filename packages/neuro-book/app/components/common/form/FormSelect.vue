@@ -22,12 +22,18 @@ const props = withDefaults(defineProps<{
     dropdownDirection?: FloatingPanelDirection;
     disabled?: boolean;
     hideCheckmark?: boolean;
+    /** 触发器显示覆盖文本（如只显 modelId）；不传=选中项 label。下拉列表不受影响。 */
+    displayLabel?: string;
+    /** 009C1R2 件7b：轻量芯片形态——无边框纯文字+下拉箭头，hover 显底色。 */
+    bare?: boolean;
 }>(), {
     placeholder: "",
     size: "default",
     dropdownDirection: "auto",
     disabled: false,
     hideCheckmark: false,
+    displayLabel: "",
+    bare: false,
 });
 
 const emit = defineEmits<{
@@ -85,8 +91,8 @@ const optionSizeClass = computed(() => props.size === "sm"
 <template>
     <div ref="rootRef" class="relative">
         <div
-            class="flex w-full items-center justify-between rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] text-[var(--text-main)] outline-none transition-colors select-none"
-            :class="[controlSizeClass, open ? '!border-[var(--accent-main)] ring-1 ring-[var(--accent-main)]/30' : '', props.disabled ? 'cursor-default opacity-80' : 'cursor-pointer hover:bg-[var(--bg-hover)]']"
+            class="flex w-full items-center justify-between rounded-md text-[var(--text-main)] outline-none transition-colors select-none"
+            :class="[controlSizeClass, props.bare ? '' : 'border border-[var(--border-color)] bg-[var(--bg-input)]', open ? (props.bare ? 'bg-[var(--bg-hover)]' : '!border-[var(--accent-main)] ring-1 ring-[var(--accent-main)]/30') : '', props.disabled ? 'cursor-default opacity-80' : 'cursor-pointer hover:bg-[var(--bg-hover)]']"
             :tabindex="props.disabled ? -1 : 0"
             :aria-disabled="props.disabled"
             @focus="emit('focus', $event)"
@@ -97,7 +103,7 @@ const optionSizeClass = computed(() => props.size === "sm"
                     <template v-if="opt.value === modelValue">
                         <span v-if="opt.indicatorClass" class="h-1.5 w-1.5 rounded-full shrink-0 shadow-sm" :class="opt.indicatorClass"></span>
                         <span v-else-if="opt.iconClass" class="shrink-0 h-3 w-3 text-[var(--text-muted)]" :class="opt.iconClass"></span>
-                        <span class="truncate">{{ opt.label }}</span>
+                        <span class="truncate">{{ props.displayLabel || opt.label }}</span>
                     </template>
                 </template>
                 <span v-if="!options.some(o => o.value === modelValue)" class="text-[var(--text-muted)] opacity-80">{{ placeholder || t("common.selectOption") }}</span>

@@ -6,36 +6,28 @@ import zhCN from "nbook/app/i18n/locales/zh-CN";
 
 const componentPath = fileURLToPath(new URL("./AgentThinkingLevelSelect.vue", import.meta.url));
 
-describe("AgentThinkingLevelSelect 契约（009C1R 微调4/5：八项全量+读真实当前档）", () => {
-    it("props 读会话真实档与生效档，emit 还原 DTO|null 即选即生效", async () => {
+describe("AgentThinkingLevelSelect 契约（009C1R2 件4：按模型过滤+删跟随Profile）", () => {
+    it("props=请求档/生效档/thinkingLevelMap；选项按 map 过滤、空回退全量七档", async () => {
         const source = await readFile(componentPath, "utf-8");
         expect(source).toContain("modelValue: ThinkingLevelDto | null");
         expect(source).toContain("effectiveLevel?: ThinkingLevelDto | null");
-        expect(source).toContain('(e: "update:modelValue", value: ThinkingLevelDto | null)');
-        expect(source).toContain('from "nbook/shared/dto/app-settings.dto"');
+        expect(source).toContain("thinkingLevelMap?: Record<string, string | null> | null");
+        expect(source).toContain("supportedLevels");
+        expect(source).toContain('props.modelValue ?? props.effectiveLevel');
     });
 
-    it("全量八项=跟随Profile+七档 DTO，复用 agent.composer 既有档位键", async () => {
+    it("无「跟随Profile」选项；档位键复用 agent.composer 既有七档", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("agent.composer.followProfile");
+        expect(source).not.toContain('""');
+        expect(source).not.toContain("followProfile");
         expect(source).toContain("agent.composer.off");
-        expect(source).toContain("agent.composer.minimal");
-        expect(source).toContain("agent.composer.low");
-        expect(source).toContain("agent.composer.medium");
-        expect(source).toContain("agent.composer.high");
-        expect(source).toContain("agent.composer.xhigh");
         expect(source).toContain("agent.composer.max");
-        expect(source).toContain("FormSelect");
-
-        expect(zhCN.agent.composer.followProfile).toBeTruthy();
         expect(zhCN.agent.composer.off).toBeTruthy();
-        expect(zhCN.agent.composer.minimal).toBeTruthy();
-        expect(zhCN.agent.composer.low).toBe("低");
-        expect(zhCN.agent.composer.medium).toBeTruthy();
-        expect(zhCN.agent.composer.high).toBeTruthy();
-        expect(zhCN.agent.composer.xhigh).toBeTruthy();
-        expect(zhCN.agent.composer.max).toBeTruthy();
-        expect(enUS.agent.composer.followProfile).toBeTruthy();
         expect(enUS.agent.composer.max).toBeTruthy();
+    });
+
+    it("bare 芯片形态（件7b 去描边）", async () => {
+        const source = await readFile(componentPath, "utf-8");
+        expect(source).toContain("bare");
     });
 });

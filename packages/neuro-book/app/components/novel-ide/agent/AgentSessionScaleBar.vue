@@ -4,21 +4,21 @@ export type AgentSessionScaleSegment = {
     id: string;
     /** 该格覆盖范围的摘要文本，hover 预览卡显示 */
     summary: string;
-    /** 该格锚定的消息序号，seek 发此值供挂载侧直接定位 */
+    /** 该格锚定的 flowItem 序号，seek 直接定位 */
     anchorIndex: number;
+    /** 体量权重（轮内节点数），决定刻度线长短分级 */
+    weight?: number;
 };
 
 const props = defineProps<{
     /** 挂载侧聚合后的格序列（规格封顶 50，聚合归挂载侧，本件只渲染收到的 segments） */
     segments: AgentSessionScaleSegment[];
-    /** 当前锚点消息序号；命中「anchorIndex ≤ activeIndex 的最后一格」高亮 */
+    /** 当前锚点序号；命中「anchorIndex ≤ activeIndex 的最后一格」高亮 */
     activeIndex: number;
 }>();
 
 const emit = defineEmits<{
     (e: "seek", index: number): void;
-    /** 单击格：打开该格的中面板（009C1R 必修B 三形态之二）。 */
-    (e: "open-outline", gridIndex: number): void;
     (e: "expand"): void;
 }>();
 
@@ -26,16 +26,11 @@ const {t} = useI18n();
 
 const trackRef = ref<HTMLElement | null>(null);
 const hoverIndex = ref<number | null>(null);
-/** hover 预览卡跟格移动（009C1R 顺手修遗留：不再固定在顶部）。 */
+/** hover 预览卡跟格移动。 */
 const hoverTopPx = ref(0);
 // 拖动时的 seek 节流间隔；点击路径不节流
 const SEEK_THROTTLE_MS = 80;
 let lastSeekAt = 0;
-// 区分点击与拖动：按下后位移超过阈值算拖动，松开不再当点击弹面板
-const DRAG_THRESHOLD_PX = 4;
-let dragStartY = 0;
-let dragMoved = false;
-let suppressClickAt = 0;
 
 /** 当前应高亮的格下标：anchorIndex ≤ activeIndex 的最后一格；都大于则无高亮。 */
 const activeGridIndex = computed(() => {
@@ -47,6 +42,24 @@ const activeGridIndex = computed(() => {
     }
     return matched;
 });
+
+/** 体量分级（009C1R2 件2a）：线长三档，与底色融合无底轨。 */
+const segmentWidthClass = (index: number): string => {
+    const weight = props.segments[index]?.weight ?? 1;
+    if (index === activeGridIndex.value) {
+        return "w-full bg-[var(--text-main)]";
+    }
+    if (index === hoverIndex.value) {
+        return "w-2/3 bg-[var(--text-secondary)]";
+    }
+    if (weight >= 6) {
+        return "w-full bg-[var(--border-strong)]/70";
+    }
+    if (weight >= 3) {
+        return "w-2/3 bg-[var(--border-strong)]/70";
+    }
+    return "w-1/2 bg-[var(--border-strong)]/70";
+};
 
 /** 指针纵坐标换算格下标；条内均分，越界收敛到首末格。 */
 function gridIndexFromPointer(event: PointerEvent): number | null {
@@ -69,6 +82,10 @@ function seekThrottled(gridIndex: number): void {
         return;
     }
     lastSeekAt = now;
+    seekIndex(gridIndex);
+}
+
+function seekIndex(gridIndex: number): void {
     const segment = props.segments[gridIndex];
     if (segment) {
         emit("seek", segment.anchorIndex);
@@ -76,22 +93,16 @@ function seekThrottled(gridIndex: number): void {
 }
 
 function handleTrackPointerDown(event: PointerEvent): void {
-    if (gridIndexFromPointer(event) === null) {
+    const gridIndex = gridIndexFromPointer(event);
+    if (gridIndex === null) {
         return;
     }
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-    dragStartY = event.clientY;
-    dragMoved = false;
+    seekIndex(gridIndex);
 }
 
 function handleTrackPointerMove(event: PointerEvent): void {
     if (!(event.buttons & 1)) {
-        return;
-    }
-    if (!dragMoved && Math.abs(event.clientY - dragStartY) > DRAG_THRESHOLD_PX) {
-        dragMoved = true;
-    }
-    if (!dragMoved) {
         return;
     }
     const gridIndex = gridIndexFromPointer(event);
@@ -100,27 +111,11 @@ function handleTrackPointerMove(event: PointerEvent): void {
     }
 }
 
-function handleTrackPointerUp(event: PointerEvent): void {
-    if (dragMoved) {
-        // 拖动结束后的 pointerup 会派发 click；标记时间窗抑制，避免松手误开面板。
-        suppressClickAt = Date.now();
-        return;
-    }
-    const gridIndex = gridIndexFromPointer(event);
-    if (gridIndex !== null) {
-        emit("open-outline", gridIndex);
-    }
-}
-
 function handleSegmentClick(gridIndex: number): void {
-    // pointerup 已处理点击；这里只兜底键盘 Enter 与拖动后的误触抑制。
-    if (Date.now() - suppressClickAt < 200) {
-        return;
-    }
-    emit("open-outline", gridIndex);
+    seekIndex(gridIndex);
 }
 
-/** hover 预览卡纵向跟手：以格中心在条内的位置对齐卡片中点，越界收敛。 */
+/** hover 预览卡纵向跟手：以格中心对齐，越界收敛。 */
 function handleSegmentHover(event: PointerEvent, index: number): void {
     hoverIndex.value = index;
     const track = trackRef.value;
@@ -136,26 +131,27 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
 </script>
 
 <template>
-    <!-- 会话树内嵌刻度条（009C1R 必修B）：右缘 24px 固定列；hover 预览、单击中面板、拖动按比例滚 -->
-    <div class="relative flex h-full w-6 shrink-0 flex-col items-stretch gap-px py-1">
+    <!-- 会话刻度条（009C1R2 件2 照旧库 0f92cc9a 重做）：右缘 24px；2px 细横线长短分级、无底轨无边框；
+         点击格=直接 seek 滚动定位（无中间层）；hover=小预览框；底部入口开完整会话树 -->
+    <div class="relative flex h-full w-6 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
-            class="flex min-h-0 flex-1 touch-none flex-col gap-px"
+            class="flex min-h-0 flex-1 touch-none flex-col"
             @pointerdown="handleTrackPointerDown"
             @pointermove="handleTrackPointerMove"
-            @pointerup="handleTrackPointerUp"
         >
             <button
                 v-for="(segment, index) in props.segments"
                 :key="segment.id"
                 type="button"
-                class="min-h-[4px] flex-1 rounded-sm transition-colors"
-                :class="index === activeGridIndex ? 'bg-[var(--accent-main)]' : index === hoverIndex ? 'bg-[var(--text-muted)]' : 'bg-[var(--border-color)] hover:bg-[var(--text-muted)]'"
+                class="flex min-h-[10px] flex-1 items-center justify-center"
                 :aria-label="segment.summary"
                 @pointerenter="(event) => handleSegmentHover(event, index)"
                 @pointerleave="hoverIndex = null"
                 @click="handleSegmentClick(index)"
-            ></button>
+            >
+                <span class="h-[2px] rounded-full transition-all duration-150" :class="segmentWidthClass(index)"></span>
+            </button>
         </div>
         <button
             type="button"

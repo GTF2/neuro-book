@@ -770,6 +770,14 @@ const sessionModelSelectionValue = computed(() => sessionModelDraft.value.modelK
 /** 009C1R 微调4：外置档位件读会话真实当前档（requested；null=跟随 Profile）与解析后生效档。 */
 const sessionThinkingLevel = computed<ThinkingLevelDto | null>(() => activeRecovery.value?.thinkingLevel ?? null);
 const sessionEffectiveThinkingLevel = computed<ThinkingLevelDto | null>(() => activeRecovery.value?.effectiveThinkingLevel ?? null);
+/** 009C1R2 件4：当前选中模型的档位映射，档位件按此过滤选项；空回退全量七档。 */
+const sessionThinkingLevelMap = computed<Record<string, string | null> | null>(() => {
+    const key = sessionModelDraft.value.modelKey;
+    if (!key) {
+        return null;
+    }
+    return selectableModels.value.find((model) => model.key === key)?.thinkingLevelMap ?? null;
+});
 const drawerIconClass = computed(() => "i-lucide-sparkles text-[var(--accent-text)]");
 
 const sessionTreeState = computed(() => deriveAgentTreeState(activeRecovery.value?.tree ?? []));
@@ -804,14 +812,14 @@ const cumulativeCacheHitRateLabel = computed(() => {
     const usage = activeSummary.value?.usage;
     return usage ? formatCacheHitRate(usage) : "";
 });
-/** 009C1R 必修C：绿环=已缓存 token 占上下文总容量的比例；缺数据为 null 整环隐藏。 */
+/** 009C1R2 件1：绿环比例=当前上下文估算 tokens ÷ 模型最大上下文窗口（与底部 context gauge 同源同值；不再用累计 cacheRead）。 */
 const cacheRingRatio = computed<number | null>(() => {
-    const cacheRead = activeSummary.value?.usage?.cacheRead;
-    const limit = activeRecovery.value?.contextUsage?.limitTokens;
-    if (typeof cacheRead !== "number" || !Number.isFinite(cacheRead) || typeof limit !== "number" || !Number.isFinite(limit) || limit <= 0) {
+    const usage = activeRecovery.value?.contextUsage;
+    if (!usage || typeof usage.usedTokens !== "number" || !Number.isFinite(usage.usedTokens)
+        || typeof usage.limitTokens !== "number" || !Number.isFinite(usage.limitTokens) || usage.limitTokens <= 0) {
         return null;
     }
-    return cacheRead / limit;
+    return usage.usedTokens / usage.limitTokens;
 });
 const cacheLimitLabel = computed(() => {
     const limit = activeRecovery.value?.contextUsage?.limitTokens;
@@ -4407,6 +4415,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 :session-model-selection-value="sessionModelSelectionValue"
                 :session-thinking-level="sessionThinkingLevel"
                 :session-effective-thinking-level="sessionEffectiveThinkingLevel"
+                :session-thinking-level-map="sessionThinkingLevelMap"
                 :selectable-models="selectableModels"
                 :agent-mode="agentMode"
                 :can-continue-without-input="canContinueWithoutInput"
