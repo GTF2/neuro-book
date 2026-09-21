@@ -522,5 +522,6 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
             @seek="scrollToFlowItem"
             @expand="emit('expand-session-tree')"
         />
+        </div>
     </div>
 </template>
