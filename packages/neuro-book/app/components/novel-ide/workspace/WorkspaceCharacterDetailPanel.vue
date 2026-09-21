@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import YAML from "yaml";
 import {storeToRefs} from "pinia";
 import Dialog from "nbook/app/components/common/Dialog.vue";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import type {CharacterExt, CharacterMeta, CharacterProfile, CharacterStory} from "nbook/shared/dto/character.dto";
+import {
+    parseMarkdownDocument,
+    renderMarkdownDocument,
+} from "nbook/app/components/novel-ide/workspace/workspace-frontmatter-profile";
 import {
     getWorkspaceLorebookStatusIndicatorClass,
 } from "nbook/app/components/novel-ide/workspace/workspace-entry-meta";
@@ -39,8 +42,6 @@ type CharacterDraft = {
     ext: Record<string, unknown>;
     character: CharacterExt;
 };
-
-const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 
 const props = defineProps<{
     node: WorkspaceFileNode | null;
@@ -81,7 +82,16 @@ const statusOptions = computed<SelectOption[]>(() => [
     {value: "active", label: t("ide.workspace.common.statusActive"), description: t("ide.workspace.common.statusActiveDescription"), indicatorClass: getWorkspaceLorebookStatusIndicatorClass("active")},
     {value: "archived", label: t("ide.workspace.common.statusArchived"), description: t("ide.workspace.common.statusArchivedDescription"), indicatorClass: getWorkspaceLorebookStatusIndicatorClass("archived")},
 ]);
-const isDirty = computed(() => editForm.value ? renderDraft(editForm.value) !== selectedFileContent.value : false);
+// dirty 用对称管道判定：磁盘内容也走 parse→createDraft→renderDraft 再比较，
+// CRLF、YAML 键序、围栏后空行数等格式差异被同一管道吸收，只剩真语义差异（026 同族修法）。
+const isDirty = computed(() => {
+    if (!editForm.value || !props.node) {
+        return false;
+    }
+    const stored = parseMarkdownDocument(selectedFileContent.value);
+    const storedDraft = createDraft(props.node, stored.frontmatter, stored.body);
+    return renderDraft(editForm.value) !== renderDraft(storedDraft);
+});
 const relatedIssues = computed(() => {
     if (!props.node) {
         return [];
@@ -204,32 +214,6 @@ function updateDialogVisible(visible: boolean): void {
     dialogOpen.value = visible;
 }
 
-function parseMarkdownDocument(content: string): {
-    frontmatter: Record<string, unknown>;
-    body: string;
-    error: string | null;
-} {
-    const match = content.match(FRONTMATTER_PATTERN);
-    if (!match) {
-        return {frontmatter: {}, body: content, error: null};
-    }
-
-    try {
-        const parsed = YAML.parse(match[1] ?? "", {logLevel: "silent"}) as unknown;
-        return {
-            frontmatter: isPlainObject(parsed) ? parsed : {},
-            body: content.slice(match[0].length),
-            error: isPlainObject(parsed) || parsed === null ? null : t("ide.workspace.common.frontmatterObjectError"),
-        };
-    } catch (error) {
-        return {
-            frontmatter: {},
-            body: content.slice(match[0].length),
-            error: error instanceof Error ? error.message : t("ide.workspace.common.frontmatterParseFailed"),
-        };
-    }
-}
-
 function createDraft(node: WorkspaceFileNode, frontmatter: Record<string, unknown>, body: string): CharacterDraft {
     const ext = readPlainObject(frontmatter.ext);
     const legacyCharacterExt = readPlainObject(ext.character);
@@ -282,7 +266,7 @@ function renderDraft(draft: CharacterDraft): string {
         character: draft.character,
         ...(Object.keys(draft.ext).length > 0 ? {ext: draft.ext} : {}),
     };
-    return `---\n${YAML.stringify(frontmatter).trimEnd()}\n---\n\n${draft.content}`;
+    return renderMarkdownDocument(frontmatter, draft.content);
 }
 
 /**
@@ -407,7 +391,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
                     <div class="truncate text-sm font-semibold text-[var(--text-main)]">{{ editForm?.title || t("ide.workspace.character.panelTitle") }}</div>
                     <div class="truncate text-[10px] text-[var(--text-muted)]">{{ editForm?.path }}</div>
                 </div>
-                <span v-if="isDirty" class="h-2 w-2 shrink-0 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.dirty')"></span>
             </div>
         </template>
 
@@ -457,7 +440,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
                         <div class="flex items-center gap-2">
                             <h2 class="truncate text-2xl font-bold tracking-wide text-[var(--text-main)]">{{ editForm?.title || t("ide.workspace.character.profileTitle") }}</h2>
                             <span v-if="editForm?.status" class="rounded-full border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-2 py-0.5 text-[11px] text-[var(--status-warning)]">{{ editForm.status }}</span>
-                            <span v-if="isDirty" class="h-2 w-2 shrink-0 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.dirty')"></span>
                         </div>
                         <div class="mt-1 truncate text-sm text-[var(--text-secondary)]">{{ editForm?.character.logline || editForm?.summary || t("ide.workspace.character.noDefinition") }}</div>
                         <div class="mt-2 flex flex-wrap gap-1.5">

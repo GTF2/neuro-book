@@ -1294,6 +1294,7 @@ const zhCN = {
                 hintUpdateStats: "重新统计本卷的字数、章节数与文件数",
                 hintEditable: "可直接在编辑器里修改",
                 hintReadonly: "只读文件，编辑器里不能修改",
+                typeLabel: "类型",
             },
             lorebookDetail: {
                 path: "路径 (Path)",
