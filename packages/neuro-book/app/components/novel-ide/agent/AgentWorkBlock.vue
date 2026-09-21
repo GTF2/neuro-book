@@ -26,7 +26,7 @@ const durationLabel = computed(() => {
         return t("agent.workBlock.working", {seconds});
     }
     if (props.round.durationMs === null) {
-        return t("agent.workBlock.worked", {duration: ""}).trim();
+        return t("agent.workBlock.workRound");
     }
     const totalSeconds = Math.max(1, Math.round(props.round.durationMs / 1000));
     if (totalSeconds < 60) {
@@ -67,13 +67,13 @@ const summaryTitle = computed(() => {
 <template>
     <button
         type="button"
-        class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+        class="flex w-fit max-w-full items-start gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
         :title="props.round.toolCount > 0 ? summaryTitle : undefined"
         @click="emit('toggle')"
     >
         <span :class="props.expanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
-        <span class="shrink-0 font-medium">{{ durationLabel }}</span>
+        <span class="shrink-0 font-medium leading-5">{{ durationLabel }}</span>
         <span v-if="props.round.modelLabel" class="shrink-0 rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1 text-[9px] text-[var(--text-muted)]/80">{{ props.round.modelLabel }}</span>
-        <span v-if="!props.expanded && summaryLabel" class="min-w-0 truncate text-[var(--text-muted)]/75">{{ summaryLabel }}</span>
+        <span v-if="!props.expanded && summaryLabel" class="min-w-0 text-left whitespace-normal break-words text-[var(--text-muted)]/75">{{ summaryLabel }}</span>
     </button>
 </template>

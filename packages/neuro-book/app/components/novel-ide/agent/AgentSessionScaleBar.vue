@@ -61,7 +61,8 @@ const segmentWidthClass = (index: number): string => {
     return "w-1/2 bg-[var(--border-strong)]/70";
 };
 
-/** 指针纵坐标换算格下标；条内均分，越界收敛到首末格。 */
+/** 指针纵坐标换算格下标；格为固定小高且可内滚（件4），换算含滚动偏移，越界收敛。 */
+const SEGMENT_ROW_PX = 10;
 function gridIndexFromPointer(event: PointerEvent): number | null {
     const track = trackRef.value;
     if (!track || props.segments.length === 0) {
@@ -71,8 +72,8 @@ function gridIndexFromPointer(event: PointerEvent): number | null {
     if (rect.height <= 0) {
         return null;
     }
-    const ratio = (event.clientY - rect.top) / rect.height;
-    const index = Math.floor(ratio * props.segments.length);
+    const offsetPx = event.clientY - rect.top + track.scrollTop;
+    const index = Math.floor(offsetPx / SEGMENT_ROW_PX);
     return Math.min(Math.max(index, 0), props.segments.length - 1);
 }
 
@@ -131,12 +132,13 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
 </script>
 
 <template>
-    <!-- 会话刻度条（009C1R2 件2 照旧库 0f92cc9a 重做）：右缘 24px；2px 细横线长短分级、无底轨无边框；
-         点击格=直接 seek 滚动定位（无中间层）；hover=小预览框；底部入口开完整会话树 -->
+    <!-- 会话刻度条（009C1R2 件2/件4）：右缘 24px；2px 细横线长短分级、无底轨无边框；
+         密度映射=格固定小高、少时集中中段、多时向两端扩展（框高 2/3 居中，装不下隐藏滚动条内滚）；
+         点击格=直接 seek 定位；hover=小预览框；底部入口开完整会话树 -->
     <div class="relative flex h-full w-6 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
-            class="flex min-h-0 flex-1 touch-none flex-col"
+            class="rail-scroll my-auto flex h-2/3 touch-none flex-col justify-center overflow-y-auto"
             @pointerdown="handleTrackPointerDown"
             @pointermove="handleTrackPointerMove"
         >
@@ -144,7 +146,7 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
                 v-for="(segment, index) in props.segments"
                 :key="segment.id"
                 type="button"
-                class="flex min-h-[10px] flex-1 items-center justify-center"
+                class="flex h-2.5 shrink-0 items-center justify-center"
                 :aria-label="segment.summary"
                 @pointerenter="(event) => handleSegmentHover(event, index)"
                 @pointerleave="hoverIndex = null"
@@ -169,4 +171,18 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
             {{ props.segments[hoverIndex]?.summary }}
         </div>
     </div>
+
 </template>
+
+<style scoped>
+/* 刻度条自滚（格多到超框）不显示滚动条：右侧已有真正的会话滚动区。 */
+.rail-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.rail-scroll::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+</style>

@@ -76,7 +76,7 @@ const parsedResult = computed<unknown | null>(() => {
 
 <template>
     <!-- 009C1R 必修A：收起态降为过程行（灰色小字+图标+一行摘要），展开才成卡片细节 -->
-    <div v-if="renderConfig.mode !== 'hidden'" class="w-full" :class="props.expanded ? 'overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] shadow-sm' : ''">
+    <div v-if="renderConfig.mode !== 'hidden'" class="w-full">
         <!-- 过程行：点击切换展开 -->
         <button
             v-if="!props.expanded"
@@ -89,25 +89,15 @@ const parsedResult = computed<unknown | null>(() => {
             <span v-if="rowSummary" class="min-w-0 flex-1 truncate opacity-75">{{ rowSummary }}</span>
         </button>
         <!-- 展开态头部：卡片头部（点击收起） -->
-        <button v-else class="flex w-full items-center justify-between px-3 py-1.5 text-left transition-colors hover:bg-[var(--bg-hover)]" @click="emit('toggle')">
-            <div class="flex min-w-0 items-center gap-2.5 overflow-hidden">
-                <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded" :class="displayedStatusClass">
-                    <span :class="[displayedStatusIcon, isRunning ? 'animate-spin' : '']" class="h-3 w-3"></span>
-                </div>
-                <!-- 紧凑单行 -->
-                <div class="flex min-w-0 items-center gap-2">
-                    <span class="truncate font-mono text-xs font-medium text-[var(--text-main)] shrink-0">{{ props.toolCall.name }}</span>
-                    <span class="shrink-0 text-[10px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{{ renderConfig.typeLabel }}</span>
-                    <span v-if="collapsedPreview" class="truncate font-mono text-[11px] text-[var(--text-muted)] opacity-80 min-w-0">
-                        {{ collapsedPreview }}
-                    </span>
-                </div>
-            </div>
-            <span :class="props.expanded ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'" class="ml-2 h-4 w-4 shrink-0 text-[var(--text-muted)]"></span>
+        <button v-else class="flex w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]" @click="emit('toggle')">
+            <span class="i-lucide-chevron-down h-3 w-3 shrink-0"></span>
+            <span :class="[displayedStatusIcon, rowIconClass, isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
+            <span class="shrink-0 font-mono">{{ props.toolCall.name }}</span>
+            <span v-if="collapsedPreview" class="min-w-0 flex-1 truncate opacity-75">{{ collapsedPreview }}</span>
         </button>
 
         <!-- 展开内容区域 -->
-        <div v-if="props.expanded" class="border-t border-[var(--border-color)]/50 bg-[var(--bg-input)]/50 px-3 pb-3 pt-1">
+        <div v-if="props.expanded" class="mt-0.5 ml-3 border-l-2 border-[var(--border-color)]/50 pl-3 pb-1">
             <!-- block 模式：使用注册表声明的专用组件 -->
             <component :is="renderConfig.component" v-if="renderConfig.mode === 'block' && renderConfig.component" :tool-call="props.toolCall" />
 

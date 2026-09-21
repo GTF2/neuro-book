@@ -262,13 +262,10 @@ export const groupChatNodesIntoBlocks = (nodes: ChatNode[]): ChatFlowItem[] => {
         if (systemRun.length === 0) {
             return;
         }
-        if (systemRun.length === 1) {
-            items.push({kind: "node", node: systemRun[0]!});
-        } else {
-            const first = systemRun[0]!;
-            const last = systemRun[systemRun.length - 1]!;
-            items.push({kind: "injections", id: `inj:${first.message.id}::${last.message.id}`, nodes: systemRun});
-        }
+        // 009C1R2 件3：开头批量注入与单条统一收拢（中途注入归轮，见循环内）。
+        const first = systemRun[0]!;
+        const last = systemRun[systemRun.length - 1]!;
+        items.push({kind: "injections", id: `inj:${first.message.id}::${last.message.id}`, nodes: systemRun});
         systemRun = [];
     };
 
@@ -288,8 +285,13 @@ export const groupChatNodesIntoBlocks = (nodes: ChatNode[]): ChatFlowItem[] => {
             continue;
         }
         if (isSystemNode(node)) {
-            // system 注入不打断轮的连续性：夹在轮中间的注入参与收拢，轮继续累积。
-            systemRun.push(node);
+            // 009C1R2 件3：中途补传的 system/CUSTOM 注入归入当前轮（不切断轮），
+            // 渲染为轮内灰小字注入行；轮未开启时（会话开头）才走独立收拢行。
+            if (roundNodes.length === 0) {
+                systemRun.push(node);
+                continue;
+            }
+            roundNodes.push(node);
             continue;
         }
         flushSystemRun();

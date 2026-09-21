@@ -52,7 +52,7 @@ const panelRows = computed(() => [
 </script>
 
 <template>
-    <div v-if="props.contextUsageLabel" class="relative shrink-0">
+    <div v-if="props.contextUsageLabel" class="relative flex shrink-0 items-center">
         <button
             type="button"
             class="inline-flex h-5 w-5 items-center justify-center rounded-full transition-[filter] hover:brightness-125"

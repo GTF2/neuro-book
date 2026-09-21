@@ -98,7 +98,7 @@ describe("轮次聚合（009C1R2 件3：相邻 user 消息之间全部节点收�
         expect(isFoldableToolNode(round.nodes[0]!)).toBe(false);
     });
 
-    it("连续 system 注入≥2 收拢为一行；单条保留独立节点", () => {
+    it("开头连续 system 注入收拢为一行（009C1R2 件3：单条也收拢）", () => {
         const nodes: ChatNode[] = [
             textNode("s1", "system", "注入1"),
             textNode("s2", "system", "注入2"),
@@ -107,11 +107,28 @@ describe("轮次聚合（009C1R2 件3：相邻 user 消息之间全部节点收�
         ];
         const items = groupChatNodesIntoBlocks(nodes);
         expect(items[0]!.kind).toBe("injections");
-        expect((items[0] as {nodes: ChatNode[]}).nodes).toHaveLength(3);
+        expect((items[0] as {nodes: unknown[]}).nodes).toHaveLength(3);
         expect(items[1]!.kind).toBe("round");
 
         const single = groupChatNodesIntoBlocks([textNode("s1", "system", "注入1"), textNode("a1", "ai", "回答")]);
-        expect(single[0]!.kind).toBe("node");
+        expect(single[0]!.kind).toBe("injections");
+        expect((single[0] as {nodes: unknown[]}).nodes).toHaveLength(1);
+    });
+
+    it("中途 system 注入归入当前轮不切断（009C1R2 件3）", () => {
+        const nodes: ChatNode[] = [
+            textNode("u1", "user", "问"),
+            textNode("a1", "ai", "答一"),
+            textNode("s1", "system", "中途注入"),
+            textNode("a2", "ai", "答二"),
+        ];
+        const items = groupChatNodesIntoBlocks(nodes);
+        expect(items).toHaveLength(2);
+        expect(items[0]!.kind).toBe("node");
+        const round = items[1] as Extract<ChatFlowItem, {kind: "round"}>;
+        expect(round.kind).toBe("round");
+        expect(round.nodes).toHaveLength(3);
+        expect(round.nodes[1]!.message.type).toBe("system");
     });
 
     it("失败轮/运行中轮标记（默认展开依据）", () => {

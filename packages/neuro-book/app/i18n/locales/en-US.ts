@@ -2318,6 +2318,8 @@ const enUS = {
             working: "Working {seconds}s",
             worked: "Worked {duration}",
             workedSeconds: "Worked {seconds}s",
+            workRound: "This turn",
+            injectionSingle: "Context injection",
             minutesSeconds: "{minutes}m {seconds}s",
             injections: "Context injections ×{count}",
             moreKinds: "+{count} kinds",

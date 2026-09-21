@@ -404,7 +404,7 @@ const endSwipe = (event: PointerEvent): void => {
                     <span v-else class="text-[10px] normal-case tracking-normal text-[var(--text-muted)]/65">{{ t("agent.textBubble.collapse") }}</span>
                 </button>
 
-                <div v-if="!isThinkingCollapsed" class="mt-1.5 border-l border-[var(--border-color)]/40 pl-3 text-[13px] leading-relaxed text-[var(--text-muted)]/85">
+                <div v-if="!isThinkingCollapsed" class="mt-1.5 border-l-2 border-[var(--border-color)]/50 pl-4 text-[13px] leading-relaxed text-[var(--text-muted)]/85">
                     <AgentMarkdownContent :content="props.node.message.thinking ?? ''" :streaming="props.node.message.status === 'streaming'" :open-reference="props.openReference" />
                 </div>
             </div>
@@ -414,7 +414,7 @@ const endSwipe = (event: PointerEvent): void => {
         <div
             v-if="hasMessageContent"
             class="min-w-0 touch-pan-y"
-            :class="isUserMessage ? 'w-fit max-w-[65%]' : 'w-full'"
+            :class="isUserMessage ? 'w-fit max-w-[36rem]' : 'w-full'"
             @pointerdown="startSwipe"
             @pointerup="endSwipe"
             @pointercancel="swipeStart = null"

@@ -115,14 +115,14 @@ const optionSizeClass = computed(() => props.size === "sm"
             <div
                 v-if="open"
                 ref="panelRef"
-                class="absolute left-0 right-0 z-[9200] overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-1.5 shadow-xl custom-scrollbar"
+                class="absolute left-0 z-[9200] min-w-max overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-1.5 shadow-xl custom-scrollbar"
                 :class="resolvedDirection === 'up' ? 'bottom-full mb-1' : 'top-full mt-1'"
                 :style="panelStyle"
             >
                 <div
                     v-for="opt in options"
                     :key="opt.value"
-                    class="mb-1 flex items-center gap-2 rounded-md cursor-pointer transition-colors last:mb-0 hover:bg-[var(--bg-hover)]"
+                    class="mb-1 flex items-center gap-2 whitespace-nowrap rounded-md cursor-pointer transition-colors last:mb-0 hover:bg-[var(--bg-hover)]"
                     :class="[optionSizeClass, opt.value === modelValue ? 'text-[var(--text-main)] font-medium bg-[var(--bg-input)]' : 'text-[var(--text-secondary)] hover:text-[var(--text-main)]']"
                     @click="selectOption(opt)"
                 >

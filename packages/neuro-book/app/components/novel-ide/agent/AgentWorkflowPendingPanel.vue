@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Dialog from "nbook/app/components/common/Dialog.vue";
+import {onClickOutside} from "@vueuse/core";
 import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
 import AgentMarkdownContent from "nbook/app/components/novel-ide/agent/AgentMarkdownContent.vue";
 import {useAgentJobsFeed} from "nbook/app/composables/useAgentJobsFeed";
@@ -235,8 +235,12 @@ async function submitRun(runId: string): Promise<void> {
     }
 }
 
-/** 009C1R2 件7c：待应答收编为徽标+弹层；应答逻辑零改动只动容器。 */
-const pendingDialogOpen = ref(false);
+/** 009C1R3 件11：改就地内联滑出面板（非模态、点外部收起）；应答逻辑零改动只动容器。 */
+const pendingPanelOpen = ref(false);
+const pendingPanelRef = ref<HTMLElement | null>(null);
+onClickOutside(pendingPanelRef, () => {
+    pendingPanelOpen.value = false;
+});
 
 onBeforeUnmount(() => {
     disposed = true;
@@ -250,26 +254,23 @@ onBeforeUnmount(() => {
         <button
             type="button"
             class="flex w-fit items-center gap-1.5 rounded px-1 py-0.5 text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
-            @click="pendingDialogOpen = true"
+            @click="pendingPanelOpen = !pendingPanelOpen"
         >
             <span class="i-lucide-inbox h-3.5 w-3.5 shrink-0 text-[var(--status-warning)]"></span>
             <span>{{ waitingCount }} 个流程等应答</span>
             <span class="rounded-full bg-[var(--status-warning-bg)] px-1.5 text-[9px] font-semibold text-[var(--status-warning)]">{{ waitingCount }}</span>
         </button>
 
-        <Dialog
-            :model-value="pendingDialogOpen"
-            title="Workflow 待处理"
-            width="min(560px, calc(100vw - 16px))"
-            body-class="!gap-0 !overflow-y-auto !bg-[var(--bg-panel)]"
-            :show-footer="false"
-            @update:model-value="pendingDialogOpen = $event"
+        <div
+            v-if="pendingPanelOpen"
+            ref="pendingPanelRef"
+            class="mt-2 max-h-[50vh] overflow-y-auto rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-3 shadow-lg"
         >
-            <div class="flex items-center justify-between gap-2 px-4 pt-3 text-[10px] text-[var(--text-muted)]">
+            <div class="flex items-center justify-between gap-2 text-[10px] text-[var(--text-muted)]">
                 <span>每个流程分别应答</span>
                 <span v-if="waitingCount" class="rounded-full bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[var(--status-warning)]">{{ waitingCount }}</span>
             </div>
-            <div class="px-4 pb-4 pt-2">
+            <div class="pt-2">
         <div v-for="job in waitingJobs" :key="job.jobId" class="mt-3 border-t border-[var(--border-color)] pt-3 first:mt-2 first:border-t-0 first:pt-0">
             <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex min-w-0 items-center gap-2">
@@ -321,6 +322,6 @@ onBeforeUnmount(() => {
         </div>
         <div v-if="feed.error" class="mt-2 text-xs text-[var(--status-danger)]">{{ feed.error }}</div>
             </div>
-        </Dialog>
+        </div>
     </section>
 </template>

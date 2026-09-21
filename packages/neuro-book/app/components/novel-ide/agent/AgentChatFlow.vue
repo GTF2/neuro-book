@@ -144,7 +144,8 @@ const visibleRoundNodes = (round: ChatRoundItem): ChatNode[] => {
         if (node.kind === "tool") {
             return !isFoldableToolNode(node);
         }
-        return true;
+        // 中途 system 注入属过程信息，随轮收起隐藏（009C1R2 件3）。
+        return node.message.type !== "system";
     });
 };
 
@@ -179,28 +180,33 @@ const flowItemWeight = (item: ChatFlowItem): number => {
     return 1;
 };
 const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
-    const items = flowItems.value;
-    if (items.length === 0 || props.mode !== "main") {
+    if (props.mode !== "main") {
         return [];
     }
-    const perSegment = Math.max(1, Math.ceil(items.length / SCALE_SEGMENT_LIMIT));
+    // 009C1R2 件5：刻度格只聚合对话项（user 消息与轮），系统注入/独立工具项不进格；
+    // anchorIndex 保留原 flowItems 下标供 seek 直接定位。
+    const dialogItems = flowItems.value
+        .map((item, index) => ({item, index}))
+        .filter(({item}) => item.kind === "round" || (item.kind === "node" && item.node.kind === "text" && item.node.message.type === "user"));
+    if (dialogItems.length === 0) {
+        return [];
+    }
+    const perSegment = Math.max(1, Math.ceil(dialogItems.length / SCALE_SEGMENT_LIMIT));
     const segments: AgentSessionScaleSegment[] = [];
-    for (let start = 0; start < items.length; start += perSegment) {
-        const anchorIndex = start;
+    for (let start = 0; start < dialogItems.length; start += perSegment) {
+        const first = dialogItems[start]!;
         let summary = "";
         let weight = 0;
-        for (let probe = start; probe < Math.min(start + perSegment, items.length); probe += 1) {
-            const item = items[probe];
-            if (!item) {
-                continue;
-            }
-            weight += flowItemWeight(item);
+        for (let probe = start; probe < Math.min(start + perSegment, dialogItems.length); probe += 1) {
+            const entry = dialogItems[probe]!;
+            weight += flowItemWeight(entry.item);
             if (!summary) {
-                summary = flowItemSummary(item);
+                summary = flowItemSummary(entry.item);
             }
         }
+        const anchorIndex = first.index;
         if (!summary) {
-            summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, items.length)});
+            summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, dialogItems.length)});
         }
         segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex, weight});
     }
@@ -518,7 +524,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                         <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
                         <span>{{ t("agent.workBlock.injections", {count: item.nodes.length}) }}</span>
                     </button>
-                    <template v-if="isInjectionsOpen(item)">
+                    <div v-if="isInjectionsOpen(item)" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
                         <AgentTextBubble
                             v-for="node in item.nodes"
                             :key="node.message.id"
@@ -541,7 +547,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             @copy="emit('copy', $event)"
                             @attachment-registered="emit('attachment-registered', $event)"
                         />
-                    </template>
+                    </div>
                 </div>
                 <!-- 一轮工作块（件3）：块头=唯一身份标记；正文恒显，过程行/思考行随展开态 -->
                 <template v-else-if="item.kind === 'round'">
@@ -551,8 +557,36 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                         :key="getNodeKey(node)"
                         :class="nodeIndex > 0 ? 'mt-2' : ''"
                     >
+                        <!-- 轮中途注入行（009C1R2 件3）：灰小字可展开，与收拢行同款 -->
+                        <div v-if="node.kind === 'text' && node.message.type === 'system'" class="space-y-1">
+                            <button
+                                type="button"
+                                class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+                                @click="toggleInjections({id: node.message.id})"
+                            >
+                                <span :class="isInjectionsOpen({id: node.message.id}) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                                <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
+                                <span>{{ t("agent.workBlock.injectionSingle") }}</span>
+                            </button>
+                            <div v-if="isInjectionsOpen({id: node.message.id})" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
+                                <AgentTextBubble
+                                    :node="node as Extract<ChatNode, {kind: 'text'}>"
+                                    :session-id="props.sessionId"
+                                    :action-disabled="props.messageActionDisabled"
+                                    :run-action-disabled="props.runActionDisabled"
+                                    :session-attachments="props.sessionAttachments"
+                                    :can-register-attachments="props.canRegisterAttachments"
+                                    :can-insert-attachments="props.canInsertAttachments"
+                                    :project-root="props.projectRoot"
+                                    :model-supports-images="props.modelSupportsImages"
+                                    :open-reference="props.openReference"
+                                    :cost-display-options="props.costDisplayOptions"
+                                    @copy="emit('copy', $event)"
+                                />
+                            </div>
+                        </div>
                         <AgentTextBubble
-                            v-if="node.kind === 'text'"
+                            v-else-if="node.kind === 'text'"
                             :node="node"
                             :session-id="props.sessionId"
                             :editing-message-id="props.editingMessageId"

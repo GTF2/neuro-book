@@ -718,35 +718,9 @@ defineExpose({focus, insertAttachment});
             </div>
         </div>
 
-        <!-- token 与运行状态 -->
+        <!-- 运行状态（009C1R2 件12：token 统计芯片已删，数据链保留供绿环 hover） -->
         <div class="flex flex-wrap items-center justify-end gap-1 px-2 pb-1.5 text-[9px] text-[var(--text-muted)]">
-            <!-- gauge 芯片：点击打开上下文检查面板（Task 126） -->
-            <button :title="props.contextUsageExactLabel" class="inline-flex max-w-full items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5 transition-colors hover:bg-[var(--bg-hover)]" @click="emit('open-context-inspector')">
-                <span class="i-lucide-gauge h-3 w-3 shrink-0"></span>
-                <span class="truncate font-medium text-[var(--text-secondary)]">{{ props.contextUsageCompactLabel }}</span>
-                <span v-if="props.contextPercentCompactLabel" class="rounded-full bg-[var(--accent-bg)] px-1 py-[1px] text-[8px] font-semibold text-[var(--accent-text)]">{{ props.contextPercentCompactLabel }}</span>
-            </button>
-            <div :title="props.cumulativeUsageExactLabel" class="inline-flex items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5">
-                <span class="i-lucide-arrow-down h-3 w-3"></span>
-                <span>{{ props.cumulativeInputCompactLabel }}</span>
-                <span class="i-lucide-arrow-up h-3 w-3"></span>
-                <span>{{ props.cumulativeOutputCompactLabel }}</span>
-                <span class="i-lucide-database-zap h-3 w-3"></span>
-                <span>{{ props.cumulativeCacheCompactLabel }}</span>
-                <template v-if="props.cumulativeCacheHitRateLabel">
-                    <span class="i-lucide-percent h-3 w-3"></span>
-                    <span>{{ props.cumulativeCacheHitRateLabel }}</span>
-                </template>
-                <template v-if="props.cumulativeCacheWriteCompactLabel !== '-' && props.cumulativeCacheWriteCompactLabel !== '0'">
-                    <span class="i-lucide-hard-drive-upload h-3 w-3"></span>
-                    <span>{{ props.cumulativeCacheWriteCompactLabel }}</span>
-                </template>
-                <template v-if="props.cumulativeCostCompactLabel">
-                    <span class="i-lucide-circle-dollar-sign h-3 w-3"></span>
-                    <span>{{ props.cumulativeCostCompactLabel }}</span>
-                </template>
-            </div>
-            <div v-if="props.connectionStatusLabel" class="inline-flex items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5">
+                                    <div v-if="props.connectionStatusLabel" class="inline-flex items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5">
                 <span class="i-lucide-wifi h-3 w-3"></span>
                 <span>{{ props.connectionStatusLabel }}</span>
             </div>

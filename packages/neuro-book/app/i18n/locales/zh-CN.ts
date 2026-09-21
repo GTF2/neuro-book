@@ -2319,6 +2319,8 @@ const zhCN = {
             working: "工作中 {seconds} 秒",
             worked: "已工作 {duration}",
             workedSeconds: "已工作 {seconds} 秒",
+            workRound: "本轮",
+            injectionSingle: "系统上下文注入",
             minutesSeconds: "{minutes} 分 {seconds} 秒",
             injections: "系统上下文注入 ×{count}",
             moreKinds: "等 {count} 类",

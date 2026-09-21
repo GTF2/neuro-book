@@ -25,6 +25,16 @@ describe("AgentSessionScaleBar 契约（009C1R2 件2：细线视觉+点格直滚
         expect(source).not.toContain("bg-[var(--accent-main)]");
     });
 
+    it("密度映射（009C1R2 件4）：固定格高+框高 2/3 居中+隐藏滚动+指针换算含滚动偏移", async () => {
+        const source = await readFile(componentPath, "utf-8");
+        expect(source).toContain("h-2.5");
+        expect(source).toContain("h-2/3");
+        expect(source).toContain("justify-center");
+        expect(source).toContain("rail-scroll");
+        expect(source).toContain("SEGMENT_ROW_PX");
+        expect(source).toContain("track.scrollTop");
+    });
+
     it("点格=直接 seek、拖动节流、hover 预览跟格", async () => {
         const source = await readFile(componentPath, "utf-8");
         expect(source).toContain("handleSegmentClick");
