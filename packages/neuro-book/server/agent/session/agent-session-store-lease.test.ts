@@ -1,4 +1,5 @@
 import {mkdir, mkdtemp, readFile, rm, stat, utimes, writeFile} from "node:fs/promises";
+import {randomUUID} from "node:crypto";
 import { testHostPath } from "@notnotype/neuro-book-test-support/test-path"
 import {dirname, join} from "node:path";
 import {afterEach, describe, expect, it} from "vitest";
@@ -6,6 +7,7 @@ import {
     acquireAgentSessionStoreLease,
     acquireAgentSessionStoreLeaseSync,
     AGENT_SESSION_STORE_LEASE_OWNER_SCHEMA,
+    AGENT_SESSION_STORE_LEASE_SELF_HEAL_IDLE_MS,
     AgentSessionStoreLeaseHeldError,
     agentSessionStoreLeasePath,
     runWithAgentSessionStoreLease,
@@ -122,6 +124,52 @@ describe("Agent Session Store runtime lease", () => {
         }
     });
 
+    it("owner pid已死且心跳停滞超自愈阈值时移除残留锁并接管", async () => {
+        const root = await nextRoot();
+        const path = agentSessionStoreLeasePath(root);
+        await mkdir(dirname(path), {recursive: true});
+        await writeFile(path, ownerJson(999_999_999), "utf8");
+        await mkdir(`${path}.lock`);
+        const idleTime = new Date(Date.now() - AGENT_SESSION_STORE_LEASE_SELF_HEAL_IDLE_MS - 5_000);
+        await utimes(`${path}.lock`, idleTime, idleTime);
+        // 日志不做拦截断言：vitest 对 node_modules externalize 后 consola 双实例（server CJS 副本
+        // vs 测试 ESM 副本），spyOn 抓不到。接管成功本身已构成控制流证明——selfHeal 仅在
+        // consola.warn 完整执行后返回 true 并重试取锁，重试成功即日志代码已执行且未抛错。
+        const release = acquireAgentSessionStoreLeaseSync(root, "runtime");
+        try {
+            expect(await readOwner(path)).toMatchObject({kind: "runtime", pid: process.pid});
+            expect((await stat(`${path}.lock`)).mtimeMs).toBeGreaterThan(idleTime.getTime());
+        } finally {
+            release();
+        }
+    });
+
+    it("owner pid存活且心跳新鲜时不自愈并保持ELOCKED", async () => {
+        const root = await nextRoot();
+        const path = agentSessionStoreLeasePath(root);
+        await mkdir(dirname(path), {recursive: true});
+        await writeFile(path, ownerJson(process.pid), "utf8");
+        await mkdir(`${path}.lock`);
+
+        const failure = await acquireAgentSessionStoreLease(root, "migration").catch((error: unknown) => error);
+        expect(failure).toBeInstanceOf(AgentSessionStoreLeaseHeldError);
+        expect(failure).toMatchObject({code: "ELOCKED"});
+        await expect(stat(`${path}.lock`)).resolves.toBeTruthy();
+    });
+
+    it("owner pid已死但心跳仍新鲜时不自愈，留给stale协议处理", async () => {
+        const root = await nextRoot();
+        const path = agentSessionStoreLeasePath(root);
+        await mkdir(dirname(path), {recursive: true});
+        await writeFile(path, ownerJson(999_999_999), "utf8");
+        await mkdir(`${path}.lock`);
+
+        const failure = await acquireAgentSessionStoreLease(root, "migration").catch((error: unknown) => error);
+        expect(failure).toBeInstanceOf(AgentSessionStoreLeaseHeldError);
+        expect(failure).toMatchObject({code: "ELOCKED"});
+        await expect(stat(`${path}.lock`)).resolves.toBeTruthy();
+    });
+
     it("任务失败与lease释放失败同时发生时保留两个原始原因", async () => {
         const taskFailure = new Error("migration failed");
         const releaseFailure = new Error("lease release failed");
@@ -150,4 +198,18 @@ describe("Agent Session Store runtime lease", () => {
 /** 读取当前测试 owner metadata。 */
 async function readOwner(path: string): Promise<AgentSessionStoreLeaseOwner> {
     return JSON.parse(await readFile(path, "utf8")) as AgentSessionStoreLeaseOwner;
+}
+
+/** 构造能通过 parseOwner 严格校验的 owner metadata 文本。 */
+function ownerJson(pid: number): string {
+    const owner: AgentSessionStoreLeaseOwner = {
+        schema: AGENT_SESSION_STORE_LEASE_OWNER_SCHEMA,
+        leaseId: randomUUID(),
+        kind: "runtime",
+        pid,
+        acquiredAt: new Date(Date.now() - 120_000).toISOString(),
+        runtime: process.versions.bun ? "bun" : "node",
+        runtimeVersion: process.versions.bun ?? process.versions.node,
+    };
+    return `${JSON.stringify(owner, null, 2)}\n`;
 }

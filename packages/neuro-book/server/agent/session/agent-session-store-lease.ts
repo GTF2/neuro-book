@@ -1,9 +1,11 @@
+import {consola} from "consola";
 import {randomUUID} from "node:crypto";
 import {
     closeSync,
     mkdirSync,
     openSync,
     readFileSync,
+    rmSync,
     statSync,
     writeFileSync,
 } from "node:fs";
@@ -15,6 +17,8 @@ export const AGENT_SESSION_STORE_LEASE_RELATIVE_PATH = ".nbook/agent/migrations/
 export const AGENT_SESSION_STORE_LEASE_OWNER_SCHEMA = "nbook.agent-session-store-lease-owner/v1";
 export const AGENT_SESSION_STORE_LEASE_STALE_MS = 30_000;
 export const AGENT_SESSION_STORE_LEASE_HEARTBEAT_MS = 15_000;
+/** 死 owner 残留锁的自愈阈值：pid 已死且心跳停滞超过该值才允许移除 `.lock`。 */
+export const AGENT_SESSION_STORE_LEASE_SELF_HEAL_IDLE_MS = 60_000;
 
 const CANONICAL_UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/iu;
 
@@ -137,7 +141,18 @@ async function acquireAgentSessionStoreLeaseHandle(
         });
     } catch (error) {
         if (!isLockContention(error)) throw error;
-        throw await leaseHeldError(path, error);
+        if (!selfHealStaleLeaseSync(path)) throw await leaseHeldError(path, error);
+        try {
+            releaseLock = await lock(path, {
+                realpath: false,
+                stale: AGENT_SESSION_STORE_LEASE_STALE_MS,
+                update: AGENT_SESSION_STORE_LEASE_HEARTBEAT_MS,
+                onCompromised: signal.notify,
+            });
+        } catch (retryError) {
+            if (!isLockContention(retryError)) throw retryError;
+            throw await leaseHeldError(path, retryError);
+        }
     }
     const lease = leaseHandle(releaseLock, signal);
     await writeLeaseOwner(path, kind, lease);
@@ -172,7 +187,18 @@ export function acquireAgentSessionStoreLeaseSync(
         });
     } catch (error) {
         if (!isLockContention(error)) throw error;
-        throw leaseHeldErrorSync(path, error);
+        if (!selfHealStaleLeaseSync(path)) throw leaseHeldErrorSync(path, error);
+        try {
+            releaseLock = lockSync(path, {
+                realpath: false,
+                stale: AGENT_SESSION_STORE_LEASE_STALE_MS,
+                update: AGENT_SESSION_STORE_LEASE_HEARTBEAT_MS,
+                onCompromised: signal.notify,
+            });
+        } catch (retryError) {
+            if (!isLockContention(retryError)) throw retryError;
+            throw leaseHeldErrorSync(path, retryError);
+        }
     }
     const release = syncLeaseHandle(releaseLock, signal);
     try {
@@ -442,6 +468,52 @@ function parseOwner(text: string): AgentSessionStoreLeaseOwner | null {
 /** proper-lockfile 在其他 owner 持有 lease 时使用 ELOCKED。 */
 function isLockContention(error: unknown): error is NodeJS.ErrnoException {
     return error instanceof Error && "code" in error && error.code === "ELOCKED";
+}
+
+/** owner 进程存活探测：ESRCH=不存在；EPERM=存在但无权限信号，同样视为存活。 */
+function isProcessAlive(pid: number): boolean {
+    try {
+        process.kill(pid, 0);
+        return true;
+    } catch (error) {
+        return (error as NodeJS.ErrnoException).code === "EPERM";
+    }
+}
+
+/**
+ * ELOCKED 后的死 owner 自愈：runtime.lease 声明的 owner pid 已不存在、且 `.lock`
+ * 心跳 mtime 停滞超过自愈阈值时，移除残留锁目录让本次取锁重试，并记日志。
+ * 任一条件不满足（owner 存活、pid 不可信、心跳仍新、诊断文件损坏）都不动锁。
+ * 正常路径下 proper-lockfile 的 stale(30s) 协议先于本阈值接管，这里只兜 stale
+ * 协议失效（如 mtime 判定异常）而 owner 已死的残留场景；pid 复用会误判存活，
+ * 此时退回 stale 协议，方向安全。
+ */
+function selfHealStaleLeaseSync(path: string): boolean {
+    let owner: AgentSessionStoreLeaseOwner | null = null;
+    try {
+        owner = parseOwner(readFileSync(path, "utf8"));
+    } catch {
+        return false;
+    }
+    if (!owner || isProcessAlive(owner.pid)) {
+        return false;
+    }
+    try {
+        if (Date.now() - statSync(`${path}.lock`).mtimeMs < AGENT_SESSION_STORE_LEASE_SELF_HEAL_IDLE_MS) {
+            return false;
+        }
+    } catch {
+        return false;
+    }
+    rmSync(`${path}.lock`, {recursive: true, force: true});
+    consola.warn({
+        message: "runtime.lease 自愈接管：owner 进程已不存在且心跳停滞，已移除残留锁并重试取锁。",
+        pid: owner.pid,
+        acquiredAt: owner.acquiredAt,
+        idleMs: AGENT_SESSION_STORE_LEASE_SELF_HEAL_IDLE_MS,
+        leasePath: path,
+    });
+    return true;
 }
 
 /** 将未知失败收窄为可聚合 Error。 */
