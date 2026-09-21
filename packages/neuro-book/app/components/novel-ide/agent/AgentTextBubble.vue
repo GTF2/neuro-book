@@ -152,16 +152,11 @@ const canRetry = computed(() => !isUnknownDelivery.value && (props.node.message.
 /** 是否为已进入历史的 steer 引导消息。 */
 const isSteerMessage = computed(() => props.node.message.type === "user" && props.node.message.intent === "steer");
 
-/** 普通消息头部图标。 */
-const messageIconClass = computed(() => {
-    if (props.node.message.type === "ai") {
-        return "i-lucide-sparkles text-[var(--accent-text)]";
-    }
-    if (isSteerMessage.value) {
-        return "i-lucide-corner-down-left text-[var(--accent-text)]";
-    }
-    return "i-lucide-user text-[var(--text-muted)]";
-});
+/** 作文流分流：用户消息走右侧气泡，AI 消息走零边框文档流（009单C批次1 总纲）。 */
+const isUserMessage = computed(() => props.node.message.type === "user");
+
+/** 功能按钮排常显条件：unknown 投递等关键操作不能藏进 hover。 */
+const alwaysShowActions = computed(() => isUnknownDelivery.value);
 
 /** 普通消息头部标签。 */
 const messageAuthorLabel = computed(() => {
@@ -433,16 +428,11 @@ const endSwipe = (event: PointerEvent): void => {
     </div>
 
     <!-- 用户 / Assistant 消息 -->
-    <div v-else class="group flex min-w-0 w-full flex-col items-start">
-        <!-- 消息头部 -->
-        <div class="mb-1.5 ml-1 flex w-full items-center gap-2">
-            <div
-                class="flex h-4 w-4 items-center justify-center rounded-full border"
-                :class="props.node.message.type === 'ai' ? 'border-[var(--accent-main)] bg-[var(--accent-bg)]' : 'border-[var(--border-color)] bg-[var(--bg-input)]'"
-            >
-                <span :class="messageIconClass" class="h-2.5 w-2.5"></span>
-            </div>
-            <span class="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--text-main)]">
+    <div v-else class="group flex min-w-0 w-full flex-col" :class="isUserMessage ? 'items-end' : 'items-start'">
+        <!-- AI 身份锚定行：左侧引出箭头+弱化元信息；用户消息无头像无名字（009单C 总纲） -->
+        <div v-if="!isUserMessage" class="mb-1 ml-1 flex w-full items-center gap-2 text-[var(--text-muted)]">
+            <span class="i-lucide-corner-down-right h-3 w-3 shrink-0 text-[var(--accent-text)]/70"></span>
+            <span class="text-[10px] font-medium uppercase tracking-[0.24em] text-[var(--text-muted)]/80">
                 {{ messageAuthorLabel }}
             </span>
             <span v-if="props.node.message.model" class="rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">
@@ -452,40 +442,15 @@ const endSwipe = (event: PointerEvent): void => {
             <span v-if="messageStatusLabel(props.node.message)" class="rounded border border-[var(--border-color)] bg-[var(--bg-sidebar)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)]">
                 {{ messageStatusLabel(props.node.message) }}
             </span>
-
-            <div class="flex-1"></div>
-
-            <div class="mr-4 flex items-center gap-1 text-[var(--text-muted)]">
-                <button v-if="isUnknownDelivery" class="rounded p-1 text-[var(--status-warning)] transition-colors hover:bg-[var(--bg-hover)]" title="确认可能重复后重新发送" @click="emit('resend-unknown', props.node.message)">
-                    <span class="i-lucide-send h-3.5 w-3.5"></span>
-                </button>
-                <button v-if="isUnknownDelivery" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--status-danger)]" title="移除本地未知占位" @click="emit('dismiss-unknown', props.node.message)">
-                    <span class="i-lucide-x h-3.5 w-3.5"></span>
-                </button>
-                <AgentBranchSwitcher
-                    v-if="props.branchSwitcher"
-                    class="mr-1"
-                    :state="props.branchSwitcher"
-                    :disabled="props.actionDisabled || props.runActionDisabled"
-                    @cycle="cycleBranch"
-                />
-                <button class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled" :title="isContentOmitted ? t('agent.textBubble.copyPreview') : t('agent.textBubble.copy')" @click="emit('copy', props.node.message)">
-                    <span class="i-lucide-copy h-3.5 w-3.5"></span>
-                </button>
-                <button v-if="canEdit" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.edit')" @click="startEdit">
-                    <span class="i-lucide-pencil h-3.5 w-3.5"></span>
-                </button>
-                <button v-if="canRetry" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.retry')" @click="emit('retry', props.node.message)">
-                    <span class="i-lucide-rotate-cw h-3.5 w-3.5"></span>
-                </button>
-                <button class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.branchFromHere')" @click="emit('branch-from-here', props.node.message)">
-                    <span class="i-lucide-git-branch-plus h-3.5 w-3.5"></span>
-                </button>
-            </div>
+        </div>
+        <!-- 用户 steer 消息：无头部后的可见轻量标记 -->
+        <div v-if="isUserMessage && isSteerMessage" class="mb-0.5 mr-2 flex items-center gap-1 text-[10px] text-[var(--text-muted)]">
+            <span class="i-lucide-corner-down-left h-3 w-3 text-[var(--accent-text)]"></span>
+            <span>{{ t("agent.textBubble.steer") }}</span>
         </div>
 
         <!-- Assistant 思维链 -->
-        <div v-if="hasThinking" class="mb-1 w-full pl-6">
+        <div v-if="hasThinking" class="mb-1 w-full pl-4">
             <div class="px-0.5 py-0.5">
                 <button
                     class="flex w-full items-center gap-1.5 text-left text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]/90 transition-colors hover:text-[var(--text-main)]"
@@ -508,17 +473,27 @@ const endSwipe = (event: PointerEvent): void => {
             </div>
         </div>
 
-        <!-- 消息正文 -->
+        <!-- 消息正文：用户=右侧气泡（上限 55%）；AI=零边框文档流（009单C 总纲） -->
         <div
             v-if="hasMessageContent"
-            class="min-w-0 w-full touch-pan-y pl-6"
+            class="min-w-0 touch-pan-y"
+            :class="isUserMessage ? 'w-fit max-w-[55%]' : 'w-full'"
             @pointerdown="startSwipe"
             @pointerup="endSwipe"
             @pointercancel="swipeStart = null"
         >
             <div
-                class="min-w-0 max-w-full rounded-2xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] px-4 py-3 shadow-sm"
-                :class="props.node.message.error ? 'border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]' : ''"
+                class="min-w-0 text-sm leading-relaxed text-[var(--text-main)]"
+                :class="[
+                    isUserMessage
+                        ? 'rounded-2xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] px-4 py-3 shadow-sm'
+                        : '',
+                    props.node.message.error
+                        ? (isUserMessage
+                            ? 'border-[var(--status-danger-border)] bg-[var(--status-danger-bg)]'
+                            : 'border-l-2 border-l-[var(--status-danger)] pl-3')
+                        : '',
+                ]"
             >
                 <div v-if="isEditing" class="space-y-3">
                     <!-- 消息编辑器 -->
@@ -578,8 +553,43 @@ const endSwipe = (event: PointerEvent): void => {
             </div>
         </div>
 
+        <!-- 功能按钮排：hover 显示；用户右下角 / AI 左下角（009单C 总纲）；unknown 投递常显 -->
+        <div
+            class="mr-4 mt-0.5 flex items-center gap-1 text-[var(--text-muted)]"
+            :class="[
+                isUserMessage ? 'self-end' : 'self-start',
+                alwaysShowActions ? '' : 'opacity-0 transition-opacity focus-within:opacity-100 group-hover:opacity-100',
+            ]"
+        >
+            <button v-if="isUnknownDelivery" class="rounded p-1 text-[var(--status-warning)] transition-colors hover:bg-[var(--bg-hover)]" title="确认可能重复后重新发送" @click="emit('resend-unknown', props.node.message)">
+                <span class="i-lucide-send h-3.5 w-3.5"></span>
+            </button>
+            <button v-if="isUnknownDelivery" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--status-danger)]" title="移除本地未知占位" @click="emit('dismiss-unknown', props.node.message)">
+                <span class="i-lucide-x h-3.5 w-3.5"></span>
+            </button>
+            <AgentBranchSwitcher
+                v-if="props.branchSwitcher"
+                class="mr-1"
+                :state="props.branchSwitcher"
+                :disabled="props.actionDisabled || props.runActionDisabled"
+                @cycle="cycleBranch"
+            />
+            <button class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled" :title="isContentOmitted ? t('agent.textBubble.copyPreview') : t('agent.textBubble.copy')" @click="emit('copy', props.node.message)">
+                <span class="i-lucide-copy h-3.5 w-3.5"></span>
+            </button>
+            <button v-if="canEdit" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.edit')" @click="startEdit">
+                <span class="i-lucide-pencil h-3.5 w-3.5"></span>
+            </button>
+            <button v-if="canRetry" class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.retry')" @click="emit('retry', props.node.message)">
+                <span class="i-lucide-rotate-cw h-3.5 w-3.5"></span>
+            </button>
+            <button class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.branchFromHere')" @click="emit('branch-from-here', props.node.message)">
+                <span class="i-lucide-git-branch-plus h-3.5 w-3.5"></span>
+            </button>
+        </div>
+
         <!-- token 尾部 -->
-        <div v-if="messageUsage" class="mt-1 flex w-full items-center pl-6 text-[var(--text-muted)]">
+        <div v-if="messageUsage" class="mt-1 flex w-full items-center pl-4 text-[var(--text-muted)]">
             <div class="flex-1"></div>
             <div class="flex items-center gap-1 text-[10px] text-[var(--text-muted)]" :title="messageUsageTitle">
                 <span class="i-lucide-zap mr-1 h-3 w-3"></span>
