@@ -744,11 +744,15 @@ function sameRuntimePaths(left: RuntimePaths | undefined, right: RuntimePaths | 
 
 async function createCompileWorker(runtimePaths?: RuntimePaths): Promise<Worker> {
     const workerPaths = await resolveCompileWorkerPaths(runtimePaths);
+    // 单个 profile 编译任务不应耗尽内存：超限 Worker 终止并按编译失败上报，
+    // 防止异常源码把 Worker 推到系统级 OOM 连坐 dev 进程（用户资产 personas 预览崩溃实测形态）。
+    const resourceLimits = {maxOldGenerationSizeMb: 1024};
     if (workerPaths.precompiled) {
-        return new Worker(pathToFileURL(workerPaths.entry));
+        return new Worker(pathToFileURL(workerPaths.entry), {resourceLimits});
     }
     return new Worker(pathToFileURL(workerPaths.entry), {
         execArgv: ["--import", requiredWorkerPath(workerPaths.tsxLoaderUrl, "tsx loader")],
+        resourceLimits,
     });
 }
 
