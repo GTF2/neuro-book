@@ -1,6 +1,6 @@
 # 任务009C1F-Flash三组件+i18n
 
-> **状态：已生效（2026-09-21 参谋部确认批次1 规格包通过，可立即开工）。**
+> **状态：已审合（2026-09-21 前线并入 510f7c48，271 绿复跑+两裁决采纳；worktree 已清理）**
 > 规格源：`docs/design/009-单C-批次1-规格包.md` 第 4 节（本任务书是其裁发件，冲突时以规格包为准）。
 
 ## 运行配置（开工前设置，本节由前线填写完整）
@@ -77,8 +77,39 @@
 
 ## 疑问区（工程队填写）
 
-（空）
+（空——任务书与规格包的 modelValue 值集出入已按"冲突以规格包为准"解决，见交付报告偏差 1，未形成阻塞疑问）
 
 ## 交付报告（工程队填写）
 
-（空。格式：做了什么/为什么/自测结果/遗留问题/本窗口会话 ID）
+**做了什么**（2026-09-21，单 commit `555aa210`，8 文件 +341 行）：
+
+1. **AgentCacheRing.vue**：`hitRateLabel`/`compactLabel` props + `open-context-inspector` emit，与规格 §4.1 逐字一致。绿环 SVG（stroke-dasharray 比例描边，比例从 hitRateLabel 文本解析百分比、失败按 0，不造数），14px，hover `brightness-125` 变亮，空串 `v-if` 整体隐藏，title=`cacheRingTitle` 译文 + compactLabel 以 ` · ` 拼接。
+2. **AgentThinkingLevelSelect.vue**：`modelValue: ThinkingLevelDto | null` + `disabled` + `update:modelValue`。字标（当前档中文）+chevron 图标+透明原生 select 叠加（点击即原生下拉，可达性零成本）。只露低/中/高三档（DTO 值 low/medium/high），null 显示 "—" 占位；档位不在三档内（off/minimal/xhigh/max）时字标回退显示原值。
+3. **AgentSessionScaleBar.vue**：`segments`/`activeIndex` + `seek(index)`/`expand()`。右缘 24px（w-6）、高度随容器（h-full）、格 `min-h-[4px]` flex 均分保证可点击、活跃格 accent 高亮、hover 格变亮+右侧浮出预览卡（显示该格 summary）、点击/拖动定位、拖动 `setPointerCapture` + 80ms 节流；条底部「查看全部」图标按钮 emit `expand`。聚合与完整树归挂载侧，组件只渲染收到的 segments（未做 50 封顶裁剪）。
+4. **i18n**：zh-CN/en-US 的 `agent.composer` 块尾追加 `cacheRingTitle` / `thinkingLevel.low|mid|high` / `scaleBarViewAll`（各 +7 行，零既有值改动，commit 标注 `[i18n-add]`）。
+5. **三同名测试**（AgentCacheRing/AgentThinkingLevelSelect/AgentSessionScaleBar `.test.ts`）：契约断言（props/emits 字面量+关键实现特征）+ i18n 键双语齐备断言，仓库既有 readFile 源码断言模式（无 @vue/test-utils，mount 冒烟不可行）。
+
+**关键决策理由**：
+
+- **modelValue 值集以规格包为准**：任务书写 `'low'|'mid'|'high'|null`，但规格包 §4.2 与真实 `ThinkingLevelDto`（`shared/dto/app-settings.dto.ts:17`）都是七档枚举 `off/minimal/low/medium/high/xhigh/max`，且弹层内既有下拉就是七档。按"冲突以规格包为准"取 DTO 真实类型；UI 露三档（口径裁定 #5"外置快捷档位"），DTO 值 `medium` 映射 i18n 键 `thinkingLevel.mid`（键名照规格、值用 DTO 真实值）。
+- **seek 发 anchorIndex 而非格下标**：规格给 segments 带 `anchorIndex` 而组件要把 seek 变成"挂载侧可直接定位"，发锚点消息序号最省挂载侧一跳；相应地 activeIndex 口径=**anchorIndex ≤ activeIndex 的最后一格高亮**（对话滚动落在两格之间时仍有正确高亮）。**此口径规格未明说，请前线核对**。
+- **ScaleBar 未做 50 封顶裁剪**：任务书明文"格数封顶 50（超出由调用方聚合，组件只渲染收到的 segments）"——封顶是挂载侧义务，组件全量渲染。
+- **三键新建而非复用既有 `agent.composer.low/medium/high`**：规格契约逐字执行（验收第 4 条），键路径 `thinkingLevel.*` 是契约一部分；与既有键的语义重叠留给前线定夺是否收敛。
+
+**自测结果**：
+
+- 新测试 7 用例全绿（`bun run test -- app/components/novel-ide/agent/AgentCacheRing.test.ts AgentThinkingLevelSelect.test.ts AgentSessionScaleBar.test.ts`）
+- agent 目录回归：**29 文件 271 用例全绿**
+- `bun run --cwd packages/neuro-book typecheck`：**零错**（026 时登记的那条 master 基线错误已被前线在 814482b1 收尾时修复）
+- `npx impeccable detect`（worktree 外运行）：三组件**零发现**；全 agent 目录仅 2 条既有文件发现（AgentMarkdownContent.vue:181 side-tab、AgentWorkspaceChanges.vue:327 height transition），均属 5.3 独占的既有组件，与本任务无关
+- diff 审查：改动恰好=三新组件+三新测试+i18n 两文件各 +7 行纯块尾追加，无第五类改动
+- dev server 页面验证按任务书不适用（三组件未挂载，真机效果归前线批次1 统一验收）
+
+**遗留问题**：
+
+1. seek/activeIndex 的 anchorIndex 口径请前线核对（上文关键决策第 2 条）；若前线要格下标口径，改动只在两处 emit 与一处 computed。
+2. `thinkingLevel.low/mid/high` 与既有 `agent.composer.low/medium/high` 语义重叠，是否收敛归前线。
+3. CacheRing 的 title 拼接符（` · `）与 ScaleBar 预览卡样式（w-56/max-h-40）是规格留白处的自由裁量，前线挂载后不满意可直接改。
+4. worktree 环境新坑登记：新 worktree 需 `bun install` + `nuxt prepare` + `bun run generate`（prisma 生成物）三步后才可跑测试/typecheck，缺前者报 TSCONFIG_ERROR、缺后者报 prisma client 5 条 TS2307。
+
+**本窗口会话 ID**：`sess_f7630ad3-9078-4e74-b751-945479569d6e`
