@@ -1,6 +1,6 @@
 # 任务009C1F-Flash三组件+i18n
 
-> **状态：待参谋部确认批次1规格包后生效——收到用户"009单C批次1 已确认"口令前勿开工。**
+> **状态：已生效（2026-09-21 参谋部确认批次1 规格包通过，可立即开工）。**
 > 规格源：`docs/design/009-单C-批次1-规格包.md` 第 4 节（本任务书是其裁发件，冲突时以规格包为准）。
 
 ## 运行配置（开工前设置，本节由前线填写完整）
@@ -22,7 +22,7 @@
 
 1. 读 `D:\MyProject\neuro-book\AGENTS.md` 的"本 Fork 工作规矩"节（绝对路径）
 2. 读本任务书全文 + 规格包 `docs/design/009-单C-批次1-规格包.md` 第 3、4 节
-3. 确认工作位置：主仓库分支模式，`git branch --show-current` 必须输出 `task-009c-f1`（分支已由前线建好；若未切过去先 `git checkout task-009c-f1`）
+3. 确认工作位置：**worktree 模式**（与前线 5.3 并行施工，避免争用主仓库工作区）——在 `D:\MyProject\worktrees\task-009c-f1` 目录内，`git rev-parse --show-toplevel` 验证；**注意：worktree 内操作一律用绝对路径或先 cd 到 worktree 目录**（worktree 场景下向上搜索可能读不到主仓库根的 AGENTS.md，用绝对路径读）
 4. 读一个现成组件学约定：`packages/neuro-book/app/components/novel-ide/agent/AgentSessionModelControls.vue`（同目录 props/emits/Tailwind 主题变量写法）
 
 ## 范围与边界
