@@ -143,3 +143,39 @@ export function getWorkspaceLorebookStatusIndicatorClass(status: WorkspaceLorebo
     }
     return "bg-slate-400";
 }
+
+/**
+ * 返回文件树/详情面板类型角标的 i18n 键；无匹配返回 null，调用方回退显示原值。
+ * volume/chapter/lore/node 不在 lorebook 类型集合内：volume 是用户工作区自定的 frontmatter type，
+ * chapter/lore 来自约定目录名，node 是 content index 文件角标。
+ */
+export function getWorkspaceTreeTypeLabelKey(type: string): string | null {
+    if (type === "location") {
+        return "ide.workspace.filePanel.lorebookLocation";
+    }
+    if (type === "character") {
+        return "ide.workspace.filePanel.lorebookCharacter";
+    }
+    if (type === "item") {
+        return "ide.workspace.filePanel.lorebookItem";
+    }
+    if (type === "rule") {
+        return "ide.workspace.filePanel.lorebookRule";
+    }
+    if (type === "note") {
+        return "ide.workspace.filePanel.lorebookNote";
+    }
+    if (type === "volume") {
+        return "ide.workspace.filePanel.treeTypeVolume";
+    }
+    if (type === "chapter") {
+        return "ide.workspace.filePanel.treeTypeChapter";
+    }
+    if (type === "lore") {
+        return "ide.workspace.filePanel.treeTypeLore";
+    }
+    if (type === "node") {
+        return "ide.workspace.filePanel.treeTypeNode";
+    }
+    return null;
+}

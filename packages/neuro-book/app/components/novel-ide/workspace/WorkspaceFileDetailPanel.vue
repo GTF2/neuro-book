@@ -7,9 +7,13 @@ import TagInput from "nbook/app/components/common/form/TagInput.vue";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import {useNovelIdeStore, type WorkspaceFileIssue, type WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import {isWorkspaceContentScopePath} from "nbook/app/components/novel-ide/workspace/workspace-file-tree";
+import {
+    joinWorkspaceMarkdownDocument,
+    normalizeWorkspaceMarkdownDocument,
+    parseWorkspaceFrontmatterText,
+    splitWorkspaceMarkdownDocument,
+} from "nbook/app/components/novel-ide/workspace/workspace-frontmatter-profile";
 import {normalizeLucideIconName, readLucideIconClass} from "nbook/app/utils/lucide-icons";
-
-const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 
 type ManuscriptFrontmatterDraft = {
     title: string;
@@ -83,6 +87,11 @@ const readableTotalWords = computed(() => {
     }
     return "";
 });
+const currentWordsLabel = computed(() => t("ide.workspace.fileDetail.unitWords", {count: manuscriptStats.value.currentWords.toLocaleString(locale.value)}));
+const totalWordsLabel = computed(() => t("ide.workspace.fileDetail.unitWords", {count: manuscriptStats.value.totalWords.toLocaleString(locale.value)}));
+const totalSizeLabel = computed(() => t("ide.workspace.fileDetail.unitKb", {count: (manuscriptStats.value.totalSize / 1024).toFixed(1)}));
+const chaptersLabel = computed(() => t("ide.workspace.fileDetail.unitCount", {count: manuscriptStats.value.chapters.toLocaleString(locale.value)}));
+const filesLabel = computed(() => t("ide.workspace.fileDetail.unitCount", {count: manuscriptStats.value.files.toLocaleString(locale.value)}));
 const isDirectoryWithoutIndex = computed(() => Boolean(props.node?.isDirectory && !props.node.hasIndex));
 const isContentDirectoryWithoutIndex = computed(() => Boolean(props.node?.isDirectory && !props.node.hasIndex && isWorkspaceContentScopePath(props.node.path)));
 const canEditFrontmatter = computed(() => Boolean(isContentIndexFile.value && !isManuscriptIndexFile.value && !localFrontmatterError.value && !props.node?.frontmatterError));
@@ -94,8 +103,10 @@ const canConvertFileToDirectory = computed(() => Boolean(
     && isWorkspaceContentScopePath(props.node.path)
     && !props.node.path.toLowerCase().endsWith("/index.md"),
 ));
-const renderedContent = computed(() => renderMarkdownDocument(frontmatterText.value, markdownBody.value));
-const isFrontmatterDirty = computed(() => isContentIndexFile.value && renderedContent.value !== selectedFileContent.value);
+const renderedContent = computed(() => joinWorkspaceMarkdownDocument(frontmatterText.value, markdownBody.value));
+// 磁盘内容与编辑态各过同一规范化管道再比较；直接字节比较会把 CRLF、围栏后空行数等格式差异误报成"未保存"。
+const normalizedStoredContent = computed(() => isContentIndexFile.value ? normalizeWorkspaceMarkdownDocument(selectedFileContent.value) : "");
+const isFrontmatterDirty = computed(() => isContentIndexFile.value && renderedContent.value !== normalizedStoredContent.value);
 const manuscriptBasePath = computed(() => {
     if (!props.node) {
         return "";
@@ -105,7 +116,7 @@ const manuscriptBasePath = computed(() => {
     }
     return props.node.path.replace(/\/$/, "");
 });
-const currentIconName = computed(() => normalizeLucideIconName(parseFrontmatterText(frontmatterText.value).frontmatter.icon));
+const currentIconName = computed(() => normalizeLucideIconName(parseWorkspaceFrontmatterText(frontmatterText.value).frontmatter.icon));
 const currentIconClass = computed(() => readLucideIconClass(currentIconName.value) ?? "i-lucide-notebook-tabs");
 const readonlyFrontmatterText = computed(() => {
     if (!props.node) {
@@ -147,7 +158,7 @@ async function saveManuscriptForm(): Promise<void> {
         return;
     }
 
-    const parsed = parseFrontmatterText(frontmatterText.value);
+    const parsed = parseWorkspaceFrontmatterText(frontmatterText.value);
     if (parsed.error) {
         localFrontmatterError.value = parsed.error;
         return;
@@ -195,7 +206,7 @@ function refreshManuscriptStats(): void {
  * 将选择器里的图标名写入当前 frontmatter。
  */
 function applySelectedIcon(iconName: string): void {
-    const parsed = parseFrontmatterText(frontmatterText.value);
+    const parsed = parseWorkspaceFrontmatterText(frontmatterText.value);
     if (parsed.error) {
         localFrontmatterError.value = parsed.error;
         return;
@@ -220,12 +231,12 @@ watch(() => [props.node?.path, selectedFileContent.value], () => {
         return;
     }
 
-    const parsed = parseMarkdownDocument(selectedFileContent.value);
+    const parsed = splitWorkspaceMarkdownDocument(selectedFileContent.value);
     frontmatterText.value = parsed.frontmatterText;
     markdownBody.value = parsed.body;
     localFrontmatterError.value = parsed.error;
     if (props.node) {
-        manuscriptForm.value = createManuscriptDraft(props.node, parseFrontmatterText(parsed.frontmatterText).frontmatter);
+        manuscriptForm.value = createManuscriptDraft(props.node, parseWorkspaceFrontmatterText(parsed.frontmatterText).frontmatter);
         refreshManuscriptStats();
     }
     lastLoadedContent.value = selectedFileContent.value;
@@ -236,67 +247,8 @@ watch(frontmatterText, () => {
         localFrontmatterError.value = null;
         return;
     }
-    localFrontmatterError.value = parseFrontmatterText(frontmatterText.value).error;
+    localFrontmatterError.value = parseWorkspaceFrontmatterText(frontmatterText.value).error;
 });
-
-function parseMarkdownDocument(content: string): {
-    frontmatterText: string;
-    body: string;
-    error: string | null;
-} {
-    const match = content.match(FRONTMATTER_PATTERN);
-    if (!match) {
-        return {
-            frontmatterText: "",
-            body: content,
-            error: null,
-        };
-    }
-
-    const text = match[1] ?? "";
-    return {
-        frontmatterText: text.trimEnd(),
-        body: content.slice(match[0].length),
-        error: parseFrontmatterText(text).error,
-    };
-}
-
-function parseFrontmatterText(text: string): {
-    frontmatter: Record<string, unknown>;
-    error: string | null;
-} {
-    if (!text.trim()) {
-        return {frontmatter: {}, error: null};
-    }
-
-    try {
-        const parsed = YAML.parse(text, {logLevel: "silent"}) as unknown;
-        if (parsed === null) {
-            return {frontmatter: {}, error: null};
-        }
-        if (!isPlainObject(parsed)) {
-            return {frontmatter: {}, error: t("ide.workspace.common.frontmatterObjectError")};
-        }
-        return {frontmatter: parsed, error: null};
-    } catch (error) {
-        return {
-            frontmatter: {},
-            error: error instanceof Error ? error.message : t("ide.workspace.common.frontmatterParseFailed"),
-        };
-    }
-}
-
-function renderMarkdownDocument(text: string, body: string): string {
-    const parsed = parseFrontmatterText(text);
-    if (parsed.error || Object.keys(parsed.frontmatter).length === 0) {
-        return body;
-    }
-    return `---\n${text.trimEnd()}\n---\n\n${body}`;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
 
 /**
  * 从 frontmatter 和文件节点生成 manuscript 表单草稿。
@@ -358,8 +310,8 @@ function basename(filePath: string): string {
             <!-- 文件详情基础信息 -->
             <div class="min-w-0 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] px-2 py-1.5">
                 <div class="flex min-w-0 items-center justify-between gap-2">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ props.node.isDirectory ? "Directory" : "File" }}</div>
-                    <div class="shrink-0 text-[10px] text-[var(--text-muted)]">{{ props.node.editable ? t("ide.workspace.fileDetail.editable") : t("ide.workspace.fileDetail.readonly") }}</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ props.node.isDirectory ? t("ide.workspace.fileDetail.blockDirectory") : t("ide.workspace.fileDetail.blockFile") }}</div>
+                    <div class="shrink-0 text-[10px] text-[var(--text-muted)]" :title="props.node.editable ? t('ide.workspace.fileDetail.hintEditable') : t('ide.workspace.fileDetail.hintReadonly')">{{ props.node.editable ? t("ide.workspace.fileDetail.editable") : t("ide.workspace.fileDetail.readonly") }}</div>
                 </div>
                 <div class="mt-1 max-w-full truncate font-mono text-[11px] text-[var(--text-main)]" :title="props.node.path">{{ props.node.path }}</div>
             </div>
@@ -378,52 +330,52 @@ function basename(filePath: string): string {
             <!-- frontmatter 详情 -->
             <div v-if="isManuscriptIndexFile" class="min-w-0 space-y-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-2">
                 <div class="flex items-center justify-between gap-2">
-                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">Manuscript</div>
+                    <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.blockManuscript") }}</div>
                     <div class="flex shrink-0 items-center gap-2">
                         <span v-if="manuscriptStats.updatedAt" class="text-[10px] text-[var(--text-muted)]">{{ manuscriptStats.updatedAt }}</span>
                         <span v-if="isFrontmatterDirty" class="text-[10px] text-[var(--status-warning)]">{{ t("ide.workspace.common.unsaved") }}</span>
-                        <button type="button" class="rounded-md border border-[var(--border-color)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" @click="refreshManuscriptStats">{{ t("ide.workspace.fileDetail.updateStats") }}</button>
+                        <button type="button" class="rounded-md border border-[var(--border-color)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('ide.workspace.fileDetail.hintUpdateStats')" @click="refreshManuscriptStats">{{ t("ide.workspace.fileDetail.updateStats") }}</button>
                     </div>
                 </div>
                 <div class="grid grid-cols-5 gap-1.5">
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.current") }}</div>
-                        <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.currentWords }}</div>
+                        <div class="mt-0.5 text-[var(--text-main)]">{{ currentWordsLabel }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.total") }}</div>
-                        <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.totalWords }}</div>
+                        <div class="mt-0.5 text-[var(--text-main)]">{{ totalWordsLabel }}</div>
                         <div v-if="readableTotalWords" class="text-[11px] text-[var(--text-muted)]">{{ readableTotalWords }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.size") }}</div>
-                        <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.totalSize }}</div>
+                        <div class="mt-0.5 text-[var(--text-main)]">{{ totalSizeLabel }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.chapters") }}</div>
-                        <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.chapters }}</div>
+                        <div class="mt-0.5 text-[var(--text-main)]">{{ chaptersLabel }}</div>
                     </div>
                     <div class="rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                         <div class="text-[8px] uppercase tracking-[0.12em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.files") }}</div>
-                        <div class="mt-0.5 text-[var(--text-main)]">{{ manuscriptStats.files }}</div>
+                        <div class="mt-0.5 text-[var(--text-main)]">{{ filesLabel }}</div>
                     </div>
                 </div>
                 <div class="grid grid-cols-[minmax(0,1fr)_132px] gap-2">
                     <div class="space-y-1">
-                        <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ t("ide.workspace.common.title") }}</label>
+                        <label class="text-[11px] font-medium text-[var(--text-secondary)]" :title="t('ide.workspace.fileDetail.hintTitle')">{{ t("ide.workspace.common.title") }}</label>
                         <input v-model="manuscriptForm.title" class="h-7 w-full rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 text-xs text-[var(--text-main)] outline-none focus:border-[var(--accent-main)]" type="text" @blur="void saveManuscriptForm()">
                     </div>
                     <div class="space-y-1">
-                        <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ t("ide.workspace.common.status") }}</label>
+                        <label class="text-[11px] font-medium text-[var(--text-secondary)]" :title="t('ide.workspace.fileDetail.hintStatus')">{{ t("ide.workspace.common.status") }}</label>
                         <FormSelect :model-value="manuscriptForm.status || 'draft'" :options="manuscriptStatusOptions" @update:model-value="manuscriptForm.status = $event; void saveManuscriptForm()" />
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ t("ide.workspace.common.tags") }}</label>
+                    <label class="text-[11px] font-medium text-[var(--text-secondary)]" :title="t('ide.workspace.fileDetail.hintTags')">{{ t("ide.workspace.common.tags") }}</label>
                     <TagInput :model-value="manuscriptForm.tags" :placeholder="t('ide.workspace.common.addTag')" accentStyle @update:model-value="manuscriptForm.tags = $event; void saveManuscriptForm()" />
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[11px] font-medium text-[var(--text-secondary)]">{{ t("ide.workspace.common.summary") }}</label>
+                    <label class="text-[11px] font-medium text-[var(--text-secondary)]" :title="t('ide.workspace.fileDetail.hintSummary')">{{ t("ide.workspace.common.summary") }}</label>
                     <textarea v-model="manuscriptForm.summary" rows="3" class="w-full resize-y rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5 text-xs leading-5 text-[var(--text-main)] outline-none focus:border-[var(--accent-main)]" @blur="void saveManuscriptForm()"></textarea>
                 </div>
             </div>

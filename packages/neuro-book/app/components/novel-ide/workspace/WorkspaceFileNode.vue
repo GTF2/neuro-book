@@ -12,6 +12,7 @@ import {
 import {
     getWorkspaceLorebookStatusIndicatorClass,
     getWorkspaceLorebookTypeMeta,
+    getWorkspaceTreeTypeLabelKey,
     readWorkspaceLorebookStatus,
     readWorkspaceLorebookType,
 } from "nbook/app/components/novel-ide/workspace/workspace-entry-meta";
@@ -51,6 +52,21 @@ const iconClass = computed(() => getWorkspaceFileIcon(props.node, isOpen.value))
 const configuredIconClass = computed(() => readLucideIconClass(props.node.icon));
 const isContentIndexFile = computed(() => !isLorebookEntry.value && isWorkspaceContentIndexNode(props.node));
 const directoryMeta = computed(() => props.node.isDirectory && isWorkspaceContentScopePath(props.node.path) ? resolveDirectoryMeta(basename(props.node.path)) : null);
+const entryTypeLabel = computed(() => {
+    const type = props.node.entryType;
+    if (!type) {
+        return "";
+    }
+    const labelKey = getWorkspaceTreeTypeLabelKey(type);
+    return labelKey ? t(labelKey) : type;
+});
+const directoryTypeLabel = computed(() => {
+    if (!directoryMeta.value) {
+        return "";
+    }
+    const labelKey = getWorkspaceTreeTypeLabelKey(directoryMeta.value.label);
+    return labelKey ? t(labelKey) : directoryMeta.value.label;
+});
 const displayIconClass = computed(() => {
     if (configuredIconClass.value) {
         return configuredIconClass.value;
@@ -298,13 +314,13 @@ onUnmounted(() => {
                     {{ nodeName }}
                 </span>
                 <span v-else-if="node.entryType" class="max-w-[84px] shrink-0 truncate text-[10px] opacity-60">
-                    {{ node.entryType }}
+                    {{ entryTypeLabel }}
                 </span>
                 <span v-else-if="directoryMeta" class="max-w-[72px] shrink-0 truncate text-right text-[10px] opacity-45">
-                    {{ directoryMeta.label }}
+                    {{ directoryTypeLabel }}
                 </span>
                 <span v-else-if="isContentIndexFile" class="shrink-0 text-[10px] text-[var(--text-muted)] opacity-45">
-                    node
+                    {{ t("ide.workspace.filePanel.treeTypeNode") }}
                 </span>
                 <span v-if="isLorebookEntry" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="statusIndicatorClass" :title="statusLabel"></span>
                 <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="node.status"></span>
