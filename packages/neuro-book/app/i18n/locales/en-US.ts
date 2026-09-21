@@ -1297,6 +1297,7 @@ const enUS = {
                 hintUpdateStats: "Re-count words, chapters and files of this volume",
                 hintEditable: "Editable directly in the editor",
                 hintReadonly: "Read-only, cannot be edited in the editor",
+                typeLabel: "Type",
             },
             lorebookDetail: {
                 path: "Path",

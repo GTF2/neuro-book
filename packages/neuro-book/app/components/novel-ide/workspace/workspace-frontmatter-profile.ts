@@ -39,6 +39,8 @@ const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 
 /**
  * 解析 Markdown 文档的 YAML frontmatter，解析失败时保留正文切分结果。
+ * 正文剥掉围栏后的前导空行，与 renderMarkdownDocument 固定补回一个空行构成幂等规范化：
+ * 否则 parse 保留 `\n` 前导、render 再补 `\n\n`，每次保存轮空行 +1（focus/blur 空行 bug 的根因）。
  */
 export function parseMarkdownDocument(content: string): ParsedMarkdownDocument {
     const match = content.match(FRONTMATTER_PATTERN);
@@ -50,13 +52,13 @@ export function parseMarkdownDocument(content: string): ParsedMarkdownDocument {
         const parsed = YAML.parse(match[1] ?? "", {logLevel: "silent"}) as unknown;
         return {
             frontmatter: isPlainObject(parsed) ? parsed : {},
-            body: content.slice(match[0].length),
+            body: content.slice(match[0].length).replace(/^(?:\r?\n)+/, ""),
             error: isPlainObject(parsed) || parsed === null ? null : translate("ide.workspace.common.frontmatterObjectError", "frontmatter 必须是对象"),
         };
     } catch (error) {
         return {
             frontmatter: {},
-            body: content.slice(match[0].length),
+            body: content.slice(match[0].length).replace(/^(?:\r?\n)+/, ""),
             error: error instanceof Error ? error.message : translate("ide.workspace.common.frontmatterParseFailed", "frontmatter 解析失败"),
         };
     }
@@ -146,66 +148,4 @@ export function basename(filePath: string): string {
  */
 export function isPlainObject(value: unknown): value is Record<string, unknown> {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value);
-}
-
-/**
- * 按围栏切分 Markdown；frontmatter 保持原文文本不重排（区别于 parseMarkdownDocument 的对象版）。
- * 正文剥掉围栏后的前导空行，与 joinWorkspaceMarkdownDocument 的固定补回构成幂等规范化；
- * 详情面板的编辑态与磁盘态都必须走同一套切分/重组，dirty 比较才是格式无关的。
- */
-export function splitWorkspaceMarkdownDocument(content: string): {frontmatterText: string; body: string; error: string | null} {
-    const match = content.match(FRONTMATTER_PATTERN);
-    if (!match) {
-        return {frontmatterText: "", body: content, error: null};
-    }
-    const text = match[1] ?? "";
-    return {
-        frontmatterText: text.trimEnd(),
-        body: content.slice(match[0].length).replace(/^(?:\r?\n)+/, ""),
-        error: parseWorkspaceFrontmatterText(text).error,
-    };
-}
-
-/**
- * 把 frontmatter 文本段拼回完整 Markdown；空段或非对象 frontmatter 时只返回正文。
- */
-export function joinWorkspaceMarkdownDocument(frontmatterText: string, body: string): string {
-    const parsed = parseWorkspaceFrontmatterText(frontmatterText);
-    if (parsed.error || Object.keys(parsed.frontmatter).length === 0) {
-        return body;
-    }
-    return `---\n${frontmatterText.trimEnd()}\n---\n\n${body}`;
-}
-
-/**
- * 解析 frontmatter 文本段为对象；空段视为空对象。
- */
-export function parseWorkspaceFrontmatterText(text: string): {frontmatter: Record<string, unknown>; error: string | null} {
-    if (!text.trim()) {
-        return {frontmatter: {}, error: null};
-    }
-    try {
-        const parsed = YAML.parse(text, {logLevel: "silent"}) as unknown;
-        if (parsed === null) {
-            return {frontmatter: {}, error: null};
-        }
-        if (!isPlainObject(parsed)) {
-            return {frontmatter: {}, error: translate("ide.workspace.common.frontmatterObjectError", "frontmatter 必须是对象")};
-        }
-        return {frontmatter: parsed, error: null};
-    } catch (error) {
-        return {
-            frontmatter: {},
-            error: error instanceof Error ? error.message : translate("ide.workspace.common.frontmatterParseFailed", "frontmatter 解析失败"),
-        };
-    }
-}
-
-/**
- * 规范化管道：切分再重组。磁盘内容与编辑态内容比较前各过一遍，
- * 消除行尾风格、frontmatter 尾部空行、围栏后空行数等格式差异造成的假 dirty。
- */
-export function normalizeWorkspaceMarkdownDocument(content: string): string {
-    const sections = splitWorkspaceMarkdownDocument(content);
-    return joinWorkspaceMarkdownDocument(sections.frontmatterText, sections.body);
 }

@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import YAML from "yaml";
 import {storeToRefs} from "pinia";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import Combobox from "nbook/app/components/common/form/Combobox.vue";
+import {
+    basename,
+    parseMarkdownDocument,
+    readGovernance,
+    readNullableString,
+    readRefs,
+    readRetrieval,
+    readString,
+    readStringArray,
+    renderMarkdownDocument,
+} from "nbook/app/components/novel-ide/workspace/workspace-frontmatter-profile";
 import {
     getWorkspaceLorebookStatusIndicatorClass,
     getWorkspaceLorebookTypeMeta,
@@ -43,7 +53,6 @@ type LorebookFileDraft = {
     legacyWritingTip?: string | null;
 };
 
-const FRONTMATTER_PATTERN = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/;
 const LOCATION_SUBTYPES = ["world", "continent", "nation", "region", "city", "district", "building", "room", "landmark", "facility", "ruin", "dungeon", "settlement", "transport"];
 const ITEM_SUBTYPES = ["artifact", "consumable", "equipment", "resource", "document", "token"];
 const CHARACTER_SUBTYPES = ["person", "important", "background", "unknown", "group"];
@@ -77,7 +86,16 @@ const expandedSections = ref({
 const typeMeta = computed(() => editForm.value ? getWorkspaceLorebookTypeMeta(editForm.value.type) : null);
 const currentIconName = computed(() => normalizeLucideIconName(editForm.value?.icon) ?? normalizeLucideIconName(props.node?.icon));
 const currentIconClass = computed(() => readLucideIconClass(currentIconName.value) ?? typeMeta.value?.icon ?? "i-lucide-scroll-text");
-const isDirty = computed(() => editForm.value ? renderDraft(editForm.value) !== selectedFileContent.value : false);
+// dirty 用对称管道判定：磁盘内容也走 parse→createDraft→renderDraft 再比较，
+// CRLF、YAML 键序、围栏后空行数等格式差异被同一管道吸收，只剩真语义差异（026 同族修法）。
+const isDirty = computed(() => {
+    if (!editForm.value || !props.node) {
+        return false;
+    }
+    const stored = parseMarkdownDocument(selectedFileContent.value);
+    const storedDraft = createDraft(props.node, stored.frontmatter, stored.body);
+    return renderDraft(editForm.value) !== renderDraft(storedDraft);
+});
 const relatedIssues = computed(() => {
     if (!props.node) {
         return [];
@@ -173,32 +191,6 @@ watch(() => [props.node?.path, selectedFileContent.value], () => {
     diagnostics.value = parsed.error ?? "";
 }, {immediate: true});
 
-function parseMarkdownDocument(content: string): {
-    frontmatter: Record<string, unknown>;
-    body: string;
-    error: string | null;
-} {
-    const match = content.match(FRONTMATTER_PATTERN);
-    if (!match) {
-        return {frontmatter: {}, body: content, error: null};
-    }
-
-    try {
-        const parsed = YAML.parse(match[1] ?? "", {logLevel: "silent"});
-        return {
-            frontmatter: isPlainObject(parsed) ? parsed : {},
-            body: content.slice(match[0].length),
-            error: isPlainObject(parsed) || parsed === null ? null : t("ide.workspace.common.frontmatterObjectError"),
-        };
-    } catch (error) {
-        return {
-            frontmatter: {},
-            body: content.slice(match[0].length),
-            error: error instanceof Error ? error.message : t("ide.workspace.common.frontmatterParseFailed"),
-        };
-    }
-}
-
 function createDraft(node: WorkspaceFileNode, frontmatter: Record<string, unknown>, body: string): LorebookFileDraft {
     const legacyWritingTip = Object.prototype.hasOwnProperty.call(frontmatter, "writingTip")
         ? {legacyWritingTip: readNullableString(frontmatter.writingTip)}
@@ -237,65 +229,13 @@ function renderDraft(draft: LorebookFileDraft): string {
         governance: draft.governance,
         ...(draft.legacyWritingTip !== undefined ? {writingTip: draft.legacyWritingTip} : {}),
     };
-    return `---\n${YAML.stringify(frontmatter).trimEnd()}\n---\n\n${draft.content}`;
+    return renderMarkdownDocument(frontmatter, draft.content);
 }
 
 function readLorebookType(value: unknown): LorebookFileDraft["type"] {
     return ["location", "character", "item", "rule", "note"].includes(String(value))
         ? String(value) as LorebookFileDraft["type"]
         : "note";
-}
-
-function readString(value: unknown, fallback: string): string {
-    return typeof value === "string" ? value : fallback;
-}
-
-function readNullableString(value: unknown): string | null {
-    return typeof value === "string" && value.trim() ? value : null;
-}
-
-function readStringArray(value: unknown): string[] {
-    return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
-}
-
-function readRefs(value: unknown): LorebookFileRef[] {
-    if (!Array.isArray(value)) {
-        return [];
-    }
-    return value.filter(isPlainObject).map((item) => ({
-        relation: readString(item.relation, ""),
-        target: readString(item.target, ""),
-        note: readNullableString(item.note),
-    }));
-}
-
-function readRetrieval(value: unknown): LorebookFileDraft["retrieval"] {
-    if (!isPlainObject(value)) {
-        return {enabled: true, trigger: null};
-    }
-    return {
-        enabled: typeof value.enabled === "boolean" ? value.enabled : true,
-        trigger: readNullableString(value.trigger),
-    };
-}
-
-function readGovernance(value: unknown): LorebookFileDraft["governance"] {
-    if (!isPlainObject(value)) {
-        return {source: "manual", review: "proposed"};
-    }
-    return {
-        source: readString(value.source, "manual"),
-        review: readString(value.review, "proposed"),
-    };
-}
-
-function basename(filePath: string): string {
-    const normalizedPath = filePath.replace(/\/$/, "");
-    return normalizedPath.includes("/") ? normalizedPath.slice(normalizedPath.lastIndexOf("/") + 1) : normalizedPath;
-}
-
-function isPlainObject(value: unknown): value is Record<string, unknown> {
-    return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 </script>
 
@@ -307,7 +247,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
                     <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[11px]" :class="typeMeta.iconClass">
                         <span :class="currentIconClass" class="h-3.5 w-3.5"></span>
                     </span>
-                    <span v-if="isDirty" class="h-2 w-2 shrink-0 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.dirty')"></span>
                     <span class="truncate font-serif text-sm font-bold tracking-wide text-[var(--text-main)]">{{ editForm.title || editForm.name }}</span>
                 </template>
             </div>
