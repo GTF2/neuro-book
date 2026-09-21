@@ -1156,6 +1156,7 @@ const enUS = {
                 collapse: "Collapse",
                 dirty: "Unsaved changes",
                 unsaved: "Unsaved",
+                saved: "Saved",
                 status: "Status",
                 title: "Title",
                 tags: "Tags",
@@ -1855,12 +1856,17 @@ const enUS = {
             cycleModeTitle: "Current {mode}. Click or Shift+Tab to cycle modes",
             discussPlaceholder: "Discuss mode (read-only): ask, analyze, compare options... (type {'@'} to reference, $ skills, / commands)",
             planPlaceholder: "Plan mode (read-only): plan first, then implement... (type {'@'} to reference, $ skills, / commands)",
-            cacheRingTitle: "Cache hit overview",
-            thinkingLevel: {
-                low: "Low",
-                mid: "Medium",
-                high: "High",
-            },
+            cacheRingTitle: "Cache overview",
+            // [i18n-add] 009C1R ring panel rows
+            cacheRingCached: "Cached",
+            cacheRingLimit: "Cache limit",
+            cacheRingUpload: "Upload",
+            cacheRingDownload: "Download",
+            cacheRingHitRate: "Hit rate",
+            // [i18n-add] 009C1R import button
+            importTitle: "Import (images as attachments, text into composer)",
+            // [i18n-add] 009C1R scale outline panel
+            scaleOutlineTitle: "Chat outline",
             scaleBarViewAll: "View full session tree",
         },
         attachments: {
@@ -2019,6 +2025,7 @@ const enUS = {
             // [i18n-add] 009单C批次1 顶栏收编 ⓘ 容器（5.3 侧追加）
             infoMenuTitle: "Chat details (system prompt / linked agents / summarizer)",
             summarizerLabel: "Summarizer",
+            summarizerIdle: "Idle",
             inlineRunning: "In progress",
             inlineSessionLabel: "Automatic Inline AI Session",
             connecting: "Connecting",
@@ -2218,6 +2225,11 @@ const enUS = {
             nodeCount: "{count} nodes",
             leaf: "leaf {leaf}",
             searchPlaceholder: "Search content, type, or Entry ID...",
+            filterDefault: "Main",
+            filterNoTools: "No tools",
+            filterUser: "User only",
+            filterLabeled: "Labeled",
+            filterAllLabel: "All",
             filterDefaultTitle: "Show main history nodes",
             filterNoToolsTitle: "Hide tool results and keep conversation nodes",
             filterUserTitle: "Only show user and system injection messages",
@@ -2268,6 +2280,7 @@ const enUS = {
             rejected: "Switch to {mode} rejected",
         },
         textBubble: {
+            expandFull: "Show full text",
             steer: "Steer",
             you: "You",
             collapse: "Collapse",

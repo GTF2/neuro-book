@@ -8,11 +8,11 @@ import AgentThinkingLevelSelect from "nbook/app/components/novel-ide/agent/Agent
 import AgentUserInputPrompt from "nbook/app/components/novel-ide/agent/AgentUserInputPrompt.vue";
 import AgentWorkspaceChanges from "nbook/app/components/novel-ide/agent/AgentWorkspaceChanges.vue";
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
+import type {EnabledModelOptionDto, ThinkingLevelDto} from "nbook/shared/dto/app-settings.dto";
 import type {
     AgentTriggerMenuContext,
     AgentTriggerMenuState,
 } from "nbook/app/components/novel-ide/agent/trigger-menu";
-import type {EnabledModelOptionDto} from "nbook/shared/dto/app-settings.dto";
 import type {AgentQueuedMessageDto, AgentMode, AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import {publicValuePreviewJsonValue} from "nbook/app/components/novel-ide/agent/agent-message";
 import {agentAttachmentUrl} from "nbook/app/components/novel-ide/agent/agent-attachment";
@@ -35,17 +35,14 @@ const props = defineProps<{
     availability: AgentComposerAvailability;
     canRegisterAttachments: boolean;
     canInsertAttachments: boolean;
-    /** 附件入口收编参数（009单C批次1：顶栏按钮迁入输入框左下，宿主持有面板开关与计数）。 */
-    attachmentPanelOpen: boolean;
-    attachmentCount: number;
-    attachmentButtonDisabled: boolean;
     loadingSession: boolean;
     sessionModelSaving: boolean;
-    sessionModelPopoverOpen: boolean;
     sessionModelSelectionValue: string | null;
-    sessionThinkingResolvedLabel: string;
-    sessionModelDraft: AgentSessionModelDraft;
     selectableModels: EnabledModelOptionDto[];
+    /** 009C1R 微调4：会话当前请求档（真实值，非草稿）；null=跟随 Profile */
+    sessionThinkingLevel?: ThinkingLevelDto | null;
+    /** Profile 解析后的实际生效档，档位件跟随 Profile 时标注 */
+    sessionEffectiveThinkingLevel?: ThinkingLevelDto | null;
     agentMode: AgentMode;
     canContinueWithoutInput: boolean;
     contextUsageExactLabel: string;
@@ -55,6 +52,10 @@ const props = defineProps<{
     cumulativeInputCompactLabel: string;
     cumulativeOutputCompactLabel: string;
     cumulativeCacheCompactLabel: string;
+    /** 绿环比例（009C1R 必修C）：已缓存 token / 上下文总容量；null=无数据隐藏 */
+    cacheRingRatio?: number | null;
+    /** 上下文总容量紧凑文本，绿环 hover 面板「最大缓存」行 */
+    cacheLimitLabel?: string;
     cumulativeCacheWriteCompactLabel: string;
     cumulativeCacheHitRateLabel: string;
     cumulativeCostCompactLabel: string;
@@ -76,9 +77,9 @@ const props = defineProps<{
 const emit = defineEmits<{
     (e: "update:inputText", value: string): void;
     (e: "update:pendingResolutionDraft", value: AgentPendingResolutionDraft): void;
-    (e: "update:sessionModelPopoverOpen", value: boolean): void;
-    (e: "update:sessionModelDraft", value: AgentSessionModelDraft): void;
     (e: "update-session-model-selection", value: string | null): void;
+    /** 009C1R 微调6：外置档位件即选即生效（宿主走 updateSessionThinkingLevel 立即通道）。 */
+    (e: "update-session-thinking-level", value: ThinkingLevelDto | null): void;
     (e: "submit-user-input"): void;
     (e: "cancel-user-input"): void;
     (e: "resync-user-input"): void;
@@ -89,15 +90,11 @@ const emit = defineEmits<{
     (e: "followup"): void;
     (e: "stop"): void;
     (e: "cycle-mode"): void;
-    (e: "toggle-session-model-popover"): void;
-    (e: "apply-session-model-settings"): void;
-    (e: "reset-session-model-settings"): void;
     (e: "reconnect-events"): void;
     (e: "refresh-history"): void;
     (e: "open-history-inbox"): void;
     (e: "open-workspace-file", path: string): void;
     (e: "attachment-registered", item: AgentSessionAttachmentItemDto): void;
-    (e: "toggle-attachment-panel"): void;
     (e: "availability-action", action: AgentComposerAvailabilityAction): void;
 }>();
 
@@ -436,6 +433,47 @@ function handleImageFileSelection(event: Event): void {
     input.value = "";
 }
 
+const IMPORT_TEXT_EXTENSIONS = new Set([".txt", ".md", ".markdown", ".csv", ".json"]);
+
+/** 「+」通用导入（009C1R 微调7）：图片挂附件，文本读入输入框，其余类型明示不支持。 */
+function selectImportFiles(): void {
+    if (!composerReadonly.value) {
+        imageFileInputRef.value?.click();
+    }
+}
+
+async function handleImportFileSelection(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files ?? []);
+    input.value = "";
+    const notification = useNotification();
+    const imagesToQueue: File[] = [];
+    for (const file of files) {
+        if (file.type.startsWith("image/") || /\.(png|jpe?g|gif|webp)$/iu.test(file.name)) {
+            imagesToQueue.push(file);
+            continue;
+        }
+        const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+        if (file.type.startsWith("text/") || IMPORT_TEXT_EXTENSIONS.has(extension)) {
+            if (file.size > 512 * 1024) {
+                notification.warning(`${file.name}：文本文件超过 512 KB，未导入。`, {title: t("agent.composer.importTitle")});
+                continue;
+            }
+            try {
+                const text = await file.text();
+                emit("update:inputText", `${props.inputText}${props.inputText ? "\n\n" : ""}<!-- 导入自 ${file.name} -->\n${text}`);
+            } catch {
+                notification.warning(`${file.name}：读取失败，未导入。`, {title: t("agent.composer.importTitle")});
+            }
+            continue;
+        }
+        notification.warning(`${file.name}：当前版本支持图片与文本导入，PDF 等格式将在后续批次支持。`, {title: t("agent.composer.importTitle")});
+    }
+    if (imagesToQueue.length > 0) {
+        queueImageFiles({files: imagesToQueue});
+    }
+}
+
 function notifyImageFilesBlocked(): void {
     images.notifyBlocked();
 }
@@ -644,52 +682,47 @@ defineExpose({focus, insertAttachment});
 
             <div class="flex min-w-0 items-center gap-2 border-t border-[var(--border-color)]/50 px-2 py-2">
                 <div class="flex min-w-0 flex-1 items-center gap-2">
-                    <!-- 附件入口（009单C批次1：从顶栏收编进输入框左下；开关与计数由宿主持有） -->
+                    <!-- 「+」通用导入（009C1R 微调7）：图片挂附件、文本读入输入框；📎 附件入口已收编进顶栏 ⓘ -->
                     <button
                         type="button"
                         class="flex shrink-0 items-center gap-1 rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40"
-                        :class="props.attachmentPanelOpen ? 'bg-[var(--bg-hover)] text-[var(--accent-text)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'"
-                        :disabled="props.attachmentButtonDisabled"
-                        :title="t('agent.composer.attachmentsTitle')"
-                        @click="emit('toggle-attachment-panel')"
+                        :class="'text-[var(--text-muted)] hover:text-[var(--text-main)]'"
+                        :disabled="!canRegisterImages"
+                        :title="t('agent.composer.importTitle')"
+                        @click="selectImportFiles"
                     >
-                        <span class="i-lucide-paperclip h-3.5 w-3.5"></span>
-                        <span v-if="props.attachmentCount > 0" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ props.attachmentCount }}</span>
+                        <span class="i-lucide-file-plus h-3.5 w-3.5"></span>
                     </button>
-                    <!-- 缓存命中绿环（009单C批次1）：模型选择器左侧，hover 现有累计标签，点击复用上下文检查面板 -->
+                    <!-- 缓存绿环（009C1R 必修C）：环=已缓存/上下文容量比例，hover 自制面板与底部统计条同源 -->
                     <AgentCacheRing
+                        :cache-ratio="props.cacheRingRatio ?? null"
+                        :cached-label="props.cumulativeCacheCompactLabel"
+                        :limit-label="props.cacheLimitLabel ?? '-'"
+                        :input-label="props.cumulativeInputCompactLabel"
+                        :output-label="props.cumulativeOutputCompactLabel"
                         :hit-rate-label="props.cumulativeCacheHitRateLabel"
-                        :compact-label="props.cumulativeCacheCompactLabel"
                         @open-context-inspector="emit('open-context-inspector')"
                     />
+                    <!-- 模型选择器（009C1R 微调3/6）：固定宽度区间，短名不塌长名省略；弹层已删，选模型即生效 -->
                     <AgentSessionModelControls
                         :session-model-selection-value="props.sessionModelSelectionValue"
-                        :session-thinking-resolved-label="props.sessionThinkingResolvedLabel"
-                        :session-model-draft="props.sessionModelDraft"
                         :selectable-models="props.selectableModels"
-                        :session-model-saving="props.sessionModelSaving"
-                        :session-model-popover-open="props.sessionModelPopoverOpen"
                         :readonly="composerReadonly"
                         :running="props.running"
                         :loading-session="props.loadingSession"
                         dropdown-direction="up"
-                        root-class="min-w-0 max-w-[320px] flex-1"
-                        popover-class="w-[360px]"
-                        @update:session-model-popover-open="emit('update:sessionModelPopoverOpen', $event)"
-                        @update:session-model-draft="emit('update:sessionModelDraft', $event)"
+                        root-class="w-[200px] min-w-[140px] max-w-[260px]"
                         @update-session-model-selection="emit('update-session-model-selection', $event)"
-                        @toggle-session-model-popover="emit('toggle-session-model-popover')"
-                        @apply-session-model-settings="emit('apply-session-model-settings')"
-                        @reset-session-model-settings="emit('reset-session-model-settings')"
                     />
-                    <!-- 思考档快捷件（009单C批次1）：模型选择器右侧，与弹层内下拉同一 sessionModelDraft 通道双向同步 -->
+                    <!-- 思考档下拉（009C1R 微调4/5/6）：读会话真实当前档，八项全量，即选即生效 -->
                     <AgentThinkingLevelSelect
-                        :model-value="props.sessionModelDraft.reasoningEffort ?? null"
+                        :model-value="props.sessionThinkingLevel ?? null"
+                        :effective-level="props.sessionEffectiveThinkingLevel ?? null"
                         :disabled="composerReadonly || props.running"
-                        @update:model-value="emit('update:sessionModelDraft', {...props.sessionModelDraft, reasoningEffort: $event})"
+                        @update:model-value="emit('update-session-thinking-level', $event)"
                     />
 
-                    <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp" @change="handleImageFileSelection" />
+                    <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp,text/plain,.md,.markdown,.txt,.csv,.json" @change="handleImportFileSelection" />
                     <button
                         type="button"
                         class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"

@@ -139,8 +139,9 @@ const hasRelatedIssues = computed(() => relatedIssues.value.length > 0);
 
 /**
  * 保存当前 Markdown 文件的 frontmatter，正文保持不变。
+ * notify=true 时给成功提示（009C1R 微调10：手动保存反馈；blur 自动保存保持静默）。
  */
-async function saveFrontmatter(): Promise<void> {
+async function saveFrontmatter(options?: {notify?: boolean}): Promise<void> {
     if (!isContentIndexFile.value || localFrontmatterError.value || props.node?.frontmatterError || savingFile.value || !isFrontmatterDirty.value) {
         return;
     }
@@ -148,12 +149,15 @@ async function saveFrontmatter(): Promise<void> {
     selectedFileContent.value = renderedContent.value;
     await store.saveCurrentFile();
     lastLoadedContent.value = selectedFileContent.value;
+    if (options?.notify) {
+        useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? ""});
+    }
 }
 
 /**
  * 保存 manuscript 节点表单，保留未展示的 frontmatter 字段。
  */
-async function saveManuscriptForm(): Promise<void> {
+async function saveManuscriptForm(options?: {notify?: boolean}): Promise<void> {
     if (!isManuscriptIndexFile.value || localFrontmatterError.value || props.node?.frontmatterError || savingFile.value) {
         return;
     }
@@ -171,7 +175,7 @@ async function saveManuscriptForm(): Promise<void> {
         tags: manuscriptForm.value.tags,
         summary: manuscriptForm.value.summary,
     }).trimEnd();
-    await saveFrontmatter();
+    await saveFrontmatter(options);
 }
 
 /**
@@ -303,7 +307,7 @@ function basename(filePath: string): string {
         <template #actions>
             <button v-if="canCreateIndex" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('create-index')">{{ t("ide.workspace.fileDetail.convert") }}</button>
             <button v-if="canConvertFileToDirectory" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('convert-file-to-directory')">{{ t("ide.workspace.fileDetail.convertToDirectory") }}</button>
-            <button v-if="isContentIndexFile" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-45" type="button" :disabled="isManuscriptIndexFile ? savingFile : (!isFrontmatterDirty || savingFile)" @click="isManuscriptIndexFile ? void saveManuscriptForm() : void saveFrontmatter()">{{ t("ide.workspace.common.save") }}</button>
+            <button v-if="isContentIndexFile" class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-45" type="button" :disabled="isManuscriptIndexFile ? savingFile : (!isFrontmatterDirty || savingFile)" @click="isManuscriptIndexFile ? void saveManuscriptForm({notify: true}) : void saveFrontmatter({notify: true})"><span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}</button>
         </template>
 
         <div v-if="props.node" class="grid min-w-0 gap-2 text-xs text-[var(--text-secondary)]">
@@ -333,7 +337,7 @@ function basename(filePath: string): string {
                     <div class="text-[10px] uppercase tracking-[0.16em] text-[var(--text-muted)]">{{ t("ide.workspace.fileDetail.blockManuscript") }}</div>
                     <div class="flex shrink-0 items-center gap-2">
                         <span v-if="manuscriptStats.updatedAt" class="text-[10px] text-[var(--text-muted)]">{{ manuscriptStats.updatedAt }}</span>
-                        <span v-if="isFrontmatterDirty" class="text-[10px] text-[var(--status-warning)]">{{ t("ide.workspace.common.unsaved") }}</span>
+                        <span v-if="isFrontmatterDirty" class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                         <button type="button" class="rounded-md border border-[var(--border-color)] px-1.5 py-0.5 text-[10px] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('ide.workspace.fileDetail.hintUpdateStats')" @click="refreshManuscriptStats">{{ t("ide.workspace.fileDetail.updateStats") }}</button>
                     </div>
                 </div>
@@ -383,7 +387,7 @@ function basename(filePath: string): string {
             <div v-else-if="isContentIndexFile || props.node.contentNode" class="space-y-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-input)] p-2">
                 <div class="flex items-center justify-between gap-2">
                     <div class="text-[10px] uppercase tracking-[0.18em] text-[var(--text-muted)]">Frontmatter</div>
-                    <span v-if="isContentIndexFile && isFrontmatterDirty" class="text-[10px] text-[var(--status-warning)]">{{ t("ide.workspace.common.unsaved") }}</span>
+                    <span v-if="isContentIndexFile && isFrontmatterDirty" class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                 </div>
                 <div v-if="isContentIndexFile" class="flex items-center justify-between gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] px-2 py-1.5">
                     <div class="flex min-w-0 items-center gap-2">

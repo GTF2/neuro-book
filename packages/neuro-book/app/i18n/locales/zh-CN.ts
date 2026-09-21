@@ -1154,6 +1154,7 @@ const zhCN = {
                 collapse: "收起",
                 dirty: "有未保存修改",
                 unsaved: "未保存",
+                saved: "已保存",
                 status: "状态",
                 title: "标题",
                 tags: "标签",
@@ -1853,12 +1854,19 @@ const zhCN = {
             cycleModeTitle: "当前{mode}，点击或 Shift+Tab 切换模式",
             discussPlaceholder: "讨论模式（只读）：提问、分析、对比方案... (输入 {'@'} 引用, $ 技能, / 命令)",
             planPlaceholder: "计划模式（只读）：先制定计划再实现... (输入 {'@'} 引用, $ 技能, / 命令)",
-            cacheRingTitle: "缓存命中概览",
-            thinkingLevel: {
-                low: "低",
-                mid: "中",
-                high: "高",
-            },
+            cacheRingTitle: "缓存概览",
+            // [i18n-add] 009C1R 必修C 绿环 hover 面板五行（与底部统计条同源）
+            cacheRingCached: "已缓存",
+            cacheRingLimit: "最大缓存",
+            cacheRingUpload: "上传",
+            cacheRingDownload: "下载",
+            cacheRingHitRate: "命中率",
+            // [i18n-add] 009C1R 微调5 八项档位下拉复用既有 followProfile/off/minimal/low/medium/high/xhigh/max
+            // [i18n-del] thinkingLevel.low|mid|high 三键已删（与 agent.composer.low/medium/high 语义重叠，收敛到既有键）
+            // [i18n-add] 009C1R 微调7 通用导入按钮
+            importTitle: "导入（图片挂附件，文本读入输入框）",
+            // [i18n-add] 009C1R 必修B 刻度条中面板
+            scaleOutlineTitle: "对话大纲",
             scaleBarViewAll: "查看全部会话",
         },
         attachments: {
@@ -2017,6 +2025,8 @@ const zhCN = {
             // [i18n-add] 009单C批次1 顶栏收编 ⓘ 容器（5.3 侧追加）
             infoMenuTitle: "会话详情（系统提示词 / 关联 Agent / 摘要器）",
             summarizerLabel: "摘要器",
+            // [i18n-add] 009C1R 微调8 摘要器空闲态
+            summarizerIdle: "未运行",
             inlineRunning: "进行中",
             inlineSessionLabel: "自动 Inline AI Session",
             connecting: "连接中",
@@ -2216,6 +2226,11 @@ const zhCN = {
             nodeCount: "{count} 个节点",
             leaf: "叶节点 {leaf}",
             searchPlaceholder: "搜索内容、类型或 Entry ID...",
+            filterDefault: "主要节点",
+            filterNoTools: "无工具",
+            filterUser: "仅用户",
+            filterLabeled: "已标记",
+            filterAllLabel: "全部",
             filterDefaultTitle: "显示主要历史节点",
             filterNoToolsTitle: "隐藏工具结果，保留对话节点",
             filterUserTitle: "只看用户与系统注入消息",
@@ -2269,6 +2284,7 @@ const zhCN = {
             steer: "引导",
             you: "你",
             collapse: "收起",
+            expandFull: "展开全文",
             editPlaceholder: "编辑消息...",
             cancel: "取消",
             save: "保存",

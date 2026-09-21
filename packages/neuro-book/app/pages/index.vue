@@ -528,10 +528,7 @@ const displayInlinePromptEditPreview = computed(() => inlineEditorAgent.editPrev
 const inlinePromptLiveView = inlineEditorAgent.liveView;
 const inlinePromptSelectableModels = inlineEditorAgent.selectableModels;
 const inlinePromptSessionModelSelectionValue = inlineEditorAgent.sessionModelSelectionValue;
-const inlinePromptSessionModelDraft = inlineEditorAgent.sessionModelDraft;
 const inlinePromptSessionModelSaving = inlineEditorAgent.sessionModelSaving;
-const inlinePromptSessionModelPopoverOpen = inlineEditorAgent.sessionModelPopoverOpen;
-const inlinePromptSessionThinkingResolvedLabel = inlineEditorAgent.sessionThinkingResolvedLabel;
 const inlinePromptAvailable = computed(() => {
     return workspaceDisplayReady.value
         && selectedFileNode.value?.editable === true
@@ -1158,14 +1155,6 @@ async function openInlineEditorSessionChat(): Promise<void> {
         inlinePromptStatusText.value = resolveApiErrorMessage(error, t("ide.inlineAi.openModelPanelFailed"));
         notification.error(inlinePromptStatusText.value, {title: "Inline AI"});
     }
-}
-
-function updateInlineSessionModelDraft(value: AgentSessionModelDraft): void {
-    inlineEditorAgent.setSessionModelDraft(value);
-}
-
-function updateInlineSessionModelPopoverOpen(value: boolean): void {
-    inlineEditorAgent.setSessionModelPopoverOpen(value);
 }
 
 /**
@@ -2674,10 +2663,7 @@ onBeforeUnmount(() => {
                     :live-view="inlinePromptLiveView"
                     :selectable-models="inlinePromptSelectableModels"
                     :session-model-selection-value="inlinePromptSessionModelSelectionValue"
-                    :session-model-draft="inlinePromptSessionModelDraft"
                     :session-model-saving="inlinePromptSessionModelSaving"
-                    :session-model-popover-open="inlinePromptSessionModelPopoverOpen"
-                    :session-thinking-resolved-label="inlinePromptSessionThinkingResolvedLabel"
                     @update:model-value="inlinePromptInstruction = $event"
                     @update:expanded="inlinePromptExpanded = $event"
                     @update:task="inlinePromptTask = $event"
@@ -2687,11 +2673,6 @@ onBeforeUnmount(() => {
                     @create-session="void createInlineEditorSession()"
                     @open-session-chat="void openInlineEditorSessionChat()"
                     @update-session-model-selection="void inlineEditorAgent.updateSessionModelSelection($event)"
-                    @update:session-model-draft="updateInlineSessionModelDraft"
-                    @update:session-model-popover-open="updateInlineSessionModelPopoverOpen"
-                    @toggle-session-model-popover="inlineEditorAgent.toggleSessionModelPopover()"
-                    @apply-session-model-settings="void inlineEditorAgent.applySessionModelSettings()"
-                    @reset-session-model-settings="void inlineEditorAgent.resetSessionModelSettings()"
                     @send="void sendInlineEditorPrompt()"
                     @stop="void stopInlineEditorPrompt()"
                 />

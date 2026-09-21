@@ -6,19 +6,30 @@ import zhCN from "nbook/app/i18n/locales/zh-CN";
 
 const componentPath = fileURLToPath(new URL("./AgentCacheRing.vue", import.meta.url));
 
-describe("AgentCacheRing 契约（规格包 009 单C 批次1 §4.1）", () => {
-    it("props/emits 与规格逐字一致，空串隐藏与比例描边就位", async () => {
+describe("AgentCacheRing 契约（009C1R 必修C：环=已缓存/上下文容量比例）", () => {
+    it("props/emits 为比例+五行面板数据，空串隐藏与比例描边就位", async () => {
         const source = await readFile(componentPath, "utf-8");
+        expect(source).toContain("cacheRatio: number | null");
+        expect(source).toContain("cachedLabel: string");
+        expect(source).toContain("limitLabel: string");
+        expect(source).toContain("inputLabel: string");
+        expect(source).toContain("outputLabel: string");
         expect(source).toContain("hitRateLabel: string");
-        expect(source).toContain("compactLabel: string");
         expect(source).toContain('(e: "open-context-inspector")');
-        expect(source).toContain('v-if="props.hitRateLabel"');
+        expect(source).toContain('v-if="props.cachedLabel"');
         expect(source).toContain("stroke-dasharray");
-        expect(source).toContain("hover:brightness-125");
     });
 
-    it("i18n 键 agent.composer.cacheRingTitle 双语齐备", () => {
-        expect(zhCN.agent.composer.cacheRingTitle).toBe("缓存命中概览");
-        expect(enUS.agent.composer.cacheRingTitle).toBeTruthy();
+    it("hover 自制面板五行 i18n 键双语齐备", () => {
+        expect(zhCN.agent.composer.cacheRingCached).toBe("已缓存");
+        expect(zhCN.agent.composer.cacheRingLimit).toBe("最大缓存");
+        expect(zhCN.agent.composer.cacheRingUpload).toBe("上传");
+        expect(zhCN.agent.composer.cacheRingDownload).toBe("下载");
+        expect(zhCN.agent.composer.cacheRingHitRate).toBe("命中率");
+        expect(enUS.agent.composer.cacheRingCached).toBeTruthy();
+        expect(enUS.agent.composer.cacheRingLimit).toBeTruthy();
+        expect(enUS.agent.composer.cacheRingUpload).toBeTruthy();
+        expect(enUS.agent.composer.cacheRingDownload).toBeTruthy();
+        expect(enUS.agent.composer.cacheRingHitRate).toBeTruthy();
     });
 });

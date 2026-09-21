@@ -5,7 +5,8 @@ import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubbl
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
 import AgentSessionScaleBar, {type AgentSessionScaleSegment} from "nbook/app/components/novel-ide/agent/AgentSessionScaleBar.vue";
-import {groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import AgentScaleOutlinePanel, {type AgentScaleOutlineRow} from "nbook/app/components/novel-ide/agent/AgentScaleOutlinePanel.vue";
+import {CHAT_WORK_BLOCK_META, groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -142,6 +143,69 @@ const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
 /** 可视区首个 flowItem 序号；滚动时节流更新供刻度条高亮。 */
 const visibleFlowIndex = ref(0);
 let visibleAnchorScanAt = 0;
+
+/** 中面板（009C1R 必修B 三形态之二）：点击刻度格打开该格覆盖范围的大纲行。 */
+const outlineGridIndex = ref<number | null>(null);
+
+/** 中面板行投影：该格覆盖的 flowItems → prompt/answer/work 三类摘要行。 */
+const outlineRows = computed<AgentScaleOutlineRow[]>(() => {
+    const gridIndex = outlineGridIndex.value;
+    if (gridIndex === null) {
+        return [];
+    }
+    const items = flowItems.value;
+    const perSegment = Math.max(1, Math.ceil(items.length / SCALE_SEGMENT_LIMIT));
+    const start = Math.min(gridIndex * perSegment, items.length);
+    const end = Math.min(start + perSegment, items.length);
+    const rows: AgentScaleOutlineRow[] = [];
+    for (let index = start; index < end; index += 1) {
+        const item = items[index];
+        if (!item) {
+            continue;
+        }
+        if (item.kind === "block") {
+            const meta = CHAT_WORK_BLOCK_META[item.blockKind];
+            rows.push({
+                id: `block-${item.id}`,
+                kind: "work",
+                label: `${t(meta.labelKey)} · ${t("agent.workBlock.stepCount", {count: item.count})}`,
+                flowIndex: index,
+            });
+            continue;
+        }
+        if (item.node.kind === "tool") {
+            rows.push({id: `tool-${item.node.toolCall.id}`, kind: "work", label: item.node.toolCall.name, flowIndex: index});
+            continue;
+        }
+        const message = item.node.message;
+        const raw = message.content.trim();
+        if (!raw) {
+            continue;
+        }
+        rows.push({
+            id: `text-${message.id}-${index}`,
+            kind: message.type === "user" ? "prompt" : "answer",
+            label: raw.replace(/\s+/gu, " ").slice(0, 60),
+            flowIndex: index,
+        });
+    }
+    return rows;
+});
+
+/** 刻度格点击 → 中面板打开并滚到该格行列表头。 */
+function openOutline(gridIndex: number): void {
+    outlineGridIndex.value = gridIndex;
+}
+
+function closeOutline(): void {
+    outlineGridIndex.value = null;
+}
+
+/** 中面板行点击 → 定位正文后自动收起。 */
+function seekFromOutline(flowIndex: number): void {
+    closeOutline();
+    scrollToFlowItem(flowIndex);
+}
 
 /** 轻量追踪最后一条消息的渲染尺寸变化，避免 deep watch 扫描整棵消息树。 */
 const messageScrollSignature = computed(() => {
@@ -513,15 +577,25 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                 <p class="text-xs text-[var(--text-muted)]">{{ t("agent.chat.waiting") }}</p>
             </template>
         </div>
-        <!-- 会话树内嵌刻度条：main 模式且有渲染单元时显示；「查看全部」交宿主开完整树 -->
+        </div>
+        <!-- 会话刻度条（009C1R 必修B）：滚动容器外的固定右缘列，不随消息滚动；
+             hover=预览卡、点击格=中面板、底部「查看全部」=完整树，三形态递进 -->
         <AgentSessionScaleBar
             v-if="scaleSegments.length > 0"
             class="h-full"
             :segments="scaleSegments"
             :active-index="visibleFlowIndex"
             @seek="scrollToFlowItem"
+            @open-outline="openOutline"
             @expand="emit('expand-session-tree')"
         />
-        </div>
+        <!-- 中面板（三形态之二）：右缘滑入，列该格覆盖的 prompt/answer/work 摘要行 -->
+        <AgentScaleOutlinePanel
+            v-if="outlineGridIndex !== null && outlineRows.length > 0"
+            :rows="outlineRows"
+            @seek="seekFromOutline"
+            @view-all="closeOutline(); emit('expand-session-tree')"
+            @close="closeOutline"
+        />
     </div>
 </template>

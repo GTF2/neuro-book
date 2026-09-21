@@ -6,27 +6,36 @@ import zhCN from "nbook/app/i18n/locales/zh-CN";
 
 const componentPath = fileURLToPath(new URL("./AgentThinkingLevelSelect.vue", import.meta.url));
 
-describe("AgentThinkingLevelSelect 契约（规格包 009 单C 批次1 §4.2）", () => {
-    it("props/emits 与规格一致，modelValue 用真实 ThinkingLevelDto", async () => {
+describe("AgentThinkingLevelSelect 契约（009C1R 微调4/5：八项全量+读真实当前档）", () => {
+    it("props 读会话真实档与生效档，emit 还原 DTO|null 即选即生效", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain('modelValue: ThinkingLevelDto | null');
-        expect(source).toContain("disabled?: boolean");
-        expect(source).toContain('(e: "update:modelValue", value: ThinkingLevelDto)');
+        expect(source).toContain("modelValue: ThinkingLevelDto | null");
+        expect(source).toContain("effectiveLevel?: ThinkingLevelDto | null");
+        expect(source).toContain('(e: "update:modelValue", value: ThinkingLevelDto | null)');
         expect(source).toContain('from "nbook/shared/dto/app-settings.dto"');
     });
 
-    it("快捷件只露低/中/高三档，i18n 键 thinkingLevel.low/mid/high 双语齐备", async () => {
+    it("全量八项=跟随Profile+七档 DTO，复用 agent.composer 既有档位键", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain('"low" | "medium" | "high"');
-        expect(source).toContain("agent.composer.thinkingLevel.low");
-        expect(source).toContain("agent.composer.thinkingLevel.mid");
-        expect(source).toContain("agent.composer.thinkingLevel.high");
+        expect(source).toContain("agent.composer.followProfile");
+        expect(source).toContain("agent.composer.off");
+        expect(source).toContain("agent.composer.minimal");
+        expect(source).toContain("agent.composer.low");
+        expect(source).toContain("agent.composer.medium");
+        expect(source).toContain("agent.composer.high");
+        expect(source).toContain("agent.composer.xhigh");
+        expect(source).toContain("agent.composer.max");
+        expect(source).toContain("FormSelect");
 
-        expect(zhCN.agent.composer.thinkingLevel.low).toBe("低");
-        expect(zhCN.agent.composer.thinkingLevel.mid).toBe("中");
-        expect(zhCN.agent.composer.thinkingLevel.high).toBe("高");
-        expect(enUS.agent.composer.thinkingLevel.low).toBeTruthy();
-        expect(enUS.agent.composer.thinkingLevel.mid).toBeTruthy();
-        expect(enUS.agent.composer.thinkingLevel.high).toBeTruthy();
+        expect(zhCN.agent.composer.followProfile).toBeTruthy();
+        expect(zhCN.agent.composer.off).toBeTruthy();
+        expect(zhCN.agent.composer.minimal).toBeTruthy();
+        expect(zhCN.agent.composer.low).toBe("低");
+        expect(zhCN.agent.composer.medium).toBeTruthy();
+        expect(zhCN.agent.composer.high).toBeTruthy();
+        expect(zhCN.agent.composer.xhigh).toBeTruthy();
+        expect(zhCN.agent.composer.max).toBeTruthy();
+        expect(enUS.agent.composer.followProfile).toBeTruthy();
+        expect(enUS.agent.composer.max).toBeTruthy();
     });
 });

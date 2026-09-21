@@ -18,7 +18,25 @@ const renderConfig = computed(() => resolveToolRenderConfig(props.toolCall));
 const {t} = useI18n();
 
 const isRunning = computed(() => props.toolCall.status === "running" || props.toolCall.status === "streaming");
+const isFailed = computed(() => props.toolCall.status === "error" || props.toolCall.status === "invalid");
 const collapsedPreview = computed(() => renderConfig.value.collapsedPreviewKey ? t(renderConfig.value.collapsedPreviewKey) : renderConfig.value.collapsedPreview);
+/** 收起态过程行的一行摘要：优先参数预览，其次注册表预览文案。 */
+const rowSummary = computed(() => {
+    if (renderConfig.value.mode === "inline") {
+        return props.toolCall.argsJson ?? props.toolCall.argsText;
+    }
+    return collapsedPreview.value;
+});
+/** 收起态图标颜色沿用状态语义：失败红、运行信息色、其余弱化。 */
+const rowIconClass = computed(() => {
+    if (isFailed.value) {
+        return "text-[var(--status-danger)]";
+    }
+    if (isRunning.value) {
+        return "text-[var(--status-info)]";
+    }
+    return "";
+});
 /** 后台 workflow 的 tool success 只表示 job 已登记，头部不得显示成 workflow 完成。 */
 const isStartedWorkflowJob = computed(() => {
     const details = props.toolCall.resultData;
@@ -57,9 +75,21 @@ const parsedResult = computed<unknown | null>(() => {
 </script>
 
 <template>
-    <div v-if="renderConfig.mode !== 'hidden'" class="w-full overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] shadow-sm">
-        <!-- 容器头部：点击切换展开 -->
-        <button class="flex w-full items-center justify-between px-3 py-1.5 text-left transition-colors hover:bg-[var(--bg-hover)]" @click="emit('toggle')">
+    <!-- 009C1R 必修A：收起态降为过程行（灰色小字+图标+一行摘要），展开才成卡片细节 -->
+    <div v-if="renderConfig.mode !== 'hidden'" class="w-full" :class="props.expanded ? 'overflow-hidden rounded-xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] shadow-sm' : ''">
+        <!-- 过程行：点击切换展开 -->
+        <button
+            v-if="!props.expanded"
+            class="flex w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+            @click="emit('toggle')"
+        >
+            <span :class="[displayedStatusIcon, rowIconClass, isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
+            <span class="shrink-0 font-mono">{{ props.toolCall.name }}</span>
+            <span v-if="rowSummary" class="min-w-0 flex-1 truncate opacity-75">{{ rowSummary }}</span>
+            <span class="i-lucide-chevron-right h-3 w-3 shrink-0"></span>
+        </button>
+        <!-- 展开态头部：卡片头部（点击收起） -->
+        <button v-else class="flex w-full items-center justify-between px-3 py-1.5 text-left transition-colors hover:bg-[var(--bg-hover)]" @click="emit('toggle')">
             <div class="flex min-w-0 items-center gap-2.5 overflow-hidden">
                 <div class="flex h-5 w-5 shrink-0 items-center justify-center rounded" :class="displayedStatusClass">
                     <span :class="[displayedStatusIcon, isRunning ? 'animate-spin' : '']" class="h-3 w-3"></span>
@@ -68,10 +98,7 @@ const parsedResult = computed<unknown | null>(() => {
                 <div class="flex min-w-0 items-center gap-2">
                     <span class="truncate font-mono text-xs font-medium text-[var(--text-main)] shrink-0">{{ props.toolCall.name }}</span>
                     <span class="shrink-0 text-[10px] uppercase tracking-[0.24em] text-[var(--text-muted)]">{{ renderConfig.typeLabel }}</span>
-                    <span v-if="!props.expanded && renderConfig.mode === 'inline'" class="truncate font-mono text-[11px] text-[var(--text-muted)] opacity-80 min-w-0">
-                        {{ props.toolCall.argsJson ?? props.toolCall.argsText }}
-                    </span>
-                    <span v-else-if="!props.expanded && collapsedPreview" class="truncate font-mono text-[11px] text-[var(--text-muted)] opacity-80 min-w-0">
+                    <span v-if="collapsedPreview" class="truncate font-mono text-[11px] text-[var(--text-muted)] opacity-80 min-w-0">
                         {{ collapsedPreview }}
                     </span>
                 </div>

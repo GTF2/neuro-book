@@ -41,10 +41,7 @@ const props = defineProps<{
     liveView: InlineEditorLiveView;
     selectableModels: EnabledModelOptionDto[];
     sessionModelSelectionValue: string | null;
-    sessionModelDraft: AgentSessionModelDraft;
     sessionModelSaving: boolean;
-    sessionModelPopoverOpen: boolean;
-    sessionThinkingResolvedLabel: string;
 }>();
 
 const emit = defineEmits<{
@@ -60,11 +57,6 @@ const emit = defineEmits<{
     (e: "create-session"): void;
     (e: "open-session-chat"): void;
     (e: "update-session-model-selection", value: string | null): void;
-    (e: "update:sessionModelDraft", value: AgentSessionModelDraft): void;
-    (e: "update:sessionModelPopoverOpen", value: boolean): void;
-    (e: "toggle-session-model-popover"): void;
-    (e: "apply-session-model-settings"): void;
-    (e: "reset-session-model-settings"): void;
 }>();
 
 const rootRef = ref<HTMLDivElement | null>(null);
@@ -372,22 +364,12 @@ onBeforeUnmount(() => {
 
                         <AgentSessionModelControls
                             :session-model-selection-value="props.sessionModelSelectionValue"
-                            :session-thinking-resolved-label="props.sessionThinkingResolvedLabel"
-                            :session-model-draft="props.sessionModelDraft"
                             :selectable-models="props.selectableModels"
-                            :session-model-saving="props.sessionModelSaving"
-                            :session-model-popover-open="props.sessionModelPopoverOpen"
                             :running="props.running"
                             :loading-session="props.sessionLoading || !props.activeSessionId"
                             dropdown-direction="up"
-                            root-class="w-[260px] max-w-[40vw]"
-                            popover-class="w-[340px]"
-                            @update:session-model-popover-open="emit('update:sessionModelPopoverOpen', $event)"
-                            @update:session-model-draft="emit('update:sessionModelDraft', $event)"
+                            root-class="w-[200px] min-w-[140px] max-w-[260px]"
                             @update-session-model-selection="emit('update-session-model-selection', $event)"
-                            @toggle-session-model-popover="emit('toggle-session-model-popover')"
-                            @apply-session-model-settings="emit('apply-session-model-settings')"
-                            @reset-session-model-settings="emit('reset-session-model-settings')"
                         />
 
                         <button

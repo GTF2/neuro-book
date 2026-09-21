@@ -1,51 +1,72 @@
 <script setup lang="ts">
+import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import type {ThinkingLevelDto} from "nbook/shared/dto/app-settings.dto";
 
+/**
+ * 外置思考档下拉（009C1R 微调4/5）：全量八项=跟随Profile+七档 DTO，
+ * 样式走项目统一 FormSelect；跟随 Profile 时以 description 标注解析后的生效档。
+ * 选项值用字符串（""=跟随 Profile），emit 还原回 DTO|null。
+ */
 const props = withDefaults(defineProps<{
-    /** 真实 ThinkingLevelDto 七档枚举或 null（跟随 profile）；外置快捷件只露常用三档 */
+    /** 会话当前请求档；null=跟随 Profile（009C1R 微调4：读真实当前值，不再是未应用草稿） */
     modelValue: ThinkingLevelDto | null;
+    /** Profile 解析后的实际生效档，跟随 Profile 时标注用 */
+    effectiveLevel?: ThinkingLevelDto | null;
     disabled?: boolean;
 }>(), {
+    effectiveLevel: null,
     disabled: false,
 });
 
 const emit = defineEmits<{
-    (e: "update:modelValue", value: ThinkingLevelDto): void;
+    (e: "update:modelValue", value: ThinkingLevelDto | null): void;
 }>();
 
 const {t} = useI18n();
 
-// 快捷件口径（规格包 §4.2 + 口径裁定 #5）：三常用档外置，off/minimal/xhigh/max 走模型弹层内全量下拉
-type QuickLevel = Extract<ThinkingLevelDto, "low" | "medium" | "high">;
-const quickLevels: Array<{value: QuickLevel; labelKey: string}> = [
-    {value: "low", labelKey: "agent.composer.thinkingLevel.low"},
-    {value: "medium", labelKey: "agent.composer.thinkingLevel.mid"},
-    {value: "high", labelKey: "agent.composer.thinkingLevel.high"},
-];
+const LEVEL_LABEL_KEYS: Record<ThinkingLevelDto, string> = {
+    off: "agent.composer.off",
+    minimal: "agent.composer.minimal",
+    low: "agent.composer.low",
+    medium: "agent.composer.medium",
+    high: "agent.composer.high",
+    xhigh: "agent.composer.xhigh",
+    max: "agent.composer.max",
+};
 
-const currentLabel = computed(() => {
-    const matched = quickLevels.find((level) => level.value === props.modelValue);
-    // 当前档不在三档内（off/minimal/xhigh/max）时显示原值字标，null 显示占位
-    return matched ? t(matched.labelKey) : props.modelValue ?? "—";
-});
+const levelLabel = (level: ThinkingLevelDto | null): string => {
+    if (level === null) {
+        return t("agent.composer.followProfile");
+    }
+    return t(LEVEL_LABEL_KEYS[level]);
+};
+
+const options = computed<SelectOption[]>(() => [
+    {
+        value: "",
+        label: t("agent.composer.followProfile"),
+        description: props.effectiveLevel
+            ? t("agent.composer.current", {value: levelLabel(props.effectiveLevel)})
+            : "",
+    },
+    ...(Object.keys(LEVEL_LABEL_KEYS) as ThinkingLevelDto[]).map((level) => ({
+        value: level,
+        label: levelLabel(level),
+    })),
+]);
+
+const currentValue = computed(() => props.modelValue ?? "");
 </script>
 
 <template>
-    <!-- 外置思考档快捷件：与 AgentSessionModelControls 弹层内 reasoningEffort 同一数据通道（5.3 接线 sessionModelDraft） -->
-    <label
-        class="relative inline-flex h-7 shrink-0 cursor-pointer items-center gap-0.5 rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] pl-2 pr-1.5 text-[11px] text-[var(--text-secondary)] transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
-        :class="props.disabled ? 'pointer-events-none opacity-50' : ''"
-        :title="t('agent.composer.thinkingEffort')"
-    >
-        <span class="min-w-0 truncate font-medium">{{ currentLabel }}</span>
-        <span class="i-lucide-chevrons-up-down h-3 w-3 shrink-0 text-[var(--text-muted)]"></span>
-        <select
-            class="absolute inset-0 h-full w-full cursor-pointer opacity-0 outline-none"
+    <div class="shrink-0" :title="t('agent.composer.thinkingEffort')">
+        <FormSelect
+            :model-value="currentValue"
+            :options="options"
+            size="sm"
+            dropdown-direction="up"
             :disabled="props.disabled"
-            :value="props.modelValue ?? ''"
-            @change="emit('update:modelValue', ($event.target as HTMLSelectElement).value as ThinkingLevelDto)"
-        >
-            <option v-for="level in quickLevels" :key="level.value" :value="level.value">{{ t(level.labelKey) }}</option>
-        </select>
-    </label>
+            @update:model-value="emit('update:modelValue', ($event || null) as ThinkingLevelDto | null)"
+        />
+    </div>
 </template>

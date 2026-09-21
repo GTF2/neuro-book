@@ -8,8 +8,7 @@ import AgentAttachmentGallery from "nbook/app/components/novel-ide/agent/AgentAt
 import AgentAttachmentCard from "nbook/app/components/novel-ide/agent/AgentAttachmentCard.vue";
 import AgentHistoryMessageEditor from "nbook/app/components/novel-ide/agent/AgentHistoryMessageEditor.vue";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
-import {formatCost, formatCostExact, type CostDisplayOptions} from "nbook/app/utils/cost-format";
-import {promptCacheHitRate, promptCacheTotalTokens, type PromptCacheUsage} from "nbook/app/utils/prompt-cache";
+import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {
     AgentTriggerMenuContext,
     AgentTriggerMenuState,
@@ -64,7 +63,7 @@ const { isCollapsed: isThinkingCollapsed, toggle: toggleThinking } = useCollapsi
 const editingDraft = ref("");
 const isSystemCollapsed = ref(true);
 const swipeStart = ref<{x: number; y: number} | null>(null);
-const {t, locale} = useI18n();
+const {t} = useI18n();
 
 /**
  * 编辑态统一解码 HTML 实体。
@@ -155,6 +154,18 @@ const isSteerMessage = computed(() => props.node.message.type === "user" && prop
 /** 作文流分流：用户消息走右侧气泡，AI 消息走零边框文档流（009单C批次1 总纲）。 */
 const isUserMessage = computed(() => props.node.message.type === "user");
 
+/** 009C1R 微调2：用户长消息发出后默认折叠到约 3 行（渐隐+展开全文），短消息原样。 */
+const USER_COLLAPSE_THRESHOLD = 120;
+const isUserCollapsible = computed(() => {
+    if (!isUserMessage.value || props.node.message.error) {
+        return false;
+    }
+    const message = props.node.message;
+    const length = message.content.length + (message.contentBlocks ?? []).length * 40;
+    return length > USER_COLLAPSE_THRESHOLD;
+});
+const userExpanded = ref(false);
+
 /** 功能按钮排常显条件：unknown 投递等关键操作不能藏进 hover。 */
 const alwaysShowActions = computed(() => isUnknownDelivery.value);
 
@@ -189,84 +200,6 @@ const systemLabel = computed(() => {
     }
     return "System";
 });
-
-/** 当前 assistant 消息的 provider 调用用量。 */
-const messageUsage = computed(() => props.node.message.type === "ai" ? props.node.message.usage : undefined);
-
-/** 本次调用 token 明细 tooltip。 */
-const messageUsageTitle = computed(() => {
-    const usage = messageUsage.value;
-    if (!usage) {
-        return "";
-    }
-    const costLabel = formatCost(usage.cost.total, props.costDisplayOptions)
-        ? t("agent.textBubble.usageCost", {
-            compactCost: formatCost(usage.cost.total, props.costDisplayOptions),
-            inputCost: formatCostExact(usage.cost.input, props.costDisplayOptions),
-            outputCost: formatCostExact(usage.cost.output, props.costDisplayOptions),
-            cacheReadCost: formatCostExact(usage.cost.cacheRead, props.costDisplayOptions),
-            cacheWriteCost: formatCostExact(usage.cost.cacheWrite, props.costDisplayOptions),
-            totalCost: formatCostExact(usage.cost.total, props.costDisplayOptions),
-            suffix: props.costExchangeRateSuffix ?? "",
-        })
-        : "";
-    return t("agent.textBubble.usageTitle", {
-        total: formatTokenCount(usage.totalTokens),
-        input: formatTokenCount(usage.input),
-        output: formatTokenCount(usage.output),
-        cacheRead: formatTokenCount(usage.cacheRead),
-        cacheWrite: formatTokenCount(usage.cacheWrite),
-        hitRate: formatCacheHitRate(usage),
-        cost: costLabel,
-    });
-});
-
-/** 当前调用是否有可计算的 prompt cache 命中率。 */
-const messageCacheHitRateLabel = computed(() => {
-    const usage = messageUsage.value;
-    if (!usage || promptCacheTotalTokens(usage) <= 0) {
-        return "";
-    }
-    return formatCacheHitRate(usage);
-});
-
-/** 本次调用费用标签；没有可展示价格时为空。 */
-const messageCostLabel = computed(() => formatCost(messageUsage.value?.cost.total, props.costDisplayOptions));
-
-/** 格式化精确 token 数。 */
-function formatTokenCount(value: number | null | undefined): string {
-    if (typeof value !== "number" || !Number.isFinite(value)) {
-        return "-";
-    }
-    return new Intl.NumberFormat(locale.value, {maximumFractionDigits: 0}).format(value);
-}
-
-/** 格式化紧凑 token 数。 */
-function formatCompactTokenCount(value: number | null | undefined): string {
-    if (typeof value !== "number" || !Number.isFinite(value)) {
-        return "-";
-    }
-    if (value >= 1_000_000) {
-        return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`;
-    }
-    if (value >= 1_000) {
-        return `${(value / 1_000).toFixed(value >= 10_000 ? 0 : 1)}K`;
-    }
-    return `${value}`;
-}
-
-/** 格式化百分比。 */
-function formatPercent(value: number): string {
-    return `${new Intl.NumberFormat(locale.value, {
-        maximumFractionDigits: value >= 10 ? 0 : 1,
-    }).format(value)}%`;
-}
-
-/** 格式化 prompt cache 命中率；口径见 `app/utils/prompt-cache.ts`，无从计算时显示 —。 */
-function formatCacheHitRate(usage: PromptCacheUsage): string {
-    const rate = promptCacheHitRate(usage);
-    return rate === null ? "—" : formatPercent(rate);
-}
 
 /** 系统消息折叠摘要。 */
 const systemSummary = computed(() => {
@@ -473,17 +406,17 @@ const endSwipe = (event: PointerEvent): void => {
             </div>
         </div>
 
-        <!-- 消息正文：用户=右侧气泡（上限 55%）；AI=零边框文档流（009单C 总纲） -->
+        <!-- 消息正文：用户=右侧气泡（固定 65% 宽，009C1R 微调1）；AI=零边框文档流（009单C 总纲） -->
         <div
             v-if="hasMessageContent"
             class="min-w-0 touch-pan-y"
-            :class="isUserMessage ? 'w-fit max-w-[55%]' : 'w-full'"
+            :class="isUserMessage ? 'w-[65%]' : 'w-full'"
             @pointerdown="startSwipe"
             @pointerup="endSwipe"
             @pointercancel="swipeStart = null"
         >
             <div
-                class="min-w-0 text-sm leading-relaxed text-[var(--text-main)]"
+                class="relative min-w-0 text-sm leading-relaxed text-[var(--text-main)]"
                 :class="[
                     isUserMessage
                         ? 'rounded-2xl border border-[var(--border-color)] bg-[var(--chat-ai-bg)] px-4 py-3 shadow-sm'
@@ -516,7 +449,7 @@ const endSwipe = (event: PointerEvent): void => {
                         @attachment-registered="emit('attachment-registered', $event)"
                     />
                 </div>
-                <div v-else class="min-w-0 text-sm leading-relaxed text-[var(--text-main)]">
+                <div v-else class="min-w-0 text-sm leading-relaxed text-[var(--text-main)]" :class="isUserCollapsible && !userExpanded ? 'max-h-[72px] overflow-hidden' : ''">
                     <!-- 新 durable user DTO 按原始 contentIndex 保序；其他消息继续走原正文路径。 -->
                     <template v-if="props.node.message.contentBlocks?.length">
                         <div v-for="(block, blockIndex) in props.node.message.contentBlocks" :key="`${block.type}:${block.contentIndex}`" :class="blockIndex > 0 ? 'mt-3' : ''">
@@ -550,6 +483,17 @@ const endSwipe = (event: PointerEvent): void => {
                     </div>
                     <div v-if="(props.node.message.omittedToolCalls ?? 0) > 0" class="mt-2 flex items-center gap-1.5 text-[11px] text-[var(--status-info)]"><span class="i-lucide-info h-3.5 w-3.5 shrink-0"></span><span>另有 {{ props.node.message.omittedToolCalls }} 个工具调用未在历史预览中显示</span></div>
                 </div>
+                <!-- 009C1R 微调2：折叠态底部渐隐 + 展开/收起开关 -->
+                <div v-if="isUserCollapsible && !userExpanded" class="pointer-events-none absolute inset-x-0 bottom-0 flex h-12 items-end justify-center bg-gradient-to-t from-[var(--chat-ai-bg)] via-[var(--chat-ai-bg)]/80 to-transparent pb-1"></div>
+                <button
+                    v-if="isUserCollapsible"
+                    type="button"
+                    class="mt-1.5 flex items-center gap-1 text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-main)]"
+                    @click="userExpanded = !userExpanded"
+                >
+                    <span :class="userExpanded ? 'i-lucide-chevrons-up' : 'i-lucide-chevrons-down'" class="h-3 w-3"></span>
+                    <span>{{ userExpanded ? t("agent.textBubble.collapse") : t("agent.textBubble.expandFull") }}</span>
+                </button>
             </div>
         </div>
 
@@ -586,33 +530,6 @@ const endSwipe = (event: PointerEvent): void => {
             <button class="rounded p-1 transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.actionDisabled || props.runActionDisabled" :title="t('agent.textBubble.branchFromHere')" @click="emit('branch-from-here', props.node.message)">
                 <span class="i-lucide-git-branch-plus h-3.5 w-3.5"></span>
             </button>
-        </div>
-
-        <!-- token 尾部 -->
-        <div v-if="messageUsage" class="mt-1 flex w-full items-center pl-4 text-[var(--text-muted)]">
-            <div class="flex-1"></div>
-            <div class="flex items-center gap-1 text-[10px] text-[var(--text-muted)]" :title="messageUsageTitle">
-                <span class="i-lucide-zap mr-1 h-3 w-3"></span>
-                <span>{{ t("agent.textBubble.thisTurn", {value: formatCompactTokenCount(messageUsage.totalTokens)}) }}</span>
-                <span class="i-lucide-arrow-down h-3 w-3"></span>
-                <span>{{ formatCompactTokenCount(messageUsage.input) }}</span>
-                <span class="i-lucide-arrow-up h-3 w-3"></span>
-                <span>{{ formatCompactTokenCount(messageUsage.output) }}</span>
-                <span class="i-lucide-database-zap h-3 w-3"></span>
-                <span>{{ formatCompactTokenCount(messageUsage.cacheRead) }}</span>
-                <template v-if="messageCacheHitRateLabel">
-                    <span class="i-lucide-percent h-3 w-3"></span>
-                    <span>{{ messageCacheHitRateLabel }}</span>
-                </template>
-                <template v-if="messageUsage.cacheWrite">
-                    <span class="i-lucide-hard-drive-upload h-3 w-3"></span>
-                    <span>{{ formatCompactTokenCount(messageUsage.cacheWrite) }}</span>
-                </template>
-                <template v-if="messageCostLabel">
-                    <span class="i-lucide-circle-dollar-sign h-3 w-3"></span>
-                    <span>{{ t("agent.textBubble.thisTurn", {value: messageCostLabel}) }}</span>
-                </template>
-            </div>
         </div>
     </div>
 </template>

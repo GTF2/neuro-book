@@ -30,11 +30,11 @@ const collapsedBranchIds = ref<Set<string>>(new Set());
 const listContainerRef = ref<HTMLElement | null>(null);
 const {t} = useI18n();
 const filterOptions = computed<{value: AgentSessionTreeFilterMode; label: string; title: string}[]>(() => [
-    {value: "default", label: "Default", title: t("agent.sessionTree.filterDefaultTitle")},
-    {value: "no-tools", label: "No-tools", title: t("agent.sessionTree.filterNoToolsTitle")},
-    {value: "user", label: "User", title: t("agent.sessionTree.filterUserTitle")},
-    {value: "labeled", label: "Labeled", title: t("agent.sessionTree.filterLabeledTitle")},
-    {value: "all", label: "All", title: t("agent.sessionTree.filterAllTitle")},
+    {value: "default", label: t("agent.sessionTree.filterDefault"), title: t("agent.sessionTree.filterDefaultTitle")},
+    {value: "no-tools", label: t("agent.sessionTree.filterNoTools"), title: t("agent.sessionTree.filterNoToolsTitle")},
+    {value: "user", label: t("agent.sessionTree.filterUser"), title: t("agent.sessionTree.filterUserTitle")},
+    {value: "labeled", label: t("agent.sessionTree.filterLabeled"), title: t("agent.sessionTree.filterLabeledTitle")},
+    {value: "all", label: t("agent.sessionTree.filterAllLabel"), title: t("agent.sessionTree.filterAllTitle")},
 ]);
 
 const treeState = computed(() => deriveAgentTreeState(props.tree));

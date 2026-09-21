@@ -184,7 +184,6 @@ const sessionModelDraft = ref<AgentSessionModelDraft>({
     modelKey: null,
     reasoningEffort: null,
 });
-const sessionModelPopoverOpen = ref(false);
 const sessionModelSaving = ref(false);
 const submittingUserInputKey = ref<string | null>(null);
 const pendingResolutionDraft = ref<AgentPendingResolutionDraft>(createAgentPendingResolutionDraft([]));
@@ -397,26 +396,27 @@ const createProfileDropdownItems = computed<DropdownItem[]>(() => createProfileO
 const canChooseCreateProfile = computed(() => createProfileOptions.value.length > 1);
 
 /**
- * ⓘ 会话详情菜单（009单C批次1 收编容器）：系统提示词/LinkedAgent/摘要器状态。
- * 摘要器行仅展示状态，不可点；两个入口在宿主侧切面板开关。
+ * ⓘ 会话详情菜单（009单C批次1 收编容器）：系统提示词/LinkedAgent/附件/摘要器状态。
+ * 009C1R 微调7：📎 附件入口（含计数）收编进 ⓘ；微调8：摘要器状态行常显（无运行状态也可见）。
  */
 const infoMenuItems = computed<DropdownItem[]>(() => {
     const linkedLabel = linkedAgentCount.value > 0
         ? `${t("agent.chatSurface.linkedAgentsTitle")} (${linkedAgentCount.value})`
         : t("agent.chatSurface.linkedAgentsTitle");
-    const items: DropdownItem[] = [
+    const attachmentLabel = sessionAttachmentUniqueTotal.value > 0
+        ? `${t("agent.composer.attachmentsTitle")} (${sessionAttachmentUniqueTotal.value})`
+        : t("agent.composer.attachmentsTitle");
+    const summarizer = summarizerStatus.value;
+    return [
         {label: t("agent.systemPrompt.open"), value: "system-prompt", iconClass: "i-lucide-terminal-square", active: systemPromptPanelOpen.value},
         {label: linkedLabel, value: "linked-agents", iconClass: "i-lucide-users", active: linkedAgentPanelOpen.value},
-    ];
-    if (summarizerStatus.value) {
-        // 仅展示状态；handleInfoMenuSelect 不处理该 value，点击无动作。
-        items.push({
-            label: `${t("agent.chatSurface.summarizerLabel")}: ${summarizerStatus.value.label}`,
+        {label: attachmentLabel, value: "attachments", iconClass: "i-lucide-paperclip", active: attachmentPanelOpen.value},
+        {
+            label: `${t("agent.chatSurface.summarizerLabel")}: ${summarizer?.label ?? t("agent.chatSurface.summarizerIdle")}`,
             value: "summarizer-status",
-            iconClass: summarizerStatus.value.icon,
-        });
-    }
-    return items;
+            iconClass: summarizer?.icon ?? "i-lucide-scroll-text",
+        },
+    ];
 });
 const handleInfoMenuSelect = (value: string) => {
     if (value === "system-prompt") {
@@ -425,6 +425,10 @@ const handleInfoMenuSelect = (value: string) => {
     }
     if (value === "linked-agents") {
         linkedAgentPanelOpen.value = !linkedAgentPanelOpen.value;
+        return;
+    }
+    if (value === "attachments") {
+        toggleAttachmentPanel();
     }
 };
 
@@ -763,17 +767,9 @@ const summarizerStatus = computed<null | {
     return null;
 });
 const sessionModelSelectionValue = computed(() => sessionModelDraft.value.modelKey);
-const sessionThinkingResolvedLabel = computed(() => {
-    const requested = activeRecovery.value?.thinkingLevel ?? null;
-    const effective = activeRecovery.value?.effectiveThinkingLevel ?? "off";
-    if (requested === null) {
-        return t("agent.chatSurface.followProfileCurrent", {level: thinkingLevelLabel(effective)});
-    }
-    if (requested === effective) {
-        return thinkingLevelLabel(effective);
-    }
-    return t("agent.chatSurface.requestedEffective", {requested: thinkingLevelLabel(requested), effective: thinkingLevelLabel(effective)});
-});
+/** 009C1R 微调4：外置档位件读会话真实当前档（requested；null=跟随 Profile）与解析后生效档。 */
+const sessionThinkingLevel = computed<ThinkingLevelDto | null>(() => activeRecovery.value?.thinkingLevel ?? null);
+const sessionEffectiveThinkingLevel = computed<ThinkingLevelDto | null>(() => activeRecovery.value?.effectiveThinkingLevel ?? null);
 const drawerIconClass = computed(() => "i-lucide-sparkles text-[var(--accent-text)]");
 
 const sessionTreeState = computed(() => deriveAgentTreeState(activeRecovery.value?.tree ?? []));
@@ -807,6 +803,19 @@ const cumulativeCacheWriteCompactLabel = computed(() => formatCompactTokenCount(
 const cumulativeCacheHitRateLabel = computed(() => {
     const usage = activeSummary.value?.usage;
     return usage ? formatCacheHitRate(usage) : "";
+});
+/** 009C1R 必修C：绿环=已缓存 token 占上下文总容量的比例；缺数据为 null 整环隐藏。 */
+const cacheRingRatio = computed<number | null>(() => {
+    const cacheRead = activeSummary.value?.usage?.cacheRead;
+    const limit = activeRecovery.value?.contextUsage?.limitTokens;
+    if (typeof cacheRead !== "number" || !Number.isFinite(cacheRead) || typeof limit !== "number" || !Number.isFinite(limit) || limit <= 0) {
+        return null;
+    }
+    return cacheRead / limit;
+});
+const cacheLimitLabel = computed(() => {
+    const limit = activeRecovery.value?.contextUsage?.limitTokens;
+    return typeof limit === "number" && Number.isFinite(limit) ? formatCompactTokenCount(limit) : "-";
 });
 /** 上下文检查面板开关（Task 126）；由 composer 的 gauge 芯片触发。 */
 const contextInspectorOpen = ref(false);
@@ -1434,7 +1443,6 @@ function clearActiveAgentSession(): void {
     systemPromptPanelOpen.value = false;
     sessionTreeDialogOpen.value = false;
     contextInspectorOpen.value = false;
-    sessionModelPopoverOpen.value = false;
     sessionModelSaving.value = false;
     sessionActionId.value = null;
     cancelEditingMessage();
@@ -2897,38 +2905,6 @@ const updateSessionThinkingLevel = async (thinkingLevel: ThinkingLevelDto | null
     }
 };
 
-function toggleSessionModelPopover(): void {
-    if (!activeInteraction.value.canChangeRuntime) {
-        return;
-    }
-    sessionModelPopoverOpen.value = !sessionModelPopoverOpen.value;
-}
-
-async function applySessionModelSettings(): Promise<void> {
-    if (!activeInteraction.value.canChangeRuntime) {
-        return;
-    }
-    const nextModelKey = sessionModelDraft.value.modelKey;
-    const nextThinkingLevel = sessionModelDraft.value.reasoningEffort;
-    await updateSessionModelSelection(nextModelKey);
-    await updateSessionThinkingLevel(nextThinkingLevel);
-    sessionModelDraft.value = {
-        ...sessionModelDraft.value,
-        modelKey: nextModelKey,
-        reasoningEffort: nextThinkingLevel,
-    };
-    sessionModelPopoverOpen.value = false;
-}
-
-async function resetSessionModelSettings(): Promise<void> {
-    if (!activeInteraction.value.canChangeRuntime) {
-        return;
-    }
-    await updateSessionModelSelection(null);
-    await updateSessionThinkingLevel(null);
-    sessionModelPopoverOpen.value = false;
-}
-
 function modelDraftFromRecovery(recovery: Pick<AgentSessionRecoveryDto, "model" | "thinkingLevel"> | null): AgentSessionModelDraft {
     const model = recovery?.model ?? null;
     return {
@@ -3613,7 +3589,6 @@ async function resetWorkspaceSessionState(attempt?: AgentSurfaceActivationAttemp
     linkedAgentPanelOpen.value = false;
     sessionDialogOpen.value = false;
     sessionTreeDialogOpen.value = false;
-    sessionModelPopoverOpen.value = false;
     cancelEditingMessage();
     messageActionId.value = null;
     inputText.value = "";
@@ -3683,7 +3658,6 @@ async function restoreAgentSurface(
 function closeSurfaceTransientState(): void {
     sessionDialogOpen.value = false;
     linkedAgentPanelOpen.value = false;
-    sessionModelPopoverOpen.value = false;
     attachmentPanelOpen.value = false;
     cancelEditingMessage();
     messageActionId.value = null;
@@ -4419,8 +4393,6 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 ref="inputRef"
                 v-model:input-text="inputText"
                 v-model:pending-resolution-draft="pendingResolutionDraft"
-                v-model:session-model-popover-open="sessionModelPopoverOpen"
-                v-model:session-model-draft="sessionModelDraft"
                 :pending-sessions="pendingUserInputSessions"
                 :submitting-user-input="submittingCurrentUserInput"
                 :can-resolve-user-input="activeInteraction.canResolveUserInput"
@@ -4430,14 +4402,11 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 :availability="composerAvailability"
                 :can-register-attachments="activeInteraction.canRegisterAttachment"
                 :can-insert-attachments="activeInteraction.canInsertAttachment"
-                :attachment-panel-open="attachmentPanelOpen"
-                :attachment-count="sessionAttachmentUniqueTotal"
-                :attachment-button-disabled="!activeSessionId"
-                @toggle-attachment-panel="toggleAttachmentPanel"
                 :loading-session="loadingSession"
                 :session-model-saving="sessionModelSaving"
                 :session-model-selection-value="sessionModelSelectionValue"
-                :session-thinking-resolved-label="sessionThinkingResolvedLabel"
+                :session-thinking-level="sessionThinkingLevel"
+                :session-effective-thinking-level="sessionEffectiveThinkingLevel"
                 :selectable-models="selectableModels"
                 :agent-mode="agentMode"
                 :can-continue-without-input="canContinueWithoutInput"
@@ -4450,6 +4419,8 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 :cumulative-cache-compact-label="cumulativeCacheCompactLabel"
                 :cumulative-cache-write-compact-label="cumulativeCacheWriteCompactLabel"
                 :cumulative-cache-hit-rate-label="cumulativeCacheHitRateLabel"
+                :cache-ring-ratio="cacheRingRatio"
+                :cache-limit-label="cacheLimitLabel"
                 :cumulative-cost-compact-label="cumulativeCostCompactLabel"
                 :connection-status-label="connectionStatusLabel"
                 :run-phase-label="runPhaseLabel"
@@ -4473,10 +4444,8 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @followup="void followup()"
                 @stop="void stopRun()"
                 @cycle-mode="void cycleAgentMode()"
-                @toggle-session-model-popover="toggleSessionModelPopover"
                 @update-session-model-selection="void updateSessionModelSelection($event)"
-                @apply-session-model-settings="void applySessionModelSettings()"
-                @reset-session-model-settings="void resetSessionModelSettings()"
+                @update-session-thinking-level="void updateSessionThinkingLevel($event)"
                 @reconnect-events="void reconnectActiveSessionEvents()"
                 @refresh-history="void syncActiveSessionRecovery()"
                 @open-history-inbox="emit('open-history-inbox')"
