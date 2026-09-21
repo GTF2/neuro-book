@@ -1878,6 +1878,8 @@ const enUS = {
             loadMore: "Load more",
         },
         chat: {
+            // [i18n-add] 009单C批次1 刻度条（5.3 侧追加）
+            scaleSegmentFallback: "Items {from}-{to}",
             startTitle: "Start Collaborating With AI",
             startDescription: "Ask me to design characters, plan outlines, or discuss where the story should go next.",
             waiting: "Waiting for Agent response...",

@@ -4,6 +4,7 @@ import { toChatNodes } from "nbook/app/components/novel-ide/agent/agent-message"
 import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubble.vue";
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
+import AgentSessionScaleBar, {type AgentSessionScaleSegment} from "nbook/app/components/novel-ide/agent/AgentSessionScaleBar.vue";
 import {groupChatNodesIntoBlocks, type ChatFlowItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
@@ -82,6 +83,8 @@ const emit = defineEmits<{
     (e: "attachment-registered", item: AgentSessionAttachmentItemDto): void;
     (e: "resend-unknown", message: AgentMessage): void;
     (e: "dismiss-unknown", message: AgentMessage): void;
+    /** 刻度条「查看全部」：宿主打开完整会话树（009单C批次1 §2.3 覆盖式三形态）。 */
+    (e: "expand-session-tree"): void;
 }>();
 
 const scrollRef = ref<HTMLDivElement | null>(null);
@@ -103,6 +106,42 @@ const chatNodes = computed(() => {
 
 /** 主时间线渲染单元：连续同类工具节点聚成工作块（009单C批次1），其余为单节点。 */
 const flowItems = computed(() => groupChatNodesIntoBlocks(chatNodes.value));
+
+/**
+ * 刻度条格序列（009单C批次1 §2.3）：flowItems 均分聚合封顶 50 格；
+ * anchorIndex=格首 flowItem 序号（ScaleBar seek 直接发回该值定位）；
+ * summary=格内首个文本消息的标题/首行截断。
+ */
+const SCALE_SEGMENT_LIMIT = 50;
+const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
+    const items = flowItems.value;
+    if (items.length === 0 || props.mode !== "main") {
+        return [];
+    }
+    const perSegment = Math.max(1, Math.ceil(items.length / SCALE_SEGMENT_LIMIT));
+    const segments: AgentSessionScaleSegment[] = [];
+    for (let start = 0; start < items.length; start += perSegment) {
+        const anchorIndex = start;
+        let summary = "";
+        for (let probe = start; probe < Math.min(start + perSegment, items.length) && !summary; probe += 1) {
+            const item = items[probe];
+            if (item?.kind === "node" && item.node.kind === "text") {
+                const raw = item.node.message.content.trim();
+                if (raw) {
+                    summary = raw.slice(0, 40);
+                }
+            }
+        }
+        if (!summary) {
+            summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, items.length)});
+        }
+        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex});
+    }
+    return segments;
+});
+/** 可视区首个 flowItem 序号；滚动时节流更新供刻度条高亮。 */
+const visibleFlowIndex = ref(0);
+let visibleAnchorScanAt = 0;
 
 /** 轻量追踪最后一条消息的渲染尺寸变化，避免 deep watch 扫描整棵消息树。 */
 const messageScrollSignature = computed(() => {
@@ -237,10 +276,46 @@ const requestPreviousHistory = (): void => {
 };
 
 /** 滚动事件处理。 */
+/** 滚动时节流扫描可视区第一个渲染单元元素，更新刻度条高亮锚。 */
+function updateVisibleFlowIndex(): void {
+    const now = Date.now();
+    if (now - visibleAnchorScanAt < 200) {
+        return;
+    }
+    visibleAnchorScanAt = now;
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    const containerTop = container.getBoundingClientRect().top;
+    const nodes = container.querySelectorAll<HTMLElement>("[data-flow-index]");
+    for (const node of nodes) {
+        if (node.getBoundingClientRect().bottom > containerTop) {
+            const parsed = Number.parseInt(node.dataset.flowIndex ?? "", 10);
+            if (Number.isFinite(parsed)) {
+                visibleFlowIndex.value = parsed;
+            }
+            return;
+        }
+    }
+}
+
+/** 刻度条 seek 定位：滚动到指定 flowItem（009单C批次1 §2.3 可点击定位）。 */
+function scrollToFlowItem(flowIndex: number): void {
+    const container = scrollRef.value;
+    if (!container) {
+        return;
+    }
+    const target = container.querySelector<HTMLElement>(`[data-flow-index="${String(flowIndex)}"]`);
+    target?.scrollIntoView({block: "start"});
+}
+
 const onScroll = (): void => {
     if (!scrollRef.value) return;
     const currentScrollTop = scrollRef.value.scrollTop;
     const userScrolledUp = currentScrollTop < lastScrollTop.value;
+
+    updateVisibleFlowIndex();
 
     if (isNearBottom()) {
         shouldStickToBottom.value = true;
@@ -335,8 +410,9 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
 </script>
 
 <template>
-    <!-- 通用对话流容器 -->
-    <div ref="scrollRef" class="flex flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
+    <!-- 通用对话流容器：消息列 + 右缘会话刻度条（009单C批次1 §2.3） -->
+    <div class="relative flex min-h-0 flex-1">
+        <div ref="scrollRef" class="flex min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
         <!-- 更早历史局部状态；失败不会遮断当前已加载对话。 -->
         <div v-if="props.historyHasPrevious || props.historyLoading || props.historyError" class="mb-4 flex shrink-0 items-center justify-center">
             <button
@@ -357,6 +433,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                 v-for="(item, index) in flowItems"
                 :key="getFlowItemKey(item)"
                 :class="flowItemSpacingClass(index)"
+                :data-flow-index="index"
             >
                 <AgentWorkBlock
                     v-if="item.kind === 'block'"
@@ -436,5 +513,14 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                 <p class="text-xs text-[var(--text-muted)]">{{ t("agent.chat.waiting") }}</p>
             </template>
         </div>
+        <!-- 会话树内嵌刻度条：main 模式且有渲染单元时显示；「查看全部」交宿主开完整树 -->
+        <AgentSessionScaleBar
+            v-if="scaleSegments.length > 0"
+            class="h-full"
+            :segments="scaleSegments"
+            :active-index="visibleFlowIndex"
+            @seek="scrollToFlowItem"
+            @expand="emit('expand-session-tree')"
+        />
     </div>
 </template>

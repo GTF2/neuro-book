@@ -4326,10 +4326,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     <button v-else class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.session.newChat')" :disabled="loadingSession" @click="void createSessionFromHeader()">
                         <span class="i-lucide-plus h-4 w-4"></span>
                     </button>
-                    <!-- 过渡保留：会话树/会话列表——收编去向=右侧刻度条（Flash 件交付挂载后撤，功能一件不丢） -->
-                    <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.chatSurface.sessionTreeTitle')" :disabled="!activeSessionId || !activeInteraction.canMutateHistory" @click="sessionTreeDialogOpen = true">
-                        <span class="i-lucide-git-branch h-4 w-4"></span>
-                    </button>
+                    <!-- 会话列表：跨会话切换入口（009单C批次1 裁定保留——刻度条 expand=会话内树导航，不含跨会话切换，功能一件不丢） -->
                     <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('agent.chatSurface.sessionListTitle')" @click="openSessionDialog()">
                         <span class="i-lucide-messages-square h-4 w-4"></span>
                     </button>
@@ -4412,6 +4409,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @cycle-branch="void cycleMessageBranch($event.messageId, $event.direction)"
                 @load-previous="void loadPreviousHistory()"
                 @attachment-registered="registerSessionAttachment"
+                @expand-session-tree="sessionTreeDialogOpen = true"
             />
 
             <AgentWorkflowPendingPanel :session-id="activeSessionId" />

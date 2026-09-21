@@ -3,6 +3,8 @@ import type {AgentPendingUserInputSession} from "nbook/app/components/novel-ide/
 import type {AgentPendingResolutionDraft, AgentPendingSubmissionIssue} from "nbook/app/components/novel-ide/agent/agent-pending-resolution";
 import AgentComposerInput from "nbook/app/components/novel-ide/agent/AgentComposerInput.vue";
 import AgentSessionModelControls from "nbook/app/components/novel-ide/agent/AgentSessionModelControls.vue";
+import AgentCacheRing from "nbook/app/components/novel-ide/agent/AgentCacheRing.vue";
+import AgentThinkingLevelSelect from "nbook/app/components/novel-ide/agent/AgentThinkingLevelSelect.vue";
 import AgentUserInputPrompt from "nbook/app/components/novel-ide/agent/AgentUserInputPrompt.vue";
 import AgentWorkspaceChanges from "nbook/app/components/novel-ide/agent/AgentWorkspaceChanges.vue";
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
@@ -654,6 +656,12 @@ defineExpose({focus, insertAttachment});
                         <span class="i-lucide-paperclip h-3.5 w-3.5"></span>
                         <span v-if="props.attachmentCount > 0" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ props.attachmentCount }}</span>
                     </button>
+                    <!-- 缓存命中绿环（009单C批次1）：模型选择器左侧，hover 现有累计标签，点击复用上下文检查面板 -->
+                    <AgentCacheRing
+                        :hit-rate-label="props.cumulativeCacheHitRateLabel"
+                        :compact-label="props.cumulativeCacheCompactLabel"
+                        @open-context-inspector="emit('open-context-inspector')"
+                    />
                     <AgentSessionModelControls
                         :session-model-selection-value="props.sessionModelSelectionValue"
                         :session-thinking-resolved-label="props.sessionThinkingResolvedLabel"
@@ -673,6 +681,12 @@ defineExpose({focus, insertAttachment});
                         @toggle-session-model-popover="emit('toggle-session-model-popover')"
                         @apply-session-model-settings="emit('apply-session-model-settings')"
                         @reset-session-model-settings="emit('reset-session-model-settings')"
+                    />
+                    <!-- 思考档快捷件（009单C批次1）：模型选择器右侧，与弹层内下拉同一 sessionModelDraft 通道双向同步 -->
+                    <AgentThinkingLevelSelect
+                        :model-value="props.sessionModelDraft.reasoningEffort ?? null"
+                        :disabled="composerReadonly || props.running"
+                        @update:model-value="emit('update:sessionModelDraft', {...props.sessionModelDraft, reasoningEffort: $event})"
                     />
 
                     <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp" @change="handleImageFileSelection" />
