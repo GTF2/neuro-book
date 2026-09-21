@@ -32,7 +32,9 @@ import {
     AgentSurfaceOperationController,
     adoptInlineEditorRequest,
     forgetRememberedSession,
+    isRememberedSessionArchivedError,
     readRememberedSession,
+    RememberedSessionArchivedError,
     isAgentSurfaceSupersededError,
     projectAgentSessionLoad,
     projectAgentComposerAvailability,
@@ -1061,6 +1063,7 @@ const ensureSessionReadyInternal = async (
             attempt,
             expectedIdentity: remembered.sessionIdentity,
             recoverMissing: false,
+            rejectArchived: true,
         });
         if (loaded.status === "loaded") {
             return sessions.value;
@@ -1068,7 +1071,14 @@ const ensureSessionReadyInternal = async (
         if (loaded.status === "superseded") {
             return sessions.value;
         }
-        if (loaded.status === "primary_missing" && import.meta.client) {
+        if (loaded.status === "archived_rejected" && import.meta.client) {
+            // 书删除后会话被服务端归档，同名重建书沿用同一 scopeKey 捡回记忆；忘掉它走正常列表。
+            forgetRememberedSession(
+                localStorage,
+                `agent:last-session:${sessionMemoryScopeKey.value}`,
+                remembered,
+            );
+        } else if (loaded.status === "primary_missing" && import.meta.client) {
             forgetRememberedSession(
                 localStorage,
                 `agent:last-session:${sessionMemoryScopeKey.value}`,
@@ -1512,6 +1522,8 @@ const loadSession = async (
         recoverMissing?: boolean;
         expectedIdentity?: AgentSessionIdentity;
         acceptsAdditional?: () => boolean;
+        /** 拒绝恢复已归档会话；仅用于 remembered 自动恢复路径，显式选择不传。 */
+        rejectArchived?: boolean;
     } = {},
 ): Promise<AgentSessionLoadResult<void>> => {
     const attempt = options.attempt ?? surfaceActivation.begin(sessionScopeKey.value);
@@ -1585,6 +1597,9 @@ const loadSession = async (
                 if (options.expectedIdentity !== undefined
                     && recovery.summary.sessionIdentity !== options.expectedIdentity) {
                     throw new Error("加载的对话身份与浏览器记忆不一致。请从当前对话列表重新选择。");
+                }
+                if (options.rejectArchived === true && recovery.summary.archived) {
+                    throw new RememberedSessionArchivedError();
                 }
                 const preparedDraft = await prepareComposerDraftContext(sessionId);
                 if (!acceptsLoad()) {
@@ -1672,6 +1687,9 @@ const loadSession = async (
         }
         if (result.status === "superseded") {
             return result;
+        }
+        if (result.status === "failed" && isRememberedSessionArchivedError(result.error)) {
+            return {status: "archived_rejected"};
         }
         if (result.status === "primary_missing" && options.recoverMissing !== false) {
             const recovered = await recoverMissingAgentSession(sessionId, previousSessionId, attempt, loadOwner);
@@ -3880,7 +3898,23 @@ async function refreshInlineEditorSessions(
                 loadOwner,
                 recoverMissing: options.recoverMissing,
                 expectedIdentity: target.sessionIdentity,
+                rejectArchived: true,
             });
+            if (loaded.status === "archived_rejected") {
+                // 书删除后 Inline 会话被归档，同名重建书沿用同一 scopeKey 捡回记忆；忘掉它保持未选中。
+                if (import.meta.client) {
+                    forgetRememberedSession(
+                        localStorage,
+                        `agent:inline-editor-session:${sessionMemoryScopeKey.value}`,
+                        target,
+                    );
+                }
+                clearInlineEditorSession(target.sessionId, false);
+                if (loaded.requestId !== inlineEditorSessionRequestId || !acceptsLoad()) {
+                    return {status: "superseded"};
+                }
+                return {status: "current", value: page.items};
+            }
             const adopted = adoptInlineEditorRequest(requestId, loaded.status === "primary_missing"
                 ? {status: "failed", requestId: loaded.requestId}
                 : loaded);
@@ -3948,6 +3982,10 @@ async function createInlineEditorSession(
         if (loaded.status === "primary_missing") {
             throw new Error(t("agent.chatSurface.inlineLoadFailed"));
         }
+        if (loaded.status === "archived_rejected") {
+            // 显式创建/选择路径不传 rejectArchived；类型完备兜底。
+            throw new Error(t("agent.chatSurface.inlineLoadFailed"));
+        }
         if (loaded.status === "failed") {
             throw new Error(loaded.message);
         }
@@ -3972,7 +4010,7 @@ async function selectInlineEditorSession(sessionId: number): Promise<InlineEdito
     clearInlineReconnectWatchers();
     try {
         const loaded = await loadInlineEditorSession(sessionId, {owner, loadOwner});
-        return projectInlineEditorSelection(loaded.status === "primary_missing"
+        return projectInlineEditorSelection(loaded.status === "primary_missing" || loaded.status === "archived_rejected"
             ? {status: "failed", message: t("agent.chatSurface.inlineLoadFailed")}
             : loaded);
     } finally {
@@ -3985,6 +4023,7 @@ type InlineEditorSessionLoadResult =
     | {status: "superseded"}
     | {status: "empty"; requestId: number}
     | {status: "primary_missing"; requestId: number}
+    | {status: "archived_rejected"; requestId: number}
     | {status: "failed"; message: string; requestId: number};
 
 /** 清理失效 Inline Session 并刷新一次；有列表时保持未绑定，不猜测首项。 */
@@ -4056,6 +4095,8 @@ async function loadInlineEditorSession(
         loadOwner?: AgentSessionLoadOwner;
         recoverMissing?: boolean;
         expectedIdentity?: AgentSessionIdentity;
+        /** 拒绝恢复已归档会话；仅用于 remembered 自动恢复路径，显式选择不传。 */
+        rejectArchived?: boolean;
     } = {},
 ): Promise<InlineEditorSessionLoadResult> {
     const owner = options.owner ?? captureInlineSurfaceOperation();
@@ -4086,6 +4127,9 @@ async function loadInlineEditorSession(
                     && recovery.summary.sessionIdentity !== options.expectedIdentity) {
                     throw new Error("Inline 对话身份与浏览器记忆不一致。请从当前列表重新选择。");
                 }
+                if (options.rejectArchived === true && recovery.summary.archived) {
+                    throw new RememberedSessionArchivedError();
+                }
                 if (recovery.summary.profileKey !== INLINE_EDITOR_PROFILE_KEY) {
                     throw new Error(t("agent.chatSurface.inlineLoadFailed"));
                 }
@@ -4109,6 +4153,9 @@ async function loadInlineEditorSession(
             return {status: "primary_missing", requestId: inlineEditorSessionRequestId};
         }
         if (result.status === "dependency_missing" || result.status === "failed") {
+            if (result.status === "failed" && isRememberedSessionArchivedError(result.error)) {
+                return {status: "archived_rejected", requestId: inlineEditorSessionRequestId};
+            }
             throw result.error;
         }
         if (result.status === "superseded") {

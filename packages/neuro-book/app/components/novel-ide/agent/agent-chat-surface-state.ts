@@ -109,6 +109,22 @@ export function forgetRememberedSession(
     }
 }
 
+/**
+ * 自动恢复的 remembered session 已被归档（典型：所属书删除后归档、同名重建书沿用旧 scopeKey）。
+ * 抛出后由 loadSession 映射为 archived_rejected；调用方应忘掉记忆并回落到列表流程。
+ */
+export class RememberedSessionArchivedError extends Error {
+    constructor() {
+        super("记住的对话已归档，不能自动恢复。请从当前对话列表重新选择。");
+        this.name = "RememberedSessionArchivedError";
+    }
+}
+
+/** 判断 Session 加载失败是否只是 remembered session 已归档。 */
+export function isRememberedSessionArchivedError(error: unknown): error is RememberedSessionArchivedError {
+    return error instanceof RememberedSessionArchivedError;
+}
+
 export type StreamOpenRememberOutcome =
     | {status: "connected"}
     | {status: "connect_failed"; error: unknown}
@@ -215,6 +231,7 @@ export type AgentSessionLoadResult<TResult> =
     | {status: "primary_missing"}
     | {status: "dependency_missing"; error: unknown}
     | {status: "failed"; error: unknown}
+    | {status: "archived_rejected"}
     | {status: "superseded"};
 
 export type AgentSessionLoadStatus =

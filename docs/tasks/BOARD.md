@@ -38,6 +38,8 @@
 
 | 024 | 用户资产崩溃残留排查（具体触发未定位：日志缺失+当前环境全端点扫描不崩；已做 sync 端点防御捕获 `223799d9`；**复发时用户立即保存终端输出**）；左下角用户名=账号名数据渲染非 bug，displayName/默认"我" 归 009 单C | 前线 | — | — | **部分完成·触发点已锁**（2026-09-21 二轮按用户堆栈实锤：agents/leader.default/personas/*.md 触发 Worker OOM 连坐 dev 进程；**实测一个 read 请求曾把长跑 5 小时的实例直接打死（HTTP 000 进程死），新实例同请求 200 不炸=状态累积型**；代码层 personas 无专属处理、产品唯一 Worker=profile 编译 Worker 原无内存上限；已落两层防御——sync 端点捕获 `223799d9` + Worker resourceLimits 1GB 走既有 handleCrash `a9b30dc5`；根因循环未定位（崩溃堆栈在用户终端未回传，dev 日志管道已就位待复发即抓）；一轮实测：read/stat/download 1783 文件×3 全扫不崩+新代码 3 连发 200；修正 020 误判——116 条"环境失败"实为 bun/vitest runner 错配） | — |
 
+| 025 | 删书后同名重建=旧数据复活（数据生命周期：删书归档会话正常，但同名建书后旧对话被捡回） | 前线 | — | — | **完成·待用户复验**（2026-09-21 前线亲修：**根因三环**——①删书→目录清理与墓碑均正常，会话被正确归档（jsonl 保留+archived 标记，符合设计）；②但浏览器 localStorage `agent:last-session:<书名>` 记住旧会话 ID，同名建书 scopeKey 相同，面板激活时 readLastSession 直接按 ID 加载归档会话（recovery 按 ID 读取不拒归档——列表显式查看是合法路径）；③用户点状态条"恢复对话"按钮后归档被撤销（71 号实测 15:29:40 被 restore），旧会话彻底回到活跃列表。**修复**：主面板 loadSession 与 Inline 双路径加 rejectArchived——自动恢复拒绝已归档会话（新 RememberedSessionArchivedError→archived_rejected 状态），忘掉 localStorage 记忆回落空白列表；显式从"已归档"筛选恢复仍是合法功能不受影响。agent 目录 264 测试全绿+typecheck 过+Vite 编译产物已验证含修复。**现场数据修复**：被误恢复的 71 号会话已重新归档，两本重建书活跃列表实测 total=0。用户复验法：刷新页面→点开 123/xin-xiao-shu-2→Agent 面板应显示空白（无旧对话）） | — |
+
 ## 状态规则
 
 - 状态只能由负责窗口或前线指挥部改写；工程队改状态必须同时附交付报告。

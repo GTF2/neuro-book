@@ -7,11 +7,13 @@ import {
     AgentSurfaceSupersededError,
     adoptInlineEditorRequest,
     forgetRememberedSession,
+    isRememberedSessionArchivedError,
     readRememberedSession,
     projectAgentSessionLoad,
     projectAgentComposerAvailability,
     projectInlineEditorSelection,
     projectReconnectReady,
+    RememberedSessionArchivedError,
     runSessionLoadAttempt,
     tryWriteRememberedSession,
     registerReconnectRestoreWatcher,
@@ -397,6 +399,23 @@ describe("runSessionLoadAttempt", () => {
             errorCode,
         })).resolves.toEqual({status: "superseded"});
         expect(commit).toHaveBeenCalledOnce();
+    });
+
+    it("commit 抛出归档拒绝错误时保持 failed 语义且错误实例可识别", async () => {
+        const archivedError = new RememberedSessionArchivedError();
+
+        const result = await runSessionLoadAttempt({
+            read: async () => ({summary: {archived: true}}),
+            commit: () => {
+                throw archivedError;
+            },
+            accepts: () => true,
+            errorCode,
+        });
+
+        expect(result).toEqual({status: "failed", error: archivedError});
+        expect(isRememberedSessionArchivedError(result.error)).toBe(true);
+        expect(isRememberedSessionArchivedError(new Error("普通错误"))).toBe(false);
     });
 });
 
