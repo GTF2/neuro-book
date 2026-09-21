@@ -33,6 +33,10 @@ const props = defineProps<{
     availability: AgentComposerAvailability;
     canRegisterAttachments: boolean;
     canInsertAttachments: boolean;
+    /** 附件入口收编参数（009单C批次1：顶栏按钮迁入输入框左下，宿主持有面板开关与计数）。 */
+    attachmentPanelOpen: boolean;
+    attachmentCount: number;
+    attachmentButtonDisabled: boolean;
     loadingSession: boolean;
     sessionModelSaving: boolean;
     sessionModelPopoverOpen: boolean;
@@ -91,6 +95,7 @@ const emit = defineEmits<{
     (e: "open-history-inbox"): void;
     (e: "open-workspace-file", path: string): void;
     (e: "attachment-registered", item: AgentSessionAttachmentItemDto): void;
+    (e: "toggle-attachment-panel"): void;
     (e: "availability-action", action: AgentComposerAvailabilityAction): void;
 }>();
 
@@ -637,6 +642,18 @@ defineExpose({focus, insertAttachment});
 
             <div class="flex min-w-0 items-center gap-2 border-t border-[var(--border-color)]/50 px-2 py-2">
                 <div class="flex min-w-0 flex-1 items-center gap-2">
+                    <!-- 附件入口（009单C批次1：从顶栏收编进输入框左下；开关与计数由宿主持有） -->
+                    <button
+                        type="button"
+                        class="flex shrink-0 items-center gap-1 rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40"
+                        :class="props.attachmentPanelOpen ? 'bg-[var(--bg-hover)] text-[var(--accent-text)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'"
+                        :disabled="props.attachmentButtonDisabled"
+                        :title="t('agent.composer.attachmentsTitle')"
+                        @click="emit('toggle-attachment-panel')"
+                    >
+                        <span class="i-lucide-paperclip h-3.5 w-3.5"></span>
+                        <span v-if="props.attachmentCount > 0" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ props.attachmentCount }}</span>
+                    </button>
                     <AgentSessionModelControls
                         :session-model-selection-value="props.sessionModelSelectionValue"
                         :session-thinking-resolved-label="props.sessionThinkingResolvedLabel"

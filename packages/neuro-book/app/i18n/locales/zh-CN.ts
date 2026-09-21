@@ -1804,6 +1804,8 @@ const zhCN = {
             stale: "文件已发生新变化，已刷新列表；原操作未执行。",
         },
         composer: {
+            // [i18n-add] 009单C批次1 附件入口收编（5.3 侧追加）
+            attachmentsTitle: "查看当前对话的全部附件",
             followProfile: "跟随 Profile",
             off: "关闭",
             minimal: "极低",
@@ -2003,6 +2005,9 @@ const zhCN = {
             parentSession: "协作父会话 #{id}",
         },
         chatSurface: {
+            // [i18n-add] 009单C批次1 顶栏收编 ⓘ 容器（5.3 侧追加）
+            infoMenuTitle: "会话详情（系统提示词 / 关联 Agent / 摘要器）",
+            summarizerLabel: "摘要器",
             inlineRunning: "进行中",
             inlineSessionLabel: "自动 Inline AI Session",
             connecting: "连接中",

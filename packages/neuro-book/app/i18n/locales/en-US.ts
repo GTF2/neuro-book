@@ -1806,6 +1806,8 @@ const enUS = {
             stale: "The file changed again. The list was refreshed and the original action was not run.",
         },
         composer: {
+            // [i18n-add] 009单C批次1 附件入口收编（5.3 侧追加）
+            attachmentsTitle: "View all attachments of this chat",
             followProfile: "Follow Profile",
             off: "Off",
             minimal: "Minimal",
@@ -2005,6 +2007,9 @@ const enUS = {
             parentSession: "Parent session #{id}",
         },
         chatSurface: {
+            // [i18n-add] 009单C批次1 顶栏收编 ⓘ 容器（5.3 侧追加）
+            infoMenuTitle: "Chat details (system prompt / linked agents / summarizer)",
+            summarizerLabel: "Summarizer",
             inlineRunning: "In progress",
             inlineSessionLabel: "Automatic Inline AI Session",
             connecting: "Connecting",

@@ -396,6 +396,38 @@ const createProfileDropdownItems = computed<DropdownItem[]>(() => createProfileO
 })));
 const canChooseCreateProfile = computed(() => createProfileOptions.value.length > 1);
 
+/**
+ * ⓘ 会话详情菜单（009单C批次1 收编容器）：系统提示词/LinkedAgent/摘要器状态。
+ * 摘要器行仅展示状态，不可点；两个入口在宿主侧切面板开关。
+ */
+const infoMenuItems = computed<DropdownItem[]>(() => {
+    const linkedLabel = linkedAgentCount.value > 0
+        ? `${t("agent.chatSurface.linkedAgentsTitle")} (${linkedAgentCount.value})`
+        : t("agent.chatSurface.linkedAgentsTitle");
+    const items: DropdownItem[] = [
+        {label: t("agent.systemPrompt.open"), value: "system-prompt", iconClass: "i-lucide-terminal-square", active: systemPromptPanelOpen.value},
+        {label: linkedLabel, value: "linked-agents", iconClass: "i-lucide-users", active: linkedAgentPanelOpen.value},
+    ];
+    if (summarizerStatus.value) {
+        // 仅展示状态；handleInfoMenuSelect 不处理该 value，点击无动作。
+        items.push({
+            label: `${t("agent.chatSurface.summarizerLabel")}: ${summarizerStatus.value.label}`,
+            value: "summarizer-status",
+            iconClass: summarizerStatus.value.icon,
+        });
+    }
+    return items;
+});
+const handleInfoMenuSelect = (value: string) => {
+    if (value === "system-prompt") {
+        systemPromptPanelOpen.value = !systemPromptPanelOpen.value;
+        return;
+    }
+    if (value === "linked-agents") {
+        linkedAgentPanelOpen.value = !linkedAgentPanelOpen.value;
+    }
+};
+
 /** localStorage 等稳定记忆只按 Workspace/Project 身份分区，不随 reconnect generation 改名。 */
 const sessionMemoryScopeKey = computed(() => agentSessionScopeKey(ideStore.workspaceKind, ideStore.currentProjectRoot));
 /** 数据面 scope 包含 ready revision；同 root reconnect 后旧请求也会立即失去发布权。 */
@@ -4276,14 +4308,16 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                         </div>
                         <div class="flex min-w-0 items-center gap-1.5">
                             <div class="truncate text-[10px] leading-4 text-[var(--text-muted)]" :title="activeSessionSummaryText">{{ activeSessionSummaryText }}</div>
-                            <span v-if="summarizerStatus" class="inline-flex shrink-0 items-center gap-1 rounded border px-1.5 py-0.5 text-[9px] font-medium tracking-normal" :class="summarizerStatus.className" :title="summarizerStatus.title">
-                                <span class="h-3 w-3" :class="[summarizerStatus.icon, summarizerStatus.spinning ? 'animate-spin' : '']"></span>
-                                {{ summarizerStatus.label }}
-                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="flex shrink-0 items-center gap-1">
+                    <!-- ⓘ 会话详情容器（009单C批次1 收编：系统提示词/LinkedAgent/摘要器状态入此） -->
+                    <Dropdown :items="infoMenuItems" root-class="relative inline-block" menu-class="right-0 top-full mt-1.5 w-52" compact @select="handleInfoMenuSelect">
+                        <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('agent.chatSurface.infoMenuTitle')">
+                            <span class="i-lucide-info h-4 w-4"></span>
+                        </button>
+                    </Dropdown>
                     <Dropdown v-if="canChooseCreateProfile" :items="createProfileDropdownItems" root-class="relative inline-block" menu-class="right-0 top-full mt-1.5 w-44" compact @select="void createSessionFromHeader($event)">
                         <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.session.newChat')" :disabled="loadingSession">
                             <span class="i-lucide-plus h-4 w-4"></span>
@@ -4292,25 +4326,12 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                     <button v-else class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.session.newChat')" :disabled="loadingSession" @click="void createSessionFromHeader()">
                         <span class="i-lucide-plus h-4 w-4"></span>
                     </button>
-                    <button class="flex items-center gap-1 rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :class="{'bg-[var(--bg-hover)] text-[var(--accent-main)]': attachmentPanelOpen}" title="查看当前 Session 的全部附件" :disabled="!activeSessionId" @click="toggleAttachmentPanel">
-                        <span class="i-lucide-paperclip h-4 w-4"></span>
-                        <span v-if="sessionAttachmentUniqueTotal" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ sessionAttachmentUniqueTotal }}</span>
-                    </button>
-                    <button class="flex items-center gap-1.5 rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :class="{'bg-[var(--bg-hover)] text-[var(--accent-main)]': linkedAgentPanelOpen}" :title="t('agent.chatSurface.linkedAgentsTitle')" @click="linkedAgentPanelOpen = !linkedAgentPanelOpen">
-                        <span class="i-lucide-users h-4 w-4"></span>
-                        <span v-if="linkedAgentCount" class="rounded-sm bg-[var(--accent-main)] px-1 text-[9px] font-bold text-[var(--text-inverse)]">{{ linkedAgentCount }}</span>
-                    </button>
+                    <!-- 过渡保留：会话树/会话列表——收编去向=右侧刻度条（Flash 件交付挂载后撤，功能一件不丢） -->
                     <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :title="t('agent.chatSurface.sessionTreeTitle')" :disabled="!activeSessionId || !activeInteraction.canMutateHistory" @click="sessionTreeDialogOpen = true">
                         <span class="i-lucide-git-branch h-4 w-4"></span>
                     </button>
-                    <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40" :class="{'bg-[var(--bg-hover)] text-[var(--accent-main)]': systemPromptPanelOpen}" :title="t('agent.systemPrompt.open')" :disabled="!activeSessionId" @click="systemPromptPanelOpen = !systemPromptPanelOpen">
-                        <span class="i-lucide-terminal-square h-4 w-4"></span>
-                    </button>
                     <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" :title="t('agent.chatSurface.sessionListTitle')" @click="openSessionDialog()">
                         <span class="i-lucide-messages-square h-4 w-4"></span>
-                    </button>
-                    <button class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" @click="emit('close')">
-                        <span class="i-lucide-x h-4 w-4"></span>
                     </button>
                 </div>
             </div>
@@ -4411,6 +4432,10 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 :availability="composerAvailability"
                 :can-register-attachments="activeInteraction.canRegisterAttachment"
                 :can-insert-attachments="activeInteraction.canInsertAttachment"
+                :attachment-panel-open="attachmentPanelOpen"
+                :attachment-count="sessionAttachmentUniqueTotal"
+                :attachment-button-disabled="!activeSessionId"
+                @toggle-attachment-panel="toggleAttachmentPanel"
                 :loading-session="loadingSession"
                 :session-model-saving="sessionModelSaving"
                 :session-model-selection-value="sessionModelSelectionValue"
