@@ -2275,6 +2275,17 @@ const enUS = {
             usageCost: " / This call cost {compactCost} (input {inputCost} / output {outputCost} / cache read {cacheReadCost} / cache write {cacheWriteCost} / total {totalCost}{suffix})",
             thisTurn: "This call {value}",
         },
+        // [i18n-add] 009单C批次1 工作块过程行（5.3 侧追加）
+        workBlock: {
+            explore: "Exploring",
+            edit: "Editing files",
+            command: "Running commands",
+            database: "Querying database",
+            web: "Searching the web",
+            fileCount: "{count} files",
+            stepCount: "{count} steps",
+            failedCount: "{count} failed",
+        },
         tasks: {
             todo: "Todo",
             inProgress: "In progress",

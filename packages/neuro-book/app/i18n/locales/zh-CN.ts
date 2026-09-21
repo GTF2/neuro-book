@@ -2273,6 +2273,17 @@ const zhCN = {
             usageCost: " / 本次耗费 {compactCost}（输入 {inputCost} / 输出 {outputCost} / 缓存读 {cacheReadCost} / 缓存写 {cacheWriteCost} / 总计 {totalCost}{suffix}）",
             thisTurn: "本次 {value}",
         },
+        // [i18n-add] 009单C批次1 工作块过程行（5.3 侧追加）
+        workBlock: {
+            explore: "查阅资料",
+            edit: "修改文件",
+            command: "执行命令",
+            database: "查询数据库",
+            web: "检索网络",
+            fileCount: "{count} 个文件",
+            stepCount: "{count} 步",
+            failedCount: "{count} 个失败",
+        },
         tasks: {
             todo: "待开始",
             inProgress: "进行中",
