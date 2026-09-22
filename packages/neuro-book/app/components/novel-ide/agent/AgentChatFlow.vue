@@ -228,22 +228,32 @@ const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
         let summary = "";
         let weight = 0;
         let failed = false;
+        const failureTools = new Set<string>();
         for (let probe = start; probe < Math.min(start + perSegment, dialogItems.length); probe += 1) {
             const entry = dialogItems[probe]!;
             weight += flowItemWeight(entry.item);
             if (!summary) {
                 summary = flowItemSummary(entry.item);
             }
-            // R5h：格内任一轮含失败 → 红刻度提示（hover/选中仍走 focus 蓝满宽）
+            // R5i：格内任一轮含失败 → 红刻度提示（hover/选中仍走 focus 蓝满宽）；收集失败工具供悬浮卡
             if (entry.item.kind === "round" && entry.item.hasFailure) {
                 failed = true;
+                for (const name of entry.item.failedToolNames ?? []) {
+                    failureTools.add(name);
+                }
             }
         }
         const anchorIndex = first.index;
         if (!summary) {
             summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, dialogItems.length)});
         }
-        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex, weight, ...(failed ? {failed: true} : {})});
+        segments.push({
+            id: `scale-${anchorIndex}`,
+            summary,
+            anchorIndex,
+            weight,
+            ...(failed ? {failed: true, failureTools: [...failureTools]} : {}),
+        });
     }
     return segments;
 });

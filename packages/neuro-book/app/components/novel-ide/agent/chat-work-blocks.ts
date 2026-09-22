@@ -26,6 +26,8 @@ export type ChatRoundItem = {
     nodes: ChatNode[];
     /** 轮内是否有失败：失败轮默认展开。 */
     hasFailure: boolean;
+    /** R5i：失败工具名列表（去重保序）——红刻度悬浮卡显示"哪里失败"。 */
+    failedToolNames?: string[];
     /** 轮内是否仍在跑：运行中不自动收起。 */
     isRunning: boolean;
     /** 首尾时间差（毫秒）；单条消息轮为 0（已开始但跨度未知），全缺时间戳为 null。 */
@@ -225,13 +227,15 @@ const buildRound = (nodes: ChatNode[]): ChatRoundItem => {
         .map((node) => parseTimestampMs(node.message.timestamp))
         .filter((value): value is number => value !== null);
     const modelLabel = nodes.find((node) => node.kind === "text" && node.message.type === "ai" && node.message.model)?.message.model ?? null;
+    const failedToolNames = [...new Set(toolCalls.filter(isFailedToolCall).map((toolCall) => toolCall.name))];
     const first = nodes[0];
     const last = nodes[nodes.length - 1];
     return {
         kind: "round",
         id: `${first?.message.id ?? ""}::${last?.message.id ?? ""}`,
         nodes,
-        hasFailure: toolCalls.some(isFailedToolCall),
+        hasFailure: failedToolNames.length > 0,
+        ...(failedToolNames.length > 0 ? {failedToolNames} : {}),
         isRunning: nodes.some((node) => node.kind === "text" && node.message.status === "streaming")
             || toolCalls.some(isRunningToolCall),
         durationMs: timestamps.length > 0 ? Math.max(...timestamps) - Math.min(...timestamps) : null,

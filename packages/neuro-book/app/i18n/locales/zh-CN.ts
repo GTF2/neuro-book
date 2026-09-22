@@ -1886,6 +1886,7 @@ const zhCN = {
         chat: {
             // [i18n-add] 009单C批次1 刻度条（5.3 侧追加）
             scaleSegmentFallback: "第 {from}-{to} 段",
+            scaleFailureNote: "该段有 {count} 处失败：{tools}", // [i18n-add] R5i 红刻度悬浮卡失败详情
             startTitle: "开始与 AI 协作",
             startDescription: "你可以让我帮你设计角色、规划大纲，或者直接讨论接下来的剧情走向。",
             waiting: "等待 Agent 响应…",

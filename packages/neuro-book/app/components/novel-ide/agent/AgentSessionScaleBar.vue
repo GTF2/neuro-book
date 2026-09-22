@@ -10,6 +10,8 @@ export type AgentSessionScaleSegment = {
     weight?: number;
     /** R5h：格内任一轮含失败 → 静态红刻度；hover/选中仍走 focus 蓝满宽 */
     failed?: boolean;
+    /** R5i：格内失败工具名（去重）——悬浮卡红字列出"哪里失败" */
+    failureTools?: string[];
 };
 
 const props = defineProps<{
@@ -25,6 +27,7 @@ const emit = defineEmits<{
 }>();
 
 const {t} = useI18n();
+import {toolShortLabelKey} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 
 const trackRef = ref<HTMLElement | null>(null);
 const hoverIndex = ref<number | null>(null);
@@ -238,7 +241,12 @@ const previewTeleportTarget = computed<Element | string>(() => rootRef.value?.cl
                 class="pointer-events-none fixed z-50 max-h-40 w-56 overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 text-[11px] leading-5 text-[var(--text-secondary)] shadow-xl"
                 :style="{left: `${hoverX}px`, top: `${hoverY}px`}"
             >
-                {{ props.segments[hoverIndex]?.summary }}
+                <div>{{ props.segments[hoverIndex]?.summary }}</div>
+                <!-- R5i：失败轮悬浮卡红字列出失败工具（与红刻度呼应） -->
+                <div v-if="props.segments[hoverIndex]?.failureTools?.length" class="mt-1 flex items-start gap-1 border-t border-[var(--border-color)]/50 pt-1 text-[var(--status-danger)]">
+                    <span class="i-lucide-triangle-alert mt-1 h-3 w-3 shrink-0"></span>
+                    <span class="min-w-0 flex-1">{{ t("agent.chat.scaleFailureNote", {count: props.segments[hoverIndex]!.failureTools!.length, tools: props.segments[hoverIndex]!.failureTools!.map((name) => t(toolShortLabelKey(name))).join("、")}) }}</span>
+                </div>
             </div>
         </Teleport>
     </div>
