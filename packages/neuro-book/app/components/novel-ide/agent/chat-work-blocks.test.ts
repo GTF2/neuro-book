@@ -41,12 +41,14 @@ describe("工具类别映射全覆盖（009C1R2 件6，对照 buildAgentTools 46
         ["save_story_decision", "edit"], ["variable_patch", "edit"], ["subject_event_append", "edit"], ["subject_memory_update", "edit"],
         // 单类
         ["bash", "command"], ["execute_sql", "database"], ["web_search", "web"], ["web_fetch", "web"], ["execute_world", "world"],
-        // 不折叠 10
+        // agent 类（R5f 用户裁定：代理生命周期并入折叠，拆书会话一次 5 个须聚合）
+        ["create_agent", "agent"], ["invoke_agent", "agent"], ["detach_agent", "agent"],
+        // 不折叠 7
         ["request_user_input", null], ["switch_mode", null], ["report_result", null], ["task_create", null], ["task_set_status", null],
-        ["run_workflow", null], ["cancel_job", null], ["create_agent", null], ["invoke_agent", null], ["detach_agent", null],
+        ["run_workflow", null], ["cancel_job", null],
     ];
 
-    it("46 工具逐个归类断言（36 折叠+10 不折叠）", () => {
+    it("46 工具逐个归类断言（39 折叠+7 不折叠）", () => {
         expect(KIND_EXPECTATIONS).toHaveLength(46);
         for (const [name, expected] of KIND_EXPECTATIONS) {
             expect(resolveToolWorkKind(name), `工具 ${name}`).toBe(expected);

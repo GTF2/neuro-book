@@ -52,6 +52,7 @@ describe("useAgentSession event reducer", () => {
 
         session.applyLiveState({
             ...liveState(),
+            summary: {...summary(), status: "waiting"}, // R5f：pending 卡仅 waiting 态展示
             pendingUserInputs: [{
                 toolCallId: assertPublicToolCallId("form-1"),
                 toolName: "large_form_input",
@@ -90,6 +91,7 @@ describe("useAgentSession event reducer", () => {
 
         session.applyLiveState({
             ...liveState(),
+            summary: {...summary(), status: "waiting"}, // R5f：pending 卡仅 waiting 态展示
             pendingUserInputs: [{
                 toolCallId: assertPublicToolCallId("form-1"),
                 toolName: "large_form_input",
@@ -140,6 +142,7 @@ describe("useAgentSession event reducer", () => {
 
         session.applyLiveState({
             ...liveState(),
+            summary: {...summary(), status: "waiting"}, // R5f：pending 卡仅 waiting 态展示
             pendingUserInputs: [{
                 toolCallId: assertPublicToolCallId("question-1"),
                 toolName: "request_user_input",
@@ -159,6 +162,7 @@ describe("useAgentSession event reducer", () => {
         const session = useAgentSession();
         session.applyRecovery({
             ...recovery(0),
+            summary: {...summary(), status: "waiting"},
             pendingUserInputs: ["approval-1", "approval-2"].map((toolCallId) => ({
                 toolCallId: assertPublicToolCallId(toolCallId),
                 toolName: "run_workflow",
@@ -176,10 +180,33 @@ describe("useAgentSession event reducer", () => {
         expect(session.pendingUserInputSession.value?.questions[0]?.toolCallId).toBe("approval-1");
     });
 
+    it("R5f：非 waiting 会话（interrupted/idle）的恢复 pending 是僵尸数据，不进展示列表", () => {
+        const session = useAgentSession();
+        session.applyRecovery({
+            ...recovery(0),
+            summary: {...summary(), status: "interrupted"},
+            pendingUserInputs: ["approval-1"].map((toolCallId) => ({
+                toolCallId: assertPublicToolCallId(toolCallId),
+                toolName: "run_workflow",
+                args: {kind: "generic" as const, value: {kind: "object" as const, entries: [], omittedEntries: 0}},
+            })),
+        });
+        expect(session.pendingUserInputSessions.value).toEqual([]);
+
+        // waiting 态同一份数据正常展示
+        session.applyLiveState({...liveState(), summary: {...summary(), status: "waiting"}, pendingUserInputs: [{
+            toolCallId: assertPublicToolCallId("approval-1"),
+            toolName: "run_workflow",
+            args: {kind: "generic", value: {kind: "object", entries: [], omittedEntries: 0}},
+        }]});
+        expect(session.pendingUserInputSessions.value).toHaveLength(1);
+    });
+
     it("live pending 追加到完整列表，tool result 只移除对应项", () => {
         const session = useAgentSession();
         session.applyRecovery({
             ...recovery(0),
+            summary: {...summary(), status: "waiting"}, // R5f：pending 卡仅 waiting 态展示
             pendingUserInputs: ["approval-1", "approval-2"].map((toolCallId) => ({
                 toolCallId: assertPublicToolCallId(toolCallId),
                 toolName: "run_workflow",

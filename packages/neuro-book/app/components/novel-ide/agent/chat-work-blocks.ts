@@ -4,7 +4,7 @@ import type {AgentToolCall, ChatNode} from "nbook/app/components/novel-ide/agent
  * 工作块类别：决定图标与人话标题。world 为 009C1R2 件6 新增类别。
  * 只用工具元数据分类，不依赖 AI 生成——准确、零延迟、零成本。
  */
-export type ChatWorkBlockKind = "explore" | "edit" | "command" | "database" | "web" | "world";
+export type ChatWorkBlockKind = "explore" | "edit" | "command" | "database" | "web" | "world" | "agent";
 
 /** 折叠节点：块内一定是工具节点，文本节点永远不进块。 */
 export type ChatWorkBlockNode = Extract<ChatNode, {kind: "tool"}>;
@@ -62,8 +62,10 @@ export type ChatFlowItem =
     | ChatRoundItem;
 
 /**
- * 不折叠工具（009C1R2 件6 对照 buildAgentTools 46 工具全量核定）：
- * 交互与汇总类必须始终可见；取消与代理生命周期类不参与过程行收拢。
+ * 不折叠工具（009C1R2 件6 对照 buildAgentTools 46 工具全量核定；R5f 用户裁定调整）：
+ * 交互与汇总类必须始终可见；取消类不参与过程行收拢。
+ * create/invoke/detach_agent 原在代理生命周期白名单（R5f 移出）——拆书会话一次创建
+ * 5 个子代理把消息流刷成噪音，用户要求与普通工具一样按轮聚合。
  */
 const NON_BLOCKABLE_TOOL_NAMES: ReadonlySet<string> = new Set([
     "run_workflow",
@@ -73,9 +75,6 @@ const NON_BLOCKABLE_TOOL_NAMES: ReadonlySet<string> = new Set([
     "task_create",
     "task_set_status",
     "cancel_job",
-    "create_agent",
-    "invoke_agent",
-    "detach_agent",
 ]);
 
 /** 工具名 → 工作块类别；未登记=不折叠。覆盖 buildAgentTools 除不折叠清单外的全部 36 个工具。 */
@@ -113,12 +112,16 @@ const WORK_KIND_BY_TOOL_NAME: Record<string, ChatWorkBlockKind> = {
     variable_patch: "edit",
     subject_event_append: "edit",
     subject_memory_update: "edit",
-    // command / database / web / world
+    // command / database / web / world / agent
     bash: "command",
     execute_sql: "database",
     web_search: "web",
     web_fetch: "web",
     execute_world: "world",
+    // [i18n-add] R5f 代理生命周期并入 agent 类别（拆书会话一次 5 个须聚合，用户裁定）
+    create_agent: "agent",
+    invoke_agent: "agent",
+    detach_agent: "agent",
 };
 
 /** 最少两步才值得在摘要里单列细分；单步直接并入类别人话。 */
@@ -312,6 +315,7 @@ export const CHAT_WORK_BLOCK_META: Record<ChatWorkBlockKind, {icon: string; labe
     database: {icon: "i-lucide-database", labelKey: "agent.workBlock.database"},
     web: {icon: "i-lucide-globe", labelKey: "agent.workBlock.web"},
     world: {icon: "i-lucide-orbit", labelKey: "agent.workBlock.world"},
+    agent: {icon: "i-lucide-bot", labelKey: "agent.workBlock.agent"},
 };
 
 /** 细分摘要里单列的工具短名（其余工具并入类别人话计数）；i18n 键 agent.workBlock.tool.*。 */

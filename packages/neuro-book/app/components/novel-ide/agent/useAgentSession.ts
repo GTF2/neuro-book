@@ -360,7 +360,10 @@ export function useAgentSession() {
             }));
         }
         applyRunState(payload.activeInvocation, payload.pendingUserInputs);
-        pendingUserInputSessions.value = payload.pendingUserInputs
+        // R5f（用户实测）：pending 卡仅 waiting 态展示——interrupted/idle 会话恢复 payload 里的
+        // 残留 pending 是僵尸数据（真机会话 status=interrupted 且全库 waiting=0 仍挂"1/3 待处理"卡，
+        // 放弃按钮因 canAbort=false 静默无效）。waiting 才有 canResolve/canAbort，与 policy 对齐。
+        pendingUserInputSessions.value = (payload.summary?.status === "waiting" ? payload.pendingUserInputs : [])
             .map((pending) => toPendingUserInputSession(pending, messages.value))
             .filter((session): session is AgentPendingUserInputSession => session !== null);
         eventEpoch.value = payload.eventCursor.eventEpoch;
@@ -530,7 +533,8 @@ export function useAgentSession() {
             contextUsage: state.contextUsage,
         };
         applyRunState(state.activeInvocation, pendingUserInputs);
-        pendingUserInputSessions.value = pendingUserInputs
+        // R5f：同恢复链路——仅 waiting 态展示 pending 卡（见上方恢复应用处注）。
+        pendingUserInputSessions.value = (state.summary?.status === "waiting" ? pendingUserInputs : [])
             .map((pending: AgentPendingUserInputDto) => toPendingUserInputSession(pending, messages.value))
             .filter((session): session is AgentPendingUserInputSession => session !== null);
         if (pendingDetailsMissing) {

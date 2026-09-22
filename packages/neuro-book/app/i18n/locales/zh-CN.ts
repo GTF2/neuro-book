@@ -2312,6 +2312,7 @@ const zhCN = {
             web: "检索网络",
             // [i18n-add] 009C1R2 件6 world 新类别
             world: "世界引擎",
+            agent: "子代理", // [i18n-add] R5f 代理生命周期类别（create/invoke/detach_agent 聚合）
             fileCount: "{count} 个文件",
             stepCount: "{count} 步",
             failedCount: "{count} 个失败",
@@ -2333,6 +2334,9 @@ const zhCN = {
             target: "目标",
             // [i18n-add] 009C1R2 件6 工具短名（细分计数摘要）
             tool: {
+                create_agent: "创建子代理", // [i18n-add] R5f
+                invoke_agent: "派发子代理", // [i18n-add] R5f
+                detach_agent: "分离子代理", // [i18n-add] R5f
                 read: "文件",
                 write: "写文件",
                 edit: "改文件",

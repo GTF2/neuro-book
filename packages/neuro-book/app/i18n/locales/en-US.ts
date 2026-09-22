@@ -2311,6 +2311,7 @@ const enUS = {
             web: "Web",
             // [i18n-add] 009C1R2 world kind
             world: "World engine",
+            agent: "Sub-agents", // [i18n-add] R5f agent lifecycle kind (create/invoke/detach_agent)
             fileCount: "{count} files",
             stepCount: "{count} steps",
             failedCount: "{count} failed",
@@ -2332,6 +2333,9 @@ const enUS = {
             target: "Target",
             // [i18n-add] 009C1R2 tool short labels
             tool: {
+                create_agent: "create sub-agent", // [i18n-add] R5f
+                invoke_agent: "dispatch sub-agent", // [i18n-add] R5f
+                detach_agent: "detach sub-agent", // [i18n-add] R5f
                 read: "file",
                 write: "write",
                 edit: "edit file",

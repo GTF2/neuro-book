@@ -232,8 +232,9 @@ function handlePrimary(): void {
             <div v-if="!props.canResolve && props.blockedMessage" class="flex items-start gap-2 border-b border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs leading-5 text-[var(--status-danger)]" role="status">
                 <span class="i-lucide-octagon-alert mt-0.5 h-3.5 w-3.5 shrink-0"></span>
                 <span class="min-w-0 flex-1">{{ props.blockedMessage }}</span>
-                <!-- R5b：放弃=走 cancel 链真中断该等待（不再永远挂着）；收起=折叠可恢复（数据不动） -->
-                <button type="button" class="shrink-0 rounded border border-current px-2 py-0.5 font-medium hover:bg-[var(--bg-hover)]" @click="emit('cancel')">{{ t("agent.userInput.abortPending") }}</button>
+                <!-- R5b：放弃=走 cancel 链真中断该等待（不再永远挂着）；收起=折叠可恢复（数据不动）。
+                     R5f：与底部按钮同守卫——canAbort=false 时禁用（原先可点但链上静默 return，用户实锤"点了没反应"） -->
+                <button type="button" class="shrink-0 rounded border border-current px-2 py-0.5 font-medium transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40" :disabled="props.submitting || !props.canAbort" @click="emit('cancel')">{{ t("agent.userInput.abortPending") }}</button>
                 <button type="button" class="shrink-0 rounded px-2 py-0.5 font-medium hover:bg-[var(--bg-hover)]" @click="emit('dismiss')">{{ t("agent.userInput.dismissPending") }}</button>
             </div>
             <div v-if="props.submissionIssue" class="flex items-start gap-2 border-b px-3 py-2 text-xs leading-5" :class="props.submissionIssue.kind === 'unknown' ? 'border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] text-[var(--status-warning)]' : 'border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] text-[var(--status-danger)]'" role="status">
