@@ -212,26 +212,6 @@ function applySelectedIcon(iconName: string): void {
     void saveDraft();
 }
 
-watch(() => [props.node?.path, selectedFileContent.value], () => {
-    if (!isContentIndexFile.value || !props.node) {
-        draft.value = null;
-        diagnostics.value = "";
-        lastLoadedContent.value = selectedFileContent.value;
-        refreshManuscriptStats();
-        rebuildProjectYamlDraft();
-        return;
-    }
-    if (selectedFileContent.value === lastLoadedContent.value) {
-        return;
-    }
-
-    const parsed = parseMarkdownDocument(selectedFileContent.value);
-    draft.value = createDraft(props.node, parsed.frontmatter, parsed.body);
-    diagnostics.value = parsed.error ?? "";
-    refreshManuscriptStats();
-    lastLoadedContent.value = selectedFileContent.value;
-}, {immediate: true});
-
 /** R4 件9③：project.yaml 表单化（C 类极简→最低表单）。title 必填（BUG030 前端拦截联动）。 */
 const isProjectYamlFile = computed(() => (props.node?.path ?? "").toLowerCase() === "project.yaml");
 type ProjectYamlDraft = {title: string; summary: string};
@@ -304,6 +284,28 @@ async function saveProjectYaml(): Promise<void> {
     projectYamlBaseline.value = next;
     useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? ""});
 }
+
+watch(() => [props.node?.path, selectedFileContent.value], () => {
+    if (!isContentIndexFile.value || !props.node) {
+        draft.value = null;
+        diagnostics.value = "";
+        lastLoadedContent.value = selectedFileContent.value;
+        refreshManuscriptStats();
+        rebuildProjectYamlDraft();
+        return;
+    }
+    if (selectedFileContent.value === lastLoadedContent.value) {
+        return;
+    }
+
+    const parsed = parseMarkdownDocument(selectedFileContent.value);
+    draft.value = createDraft(props.node, parsed.frontmatter, parsed.body);
+    diagnostics.value = parsed.error ?? "";
+    refreshManuscriptStats();
+    lastLoadedContent.value = selectedFileContent.value;
+}, {immediate: true});
+
+
 
 /**
  * 从 frontmatter 与文件节点生成表单草稿；表单未覆盖的字段收进 rest 原样保留。

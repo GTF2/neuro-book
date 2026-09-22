@@ -39,20 +39,29 @@ onBeforeUnmount(() => {
 /** 块头时长：秒级轮「X 秒」，分钟级「X 分 X 秒」。 */
 const durationLabel = computed(() => {
     if (props.round.isRunning) {
+        // 真机实证（《新小说1》拆书会话）：interrupted 会话可残留 streaming 状态，动态计时会算出
+        // 数日级天文数字——超过 1 小时视为陈旧残留，回退静态跨度兜底。
+        const STALE_RUNNING_CAP_MS = 3_600_000;
         const liveMs = props.round.startedAtMs !== null ? nowTick.value - props.round.startedAtMs : props.round.durationMs;
+        if ((liveMs ?? 0) > STALE_RUNNING_CAP_MS) {
+            return props.round.durationMs === null ? t("agent.workBlock.workRound") : formatWorked(Math.max(1, Math.round(props.round.durationMs / 1000)));
+        }
         const seconds = Math.max(1, Math.round((liveMs ?? 0) / 1000));
         return t("agent.workBlock.working", {seconds});
     }
     if (props.round.durationMs === null) {
         return t("agent.workBlock.workRound");
     }
-    const totalSeconds = Math.max(1, Math.round(props.round.durationMs / 1000));
+    return formatWorked(Math.max(1, Math.round(props.round.durationMs / 1000)));
+});
+
+function formatWorked(totalSeconds: number): string {
     if (totalSeconds < 60) {
         return t("agent.workBlock.workedSeconds", {seconds: totalSeconds});
     }
     const minutes = Math.floor(totalSeconds / 60);
     return t("agent.workBlock.worked", {duration: t("agent.workBlock.minutesSeconds", {minutes, seconds: totalSeconds % 60})});
-});
+}
 
 /** 收起态工作摘要：「查阅 3 · 改稿 1 · 2 个文件」类别人话+计数（≤3 类）；细分与目标名入 title。 */
 const summaryLabel = computed(() => {
