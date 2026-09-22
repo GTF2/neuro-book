@@ -1156,7 +1156,6 @@ const enUS = {
                 collapse: "Collapse",
                 dirty: "Unsaved changes",
                 unsaved: "Unsaved",
-                saved: "Saved",
                 status: "Status",
                 title: "Title",
                 tags: "Tags",

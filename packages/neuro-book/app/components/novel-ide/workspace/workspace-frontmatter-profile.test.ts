@@ -186,12 +186,17 @@ describe("R4 件8：正文 dirty 传导到属性面板保存按钮", () => {
         expect(source).toContain("!store.hasUnsavedFileChanges");
     });
 
-    it("R5c：保存成功提示不再区分路径——blur 自动保存同样右下角气泡，notify 参数已删", async () => {
-        const source = await readFile(panelPath, "utf-8");
-        // 用户反馈根因：blur 静默保存让用户以为没保存；与 Lorebook 面板行为对齐
-        expect(source).toContain('@blur="void saveDraft()"');
-        expect(source).toContain('position: "bottom-right"');
-        expect(source).not.toContain("options?.notify");
-        expect(source).not.toContain("{notify: true}");
+    it("R5e：保存成功弹泡整体移除（用户裁定）——两面板零通知调用，反馈由按钮 spinner+圆点承担", async () => {
+        for (const panel of ["WorkspaceFileDetailPanel.vue", "WorkspaceLorebookDetailPanel.vue"]) {
+            const source = await readFile(fileURLToPath(new URL(`./${panel}`, import.meta.url)), "utf-8");
+            expect(source).not.toContain("flashSaved");
+            expect(source).not.toContain("useNotification");
+            expect(source).not.toContain('position: "bottom-right"');
+            // blur 自动保存链保留（删的只是成功提示，不是保存行为）
+            expect(source).toContain("void saveDraft()");
+        }
+        // 死键随组件移除清掉（双语对称；in 运算符绕开"键已不存在"的类型报错——报错本身即删除生效的证明）
+        expect("saved" in zhCN.ide.workspace.common).toBe(false);
+        expect("saved" in enUS.ide.workspace.common).toBe(false);
     });
 });

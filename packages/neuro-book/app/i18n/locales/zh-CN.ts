@@ -1154,7 +1154,6 @@ const zhCN = {
                 collapse: "收起",
                 dirty: "有未保存修改",
                 unsaved: "未保存",
-                saved: "已保存",
                 status: "状态",
                 title: "标题",
                 tags: "标签",

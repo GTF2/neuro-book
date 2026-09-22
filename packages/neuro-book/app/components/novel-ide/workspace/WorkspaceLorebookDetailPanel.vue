@@ -2,7 +2,6 @@
 import {storeToRefs} from "pinia";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
-import {useNotification} from "nbook/app/composables/useNotification";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import Combobox from "nbook/app/components/common/form/Combobox.vue";
 import {
@@ -97,13 +96,10 @@ const isDirty = computed(() => {
     const storedDraft = createDraft(props.node, stored.frontmatter, stored.body);
     return renderDraft(editForm.value) !== renderDraft(storedDraft);
 });
-// R5 件6①：与正文面板同款保存链——正文 dirty 并联+轻量保存+行内已保存提示。
+// R5 件6①：与正文面板同款保存链——正文 dirty 并联+轻量保存。
+// R5e（用户裁定）：保存成功弹泡整体移除，反馈由按钮 spinner+圆点熄灭承担。
 const hasUnsavedBody = computed(() => store.hasUnsavedFileChanges);
 const saveDisabled = computed(() => (!isDirty.value && !hasUnsavedBody.value) || savingFile.value);
-// R5b（用户反馈）：保存成功=右下角小气泡轻提示（1.8s 自动消失），替代行内闪现。
-function flashSaved(): void {
-    useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? "", position: "bottom-right", duration: 1_800});
-}
 const relatedIssues = computed(() => {
     if (!props.node) {
         return [];
@@ -161,7 +157,6 @@ const saveDraft = async (): Promise<void> => {
     await store.saveCurrentFile();
     lastAppliedContent.value = nextContent;
     diagnostics.value = "";
-    flashSaved();
 };
 
 /**

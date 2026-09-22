@@ -3,7 +3,6 @@ import {storeToRefs} from "pinia";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import LucideIconPickerDialog from "nbook/app/components/common/LucideIconPickerDialog.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
-import {useNotification} from "nbook/app/composables/useNotification";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import {useNovelIdeStore, type WorkspaceFileIssue, type WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import {isWorkspaceContentScopePath} from "nbook/app/components/novel-ide/workspace/workspace-file-tree";
@@ -132,10 +131,8 @@ const isDirty = computed(() => {
 // 须把 store 的正文未保存态并联进按钮与圆点——用户验收链=正文输入→按钮点亮+圆点→保存→熄灭。
 const hasUnsavedBody = computed(() => store.hasUnsavedFileChanges);
 const saveDisabled = computed(() => (!isDirty.value && !hasUnsavedBody.value) || savingFile.value);
-// R5b（用户反馈）：保存成功=右下角小气泡轻提示（1.8s 自动消失），替代行内闪现。
-function flashSaved(): void {
-    useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? "", position: "bottom-right", duration: 1_800});
-}
+// R5e（用户裁定）：保存成功弹泡整体移除——用户从没见过它（正文保存路径不经过本面板保存函数），
+// 且保存反馈已有按钮 spinner+圆点熄灭承担，弱信息提示属噪音。
 const manuscriptBasePath = computed(() => {
     if (!props.node) {
         return "";
@@ -157,8 +154,7 @@ const hasRelatedIssues = computed(() => relatedIssues.value.length > 0);
 
 /**
  * 保存当前条目的表单字段，保留表单未覆盖的 frontmatter 字段与正文。
- * R5c（用户反馈）：blur 自动保存同样右下角气泡反馈——静默路径让用户以为没保存；
- * 与 Lorebook 面板行为对齐（那边所有保存路径都提示）。
+ * 保存反馈=按钮 spinner+圆点熄灭（R5e 用户裁定撤成功弹泡）。
  */
 async function saveDraft(): Promise<void> {
     if (!draft.value || !isContentIndexFile.value || diagnostics.value || props.node?.frontmatterError || savingFile.value) {
@@ -174,7 +170,6 @@ async function saveDraft(): Promise<void> {
     selectedFileContent.value = nextContent;
     await store.saveCurrentFile();
     lastLoadedContent.value = selectedFileContent.value;
-    flashSaved();
 }
 
 /**
@@ -286,7 +281,6 @@ async function saveProjectYaml(): Promise<void> {
     selectedFileContent.value = next;
     await store.saveCurrentFile();
     projectYamlBaseline.value = next;
-    flashSaved();
 }
 
 watch(() => [props.node?.path, selectedFileContent.value], () => {
