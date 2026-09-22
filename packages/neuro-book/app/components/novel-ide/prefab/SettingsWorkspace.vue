@@ -45,7 +45,7 @@ const PLACEHOLDER_SECTIONS: SettingsWorkspaceSection[] = [
 /* 占位设置项：覆盖 select/toggle/text 三种控件形态+一个可展开分组样例。 */
 const PLACEHOLDER_FIELDS: SettingsWorkspaceField[] = [
     {
-        id: "theme", sectionId: "appearance", labelKey: "settingsWorkspace.fields.theme", kind: "select", value: "system",
+        id: "theme", sectionId: "appearance", labelKey: "settingsWorkspace.fields.themeLabel", kind: "select", value: "system",
         options: [
             { value: "system", labelKey: "settingsWorkspace.fields.theme.system" },
             { value: "dark", labelKey: "settingsWorkspace.fields.theme.dark" },
@@ -55,7 +55,7 @@ const PLACEHOLDER_FIELDS: SettingsWorkspaceField[] = [
     { id: "reduce-motion", sectionId: "appearance", labelKey: "settingsWorkspace.fields.reduceMotion", kind: "toggle", value: false },
     { id: "editor-font-size", sectionId: "appearance", labelKey: "settingsWorkspace.fields.editorFontSize", kind: "text", value: "16" },
     {
-        id: "default-model", sectionId: "models", labelKey: "settingsWorkspace.fields.defaultModel", kind: "select", value: "placeholder-a",
+        id: "default-model", sectionId: "models", labelKey: "settingsWorkspace.fields.defaultModelLabel", kind: "select", value: "placeholder-a",
         options: [
             { value: "placeholder-a", labelKey: "settingsWorkspace.fields.defaultModel.placeholderA" },
             { value: "placeholder-b", labelKey: "settingsWorkspace.fields.defaultModel.placeholderB" },

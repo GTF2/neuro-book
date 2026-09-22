@@ -1806,8 +1806,8 @@ const zhCN = {
             advanced: "高级",
         },
         fields: {
-            // vue-i18n 嵌套限制：fields.theme / fields.defaultModel 的叶子标签值无法与子键共存，未落盘；
-            // SettingsWorkspace.vue 直接 t(labelKey) 的两处会显示键路径，修复需组件改键或清单拆分
+            // vue-i18n 嵌套限制：theme/defaultModel 下挂 options 子键，父键自身无叶子文案；
+            // 行标签走独立的 themeLabel/defaultModelLabel 叶子键，组件不再 t() 结构父键
             theme: {
                 system: "跟随系统",
                 dark: "深色",
@@ -1825,6 +1825,8 @@ const zhCN = {
             advancedGroup: "高级选项",
             verboseLogging: "详细日志",
             telemetry: "匿名使用统计",
+            themeLabel: "主题", // [i18n-add] 行标签叶子键：fields.theme 是结构父键，不能被 t() 渲染
+            defaultModelLabel: "默认模型", // [i18n-add] 同上，fields.defaultModel 的行标签
         },
     }, // [i18n-add] settingsWorkspace
     agent: {

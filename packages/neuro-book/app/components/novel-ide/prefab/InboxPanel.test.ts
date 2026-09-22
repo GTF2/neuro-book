@@ -31,7 +31,7 @@ describe("InboxPanel 骨架契约（009 prefab）", () => {
 
     it("源码引用的每个 prefab.inbox.* 键在双语 locale 中均非空，文案一律按键取值", async () => {
         const source = await readFile(componentPath, "utf-8");
-        const keys = [...new Set([...source.matchAll(/["'](prefab\.inbox\.[A-Za-z0-9.]+)["']/g)].map((match) => match[1]))];
+        const keys = [...new Set([...source.matchAll(/["'](prefab\.inbox\.[A-Za-z0-9.]+)["']/g)].map((match) => match[1]).filter((key): key is string => key !== undefined))];
         expect(keys.length).toBeGreaterThan(0);
         for (const key of keys) {
             const zh = pick(zhCN, key);

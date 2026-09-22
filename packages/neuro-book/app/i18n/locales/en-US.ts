@@ -1808,9 +1808,9 @@ const enUS = {
             advanced: "Advanced",
         },
         fields: {
-            // vue-i18n nesting limit: leaf label values of fields.theme / fields.defaultModel cannot
-            // coexist with their child keys; SettingsWorkspace.vue's direct t(labelKey) at those two
-            // spots will show the key path until the component key or the list is split
+            // vue-i18n nesting limit: theme/defaultModel hold option child keys, so the parent key
+            // itself has no leaf text; row labels go through the standalone themeLabel /
+            // defaultModelLabel leaf keys instead of t() on a structural parent key
             theme: {
                 system: "Follow system",
                 dark: "Dark",
@@ -1828,6 +1828,8 @@ const enUS = {
             advancedGroup: "Advanced options",
             verboseLogging: "Verbose logging",
             telemetry: "Anonymous usage statistics",
+            themeLabel: "Theme", // [i18n-add] row label leaf key: fields.theme is a structural parent key
+            defaultModelLabel: "Default model", // [i18n-add] row label leaf key for fields.defaultModel
         },
     }, // [i18n-add] settingsWorkspace
     agent: {
