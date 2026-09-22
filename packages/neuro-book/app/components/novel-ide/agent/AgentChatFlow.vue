@@ -619,6 +619,8 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 @click="toggleRoundEntry(entry.id)"
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                                <!-- R5i：聚合行补前置图标对齐其他过程行——按主导类别取 META 图标（查阅=书/命令=终端/子代理=机器人…），风格与块头摘要同源 -->
+                                <span :class="CHAT_WORK_BLOCK_META[entry.kinds[0]!.kind].icon" class="h-3 w-3 shrink-0"></span>
                                 <template v-if="entry.toolName">
                                     <!-- R5h：主体保持灰——只有「·N 失败」后缀染红（整行红会读成"全组失败"，用户实锤） -->
                                     <span class="shrink-0 font-medium">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
