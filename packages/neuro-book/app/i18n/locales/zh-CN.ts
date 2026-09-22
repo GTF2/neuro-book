@@ -1263,6 +1263,7 @@ const zhCN = {
                 convertToDirectory: "转目录",
                 editable: "可编辑",
                 readonly: "只读",
+                projectTitleRequired: "显示标题不能为空——留空会让这本书从书架消失（BUG030）。", // [i18n-add] 009C1R4 件9 project.yaml 表单校验
                 contentDirectoryWithoutIndex: "该目录还没有 index.md，因此 frontmatter 只读。点击“转化”会创建 index.md。",
                 directoryWithoutIndex: "普通目录不承载 frontmatter。只有 manuscript/ 与 lorebook/ 下的目录节点使用 index.md。",
                 draft: "草稿",
@@ -2323,6 +2324,8 @@ const zhCN = {
             injectionSingle: "系统上下文注入",
             minutesSeconds: "{minutes} 分 {seconds} 秒",
             injections: "系统上下文注入 ×{count}",
+            groupErrorSuffix: "·{count} 异常", // [i18n-add] 009C1R4 件2 注入聚合异常计数
+            groupFailedSuffix: "·{count} 失败", // [i18n-add] 009C1R4 件2 工具聚合失败计数
             moreKinds: "等 {count} 类",
             moreCalls: "共 {count} 次",
             target: "目标",
@@ -2395,6 +2398,7 @@ const zhCN = {
             addSuggestion: "追加建议",
             otherAnswer: "其他答案",
             pendingTitle: "等待你的处理",
+            pendingBlockedTitle: "待处理 · 当前不可回答", // [i18n-add] 009C1R4 件10 不可回答态头部标题
             pendingRegion: "待处理输入",
             resync: "重新同步",
             suggestionDescription: "在下方输入框写下建议，Agent 会继续留在当前模式调整计划。",

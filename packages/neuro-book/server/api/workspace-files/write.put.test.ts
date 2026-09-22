@@ -122,4 +122,37 @@ describe("PUT /api/workspace-files/write", () => {
             },
         });
     });
+
+    it("BUG030：project.yaml 保存时 title 为空或被清空则 400 拒绝，普通文件不受影响", async () => {
+        const root = absoluteFsPath(testHostPath("workspace-write-manifest-title", randomUUID()));
+        createdRoots.push(root);
+        await fs.mkdir(path.join(root, "notes"), {recursive: true});
+        await fs.writeFile(path.join(root, "project.yaml"), 'kind: novel\ntitle: 旧标题\nsummary: ""\n', "utf-8");
+        await fs.writeFile(path.join(root, "notes", "普通.md"), "title 可以随便空\n", "utf-8");
+        vi.doMock("nbook/server/workspace-files/novel-workspace", () => ({
+            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "workspace-root", root})),
+        }));
+        const handler = (await import("nbook/server/api/workspace-files/write.put")).default;
+
+        readBodyMock.mockResolvedValue({
+            path: "project.yaml",
+            content: 'kind: novel\ntitle: \nsummary: ""\n',
+        });
+        await expect(handler({} as never)).rejects.toMatchObject({
+            statusCode: 400,
+            message: expect.stringContaining("title"),
+        });
+
+        readBodyMock.mockResolvedValue({
+            path: "project.yaml",
+            content: 'kind: novel\ntitle: 新小说3\nsummary: ""\n',
+        });
+        await expect(handler({} as never)).resolves.toBeDefined();
+
+        readBodyMock.mockResolvedValue({
+            path: "notes/普通.md",
+            content: "title 可以随便空\n",
+        });
+        await expect(handler({} as never)).resolves.toBeDefined();
+    });
 });

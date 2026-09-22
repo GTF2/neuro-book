@@ -386,8 +386,8 @@ const endSwipe = (event: PointerEvent): void => {
             <span>{{ t("agent.textBubble.steer") }}</span>
         </div>
 
-        <!-- Assistant 思维链 -->
-        <div v-if="hasThinking && props.showThinking !== false" class="mb-1 w-full pl-4">
+        <!-- Assistant 思维链（R4 件2①：行头平齐块头左缘，展开体与工具行/注入行统一 ml-3+左竖线+pl-3） -->
+        <div v-if="hasThinking && props.showThinking !== false" class="mb-1 w-full">
             <div class="px-0.5 py-0.5">
                 <button
                     class="flex w-full items-center gap-1.5 text-left text-[10px] font-medium uppercase tracking-[0.14em] text-[var(--text-muted)]/90 transition-colors hover:text-[var(--text-main)]"
@@ -404,7 +404,7 @@ const endSwipe = (event: PointerEvent): void => {
                     <span v-else class="text-[10px] normal-case tracking-normal text-[var(--text-muted)]/65">{{ t("agent.textBubble.collapse") }}</span>
                 </button>
 
-                <div v-if="!isThinkingCollapsed" class="mt-1.5 border-l-2 border-[var(--border-color)]/50 pl-4 text-[13px] leading-relaxed text-[var(--text-muted)]/85">
+                <div v-if="!isThinkingCollapsed" class="mt-1.5 ml-3 border-l-2 border-[var(--border-color)]/50 pl-3 text-[13px] leading-relaxed text-[var(--text-muted)]/85">
                     <AgentMarkdownContent :content="props.node.message.thinking ?? ''" :streaming="props.node.message.status === 'streaming'" :open-reference="props.openReference" />
                 </div>
             </div>
@@ -414,7 +414,7 @@ const endSwipe = (event: PointerEvent): void => {
         <div
             v-if="hasMessageContent"
             class="min-w-0 touch-pan-y"
-            :class="isUserMessage ? 'w-fit max-w-[36rem]' : 'w-full'"
+            :class="isUserMessage ? 'w-fit max-w-[30rem]' : 'w-full'"
             @pointerdown="startSwipe"
             @pointerup="endSwipe"
             @pointercancel="swipeStart = null"

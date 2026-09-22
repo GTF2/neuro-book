@@ -170,3 +170,17 @@ describe("属性面板统一契约（028）", () => {
         }
     });
 });
+
+describe("R4 件8：正文 dirty 传导到属性面板保存按钮", () => {
+    const panelPath = fileURLToPath(new URL("./WorkspaceFileDetailPanel.vue", import.meta.url));
+
+    it("按钮禁用源=表单 dirty ∥ 正文未保存；圆点同源；saveDraft 不得在正文未保存时空转返回", async () => {
+        const source = await readFile(panelPath, "utf-8");
+        expect(source).toContain("hasUnsavedBody");
+        expect(source).toContain("store.hasUnsavedFileChanges");
+        expect(source).toContain("saveDisabled");
+        expect(source).toContain(':disabled="saveDisabled"');
+        expect(source).toContain('v-if="isDirty || hasUnsavedBody || projectYamlDirty"');
+        expect(source).toContain("!store.hasUnsavedFileChanges");
+    });
+});

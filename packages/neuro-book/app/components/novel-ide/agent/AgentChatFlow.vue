@@ -5,7 +5,7 @@ import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubbl
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
 import AgentSessionScaleBar, {type AgentSessionScaleSegment} from "nbook/app/components/novel-ide/agent/AgentSessionScaleBar.vue";
-import {groupChatNodesIntoBlocks, isFoldableToolNode, type ChatFlowItem, type ChatRoundItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {buildRoundEntries, groupChatNodesIntoBlocks, isFoldableToolNode, toolShortLabelKey, type ChatFlowItem, type ChatRoundItem, type RoundEntry} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -135,17 +135,28 @@ const hasTextBubbleContent = (node: ChatNode): boolean => {
     return Boolean(node.message.content.trim() || node.message.contentBlocks?.length || node.message.attachments?.length);
 };
 
-/** 轮收起态可见节点：正文与非折叠交互卡保留，折叠类工具行与思考行随展开态出现（件3b/h）。 */
-const visibleRoundNodes = (round: ChatRoundItem): ChatNode[] => {
+/** R4 件2：轮内渲染分组——连续 system 注入聚合、连续同名工具≥3 聚合；收起态过滤过程组。 */
+const roundEntryOpenMap = ref<Record<string, boolean>>({});
+const isRoundEntryOpen = (id: string): boolean => Boolean(roundEntryOpenMap.value[id]);
+const toggleRoundEntry = (id: string): void => {
+    roundEntryOpenMap.value = {...roundEntryOpenMap.value, [id]: !roundEntryOpenMap.value[id]};
+};
+const visibleRoundEntries = (round: ChatRoundItem): RoundEntry[] => {
+    const entries = buildRoundEntries(round.nodes);
     if (isRoundExpanded(round)) {
-        return round.nodes;
+        return entries;
     }
-    return round.nodes.filter((node) => {
-        if (node.kind === "tool") {
-            return !isFoldableToolNode(node);
+    return entries.filter((entry) => {
+        if (entry.kind === "injectionGroup") {
+            return false;
         }
-        // 中途 system 注入属过程信息，随轮收起隐藏（009C1R2 件3）。
-        return node.message.type !== "system";
+        if (entry.kind === "toolGroup") {
+            return false;
+        }
+        if (entry.node.kind === "tool") {
+            return !isFoldableToolNode(entry.node);
+        }
+        return entry.node.message.type !== "system";
     });
 };
 
@@ -456,7 +467,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
 <template>
     <!-- 通用对话流容器：消息列 + 右缘会话刻度条（点击格直接定位） -->
     <div class="relative flex min-h-0 flex-1">
-        <div ref="scrollRef" class="flex min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
+        <div ref="scrollRef" class="chat-scroll-hidden flex min-w-0 flex-1 flex-col overflow-y-auto p-4 pb-12 bg-[var(--bg-panel)]" @scroll="onScroll">
         <!-- 更早历史局部状态；失败不会遮断当前已加载对话。 -->
         <div v-if="props.historyHasPrevious || props.historyLoading || props.historyError" class="mb-4 flex shrink-0 items-center justify-center">
             <button
@@ -552,25 +563,29 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                 <!-- 一轮工作块（件3）：块头=唯一身份标记；正文恒显，过程行/思考行随展开态 -->
                 <template v-else-if="item.kind === 'round'">
                     <AgentWorkBlock :round="item" :expanded="isRoundExpanded(item)" @toggle="toggleRound(item)" />
+                    <!-- R4 件2：轮内按分组渲染——过程行行头统一平齐块头左缘（单层对齐），展开体统一 ml-3+左竖线 -->
                     <div
-                        v-for="(node, nodeIndex) in visibleRoundNodes(item)"
-                        :key="getNodeKey(node)"
-                        :class="nodeIndex > 0 ? 'mt-2' : ''"
+                        v-for="(entry, entryIndex) in visibleRoundEntries(item)"
+                        :key="entry.kind === 'node' ? getNodeKey(entry.node) : entry.id"
+                        :class="entryIndex > 0 ? 'mt-2' : ''"
                     >
-                        <!-- 轮中途注入行（009C1R2 件3）：灰小字可展开，与收拢行同款 -->
-                        <div v-if="node.kind === 'text' && node.message.type === 'system'" class="space-y-1">
+                        <!-- 连续系统注入聚合块（R4 件2③）：「系统上下文注入 ×N」，含异常计数 -->
+                        <div v-if="entry.kind === 'injectionGroup'" class="space-y-1">
                             <button
                                 type="button"
-                                class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
-                                @click="toggleInjections({id: node.message.id})"
+                                class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] leading-4 text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+                                @click="toggleRoundEntry(entry.id)"
                             >
-                                <span :class="isInjectionsOpen({id: node.message.id}) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
-                                <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
-                                <span>{{ t("agent.workBlock.injectionSingle") }}</span>
+                                <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                                <span :class="entry.errorCount > 0 ? 'i-lucide-triangle-alert text-[var(--status-danger)]' : 'i-lucide-file-code'" class="h-3 w-3 shrink-0"></span>
+                                <span>{{ t("agent.workBlock.injections", {count: entry.nodes.length}) }}</span>
+                                <span v-if="entry.errorCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupErrorSuffix", {count: entry.errorCount}) }}</span>
                             </button>
-                            <div v-if="isInjectionsOpen({id: node.message.id})" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
+                            <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-1 border-l-2 border-[var(--border-color)]/50 pl-3">
                                 <AgentTextBubble
-                                    :node="node as Extract<ChatNode, {kind: 'text'}>"
+                                    v-for="injectionNode in entry.nodes"
+                                    :key="injectionNode.message.id"
+                                    :node="injectionNode"
                                     :session-id="props.sessionId"
                                     :action-disabled="props.messageActionDisabled"
                                     :run-action-disabled="props.runActionDisabled"
@@ -585,9 +600,61 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 />
                             </div>
                         </div>
+                        <!-- 连续同名工具聚合行（R4 件2②）：「{中文名} ×N」，失败标红，点击展开全部子行 -->
+                        <div v-else-if="entry.kind === 'toolGroup'" class="space-y-1">
+                            <button
+                                type="button"
+                                class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] leading-4 text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+                                @click="toggleRoundEntry(entry.id)"
+                            >
+                                <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                                <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
+                                <span class="shrink-0">×{{ entry.nodes.length }}</span>
+                                <span v-if="entry.failedCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupFailedSuffix", {count: entry.failedCount}) }}</span>
+                            </button>
+                            <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-2 border-l-2 border-[var(--border-color)]/50 pl-3">
+                                <AgentToolBubble
+                                    v-for="toolNode in entry.nodes"
+                                    :key="toolNode.toolCall.id"
+                                    :tool-call="toolNode.toolCall"
+                                    :session-id="props.sessionId"
+                                    @copy="emit('copy-tool', $event)"
+                                />
+                            </div>
+                        </div>
+                        <template v-else-if="entry.node.kind === 'text' && entry.node.message.type === 'system'">
+                            <!-- 轮中途单条注入行（009C1R3 件3 已过审形态）：灰小字可展开 -->
+                            <div class="space-y-1">
+                                <button
+                                    type="button"
+                                    class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] leading-4 text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+                                    @click="toggleInjections({id: entry.node.message.id})"
+                                >
+                                    <span :class="isInjectionsOpen({id: entry.node.message.id}) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
+                                    <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
+                                    <span>{{ t("agent.workBlock.injectionSingle") }}</span>
+                                </button>
+                                <div v-if="isInjectionsOpen({id: entry.node.message.id})" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
+                                    <AgentTextBubble
+                                        :node="entry.node"
+                                        :session-id="props.sessionId"
+                                        :action-disabled="props.messageActionDisabled"
+                                        :run-action-disabled="props.runActionDisabled"
+                                        :session-attachments="props.sessionAttachments"
+                                        :can-register-attachments="props.canRegisterAttachments"
+                                        :can-insert-attachments="props.canInsertAttachments"
+                                        :project-root="props.projectRoot"
+                                        :model-supports-images="props.modelSupportsImages"
+                                        :open-reference="props.openReference"
+                                        :cost-display-options="props.costDisplayOptions"
+                                        @copy="emit('copy', $event)"
+                                    />
+                                </div>
+                            </div>
+                        </template>
                         <AgentTextBubble
-                            v-else-if="node.kind === 'text'"
-                            :node="node"
+                            v-else-if="entry.node.kind === 'text'"
+                            :node="entry.node"
                             :session-id="props.sessionId"
                             :editing-message-id="props.editingMessageId"
                             :editing-content="props.editingMessageText"
@@ -600,7 +667,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             :project-root="props.projectRoot"
                             :model-supports-images="props.modelSupportsImages"
                             :attachment-insert-request="props.attachmentInsertRequest"
-                            :branch-switcher="props.branchSwitcherStateByMessageId?.[node.message.id]"
+                            :branch-switcher="props.branchSwitcherStateByMessageId?.[entry.node.message.id]"
                             :menu-refresh-key="props.menuRefreshKey"
                             :resolve-menu="props.resolveEditorMenu"
                             :on-skill-trigger-start="props.onEditorSkillTriggerStart"
@@ -609,7 +676,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             :cost-exchange-rate-suffix="props.costExchangeRateSuffix"
                             suppress-identity
                             :show-thinking="isRoundExpanded(item)"
-                            :suppress-actions="!isActionsHost(item, node)"
+                            :suppress-actions="!isActionsHost(item, entry.node)"
                             @copy="emit('copy', $event)"
                             @start-edit="emit('start-edit', $event)"
                             @cancel-edit="emit('cancel-edit', $event)"
@@ -623,7 +690,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                         />
                         <AgentToolBubble
                             v-else
-                            :tool-call="node.toolCall"
+                            :tool-call="entry.node.toolCall"
                             :session-id="props.sessionId"
                             @copy="emit('copy-tool', $event)"
                         />
@@ -674,3 +741,17 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
         />
     </div>
 </template>
+
+<style scoped>
+/* R4 件3⑤：隐藏消息区原生滚动条（刻度条接管定位，滚轮不受影响）。
+   回滚开关：删除本类的滚动条隐藏规则即可恢复原生滚动条。 */
+.chat-scroll-hidden {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.chat-scroll-hidden::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+}
+</style>

@@ -1,6 +1,7 @@
 import {describe, expect, it} from "vitest";
 import type {AgentMessage, AgentToolCall, ChatNode} from "nbook/app/components/novel-ide/agent/agent-message";
 import {
+    buildRoundEntries,
     groupChatNodesIntoBlocks,
     isFoldableToolNode,
     resolveToolWorkKind,
@@ -79,9 +80,28 @@ describe("轮次聚合（009C1R2 件3：相邻 user 消息之间全部节点收�
         expect(round.kind).toBe("round");
         expect(round.nodes).toHaveLength(3);
         expect(round.durationMs).toBe(55_000);
+        expect(round.startedAtMs).toBe(Date.parse("2026-09-21T10:00:05Z"));
         expect(round.toolCount).toBe(1);
         expect(round.workByKind[0]).toEqual({kind: "explore", count: 1});
         expect(round.filePaths).toEqual([]);
+    });
+
+    it("R4 件1：纯思考轮（单条 AI 消息）durationMs=0 非 null，零时间戳才回退 null", () => {
+        const thinking = groupChatNodesIntoBlocks([
+            textNode("u1", "user", "想一下", "2026-09-21T10:00:00Z"),
+            textNode("a1", "ai", "想好了", "2026-09-21T10:00:30Z"),
+        ]);
+        const round = thinking[1] as Extract<ChatFlowItem, {kind: "round"}>;
+        expect(round.durationMs).toBe(0);
+        expect(round.startedAtMs).toBe(Date.parse("2026-09-21T10:00:30Z"));
+
+        const noTime = groupChatNodesIntoBlocks([
+            textNode("u1", "user", "无时间"),
+            textNode("a1", "ai", "也没有"),
+        ]);
+        const roundNoTime = noTime[1] as Extract<ChatFlowItem, {kind: "round"}>;
+        expect(roundNoTime.durationMs).toBeNull();
+        expect(roundNoTime.startedAtMs).toBeNull();
     });
 
     it("不折叠工具参与轮但不出现在折叠摘要计数中", () => {
@@ -145,5 +165,61 @@ describe("轮次聚合（009C1R2 件3：相邻 user 消息之间全部节点收�
         expect(zhCN.agent.workBlock.moreKinds).toContain("{count}");
         expect(enUS.agent.workBlock.worked).toBeTruthy();
         expect(enUS.agent.workBlock.injections).toContain("{count}");
+    });
+});
+
+describe("轮内渲染分组（R4 件2：注入聚合+同类工具聚合）", () => {
+    const systemNode = (id: string, error = false): ChatNode => ({
+        kind: "text",
+        message: message({id, type: "system", content: "注入", systemDisplayKind: error ? "error" : undefined}),
+    });
+
+    it("连续 system ≥2 聚合为 injectionGroup 并计异常，单条保持 node", () => {
+        const entries = buildRoundEntries([
+            systemNode("s1"),
+            systemNode("s2"),
+            systemNode("s3", true),
+            textNode("a1", "ai", "回答"),
+        ]);
+        expect(entries).toHaveLength(2);
+        expect(entries[0]!.kind).toBe("injectionGroup");
+        const group = entries[0] as Extract<ReturnType<typeof buildRoundEntries>[number], {kind: "injectionGroup"}>;
+        expect(group.nodes).toHaveLength(3);
+        expect(group.errorCount).toBe(1);
+
+        const single = buildRoundEntries([systemNode("s0"), textNode("a1", "ai", "回答")]);
+        expect(single[0]!.kind).toBe("node");
+    });
+
+    it("连续同名工具 ≥3 且全终态聚合为 toolGroup（含失败计数），含进行中不聚合", () => {
+        const grouped = buildRoundEntries([
+            toolNode("r1", "read"),
+            toolNode("r2", "read"),
+            toolNode("r3", "read"),
+        ]);
+        expect(grouped).toHaveLength(1);
+        expect(grouped[0]!.kind).toBe("toolGroup");
+        const toolGroup = grouped[0] as Extract<ReturnType<typeof buildRoundEntries>[number], {kind: "toolGroup"}>;
+        expect(toolGroup.toolName).toBe("read");
+        expect(toolGroup.nodes).toHaveLength(3);
+        expect(toolGroup.failedCount).toBe(0);
+
+        const failed = buildRoundEntries([
+            toolNode("r1", "read"),
+            toolNode("r2", "read"),
+            {kind: "tool", message: message({id: "m", type: "ai"}), toolCall: {id: "r3", name: "read", status: "error", argsText: "", result: ""} as AgentToolCall},
+        ]);
+        const failedGroup = failed[0] as Extract<ReturnType<typeof buildRoundEntries>[number], {kind: "toolGroup"}>;
+        expect(failedGroup.failedCount).toBe(1);
+
+        const running = buildRoundEntries([
+            toolNode("r1", "read"),
+            toolNode("r2", "read"),
+            {kind: "tool", message: message({id: "m", type: "ai"}), toolCall: {id: "r3", name: "read", status: "running", argsText: "", result: ""} as AgentToolCall},
+        ]);
+        expect(running.every((entry) => entry.kind === "node")).toBe(true);
+
+        const two = buildRoundEntries([toolNode("r1", "read"), toolNode("r2", "read")]);
+        expect(two.every((entry) => entry.kind === "node")).toBe(true);
     });
 });

@@ -210,7 +210,8 @@ function handlePrimary(): void {
         <header class="flex min-w-0 items-center justify-between gap-3 border-b border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-3 py-2">
             <div class="min-w-0">
                 <div class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-[var(--status-warning)]">
-                    <span class="inline-flex items-center gap-1.5"><span class="i-lucide-message-square-more h-3.5 w-3.5"></span>{{ t("agent.userInput.pendingTitle") }}</span>
+                    <!-- R4 件10③：不可回答时头部明确呈现「需处理但当前不可回答」态，原因在下方红条，不再与队列计数打架 -->
+                    <span class="inline-flex items-center gap-1.5"><span class="i-lucide-message-square-more h-3.5 w-3.5"></span>{{ props.canResolve ? t("agent.userInput.pendingTitle") : t("agent.userInput.pendingBlockedTitle") }}</span>
                     <span class="rounded-full border border-[var(--status-warning-border)] bg-[var(--bg-input)] px-2 py-0.5 tabular-nums">{{ activeIndex + 1 }} / {{ items.length }}</span>
                     <span class="rounded-full border border-[var(--status-warning-border)] bg-[var(--bg-input)] px-2 py-0.5 tabular-nums">{{ t("agent.userInput.answeredProgress", {answered: completedCount, total: items.length}) }}</span>
                 </div>

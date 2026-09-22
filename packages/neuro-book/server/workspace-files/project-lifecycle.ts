@@ -2176,6 +2176,16 @@ export class ProjectLifecycle {
                 continue;
             }
             if (manifest.status === "repairable") {
+                if (manifest.issues.length > 0 && manifest.issues.every((issue) => issue.code === "PROJECT_MANIFEST_FIELD_INVALID")) {
+                    // BUG030：字段级问题（如 title 被清空）不让书从书架消失——proposedManifest 的 title 兜底=目录名；
+                    // 打开时 prepareOpen 的 ensure 会把归一化 manifest 写回磁盘，下次扫描即恢复 valid。
+                    // missing/corrupt 仍走 candidates：那类目录还不能以任何形态代表一本书。
+                    projects.push(Object.freeze({
+                        projectRoot: resolved.ref.projectRoot,
+                        ...manifest.proposedManifest,
+                    }) as ProjectListEntry);
+                    continue;
+                }
                 candidates.push(resolved.ref);
                 continue;
             }

@@ -1265,6 +1265,7 @@ const enUS = {
                 convertToDirectory: "To Directory",
                 editable: "Editable",
                 readonly: "Read-only",
+                projectTitleRequired: "Display title is required — an empty title removes this book from the shelf (BUG030).", // [i18n-add] 009C1R4 project.yaml form validation
                 contentDirectoryWithoutIndex: "This directory has no index.md yet, so frontmatter is read-only. Click Convert to create index.md.",
                 directoryWithoutIndex: "Normal directories do not carry frontmatter. Only directory nodes under manuscript/ and lorebook/ use index.md.",
                 draft: "Draft",
@@ -2322,6 +2323,8 @@ const enUS = {
             injectionSingle: "Context injection",
             minutesSeconds: "{minutes}m {seconds}s",
             injections: "Context injections ×{count}",
+            groupErrorSuffix: "·{count} errors", // [i18n-add] 009C1R4 injection group error count
+            groupFailedSuffix: "·{count} failed", // [i18n-add] 009C1R4 tool group failure count
             moreKinds: "+{count} kinds",
             moreCalls: "{count} calls",
             target: "Target",
@@ -2394,6 +2397,7 @@ const enUS = {
             addSuggestion: "Add Suggestion",
             otherAnswer: "Other Answer",
             pendingTitle: "Waiting for Your Input",
+            pendingBlockedTitle: "Pending · not answerable now", // [i18n-add] 009C1R4 blocked-state header
             pendingRegion: "Pending input",
             resync: "Resync",
             suggestionDescription: "Write a suggestion below. The Agent will stay in the current mode and adjust the plan.",

@@ -235,12 +235,14 @@ async function submitRun(runId: string): Promise<void> {
     }
 }
 
-/** 009C1R3 件11：改就地内联滑出面板（非模态、点外部收起）；应答逻辑零改动只动容器。 */
+/** 009C1R3 件11：改就地内联滑出面板（非模态、点外部收起）；应答逻辑零改动只动容器。
+ *  R4 件6：徽标按钮不在面板元素内，须从 onClickOutside 排除——否则点徽标「先关再开」净效果恒开（用户实测关不掉）。 */
 const pendingPanelOpen = ref(false);
 const pendingPanelRef = ref<HTMLElement | null>(null);
+const badgeRef = ref<HTMLElement | null>(null);
 onClickOutside(pendingPanelRef, () => {
     pendingPanelOpen.value = false;
-});
+}, {ignore: [badgeRef]});
 
 onBeforeUnmount(() => {
     disposed = true;
@@ -252,9 +254,12 @@ onBeforeUnmount(() => {
     <!-- 009C1R2 件7c：默认收起=一行紧凑徽标；点击弹居中 Dialog 承载应答卡（原逻辑原样） -->
     <section v-if="waitingCount || feed.error" class="border-t border-[var(--border-color)] bg-[var(--bg-panel)] px-3 py-2">
         <button
+            ref="badgeRef"
             type="button"
             class="flex w-fit items-center gap-1.5 rounded px-1 py-0.5 text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+            :aria-expanded="pendingPanelOpen"
             @click="pendingPanelOpen = !pendingPanelOpen"
+            @keydown.esc.stop="pendingPanelOpen = false"
         >
             <span class="i-lucide-inbox h-3.5 w-3.5 shrink-0 text-[var(--status-warning)]"></span>
             <span>{{ waitingCount }} 个流程等应答</span>
@@ -264,7 +269,9 @@ onBeforeUnmount(() => {
         <div
             v-if="pendingPanelOpen"
             ref="pendingPanelRef"
-            class="mt-2 max-h-[50vh] overflow-y-auto rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-3 shadow-lg"
+            class="mt-2 max-h-[50vh] overflow-y-auto rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] p-3 shadow-lg outline-none"
+            tabindex="-1"
+            @keydown.esc="pendingPanelOpen = false"
         >
             <div class="flex items-center justify-between gap-2 text-[10px] text-[var(--text-muted)]">
                 <span>每个流程分别应答</span>

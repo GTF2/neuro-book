@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import {CHAT_WORK_BLOCK_META, WORK_DETAIL_LIMIT, type ChatRoundItem} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 
 /**
@@ -19,10 +20,27 @@ const {t} = useI18n();
 
 const DURATION_MINUTE_MS = 60_000;
 
+// R4 件1：运行中轮每秒重算「已工作」，不依赖新消息事件——纯思考轮（单条 AI 消息）也能跳动。
+const nowTick = ref(Date.now());
+let runningTimer: ReturnType<typeof setInterval> | null = null;
+onMounted(() => {
+    if (props.round.isRunning) {
+        runningTimer = setInterval(() => {
+            nowTick.value = Date.now();
+        }, 1_000);
+    }
+});
+onBeforeUnmount(() => {
+    if (runningTimer !== null) {
+        clearInterval(runningTimer);
+    }
+});
+
 /** 块头时长：秒级轮「X 秒」，分钟级「X 分 X 秒」。 */
 const durationLabel = computed(() => {
     if (props.round.isRunning) {
-        const seconds = props.round.durationMs !== null ? Math.max(1, Math.round(props.round.durationMs / 1000)) : 0;
+        const liveMs = props.round.startedAtMs !== null ? nowTick.value - props.round.startedAtMs : props.round.durationMs;
+        const seconds = Math.max(1, Math.round((liveMs ?? 0) / 1000));
         return t("agent.workBlock.working", {seconds});
     }
     if (props.round.durationMs === null) {
@@ -65,15 +83,16 @@ const summaryTitle = computed(() => {
 </script>
 
 <template>
+    <!-- R4 件1：整行同一垂直中线（箭头/时长/模型徽章/摘要统一 leading 与 items-center）。 -->
     <button
         type="button"
-        class="flex w-fit max-w-full items-start gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
+        class="flex w-fit max-w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] leading-4 text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]"
         :title="props.round.toolCount > 0 ? summaryTitle : undefined"
         @click="emit('toggle')"
     >
         <span :class="props.expanded ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
-        <span class="shrink-0 font-medium leading-5">{{ durationLabel }}</span>
-        <span v-if="props.round.modelLabel" class="shrink-0 rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1 text-[9px] text-[var(--text-muted)]/80">{{ props.round.modelLabel }}</span>
-        <span v-if="!props.expanded && summaryLabel" class="min-w-0 text-left whitespace-normal break-words text-[var(--text-muted)]/75">{{ summaryLabel }}</span>
+        <span class="shrink-0 font-medium">{{ durationLabel }}</span>
+        <span v-if="props.round.modelLabel" class="flex shrink-0 items-center rounded border border-[var(--border-color)] bg-[var(--bg-input)] px-1 text-[9px] leading-4 text-[var(--text-muted)]/80">{{ props.round.modelLabel }}</span>
+        <span v-if="!props.expanded && summaryLabel" class="min-w-0 self-center text-left text-[11px] leading-4 text-[var(--text-muted)]/75">{{ summaryLabel }}</span>
     </button>
 </template>

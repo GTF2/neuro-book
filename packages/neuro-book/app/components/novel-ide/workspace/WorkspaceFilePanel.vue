@@ -699,6 +699,7 @@ watch(canAccessWorkspace, (canAccess) => {
             @close="store.clearActiveFile()"
             @create-index="void createDirectoryIndex()"
             @convert-file-to-directory="void convertFileToDirectory()"
+            @refresh="void refreshTree()"
         />
 
         <ContextMenu

@@ -647,7 +647,7 @@ defineExpose({focus, insertAttachment});
                     <input ref="imageFileInputRef" class="hidden" type="file" multiple accept="image/png,image/jpeg,image/gif,image/webp" @change="handleImageFileSelection" />
                     <button
                         type="button"
-                        class="rounded p-1.5 text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"
+                        class="flex h-7 w-7 items-center justify-center rounded text-[var(--text-muted)] transition-colors hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)] disabled:cursor-not-allowed disabled:opacity-40"
                         :disabled="!canRegisterImages"
                         title="选择图片（可多选，也可拖拽或粘贴）"
                         @click="selectImageFiles"
@@ -666,7 +666,7 @@ defineExpose({focus, insertAttachment});
                         :hit-rate-label="props.cumulativeCacheHitRateLabel"
                         @open-context-inspector="emit('open-context-inspector')"
                     />
-                    <!-- 模型选择器（009C1R 微调3/6）：固定宽度区间，短名不塌长名省略；弹层已删，选模型即生效 -->
+                    <!-- 模型选择器（R4 件4）：触发器宽度收缩到内容实际宽（fit-content 消右侧空白）；弹层按最长选项自适应（min-w-max 勿回退） -->
                     <AgentSessionModelControls
                         :session-model-selection-value="props.sessionModelSelectionValue"
                         :selectable-models="props.selectableModels"
@@ -674,7 +674,7 @@ defineExpose({focus, insertAttachment});
                         :running="props.running"
                         :loading-session="props.loadingSession"
                         dropdown-direction="up"
-                        root-class="w-[200px] min-w-[140px] max-w-[260px]"
+                        root-class="w-fit min-w-[140px] max-w-[260px]"
                         @update-session-model-selection="emit('update-session-model-selection', $event)"
                     />
                     <!-- 思考档下拉（009C1R 微调4/5/6）：读会话真实当前档，八项全量，即选即生效 -->
@@ -688,7 +688,7 @@ defineExpose({focus, insertAttachment});
 
 
                     <button
-                        class="rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)]"
+                        class="flex h-7 w-7 items-center justify-center rounded transition-colors hover:bg-[var(--bg-hover)]"
                         :class="composerExpanded ? 'bg-[var(--bg-hover)] text-[var(--accent-text)]' : 'text-[var(--text-muted)] hover:text-[var(--text-main)]'"
                         :title="expandButtonTitle"
                         @click="composerExpanded = !composerExpanded"
@@ -698,7 +698,7 @@ defineExpose({focus, insertAttachment});
 
                     <!-- 三态模式切换按钮：normal → discuss → plan 循环 -->
                     <button
-                        class="rounded p-1.5 transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+                        class="flex h-7 w-7 items-center justify-center rounded transition-colors hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
                         :class="agentModeMeta.buttonClass"
                         :disabled="composerReadonly || props.running"
                         :title="modeButtonTitle"
@@ -708,7 +708,7 @@ defineExpose({focus, insertAttachment});
                     </button>
                 </div>
                 <button
-                    class="flex shrink-0 items-center justify-center rounded bg-[var(--accent-bg)] p-1.5 text-[var(--accent-text)] transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="flex h-7 w-7 shrink-0 items-center justify-center rounded bg-[var(--accent-bg)] text-[var(--accent-text)] transition-opacity hover:opacity-80 disabled:cursor-not-allowed disabled:opacity-50"
                     :disabled="sendDisabled"
                     :title="sendButtonTitle"
                     @click.prevent="submitButton"

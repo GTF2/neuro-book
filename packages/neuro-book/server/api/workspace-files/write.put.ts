@@ -1,7 +1,9 @@
 import {z} from "zod";
+import * as yaml from "yaml";
 import {createError} from "h3";
 import {ProjectRootDtoSchema} from "nbook/shared/dto/project.dto";
 import {readWorkspaceTextFile, statWorkspacePath, type WorkspaceFileNode} from "nbook/server/workspace-files/workspace-files";
+import {PROJECT_MANIFEST_FILE} from "nbook/server/workspace-files/project-manifest";
 import {buildWorkspaceWriteConflict} from "nbook/server/workspace-files/workspace-file-conflict";
 import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
 import {withProjectTargetMutation} from "nbook/server/workspace-files/project-open-guard";
@@ -78,6 +80,7 @@ const WriteWorkspaceFileBodySchema = z.object({
  */
 export default defineEventHandler(async (event) => {
     const body = WriteWorkspaceFileBodySchema.parse(await readBody(event));
+    assertProjectManifestTitle(body.path, body.content);
     const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), body);
     return withProjectTargetMutation(target, async (projectHandles) => {
         // 冲突检测已读到的写前内容，直接作为记账 before 复用（省一次读盘）。
@@ -110,6 +113,32 @@ export default defineEventHandler(async (event) => {
         return statWorkspacePath(target.root, body.path);
     });
 });
+
+/**
+ * BUG030 双保险：project.yaml 的 title 是书架身份源，清空保存会让书从列表消失
+ * （列表侧已兜底显示目录名）。这里在保存源头拦截空 title，阻止坏 manifest 落盘。
+ */
+function assertProjectManifestTitle(filePath: string, content: string): void {
+    if (filePath !== PROJECT_MANIFEST_FILE) {
+        return;
+    }
+    let parsed: unknown;
+    try {
+        parsed = yaml.parse(content);
+    } catch {
+        return;
+    }
+    if (typeof parsed !== "object" || parsed === null || (parsed as {kind?: unknown}).kind !== "novel") {
+        return;
+    }
+    const title = (parsed as {title?: unknown}).title;
+    if (typeof title !== "string" || title.trim().length === 0) {
+        throw createError({
+            statusCode: 400,
+            message: "project.yaml 的显示标题（title）不能为空——留空会让这本书从书架消失。请填写标题后再保存。",
+        });
+    }
+}
 
 /**
  * 读取当前真实文件状态；文件被外部删除时返回空内容和空节点。

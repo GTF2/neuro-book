@@ -28,8 +28,10 @@ export type ChatRoundItem = {
     hasFailure: boolean;
     /** 轮内是否仍在跑：运行中不自动收起。 */
     isRunning: boolean;
-    /** 首尾时间差（毫秒）；缺时间戳为 null。 */
+    /** 首尾时间差（毫秒）；单条消息轮为 0（已开始但跨度未知），全缺时间戳为 null。 */
     durationMs: number | null;
+    /** 轮内最早消息时间戳（毫秒）；运行中块头用它做「已工作」动态计时。 */
+    startedAtMs: number | null;
     /** 轮内 AI 消息的模型名（块头身份信息）。 */
     modelLabel: string | null;
     /** 按类别汇总的工作量（收起态块头摘要用，≤3 类+等 N 次）。 */
@@ -229,7 +231,8 @@ const buildRound = (nodes: ChatNode[]): ChatRoundItem => {
         hasFailure: toolCalls.some(isFailedToolCall),
         isRunning: nodes.some((node) => node.kind === "text" && node.message.status === "streaming")
             || toolCalls.some(isRunningToolCall),
-        durationMs: timestamps.length > 1 ? Math.max(...timestamps) - Math.min(...timestamps) : null,
+        durationMs: timestamps.length > 0 ? Math.max(...timestamps) - Math.min(...timestamps) : null,
+        startedAtMs: timestamps.length > 0 ? Math.min(...timestamps) : null,
         modelLabel,
         workByKind: [...kindCounts.entries()]
             .map(([kind, count]) => ({kind, count}))
@@ -316,3 +319,76 @@ export const toolShortLabelKey = (toolName: string): string => `agent.workBlock.
 
 /** 计数摘要细分上限：超出合并「等 N 次」（件6）。 */
 export const WORK_DETAIL_LIMIT = 3;
+
+/** 连续同类工具聚合门槛（R4 件2②）。 */
+export const TOOL_GROUP_MIN = 3;
+
+/** 轮内渲染分组（R4 件2）：连续 system 注入 ≥2 聚合成块、连续同名工具 ≥3 且全终态聚合成单行摘要。 */
+export type RoundEntry =
+    | {kind: "node"; node: ChatNode}
+    | {kind: "injectionGroup"; id: string; nodes: Extract<ChatNode, {kind: "text"}>[]; errorCount: number}
+    | {kind: "toolGroup"; id: string; toolName: string; nodes: ChatWorkBlockNode[]; failedCount: number};
+
+const isSystemErrorNode = (node: Extract<ChatNode, {kind: "text"}>): boolean =>
+    Boolean(node.message.error) || (node.message.systemDisplayKind ?? "system") === "error";
+
+export const buildRoundEntries = (nodes: ChatNode[]): RoundEntry[] => {
+    const entries: RoundEntry[] = [];
+    let index = 0;
+    while (index < nodes.length) {
+        const node = nodes[index]!;
+        if (node.kind === "text" && node.message.type === "system") {
+            const group: Extract<ChatNode, {kind: "text"}>[] = [];
+            while (index < nodes.length && nodes[index]!.kind === "text" && nodes[index]!.message.type === "system") {
+                group.push(nodes[index] as Extract<ChatNode, {kind: "text"}>);
+                index += 1;
+            }
+            // 单条保留现有注入行形态（009C1R3 件3 已过审）；≥2 才聚合为「系统上下文注入 ×N」。
+            if (group.length >= 2) {
+                const first = group[0]!;
+                const last = group[group.length - 1]!;
+                entries.push({
+                    kind: "injectionGroup",
+                    id: `injg:${first.message.id}::${last.message.id}`,
+                    nodes: group,
+                    errorCount: group.filter(isSystemErrorNode).length,
+                });
+            } else {
+                for (const single of group) {
+                    entries.push({kind: "node", node: single});
+                }
+            }
+            continue;
+        }
+        if (isFoldableToolNode(node)) {
+            const toolName = node.toolCall.name;
+            const group: ChatWorkBlockNode[] = [];
+            while (index < nodes.length) {
+                const candidate = nodes[index]!;
+                if (candidate.kind !== "tool" || candidate.toolCall.name !== toolName || !isFoldableToolNode(candidate)) {
+                    break;
+                }
+                group.push(candidate);
+                index += 1;
+            }
+            const allTerminal = group.every((entry) => !isRunningToolCall(entry.toolCall));
+            if (group.length >= TOOL_GROUP_MIN && allTerminal) {
+                entries.push({
+                    kind: "toolGroup",
+                    id: `toolg:${toolName}::${group[0]!.toolCall.id ?? "0"}::${group.length}`,
+                    toolName,
+                    nodes: group,
+                    failedCount: group.filter((entry) => isFailedToolCall(entry.toolCall)).length,
+                });
+            } else {
+                for (const single of group) {
+                    entries.push({kind: "node", node: single});
+                }
+            }
+            continue;
+        }
+        entries.push({kind: "node", node});
+        index += 1;
+    }
+    return entries;
+};

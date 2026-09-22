@@ -6,7 +6,7 @@ export type AgentSessionScaleSegment = {
     summary: string;
     /** 该格锚定的 flowItem 序号，seek 直接定位 */
     anchorIndex: number;
-    /** 体量权重（轮内节点数），决定刻度线长短分级 */
+    /** 体量权重（轮内节点数），驱动格高波浪与颜色深浅 */
     weight?: number;
 };
 
@@ -26,8 +26,9 @@ const {t} = useI18n();
 
 const trackRef = ref<HTMLElement | null>(null);
 const hoverIndex = ref<number | null>(null);
-/** hover 预览卡跟格移动。 */
-const hoverTopPx = ref(0);
+/** R4 件3②：hover 预览卡 fixed 贴鼠标跟随（clientX/Y），近屏幕边缘自动翻面。 */
+const hoverX = ref(0);
+const hoverY = ref(0);
 // 拖动时的 seek 节流间隔；点击路径不节流
 const SEEK_THROTTLE_MS = 80;
 let lastSeekAt = 0;
@@ -43,38 +44,65 @@ const activeGridIndex = computed(() => {
     return matched;
 });
 
-/** 体量分级（009C1R2 件2a）：线长三档，与底色融合无底轨。 */
-const segmentWidthClass = (index: number): string => {
-    const weight = props.segments[index]?.weight ?? 1;
+/** R4 件3③：格高两轨合一——非选中格=平滑波浪（3 格滑动平均，禁孤立突起，6-14px），
+ *  选中/当前视口格=20px 强调格+高亮色（显著高于任何非选中格）；密度另以颜色深浅辅助。 */
+const ACTIVE_BAR_PX = 20;
+const WAVE_MIN_PX = 6;
+const WAVE_MAX_PX = 14;
+const smoothWeight = (index: number): number => {
+    const at = (i: number): number => (i >= 0 && i < props.segments.length ? props.segments[i]?.weight ?? 1 : 1);
+    return (at(index - 1) + at(index) + at(index + 1)) / 3;
+};
+const segmentBarHeightPx = (index: number): number => {
     if (index === activeGridIndex.value) {
-        return "w-full bg-[var(--text-main)]";
+        return ACTIVE_BAR_PX;
+    }
+    const maxWeight = Math.max(1, ...props.segments.map((segment) => segment.weight ?? 1));
+    const ratio = Math.min(1, smoothWeight(index) / maxWeight);
+    return Math.round(WAVE_MIN_PX + ratio * (WAVE_MAX_PX - WAVE_MIN_PX));
+};
+/** 非选中格颜色深浅随平滑密度（0.45-0.85），波浪为主颜色为辅。 */
+const segmentBarOpacity = (index: number): number => {
+    if (index === activeGridIndex.value) {
+        return 1;
+    }
+    const maxWeight = Math.max(1, ...props.segments.map((segment) => segment.weight ?? 1));
+    const ratio = Math.min(1, smoothWeight(index) / maxWeight);
+    return 0.45 + ratio * 0.4;
+};
+const segmentBarClass = (index: number): string => {
+    if (index === activeGridIndex.value) {
+        return "bg-[var(--accent-main)]";
     }
     if (index === hoverIndex.value) {
-        return "w-2/3 bg-[var(--text-secondary)]";
+        return "bg-[var(--text-secondary)]";
     }
-    if (weight >= 6) {
-        return "w-full bg-[var(--border-strong)]/70";
-    }
-    if (weight >= 3) {
-        return "w-2/3 bg-[var(--border-strong)]/70";
-    }
-    return "w-1/2 bg-[var(--border-strong)]/70";
+    return "bg-[var(--border-strong)]";
 };
 
-/** 指针纵坐标换算格下标；格为固定小高且可内滚（件4），换算含滚动偏移，越界收敛。 */
-const SEGMENT_ROW_PX = 10;
+/** R4 件3①回归修复：格少时 justify-center 集中中段，坐标换算不再可靠——
+ *  直接按指针纵坐标遍历格元素命中（≤50 格，拖动节流 80ms 下成本可忽略），越界收敛两端。 */
 function gridIndexFromPointer(event: PointerEvent): number | null {
     const track = trackRef.value;
     if (!track || props.segments.length === 0) {
         return null;
     }
-    const rect = track.getBoundingClientRect();
-    if (rect.height <= 0) {
-        return null;
+    const children = track.children;
+    const y = event.clientY;
+    for (let index = 0; index < children.length; index += 1) {
+        const rect = (children[index] as HTMLElement).getBoundingClientRect();
+        if (y >= rect.top && y < rect.bottom) {
+            return index;
+        }
     }
-    const offsetPx = event.clientY - rect.top + track.scrollTop;
-    const index = Math.floor(offsetPx / SEGMENT_ROW_PX);
-    return Math.min(Math.max(index, 0), props.segments.length - 1);
+    if (children.length > 0) {
+        const firstTop = (children[0] as HTMLElement).getBoundingClientRect().top;
+        if (y < firstTop) {
+            return 0;
+        }
+        return children.length - 1;
+    }
+    return null;
 }
 
 function seekThrottled(gridIndex: number): void {
@@ -116,26 +144,29 @@ function handleSegmentClick(gridIndex: number): void {
     seekIndex(gridIndex);
 }
 
-/** hover 预览卡纵向跟手：以格中心对齐，越界收敛。 */
+/** hover 预览卡 fixed 贴鼠标：偏移 12,12，近屏幕右/下缘自动翻面防出界（R4 件3②）。 */
+const PREVIEW_W_PX = 224;
+const PREVIEW_H_ESTIMATE_PX = 176;
 function handleSegmentHover(event: PointerEvent, index: number): void {
     hoverIndex.value = index;
-    const track = trackRef.value;
-    const target = event.currentTarget as HTMLElement;
-    if (!track) {
-        return;
+    let x = event.clientX + 12;
+    let y = event.clientY + 12;
+    if (x + PREVIEW_W_PX > window.innerWidth - 8) {
+        x = event.clientX - PREVIEW_W_PX - 12;
     }
-    const trackRect = track.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-    const center = targetRect.top + targetRect.height / 2 - trackRect.top;
-    hoverTopPx.value = Math.max(0, Math.min(center, trackRect.height));
+    if (y + PREVIEW_H_ESTIMATE_PX > window.innerHeight - 8) {
+        y = event.clientY - PREVIEW_H_ESTIMATE_PX - 12;
+    }
+    hoverX.value = Math.max(8, x);
+    hoverY.value = Math.max(8, y);
 }
 </script>
 
 <template>
-    <!-- 会话刻度条（009C1R2 件2/件4）：右缘 24px；2px 细横线长短分级、无底轨无边框；
-         密度映射=格固定小高、少时集中中段、多时向两端扩展（框高 2/3 居中，装不下隐藏滚动条内滚）；
-         点击格=直接 seek 定位；hover=小预览框；底部入口开完整会话树 -->
-    <div class="relative flex h-full w-6 shrink-0 flex-col items-stretch py-1">
+    <!-- 会话刻度条（R4 件3）：右缘 36px；格条 8px 宽、高度=波浪渐变（密度）+选中强调格；
+         密度映射=格固定行高、少时集中中段、多时向两端扩展（框高 2/3 居中，装不下隐藏滚动条内滚）；
+         点击格=直接 seek 定位；hover=fixed 预览卡贴鼠标跟随；底部入口开完整会话树 -->
+    <div class="relative flex h-full w-9 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
             class="rail-scroll my-auto flex h-2/3 touch-none flex-col justify-center overflow-y-auto"
@@ -146,13 +177,18 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
                 v-for="(segment, index) in props.segments"
                 :key="segment.id"
                 type="button"
-                class="flex h-2.5 shrink-0 items-center justify-center"
+                class="flex h-4 shrink-0 items-center px-1"
                 :aria-label="segment.summary"
                 @pointerenter="(event) => handleSegmentHover(event, index)"
+                @pointermove="(event) => handleSegmentHover(event, index)"
                 @pointerleave="hoverIndex = null"
                 @click="handleSegmentClick(index)"
             >
-                <span class="h-[2px] rounded-full transition-all duration-150" :class="segmentWidthClass(index)"></span>
+                <span
+                    class="w-2 rounded-full transition-all duration-150"
+                    :class="segmentBarClass(index)"
+                    :style="{height: `${segmentBarHeightPx(index)}px`, opacity: segmentBarOpacity(index)}"
+                ></span>
             </button>
         </div>
         <button
@@ -165,8 +201,8 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
         </button>
         <div
             v-if="hoverIndex !== null && props.segments[hoverIndex]"
-            class="pointer-events-none absolute right-full top-0 z-30 mr-2 max-h-40 w-56 overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 text-[11px] leading-5 text-[var(--text-secondary)] shadow-xl"
-            :style="{transform: `translateY(${Math.max(0, hoverTopPx - 40)}px)`}"
+            class="pointer-events-none fixed z-30 max-h-40 w-56 overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 text-[11px] leading-5 text-[var(--text-secondary)] shadow-xl"
+            :style="{left: `${hoverX}px`, top: `${hoverY}px`}"
         >
             {{ props.segments[hoverIndex]?.summary }}
         </div>

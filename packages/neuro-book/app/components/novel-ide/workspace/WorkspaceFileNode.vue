@@ -323,7 +323,7 @@ onUnmounted(() => {
                     {{ t("ide.workspace.filePanel.treeTypeNode") }}
                 </span>
                 <span v-if="isLorebookEntry" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="statusIndicatorClass" :title="statusLabel"></span>
-                <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="node.status"></span>
+                <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="statusLabel"></span>
             </div>
         </div>
 

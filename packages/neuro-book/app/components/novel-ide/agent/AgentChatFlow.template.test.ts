@@ -20,17 +20,25 @@ describe("AgentChatFlow 挂载结构（009C1R2 件2/件3 回归锚）", () => {
         expect(source).toContain('@seek="scrollToFlowItem"');
     });
 
-    it("轮次块渲染：块头+轮体循环+身份/按钮组/思考行三控制位（件3）", async () => {
+    it("轮次块渲染：块头+轮体分组循环+身份/按钮组/思考行三控制位（件3+R4 件2 聚合）", async () => {
         const source = await readFile(componentPath, "utf-8");
         expect(source).toContain("<AgentWorkBlock");
         expect(source).toContain('item.kind === \'round\'');
-        expect(source).toContain("visibleRoundNodes");
+        expect(source).toContain("visibleRoundEntries");
+        expect(source).toContain("buildRoundEntries");
         expect(source).toContain("isActionsHost");
         expect(source).toContain("isRoundExpanded");
         expect(source).toContain("toggleInjections");
         expect(source).toContain("suppress-identity");
         expect(source).toContain(":suppress-actions");
         expect(source).toContain(":show-thinking");
+        // R4 件2②③：注入聚合块+工具聚合行
+        expect(source).toContain('entry.kind === \'injectionGroup\'');
+        expect(source).toContain('entry.kind === \'toolGroup\'');
+        expect(source).toContain("groupErrorSuffix");
+        expect(source).toContain("groupFailedSuffix");
+        // R4 件3⑤：消息区隐藏原生滚动条（回滚开关在 style 注释）
+        expect(source).toContain("chat-scroll-hidden");
     });
 
     it("间距密度：轮间 16px、轮内节点 8px（件3e）；50 格封顶聚合保持", () => {

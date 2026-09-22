@@ -3006,7 +3006,16 @@ describe("ProjectLifecycle", () => {
         const lifecycle = new ProjectLifecycle(absoluteFsPath(workspaceRoot));
         try {
             const before = await lifecycle.readProjects();
-            expect(before.projects).toEqual([]);
+            // BUG030：字段级坏 manifest（normalizable）不再让书从书架消失——降级入列、title 兜底=目录名。
+            expect(before.projects).toEqual([
+                {
+                    projectRoot: "repairable",
+                    kind: "novel",
+                    title: "repairable",
+                    summary: "",
+                },
+            ]);
+            expect((await lifecycle.readCandidates()).candidates).toEqual([]);
 
             const result = await lifecycle.ensure(projectWorkspaceRef("repairable"));
 
@@ -3026,6 +3035,38 @@ describe("ProjectLifecycle", () => {
                 summary: "",
             });
             expect((await lifecycle.readProjects()).revision).toBeGreaterThan(before.revision);
+        } finally {
+            await lifecycle.close();
+        }
+    });
+
+    it("BUG030：title 被清空的小说书不消失——列表降级显示目录名，打开 ensure 后自愈", async () => {
+        const workspaceRoot = await mkdtemp(testHostPath("nbook-project-lifecycle-"));
+        roots.push(workspaceRoot);
+        const projectRoot = path.join(workspaceRoot, "xin-xiao-shuo-3");
+        await mkdir(projectRoot);
+        await writeFile(path.join(projectRoot, "project.yaml"), 'kind: novel\ntitle: \nsummary: ""\n', "utf8");
+        await mkdir(path.join(projectRoot, "manuscript"), {recursive: true});
+        await writeFile(path.join(projectRoot, "manuscript", "001.md"), "第一章正文", "utf8");
+
+        const lifecycle = new ProjectLifecycle(absoluteFsPath(workspaceRoot));
+        try {
+            const listed = await lifecycle.readProjects();
+            expect(listed.projects).toEqual([
+                {
+                    projectRoot: "xin-xiao-shuo-3",
+                    kind: "novel",
+                    title: "xin-xiao-shuo-3",
+                    summary: "",
+                },
+            ]);
+            expect((await lifecycle.readCandidates()).candidates).toEqual([]);
+
+            const result = await lifecycle.ensure(projectWorkspaceRef("xin-xiao-shuo-3"));
+            expect(result.change).toBe("normalized");
+            expect(result.project).toMatchObject({projectRoot: "xin-xiao-shuo-3", title: "xin-xiao-shuo-3"});
+            expect(await readFile(path.join(projectRoot, "project.yaml"), "utf8")).toContain("title: xin-xiao-shuo-3");
+            expect(await readFile(path.join(projectRoot, "manuscript", "001.md"), "utf8")).toBe("第一章正文");
         } finally {
             await lifecycle.close();
         }
@@ -3466,7 +3507,15 @@ describe("ProjectLifecycle", () => {
             const current = await lifecycle.readProjects();
             expect(result.change).toBe("normalized");
             expect(firstResult.revision).toBeLessThan(current.revision);
-            expect(firstResult.projects).toEqual([]);
+            // BUG030 语义更新：冷扫描看到的字段级坏 manifest（kind: draft、title 合法）以降级条目入列，合法字段保留。
+            expect(firstResult.projects).toEqual([
+                {
+                    projectRoot: "scan-race",
+                    kind: "novel",
+                    title: "Race",
+                    summary: "",
+                },
+            ]);
             expect(current.projects).toEqual([result.project]);
             expect((await lifecycle.readCandidates()).candidates).toEqual([]);
         } finally {
