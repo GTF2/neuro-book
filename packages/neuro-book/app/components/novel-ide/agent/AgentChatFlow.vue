@@ -552,7 +552,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                     >
                         <span :class="isInjectionsOpen(item) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                         <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
-                        <span>{{ t("agent.workBlock.injections", {count: item.nodes.length}) }}</span>
+                        <span class="font-medium">{{ t("agent.workBlock.injections", {count: item.nodes.length}) }}</span>
                     </button>
                     <!-- R5b 补漏：会话开头收拢行的展开体与轮内同款灰小字行（System/CUSTOM:USER 不再两副面孔） -->
                     <div v-if="isInjectionsOpen(item)" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
@@ -586,7 +586,8 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                                 <span :class="entry.errorCount > 0 ? 'i-lucide-triangle-alert text-[var(--status-danger)]' : 'i-lucide-file-code'" class="h-3 w-3 shrink-0"></span>
-                                <span>{{ t("agent.workBlock.injections", {count: entry.nodes.length}) }}</span>
+                                <!-- R5h：过程行家族统一 font-medium——纯中文标签无 mono 加成显细（用户实锤"又细又不好辨识"） -->
+                                <span class="font-medium">{{ t("agent.workBlock.injections", {count: entry.nodes.length}) }}</span>
                                 <span v-if="entry.errorCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupErrorSuffix", {count: entry.errorCount}) }}</span>
                             </button>
                             <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
@@ -614,11 +615,11 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                                 <template v-if="entry.toolName">
-                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
-                                    <span class="shrink-0">×{{ entry.nodes.length }}</span>
+                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
+                                    <span class="shrink-0 font-medium">×{{ entry.nodes.length }}</span>
                                 </template>
-                                <span v-else :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
-                                <span v-if="entry.failedCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupFailedSuffix", {count: entry.failedCount}) }}</span>
+                                <span v-else :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
+                                <span v-if="entry.failedCount > 0" class="shrink-0 font-medium text-[var(--status-danger)]">{{ t("agent.workBlock.groupFailedSuffix", {count: entry.failedCount}) }}</span>
                             </button>
                             <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-2 border-l-2 border-[var(--border-color)]/50 pl-3">
                                 <AgentToolBubble
@@ -640,7 +641,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 >
                                     <span :class="isInjectionsOpen({id: entry.node.message.id}) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                                     <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
-                                    <span>{{ t("agent.workBlock.injectionSingle") }}</span>
+                                    <span class="font-medium">{{ t("agent.workBlock.injectionSingle") }}</span>
                                 </button>
                                 <div v-if="isInjectionsOpen({id: entry.node.message.id})" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
                                     <!-- R5 件7：单条注入展开体与聚合块同款灰小字行 -->
