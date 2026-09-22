@@ -5,7 +5,7 @@ import AgentTextBubble from "nbook/app/components/novel-ide/agent/AgentTextBubbl
 import AgentToolBubble from "nbook/app/components/novel-ide/agent/AgentToolBubble.vue";
 import AgentWorkBlock from "nbook/app/components/novel-ide/agent/AgentWorkBlock.vue";
 import AgentSessionScaleBar, {type AgentSessionScaleSegment} from "nbook/app/components/novel-ide/agent/AgentSessionScaleBar.vue";
-import {buildRoundEntries, groupChatNodesIntoBlocks, isFoldableToolNode, toolShortLabelKey, type ChatFlowItem, type ChatRoundItem, type RoundEntry} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
+import {buildRoundEntries, CHAT_WORK_BLOCK_META, groupChatNodesIntoBlocks, isFoldableToolNode, toolShortLabelKey, type ChatFlowItem, type ChatRoundItem, type RoundEntry} from "nbook/app/components/novel-ide/agent/chat-work-blocks";
 import type {CostDisplayOptions} from "nbook/app/utils/cost-format";
 import type {AgentSessionAttachmentItemDto} from "nbook/shared/dto/agent-session.dto";
 import type {
@@ -603,7 +603,9 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 </div>
                             </div>
                         </div>
-                        <!-- 连续同名工具聚合行（R4 件2②）：「{中文名} ×N」，失败标红，点击展开全部子行 -->
+                        <!-- 连续工具聚合行（R4 件2② 立规；R5f 扩展：异名同收≥2，思考隔断即断）——
+                             单一同名=「{中文名} ×N」；混合=「查阅资料 2 + 执行命令 1」人话分类；
+                             失败标红，点击展开全部子行 -->
                         <div v-else-if="entry.kind === 'toolGroup'" class="space-y-1">
                             <button
                                 type="button"
@@ -611,8 +613,11 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 @click="toggleRoundEntry(entry.id)"
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
-                                <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
-                                <span class="shrink-0">×{{ entry.nodes.length }}</span>
+                                <template v-if="entry.toolName">
+                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
+                                    <span class="shrink-0">×{{ entry.nodes.length }}</span>
+                                </template>
+                                <span v-else :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
                                 <span v-if="entry.failedCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupFailedSuffix", {count: entry.failedCount}) }}</span>
                             </button>
                             <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-2 border-l-2 border-[var(--border-color)]/50 pl-3">

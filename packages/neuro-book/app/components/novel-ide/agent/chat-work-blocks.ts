@@ -324,14 +324,14 @@ export const toolShortLabelKey = (toolName: string): string => `agent.workBlock.
 /** 计数摘要细分上限：超出合并「等 N 次」（件6）。 */
 export const WORK_DETAIL_LIMIT = 3;
 
-/** 连续同类工具聚合门槛（R4 件2②）。 */
-export const TOOL_GROUP_MIN = 3;
+/** 连续工具聚合门槛（R4 件2② 立为同名≥3；R5f 用户裁定：连 2 也收、异名同收、思考隔断即断）。 */
+export const TOOL_GROUP_MIN = 2;
 
-/** 轮内渲染分组（R4 件2）：连续 system 注入 ≥2 聚合成块、连续同名工具 ≥3 且全终态聚合成单行摘要。 */
+/** 轮内渲染分组（R4 件2 立规；R5f 扩展：连续任意工具 ≥2 且全终态聚合成单行，思考/正文隔断即断开单放）。 */
 export type RoundEntry =
     | {kind: "node"; node: ChatNode}
     | {kind: "injectionGroup"; id: string; nodes: Extract<ChatNode, {kind: "text"}>[]; errorCount: number}
-    | {kind: "toolGroup"; id: string; toolName: string; nodes: ChatWorkBlockNode[]; failedCount: number};
+    | {kind: "toolGroup"; id: string; toolName: string | null; kinds: Array<{kind: ChatWorkBlockKind; count: number}>; nodes: ChatWorkBlockNode[]; failedCount: number};
 
 const isSystemErrorNode = (node: Extract<ChatNode, {kind: "text"}>): boolean =>
     Boolean(node.message.error) || (node.message.systemDisplayKind ?? "system") === "error";
@@ -365,11 +365,11 @@ export const buildRoundEntries = (nodes: ChatNode[]): RoundEntry[] => {
             continue;
         }
         if (isFoldableToolNode(node)) {
-            const toolName = node.toolCall.name;
             const group: ChatWorkBlockNode[] = [];
             while (index < nodes.length) {
                 const candidate = nodes[index]!;
-                if (candidate.kind !== "tool" || candidate.toolCall.name !== toolName || !isFoldableToolNode(candidate)) {
+                // R5f：异名同收——只要还是连续 foldable 工具就进组；中间隔思考/正文/注入即断开
+                if (candidate.kind !== "tool" || !isFoldableToolNode(candidate)) {
                     break;
                 }
                 group.push(candidate);
@@ -377,10 +377,19 @@ export const buildRoundEntries = (nodes: ChatNode[]): RoundEntry[] => {
             }
             const allTerminal = group.every((entry) => !isRunningToolCall(entry.toolCall));
             if (group.length >= TOOL_GROUP_MIN && allTerminal) {
+                const kindCounts = new Map<ChatWorkBlockKind, number>();
+                for (const entry of group) {
+                    const kind = resolveToolWorkKind(entry.toolCall.name) ?? "explore";
+                    kindCounts.set(kind, (kindCounts.get(kind) ?? 0) + 1);
+                }
+                const names = new Set(group.map((entry) => entry.toolCall.name));
                 entries.push({
                     kind: "toolGroup",
-                    id: `toolg:${toolName}::${group[0]!.toolCall.id ?? "0"}::${group.length}`,
-                    toolName,
+                    id: `toolg:${names.size === 1 ? group[0]!.toolCall.name : "mixed"}::${group[0]!.toolCall.id ?? "0"}::${group.length}`,
+                    toolName: names.size === 1 ? group[0]!.toolCall.name : null,
+                    kinds: [...kindCounts.entries()]
+                        .map(([kind, count]) => ({kind, count}))
+                        .sort((a, b) => b.count - a.count),
                     nodes: group,
                     failedCount: group.filter((entry) => isFailedToolCall(entry.toolCall)).length,
                 });

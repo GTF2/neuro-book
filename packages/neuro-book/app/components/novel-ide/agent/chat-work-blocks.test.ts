@@ -193,7 +193,7 @@ describe("轮内渲染分组（R4 件2：注入聚合+同类工具聚合）", ()
         expect(single[0]!.kind).toBe("node");
     });
 
-    it("连续同名工具 ≥3 且全终态聚合为 toolGroup（含失败计数），含进行中不聚合", () => {
+    it("R5f：连续工具 ≥2 且全终态聚合（异名同收+混合人话分类），思考隔断即断，进行中不聚合", () => {
         const grouped = buildRoundEntries([
             toolNode("r1", "read"),
             toolNode("r2", "read"),
@@ -221,7 +221,21 @@ describe("轮内渲染分组（R4 件2：注入聚合+同类工具聚合）", ()
         ]);
         expect(running.every((entry) => entry.kind === "node")).toBe(true);
 
+        // R5f：连 2 同名也聚合
         const two = buildRoundEntries([toolNode("r1", "read"), toolNode("r2", "read")]);
-        expect(two.every((entry) => entry.kind === "node")).toBe(true);
+        expect(two).toHaveLength(1);
+        expect(two[0]!.kind).toBe("toolGroup");
+
+        // R5f：异名同收——read+bash 连 2 聚成混合组，toolName=null、kinds 按类计数
+        const mixed = buildRoundEntries([toolNode("r1", "read"), toolNode("r2", "bash")]);
+        expect(mixed).toHaveLength(1);
+        const mixedGroup = mixed[0] as Extract<ReturnType<typeof buildRoundEntries>[number], {kind: "toolGroup"}>;
+        expect(mixedGroup.toolName).toBeNull();
+        expect(mixedGroup.kinds).toEqual([{kind: "explore", count: 1}, {kind: "command", count: 1}]);
+
+        // R5f：思考/正文隔断即断开——单条单放
+        const split = buildRoundEntries([toolNode("r1", "read"), textNode("a1", "ai", "思考一下"), toolNode("r2", "bash")]);
+        expect(split).toHaveLength(3);
+        expect(split.every((entry) => entry.kind === "node")).toBe(true);
     });
 });
