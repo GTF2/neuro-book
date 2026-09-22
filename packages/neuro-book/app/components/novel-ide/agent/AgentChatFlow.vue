@@ -615,10 +615,11 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                                 <template v-if="entry.toolName">
-                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
+                                    <!-- R5h：主体保持灰——只有「·N 失败」后缀染红（整行红会读成"全组失败"，用户实锤） -->
+                                    <span class="shrink-0 font-medium">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
                                     <span class="shrink-0 font-medium">×{{ entry.nodes.length }}</span>
                                 </template>
-                                <span v-else :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
+                                <span v-else class="shrink-0 font-medium">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
                                 <span v-if="entry.failedCount > 0" class="shrink-0 font-medium text-[var(--status-danger)]">{{ t("agent.workBlock.groupFailedSuffix", {count: entry.failedCount}) }}</span>
                             </button>
                             <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-2 border-l-2 border-[var(--border-color)]/50 pl-3">
