@@ -2321,6 +2321,9 @@ const enUS = {
             workedSeconds: "Worked {seconds}s",
             workRound: "This turn",
             injectionSingle: "Context injection",
+            injectionPrefixSystem: "System", // [i18n-add] 009C1R5
+            injectionPrefixReminder: "Reminder", // [i18n-add] 009C1R5
+            injectionPrefixError: "Error", // [i18n-add] 009C1R5
             minutesSeconds: "{minutes}m {seconds}s",
             injections: "Context injections ×{count}",
             groupErrorSuffix: "·{count} errors", // [i18n-add] 009C1R4 injection group error count
@@ -2397,7 +2400,10 @@ const enUS = {
             addSuggestion: "Add Suggestion",
             otherAnswer: "Other Answer",
             pendingTitle: "Waiting for Your Input",
-            pendingBlockedTitle: "Pending · not answerable now", // [i18n-add] 009C1R4 blocked-state header
+            pendingBlockedTitle: "Pending · not answerable now",
+            dismissPending: "Dismiss", // [i18n-add] 009C1R5
+            pendingDismissedBar: "Pending input (not answerable now) — dismissed", // [i18n-add] 009C1R5
+            pendingRestore: "Restore", // [i18n-add] 009C1R5 // [i18n-add] 009C1R4 blocked-state header
             pendingRegion: "Pending input",
             resync: "Resync",
             suggestionDescription: "Write a suggestion below. The Agent will stay in the current mode and adjust the plan.",

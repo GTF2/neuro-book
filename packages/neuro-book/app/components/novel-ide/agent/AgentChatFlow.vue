@@ -160,6 +160,24 @@ const visibleRoundEntries = (round: ChatRoundItem): RoundEntry[] => {
     });
 };
 
+/** R5 件7：注入条目统一灰小字行的类型前缀与单行摘要（system reminder 与 CUSTOM:USER 同款，差异仅前缀）。 */
+const injectionLabelPrefix = (node: Extract<ChatNode, {kind: "text"}>): string => {
+    if (node.message.systemLabel) {
+        return node.message.systemLabel;
+    }
+    const kind = node.message.systemDisplayKind ?? "system";
+    if (kind === "error") {
+        return t("agent.workBlock.injectionPrefixError");
+    }
+    if (kind === "reminder") {
+        return t("agent.workBlock.injectionPrefixReminder");
+    }
+    return t("agent.workBlock.injectionPrefixSystem");
+};
+const injectionSummary = (node: Extract<ChatNode, {kind: "text"}>): string => {
+    return node.message.content.trim().replace(/\s+/gu, " ").slice(0, 60);
+};
+
 /** 悬浮按钮组只在轮尾最后一段正文后渲染一次（件3c）。 */
 const isActionsHost = (round: ChatRoundItem, node: ChatNode): boolean => {
     const host = [...round.nodes].reverse().find((candidate) => candidate.kind === "text" && hasTextBubbleContent(candidate));
@@ -581,23 +599,18 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                 <span>{{ t("agent.workBlock.injections", {count: entry.nodes.length}) }}</span>
                                 <span v-if="entry.errorCount > 0" class="shrink-0 text-[var(--status-danger)]">{{ t("agent.workBlock.groupErrorSuffix", {count: entry.errorCount}) }}</span>
                             </button>
-                            <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-1 border-l-2 border-[var(--border-color)]/50 pl-3">
-                                <AgentTextBubble
+                            <div v-if="isRoundEntryOpen(entry.id)" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
+                                <!-- R5 件7：聚合块内条目统一灰小字行（前缀+单行摘要，全文进 title），不再嵌完整气泡卡 -->
+                                <div
                                     v-for="injectionNode in entry.nodes"
                                     :key="injectionNode.message.id"
-                                    :node="injectionNode"
-                                    :session-id="props.sessionId"
-                                    :action-disabled="props.messageActionDisabled"
-                                    :run-action-disabled="props.runActionDisabled"
-                                    :session-attachments="props.sessionAttachments"
-                                    :can-register-attachments="props.canRegisterAttachments"
-                                    :can-insert-attachments="props.canInsertAttachments"
-                                    :project-root="props.projectRoot"
-                                    :model-supports-images="props.modelSupportsImages"
-                                    :open-reference="props.openReference"
-                                    :cost-display-options="props.costDisplayOptions"
-                                    @copy="emit('copy', $event)"
-                                />
+                                    class="flex w-full items-center gap-1.5 px-0.5 py-0.5 text-[11px] leading-4"
+                                    :class="injectionNode.message.error || (injectionNode.message.systemDisplayKind ?? 'system') === 'error' ? 'text-[var(--status-danger)]' : 'text-[var(--text-muted)]'"
+                                    :title="injectionNode.message.content"
+                                >
+                                    <span class="shrink-0 font-medium opacity-80">{{ injectionLabelPrefix(injectionNode) }}</span>
+                                    <span class="min-w-0 flex-1 truncate opacity-75">{{ injectionSummary(injectionNode) }}</span>
+                                </div>
                             </div>
                         </div>
                         <!-- 连续同名工具聚合行（R4 件2②）：「{中文名} ×N」，失败标红，点击展开全部子行 -->
@@ -634,21 +647,16 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                                     <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
                                     <span>{{ t("agent.workBlock.injectionSingle") }}</span>
                                 </button>
-                                <div v-if="isInjectionsOpen({id: entry.node.message.id})" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
-                                    <AgentTextBubble
-                                        :node="entry.node"
-                                        :session-id="props.sessionId"
-                                        :action-disabled="props.messageActionDisabled"
-                                        :run-action-disabled="props.runActionDisabled"
-                                        :session-attachments="props.sessionAttachments"
-                                        :can-register-attachments="props.canRegisterAttachments"
-                                        :can-insert-attachments="props.canInsertAttachments"
-                                        :project-root="props.projectRoot"
-                                        :model-supports-images="props.modelSupportsImages"
-                                        :open-reference="props.openReference"
-                                        :cost-display-options="props.costDisplayOptions"
-                                        @copy="emit('copy', $event)"
-                                    />
+                                <div v-if="isInjectionsOpen({id: entry.node.message.id})" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
+                                    <!-- R5 件7：单条注入展开体与聚合块同款灰小字行 -->
+                                    <div
+                                        class="flex w-full items-center gap-1.5 px-0.5 py-0.5 text-[11px] leading-4"
+                                        :class="entry.node.message.error || (entry.node.message.systemDisplayKind ?? 'system') === 'error' ? 'text-[var(--status-danger)]' : 'text-[var(--text-muted)]'"
+                                        :title="entry.node.message.content"
+                                    >
+                                        <span class="shrink-0 font-medium opacity-80">{{ injectionLabelPrefix(entry.node) }}</span>
+                                        <span class="min-w-0 flex-1 truncate opacity-75">{{ injectionSummary(entry.node) }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </template>

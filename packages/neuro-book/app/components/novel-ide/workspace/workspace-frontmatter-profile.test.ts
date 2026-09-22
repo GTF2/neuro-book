@@ -180,7 +180,9 @@ describe("R4 件8：正文 dirty 传导到属性面板保存按钮", () => {
         expect(source).toContain("store.hasUnsavedFileChanges");
         expect(source).toContain("saveDisabled");
         expect(source).toContain(':disabled="saveDisabled"');
-        expect(source).toContain('v-if="isDirty || hasUnsavedBody || projectYamlDirty"');
+        // R5 件4：圆点移进保存按钮右上角（absolute -right-1 -top-1），不再是独立行内圆点
+        expect(source).toContain("absolute -right-1 -top-1");
+        expect(source).not.toContain('v-if="isDirty || hasUnsavedBody || projectYamlDirty"');
         expect(source).toContain("!store.hasUnsavedFileChanges");
     });
 });

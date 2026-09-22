@@ -131,6 +131,25 @@ const isDirty = computed(() => {
 // 须把 store 的正文未保存态并联进按钮与圆点——用户验收链=正文输入→按钮点亮+圆点→保存→熄灭。
 const hasUnsavedBody = computed(() => store.hasUnsavedFileChanges);
 const saveDisabled = computed(() => (!isDirty.value && !hasUnsavedBody.value) || savingFile.value);
+// R5 件5：保存成功行内轻提示（1.5s 后淡出），替代大 toast。
+const savedFlash = ref(false);
+const savedFlashFading = ref(false);
+let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
+function flashSaved(): void {
+    if (savedFlashTimer !== null) {
+        clearTimeout(savedFlashTimer);
+    }
+    savedFlash.value = true;
+    savedFlashFading.value = false;
+    savedFlashTimer = setTimeout(() => {
+        savedFlashFading.value = true;
+        savedFlashTimer = setTimeout(() => {
+            savedFlash.value = false;
+            savedFlashFading.value = false;
+            savedFlashTimer = null;
+        }, 500);
+    }, 1_500);
+}
 const manuscriptBasePath = computed(() => {
     if (!props.node) {
         return "";
@@ -169,7 +188,7 @@ async function saveDraft(options?: {notify?: boolean}): Promise<void> {
     await store.saveCurrentFile();
     lastLoadedContent.value = selectedFileContent.value;
     if (options?.notify) {
-        useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? ""});
+        flashSaved();
     }
 }
 
@@ -282,7 +301,7 @@ async function saveProjectYaml(): Promise<void> {
     selectedFileContent.value = next;
     await store.saveCurrentFile();
     projectYamlBaseline.value = next;
-    useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? ""});
+    flashSaved();
 }
 
 watch(() => [props.node?.path, selectedFileContent.value], () => {
@@ -366,20 +385,27 @@ function readStringArray(value: unknown): string[] {
                 <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-[var(--border-color)] bg-[var(--bg-input)] text-[11px] text-[var(--accent-text)]">
                     <span :class="currentIconClass" class="h-3.5 w-3.5"></span>
                 </span>
-                <div class="min-w-0 overflow-hidden">
+                <!-- R5 件6②：头部去掉路径行（名字干净），路径移到标题悬停 -->
+                <div class="min-w-0 overflow-hidden" :title="props.node?.path">
                     <div class="truncate font-serif text-sm font-bold tracking-wide text-[var(--text-main)]">{{ props.node?.title || props.node?.path || t("ide.workspace.fileDetail.title") }}</div>
-                    <div class="truncate text-[10px] text-[var(--text-muted)]">{{ props.node?.path }}</div>
                 </div>
             </div>
         </template>
 
         <template #actions>
-            <span v-if="isDirty || hasUnsavedBody || projectYamlDirty" class="inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
             <button class="rounded-md px-2 py-1 text-[10px] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" type="button" @click="emit('refresh')">{{ t("ide.workspace.common.refresh") }}</button>
             <button v-if="canCreateIndex" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('create-index')">{{ t("ide.workspace.fileDetail.convert") }}</button>
             <button v-if="canConvertFileToDirectory" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('convert-file-to-directory')">{{ t("ide.workspace.fileDetail.convertToDirectory") }}</button>
-            <button v-if="projectYamlDraft" class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-45" type="button" :disabled="(!projectYamlDirty && !hasUnsavedBody) || projectTitleInvalid || savingFile" @click="void saveProjectYaml()"><span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}</button>
-            <button v-if="draft" class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-45" type="button" :disabled="saveDisabled" @click="void saveDraft({notify: true})"><span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}</button>
+            <!-- R5 件4：未保存圆点挪到保存按钮右上角；件5：保存中轻禁用+行内 spinner+1.5s「已保存」淡出 -->
+            <span v-if="savedFlash" class="inline-flex items-center gap-1 text-[10px] text-[var(--status-success)] transition-opacity duration-500" :class="savedFlashFading ? 'opacity-0' : 'opacity-100'"><span class="i-lucide-check h-3 w-3"></span>{{ t("ide.workspace.common.saved") }}</span>
+            <button v-if="projectYamlDraft" class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="(!projectYamlDirty && !hasUnsavedBody) || projectTitleInvalid || savingFile" @click="void saveProjectYaml()">
+                <span v-if="(projectYamlDirty || hasUnsavedBody) && !savingFile && !projectTitleInvalid" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
+                <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}
+            </button>
+            <button v-if="draft" class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="saveDisabled" @click="void saveDraft({notify: true})">
+                <span v-if="(isDirty || hasUnsavedBody) && !savingFile" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
+                <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}
+            </button>
         </template>
 
         <div v-if="props.node" class="grid min-w-0 gap-2 text-xs text-[var(--text-secondary)]">

@@ -44,31 +44,37 @@ const activeGridIndex = computed(() => {
     return matched;
 });
 
-/** R4 件3③：格高两轨合一——非选中格=平滑波浪（3 格滑动平均，禁孤立突起，6-14px），
- *  选中/当前视口格=20px 强调格+高亮色（显著高于任何非选中格）；密度另以颜色深浅辅助。 */
-const ACTIVE_BAR_PX = 20;
-const WAVE_MIN_PX = 6;
-const WAVE_MAX_PX = 14;
+/** R5 件1：鱼骨形态——竖排横向短条；长度=纺锤位置包络（两头短中间长）×密度调制（哪里厚哪里长）；
+ *  当前视口/选中条=最长且最亮双强调，其余按长度深浅渐变；条高小而均匀、纵向等距。 */
+const ACTIVE_RATIO = 1;
+const BAR_HEIGHT_PX = 3;
 const smoothWeight = (index: number): number => {
     const at = (i: number): number => (i >= 0 && i < props.segments.length ? props.segments[i]?.weight ?? 1 : 1);
     return (at(index - 1) + at(index) + at(index + 1)) / 3;
 };
-const segmentBarHeightPx = (index: number): number => {
+/** 纺锤位置包络：两端 0.35 → 中间 1.0 对称插值。 */
+const spindleRatio = (index: number): number => {
+    const last = props.segments.length - 1;
+    if (last <= 0) {
+        return 1;
+    }
+    const position = index / last;
+    return 0.35 + 0.65 * (1 - Math.abs(2 * position - 1));
+};
+const segmentBarRatio = (index: number): number => {
     if (index === activeGridIndex.value) {
-        return ACTIVE_BAR_PX;
+        return ACTIVE_RATIO;
     }
     const maxWeight = Math.max(1, ...props.segments.map((segment) => segment.weight ?? 1));
-    const ratio = Math.min(1, smoothWeight(index) / maxWeight);
-    return Math.round(WAVE_MIN_PX + ratio * (WAVE_MAX_PX - WAVE_MIN_PX));
+    const density = Math.min(1, smoothWeight(index) / maxWeight);
+    return Math.max(0.18, spindleRatio(index) * (0.45 + 0.55 * density));
 };
-/** 非选中格颜色深浅随平滑密度（0.45-0.85），波浪为主颜色为辅。 */
+/** 非选中条亮度随长度深浅渐变（0.45-0.9），选中条满亮。 */
 const segmentBarOpacity = (index: number): number => {
     if (index === activeGridIndex.value) {
         return 1;
     }
-    const maxWeight = Math.max(1, ...props.segments.map((segment) => segment.weight ?? 1));
-    const ratio = Math.min(1, smoothWeight(index) / maxWeight);
-    return 0.45 + ratio * 0.4;
+    return 0.45 + 0.45 * segmentBarRatio(index);
 };
 const segmentBarClass = (index: number): string => {
     if (index === activeGridIndex.value) {
@@ -163,9 +169,8 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
 </script>
 
 <template>
-    <!-- 会话刻度条（R4 件3）：右缘 36px；格条 8px 宽、高度=波浪渐变（密度）+选中强调格；
-         密度映射=格固定行高、少时集中中段、多时向两端扩展（框高 2/3 居中，装不下隐藏滚动条内滚）；
-         点击格=直接 seek 定位；hover=fixed 预览卡贴鼠标跟随；底部入口开完整会话树 -->
+    <!-- 会话刻度条（R5 件1 鱼骨形态）：右缘 36px；竖排横向短条右对齐、长度=纺锤位置包络×密度调制，
+         当前/选中条最长最亮双强调；点击格=直接 seek 定位；hover=fixed 预览卡贴鼠标跟随；底部入口开完整会话树 -->
     <div class="relative flex h-full w-9 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
@@ -177,17 +182,18 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
                 v-for="(segment, index) in props.segments"
                 :key="segment.id"
                 type="button"
-                class="flex h-4 shrink-0 items-center px-1"
+                class="flex h-3 shrink-0 items-center justify-end px-0.5"
                 :aria-label="segment.summary"
                 @pointerenter="(event) => handleSegmentHover(event, index)"
                 @pointermove="(event) => handleSegmentHover(event, index)"
                 @pointerleave="hoverIndex = null"
                 @click="handleSegmentClick(index)"
             >
+                <!-- R5 件1：横向短条从消息流一侧（右缘）伸出，长度=ratio、贴轨道右对齐 -->
                 <span
-                    class="w-2 rounded-full transition-all duration-150"
+                    class="rounded-full transition-all duration-150"
                     :class="segmentBarClass(index)"
-                    :style="{height: `${segmentBarHeightPx(index)}px`, opacity: segmentBarOpacity(index)}"
+                    :style="{width: `${Math.round(segmentBarRatio(index) * 100)}%`, height: `${BAR_HEIGHT_PX}px`, opacity: segmentBarOpacity(index)}"
                 ></span>
             </button>
         </div>

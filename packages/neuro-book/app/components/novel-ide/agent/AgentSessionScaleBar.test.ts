@@ -16,21 +16,15 @@ describe("AgentSessionScaleBar 契约（R4 件3：波浪格高+fixed 预览+命�
         expect(source).not.toContain("open-outline");
     });
 
-    it("R4 件3③：格高两轨合一——非选中波浪 6-14px+3 格滑动平均，选中强调格 20px 显著更高", async () => {
+    it("R5 件1 鱼骨形态：横向短条右对齐+长度=纺锤包络×密度+选中满宽满亮", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("WAVE_MIN_PX = 6");
-        expect(source).toContain("WAVE_MAX_PX = 14");
-        expect(source).toContain("ACTIVE_BAR_PX = 20");
-        expect(source).toContain("smoothWeight");
-        expect(source).not.toContain("h-[2px]");
-        // 密度另用颜色深浅辅助（opacity 0.45-0.85），高度波浪为主
-        expect(source).toContain("0.45 + ratio * 0.4");
-    });
-
-    it("R4 件3④：整体与单格加宽——容器 w-9、格条 w-2（8px 量级）", async () => {
-        const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("w-9");
-        expect(source).toContain("w-2 ");
+        expect(source).toContain("spindleRatio");
+        expect(source).toContain("justify-end");
+        expect(source).toContain("BAR_HEIGHT_PX = 3");
+        expect(source).toContain("ACTIVE_RATIO = 1");
+        expect(source).toContain("width: `${Math.round(segmentBarRatio(index) * 100)}%`");
+        expect(source).not.toContain("WAVE_MIN_PX");
+        expect(source).not.toContain("ACTIVE_BAR_PX = 20");
     });
 
     it("R4 件3①回归修复：justify-center 布局下按格元素命中取下标，禁坐标均分换算", async () => {

@@ -2322,6 +2322,9 @@ const zhCN = {
             workedSeconds: "已工作 {seconds} 秒",
             workRound: "本轮",
             injectionSingle: "系统上下文注入",
+            injectionPrefixSystem: "系统", // [i18n-add] 009C1R5 件7 注入条目前缀
+            injectionPrefixReminder: "提醒", // [i18n-add] 009C1R5 件7
+            injectionPrefixError: "错误", // [i18n-add] 009C1R5 件7
             minutesSeconds: "{minutes} 分 {seconds} 秒",
             injections: "系统上下文注入 ×{count}",
             groupErrorSuffix: "·{count} 异常", // [i18n-add] 009C1R4 件2 注入聚合异常计数
@@ -2398,7 +2401,10 @@ const zhCN = {
             addSuggestion: "追加建议",
             otherAnswer: "其他答案",
             pendingTitle: "等待你的处理",
-            pendingBlockedTitle: "待处理 · 当前不可回答", // [i18n-add] 009C1R4 件10 不可回答态头部标题
+            pendingBlockedTitle: "待处理 · 当前不可回答",
+            dismissPending: "收起", // [i18n-add] 009C1R5 件3 不可回答待处理卡收起
+            pendingDismissedBar: "有待处理输入（当前不可回答），已收起", // [i18n-add] 009C1R5 件3
+            pendingRestore: "展开", // [i18n-add] 009C1R5 件3 // [i18n-add] 009C1R4 件10 不可回答态头部标题
             pendingRegion: "待处理输入",
             resync: "重新同步",
             suggestionDescription: "在下方输入框写下建议，Agent 会继续留在当前模式调整计划。",

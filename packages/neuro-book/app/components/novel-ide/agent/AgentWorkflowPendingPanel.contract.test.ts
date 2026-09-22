@@ -14,11 +14,12 @@ describe("AgentWorkflowPendingPanel 契约（R4 件10：计数同源+三路关�
         expect(source.match(/waitingCount/g)?.length).toBeGreaterThanOrEqual(3);
     });
 
-    it("三路关闭全通：徽标 toggle（badgeRef 进 onClickOutside ignore）+点外部收起+Esc", async () => {
+    it("关闭路径（R5 裁剪）：徽标 toggle+Esc 两路；点外收起已移除（无 onClickOutside）", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("{ignore: [badgeRef]}");
         expect(source).toContain("@click=\"pendingPanelOpen = !pendingPanelOpen\"");
         expect(source).toContain("@keydown.esc=\"pendingPanelOpen = false\"");
+        expect(source).not.toContain("onClickOutside");
+        expect(source).not.toContain("badgeRef");
     });
 
     it("面板渲染条件=waitingCount 或 feed.error（无等待且无错时整节不渲染）", async () => {

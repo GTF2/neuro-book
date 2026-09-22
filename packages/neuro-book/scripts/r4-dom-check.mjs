@@ -71,12 +71,24 @@ if (chatReady) {
     });
     record("件3⑤ 消息区滚动条隐藏", scrollHidden === "none", `scrollbarWidth=${scrollHidden}`);
 
-    // 件3④：刻度条加宽
-    const barWidth = await page.evaluate(() => {
-        const bar = document.querySelector(".rail-scroll")?.parentElement;
-        return bar ? Math.round(parseFloat(getComputedStyle(bar).width)) : null;
+    // R5 件1：刻度条加宽+鱼骨形态（横向短条右对齐、宽度百分比、当前条满宽）
+    const barInfo = await page.evaluate(() => {
+        const rail = document.querySelector(".rail-scroll");
+        const bar = rail?.parentElement;
+        const bars = rail ? [...rail.querySelectorAll("button > span")] : [];
+        const widths = bars.map((el) => Math.round(el.getBoundingClientRect().width));
+        return {
+            barWidth: bar ? Math.round(parseFloat(getComputedStyle(bar).width)) : null,
+            count: bars.length,
+            maxW: widths.length ? Math.max(...widths) : 0,
+            minW: widths.length ? Math.min(...widths) : 0,
+        };
     });
-    record("件3④ 刻度条加宽 w-9", barWidth === 36, `实际宽 ${barWidth}px`);
+    record("R5 件1 刻度条鱼骨形态", barInfo.barWidth === 36 && barInfo.count > 0 && barInfo.minW < barInfo.maxW, JSON.stringify(barInfo));
+
+    // R5 件2：块头不再出现「已工作 1 秒」
+    const oneSec = await page.evaluate(() => [...document.querySelectorAll("button")].some((el) => /已工作 1 秒|工作中 1 秒/.test(el.textContent ?? "")));
+    record("R5 件2 无假 1 秒块头", !oneSec, oneSec ? "仍存在 1 秒块头" : "无「已工作 1 秒」形态");
 
     // 件3①：点格直滚端到端（先滚到底，点前段格，验证 scrollTop 位移）
     const seek = await page.evaluate(() => {

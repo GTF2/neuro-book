@@ -106,6 +106,11 @@ const imageFileInputRef = ref<HTMLInputElement | null>(null);
 const composerExpanded = ref(false);
 const composerReadonly = computed(() => props.availability.readonly);
 const hasPendingUserInput = computed(() => props.pendingSessions.length > 0);
+// R5 件3：不可回答的待处理卡可收起（数据不动）；会话切换或待处理清空时自动复位。
+const pendingDismissed = ref(false);
+watch(() => [props.sessionId, props.pendingSessions.length], () => {
+    pendingDismissed.value = false;
+});
 
 type ComposerAvailabilityView = {
     icon: string;
@@ -533,7 +538,7 @@ defineExpose({focus, insertAttachment});
 
         <!-- 等待用户输入时由唯一的待处理面板替换普通 Composer。 -->
         <AgentUserInputPrompt
-            v-if="hasPendingUserInput"
+            v-if="hasPendingUserInput && !pendingDismissed"
             :sessions="props.pendingSessions"
             :draft="props.pendingResolutionDraft"
             :submitting="props.submittingUserInput"
@@ -548,11 +553,19 @@ defineExpose({focus, insertAttachment});
             @submit="emit('submit-user-input')"
             @cancel="emit('cancel-user-input')"
             @resync="emit('resync-user-input')"
+            @dismiss="pendingDismissed = true"
         />
+
+        <!-- R5 件3：收起后的紧凑条（可展开恢复，数据不动）；输入栏同时恢复可用 -->
+        <div v-if="hasPendingUserInput && pendingDismissed" class="flex items-center gap-2 px-2 py-1.5 text-[11px] text-[var(--text-muted)]">
+            <span class="i-lucide-message-square-off h-3.5 w-3.5 shrink-0 text-[var(--status-warning)]"></span>
+            <span class="min-w-0 flex-1 truncate">{{ t("agent.userInput.pendingDismissedBar") }}</span>
+            <button type="button" class="shrink-0 rounded border border-[var(--border-color)] px-2 py-0.5 hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" @click="pendingDismissed = false">{{ t("agent.userInput.pendingRestore") }}</button>
+        </div>
 
         <!-- 消息输入栏 -->
         <div
-            v-show="!hasPendingUserInput"
+            v-show="!hasPendingUserInput || pendingDismissed"
             class="flex flex-col rounded-xl border shadow-sm transition-all"
             :class="composerReadonly ? '' : 'focus-within:border-[var(--accent-main)] focus-within:ring-1 focus-within:ring-[var(--accent-main)]'"
             :style="{...composerShellStyle, '--composer-radius': '0.75rem'}"

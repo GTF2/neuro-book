@@ -36,7 +36,9 @@ onBeforeUnmount(() => {
     }
 });
 
-/** 块头时长：秒级轮「X 秒」，分钟级「X 分 X 秒」。 */
+/** 块头时长三态（R5 件2）：真无数据→「本轮」；有数据→真实跨度（<2 秒的轮归「本轮」，不显示假 1 秒）；
+ *  异常大→陈旧钳制（R4 验证轮）。 */
+const MIN_DISPLAYABLE_SECONDS = 2;
 const durationLabel = computed(() => {
     if (props.round.isRunning) {
         // 真机实证（《新小说1》拆书会话）：interrupted 会话可残留 streaming 状态，动态计时会算出
@@ -44,7 +46,7 @@ const durationLabel = computed(() => {
         const STALE_RUNNING_CAP_MS = 3_600_000;
         const liveMs = props.round.startedAtMs !== null ? nowTick.value - props.round.startedAtMs : props.round.durationMs;
         if ((liveMs ?? 0) > STALE_RUNNING_CAP_MS) {
-            return props.round.durationMs === null ? t("agent.workBlock.workRound") : formatWorked(Math.max(1, Math.round(props.round.durationMs / 1000)));
+            return props.round.durationMs === null ? t("agent.workBlock.workRound") : formatWorked(Math.round(props.round.durationMs / 1000));
         }
         const seconds = Math.max(1, Math.round((liveMs ?? 0) / 1000));
         return t("agent.workBlock.working", {seconds});
@@ -52,10 +54,13 @@ const durationLabel = computed(() => {
     if (props.round.durationMs === null) {
         return t("agent.workBlock.workRound");
     }
-    return formatWorked(Math.max(1, Math.round(props.round.durationMs / 1000)));
+    return formatWorked(Math.round(props.round.durationMs / 1000));
 });
 
 function formatWorked(totalSeconds: number): string {
+    if (totalSeconds < MIN_DISPLAYABLE_SECONDS) {
+        return t("agent.workBlock.workRound");
+    }
     if (totalSeconds < 60) {
         return t("agent.workBlock.workedSeconds", {seconds: totalSeconds});
     }
