@@ -157,9 +157,10 @@ const hasRelatedIssues = computed(() => relatedIssues.value.length > 0);
 
 /**
  * 保存当前条目的表单字段，保留表单未覆盖的 frontmatter 字段与正文。
- * notify=true 给成功提示（009C1R 微调10：手动保存反馈；blur/表单联动自动保存静默）。
+ * R5c（用户反馈）：blur 自动保存同样右下角气泡反馈——静默路径让用户以为没保存；
+ * 与 Lorebook 面板行为对齐（那边所有保存路径都提示）。
  */
-async function saveDraft(options?: {notify?: boolean}): Promise<void> {
+async function saveDraft(): Promise<void> {
     if (!draft.value || !isContentIndexFile.value || diagnostics.value || props.node?.frontmatterError || savingFile.value) {
         return;
     }
@@ -173,9 +174,7 @@ async function saveDraft(options?: {notify?: boolean}): Promise<void> {
     selectedFileContent.value = nextContent;
     await store.saveCurrentFile();
     lastLoadedContent.value = selectedFileContent.value;
-    if (options?.notify) {
-        flashSaved();
-    }
+    flashSaved();
 }
 
 /**
@@ -387,7 +386,7 @@ function readStringArray(value: unknown): string[] {
                 <span v-if="(projectYamlDirty || hasUnsavedBody) && !savingFile && !projectTitleInvalid" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                 <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}
             </button>
-            <button v-if="draft" class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="saveDisabled" @click="void saveDraft({notify: true})">
+            <button v-if="draft" class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="saveDisabled" @click="void saveDraft()">
                 <span v-if="(isDirty || hasUnsavedBody) && !savingFile" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                 <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}
             </button>

@@ -16,16 +16,26 @@ describe("AgentSessionScaleBar 契约（R4 件3：波浪格高+fixed 预览+命�
         expect(source).not.toContain("open-outline");
     });
 
-    it("R5b 澄清版：正常态等宽+选中满宽+hover 距离衰减波浪（BASE/ACTIVE/HOVER_PEAK/RADIUS）", async () => {
+    it("R5c 单条跟随版：唯一满宽条=hover??active（focusIndex），灰色 hover 条已删，容器收窄 w-5", async () => {
         const source = await readFile(componentPath, "utf-8");
         expect(source).toContain("BASE_RATIO = 0.55");
         expect(source).toContain("ACTIVE_RATIO = 1");
-        expect(source).toContain("HOVER_PEAK_RATIO = 0.95");
         expect(source).toContain("HOVER_WAVE_RADIUS = 4");
+        expect(source).toContain("hoverIndex.value !== null");
         expect(source).toContain("justify-end");
+        expect(source).toContain("w-5");
         expect(source).toContain("width: `${Math.round(segmentBarRatio(index) * 100)}%`");
+        expect(source).not.toContain("HOVER_PEAK_RATIO");
+        expect(source).not.toContain("bg-[var(--text-secondary)]");
+        expect(source).not.toContain("w-9");
         expect(source).not.toContain("spindleRatio");
         expect(source).not.toContain("WAVE_MIN_PX");
+    });
+
+    it("R5c：pointer capture 拖动期间预览卡与波浪由 track 侧维护（格子 enter 失效场景）", async () => {
+        const source = await readFile(componentPath, "utf-8");
+        expect(source).toContain("updateHoverFromPointer(event, gridIndex)");
+        expect(source).toContain('@pointerleave="hoverIndex = null"');
     });
 
     it("R4 件3①回归修复：justify-center 布局下按格元素命中取下标，禁坐标均分换算", async () => {

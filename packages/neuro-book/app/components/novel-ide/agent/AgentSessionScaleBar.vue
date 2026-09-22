@@ -44,42 +44,47 @@ const activeGridIndex = computed(() => {
     return matched;
 });
 
-/** R5b（用户澄清）：正常态所有条等宽；当前视口/选中条=最长最亮；
- *  鼠标划过=波浪——hover 格最长、按距离衰减（近处稍长、远处不变），波浪随鼠标移动。 */
+/** R5c（用户再澄清）：正常态所有条等宽；同一时刻只有一个满宽长条——hover 时
+ *  跟着鼠标走（邻格按距离波浪衰减），移出后回到选中格；不并排渲染
+ *  "灰色 hover 条+蓝色选中条"两条。 */
 const BASE_RATIO = 0.55;
 const ACTIVE_RATIO = 1;
-const HOVER_PEAK_RATIO = 0.95;
 const HOVER_WAVE_RADIUS = 4;
 const BAR_HEIGHT_PX = 3;
+/** 满宽条位置：hover 优先（跟鼠标跑），否则选中格；两者皆无则全基线。 */
+const focusIndex = computed<number | null>(() => {
+    if (hoverIndex.value !== null) {
+        return hoverIndex.value;
+    }
+    return activeGridIndex.value >= 0 ? activeGridIndex.value : null;
+});
 const segmentBarRatio = (index: number): number => {
-    if (index === activeGridIndex.value) {
+    const focus = focusIndex.value;
+    if (focus === null) {
+        return BASE_RATIO;
+    }
+    if (index === focus) {
         return ACTIVE_RATIO;
     }
+    // R5c 无头断言逮住：静态（无 hover）时不得渲染选中格的衰减尾迹——正常态全等宽，
+    // 波浪只在鼠标划过时出现（R5b 用户原话）。
     if (hoverIndex.value === null) {
         return BASE_RATIO;
     }
-    const distance = Math.abs(index - hoverIndex.value);
-    if (distance === 0) {
-        return HOVER_PEAK_RATIO;
-    }
+    const distance = Math.abs(index - focus);
     const falloff = Math.max(0, 1 - distance / HOVER_WAVE_RADIUS);
-    return BASE_RATIO + (HOVER_PEAK_RATIO - BASE_RATIO) * falloff;
+    return BASE_RATIO + (ACTIVE_RATIO - BASE_RATIO) * falloff;
 };
-/** 亮度同步波浪：active 满亮、hover 波浪内按衰减提亮、静态条基线。 */
+/** 亮度同步波浪：focus 满亮、波浪内按衰减提亮、静态条基线。 */
 const segmentBarOpacity = (index: number): number => {
-    if (index === activeGridIndex.value) {
+    if (index === focusIndex.value) {
         return 1;
     }
     return 0.5 + 0.45 * segmentBarRatio(index);
 };
+/** 颜色只有两档：focus=accent、其余=border-strong（灰色满宽条已删）。 */
 const segmentBarClass = (index: number): string => {
-    if (index === activeGridIndex.value) {
-        return "bg-[var(--accent-main)]";
-    }
-    if (index === hoverIndex.value) {
-        return "bg-[var(--text-secondary)]";
-    }
-    return "bg-[var(--border-strong)]";
+    return index === focusIndex.value ? "bg-[var(--accent-main)]" : "bg-[var(--border-strong)]";
 };
 
 /** R4 件3①回归修复：格少时 justify-center 集中中段，坐标换算不再可靠——
@@ -128,16 +133,20 @@ function handleTrackPointerDown(event: PointerEvent): void {
     if (gridIndex === null) {
         return;
     }
+    // R5c：capture 后格子的 pointerenter 不再触发（事件重定向到 track），
+    // 拖动全程的 hover 波浪与预览卡改由 track 侧维护。
+    updateHoverFromPointer(event, gridIndex);
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
     seekIndex(gridIndex);
 }
 
 function handleTrackPointerMove(event: PointerEvent): void {
-    if (!(event.buttons & 1)) {
+    const gridIndex = gridIndexFromPointer(event);
+    if (gridIndex === null) {
         return;
     }
-    const gridIndex = gridIndexFromPointer(event);
-    if (gridIndex !== null) {
+    updateHoverFromPointer(event, gridIndex);
+    if (event.buttons & 1) {
         seekThrottled(gridIndex);
     }
 }
@@ -149,8 +158,7 @@ function handleSegmentClick(gridIndex: number): void {
 /** hover 预览卡 fixed 贴鼠标：偏移 12,12，近屏幕右/下缘自动翻面防出界（R4 件3②）。 */
 const PREVIEW_W_PX = 224;
 const PREVIEW_H_ESTIMATE_PX = 176;
-function handleSegmentHover(event: PointerEvent, index: number): void {
-    hoverIndex.value = index;
+function positionPreview(event: PointerEvent): void {
     let x = event.clientX + 12;
     let y = event.clientY + 12;
     if (x + PREVIEW_W_PX > window.innerWidth - 8) {
@@ -162,17 +170,25 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
     hoverX.value = Math.max(8, x);
     hoverY.value = Math.max(8, y);
 }
+
+/** hover 状态唯一写入口：格子事件（未按下）与 track 事件（拖动 capture）都走这里。 */
+function updateHoverFromPointer(event: PointerEvent, gridIndex: number): void {
+    hoverIndex.value = gridIndex;
+    positionPreview(event);
+}
 </script>
 
 <template>
-    <!-- 会话刻度条（R5b 澄清版）：右缘 36px；竖排横向短条右对齐——正常态等宽、当前/选中条最长最亮、
-         鼠标划过产生波浪（hover 格最长按距离衰减）；点击格=直接 seek；hover=fixed 预览卡贴鼠标 -->
-    <div class="relative flex h-full w-9 shrink-0 flex-col items-stretch py-1">
+    <!-- 会话刻度条（R5c）：右缘 20px 窄轨；竖排横向短条右对齐——正常态等宽、唯一的
+         满宽长条跟随鼠标（移出回选中格）、邻格按距离波浪衰减；点击格=直接 seek；
+         hover=fixed 预览卡贴鼠标（拖动 capture 时由 track 侧维护） -->
+    <div class="relative flex h-full w-5 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
             class="rail-scroll my-auto flex h-2/3 touch-none flex-col justify-center overflow-y-auto"
             @pointerdown="handleTrackPointerDown"
             @pointermove="handleTrackPointerMove"
+            @pointerleave="hoverIndex = null"
         >
             <button
                 v-for="(segment, index) in props.segments"
@@ -180,8 +196,8 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
                 type="button"
                 class="flex h-3 shrink-0 items-center justify-end px-0.5"
                 :aria-label="segment.summary"
-                @pointerenter="(event) => handleSegmentHover(event, index)"
-                @pointermove="(event) => handleSegmentHover(event, index)"
+                @pointerenter="(event) => updateHoverFromPointer(event, index)"
+                @pointermove="(event) => updateHoverFromPointer(event, index)"
                 @pointerleave="hoverIndex = null"
                 @click="handleSegmentClick(index)"
             >

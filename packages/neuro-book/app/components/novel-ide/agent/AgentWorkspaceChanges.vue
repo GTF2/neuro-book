@@ -19,7 +19,7 @@ const emit = defineEmits<{
 
 const projectRootRef = toRef(props, "projectRoot");
 const activeRef = toRef(props, "active");
-const {revision, groups, loading, error, load} = useWorkspaceHistoryInbox(projectRootRef, activeRef);
+const {revision, groups, error, load} = useWorkspaceHistoryInbox(projectRootRef, activeRef);
 const diffRequests = useWorkspaceHistoryDiffRequests();
 const {t} = useI18n();
 const notification = useNotification();
@@ -29,7 +29,9 @@ const busyPath = ref<string | null>(null);
 const acceptingAll = ref(false);
 
 const visibleGroups = computed(() => groups.value.slice(0, 6));
-const visible = computed(() => Boolean(props.projectRoot && (loading.value || groups.value.length > 0 || error.value)));
+// R5c（用户反馈）：检查中的 loading 不参与显示条件——否则每次保存文件触发的
+// inbox 刷新都会在输入框上方闪现一条"检查中"又消失；有变更或出错才出现。
+const visible = computed(() => Boolean(props.projectRoot && (groups.value.length > 0 || error.value)));
 
 /** 展开/收起 Composer 上方的变更摘要。 */
 function toggleExpanded(): void {
@@ -225,7 +227,7 @@ watch(revision, () => {
                         <span class="i-lucide-file-diff h-3 w-3"></span>
                     </span>
                     <span class="min-w-0 flex-1 text-[11px] font-semibold text-[var(--text-secondary)]">
-                        {{ loading && groups.length === 0 ? t("agent.workspaceChanges.checking") : t("agent.workspaceChanges.title", {count: groups.length}) }}
+                        {{ t("agent.workspaceChanges.title", {count: groups.length}) }}
                     </span>
                     <span v-if="groups[0]" class="max-w-[38%] truncate font-mono text-[10px] text-[var(--text-muted)]" :title="groups[0].path">{{ groups[0].path }}</span>
                     <span class="i-lucide-chevron-down h-3 w-3 shrink-0 text-[var(--text-muted)] transition-transform duration-200" :class="expanded ? 'rotate-180' : ''"></span>

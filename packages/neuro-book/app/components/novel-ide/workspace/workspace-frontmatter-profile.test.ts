@@ -185,4 +185,13 @@ describe("R4 件8：正文 dirty 传导到属性面板保存按钮", () => {
         expect(source).not.toContain('v-if="isDirty || hasUnsavedBody || projectYamlDirty"');
         expect(source).toContain("!store.hasUnsavedFileChanges");
     });
+
+    it("R5c：保存成功提示不再区分路径——blur 自动保存同样右下角气泡，notify 参数已删", async () => {
+        const source = await readFile(panelPath, "utf-8");
+        // 用户反馈根因：blur 静默保存让用户以为没保存；与 Lorebook 面板行为对齐
+        expect(source).toContain('@blur="void saveDraft()"');
+        expect(source).toContain('position: "bottom-right"');
+        expect(source).not.toContain("options?.notify");
+        expect(source).not.toContain("{notify: true}");
+    });
 });
