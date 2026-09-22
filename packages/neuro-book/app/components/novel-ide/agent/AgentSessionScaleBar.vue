@@ -8,6 +8,8 @@ export type AgentSessionScaleSegment = {
     anchorIndex: number;
     /** 体量权重（轮内节点数），驱动格高波浪与颜色深浅 */
     weight?: number;
+    /** R5h：格内任一轮含失败 → 静态红刻度；hover/选中仍走 focus 蓝满宽 */
+    failed?: boolean;
 };
 
 const props = defineProps<{
@@ -82,9 +84,14 @@ const segmentBarOpacity = (index: number): number => {
     }
     return 0.5 + 0.45 * segmentBarRatio(index);
 };
-/** 颜色只有两档：focus=accent、其余=border-strong（灰色满宽条已删）。 */
+/** 颜色三档：focus=accent 蓝（hover/选中都走它）；失败格=红；其余=border-strong 灰。
+ *  R5h：失败格 hover 时"变蓝"是用户原话——状态让位给交互焦点。 */
 const segmentBarClass = (index: number): string => {
-    return index === focusIndex.value ? "bg-[var(--accent-main)]" : "bg-[var(--border-strong)]";
+    if (index === focusIndex.value) {
+        return "bg-[var(--accent-main)]";
+    }
+    const failed = props.segments[index]?.failed;
+    return failed ? "bg-[var(--status-danger)]" : "bg-[var(--border-strong)]";
 };
 
 /** R4 件3①回归修复：格少时 justify-center 集中中段，坐标换算不再可靠——

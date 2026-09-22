@@ -227,18 +227,23 @@ const scaleSegments = computed<AgentSessionScaleSegment[]>(() => {
         const first = dialogItems[start]!;
         let summary = "";
         let weight = 0;
+        let failed = false;
         for (let probe = start; probe < Math.min(start + perSegment, dialogItems.length); probe += 1) {
             const entry = dialogItems[probe]!;
             weight += flowItemWeight(entry.item);
             if (!summary) {
                 summary = flowItemSummary(entry.item);
             }
+            // R5h：格内任一轮含失败 → 红刻度提示（hover/选中仍走 focus 蓝满宽）
+            if (entry.item.kind === "round" && entry.item.hasFailure) {
+                failed = true;
+            }
         }
         const anchorIndex = first.index;
         if (!summary) {
             summary = t("agent.chat.scaleSegmentFallback", {from: start + 1, to: Math.min(start + perSegment, dialogItems.length)});
         }
-        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex, weight});
+        segments.push({id: `scale-${anchorIndex}`, summary, anchorIndex, weight, ...(failed ? {failed: true} : {})});
     }
     return segments;
 });
