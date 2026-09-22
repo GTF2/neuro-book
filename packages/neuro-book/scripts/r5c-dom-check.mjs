@@ -106,7 +106,7 @@ if (chatReady) {
         // 不派 pointerdown：合成事件无真指针，setPointerCapture 会抛 pageerror；move 已覆盖 track 侧 hover 维护
         rail.dispatchEvent(new PointerEvent("pointermove", {bubbles: true, buttons: 1, clientX: rect.left + 5, clientY: rect.top + 60}));
         return new Promise((resolve) => setTimeout(() => {
-            const card = document.querySelector(".pointer-events-none.fixed.z-30");
+            const card = document.querySelector(".pointer-events-none.fixed.z-50");
             const text = card?.textContent?.trim() ?? "";
             rail.dispatchEvent(new PointerEvent("pointerleave", {bubbles: false}));
             resolve({ok: Boolean(card && text), previewText: text.slice(0, 30)});

@@ -176,13 +176,19 @@ function updateHoverFromPointer(event: PointerEvent, gridIndex: number): void {
     hoverIndex.value = gridIndex;
     positionPreview(event);
 }
+
+// R5c-d：预览卡 Teleport 目标=最近的 .novel-ide-theme 宿主——挂 body 会脱离主题变量作用域
+// （CSS 变量回落 :root 的 sepia 黄色系），挂宿主既保变量又在 contain:paint 容器外
+// （ReferencePlainTextEditor 的 popoverTeleportTarget 同款先例）。
+const rootRef = ref<HTMLElement | null>(null);
+const previewTeleportTarget = computed<Element | string>(() => rootRef.value?.closest(".novel-ide-theme") ?? "body");
 </script>
 
 <template>
     <!-- 会话刻度条（R5c）：右缘 20px 窄轨；竖排横向短条右对齐——正常态等宽、唯一的
          满宽长条跟随鼠标（移出回选中格）、邻格按距离波浪衰减；点击格=直接 seek；
          hover=fixed 预览卡贴鼠标（拖动 capture 时由 track 侧维护） -->
-    <div class="relative flex h-full w-5 shrink-0 flex-col items-stretch py-1">
+    <div ref="rootRef" class="relative flex h-full w-5 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
             class="rail-scroll my-auto flex h-2/3 touch-none flex-col justify-center overflow-y-auto"
@@ -217,13 +223,17 @@ function updateHoverFromPointer(event: PointerEvent, gridIndex: number): void {
         >
             <span class="i-lucide-list-tree h-3.5 w-3.5"></span>
         </button>
-        <div
-            v-if="hoverIndex !== null && props.segments[hoverIndex]"
-            class="pointer-events-none fixed z-30 max-h-40 w-56 overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 text-[11px] leading-5 text-[var(--text-secondary)] shadow-xl"
-            :style="{left: `${hoverX}px`, top: `${hoverY}px`}"
-        >
-            {{ props.segments[hoverIndex]?.summary }}
-        </div>
+        <!-- R5c 修复：面板祖先 contain:paint 创建包含块使 fixed 退化为相对面板定位（实测卡被顶出视口 1200px），
+             Teleport 到 .novel-ide-theme 宿主（contain 外+主题变量作用域内）；z-50 高于面板层、低于通知(9800) -->
+        <Teleport :to="previewTeleportTarget">
+            <div
+                v-if="hoverIndex !== null && props.segments[hoverIndex]"
+                class="pointer-events-none fixed z-50 max-h-40 w-56 overflow-y-auto rounded-md border border-[var(--border-color)] bg-[var(--bg-panel)] p-2 text-[11px] leading-5 text-[var(--text-secondary)] shadow-xl"
+                :style="{left: `${hoverX}px`, top: `${hoverY}px`}"
+            >
+                {{ props.segments[hoverIndex]?.summary }}
+            </div>
+        </Teleport>
     </div>
 
 </template>

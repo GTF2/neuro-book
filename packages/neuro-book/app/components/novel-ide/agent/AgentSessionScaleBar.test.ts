@@ -52,6 +52,11 @@ describe("AgentSessionScaleBar 契约（R4 件3：波浪格高+fixed 预览+命�
         expect(source).toContain("event.clientX + 12");
         expect(source).toContain("event.clientY + 12");
         expect(source).toContain("PREVIEW_W_PX");
+        // R5c 修复：面板祖先 contain:paint 使 fixed 退化为相对面板（卡被顶出视口 1200px），
+        // Teleport 到 .novel-ide-theme 宿主（contain 外+主题变量作用域内，ReferencePlainTextEditor 先例）
+        expect(source).toContain('<Teleport :to="previewTeleportTarget">');
+        expect(source).toContain('closest(".novel-ide-theme")');
+        expect(source).toContain("z-50");
         expect(source).not.toContain("hoverTopPx");
         expect(source).not.toContain("right-full");
     });
