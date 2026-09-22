@@ -1782,7 +1782,51 @@ const zhCN = {
             editChapter: "编辑章节信息",
             deleteChapter: "删除章节",
         },
+        workspaceStage: {
+            backToNormal: "返回常态",
+            navLabel: "工作区页",
+            placeholderBody: "此页内容由对应工作区组件承载（当前为骨架占位）",
+            page: {
+                plotOutline: "剧情大纲",
+                characters: "角色档案",
+                worldbook: "世界书",
+                worldEngine: "世界引擎",
+                settings: "设置",
+            }, // [i18n-add] ide.workspaceStage.page
+        }, // [i18n-add] ide.workspaceStage
     },
+    settingsWorkspace: {
+        title: "设置",
+        searchPlaceholder: "搜索设置",
+        searchEmpty: "没有匹配「{query}」的设置",
+        sections: {
+            appearance: "外观",
+            models: "模型",
+            agent: "智能体",
+            advanced: "高级",
+        },
+        fields: {
+            // vue-i18n 嵌套限制：fields.theme / fields.defaultModel 的叶子标签值无法与子键共存，未落盘；
+            // SettingsWorkspace.vue 直接 t(labelKey) 的两处会显示键路径，修复需组件改键或清单拆分
+            theme: {
+                system: "跟随系统",
+                dark: "深色",
+                light: "浅色",
+            },
+            reduceMotion: "减弱动效",
+            editorFontSize: "正文字号",
+            defaultModel: {
+                placeholderA: "占位模型甲",
+                placeholderB: "占位模型乙",
+            },
+            streamReplies: "流式输出回复",
+            autoApproveReads: "自动批准查阅操作",
+            workflowTimeout: "流程超时（秒）",
+            advancedGroup: "高级选项",
+            verboseLogging: "详细日志",
+            telemetry: "匿名使用统计",
+        },
+    }, // [i18n-add] settingsWorkspace
     agent: {
         workspaceChanges: {
             title: "文件变更 {count}",
@@ -2439,6 +2483,88 @@ const zhCN = {
             abortRetry: "同步完成，当前请求仍在等待，可以再次终止。",
         },
     },
+    cockpit: {
+        title: "驾驶舱",
+        progressLabel: "进度",
+        progressNone: "未开卷",
+        chapterValue: "第 {n} 章",
+        activityLabel: "正在做",
+        activityWriting: "第 {n} 章 · 写作中",
+        phase: {
+            writing: "写作中",
+            workflow: "流程进行中",
+            idle: "待命",
+        },
+        pendingRow: "{count} 件待拍板",
+        foreshadowRow: "伏笔未还 {count}",
+        workflowRow: "{count} 个流程等应答",
+        workflowError: "流程卡住了",
+        workflowRetry: "重试",
+        workflowAbandon: "放弃",
+    }, // [i18n-add] cockpit
+    decisionStack: {
+        demo: {
+            first: {
+                intent: "AI 想把巡山令牌写入设定档案",
+                impact: "影响：第 5 章会引用",
+            },
+            second: {
+                intent: "第 2 章埋的锈枪还没兑现，AI 想把它标记为已兑现",
+                impact: "影响：兑现登记后第 9 章的收束线将闭合",
+            },
+            third: {
+                intent: "成书流水线卡在「第 3 章·润色」，等你应答",
+                impact: "影响：应答后流水线继续跑完第 3 章",
+            },
+        },
+        accept: "接受",
+        reject: "拒绝",
+        expandRaw: "展开原始数据",
+        collapseRaw: "收起原始数据",
+        retry: "让 AI 重来",
+        rejectOnly: "仅拒绝",
+        cancel: "取消",
+        rejectAsk: "拒绝后让 AI 怎么做？",
+        empty: "都处理完了",
+        receiptTag: "已入档核对",
+        swipeHint: "左右划卡也可决策",
+    }, // [i18n-add] decisionStack
+    prefab: {
+        tierDropDown: {
+            label: "思考档位",
+            placeholder: "选择思考档位",
+            empty: "暂无可选档位",
+            levelOff: "关闭",
+            levelMinimal: "极低",
+            levelLow: "低",
+            levelMedium: "中",
+            levelHigh: "高",
+            levelXhigh: "极高",
+            levelMax: "最大",
+        },
+        inbox: {
+            title: "收件箱",
+            empty: "没有等你拍板的事",
+            collapse: "收起收件箱",
+            demoTitle1: "AI 想把「巡山令牌」写入设定档案",
+            demoDetail1: "影响：第 5 章会引用",
+            demoTitle2: "新角色「渡口船家」的名字待确认",
+            demoDetail2: "影响：第 6 章开场登场",
+            demoTitle3: "第 2 章埋的锈枪还没兑现",
+            demoDetail3: "影响：伏笔账本待登记兑现节拍",
+        },
+        historyPanel: {
+            title: "历史对话",
+            newChat: "新会话",
+            empty: "还没有历史会话",
+            sampleTitle1: "主角身世伏笔梳理",
+            samplePreview1: "把第 2 章埋的锈枪接到第 5 章",
+            sampleTitle2: "第 4 章开头改写",
+            samplePreview2: "换成雨夜码头的开场",
+            sampleTitle3: "配角口癖讨论",
+            samplePreview3: "让老周说话带歇后语",
+        },
+    }, // [i18n-add] prefab
     markdownStudio: {
         editor: {
             placeholder: "请输入 Markdown 内容...",

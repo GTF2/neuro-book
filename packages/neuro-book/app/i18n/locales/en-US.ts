@@ -1784,7 +1784,52 @@ const enUS = {
             editChapter: "Edit chapter",
             deleteChapter: "Delete chapter",
         },
+        workspaceStage: {
+            backToNormal: "Back to normal",
+            navLabel: "Workspace pages",
+            placeholderBody: "Page content is hosted by its workspace component (skeleton placeholder)",
+            page: {
+                plotOutline: "Plot outline",
+                characters: "Character profiles",
+                worldbook: "Worldbook",
+                worldEngine: "World engine",
+                settings: "Settings",
+            }, // [i18n-add] ide.workspaceStage.page
+        }, // [i18n-add] ide.workspaceStage
     },
+    settingsWorkspace: {
+        title: "Settings",
+        searchPlaceholder: "Search settings",
+        searchEmpty: "No settings matching \"{query}\"",
+        sections: {
+            appearance: "Appearance",
+            models: "Models",
+            agent: "Agent",
+            advanced: "Advanced",
+        },
+        fields: {
+            // vue-i18n nesting limit: leaf label values of fields.theme / fields.defaultModel cannot
+            // coexist with their child keys; SettingsWorkspace.vue's direct t(labelKey) at those two
+            // spots will show the key path until the component key or the list is split
+            theme: {
+                system: "Follow system",
+                dark: "Dark",
+                light: "Light",
+            },
+            reduceMotion: "Reduce motion",
+            editorFontSize: "Body font size",
+            defaultModel: {
+                placeholderA: "Placeholder model A",
+                placeholderB: "Placeholder model B",
+            },
+            streamReplies: "Stream replies",
+            autoApproveReads: "Auto-approve read actions",
+            workflowTimeout: "Workflow timeout (seconds)",
+            advancedGroup: "Advanced options",
+            verboseLogging: "Verbose logging",
+            telemetry: "Anonymous usage statistics",
+        },
+    }, // [i18n-add] settingsWorkspace
     agent: {
         workspaceChanges: {
             title: "File changes {count}",
@@ -2438,6 +2483,88 @@ const enUS = {
             abortRetry: "Sync completed. The request is still pending, so you can stop it again.",
         },
     },
+    cockpit: {
+        title: "Cockpit",
+        progressLabel: "Progress",
+        progressNone: "Not started",
+        chapterValue: "Chapter {n}",
+        activityLabel: "Working on",
+        activityWriting: "Chapter {n} · Writing",
+        phase: {
+            writing: "Writing",
+            workflow: "Workflow running",
+            idle: "Idle",
+        },
+        pendingRow: "{count} awaiting approval",
+        foreshadowRow: "{count} open foreshadowings",
+        workflowRow: "{count} workflows awaiting reply",
+        workflowError: "A workflow is stuck",
+        workflowRetry: "Retry",
+        workflowAbandon: "Abandon",
+    }, // [i18n-add] cockpit
+    decisionStack: {
+        demo: {
+            first: {
+                intent: "AI wants to write the patrol token into the setting archive",
+                impact: "Impact: chapter 5 will reference it",
+            },
+            second: {
+                intent: "The rusted gun planted in chapter 2 is unredeemed; AI wants to mark it fulfilled",
+                impact: "Impact: chapter 9's payoff arc will close once registered",
+            },
+            third: {
+                intent: "The book pipeline is waiting at \"chapter 3 · polish\" for your answer",
+                impact: "Impact: the pipeline will finish chapter 3 once answered",
+            },
+        },
+        accept: "Accept",
+        reject: "Reject",
+        expandRaw: "Show raw data",
+        collapseRaw: "Hide raw data",
+        retry: "Let AI retry",
+        rejectOnly: "Reject only",
+        cancel: "Cancel",
+        rejectAsk: "What should AI do after rejecting?",
+        empty: "All caught up",
+        receiptTag: "Verified",
+        swipeHint: "Swipe the card to decide",
+    }, // [i18n-add] decisionStack
+    prefab: {
+        tierDropDown: {
+            label: "Thinking Level",
+            placeholder: "Select thinking level",
+            empty: "No options available",
+            levelOff: "Off",
+            levelMinimal: "Minimal",
+            levelLow: "Low",
+            levelMedium: "Medium",
+            levelHigh: "High",
+            levelXhigh: "Extra High",
+            levelMax: "Maximum",
+        },
+        inbox: {
+            title: "Inbox",
+            empty: "Nothing is waiting for your decision",
+            collapse: "Collapse inbox",
+            demoTitle1: "AI wants to write \"Patrol Token\" into the setting archive",
+            demoDetail1: "Impact: chapter 5 will cite it",
+            demoTitle2: "The new character \"Ferry Keeper\" awaits name confirmation",
+            demoDetail2: "Impact: enters at the opening of chapter 6",
+            demoTitle3: "The rusty gun planted in chapter 2 is still unpaid",
+            demoDetail3: "Impact: the foreshadow ledger needs a payoff beat",
+        },
+        historyPanel: {
+            title: "History",
+            newChat: "New chat",
+            empty: "No conversations yet",
+            sampleTitle1: "Protagonist backstory foreshadowing",
+            samplePreview1: "Link the ch.2 rusted gun to ch.5",
+            sampleTitle2: "Rewrite the ch.4 opening",
+            samplePreview2: "Switch to a rainy-dock opening scene",
+            sampleTitle3: "Supporting cast speech habits",
+            samplePreview3: "Give Lao Zhou proverb-flavored speech",
+        },
+    }, // [i18n-add] prefab
     markdownStudio: {
         editor: {
             placeholder: "Enter Markdown content...",
