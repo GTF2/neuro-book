@@ -1,0 +1,15 @@
+# cwd: worktree root (.worktree/w00017-application-runtime-architecture)
+# command: bun run docs:check
+# date: 2026-09-22T16:05:35Z
+# HEAD: 411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0（t05 实现与文档尚未提交，检查覆盖工作区 diff）
+
+$ bun run docs:check
+{
+  "failures": [],
+  "checkedFiles": 6420
+}
+
+## stderr
+$ bun scripts/ci/check-documentation.ts
+
+# exit code: 0

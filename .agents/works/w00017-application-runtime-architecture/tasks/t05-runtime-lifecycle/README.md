@@ -7,57 +7,75 @@ taskId: t05-runtime-lifecycle
 
 ## 目标与范围
 
-实现第一切片的首个独立单元：[runtime.lifecycle](../../../../../docs/specs/runtime/lifecycle.md)。调用方能够创建作用域、登记资源和在途获取、执行操作、关闭或显式恢复失败收口；scope/owner/代次与结果可查询。不是仅有类型，也不代表环境适配、小内核全部或正式产品已完成。
+实现第一切片的首个独立单元 [runtime.lifecycle](../../../../../docs/specs/runtime/lifecycle.md)：调用方能创建运行实例与作用域、登记资源和受管获取、接纳操作、借用其它作用域的资源，并关闭或显式恢复失败收口；阶段、owner、借用者与结果可查询。同时建立不依赖 Nuxt 生成态与产品初始化的机制测试／类型检查入口。
 
-[整体实施路径](../../implementation-plan.md) 拥有切片顺序；[Work](../../README.md) 拥有授权与 checkout。执行者直接按当前 Task 和合同实现，不加载正式角色。本文是准备好的实施计划，本轮文档交付没有执行它。
+非目标：`runtime.services`、`runtime.plugins`、后端／浏览器环境适配、产品启动与关闭入口接线、Lab／Files／Settings；不修改现有全量 vitest／nuxt 配置，不改 `package.json` 版本、exports、依赖；不把任何 Spec 晋升为 `implemented`。[整体实施路径](../../implementation-plan.md) 拥有切片顺序，[Work](../../README.md) 拥有授权与 checkout。
 
-## 进入条件与开发者参与
+## 当前状态
 
-1. **等待 w00003 完成并合并到 master。**这是开发者的明确进入条件，当前不得提前实现纯内核、在 w00003 继续开发或从其中途检查点分叉。合并后核实所需实现／Spec 与完整 master OID，再按 [编号合同](../../../README.md#编号分配与记录位置) 从 master 创建 w00017 worktree，不要求登记共同祖先。
-2. 执行 `bun run governance:context -- --work w00017-application-runtime-architecture --task t05-runtime-lifecycle`，确认真正 checkout／branch／Spec。主树不得切分支；不 stash/reset/覆盖他人改动。
-3. 本 Task 不需要产品数据库迁移、真实 Provider 或浏览器；只操作自身测试临时资源。提交、push、合并仍分别授权。发现须改变 Spec 行为／数据策略或扩大文件 owner 时报告所需取舍，不自行弱化验收。
+机制、合同测试与独立验证入口已实现，定向验证与临时 smoke 全部通过；已授权在实现分支落两个原子提交（见下文验证与提交）。`docs/specs/runtime/lifecycle.md` 与注册表保持 `planned`：Spec 场景 6（同一装配在真实浏览器宿主复用）没有浏览器证据，只在 Node 宿主用 `location: "browser"` 跑过同装配对照。
 
-## 文件边界
+执行位置：`.worktree/w00017-application-runtime-architecture` / `refactor/w00017-runtime-foundation`，基线 `411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0`（master 含 w00003 合并 `bb688931` 与七项 Spec `bc144b2d`）。
 
-相对应用包 `packages/neuro-book/`：
+## 授权与限制
 
-- 新 `runtime/lifecycle/`：先用最少文件实现公共生命周期合同；一个主模块及相邻 `*.test.ts` 足够时不建空index/types/factory层。必要类型/错误仍由此模块拥有。
-- 新 `vitest.runtime-foundation.config.ts`：显式包root与 `nbook/*` alias，只收 runtime基础合同；`@notnotype/neuro-book-test-support/vitest` setup第一项和globalSetup必须存在，不带Agent/product初始化。后续适配器/基础服务测试接同一配置，不再开第二套。
-- 新 `tsconfig.runtime-foundation.json`：strict、无`.nuxt`依赖，显式覆盖新模块/消费者；ESM与仓库语言规范一致。
-- 包 `package.json`：增加 `test:runtime-foundation`、`typecheck:runtime-foundation`，命令按整体计划。不得顺带改版本/exports/依赖。
-- 规范成熟度只在实现与证据覆盖全文时原位更新 `docs/specs/runtime/lifecycle.md` 和注册表；其余runtime Spec保持planned。
+- 开发者已拍板：本 Task 是实现而非再次架构设计；实施计划已批准；提交授权为「拆两个原子提交」，只在 worktree 分支提交，不 push、不 PR、不合并、不动主工作区。
+- 本 Task 不需要产品数据库迁移、真实 Provider 或浏览器；只操作测试支持包分配的系统 Temp。
+- 子代理只允许外部 `omp` CLI（其次 `codex exec`）；收口阶段未派子代理。
 
-不改app页面、LabShell、Nuxt/Nitro hook、Project/Agent/Config/Storage、现有产品启动与关闭入口，不接真实数据库。不修改现有全量测试配置以屏蔽失败。
+## 公开接口摘要
 
-## 修改步骤
+调用方只从 `packages/neuro-book/runtime/lifecycle/lifecycle.ts` 进入：`createRuntimeInstance(identity, options?)`、`export type *`、`LifecycleStateError`。
 
-1. 核对相邻资源工具和原shutdown的错误/取消风格；仅复用不引入产品反向依赖的机制。公开符号修改前有LSP则先references，无server时记录文本引用清单。
-2. 固定最小公共类型：运行实例/作用域/资源身份、资源状态、取消与结束原因、关闭结果及结构化失败。区分调用方借用与唯一关闭owner；返回只读状态，不暴露可变内部集合。
-3. 先写能因真实边界缺失而失败的合同场景，再实现资源登记、在途获取、接纳与停止。停止中迟到资源仍能被owner收口，但不可发布；closed前必须确认全部受管资源结束。
-4. 实现依赖先后关闭、独立失败聚合、幂等正常close；保留被未结束消费者使用的provider。失败只由显式恢复动作重试失败资源，不重复已成功副作用，不自动循环。
-5. 加入独立Vitest/typecheck入口，确认新测试实际被收集且没有加载产品根。标准测试覆盖确定性故障，另运行一次公共入口消费的临时smoke；不把测试文件当实际smoke。
-6. 通过后移除临时脚本，记录实际公共入口/证据/限制。本Task验证后端可执行机制，生命周期Spec还要求真实浏览器复用：保留 `planned` 至首片集成证据覆盖全文，不凭单个单元或测试宿主晋升；其它runtime Spec同理。
+- 阶段：`creating | available | stopping | closed`。「关闭未完成」是 stopping 阶段里 `CloseResult.status === "incomplete"`，不是第五阶段。
+- `Scope`：`createChild`、`open`、`register`、`acquire`、`borrow`、`accept`、`close(request?)`、`recover(request?)`、`snapshot`；`stopSignal` 进入 stopping 即 abort。
+- `CloseRequest.deadline?: AbortSignal`：截止只让本次尝试结算为 `incomplete`（`reason: "deadline"`），已在跑的释放继续，不撤销、不重入；结算本身记录一条 `stage: "close"` 的失败。
+- `recover` 另起一次关闭尝试，只重试 `release-failed` 资源；在途尝试未结算时返回同一次尝试的 Promise。
+- 阶段不允许的动作抛 `LifecycleStateError`（携带 `instanceId/scopeId/phase/action`）；获取失败、取消、关闭未完成走结果联合，不抛。跨实例、借自有或后代资源抛 `TypeError`。
+- 释放回调签名 `(value) => void | Promise<void>`，没有 signal。跨作用域释放顺序依赖必须先 `borrow()`，把借用句柄放进 `dependsOn`。
+- 父关闭／恢复对每个子作用域每次尝试只级联一次；父在全部子作用域 closed 之前不释放自身资源。停滞的借用者让 owner 报告 `blocked`，不挂起。
+- 观察者抛错被吞掉，不改变机制状态；失败记录只含 `name/message`，不含资源值。
 
-## 验收
+## Module 合同
 
-- 两个运行实例、父子与独立作用域不串状态；借用者不能关闭共享provider；取消只影响指定操作，不假装回滚已发生副作用。
-- 关闭阻止新业务，已接纳消费者仍可用依赖完成清理；创建失败/取消/迟到完成只释放本次资源，旧代次不可发布；消费者先于provider结束。
-- 重复close不重复清理；一个cleanup失败不跳过独立资源；仍使用中的依赖不提前关；失败/超时不能报closed；显式恢复只重试失败收口，保留可定位owner，不能重入仍pending的清理。
-- 公开API无Vue/Nitro/数据库/Project/Agent import，无顶层I/O/global singleton。没有empty-success handler、any逃逸或用超时强行宣称资源已关。
+1. **Owner**：runtime；实现文件 `runtime/lifecycle/{lifecycle,contracts,scope,close-plan}.ts`，合同测试 `lifecycle.test.ts`。
+2. **Interface**：上节公开面；`contracts.ts` 只导出类型与 `LifecycleStateError`，`scope.ts` / `close-plan.ts` 是内部实现，不作为公开合同。
+3. **依赖方向**：机制目录只允许同目录相对导入，测试用导入边界守卫锁定不 import Vue、Nuxt、Nitro、驱动、Project、Agent；无顶层 I/O、单例、计时器。
+4. **数据边界**：只在内存维护作用域、登记、借用、在途工作与失败记录；不引入持久状态，不删除持久数据。资源实际 I/O 由提供者执行。
+5. **入口**：产品尚未接线；测试从 `vitest.runtime-foundation.config.ts`（include `runtime/**/*.test.ts`，setup 第一项与 globalSetup 均为 `@notnotype/neuro-book-test-support/vitest`，`oxc: false` + 显式 esbuild 转换、独立 sourcemap）与 `tsconfig.runtime-foundation.json`（`lib: ["ESNext"]`、`types: ["node"]`、`nbook/*` → `./*`、不依赖 `.nuxt`）进入。
+6. **验证**：下节命令；集成门禁（真实浏览器宿主、后端进程）由后续环境适配 Task 承担。
+7. **迁移撤销点**：全部为新增文件，没有旧入口被替换；撤销即删除 `runtime/lifecycle/`、两份配置与 `package.json` 两行 script。
 
-## 验证命令与证据
+## 验证命令与结果
 
-以下脚本须由本Task建立后执行，当前尚不存在；cwd应用包：
+cwd `packages/neuro-book`，HEAD `411449ec`，无 `.nuxt`：
 
-```text
-bun run test:runtime-foundation
-bun run typecheck:runtime-foundation
-```
+| 命令 | 结果 | 证据 |
+|---|---|---|
+| `bun run test:runtime-foundation` | Vitest 4.1.10，1 file / 28 passed，exit 0 | [test-runtime-foundation.txt](evidences/test-runtime-foundation.txt) |
+| `bun run typecheck:runtime-foundation` | exit 0，无诊断 | [typecheck-runtime-foundation.txt](evidences/typecheck-runtime-foundation.txt) |
+| 临时 smoke（`bun run` 系统 Temp 脚本，已删除） | 20 项检查全部 PASS，exit 0，进程自然退出 | [smoke-lifecycle.txt](evidences/smoke-lifecycle.txt) |
 
-临时smoke用本模块公共入口创建两个scope，登记一个真实定时资源或标准事件订阅及依赖消费者，实际调用/取消/关闭；观察consumer清理时provider仍可用、结束后订阅不再交付、重复close不重复副作用；再故障注入cleanup失败并显式恢复。脚本放测试支持包分配的系统Temp，结束清理，不写仓库业务数据；普通有限命令运行不创建常驻服务。该smoke不验证浏览器或完整环境适配，后续单元另做。
+仓库根：`bun run docs:check` → [docs-check.txt](evidences/docs-check.txt)；`bun run governance:context -- --work w00017-application-runtime-architecture --task t05-runtime-lifecycle` → [governance-context.txt](evidences/governance-context.txt)。
 
-最终运行 `bun run docs:check`（仓库根）；只在改动使先前证据失效时扩大重跑。报告区分 focused/全量、当前/既有失败；不得用旧w00016或w00003结果代替本Task证据。
+smoke 用公开入口跑真实 `setInterval` 与 `EventTarget` 订阅、两个子作用域借用、依赖借用的消费者、忽略 signal 的长操作取消、300ms 截止关闭、注入一次释放失败后两次 `recover`。首次运行两条 FAIL 均为脚本预期写错（父在子 closed 前不释放自身资源；截止结算本身记录一条 close 失败），机制未改动；证据文件含说明与脚本源码。
 
-## 交付与继续
+测试 28 个用例覆盖：导入边界、空 `instanceId`、阶段转换、可选／必需获取、观察者异常隔离、Spec 验收 1–5 与 7、关闭顺序与失败聚合、失败记录不泄露资源值、双实例与 server/browser 同装配。不再加同义用例。
 
-Task 快照记录公开接口、实际文件／提交基线、测试与 smoke 结果、未运行项和失败资源处理；必要历程与原始证据按需链接。确认合同闭合后按实际 API 创建下一服务装配 Task，不等待形式化角色交接。第一片总验收仍需 services、plugins、后端／浏览器适配和真实宿主 smoke，不因本 Task 完成宣称底座全部完成。
+## 相对原计划的取舍
+
+- `ResourceStatus` 收成 `registered | releasing | released | release-failed`：计划里的 `blocked` 不是资源状态，改在 `CloseIncomplete.blockedReleases` 里报告阻塞来源。
+- `CloseIncompleteReason` 为 `release-failed | deadline | blocked`，没有计划的 `cleanup-pending`：恢复时若仍有 pending 清理，新尝试先等待其结算再重试，而不是另立一种未完成原因。
+- 释放回调不接收 signal；截止只影响本次尝试的结算，机制不假装能中断提供者的清理。
+- `borrow(handle)` 接资源句柄而非 `ResourceId`；`dependsOn` 接自有资源句柄或借用句柄（`ReleaseDependency`），跨作用域依赖必须先借用，owner 因此能看到活跃借用者。
+- `accept` 没有计划的 `uses`：占用关系只由借用与 `dependsOn` 表达，在途操作只以 `termination` 进入关闭门禁。
+- 不建 `smoke:runtime-foundation` CLI；本 Task 的 smoke 为一次性脚本，CLI 留给环境适配单元按宿主模式建立。
+- 已修的类型细节：可选链不能含 `#private`（TS18030）改为显式判空；句柄 `unwrap` 用对象重载接 `ReleaseDependency`；失败释放 mock 必须写成 `vi.fn<ReleaseResource<T>>(...)`。
+
+## 未运行项
+
+全量 `bun run test`、`nuxt typecheck`、全仓 `governance:check`、浏览器宿主与 Spec 场景 6、后端真实进程 smoke。全仓 `governance:check` 的既有失败结论不沿用（`34c3d5db` 之后 w00003/t14 README 已补）。
+
+## 下一步
+
+t05 闭合后由 Work owner 按实际公开接口与证据创建服务装配 Task（`runtime/services`），再推进 plugins、环境适配与首片集成复核；`runtime.lifecycle` 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。

@@ -1,0 +1,206 @@
+# 临时 smoke：runtime.lifecycle 公开入口消费（脚本已删除，不进仓库）
+# cwd: packages/neuro-book (worktree .worktree/w00017-application-runtime-architecture)
+# command: bun run <系统 Temp>/neuro-book/w00017-t05-smoke-script/smoke-lifecycle.ts
+# bun: 1.3.14
+# date: 2026-09-22T15:59:43Z
+# HEAD: 411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0（实现文件未提交，验证覆盖的是工作区 diff）
+# 说明：脚本用 @notnotype/neuro-book-test-support/paths 的 resolveAgentScratchPath 分配 scratch 目录，
+#       订阅监听器向其中追加 events.log，finally 删除；进程不调用 process.exit，靠资源全部释放后自然退出。
+#       首次运行有 2 条 FAIL，均为脚本预期写错而非机制缺陷：
+#       (1) 父作用域在子作用域 closed 之前不释放自身资源，因此截止结算时根订阅仍会交付；
+#       (2) 截止结算本身会记录一条 stage=close 的失败，故最终失败记录是 close@1 + release@2 两条。
+#       下面是修正预期后的第二次运行原始输出。
+
+## stdout
+[+   2ms] scratch=C:\Users\NOTNOT~1\AppData\Local\Temp\neuro-book\w00017-t05-smoke\run-50676
+[+   3ms]   phase scope-1: creating -> available
+[+   3ms] PASS 订阅在 available 阶段交付事件并写入 scratch 日志
+[+   3ms]   phase scope-5: creating -> available
+[+   3ms]   phase scope-6: creating -> available
+[+   3ms]   phase scope-5: available -> stopping
+[+   4ms]   phase scope-5: stopping -> closed
+[+   4ms] PASS A.close -> closed
+[+   4ms] PASS A 内消费者先释放、借用后结束: consumer(borrowReleased=false)
+[+  69ms] PASS A 关闭后 timer 仍在走 (0 -> 4), status=registered
+[+  69ms] PASS B 仍持有借用且可用 (phase=available)
+[+  70ms] PASS 取消后等待方立即得到 cancelled (0.0ms)
+[+  70ms] PASS 执行方未结束: terminated=false timer=registered B.phase=available
+[+  70ms]   phase scope-1: available -> stopping
+[+  70ms]   phase scope-6: available -> stopping
+[+ 376ms]   failure close DeadlineExceeded: 关闭截止信号已触发，本次关闭未完成
+[+ 376ms]   failure close DeadlineExceeded: 关闭截止信号已触发，本次关闭未完成
+[+ 376ms] PASS root.close(deadline) -> incomplete/deadline
+[+ 376ms] PASS 未关闭子作用域含 B，B 在途操作 [{"id":"operation-14","label":"long-ignores-signal","waiterSettled":true}]
+[+ 376ms] PASS 截止时执行方仍未结束，timer 未释放 (root=stopping, B=stopping)
+[+ 377ms] PASS root 停止中但子未关闭时根资源尚未释放，订阅仍交付 (delivered=2)
+[+ 576ms] PASS 执行方终止 -> completed
+[+ 576ms] 执行方结束后 B.phase=stopping lastClose={"status":"incomplete","scopeId":"scope-6","attempt":1,"reason":"deadline","failedResources":[],"pendingReleases":[],"blockedReleases":[],"borrowedResources":[],"unreleasedBorrows":["borrow-8"],"pendingAcquisitions":[],"inFlightOperations":[{"id":"operation-14","label":"long-ignores-signal","waiterSettled":true}],"unclosedChildren":[],"failures":[{"sequence":18,"instanceId":"smoke-50676","scopeId":"scope-6","phase":"stopping","stage":"close","attempt":1,"resourceId":null,"error":{"name":"DeadlineExceeded","message":"关闭截止信号已触发，本次关闭未完成"}}]}
+[+ 576ms]   phase scope-6: stopping -> closed
+[+ 576ms]   failure release Error: injected clearInterval failure
+[+ 576ms] PASS root.recover -> incomplete/release-failed failed=1
+[+ 576ms] PASS B 已关闭且借用释放 (B=closed)
+[+ 576ms] PASS timer=release-failed root=stopping
+[+ 576ms]   phase scope-1: stopping -> closed
+[+ 576ms] PASS 再次 recover -> closed attempt=3
+[+ 576ms] PASS timer 释放共调用 2 次, status=released
+[+ 637ms] PASS 关闭后 timer 停止 (37 -> 37)
+[+ 638ms] PASS root 关闭后订阅不再交付 (delivered=2)
+[+ 638ms] PASS 失败记录: close@1,release@2
+[+ 639ms] scratch 已删除: exists=false
+[+ 639ms] failures=0; 等待进程自然退出
+
+## stderr
+(空)
+# exit code: 0
+
+## 脚本源码（供复现；运行后已随临时目录删除）
+```ts
+import {appendFileSync, existsSync, mkdirSync, rmSync} from "node:fs";
+import {join} from "node:path";
+import {resolveAgentScratchPath} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book-test-support/src/paths.ts";
+import {createRuntimeInstance} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/lifecycle/lifecycle.ts";
+import type {ReleaseResource} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/lifecycle/lifecycle.ts";
+
+const started = performance.now();
+let failures = 0;
+function log(message: string): void {
+    console.log(`[+${Math.round(performance.now() - started).toString().padStart(4, " ")}ms] ${message}`);
+}
+function check(condition: boolean, message: string): void {
+    if (!condition) failures += 1;
+    log(`${condition ? "PASS" : "FAIL"} ${message}`);
+}
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const scratch = resolveAgentScratchPath("w00017-t05-smoke", `run-${process.pid}`);
+mkdirSync(scratch, {recursive: true});
+log(`scratch=${scratch}`);
+const logFile = join(scratch, "events.log");
+
+try {
+    const instance = createRuntimeInstance({location: "server", instanceId: `smoke-${process.pid}`}, {
+        observer: {
+            phaseChanged: (change) => log(`  phase ${change.scopeId}: ${change.from} -> ${change.to}`),
+            failureRecorded: (failure) => log(`  failure ${failure.stage} ${failure.error.name}: ${failure.error.message}`),
+        },
+    });
+    const root = instance.root;
+
+    // 根：真实 setInterval 资源，释放可注入一次失败
+    let ticks = 0;
+    let failTimerReleaseOnce = false;
+    let timerReleaseCalls = 0;
+    const releaseTimer: ReleaseResource<ReturnType<typeof setInterval>> = (id) => {
+        timerReleaseCalls += 1;
+        if (failTimerReleaseOnce) {
+            failTimerReleaseOnce = false;
+            throw new Error("injected clearInterval failure");
+        }
+        clearInterval(id);
+    };
+    const timerResult = root.register({
+        kind: "timer",
+        label: "tick-interval",
+        value: setInterval(() => { ticks += 1; }, 10),
+        release: releaseTimer,
+    });
+    if (timerResult.status !== "registered") throw new Error("timer 登记失败");
+    const timer = timerResult.handle;
+
+    // 根：EventTarget 订阅资源，监听器写 scratch 日志
+    const bus = new EventTarget();
+    let delivered = 0;
+    const listener = () => { delivered += 1; appendFileSync(logFile, `event ${delivered}\n`); };
+    bus.addEventListener("tick", listener);
+    const busResult = root.register({
+        kind: "subscription",
+        label: "bus-listener",
+        value: {bus, listener},
+        release: ({bus, listener}) => bus.removeEventListener("tick", listener),
+    });
+    if (busResult.status !== "registered") throw new Error("订阅登记失败");
+    root.open();
+    bus.dispatchEvent(new Event("tick"));
+    check(delivered === 1 && existsSync(logFile), "订阅在 available 阶段交付事件并写入 scratch 日志");
+
+    // 子 A：借用 timer，登记依赖该借用的消费者
+    const a = root.createChild("A");
+    const b = root.createChild("B");
+    const borrowA = a.borrow(timer);
+    const borrowB = b.borrow(timer);
+    if (borrowA.status !== "borrowed" || borrowB.status !== "borrowed") throw new Error("借用失败");
+    const releaseOrder: string[] = [];
+    const consumerA = a.register({
+        kind: "consumer",
+        label: "a-consumer",
+        value: {},
+        release: () => { releaseOrder.push(`consumer(borrowReleased=${borrowA.handle.released})`); },
+        dependsOn: [borrowA.handle],
+    });
+    if (consumerA.status !== "registered") throw new Error("消费者登记失败");
+    a.open();
+    b.open();
+
+    // A 关闭：消费者先于借用结束；timer 继续走、B 仍能用
+    const closeA = await a.close();
+    check(closeA.status === "closed", `A.close -> ${closeA.status}`);
+    check(releaseOrder[0] === "consumer(borrowReleased=false)" && borrowA.handle.released, `A 内消费者先释放、借用后结束: ${releaseOrder.join(",")}`);
+    const ticksBefore = ticks;
+    await sleep(60);
+    check(ticks > ticksBefore && timer.status === "registered", `A 关闭后 timer 仍在走 (${ticksBefore} -> ${ticks}), status=${timer.status}`);
+    check(!borrowB.handle.released && b.phase === "available", `B 仍持有借用且可用 (phase=${b.phase})`);
+
+    // B 接纳忽略 signal 的长操作，随后取消
+    let operationFinished = false;
+    const operation = b.accept({
+        label: "long-ignores-signal",
+        run: async () => { await sleep(500); operationFinished = true; return "done"; },
+    });
+    const cancelAt = performance.now();
+    operation.cancel();
+    const outcome = await operation.outcome;
+    const cancelLatency = performance.now() - cancelAt;
+    check(outcome.status === "cancelled" && cancelLatency < 50, `取消后等待方立即得到 ${outcome.status} (${cancelLatency.toFixed(1)}ms)`);
+    check(!operationFinished && !operation.terminated && timer.status === "registered" && b.phase === "available",
+        `执行方未结束: terminated=${operation.terminated} timer=${timer.status} B.phase=${b.phase}`);
+
+    // root 带 300ms 截止关闭：在途操作让本次尝试 incomplete
+    const firstClose = await root.close({deadline: AbortSignal.timeout(300)});
+    check(firstClose.status === "incomplete" && firstClose.reason === "deadline", `root.close(deadline) -> ${firstClose.status}/${firstClose.status === "incomplete" ? firstClose.reason : ""}`);
+    const bInFlight = b.snapshot().inFlightOperations;
+    check(firstClose.status === "incomplete" && firstClose.unclosedChildren.includes(b.id) && bInFlight.some((op) => op.id === operation.id && op.waiterSettled),
+        `未关闭子作用域含 B，B 在途操作 ${JSON.stringify(bInFlight)}`);
+    check(!operationFinished && timer.status === "registered" && root.phase === "stopping" && b.phase === "stopping",
+        `截止时执行方仍未结束，timer 未释放 (root=${root.phase}, B=${b.phase})`);
+    bus.dispatchEvent(new Event("tick"));
+    check(delivered === 2, `root 停止中但子未关闭时根资源尚未释放，订阅仍交付 (delivered=${delivered})`);
+
+    // 等待执行方自然结束
+    const termination = await operation.termination;
+    check(termination.status === "completed" && operationFinished, `执行方终止 -> ${termination.status}`);
+    log(`执行方结束后 B.phase=${b.phase} lastClose=${JSON.stringify(b.snapshot().lastClose)}`);
+
+    // 注入一次 timer 释放失败后恢复
+    failTimerReleaseOnce = true;
+    const secondClose = await root.recover();
+    check(secondClose.status === "incomplete" && secondClose.reason === "release-failed" && secondClose.failedResources.includes(timer.id),
+        `root.recover -> ${secondClose.status}/${secondClose.status === "incomplete" ? secondClose.reason : ""} failed=${secondClose.status === "incomplete" ? secondClose.failedResources.length : 0}`);
+    check(b.phase === "closed" && borrowB.handle.released, `B 已关闭且借用释放 (B=${b.phase})`);
+    check(timer.status === "release-failed" && root.phase === "stopping", `timer=${timer.status} root=${root.phase}`);
+    const thirdClose = await root.recover();
+    check(thirdClose.status === "closed" && thirdClose.attempt === 3, `再次 recover -> ${thirdClose.status} attempt=${thirdClose.attempt}`);
+    check(timerReleaseCalls === 2 && timer.status === "released", `timer 释放共调用 ${timerReleaseCalls} 次, status=${timer.status}`);
+    const ticksAfterClose = ticks;
+    await sleep(60);
+    check(ticks === ticksAfterClose, `关闭后 timer 停止 (${ticksAfterClose} -> ${ticks})`);
+    bus.dispatchEvent(new Event("tick"));
+    check(delivered === 2, `root 关闭后订阅不再交付 (delivered=${delivered})`);
+    const stages = root.snapshot().failures.map((failure) => `${failure.stage}@${failure.attempt}`);
+    check(stages.join(",") === "close@1,release@2", `失败记录: ${stages.join(",")}`);
+} finally {
+    rmSync(scratch, {recursive: true, force: true});
+    log(`scratch 已删除: exists=${existsSync(scratch)}`);
+}
+process.exitCode = failures === 0 ? 0 : 1;
+log(`failures=${failures}; 等待进程自然退出`);
+```
