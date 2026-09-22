@@ -85,14 +85,15 @@ const parsedResult = computed<unknown | null>(() => {
         >
             <span class="i-lucide-chevron-right h-3 w-3 shrink-0"></span>
             <span :class="[displayedStatusIcon, rowIconClass, isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
-            <span class="shrink-0 font-mono">{{ props.toolCall.name }}</span>
+            <!-- R5h：过程行家族统一普通 UI 字体+medium——等宽英文名是用户两轮点名的"粗"源，与注入/思考行对齐 -->
+            <span class="shrink-0 font-medium">{{ props.toolCall.name }}</span>
             <span v-if="rowSummary" class="min-w-0 flex-1 truncate opacity-75">{{ rowSummary }}</span>
         </button>
         <!-- 展开态头部：卡片头部（点击收起） -->
         <button v-else class="flex w-full items-center gap-1.5 rounded px-0.5 py-0.5 text-left text-[11px] text-[var(--text-muted)] transition-colors hover:text-[var(--text-secondary)]" @click="emit('toggle')">
             <span class="i-lucide-chevron-down h-3 w-3 shrink-0"></span>
             <span :class="[displayedStatusIcon, rowIconClass, isRunning ? 'animate-pulse' : '']" class="h-3 w-3 shrink-0"></span>
-            <span class="shrink-0 font-mono">{{ props.toolCall.name }}</span>
+            <span class="shrink-0 font-medium">{{ props.toolCall.name }}</span>
             <span v-if="collapsedPreview" class="min-w-0 flex-1 truncate opacity-75">{{ collapsedPreview }}</span>
         </button>
 

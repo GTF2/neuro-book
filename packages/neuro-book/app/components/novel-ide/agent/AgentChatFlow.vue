@@ -615,7 +615,7 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                             >
                                 <span :class="isRoundEntryOpen(entry.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3 w-3 shrink-0"></span>
                                 <template v-if="entry.toolName">
-                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium font-mono">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
+                                    <span :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium">{{ t(toolShortLabelKey(entry.toolName)) }}</span>
                                     <span class="shrink-0 font-medium">×{{ entry.nodes.length }}</span>
                                 </template>
                                 <span v-else :class="entry.failedCount > 0 ? 'text-[var(--status-danger)]' : ''" class="shrink-0 font-medium">{{ entry.kinds.map(({kind, count}) => `${t(CHAT_WORK_BLOCK_META[kind].labelKey)} ${count}`).join(" + ") }}</span>
