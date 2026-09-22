@@ -71,7 +71,7 @@ if (chatReady) {
     });
     record("件3⑤ 消息区滚动条隐藏", scrollHidden === "none", `scrollbarWidth=${scrollHidden}`);
 
-    // R5 件1：刻度条加宽+鱼骨形态（横向短条右对齐、宽度百分比、当前条满宽）
+    // R5b：刻度条=静态等宽+active 最长；hover 波浪=hover 格变长+邻近衰减
     const barInfo = await page.evaluate(() => {
         const rail = document.querySelector(".rail-scroll");
         const bar = rail?.parentElement;
@@ -80,11 +80,26 @@ if (chatReady) {
         return {
             barWidth: bar ? Math.round(parseFloat(getComputedStyle(bar).width)) : null,
             count: bars.length,
-            maxW: widths.length ? Math.max(...widths) : 0,
-            minW: widths.length ? Math.min(...widths) : 0,
+            widths,
         };
     });
-    record("R5 件1 刻度条鱼骨形态", barInfo.barWidth === 36 && barInfo.count > 0 && barInfo.minW < barInfo.maxW, JSON.stringify(barInfo));
+    const nonActiveWidths = barInfo.widths.slice(0, Math.max(0, barInfo.widths.length - 1));
+    const staticUniform = nonActiveWidths.length > 1 && new Set(nonActiveWidths).size === 1;
+    // hover 波浪：对中段格派 pointerenter，验证 hover 格变长
+    const wave = await page.evaluate(() => {
+        const rail = document.querySelector(".rail-scroll");
+        const grids = rail ? [...rail.querySelectorAll("button")] : [];
+        if (grids.length < 6) return {ok: false, reason: `格数 ${grids.length}`};
+        const before = grids.map((g) => Math.round(g.querySelector("span").getBoundingClientRect().width));
+        const target = Math.floor(grids.length / 2);
+        grids[target].dispatchEvent(new PointerEvent("pointerenter", {bubbles: false}));
+        return new Promise((resolve) => setTimeout(() => {
+            const after = grids.map((g) => Math.round(g.querySelector("span").getBoundingClientRect().width));
+            resolve({ok: true, beforeW: before[target], afterW: after[target], grew: after[target] > before[target]});
+        }, 300));
+    });
+    record("R5b 刻度条静态等宽", barInfo.barWidth === 36 && staticUniform, JSON.stringify({count: barInfo.count, sample: barInfo.widths.slice(0, 5)}));
+    record("R5b 刻度条 hover 波浪", wave.ok && wave.grew, JSON.stringify(wave));
 
     // R5 件2：块头不再出现「已工作 1 秒」
     const oneSec = await page.evaluate(() => [...document.querySelectorAll("button")].some((el) => /已工作 1 秒|工作中 1 秒/.test(el.textContent ?? "")));

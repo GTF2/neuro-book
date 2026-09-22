@@ -2,6 +2,7 @@
 import {storeToRefs} from "pinia";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
+import {useNotification} from "nbook/app/composables/useNotification";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import Combobox from "nbook/app/components/common/form/Combobox.vue";
 import {
@@ -99,23 +100,9 @@ const isDirty = computed(() => {
 // R5 件6①：与正文面板同款保存链——正文 dirty 并联+轻量保存+行内已保存提示。
 const hasUnsavedBody = computed(() => store.hasUnsavedFileChanges);
 const saveDisabled = computed(() => (!isDirty.value && !hasUnsavedBody.value) || savingFile.value);
-const savedFlash = ref(false);
-const savedFlashFading = ref(false);
-let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
+// R5b（用户反馈）：保存成功=右下角小气泡轻提示（1.8s 自动消失），替代行内闪现。
 function flashSaved(): void {
-    if (savedFlashTimer !== null) {
-        clearTimeout(savedFlashTimer);
-    }
-    savedFlash.value = true;
-    savedFlashFading.value = false;
-    savedFlashTimer = setTimeout(() => {
-        savedFlashFading.value = true;
-        savedFlashTimer = setTimeout(() => {
-            savedFlash.value = false;
-            savedFlashFading.value = false;
-            savedFlashTimer = null;
-        }, 500);
-    }, 1_500);
+    useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? "", position: "bottom-right", duration: 1_800});
 }
 const relatedIssues = computed(() => {
     if (!props.node) {
@@ -276,7 +263,6 @@ function readLorebookType(value: unknown): LorebookFileDraft["type"] {
 
         <template #actions>
             <button class="rounded-md px-2 py-1 text-[10px] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]" type="button" @click="emit('refresh')">{{ t("ide.workspace.common.refresh") }}</button>
-            <span v-if="savedFlash" class="inline-flex items-center gap-1 text-[10px] text-[var(--status-success)] transition-opacity duration-500" :class="savedFlashFading ? 'opacity-0' : 'opacity-100'"><span class="i-lucide-check h-3 w-3"></span>{{ t("ide.workspace.common.saved") }}</span>
             <button class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="saveDisabled" @click="void saveDraft()">
                 <span v-if="(isDirty || hasUnsavedBody) && !savingFile" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                 <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}

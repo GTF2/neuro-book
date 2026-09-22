@@ -16,15 +16,16 @@ describe("AgentSessionScaleBar 契约（R4 件3：波浪格高+fixed 预览+命�
         expect(source).not.toContain("open-outline");
     });
 
-    it("R5 件1 鱼骨形态：横向短条右对齐+长度=纺锤包络×密度+选中满宽满亮", async () => {
+    it("R5b 澄清版：正常态等宽+选中满宽+hover 距离衰减波浪（BASE/ACTIVE/HOVER_PEAK/RADIUS）", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("spindleRatio");
-        expect(source).toContain("justify-end");
-        expect(source).toContain("BAR_HEIGHT_PX = 3");
+        expect(source).toContain("BASE_RATIO = 0.55");
         expect(source).toContain("ACTIVE_RATIO = 1");
+        expect(source).toContain("HOVER_PEAK_RATIO = 0.95");
+        expect(source).toContain("HOVER_WAVE_RADIUS = 4");
+        expect(source).toContain("justify-end");
         expect(source).toContain("width: `${Math.round(segmentBarRatio(index) * 100)}%`");
+        expect(source).not.toContain("spindleRatio");
         expect(source).not.toContain("WAVE_MIN_PX");
-        expect(source).not.toContain("ACTIVE_BAR_PX = 20");
     });
 
     it("R4 件3①回归修复：justify-center 布局下按格元素命中取下标，禁坐标均分换算", async () => {

@@ -3,6 +3,7 @@ import {storeToRefs} from "pinia";
 import SideDetailPanel from "nbook/app/components/common/SideDetailPanel.vue";
 import LucideIconPickerDialog from "nbook/app/components/common/LucideIconPickerDialog.vue";
 import TagInput from "nbook/app/components/common/form/TagInput.vue";
+import {useNotification} from "nbook/app/composables/useNotification";
 import FormSelect, {type SelectOption} from "nbook/app/components/common/form/FormSelect.vue";
 import {useNovelIdeStore, type WorkspaceFileIssue, type WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import {isWorkspaceContentScopePath} from "nbook/app/components/novel-ide/workspace/workspace-file-tree";
@@ -131,24 +132,9 @@ const isDirty = computed(() => {
 // 须把 store 的正文未保存态并联进按钮与圆点——用户验收链=正文输入→按钮点亮+圆点→保存→熄灭。
 const hasUnsavedBody = computed(() => store.hasUnsavedFileChanges);
 const saveDisabled = computed(() => (!isDirty.value && !hasUnsavedBody.value) || savingFile.value);
-// R5 件5：保存成功行内轻提示（1.5s 后淡出），替代大 toast。
-const savedFlash = ref(false);
-const savedFlashFading = ref(false);
-let savedFlashTimer: ReturnType<typeof setTimeout> | null = null;
+// R5b（用户反馈）：保存成功=右下角小气泡轻提示（1.8s 自动消失），替代行内闪现。
 function flashSaved(): void {
-    if (savedFlashTimer !== null) {
-        clearTimeout(savedFlashTimer);
-    }
-    savedFlash.value = true;
-    savedFlashFading.value = false;
-    savedFlashTimer = setTimeout(() => {
-        savedFlashFading.value = true;
-        savedFlashTimer = setTimeout(() => {
-            savedFlash.value = false;
-            savedFlashFading.value = false;
-            savedFlashTimer = null;
-        }, 500);
-    }, 1_500);
+    useNotification().success(t("ide.workspace.common.saved"), {title: props.node?.title ?? "", position: "bottom-right", duration: 1_800});
 }
 const manuscriptBasePath = computed(() => {
     if (!props.node) {
@@ -397,7 +383,6 @@ function readStringArray(value: unknown): string[] {
             <button v-if="canCreateIndex" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('create-index')">{{ t("ide.workspace.fileDetail.convert") }}</button>
             <button v-if="canConvertFileToDirectory" class="rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] hover:bg-[var(--bg-hover)]" type="button" @click="emit('convert-file-to-directory')">{{ t("ide.workspace.fileDetail.convertToDirectory") }}</button>
             <!-- R5 件4：未保存圆点挪到保存按钮右上角；件5：保存中轻禁用+行内 spinner+1.5s「已保存」淡出 -->
-            <span v-if="savedFlash" class="inline-flex items-center gap-1 text-[10px] text-[var(--status-success)] transition-opacity duration-500" :class="savedFlashFading ? 'opacity-0' : 'opacity-100'"><span class="i-lucide-check h-3 w-3"></span>{{ t("ide.workspace.common.saved") }}</span>
             <button v-if="projectYamlDraft" class="relative inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] text-[var(--accent-text)] transition-opacity hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed" :class="savingFile ? 'opacity-70' : ''" type="button" :disabled="(!projectYamlDirty && !hasUnsavedBody) || projectTitleInvalid || savingFile" @click="void saveProjectYaml()">
                 <span v-if="(projectYamlDirty || hasUnsavedBody) && !savingFile && !projectTitleInvalid" class="absolute -right-1 -top-1 inline-block h-1.5 w-1.5 rounded-full bg-[var(--status-warning)]" :title="t('ide.workspace.common.unsaved')"></span>
                 <span v-if="savingFile" class="i-lucide-loader-circle h-3 w-3 animate-spin"></span>{{ t("ide.workspace.common.save") }}

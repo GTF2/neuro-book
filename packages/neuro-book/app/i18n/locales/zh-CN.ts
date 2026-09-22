@@ -2402,7 +2402,8 @@ const zhCN = {
             otherAnswer: "其他答案",
             pendingTitle: "等待你的处理",
             pendingBlockedTitle: "待处理 · 当前不可回答",
-            dismissPending: "收起", // [i18n-add] 009C1R5 件3 不可回答待处理卡收起
+            dismissPending: "收起",
+            abortPending: "放弃", // [i18n-add] R5b 不可回答待处理卡放弃（cancel 链真中断） // [i18n-add] 009C1R5 件3 不可回答待处理卡收起
             pendingDismissedBar: "有待处理输入（当前不可回答），已收起", // [i18n-add] 009C1R5 件3
             pendingRestore: "展开", // [i18n-add] 009C1R5 件3 // [i18n-add] 009C1R4 件10 不可回答态头部标题
             pendingRegion: "待处理输入",

@@ -175,7 +175,8 @@ const injectionLabelPrefix = (node: Extract<ChatNode, {kind: "text"}>): string =
     return t("agent.workBlock.injectionPrefixSystem");
 };
 const injectionSummary = (node: Extract<ChatNode, {kind: "text"}>): string => {
-    return node.message.content.trim().replace(/\s+/gu, " ").slice(0, 60);
+    // 剥掉 <system-reminder>/<custom:user> 类裸 XML 标签头，摘要只留人话。
+    return node.message.content.trim().replace(/^<[^>]+>\s*/u, "").replace(/\s+/gu, " ").slice(0, 60);
 };
 
 /** 悬浮按钮组只在轮尾最后一段正文后渲染一次（件3c）。 */
@@ -553,29 +554,18 @@ defineExpose({ scrollToBottom: forceScrollToBottom, scrollRef });
                         <span class="i-lucide-file-code h-3 w-3 shrink-0"></span>
                         <span>{{ t("agent.workBlock.injections", {count: item.nodes.length}) }}</span>
                     </button>
-                    <div v-if="isInjectionsOpen(item)" class="ml-3 border-l-2 border-[var(--border-color)]/50 pl-3">
-                        <AgentTextBubble
+                    <!-- R5b 补漏：会话开头收拢行的展开体与轮内同款灰小字行（System/CUSTOM:USER 不再两副面孔） -->
+                    <div v-if="isInjectionsOpen(item)" class="ml-3 space-y-0.5 border-l-2 border-[var(--border-color)]/50 pl-3">
+                        <div
                             v-for="node in item.nodes"
                             :key="node.message.id"
-                            :node="node"
-                            :session-id="props.sessionId"
-                            :action-disabled="props.messageActionDisabled"
-                            :run-action-disabled="props.runActionDisabled"
-                            :session-attachments="props.sessionAttachments"
-                            :can-register-attachments="props.canRegisterAttachments"
-                            :can-insert-attachments="props.canInsertAttachments"
-                            :project-root="props.projectRoot"
-                            :model-supports-images="props.modelSupportsImages"
-                            :attachment-insert-request="props.attachmentInsertRequest"
-                            :menu-refresh-key="props.menuRefreshKey"
-                            :resolve-menu="props.resolveEditorMenu"
-                            :on-skill-trigger-start="props.onEditorSkillTriggerStart"
-                            :open-reference="props.openReference"
-                            :cost-display-options="props.costDisplayOptions"
-                            :cost-exchange-rate-suffix="props.costExchangeRateSuffix"
-                            @copy="emit('copy', $event)"
-                            @attachment-registered="emit('attachment-registered', $event)"
-                        />
+                            class="flex w-full items-center gap-1.5 px-0.5 py-0.5 text-[11px] leading-4"
+                            :class="node.message.error || (node.message.systemDisplayKind ?? 'system') === 'error' ? 'text-[var(--status-danger)]' : 'text-[var(--text-muted)]'"
+                            :title="node.message.content"
+                        >
+                            <span class="shrink-0 font-medium opacity-80">{{ injectionLabelPrefix(node) }}</span>
+                            <span class="min-w-0 flex-1 truncate opacity-75">{{ injectionSummary(node) }}</span>
+                        </div>
                     </div>
                 </div>
                 <!-- 一轮工作块（件3）：块头=唯一身份标记；正文恒显，过程行/思考行随展开态 -->

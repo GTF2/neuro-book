@@ -2401,7 +2401,8 @@ const enUS = {
             otherAnswer: "Other Answer",
             pendingTitle: "Waiting for Your Input",
             pendingBlockedTitle: "Pending · not answerable now",
-            dismissPending: "Dismiss", // [i18n-add] 009C1R5
+            dismissPending: "Dismiss",
+            abortPending: "Abort", // [i18n-add] R5b // [i18n-add] 009C1R5
             pendingDismissedBar: "Pending input (not answerable now) — dismissed", // [i18n-add] 009C1R5
             pendingRestore: "Restore", // [i18n-add] 009C1R5 // [i18n-add] 009C1R4 blocked-state header
             pendingRegion: "Pending input",

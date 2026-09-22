@@ -44,37 +44,33 @@ const activeGridIndex = computed(() => {
     return matched;
 });
 
-/** R5 件1：鱼骨形态——竖排横向短条；长度=纺锤位置包络（两头短中间长）×密度调制（哪里厚哪里长）；
- *  当前视口/选中条=最长且最亮双强调，其余按长度深浅渐变；条高小而均匀、纵向等距。 */
+/** R5b（用户澄清）：正常态所有条等宽；当前视口/选中条=最长最亮；
+ *  鼠标划过=波浪——hover 格最长、按距离衰减（近处稍长、远处不变），波浪随鼠标移动。 */
+const BASE_RATIO = 0.55;
 const ACTIVE_RATIO = 1;
+const HOVER_PEAK_RATIO = 0.95;
+const HOVER_WAVE_RADIUS = 4;
 const BAR_HEIGHT_PX = 3;
-const smoothWeight = (index: number): number => {
-    const at = (i: number): number => (i >= 0 && i < props.segments.length ? props.segments[i]?.weight ?? 1 : 1);
-    return (at(index - 1) + at(index) + at(index + 1)) / 3;
-};
-/** 纺锤位置包络：两端 0.35 → 中间 1.0 对称插值。 */
-const spindleRatio = (index: number): number => {
-    const last = props.segments.length - 1;
-    if (last <= 0) {
-        return 1;
-    }
-    const position = index / last;
-    return 0.35 + 0.65 * (1 - Math.abs(2 * position - 1));
-};
 const segmentBarRatio = (index: number): number => {
     if (index === activeGridIndex.value) {
         return ACTIVE_RATIO;
     }
-    const maxWeight = Math.max(1, ...props.segments.map((segment) => segment.weight ?? 1));
-    const density = Math.min(1, smoothWeight(index) / maxWeight);
-    return Math.max(0.18, spindleRatio(index) * (0.45 + 0.55 * density));
+    if (hoverIndex.value === null) {
+        return BASE_RATIO;
+    }
+    const distance = Math.abs(index - hoverIndex.value);
+    if (distance === 0) {
+        return HOVER_PEAK_RATIO;
+    }
+    const falloff = Math.max(0, 1 - distance / HOVER_WAVE_RADIUS);
+    return BASE_RATIO + (HOVER_PEAK_RATIO - BASE_RATIO) * falloff;
 };
-/** 非选中条亮度随长度深浅渐变（0.45-0.9），选中条满亮。 */
+/** 亮度同步波浪：active 满亮、hover 波浪内按衰减提亮、静态条基线。 */
 const segmentBarOpacity = (index: number): number => {
     if (index === activeGridIndex.value) {
         return 1;
     }
-    return 0.45 + 0.45 * segmentBarRatio(index);
+    return 0.5 + 0.45 * segmentBarRatio(index);
 };
 const segmentBarClass = (index: number): string => {
     if (index === activeGridIndex.value) {
@@ -169,8 +165,8 @@ function handleSegmentHover(event: PointerEvent, index: number): void {
 </script>
 
 <template>
-    <!-- 会话刻度条（R5 件1 鱼骨形态）：右缘 36px；竖排横向短条右对齐、长度=纺锤位置包络×密度调制，
-         当前/选中条最长最亮双强调；点击格=直接 seek 定位；hover=fixed 预览卡贴鼠标跟随；底部入口开完整会话树 -->
+    <!-- 会话刻度条（R5b 澄清版）：右缘 36px；竖排横向短条右对齐——正常态等宽、当前/选中条最长最亮、
+         鼠标划过产生波浪（hover 格最长按距离衰减）；点击格=直接 seek；hover=fixed 预览卡贴鼠标 -->
     <div class="relative flex h-full w-9 shrink-0 flex-col items-stretch py-1">
         <div
             ref="trackRef"
