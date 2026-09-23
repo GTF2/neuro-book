@@ -1,0 +1,26 @@
+$ (cwd packages\neuro-book) bun run smoke:runtime-foundation -- --host server
+exit=0
+
+[+    0ms] server 模式：合作停止通道 stdin:stop
+[+  147ms] PASS 同一 instanceId 重复启动共享同一实例
+[+  147ms] PASS 启动 available 且接纳开放 (available)
+[+  147ms] PASS 门禁 presence/greeter 全部通过 (presence:passed,greeter:passed)
+[+  147ms] PASS 接纳操作经命令句柄调用 greeter ("hello smoke @102")
+[+  147ms] PASS 合作停止后关闭完成 (closed)
+[+  147ms] PASS 停止来源为 stdin:stop (stdin:stop)
+[+  147ms] PASS 停止结算后信号监听已移除
+[+  147ms] PASS 停止后接纳被拒绝 (closed)
+[+  147ms] PASS 停止后旧命令句柄不可调用
+[+  147ms] PASS presence 能力释放一次 (1)
+[+  147ms] PASS 子进程自然退出 exit=0
+[+  147ms] PASS 子进程无 stderr 输出
+[+  286ms] PASS 必需门禁失败时启动 failed 且不接纳 (failed)
+[+  286ms] PASS 可选入口失败被单独报告
+[+  286ms] PASS 无关必需门禁仍通过
+[+  286ms] PASS 失败后已取得资源收口完成 (closed)
+[+  286ms] PASS 紧急输出可见且不含注入的敏感串
+[+  286ms] PASS 失败子进程以退出码 2 结束 (2)
+[+  286ms] failures=0
+
+[stderr]
+$ node --import tsx scripts/smoke/runtime-foundation.ts --host server

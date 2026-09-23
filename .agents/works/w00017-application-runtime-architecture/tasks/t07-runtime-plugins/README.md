@@ -80,4 +80,4 @@ smoke 用公开入口装配一个真实命令接收者（自维护命令表、�
 
 ## 下一步
 
-按整体路径进入环境适配（`runtime.application`：后端与浏览器适配模块、同一 smoke 入口），再做首片集成复核。三项机制 Spec 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。
+环境适配已由 [t08](../t08-runtime-application/README.md) 完成（`runtime.application` 内核、后端与浏览器适配模块、同一 smoke 入口在真实子进程与真实 Chromium 各跑一次）。三项机制 Spec 晋升仍需首片集成复核对照 Spec 全文核对证据。

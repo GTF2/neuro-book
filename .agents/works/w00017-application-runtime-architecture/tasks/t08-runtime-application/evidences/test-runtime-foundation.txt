@@ -1,0 +1,21 @@
+$ (cwd packages\neuro-book) bun run test:runtime-foundation
+exit=0
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90mC:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book[39m
+
+ [32m✓[39m runtime/services/services.test.ts [2m([22m[2m20 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m runtime/application/application.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+ [32m✓[39m runtime/lifecycle/lifecycle.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 106[2mms[22m[39m
+ [32m✓[39m runtime/plugins/plugins.test.ts [2m([22m[2m24 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+ [32m✓[39m server/runtime/foundation/server-host.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 126[2mms[22m[39m
+ [32m✓[39m app/runtime/browser-host.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 188[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m88 passed[39m[22m[90m (88)[39m
+[2m   Start at [22m 13:35:46
+[2m   Duration [22m 669ms[2m (transform 603ms, setup 208ms, import 1.01s, tests 638ms, environment 0ms)[22m
+
+
+[stderr]
+$ vitest run --config vitest.runtime-foundation.config.ts
