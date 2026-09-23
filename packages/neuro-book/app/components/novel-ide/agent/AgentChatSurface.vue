@@ -18,7 +18,12 @@ import AgentChatFlow from "nbook/app/components/novel-ide/agent/AgentChatFlow.vu
 import AgentSystemPromptPanel from "nbook/app/components/novel-ide/agent/AgentSystemPromptPanel.vue";
 import AgentComposer from "nbook/app/components/novel-ide/agent/AgentComposer.vue";
 import AgentWorkflowPendingPanel from "nbook/app/components/novel-ide/agent/AgentWorkflowPendingPanel.vue";
-import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
+
+// ponytail TOP1：单类型文件已删，类型就近持有一份
+export type AgentSessionModelDraft = {
+    modelKey: string | null;
+    reasoningEffort: ThinkingLevelDto | null;
+};
 import AgentLinkedAgentPanel from "nbook/app/components/novel-ide/agent/AgentLinkedAgentPanel.vue";
 import AgentSessionDialog from "nbook/app/components/novel-ide/agent/AgentSessionDialog.vue";
 import AgentSessionTreeDialog from "nbook/app/components/novel-ide/agent/AgentSessionTreeDialog.vue";
@@ -624,17 +629,6 @@ function readToolPath(toolCall: AgentToolCall): string {
 
 const inlineSessionModelSelectionValue = computed(() => inlineSessionModelDraft.value.modelKey);
 
-const inlineSessionThinkingResolvedLabel = computed(() => {
-    const requested = inlineEditorSession.recoveryShell.value?.thinkingLevel ?? null;
-    const effective = inlineEditorSession.recoveryShell.value?.effectiveThinkingLevel ?? "off";
-    if (requested === null) {
-        return t("agent.chatSurface.followProfileCurrent", {level: thinkingLevelLabel(effective)});
-    }
-    if (requested === effective) {
-        return thinkingLevelLabel(effective);
-    }
-    return t("agent.chatSurface.requestedEffective", {requested: thinkingLevelLabel(requested), effective: thinkingLevelLabel(effective)});
-});
 
 let lastUnavailableRelationWarningKey = "";
 
@@ -907,20 +901,6 @@ function formatCacheHitRate(usage: PromptCacheUsage): string {
     return rate === null ? "—" : formatPercent(rate);
 }
 
-/**
- * 显示 PI thinking level 的中文标签。
- */
-function thinkingLevelLabel(level: ThinkingLevelDto): string {
-    switch (level) {
-        case "off": return t("agent.composer.off");
-        case "minimal": return t("agent.composer.minimal");
-        case "low": return t("agent.composer.low");
-        case "medium": return t("agent.composer.medium");
-        case "high": return t("agent.composer.high");
-        case "xhigh": return t("agent.composer.xhigh");
-        case "max": return t("agent.composer.max");
-    }
-}
 
 /**
  * 组装 Novel IDE 客户端变量快照。目前新 profile 第一版不走 header，但保留本地上下文组装入口。
@@ -3830,7 +3810,6 @@ defineExpose({
     inlineSessionModelPopoverOpen,
     inlineSessionModelSaving,
     inlineSessionModelSelectionValue,
-    inlineSessionThinkingResolvedLabel,
     openInlineEditorSession,
     refreshInlineEditorSessions,    sessionActionId,
     ensureSessionReady,

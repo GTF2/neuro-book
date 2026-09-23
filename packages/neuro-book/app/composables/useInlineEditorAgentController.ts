@@ -2,7 +2,6 @@ import type {MaybeRefOrGetter} from "vue";
 import {computed, getCurrentScope, onScopeDispose, ref, toValue, watch} from "vue";
 import {isNovelIdeTab} from "nbook/app/components/novel-ide/mock-data";
 import type {AgentMessage, AgentToolCall} from "nbook/app/components/novel-ide/agent/agent-message";
-import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import {
     AgentSurfaceOperationController,
     type AgentSurfaceActivationAttempt,
@@ -31,6 +30,12 @@ import type {
     InvokeAgentResult,
 } from "nbook/shared/dto/agent-session.dto";
 import type {JsonValue} from "nbook/server/agent/messages/types";
+
+// ponytail TOP1：单类型文件 agent-session-model-controls.ts 已删，类型就近持有一份
+export type AgentSessionModelDraft = {
+    modelKey: string | null;
+    reasoningEffort: ThinkingLevelDto | null;
+};
 
 const INLINE_EDITOR_PROFILE_KEY = "inline.editor";
 
@@ -103,7 +108,6 @@ export function useInlineEditorAgentController(
         modelKey: null,
         reasoningEffort: null,
     });
-    const sessionModelPopoverOpen = ref(false);
     const sessionModelSaving = ref(false);
     const operationController = new AgentSurfaceOperationController();
     const operationRevision = ref(0);
@@ -193,22 +197,6 @@ export function useInlineEditorAgentController(
         return selected.title || `Inline AI #${String(selected.sessionId)}`;
     });
     const sessionModelSelectionValue = computed(() => sessionModelDraft.value.modelKey);
-    const sessionThinkingResolvedLabel = computed(() => {
-        const requested = session.recoveryShell.value?.thinkingLevel ?? null;
-        const effective = session.recoveryShell.value?.effectiveThinkingLevel ?? "off";
-        if (requested === null) {
-            return services.translate("agent.chatSurface.followProfileCurrent", {
-                level: thinkingLevelLabel(effective, services.translate),
-            });
-        }
-        if (requested === effective) {
-            return thinkingLevelLabel(effective, services.translate);
-        }
-        return services.translate("agent.chatSurface.requestedEffective", {
-            requested: thinkingLevelLabel(requested, services.translate),
-            effective: thinkingLevelLabel(effective, services.translate),
-        });
-    });
 
     function beginOperations(): AgentSurfaceActivationAttempt {
         const owner = operationController.begin(scopeKey.value);
@@ -239,7 +227,6 @@ export function useInlineEditorAgentController(
         sessions.value = [];
         session.reset();
         resultText.value = "";
-        sessionModelPopoverOpen.value = false;
         sessionModelSaving.value = false;
         syncSessionModelState();
     }
@@ -584,59 +571,6 @@ export function useInlineEditorAgentController(
         }
     }
 
-    function setSessionModelDraft(value: AgentSessionModelDraft): void {
-        if (modelActionBlocked()) {
-            restoreSessionModelDraft();
-            return;
-        }
-        sessionModelDraft.value = value;
-    }
-
-    function setSessionModelPopoverOpen(value: boolean): void {
-        if (value && modelActionBlocked()) {
-            restoreSessionModelDraft();
-            sessionModelPopoverOpen.value = false;
-            return;
-        }
-        sessionModelPopoverOpen.value = value;
-    }
-
-    function toggleSessionModelPopover(): void {
-        setSessionModelPopoverOpen(!sessionModelPopoverOpen.value);
-    }
-
-    async function applySessionModelSettings(): Promise<void> {
-        if (modelActionBlocked()) {
-            restoreSessionModelDraft();
-            sessionModelPopoverOpen.value = false;
-            return;
-        }
-        const operation = captureSessionOperation();
-        if (!operation) return;
-        const nextModelKey = sessionModelDraft.value.modelKey;
-        const nextThinkingLevel = sessionModelDraft.value.reasoningEffort;
-        if (!await updateSessionModelSelection(nextModelKey, operation)) return;
-        if (!await updateSessionThinkingLevel(nextThinkingLevel, operation)) return;
-        if (!acceptsOperation(operation.owner, operation.sessionId)) return;
-        restoreSessionModelDraft();
-        sessionModelPopoverOpen.value = false;
-    }
-
-    async function resetSessionModelSettings(): Promise<void> {
-        if (modelActionBlocked()) {
-            restoreSessionModelDraft();
-            sessionModelPopoverOpen.value = false;
-            return;
-        }
-        const operation = captureSessionOperation();
-        if (!operation) return;
-        if (!await updateSessionModelSelection(null, operation)) return;
-        if (!await updateSessionThinkingLevel(null, operation)) return;
-        if (!acceptsOperation(operation.owner, operation.sessionId)) return;
-        restoreSessionModelDraft();
-        sessionModelPopoverOpen.value = false;
-    }
-
     function readRememberedSessionId(): number | null {
         const raw = services.storage.getItem(`agent:inline-editor-session:${memoryScopeKey.value}`);
         const parsed = raw ? Number(raw) : NaN;
@@ -700,10 +634,8 @@ export function useInlineEditorAgentController(
         sessionLabel,
         selectableModels,
         sessionModelDraft,
-        sessionModelPopoverOpen,
         sessionModelSaving,
         sessionModelSelectionValue,
-        sessionThinkingResolvedLabel,
         whenReady,
         refreshSessions,
         selectSession,
@@ -712,11 +644,6 @@ export function useInlineEditorAgentController(
         sendPrompt,
         stopPrompt,
         updateSessionModelSelection,
-        setSessionModelDraft,
-        setSessionModelPopoverOpen,
-        toggleSessionModelPopover,
-        applySessionModelSettings,
-        resetSessionModelSettings,
     };
 }
 
@@ -835,17 +762,3 @@ function modelDraftFromRecovery(
     };
 }
 
-function thinkingLevelLabel(
-    level: ThinkingLevelDto,
-    translate: InlineEditorAgentControllerServices["translate"],
-): string {
-    switch (level) {
-        case "off": return translate("agent.composer.off");
-        case "minimal": return translate("agent.composer.minimal");
-        case "low": return translate("agent.composer.low");
-        case "medium": return translate("agent.composer.medium");
-        case "high": return translate("agent.composer.high");
-        case "xhigh": return translate("agent.composer.xhigh");
-        case "max": return translate("agent.composer.max");
-    }
-}

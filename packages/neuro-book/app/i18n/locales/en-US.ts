@@ -1857,7 +1857,6 @@ const enUS = {
         composer: {
             // [i18n-add] 009单C批次1 附件入口收编（5.3 侧追加）
             attachmentsTitle: "View all attachments of this chat",
-            followProfile: "Follow Profile",
             off: "Off",
             minimal: "Minimal",
             low: "Low",
@@ -1889,8 +1888,6 @@ const enUS = {
             steer: "Steer",
             queue: "Queue",
             selectSessionModel: "Select Session model",
-            sessionModelParams: "Current Session Model Parameters",
-            sessionModelDescription: "Only affects future runs in the current Session.",
             model: "Model",
             thinkingEffort: "Thinking Effort",
             current: "Current {value}",
@@ -2095,8 +2092,6 @@ const enUS = {
             summarizingTitle: "Updating the current session title and summary in the background.",
             summaryFailed: "Summary failed",
             followProfileDefault: "Follow Profile default",
-            followProfileCurrent: "Follow Profile (current {level})",
-            requestedEffective: "{requested} (effective {effective})",
             contextUnknown: "Context estimate - / -",
             contextEstimate: "Context estimate {used} / {limit} tokens{percent}",
             cachedRateSuffix: ", converted with cached USD/CNY rate",

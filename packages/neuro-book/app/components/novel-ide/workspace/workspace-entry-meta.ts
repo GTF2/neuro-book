@@ -149,33 +149,19 @@ export function getWorkspaceLorebookStatusIndicatorClass(status: WorkspaceLorebo
  * volume/chapter/lore/node 不在 lorebook 类型集合内：volume 是用户工作区自定的 frontmatter type，
  * chapter/lore 来自约定目录名，node 是 content index 文件角标。
  */
+// ponytail TOP2（审计发现 5）：九连 if 改查表，等价重写
+const KEY_BY_TREE_TYPE: Readonly<Record<string, string>> = {
+    location: "ide.workspace.filePanel.lorebookLocation",
+    character: "ide.workspace.filePanel.lorebookCharacter",
+    item: "ide.workspace.filePanel.lorebookItem",
+    rule: "ide.workspace.filePanel.lorebookRule",
+    note: "ide.workspace.filePanel.lorebookNote",
+    volume: "ide.workspace.filePanel.treeTypeVolume",
+    chapter: "ide.workspace.filePanel.treeTypeChapter",
+    lore: "ide.workspace.filePanel.treeTypeLore",
+    node: "ide.workspace.filePanel.treeTypeNode",
+};
+
 export function getWorkspaceTreeTypeLabelKey(type: string): string | null {
-    if (type === "location") {
-        return "ide.workspace.filePanel.lorebookLocation";
-    }
-    if (type === "character") {
-        return "ide.workspace.filePanel.lorebookCharacter";
-    }
-    if (type === "item") {
-        return "ide.workspace.filePanel.lorebookItem";
-    }
-    if (type === "rule") {
-        return "ide.workspace.filePanel.lorebookRule";
-    }
-    if (type === "note") {
-        return "ide.workspace.filePanel.lorebookNote";
-    }
-    if (type === "volume") {
-        return "ide.workspace.filePanel.treeTypeVolume";
-    }
-    if (type === "chapter") {
-        return "ide.workspace.filePanel.treeTypeChapter";
-    }
-    if (type === "lore") {
-        return "ide.workspace.filePanel.treeTypeLore";
-    }
-    if (type === "node") {
-        return "ide.workspace.filePanel.treeTypeNode";
-    }
-    return null;
+    return KEY_BY_TREE_TYPE[type] ?? null;
 }

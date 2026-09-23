@@ -1854,7 +1854,6 @@ const zhCN = {
         composer: {
             // [i18n-add] 009单C批次1 附件入口收编（5.3 侧追加）
             attachmentsTitle: "查看当前对话的全部附件",
-            followProfile: "跟随 Profile",
             off: "关闭",
             minimal: "极低",
             low: "低",
@@ -1886,8 +1885,6 @@ const zhCN = {
             steer: "引导",
             queue: "队列",
             selectSessionModel: "选择 Session 模型",
-            sessionModelParams: "当前 Session 模型参数",
-            sessionModelDescription: "仅影响当前 Session 后续新发起的 run。",
             model: "模型",
             thinkingEffort: "思考强度",
             current: "当前 {value}",
@@ -2095,8 +2092,6 @@ const zhCN = {
             summarizingTitle: "后台正在更新当前会话标题和摘要。",
             summaryFailed: "摘要失败",
             followProfileDefault: "跟随 Profile 默认",
-            followProfileCurrent: "跟随 Profile（当前 {level}）",
-            requestedEffective: "{requested}（实际 {effective}）",
             contextUnknown: "Context 估算 - / -",
             contextEstimate: "Context 估算 {used} / {limit} tokens{percent}",
             cachedRateSuffix: "，按缓存 USD/CNY 汇率换算",

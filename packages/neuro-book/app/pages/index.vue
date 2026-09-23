@@ -12,7 +12,6 @@ import NovelIdeSettingsDialog from "nbook/app/components/novel-ide/NovelIdeSetti
 import NovelIdeToolPanel from "nbook/app/components/novel-ide/NovelIdeToolPanel.vue";
 import WorldEngineWorkbenchDialog from "nbook/app/components/novel-ide/world-engine/WorldEngineWorkbenchDialog.vue";
 import NovelPromptBar from "nbook/app/components/novel-ide/NovelPromptBar.vue";
-import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import WorkspaceFilePanel from "nbook/app/components/novel-ide/workspace/WorkspaceFilePanel.vue";
 import ProjectPickerScreen from "nbook/app/components/novel-ide/ProjectPickerScreen.vue";
 import UserProfileWorkbenchDialog from "nbook/app/components/profile-template-editor/UserProfileWorkbenchDialog.vue";

@@ -7,7 +7,6 @@ import AgentCacheRing from "nbook/app/components/novel-ide/agent/AgentCacheRing.
 import AgentThinkingLevelSelect from "nbook/app/components/novel-ide/agent/AgentThinkingLevelSelect.vue";
 import AgentUserInputPrompt from "nbook/app/components/novel-ide/agent/AgentUserInputPrompt.vue";
 import AgentWorkspaceChanges from "nbook/app/components/novel-ide/agent/AgentWorkspaceChanges.vue";
-import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import type {EnabledModelOptionDto, ThinkingLevelDto} from "nbook/shared/dto/app-settings.dto";
 import type {
     AgentTriggerMenuContext,
