@@ -121,4 +121,22 @@ describe("同一窗口多实例与销毁", () => {
         expect(emergency).toHaveBeenCalledTimes(1);
         expect(JSON.stringify(emergency.mock.calls[0])).not.toContain("should-not-leak");
     });
+
+    it("stopTimeoutMs 约束显式销毁：释放挂起时销毁结算为 incomplete(deadline)，监听照常移除", async () => {
+        const page = new FakePage();
+        const hang = Promise.withResolvers<void>();
+        const manifest: ApplicationManifest = {
+            keys: [presenceKey],
+            receivers: [],
+            capabilities: [{id: "presence", key: presenceKey, create: () => ({id: "win"}), release: () => hang.promise}],
+            plugins: [],
+            gates: [{id: "presence", kind: "resolve", key: presenceKey}],
+        };
+        const host = new BrowserRuntimeHost().start({instanceId: "win", manifest, page, stopTimeoutMs: 20, emergency: () => undefined});
+        await host.application.startup;
+        expect(await host.destroy()).toMatchObject({status: "incomplete", reason: "deadline"});
+        await vi.waitFor(() => expect(host.detached).toBe(true));
+        expect(page.listeners.size).toBe(0);
+        hang.resolve();
+    });
 });

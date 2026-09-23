@@ -13,7 +13,7 @@ import type {SignalSource} from "./server-host";
 
 const clockKey = defineServiceKey<{now(): number}>("clock");
 
-function manifest(input: {readonly release?: () => void; readonly failRequired?: boolean} = {}): ApplicationManifest {
+function manifest(input: {readonly release?: () => void | Promise<void>; readonly failRequired?: boolean} = {}): ApplicationManifest {
     return {
         keys: [clockKey],
         receivers: [],
@@ -77,7 +77,7 @@ describe("进程信号翻译", () => {
         expect(await host.application.stop()).toEqual({status: "closed"});
     });
 
-    it("启动失败即结算：紧急输出经宿主通道、监听移除、同 id 再次启动得到新实例", async () => {
+    it("启动失败即结算：紧急输出经宿主通道、监听移除；已关闭实例的 id 退役，再次启动须换新身份", async () => {
         const proc = fakeProcess();
         const emergency = vi.fn();
         const runtime = new ServerRuntimeHost();
@@ -86,9 +86,29 @@ describe("进程信号翻译", () => {
         await vi.waitFor(() => expect(failed.detached).toBe(true));
         expect(proc.listenerCount("SIGTERM")).toBe(0);
         expect(emergency).toHaveBeenCalledWith(expect.objectContaining({instanceId: "srv", stage: "startup"}));
-        const fresh = runtime.start({instanceId: "srv", manifest: manifest(), process: proc, emergency});
-        expect(fresh).not.toBe(failed);
+        expect(() => runtime.start({instanceId: "srv", manifest: manifest(), process: proc, emergency})).toThrow(TypeError);
+        expect(proc.listenerCount("SIGTERM")).toBe(0);
+        const fresh = runtime.start({instanceId: "srv-2", manifest: manifest(), process: proc, emergency});
         expect((await fresh.application.startup).status).toBe("available");
         await fresh.application.stop();
+    });
+
+    it("stopTimeoutMs 让信号触发的停止有界：释放挂起时结算为 incomplete(deadline) 并移除监听；非法值拒绝创建", async () => {
+        const proc = fakeProcess();
+        const emergency = vi.fn();
+        const hang = Promise.withResolvers<void>();
+        const runtime = new ServerRuntimeHost();
+        expect(() => runtime.start({instanceId: "bad", manifest: manifest(), process: proc, stopTimeoutMs: 0})).toThrow(TypeError);
+        expect(proc.listenerCount("SIGTERM")).toBe(0);
+        const host = runtime.start({instanceId: "srv", manifest: manifest({release: () => hang.promise}), process: proc, stopTimeoutMs: 20, emergency});
+        await host.application.startup;
+        proc.emit("SIGTERM", "SIGTERM");
+        expect(await host.application.stopped).toMatchObject({status: "incomplete", reason: "deadline"});
+        await vi.waitFor(() => expect(host.detached).toBe(true));
+        expect(proc.listenerCount("SIGTERM")).toBe(0);
+        expect(emergency).toHaveBeenCalledWith(expect.objectContaining({stage: "stop", reason: "关闭未完成：deadline"}));
+        // 未完成的实例仍是同一实例（停止中），保留在表里，直到恢复关闭。
+        expect(runtime.get("srv")).toBe(host);
+        hang.resolve();
     });
 });

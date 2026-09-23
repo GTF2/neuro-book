@@ -48,6 +48,8 @@ interface ChildRun {
     readonly events: Json[];
     readonly exitCode: number | null;
     readonly stderr: string;
+    /** 子进程退出时刻（Date.now）。 */
+    readonly exitedAt: number;
 }
 
 /** 运行 server-entry 子进程；`ready` 到达后由 `onReady` 触发合作停止。 */
@@ -87,7 +89,7 @@ function runServerChild(args: string[], onReady: (send: (line: string) => void, 
         });
         child.on("exit", (exitCode) => {
             clearTimeout(timer);
-            resolve({events, exitCode, stderr});
+            resolve({events, exitCode, stderr, exitedAt: Date.now()});
         });
     });
 }
@@ -96,17 +98,20 @@ function eventOf(run: ChildRun, name: string): Json | undefined {
     return run.events.find((event) => event["event"] === name);
 }
 
+/** 合作停止：POSIX 发 SIGTERM；Windows 外部信号不可合作，改写 stdin `stop`。 */
+function cooperativeStop(send: (line: string) => void, kill: () => boolean): void {
+    if (process.platform === "win32") {
+        send("stop");
+    } else {
+        kill();
+    }
+}
+
 async function serverMode(): Promise<void> {
     const cooperative = process.platform === "win32" ? "stdin:stop" : "signal:SIGTERM";
     log(`server 模式：合作停止通道 ${cooperative}`);
 
-    const healthy = await runServerChild([], (send, kill) => {
-        if (process.platform === "win32") {
-            send("stop");
-        } else {
-            kill();
-        }
-    });
+    const healthy = await runServerChild([], cooperativeStop);
     const startedEvent = eventOf(healthy, "started");
     const startup = eventOf(healthy, "startup");
     const ready = eventOf(healthy, "ready");
@@ -121,7 +126,7 @@ async function serverMode(): Promise<void> {
     check(stop?.["status"] === "closed", `合作停止后关闭完成 (${String(stop?.["status"])})`);
     check(stopped?.["source"] === cooperative, `停止来源为 ${cooperative} (${String(stopped?.["source"])})`);
     check(stopped?.["detached"] === true, "停止结算后信号监听已移除");
-    check(stopped?.["late"] === "startup-failed" || stopped?.["late"] === "closed", `停止后接纳被拒绝 (${String(stopped?.["late"])})`);
+    check(stopped?.["late"] === "closed", `停止后接纳被拒绝且原因为 closed (${String(stopped?.["late"])})`);
     check(stopped?.["greetAfterStop"] === null, "停止后旧命令句柄不可调用");
     check(stopped?.["presenceReleases"] === 1, `presence 能力释放一次 (${String(stopped?.["presenceReleases"])})`);
     check(healthy.exitCode === 0, `子进程自然退出 exit=${String(healthy.exitCode)}`);
@@ -139,6 +144,25 @@ async function serverMode(): Promise<void> {
     const emergencyText = JSON.stringify(emergency ?? {});
     check(emergency !== undefined && emergencyText.includes("必需门禁失败") && !emergencyText.includes("should-not-leak"), "紧急输出可见且不含注入的敏感串");
     check(gated.exitCode === 2, `失败子进程以退出码 2 结束 (${String(gated.exitCode)})`);
+
+    // 有界停止：释放永不结算时，宿主截止让停止结算为 incomplete(deadline)，进程在截止后很快退出。
+    const stopTimeoutMs = 300;
+    let stopRequestedAt = 0;
+    const hung = await runServerChild(["--hang-release", `--stop-timeout-ms=${stopTimeoutMs}`], (send, kill) => {
+        stopRequestedAt = Date.now();
+        cooperativeStop(send, kill);
+    });
+    const hungStopped = eventOf(hung, "stopped");
+    const hungStop = hungStopped?.["stop"] as Json | undefined;
+    const elapsed = hung.exitedAt - stopRequestedAt;
+    check(hungStop?.["status"] === "incomplete" && hungStop["reason"] === "deadline", `释放挂起时停止结算为 incomplete(deadline) (${String(hungStop?.["status"])}/${String(hungStop?.["reason"])})`);
+    check(hungStopped?.["detached"] === true, "有界停止结算后信号监听已移除");
+    check(hungStopped?.["late"] === "stopping", `未完成停止后接纳按 stopping 拒绝 (${String(hungStopped?.["late"])})`);
+    check(hungStopped?.["presenceReleases"] === 1, `挂起的释放只调用一次，不被重入 (${String(hungStopped?.["presenceReleases"])})`);
+    const hungEmergencies = hung.events.filter((event) => event["event"] === "emergency");
+    check(hungEmergencies.length === 1 && JSON.stringify(hungEmergencies[0]).includes("关闭未完成：deadline"), `紧急输出一次报告 deadline (${hungEmergencies.length})`);
+    check(hung.exitCode === 3, `未完成停止以退出码 3 结束 (${String(hung.exitCode)})`);
+    check(stopRequestedAt > 0 && elapsed >= stopTimeoutMs && elapsed < stopTimeoutMs + 5_000, `停止请求到退出 ${elapsed}ms：受 ${stopTimeoutMs}ms 截止约束，未被挂起的释放拖住`);
 }
 
 interface PresenceCounter {
@@ -234,7 +258,7 @@ async function browserMode(executable: string | undefined): Promise<void> {
         const stop = destroyed["stop"] as Json;
         check(stop["status"] === "closed", `显式销毁关闭完成 (${String(stop["status"])})`);
         check(destroyed["source"] === "destroy" && destroyed["detached"] === true, "停止来源 destroy 且卸载监听已移除");
-        check(destroyed["late"] === "startup-failed" || destroyed["late"] === "closed", `销毁后接纳被拒绝 (${String(destroyed["late"])})`);
+        check(destroyed["late"] === "closed", `销毁后接纳被拒绝且原因为 closed (${String(destroyed["late"])})`);
         check(destroyed["greetAfterStop"] === null, "销毁后旧命令句柄不可调用");
         const greetA2 = await pageA.evaluate(() => (globalThis as unknown as {runtimeFoundation: {greet(id: string, name: string): Promise<string | null>}}).runtimeFoundation.greet("win-a-second", "A2"));
         const greetBAgain = await pageB.evaluate(() => (globalThis as unknown as {runtimeFoundation: {greet(id: string, name: string): Promise<string | null>}}).runtimeFoundation.greet("win-b", "B2"));
@@ -250,6 +274,20 @@ async function browserMode(executable: string | undefined): Promise<void> {
         check(gatedGates.some((gate) => gate["id"] === "flaky" && gate["status"] === "failed" && gate["required"] === false), "可选入口失败单独报告");
         const emergencies = (await pageA.evaluate(() => (globalThis as unknown as {runtimeFoundation: {emergencies(): unknown}}).runtimeFoundation.emergencies())) as Array<Json>;
         check(emergencies.some((report) => report["stage"] === "startup") && !JSON.stringify(emergencies).includes("should-not-leak"), "紧急输出可见且不含敏感串");
+
+        // 5b. 有界销毁：在场释放永不结算时，截止让销毁结算为 incomplete(deadline)，页面不被挂住。
+        const bounded = (await pageA.evaluate(async () => {
+            const api = (globalThis as unknown as {runtimeFoundation: {start(id: string, options: unknown): Promise<unknown>; destroy(id: string): Promise<unknown>}}).runtimeFoundation;
+            await api.start("win-a-bounded", {hangRelease: true, stopTimeoutMs: 200});
+            const begin = performance.now();
+            const result = (await api.destroy("win-a-bounded")) as Record<string, unknown>;
+            return {...result, elapsed: Math.round(performance.now() - begin)};
+        })) as Json;
+        const boundedStop = bounded["stop"] as Json;
+        check(boundedStop["status"] === "incomplete" && boundedStop["reason"] === "deadline", `释放挂起时销毁结算为 incomplete(deadline) (${String(boundedStop["status"])}/${String(boundedStop["reason"])})`);
+        check(bounded["detached"] === true && bounded["late"] === "stopping", `有界销毁后监听移除、接纳按 stopping 拒绝 (late=${String(bounded["late"])})`);
+        const boundedElapsed = bounded["elapsed"];
+        check(typeof boundedElapsed === "number" && boundedElapsed >= 190 && boundedElapsed < 5_000, `销毁耗时 ${String(boundedElapsed)}ms，受 200ms 截止约束`);
 
         // 6. pagehide 只请求停止；不等待关闭结果。
         const unloaded = (await pageB.evaluate(() => (globalThis as unknown as {runtimeFoundation: {unload(id: string): unknown}}).runtimeFoundation.unload("win-b"))) as Json;

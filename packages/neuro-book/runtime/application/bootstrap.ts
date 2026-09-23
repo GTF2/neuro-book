@@ -29,6 +29,15 @@ function isRequired(gate: StartupGate): boolean {
     return gate.required !== false;
 }
 
+/** 首次停止的关闭请求：宿主截止与调用方截止同时约束，任一触发即本次尝试结算为未完成。 */
+function firstStopRequest(host: AbortSignal | undefined, request: CloseRequest | undefined): CloseRequest | undefined {
+    if (host === undefined) {
+        return request;
+    }
+    const own = request?.deadline;
+    return {...request, deadline: own === undefined ? host : AbortSignal.any([host, own])};
+}
+
 export class ApplicationImpl implements Application {
     readonly identity;
     readonly root: Scope;
@@ -43,6 +52,8 @@ export class ApplicationImpl implements Application {
     #startup: StartupResult | null = null;
     #stop: Promise<StopResult> | null = null;
     #stopResult: StopResult | null = null;
+    /** 已发过紧急输出的关闭结果：恢复加入在途尝试时拿到同一结果，不重复报告。 */
+    #reportedClose: CloseResult | null = null;
     readonly #stopped = Promise.withResolvers<StopResult>();
     readonly stopped: Promise<StopResult> = this.#stopped.promise;
 
@@ -77,7 +88,9 @@ export class ApplicationImpl implements Application {
     async admit<T>(spec: OperationSpec<T>): Promise<AdmissionResult<T>> {
         const startup = await this.startup;
         if (startup.status !== "available") {
-            return {status: "rejected", reason: "startup-failed"};
+            // 启动失败与启动前被宿主停止是两种原因：后者按根作用域当前阶段报告。
+            const reason = startup.status === "failed" ? "startup-failed" : this.root.phase === "closed" ? "closed" : "stopping";
+            return {status: "rejected", reason};
         }
         try {
             return {status: "accepted", operation: this.root.accept(spec)};
@@ -91,7 +104,7 @@ export class ApplicationImpl implements Application {
 
     stop(request?: CloseRequest): Promise<StopResult> {
         if (this.#stop === null) {
-            this.#stop = this.#settleStop(this.root.close(request));
+            this.#stop = this.#settleStop(this.root.close(firstStopRequest(this.#host.stopDeadline?.(), request)));
             this.#stopped.resolve(this.#stop);
         }
         return this.#stop;
@@ -106,7 +119,8 @@ export class ApplicationImpl implements Application {
         return closing.then((result): StopResult => {
             const stop: StopResult = result.status === "closed" ? {status: "closed"} : {status: "incomplete", reason: result.reason, report: result};
             this.#stopResult = stop;
-            if (stop.status === "incomplete") {
+            if (stop.status === "incomplete" && result !== this.#reportedClose) {
+                this.#reportedClose = result;
                 const report = stop.report;
                 this.#emergency("stop", `关闭未完成：${stop.reason}`, `failedResources=${report.failedResources.length} pendingReleases=${report.pendingReleases.length} unclosedChildren=${report.unclosedChildren.length}`);
             }

@@ -4,9 +4,13 @@
  * 使用），停止结算后自然退出。本进程不监听端口、不杀任何进程、不写仓库数据。
  *
  * 用法：node --import tsx scripts/smoke/runtime-foundation/server-entry.ts [--fail-required] [--fail-optional]
+ *       [--hang-release --stop-timeout-ms=<n>]
+ * `--hang-release` 让 presence 释放永不结算，配合 `--stop-timeout-ms` 验证宿主有界停止：停止结算为
+ * `incomplete(deadline)`，进程以退出码 3 结束，而不是被挂起的释放拖住。
  */
 
 import {createInterface} from "node:readline";
+import {parseArgs} from "node:util";
 
 import {ServerRuntimeHost} from "../../../server/runtime/foundation/server-host";
 import type {EmergencyReport} from "../../../runtime/application/application";
@@ -18,8 +22,18 @@ function emit(event: string, detail: Record<string, unknown> = {}): void {
     process.stdout.write(`${JSON.stringify({event, ...detail})}\n`);
 }
 
-const failRequired = process.argv.includes("--fail-required");
-const failOptional = process.argv.includes("--fail-optional");
+const {values: flags} = parseArgs({
+    options: {
+        "fail-required": {type: "boolean", default: false},
+        "fail-optional": {type: "boolean", default: false},
+        "hang-release": {type: "boolean", default: false},
+        "stop-timeout-ms": {type: "string"},
+    },
+});
+const failRequired = flags["fail-required"];
+const failOptional = flags["fail-optional"];
+const hangRelease = flags["hang-release"];
+const stopTimeoutMs = flags["stop-timeout-ms"] === undefined ? undefined : Number(flags["stop-timeout-ms"]);
 const emergencies: EmergencyReport[] = [];
 const commands = createCommandTable();
 let presenceReleases = 0;
@@ -39,6 +53,8 @@ const manifest = createControlledManifest({
         create: (): Presence => ({id: `pid-${process.pid}`}),
         release: () => {
             presenceReleases += 1;
+            // 永不结算的释放：只有宿主截止能让停止结算。
+            return hangRelease ? new Promise<void>(() => undefined) : undefined;
         },
     },
 });
@@ -47,6 +63,7 @@ const runtime = new ServerRuntimeHost();
 const options = {
     instanceId: `server-${process.pid}`,
     manifest,
+    stopTimeoutMs,
     emergency: (report: EmergencyReport) => {
         emergencies.push(report);
         emit("emergency", {report});

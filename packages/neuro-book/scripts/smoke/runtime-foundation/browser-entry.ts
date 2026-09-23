@@ -15,7 +15,8 @@ import {clockKey, createCommandTable, createControlledManifest, presenceKey} fro
 import type {Clock, CommandTable, Presence} from "./controlled-manifest";
 
 interface PageScenario {
-    start(instanceId: string, options?: {readonly failRequired?: boolean; readonly failOptional?: boolean}): Promise<{
+    /** `hangRelease` 让在场释放永不结算，配合 `stopTimeoutMs` 验证有界销毁。 */
+    start(instanceId: string, options?: {readonly failRequired?: boolean; readonly failOptional?: boolean; readonly hangRelease?: boolean; readonly stopTimeoutMs?: number}): Promise<{
         readonly startup: StartupResult;
         readonly shared: boolean;
         readonly admission: string;
@@ -68,12 +69,15 @@ const scenario: PageScenario = {
                     return {id: instanceId};
                 },
                 release: async (presence) => {
+                    if (options.hangRelease) {
+                        return new Promise<void>(() => undefined);
+                    }
                     await presenceRequest("/presence/release", presence.id);
                 },
             },
         });
         const first = hosts.get(instanceId);
-        const host = runtime.start({instanceId, manifest, page: pageTarget, emergency: (report) => emergencies.push(report)});
+        const host = runtime.start({instanceId, manifest, page: pageTarget, stopTimeoutMs: options.stopTimeoutMs, emergency: (report) => emergencies.push(report)});
         hosts.set(instanceId, host);
         const startup = await host.application.startup;
         return {startup, shared: first !== undefined && first === host, admission: host.application.status().admission};

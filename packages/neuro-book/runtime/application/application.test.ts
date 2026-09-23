@@ -9,7 +9,7 @@ import type {PluginDefinition} from "../plugins/plugins";
 import {provide} from "../plugins/plugins";
 import {defineServiceKey} from "../services/services";
 
-import {createApplication} from "./application";
+import {createApplication, createInstanceTable, stopTimeout} from "./application";
 import type {ApplicationManifest, EmergencyReport, HostContext, StartupGate} from "./application";
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
@@ -203,6 +203,8 @@ describe("启动与关闭竞态", () => {
         expect(application.status()).toMatchObject({phase: "closed", admission: "closed"});
         expect(releaseClock).toHaveBeenCalledTimes(1);
         expect(await application.stop()).toEqual({status: "closed"});
+        // 启动前被宿主停止不是启动失败：接纳拒绝原因按根作用域阶段报告。
+        expect(await application.admit({label: "late", run: () => 1})).toEqual({status: "rejected", reason: "closed"});
     });
 
     it("停止进入后拒绝新业务，已接纳操作仍完成；依赖关闭失败则不报整实例 closed，重复停止观察同一结果；显式恢复才另起尝试", async () => {
@@ -258,6 +260,62 @@ describe("启动与关闭竞态", () => {
         controller.abort();
         expect(await application.stopped).toEqual({status: "closed"});
         expect(application.status()).toMatchObject({phase: "closed"});
+    });
+
+    it("宿主截止约束首次停止：释放挂起时停止结算为 incomplete(deadline)，挂起的释放不被重入，紧急输出一次", async () => {
+        const hang = Promise.withResolvers<void>();
+        const release = vi.fn(() => hang.promise);
+        const {context, controller, emergencies} = host();
+        const application = createApplication({...context, stopDeadline: stopTimeout(20)}, manifest({releaseClock: release}));
+        await application.startup;
+        controller.abort();
+        const stop = await application.stopped;
+        expect(stop).toMatchObject({status: "incomplete", reason: "deadline"});
+        expect(application.status().phase).toBe("stopping");
+        expect(emergencies.filter((report) => report.stage === "stop")).toHaveLength(1);
+        expect(release).toHaveBeenCalledTimes(1);
+        hang.resolve();
+    });
+
+    it("显式恢复加入在途停止时观察同一结果，不重复紧急输出", async () => {
+        const hang = Promise.withResolvers<void>();
+        const {context, emergencies} = host();
+        const application = createApplication(context, manifest({releaseClock: () => hang.promise.then(() => {
+            throw new Error("clock 释放失败");
+        })}));
+        await application.startup;
+        const stopping = application.stop();
+        await tick();
+        const recovering = application.recover();
+        hang.resolve();
+        const [stop, recovered] = await Promise.all([stopping, recovering]);
+        expect(stop.status).toBe("incomplete");
+        expect(recovered).toEqual(stop);
+        expect(emergencies.filter((report) => report.stage === "stop")).toHaveLength(1);
+    });
+
+    it("stopTimeout 只接受正整数毫秒", () => {
+        for (const invalid of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+            expect(() => stopTimeout(invalid)).toThrow(TypeError);
+        }
+    });
+});
+
+describe("宿主实例表", () => {
+    it("存活实例共享同一宿主对象；关闭后 id 退役不能再启动，新 id 可以启动，表不再返回已关闭实例", async () => {
+        const table = createInstanceTable<{readonly application: ReturnType<typeof createApplication>}>();
+        const create = vi.fn(() => ({application: createApplication(host("app-1").context, manifest())}));
+        const first = table.start("app-1", create);
+        expect(table.start("app-1", create)).toBe(first);
+        expect(create).toHaveBeenCalledTimes(1);
+        await first.application.startup;
+        await first.application.stop();
+        await tick();
+        expect(table.get("app-1")).toBeNull();
+        expect(() => table.start("app-1", create)).toThrow(TypeError);
+        const second = table.start("app-2", () => ({application: createApplication(host("app-2").context, manifest())}));
+        expect(table.get("app-2")).toBe(second);
+        await second.application.stop();
     });
 });
 

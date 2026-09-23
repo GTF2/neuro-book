@@ -37,6 +37,12 @@ export interface HostContext {
     readonly identity: RuntimeInstanceIdentity;
     /** 宿主要求停止（进程信号、页面销毁、验收脚本）；触发即进入停止。 */
     readonly stopSignal: AbortSignal;
+    /**
+     * 宿主给首次停止的截止（有界终止由拥有进程/页面的宿主执行）：内核在首次停止开始时调用一次，
+     * 返回的信号触发后本次停止尝试结算为 `incomplete(deadline)`，已在跑的释放继续跑、不被撤销也不重入。
+     * 不作用于显式恢复。
+     */
+    readonly stopDeadline?: () => AbortSignal;
     emergency(report: EmergencyReport): void;
 }
 
@@ -148,11 +154,12 @@ export interface Application {
     status(): ApplicationStatus;
     /** 等待同一启动结果后接纳业务操作；未开放接纳时明确拒绝，不绕过启动。 */
     admit<T>(spec: OperationSpec<T>): Promise<AdmissionResult<T>>;
-    /** 幂等：重复停止观察同一次结果；显式恢复才另起一次尝试。 */
+    /** 幂等：重复停止观察同一次结果；宿主截止与调用方截止同时约束，任一触发即 `incomplete(deadline)`。 */
     stop(request?: CloseRequest): Promise<StopResult>;
     /**
      * 显式恢复：对上一次未完成的停止另起一次关闭尝试（只重试失败资源，不与在途清理重入）；
-     * 之后 `stop()`、`status().stop` 观察这次的结果。未进入停止时抛 LifecycleStateError。
+     * 只使用调用方自带的截止，不复用宿主为首次停止设的截止。之后 `stop()`、`status().stop`
+     * 观察这次的结果。未进入停止时抛 LifecycleStateError。
      */
     recover(request?: CloseRequest): Promise<StopResult>;
     /** 本实例首次停止尝试的结算（无论由宿主信号、启动失败还是显式 stop 触发）；不触发停止。 */

@@ -6,7 +6,7 @@
  * 第一切片用受控装配验证真实宿主事件，正式产品的 product-startup/shutdown 尚未接入这里。
  */
 
-import {createApplication} from "../../../runtime/application/application";
+import {createApplication, createInstanceTable, stopTimeout} from "../../../runtime/application/application";
 import type {Application, ApplicationManifest, EmergencyReport} from "../../../runtime/application/application";
 
 /** 适配器需要的最小进程接口：只用到信号事件的挂接与移除；测试可传入 EventEmitter 替身。 */
@@ -24,6 +24,11 @@ export interface ServerHostOptions {
     readonly process?: SignalSource;
     /** 紧急输出；缺省向 stderr 写一行 JSON。 */
     readonly emergency?: (report: EmergencyReport) => void;
+    /**
+     * 首次停止的有界等待（毫秒）：超时后停止结算为 `incomplete(deadline)`、监听移除，进程由宿主决定退出；
+     * 在跑的释放不被撤销。缺省不设界（只受调用方截止约束）。
+     */
+    readonly stopTimeoutMs?: number;
 }
 
 export interface ServerHost {
@@ -52,6 +57,7 @@ class ServerHostImpl implements ServerHost {
     readonly #onSignal = (signal: NodeJS.Signals): void => this.requestStop(`signal:${signal}`);
 
     constructor(options: ServerHostOptions) {
+        const stopDeadline = options.stopTimeoutMs === undefined ? undefined : stopTimeout(options.stopTimeoutMs);
         this.#source = options.process ?? process;
         this.#signals = options.signals ?? DEFAULT_SIGNALS;
         for (const signal of this.#signals) {
@@ -61,6 +67,7 @@ class ServerHostImpl implements ServerHost {
             {
                 identity: {location: "server", instanceId: options.instanceId},
                 stopSignal: this.#controller.signal,
+                stopDeadline,
                 emergency: options.emergency ?? writeEmergency,
             },
             options.manifest,
@@ -87,23 +94,16 @@ class ServerHostImpl implements ServerHost {
 
 /**
  * 服务端宿主：一个进程可以持有多个实例（按 instanceId 隔离）；同一 instanceId 存活期间重复启动
- * 共享同一实例与同一组监听，不再挂接第二份。
+ * 共享同一实例与同一组监听，不再挂接第二份；实例关闭后该 id 退役（见 createInstanceTable）。
  */
 export class ServerRuntimeHost {
-    readonly #hosts = new Map<string, ServerHostImpl>();
+    readonly #instances = createInstanceTable<ServerHostImpl>();
 
     start(options: ServerHostOptions): ServerHost {
-        const existing = this.#hosts.get(options.instanceId);
-        if (existing !== undefined && existing.application.root.phase !== "closed") {
-            return existing;
-        }
-        const host = new ServerHostImpl(options);
-        this.#hosts.set(options.instanceId, host);
-        return host;
+        return this.#instances.start(options.instanceId, () => new ServerHostImpl(options));
     }
 
     get(instanceId: string): ServerHost | null {
-        const host = this.#hosts.get(instanceId);
-        return host === undefined || host.application.root.phase === "closed" ? null : host;
+        return this.#instances.get(instanceId);
     }
 }

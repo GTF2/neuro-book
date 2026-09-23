@@ -3,8 +3,8 @@
  *
  * Owner 为 runtime。本目录只允许同目录相对导入与 lifecycle / services / plugins 三个机制入口：
  * 不依赖 Vue、Nuxt、Nitro、进程信号、DOM、文件或数据库驱动。宿主事件由环境适配器
- * （server/runtime/foundation、app/runtime）翻译为 `HostContext` 后交给这里；
- * 「同一 instanceId 存活期间共享实例、已关闭不复活」由持有实例表的适配器保证，内核不维护全局表。
+ * （server/runtime/foundation、app/runtime）翻译为 `HostContext` 后交给这里；适配器用
+ * `createInstanceTable` 持有自己的实例，同一身份的共享与退役规则只在这里实现。
  *
  * 数据边界：内核只在内存里维护清单登记、门禁结果与停止结果；本能力不定义用户持久格式，
  * 正常停止不删除任何配置、Project、数据库或 Storage 记录。
@@ -15,9 +15,23 @@
 import {ApplicationImpl} from "./bootstrap";
 import type {Application, ApplicationManifest, HostContext} from "./contracts";
 
+export {createInstanceTable} from "./instances";
+export type {InstanceTable} from "./instances";
+
 export type * from "./contracts";
 
 /** 创建并启动一个运行实例；启动结果在 `application.startup` 上共享。 */
 export function createApplication(host: HostContext, manifest: ApplicationManifest): Application {
     return new ApplicationImpl(host, manifest);
+}
+
+/**
+ * 宿主有界停止的常用形态：首次停止开始后 `ms` 毫秒截止。`AbortSignal.timeout` 在 Node 与浏览器
+ * 都可用，且不阻止进程退出；停止先结算时无需清理。
+ */
+export function stopTimeout(ms: number): NonNullable<HostContext["stopDeadline"]> {
+    if (!Number.isInteger(ms) || ms <= 0) {
+        throw new TypeError(`stopTimeoutMs 必须是正整数毫秒，收到 ${String(ms)}`);
+    }
+    return () => AbortSignal.timeout(ms);
 }

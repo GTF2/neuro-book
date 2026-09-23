@@ -8,7 +8,7 @@
  * 同一 `window` 内的两个实例按 instanceId 隔离，互不共享对象；释放一个实例不发送共享后端的全局关闭。
  */
 
-import {createApplication} from "../../runtime/application/application";
+import {createApplication, createInstanceTable, stopTimeout} from "../../runtime/application/application";
 import type {Application, ApplicationManifest, EmergencyReport, StopResult} from "../../runtime/application/application";
 
 /** 适配器需要的最小页面事件接口：`pagehide` 的挂接与移除；测试可传入 EventTarget 替身。 */
@@ -24,6 +24,11 @@ export interface BrowserHostOptions {
     readonly page?: PageLifecycleTarget;
     /** 紧急输出；缺省 `console.error` 一行 JSON。 */
     readonly emergency?: (report: EmergencyReport) => void;
+    /**
+     * 首次停止的有界等待（毫秒）：超时后停止结算为 `incomplete(deadline)`、监听移除；在跑的释放不被撤销。
+     * 缺省不设界。页面卸载本就不保证异步回调执行，这里只约束显式销毁可观察的结果。
+     */
+    readonly stopTimeoutMs?: number;
 }
 
 export interface BrowserHost {
@@ -61,12 +66,14 @@ class BrowserHostImpl implements BrowserHost {
     readonly #onPageHide = (): void => this.#requestStop("unload");
 
     constructor(options: BrowserHostOptions) {
+        const stopDeadline = options.stopTimeoutMs === undefined ? undefined : stopTimeout(options.stopTimeoutMs);
         this.#page = resolvePage(options.page);
         this.#page.addEventListener("pagehide", this.#onPageHide);
         this.application = createApplication(
             {
                 identity: {location: "browser", instanceId: options.instanceId},
                 stopSignal: this.#controller.signal,
+                stopDeadline,
                 emergency: options.emergency ?? writeEmergency,
             },
             options.manifest,
@@ -94,22 +101,18 @@ class BrowserHostImpl implements BrowserHost {
     }
 }
 
-/** 浏览器宿主：一个页面可以持有多个实例（按 instanceId 隔离）；同一 instanceId 存活期间重复启动共享同一实例。 */
+/**
+ * 浏览器宿主：一个页面可以持有多个实例（按 instanceId 隔离）；同一 instanceId 存活期间重复启动共享同一实例；
+ * 实例关闭后该 id 退役（见 createInstanceTable）。
+ */
 export class BrowserRuntimeHost {
-    readonly #hosts = new Map<string, BrowserHostImpl>();
+    readonly #instances = createInstanceTable<BrowserHostImpl>();
 
     start(options: BrowserHostOptions): BrowserHost {
-        const existing = this.#hosts.get(options.instanceId);
-        if (existing !== undefined && existing.application.root.phase !== "closed") {
-            return existing;
-        }
-        const host = new BrowserHostImpl(options);
-        this.#hosts.set(options.instanceId, host);
-        return host;
+        return this.#instances.start(options.instanceId, () => new BrowserHostImpl(options));
     }
 
     get(instanceId: string): BrowserHost | null {
-        const host = this.#hosts.get(instanceId);
-        return host === undefined || host.application.root.phase === "closed" ? null : host;
+        return this.#instances.get(instanceId);
     }
 }
