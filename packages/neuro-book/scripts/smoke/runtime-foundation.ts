@@ -1,8 +1,9 @@
 /**
- * 第一切片 smoke：同一公共入口按宿主模式验证环境适配。
+ * 底座 smoke：同一公共入口按宿主模式验证环境适配，`--services` 验证第二切片的三个内置服务插件。
  *
  *   node --import tsx scripts/smoke/runtime-foundation.ts --host server
  *   node --import tsx scripts/smoke/runtime-foundation.ts --host browser [--browser-executable <path>]
+ *   node --import tsx scripts/smoke/runtime-foundation.ts --services
  *
  * 与其它 playwright smoke 一样在 Node 下运行：Bun 1.3 在 Windows 上与 playwright-core 的启动管道
  * 互不兼容（launch 60s 超时）。server 模式：用同一运行器启动真实子进程运行 server-entry，等到
@@ -11,11 +12,15 @@
  * browser 模式：esbuild 以 browser 平台打包 browser-entry，临时 HTTP 服务器提供页面与在场计数端点，
  * 用 playwright-core 启动隔离 Chromium：两个 tab 各自装配、一个 tab 内两个实例隔离、显式销毁、
  * pagehide 只请求停止；核对释放在场从不触发全局关闭。
+ * services 模式：子进程运行 services-entry，装配真实 runtime-diagnostics/platform-files/sqlite 与两个消费者：
+ * 写入→提交→关闭→另一进程重开读回；存活期间第二进程争用同一日志位置只降级不抢写；逐个移除必需提供者
+ * 启动明确失败且不产生数据副作用；句柄未释放时停止报告未完成，释放后显式恢复才 closed。
  * 全部产物在测试支持包分配的系统 Temp 下，finally 删除；不初始化产品数据库、不调用 Provider。
  */
 
 import {spawn} from "node:child_process";
-import {mkdir, rm, writeFile} from "node:fs/promises";
+import {existsSync} from "node:fs";
+import {mkdir, readdir, readFile, rm, writeFile} from "node:fs/promises";
 import {createServer} from "node:http";
 import type {AddressInfo} from "node:net";
 import {dirname, join} from "node:path";
@@ -26,6 +31,8 @@ import {resolveAgentScratchPath} from "@notnotype/neuro-book-test-support/paths"
 import {build} from "esbuild";
 import {chromium} from "playwright-core";
 import type {Browser} from "playwright-core";
+
+import {NOTES_BODY, NOTES_ROW, SECRET_SAMPLES, SERVICE_PLUGIN_IDS} from "./runtime-foundation/services-fixture";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const started = Date.now();
@@ -52,10 +59,15 @@ interface ChildRun {
     readonly exitedAt: number;
 }
 
-/** 运行 server-entry 子进程；`ready` 到达后由 `onReady` 触发合作停止。 */
-function runServerChild(args: string[], onReady: (send: (line: string) => void, kill: () => boolean) => void, timeoutMs = 20_000): Promise<ChildRun> {
+/** 运行 runtime-foundation 下的子进程入口；`ready` 到达后由 `onReady` 触发合作停止。 */
+function runServerChild(
+    args: string[],
+    onReady: (send: (line: string) => void, kill: () => boolean) => void,
+    timeoutMs = 20_000,
+    entry = "server-entry.ts",
+): Promise<ChildRun> {
     return new Promise((resolve, reject) => {
-        const child = spawn(process.execPath, [...process.execArgv, join(scriptDir, "runtime-foundation", "server-entry.ts"), ...args], {stdio: ["pipe", "pipe", "pipe"]});
+        const child = spawn(process.execPath, [...process.execArgv, join(scriptDir, "runtime-foundation", entry), ...args], {stdio: ["pipe", "pipe", "pipe"]});
         const events: Json[] = [];
         let stderr = "";
         let buffered = "";
@@ -302,21 +314,140 @@ async function browserMode(executable: string | undefined): Promise<void> {
     }
 }
 
+/** 等待一个就绪的子进程：返回 stop 函数，供父进程在做完并发检查后再合作停止。 */
+function startHeldChild(args: string[]): {ready: Promise<void>; run: Promise<ChildRun>; stop(): void} {
+    let stopper: (() => void) | null = null;
+    const {promise: ready, resolve} = Promise.withResolvers<void>();
+    const run = runServerChild(args, (send, kill) => {
+        stopper = () => cooperativeStop(send, kill);
+        resolve();
+    }, 30_000, "services-entry.ts");
+    // 子进程在 ready 前退出（启动失败）也要让等待方醒来。
+    void run.then(() => resolve(), () => resolve());
+    return {ready, run, stop: () => stopper?.()};
+}
+
+function logLines(text: string): Json[] {
+    return text.split("\n").filter((line) => line.trim() !== "").map((line) => JSON.parse(line) as Json);
+}
+
+/** node:sqlite 的实验特性告警是运行时固定输出，不算子进程错误；其余 stderr 行都算。 */
+function unexpectedStderr(text: string): string {
+    return text.split("\n").filter((line) => line.trim() !== "" && !line.includes("ExperimentalWarning: SQLite") && !line.includes("--trace-warnings")).join("\n");
+}
+
+async function servicesMode(): Promise<void> {
+    const scratch = resolveAgentScratchPath("w00017-runtime-foundation-smoke", `services-${process.pid}`);
+    const logDir = join(scratch, "logs");
+    const dataDir = join(scratch, "data");
+    const dbDir = join(scratch, "db");
+    log(`services 模式：scratch=${scratch}`);
+    try {
+        await rm(scratch, {recursive: true, force: true});
+        await mkdir(dataDir, {recursive: true});
+        await mkdir(dbDir, {recursive: true});
+        const base = ["--scratch", scratch];
+
+        // 1. 移除任一必需提供者：启动明确失败、不接纳；缺依赖的 notes 不激活，没有文件或数据库副作用。
+        //    audit 不依赖文件能力，移除 platform-files 时它仍会激活并在自己的位置登记 audit.sqlite——这是独立消费者
+        //    的正常行为，随启动失败收口，不算越界。
+        for (const omitted of SERVICE_PLUGIN_IDS) {
+            const run = await runServerChild([...base, "--phase", "write", "--omit", omitted], () => undefined, 30_000, "services-entry.ts");
+            const startup = eventOf(run, "startup");
+            const stop = startup?.["stop"] as Json | undefined;
+            const failed = ((startup?.["gates"] as Json[] | undefined) ?? []).filter((gate) => gate["status"] === "failed").map((gate) => String(gate["id"]));
+            check(startup?.["status"] === "failed" && startup["admission"] === "closed" && stop?.["status"] === "closed", `移除 ${omitted}：启动 failed、不接纳、已取得资源收口 (${String(startup?.["status"])}; failed=${failed.join(",")})`);
+            check(failed.includes("notes"), `移除 ${omitted}：依赖它的 notes 门禁失败`);
+            check(run.exitCode === 2, `移除 ${omitted}：退出码 2 (${String(run.exitCode)})`);
+            check((await readdir(dataDir)).length === 0 && !existsSync(join(dbDir, "notes.sqlite")), `移除 ${omitted}：notes 没有文件或数据库副作用`);
+            const emergency = eventOf(run, "emergency");
+            check(emergency !== undefined && JSON.stringify(emergency).includes("必需门禁失败"), `移除 ${omitted}：紧急输出可见`);
+            check(unexpectedStderr(run.stderr) === "", `移除 ${omitted}：无非预期 stderr${unexpectedStderr(run.stderr) === "" ? "" : `：${unexpectedStderr(run.stderr).slice(0, 200)}`}`);
+        }
+        // 诊断在场时，启动失败也进入日志文件（在收口前写出）。
+        const failureLines = existsSync(join(logDir, "server-current.jsonl")) ? logLines(await readFile(join(logDir, "server-current.jsonl"), "utf8")) : [];
+        check(failureLines.some((line) => line["event"] === "application.startup-emergency"), `启动门禁失败写入诊断日志 (${failureLines.filter((line) => line["event"] === "application.startup-emergency").length} 条)`);
+
+        // 2. 写阶段：三插件激活，notes 写文件并提交一行；存活期间第二进程争用同一日志位置。
+        const writer = startHeldChild([...base, "--phase", "write"]);
+        await writer.ready;
+        const contender = startHeldChild([...base, "--phase", "read"]);
+        await contender.ready;
+        contender.stop();
+        writer.stop();
+        const [written, contended] = await Promise.all([writer.run, contender.run]);
+        const ready = eventOf(written, "ready");
+        const notes = ready?.["notes"] as Json | undefined;
+        const rows = (notes?.["rows"] as Json[] | undefined) ?? [];
+        check(notes?.["text"] === NOTES_BODY, "写阶段：文件经授予写入后可读回");
+        check(rows.length === 1 && rows[0]?.["body"] === NOTES_ROW, `写阶段：SQLite 事务提交且注入样式文本按值保存 (${rows.length} 行)`);
+        const audit = ready?.["audit"] as Json | undefined;
+        check(audit?.["sharedSqliteInstance"] === true, "同一解析作用域的两个消费者共享同一 SQLite 服务实例");
+        check(audit?.["isolatedResourceFile"] === "audit.sqlite", `同名资源按 owner 作用域隔离 (${String(audit?.["isolatedResourceFile"])})`);
+        check(audit?.["secondOwnerCode"] === "file-owned", `同一物理文件拒绝第二 owner (${String(audit?.["secondOwnerCode"])})`);
+        const writerDiagnostics = ready?.["diagnostics"] as Json | undefined;
+        check((writerDiagnostics?.["exporter"] as Json | undefined)?.["state"] === "open" && writerDiagnostics?.["degraded"] === null, "写阶段：诊断文件出口获授日志位置");
+        check(((ready?.["query"] as string[] | undefined) ?? []).includes("notes.write"), "消费者可查询本实例诊断");
+        const contendedReady = eventOf(contended, "ready");
+        const contendedDiagnostics = contendedReady?.["diagnostics"] as Json | undefined;
+        check((contendedDiagnostics?.["degraded"] as Json | null | undefined)?.["reason"] === "location-conflict", `并发实例争用同一日志位置时降级 (${JSON.stringify(contendedDiagnostics?.["degraded"])})`);
+        const writtenStop = eventOf(written, "stopped")?.["stop"] as Json | undefined;
+        check(writtenStop?.["status"] === "closed" && written.exitCode === 0, `写阶段合作停止后 closed (${String(writtenStop?.["status"])}, exit=${String(written.exitCode)})`);
+        check(contended.exitCode === 0, `争用实例仍可用并正常关闭 (exit=${String(contended.exitCode)})`);
+        check(unexpectedStderr(written.stderr) === "" && unexpectedStderr(contended.stderr) === "", `写阶段与争用实例无非预期 stderr${unexpectedStderr(written.stderr + contended.stderr) === "" ? "" : `：${unexpectedStderr(written.stderr + contended.stderr).slice(0, 200)}`}`);
+
+        const logText = await readFile(join(logDir, "server-current.jsonl"), "utf8");
+        const lines = logLines(logText);
+        const writerId = String(ready?.["instanceId"]);
+        const contenderId = String(contendedReady?.["instanceId"]);
+        check(lines.some((line) => line["event"] === "notes.write" && (line["data"] as Json)["$source"] !== undefined && ((line["data"] as Json)["$source"] as Json)["instanceId"] === writerId), "日志文件读回写阶段记录，来源身份在 data.$source");
+        check(!lines.some((line) => ((line["data"] as Json | undefined)?.["$source"] as Json | undefined)?.["instanceId"] === contenderId), "争用实例未写入被占用的日志位置");
+        check(!logText.includes(SECRET_SAMPLES.token) && !logText.includes(SECRET_SAMPLES.password) && logText.includes("[REDACTED]"), "日志文件中敏感样本只剩占位符");
+
+        // 3. 读阶段：新进程重开同一文件与数据库，只读回持久值。
+        const reader = startHeldChild([...base, "--phase", "read"]);
+        await reader.ready;
+        reader.stop();
+        const reread = await reader.run;
+        const rereadNotes = eventOf(reread, "ready")?.["notes"] as Json | undefined;
+        const rereadRows = (rereadNotes?.["rows"] as Json[] | undefined) ?? [];
+        check(rereadNotes?.["text"] === NOTES_BODY && rereadRows.length === 1 && rereadRows[0]?.["body"] === NOTES_ROW, "关闭后另一进程重开：文件与已提交行读回一致");
+        check((eventOf(reread, "stopped")?.["stop"] as Json | undefined)?.["status"] === "closed" && reread.exitCode === 0, "读阶段合作停止后 closed");
+
+        // 4. 句柄未释放：停止报告未完成，服务拒绝新操作；释放后显式恢复才 closed，数据保留。
+        const holder = startHeldChild([...base, "--phase", "read", "--hold-handle"]);
+        await holder.ready;
+        holder.stop();
+        const held = await holder.run;
+        const heldStopped = eventOf(held, "stopped");
+        const heldStop = heldStopped?.["stop"] as Json | undefined;
+        check(heldStop?.["status"] === "incomplete", `句柄未释放时停止报告未完成而非 closed (${String(heldStop?.["status"])}/${String(heldStop?.["reason"])})`);
+        check(heldStopped?.["probe"] === "stopping", `关闭未完成期间服务拒绝新操作 (${String(heldStopped?.["probe"])})`);
+        check((heldStopped?.["recovered"] as Json | undefined)?.["status"] === "closed" && heldStopped?.["phase"] === "closed" && held.exitCode === 0, "释放句柄后显式恢复 closed");
+        check(existsSync(join(dataDir, "notes", "entry.txt")) && existsSync(join(dbDir, "notes.sqlite")), "关闭与恢复不删除数据文件");
+    } finally {
+        await rm(scratch, {recursive: true, force: true});
+        log(`scratch 已删除：${scratch}`);
+    }
+}
+
 async function main(): Promise<void> {
     const {values} = parseArgs({
         options: {
             host: {type: "string"},
+            services: {type: "boolean", default: false},
             "browser-executable": {type: "string"},
         },
     });
     const host = values.host;
-    if (host !== "server" && host !== "browser") {
-        throw new Error("用法：node --import tsx scripts/smoke/runtime-foundation.ts --host server|browser [--browser-executable <path>]");
-    }
-    if (host === "server") {
+    if (values.services) {
+        await servicesMode();
+    } else if (host === "server") {
         await serverMode();
-    } else {
+    } else if (host === "browser") {
         await browserMode(values["browser-executable"]);
+    } else {
+        throw new Error("用法：node --import tsx scripts/smoke/runtime-foundation.ts --host server|browser [--browser-executable <path>] | --services");
     }
     log(`failures=${failures}`);
     process.exitCode = failures === 0 ? 0 : 1;

@@ -7,13 +7,13 @@ import {readFile} from "node:fs/promises";
 import {createError} from "h3";
 import type {FetchError} from "ofetch";
 import type {PassportBackupDto, PassportJobDto, PassportJobProgress} from "nbook/shared/dto/passport.dto";
+import {redactSensitiveText} from "nbook/runtime/diagnostics/diagnostics";
 import type {RuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
 import {BackupArchiveService} from "nbook/server/backup/backup-archive-service";
 import {BackupRestoreService} from "nbook/server/backup/backup-restore-service";
 import {useBackupKeyringService} from "nbook/server/backup/backup-keyring-service";
 import {usePassportClient} from "nbook/server/passport/passport-client-service";
 import {officialSiteFetch} from "nbook/server/passport/official-site-transport";
-import {redactSensitiveText} from "nbook/server/utils/sensitive-text";
 
 // 备份/恢复后台任务管理器（Task 112）：打包与传输耗时可能远超请求超时，
 // 路由只负责启动任务并立即返回 jobId，前端轮询任务状态。

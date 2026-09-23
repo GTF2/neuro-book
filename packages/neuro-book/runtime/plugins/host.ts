@@ -586,12 +586,15 @@ export class PluginHostImpl implements PluginHost {
         }
     }
 
-    /** 激活产出的释放：只释放未交付给 runtime.services 的提供项实例；已交付的由服务作用域释放。 */
+    /**
+     * 激活产出的释放：只释放未交付给 runtime.services 的提供项实例；已交付的由服务作用域释放。
+     * 释放成功后才标记已释放：失败的释放让资源留在 release-failed，显式恢复会重试它，而不是静默跳过。
+     */
     async #releaseOutput(attempt: Attempt): Promise<void> {
         for (const record of [...attempt.provided.values()].reverse()) {
             if (!record.adopted && !record.released) {
-                record.released = true;
                 await record.release?.(record.instance);
+                record.released = true;
             }
         }
     }
@@ -630,11 +633,12 @@ export class PluginHostImpl implements PluginHost {
         return provided.instance;
     }
 
+    /** 同一提供项的释放不会并发（lifecycle 不重入在途释放）；成功后才标记，失败留给显式恢复重试。 */
     async #releaseProvided(record: EntryRecord, key: ServiceKey<unknown>, instance: unknown): Promise<void> {
         const provided = record.current?.provided.get(key);
         if (provided !== undefined && provided.instance === instance && !provided.released) {
-            provided.released = true;
             await provided.release?.(instance);
+            provided.released = true;
         }
     }
 

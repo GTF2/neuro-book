@@ -67,6 +67,12 @@ export default defineConfig({
         environment: "node",
         setupFiles: ["@notnotype/neuro-book-test-support/vitest"],
         globalSetup: ["@notnotype/neuro-book-test-support/vitest"],
-        include: ["runtime/**/*.test.ts", "server/runtime/foundation/**/*.test.ts", "app/runtime/**/*.test.ts"],
+        include: [
+            "runtime/**/*.test.ts",
+            "server/runtime/foundation/**/*.test.ts",
+            "app/runtime/**/*.test.ts",
+            "server/features/**/*.test.ts",
+            "app/features/**/*.test.ts",
+        ],
     },
 });

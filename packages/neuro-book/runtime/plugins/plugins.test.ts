@@ -726,6 +726,35 @@ describe("提供项与依赖协作", () => {
         expect(await host.activate({plugin: "extra", entry: "main"})).toMatchObject({status: "failed", stage: "output", reason: "undeclared-service", key: "logger"});
     });
 
+    it("提供项释放失败不被标记为已释放：交付给 services 与未交付两条路径都在显式恢复时重试，成功后不再重复", async () => {
+        const {host, root, assembly} = setup();
+        const attempts = {adopted: 0, unadopted: 0};
+        let fail = true;
+        const failingOnce = (label: "adopted" | "unadopted") => () => {
+            attempts[label] += 1;
+            if (fail) {
+                throw new Error(`${label} 释放失败`);
+            }
+        };
+        const scope = openedChild(root, "op");
+        accepted(host, plugin("clock", {
+            ...commandEntry("main", [], {provides: [clockKey, loggerKey]}),
+            activate: () => ({services: [
+                provide(clockKey, {now: () => 1}, failingOnce("adopted")),
+                provide(loggerKey, {lines: [], log: () => undefined}, failingOnce("unadopted")),
+            ]}),
+        }), scope);
+        assembly.declare({id: "consumer", location: "server", scope, dependencies: [{key: clockKey}]});
+        expect((await assembly.access("consumer").resolve(clockKey)).status).toBe("resolved");
+        expect((await scope.close()).status).toBe("incomplete");
+        expect(attempts).toEqual({adopted: 1, unadopted: 1});
+        fail = false;
+        expect((await scope.recover()).status).toBe("closed");
+        expect(attempts).toEqual({adopted: 2, unadopted: 2});
+        expect((await scope.recover()).status).toBe("closed");
+        expect(attempts).toEqual({adopted: 2, unadopted: 2});
+    });
+
     it("观察者异常不影响机制；接收者 revoke 抛错只记诊断", async () => {
         const runtime = createRuntimeInstance({location: "server", instanceId: "server-obs"});
         runtime.root.open();

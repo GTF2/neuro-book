@@ -1,4 +1,4 @@
-import {redactSensitiveText} from "nbook/server/utils/sensitive-text";
+import {redactSensitiveText} from "nbook/runtime/diagnostics/diagnostics";
 
 const MAX_PROVIDER_ERROR_LENGTH = 4_000;
 const TRUNCATION_MARKER = "\n…[Provider 错误已截断]";
