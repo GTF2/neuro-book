@@ -91,6 +91,8 @@
 
 ## 切片二实施单元与验收
 
+已按真实接口执行：[t10](tasks/t10-runtime-diagnostics/README.md) 诊断、[t11](tasks/t11-platform-files/README.md) 平台文件、[t12](tasks/t12-platform-sqlite/README.md) SQLite、[t13](tasks/t13-services-integration-review/README.md) 组合验收与集成复核；三项 Spec 已晋升 `implemented`。与下表的差异：SQLite 缺省驱动为 Node 内置 `node:sqlite`，驱动差异收在 `SqliteDriver` 边界，libsql/Prisma 适配器随首个领域消费者接入；诊断文件出口复用从产品日志器抽出的 `server/app-logs/jsonl-log-writer.ts`，产品日志器暂不参与位置授予锁。
+
 | 单元 | 文件与复用边界 | 实际 smoke |
 |---|---|---|
 | 诊断插件 | server/features/runtime-diagnostics entry、环境专用出口与测试；浏览器console+本实例缓冲，后端复用已授予日志位置的文件输出/轮转 | provider失败仍可见；敏感值不入快照；同日志位置授予冲突降级、不抢写；sink错误不破坏业务/独立清理 |

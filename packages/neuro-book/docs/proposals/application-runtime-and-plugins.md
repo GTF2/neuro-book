@@ -175,9 +175,9 @@ w00003 表中的路径均相对该树的 `packages/neuro-book/`，不是主树�
 | `application-bootstrap` | 环境适配、装配选择与启动/停止门禁；owner：application-runtime | plugin-runtime；按清单选择服务插件 | [runtime.application](../../../../docs/specs/runtime/application.md)，`implemented`（受控装配入口）；浏览器/后端宿主已实测，不宣称完整产品/桌面已迁移 |
 | `capability-adapters` | 命令、Storage、Config、View 等各自贡献入口；owner：各能力 owner | plugin-runtime 的扩展合同，不依赖具体页面 | 沿用能力自身 Spec；文件与设置两条纵向链路 |
 | `component-lab` | 纯组件展示及局部样板依赖；owner：ui | 组件与显式局部依赖，不依赖产品装配 | 原位修订 `ui.component-lab`；切场景无共享产品状态 |
-| `runtime-diagnostics` | 生命周期诊断服务；owner：runtime-diagnostics | 内核事件与宿主紧急输出 | [runtime.diagnostics](../../../../docs/specs/runtime/diagnostics.md)，`planned`；早期失败可见、脱敏、输出异常不阻断收口 |
-| `platform-files` | 有 owner 的受限根文件能力；owner：platform-files | 宿主文件系统与资源作用域 | [platform.files](../../../../docs/specs/platform/files.md)，`planned`；真实文件读写、拒绝越界、监听/锁释放 |
-| `sqlite` | 具名数据库借用、事务与连接机制；owner：sqlite | 宿主驱动与精确数据库资源 owner | [platform.sqlite](../../../../docs/specs/platform/sqlite.md)，`planned`；真实事务、关闭重开与失败保留 |
+| `runtime-diagnostics` | 生命周期诊断服务；owner：runtime-diagnostics | 内核事件与宿主紧急输出 | [runtime.diagnostics](../../../../docs/specs/runtime/diagnostics.md)，`implemented`；早期失败可见、脱敏、输出异常不阻断收口 |
+| `platform-files` | 有 owner 的受限根文件能力；owner：platform-files | 宿主文件系统与资源作用域 | [platform.files](../../../../docs/specs/platform/files.md)，`implemented`；真实文件读写、拒绝越界、监听/锁释放 |
+| `sqlite` | 具名数据库借用、事务与连接机制；owner：sqlite | 宿主驱动与精确数据库资源 owner | [platform.sqlite](../../../../docs/specs/platform/sqlite.md)，`implemented`；真实事务、关闭重开与失败保留 |
 
 机制构建依赖为 `runtime-lifecycle → service-composition → plugin-runtime`；产品装配与能力适配据此连接。插件运行时不反向 import Files、Storage 或 Config 实现；相应插件向机制提交描述并消费声明的合同。
 

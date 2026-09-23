@@ -139,7 +139,7 @@ Smoke 以目录查询、激活结果与贡献可见性为准。场景 1–11 由
   - 已结算且实例已离开可用的代次再触发一律 `rejected: scope-closed`，不返回旧结果、不复活；`recover(ref)` 等待上次激活作用域收口，同时重置该入口在 services 的提供者，不自动重新激活。
   - 缺失实现、缺失提供项、产出未声明的键都是 `output` 阶段失败；不接受空 handler 或占位。
   - 诊断只含 `{sequence, instanceId, location, plugin, entry, generation, stage, reason, capability, contribution, error{name,message}}`。
-- **合同测试**：`packages/neuro-book/runtime/plugins/plugins.test.ts`（24 例），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
+- **合同测试**：`packages/neuro-book/runtime/plugins/plugins.test.ts`（25 例；第 25 例是第二片复核补的提供项释放失败重试回归，见 [t13](../../../.agents/works/w00017-application-runtime-architecture/tasks/t13-services-integration-review/README.md)），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
 - **实际 smoke**：`bun run smoke:runtime-foundation -- --host server|browser`，见 [`runtime.application`](./application.md#实现合同)。
 
 ## 证据

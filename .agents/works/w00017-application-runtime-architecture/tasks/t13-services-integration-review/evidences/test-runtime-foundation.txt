@@ -1,0 +1,27 @@
+cwd: packages/neuro-book（HEAD eeeec16b + 本 Task 未提交改动）
+$ bun run test:runtime-foundation
+exit: 0
+
+RUN  v4.1.10 C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book
+
+ ✓ app/features/runtime-diagnostics/console-exporter.test.ts (2 tests) 6ms
+ ✓ runtime/services/services.test.ts (20 tests) 71ms
+ ✓ runtime/lifecycle/lifecycle.test.ts (28 tests) 98ms
+ ✓ runtime/diagnostics/diagnostics.test.ts (14 tests) 29ms
+ ✓ runtime/plugins/plugins.test.ts (25 tests) 114ms
+ ✓ runtime/application/application.test.ts (14 tests) 106ms
+ ✓ server/runtime/foundation/server-host.test.ts (5 tests) 153ms
+ ✓ server/features/runtime-diagnostics/jsonl-exporter.test.ts (8 tests) 125ms
+ ✓ app/runtime/browser-host.test.ts (6 tests) 278ms
+ ✓ server/features/sqlite/sqlite.test.ts (9 tests) 177ms
+ ✓ server/features/platform-files/platform-files.test.ts (17 tests) 678ms
+     ✓ 外部修改收到相对路径事件，重读得到新内容，释放后不再开始排队回调  481ms
+
+ Test Files  11 passed (11)
+      Tests  148 passed (148)
+   Start at  06:50:26
+   Duration  1.69s (transform 1.24s, setup 488ms, import 2.49s, tests 1.84s, environment 1ms)
+
+$ vitest run --config vitest.runtime-foundation.config.ts
+(node:73624) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)

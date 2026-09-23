@@ -1,0 +1,32 @@
+cwd: packages/neuro-book（HEAD eeeec16b + 本 Task 未提交改动）
+$ bun run smoke:runtime-foundation -- --host server
+exit: 0
+
+[+    1ms] server 模式：合作停止通道 stdin:stop
+[+  147ms] PASS 同一 instanceId 重复启动共享同一实例
+[+  147ms] PASS 启动 available 且接纳开放 (available)
+[+  147ms] PASS 门禁 presence/greeter 全部通过 (presence:passed,greeter:passed)
+[+  147ms] PASS 接纳操作经命令句柄调用 greeter ("hello smoke @104")
+[+  147ms] PASS 合作停止后关闭完成 (closed)
+[+  147ms] PASS 停止来源为 stdin:stop (stdin:stop)
+[+  147ms] PASS 停止结算后信号监听已移除
+[+  147ms] PASS 停止后接纳被拒绝且原因为 closed (closed)
+[+  147ms] PASS 停止后旧命令句柄不可调用
+[+  148ms] PASS presence 能力释放一次 (1)
+[+  148ms] PASS 子进程自然退出 exit=0
+[+  148ms] PASS 子进程无 stderr 输出
+[+  292ms] PASS 必需门禁失败时启动 failed 且不接纳 (failed)
+[+  292ms] PASS 可选入口失败被单独报告
+[+  292ms] PASS 无关必需门禁仍通过
+[+  292ms] PASS 失败后已取得资源收口完成 (closed)
+[+  292ms] PASS 紧急输出可见且不含注入的敏感串
+[+  292ms] PASS 失败子进程以退出码 2 结束 (2)
+[+  765ms] PASS 释放挂起时停止结算为 incomplete(deadline) (incomplete/deadline)
+[+  765ms] PASS 有界停止结算后信号监听已移除
+[+  765ms] PASS 未完成停止后接纳按 stopping 拒绝 (stopping)
+[+  765ms] PASS 挂起的释放只调用一次，不被重入 (1)
+[+  765ms] PASS 紧急输出一次报告 deadline (1)
+[+  765ms] PASS 未完成停止以退出码 3 结束 (3)
+[+  765ms] PASS 停止请求到退出 348ms：受 300ms 截止约束，未被挂起的释放拖住
+[+  765ms] failures=0
+$ node --import tsx scripts/smoke/runtime-foundation.ts --host server

@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: platform.files
 owners:
   - platform-files
@@ -99,7 +99,7 @@ owners:
 
 ## 验收与 Smoke
 
-本 Spec 为 planned：以下场景是实施必须提供并记录结果的执行序列，当前没有运行证据；具体命令入口由实施计划登记，本文不预设脚本名。所有运行数据使用系统临时根，遵守测试与临时根合同，不使用仓库或用户数据根。
+以下场景在系统临时根下以真实文件、真实插件宿主与真实子进程判定，遵守测试与临时根合同，不使用仓库或用户数据根；运行入口与覆盖映射见「实现合同」。
 
 1. 真实临时文件持久读回：在临时根内以根能力写入文本 → 释放句柄 → 由新的运行实例或新句柄读回同一文件且字节一致；关闭不删除文件。
 2. 越界与非法输入拒绝：`..` 相对路径、绝对路径、UNC，以及根内指向根外的 symlink/junction → 全部拒绝（绝对路径不作为合法寻址输入），且根外无任何创建；删除该链接时只删除链接本身，链接目标不受影响；无法证明位于根内的目标（例如解析失败或身份变化）同样拒绝。
@@ -112,10 +112,20 @@ owners:
 
 ## 实现合同
 
-尚未实现。
+- **实现 owner 与入口**：platform-files。唯一公开入口 `packages/neuro-book/server/features/platform-files/platform-files.ts`（`createPlatformFilesPlugin({roots, grants, location?})`、`platformFilesKey`、`PlatformFilesError`、根能力与句柄类型）。`contracts.ts` 是类型合同；`grants.ts`（授予签发与收窄）、`paths.ts`（寻址与包含校验）、`service.ts`（操作、句柄登记与关闭门禁）是实现，不属公开面。
+- **依赖方向**：只依赖 `runtime/lifecycle`、`runtime/services`、`runtime/plugins`、`server/runtime/paths/file-path`、Node 文件 API、`chokidar`（watch）与 `proper-lockfile`（协作锁）；不依赖 Project、配置、Storage、workspace-files 或 UI。
+- **关键不变量**：
+  - 根在激活时校验存在、为目录并记录 realpath；每份 `GrantSpec` 是独立服务键，受信消费者只能解析清单里声明依赖的授予键。授予由服务签发登记，伪造、跨实例或关闭后的授予一律 `grant-revoked`；`narrow()` 只能收窄目录与操作集合。
+  - 操作入参只接受根内相对路径；`..`、绝对路径、盘符、UNC、空串与 NUL 为 `invalid-path`，解析后越出根或授予目录为 `outside-root`。目标型操作解析真实目标，目录项型（remove/rename/mkdir）只解析真实父目录、不跟随目标链接；操作前后以 lstat 身份（dev/ino/类型）复核，变化即 `identity-changed`。
+  - `replaceFile` 写同目录临时文件、fsync 后原子 rename，失败清理临时文件；`rename` 需要写与删除两种权限。
+  - 取消：开始前已取消为 `cancelled` 且无副作用；进行中取消按实际结算，完成即成功，明确拒绝为 `cancelled`，其余为 `outcome-unknown`。
+  - watch 与 lock 句柄登记在调用方作用域并计入服务关闭门禁；watch 释放后不再开始排队回调、等待已开始回调；lock 以 `check()` 报告 `held|compromised`，被接管时释放不删他人锁目录。服务停止拒绝新操作与新句柄并等待在途操作；仍有句柄即关闭未完成，显式恢复另起一次尝试。多个服务键共享一个服务实例，最后一个成功释放的键才关闭服务，失败的释放在恢复时重试。
+- **验收映射**：场景 1–8 对应 `server/features/platform-files/platform-files.test.ts` 同名分组（真实临时根；链接用 junction 或 dir symlink，环境无法创建时显式 skip），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
+- **实际 smoke**：`bun run smoke:runtime-foundation -- --services`：真实子进程经授予写文件，关闭后另一进程读回同一字节；缺失 platform-files 提供者时依赖它的消费者门禁失败且不产生文件；句柄未释放时停止报告 `incomplete`，期间服务拒绝新操作（`stopping`），释放后显式恢复 `closed`，数据文件保留。
 
 ## 证据
 
 - 批准依据：开发者于 2026-09-20 明确接受总体推进方向并要求把两片沉淀为 `planned` Spec；[应用运行时与内置插件架构提案](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md) 的内置插件划分表与“File、SQLite 与业务插件的分层”把 `platform-files` 定义为受根约束的文件读写、watch、锁与资源释放能力，只接可信入口签发的资源约束，并与 `workspace-files` 分层。
 - 实现 provenance：[w00017 应用运行时与内置插件架构](../../../.agents/works/w00017-application-runtime-architecture/README.md) 与其 [t04 底座两切片规范与整体实施路径任务](../../../.agents/works/w00017-application-runtime-architecture/tasks/t04-foundation-spec-plan/README.md)。
-- 本规范尚未实现：不存在 `platform-files` 提供者与对应 smoke 证据；既有路径包含校验与锁实现只作为兼容基线，不作为本合同的完成证据。
+- 实现与验证：[w00017 t11](../../../.agents/works/w00017-application-runtime-architecture/tasks/t11-platform-files/README.md)（机制与合同测试）、[t13 第二片集成复核](../../../.agents/works/w00017-application-runtime-architecture/tasks/t13-services-integration-review/README.md)（组合 smoke 与逐条核对后晋升）。
+- 已知限制：可移植 Node API 没有 openat/O_NOFOLLOW，恶意外部进程的并发目录替换只被缩窄与检测，不作绝对保证；watch 事件尽力投递、可合并；协作锁探测存在 stale 窗口；产品既有文件访问尚未迁入本能力。

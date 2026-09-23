@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: platform.sqlite
 owners:
   - sqlite
@@ -103,7 +103,7 @@ owners:
 
 ## 验收与 Smoke
 
-本 Spec 为 planned：以下场景是实施必须提供并记录结果的执行序列，当前没有运行证据；具体命令入口由实施计划登记，本文不预设脚本名。所有运行数据使用系统临时根下的真实 SQLite 文件，不使用 mock 回显作为持久性证据。
+以下场景以系统临时根下的真实 SQLite 文件、真实插件宿主与真实子进程判定，不使用 mock 回显作为持久性证据；运行入口与覆盖映射见「实现合同」。
 
 1. 参数绑定：打开具名资源 → 由 owner 显式建表（机制不自动迁移）→ 参数化插入包含 `'); DROP TABLE` 与引号、换行的文本 → 读回完全一致且表仍存在，证明值未被当作语句执行。
 2. 回滚：打开具名资源并显式建表 → 开启事务 → 插入 → 回滚 → 关闭 → 重开同一真实文件：行不存在。
@@ -119,10 +119,19 @@ owners:
 
 ## 实现合同
 
-尚未实现。
+- **实现 owner 与入口**：sqlite。唯一公开入口 `packages/neuro-book/server/features/sqlite/sqlite.ts`（`createSqlitePlugin({driver?})`、`sqliteKey`、`SqliteError`、`createNodeSqliteDriver`、`driverFailureError`、声明／借用／结果类型与驱动适配器边界）。`contracts.ts` 是类型合同；`location.ts`（定位形态与文件身份）、`driver.ts`（`node:sqlite` 适配与错误分类）、`service.ts`（资源 owner、借用、代次与关闭门禁）是实现。
+- **依赖方向**：只依赖 `runtime/lifecycle`、`runtime/services`、`runtime/plugins`、`server/runtime/app-sqlite-location`（复用宿主 URL 形态与越界校验，不做第二套优先级解析）与 Node 内置 `node:sqlite`；不依赖 Project、配置、身份数据库或 UI。缺省驱动是 `node:sqlite`；Prisma/libsql 适配器随首个消费它们的领域接入同一 `SqliteDriver` 边界。
+- **关键不变量**：
+  - 资源由数据 owner 以 `register(declaration, {scope, dependsOn})` 登记在自己的作用域上，打开前即计入关闭门禁；同作用域同名为 `duplicate-resource`，同一物理文件（父目录实路径加文件名，win32 折叠大小写，已存在时取文件实路径）已有存活登记为 `file-owned`。打开只做连接探测，不建表、不迁移；只读或 `create: false` 时缺失文件为 `not-found`，机制从不创建目录。
+  - `resource(name, {scope})` 只见该作用域及祖先上的资源；借用必须挂在 owner 的后代作用域上，模式不得高于资源访问（`permission-denied`），只读借用上的写为 `read-only`。借用只有 execute/query/begin/commit/rollback/release，每个借用独立连接，归还后调用为 `borrow-released`。
+  - `commit()` 返回 `committed | failed | outcome-unknown`：驱动明确报告的提交前失败（busy、constraint、权限）为 `failed`；只有提交期间连接失效才是 `outcome-unknown`，借用随即失效，机制不重放。`busyTimeoutMs` 缺省 0，忙碌直接为 `busy`。`ATTACH` 为 `cross-database`。
+  - 关闭先拒绝新借用，仍有未归还借用或驱动未收口时结果为 `incomplete` 并保留在 `stopping`（不强关在用连接），`recover()` 另起一次尝试且不与在途尝试重入；重开同一文件产生新代次，旧借用为 `stale-generation`，不路由到新连接。服务收口时仍有存活资源即关闭未完成并保留占用。
+- **验收映射**：场景 1–11 对应 `server/features/sqlite/sqlite.test.ts`（真实临时库文件；提交应答丢失与驱动失效用包装真实驱动的受控适配器注入；目录链接别名在环境无法创建链接时显式 skip），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
+- **实际 smoke**：`bun run smoke:runtime-foundation -- --services`：真实子进程中消费者显式建表、参数化写入注入样式文本并提交，关闭后另一进程读回；同一解析作用域的两个消费者共享同一服务实例，同名资源按 owner 作用域隔离，同一物理文件拒绝第二 owner；缺失 sqlite 提供者时依赖它的消费者门禁失败且不产生数据库文件。
 
 ## 证据
 
 - 批准依据：开发者于 2026-09-20 明确接受总体推进方向并要求把两片沉淀为 `planned` Spec；[应用运行时与内置插件架构提案](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md) 的内置插件划分表与“File、SQLite 与业务插件的分层”规定 `sqlite` 管连接、事务、迁移执行与关闭，Project 代次作用域内的 database 资源 owner 唯一管理物理文件与全部驱动连接，应用库、历史库与 RAG 库各有独立 owner。
 - 实现 provenance：[w00017 应用运行时与内置插件架构](../../../.agents/works/w00017-application-runtime-architecture/README.md) 与其 [t04 底座两切片规范与整体实施路径任务](../../../.agents/works/w00017-application-runtime-architecture/tasks/t04-foundation-spec-plan/README.md)。
-- 本规范尚未实现：不存在统一的 SQLite 机制提供者与对应 smoke 证据；现有定位解析、数据库模块与驱动使用只作为兼容基线。
+- 实现与验证：[w00017 t12](../../../.agents/works/w00017-application-runtime-architecture/tasks/t12-platform-sqlite/README.md)（机制与合同测试）、[t13 第二片集成复核](../../../.agents/works/w00017-application-runtime-architecture/tasks/t13-services-integration-review/README.md)（组合 smoke 与逐条核对后晋升）。
+- 已知限制：`node:sqlite` 在当前 Node 仍输出 ExperimentalWarning；文件 owner 唯一性是单运行实例内协作登记，不跨进程；应用库、Project 库、历史库与 RAG 库及其既有 Prisma/libsql 使用尚未迁入本机制。
