@@ -77,6 +77,6 @@ cwd `packages/neuro-book`，HEAD `b53753b9`（未提交内容仅文档）：
 
 ## 下一步
 
-1. 合并时机由开发者决定：本分支不改产品行为，可单独合入 master；或等第二片一起合入。
+1. 合并时机（开发者 2026-09-23 决定）：「等第二片完成后一起合」。第二片继续在本分支推进，完成后再请求 push/PR/合并授权。
 2. 第二片：`runtime.diagnostics`、`platform.files`、`platform.sqlite`，消费本片预留的清单观察者、check 门禁服务访问、`Application.recover` 与 `root.createChild`。
 3. 产品装配接线随首条真实链（Files）迁移旧启动/关闭入口，旧 owner 同时退出。
