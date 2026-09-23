@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: runtime.services
 owners:
   - runtime
@@ -121,9 +121,25 @@ owners:
 8. **诊断脱敏**：声明与错误上下文包含敏感字段时，查询到的诊断只含位置/作用域/服务键/阶段/原因，不含敏感值。
 9. **两种作用域 × 两个 host 复用**：同一机制在两个 host（浏览器运行实例与后端进程实例）与两种作用域（实例级、操作级）上装配：各自独立解析、独立失败、互不串实例；机制实现不含产品领域 import 与框架适配依赖。
 
-Smoke 以解析结果、依赖检查与诊断等外部可观察结果为准；场景入口与执行方式由实施计划确定，本 Spec 不把尚未存在的脚本列为证据。
+Smoke 以解析结果、依赖检查与诊断等外部可观察结果为准。场景 1–9 由下节合同测试逐条覆盖；场景 9 的真实双宿主半边由 `smoke:runtime-foundation` 在真实后端子进程与真实 Chromium 上运行同一份受控清单验证（宿主注入的 clock/presence 能力经本机制声明、解析并随根作用域释放）。
+
+## 实现合同
+
+- **实现 owner 与入口**：runtime；唯一公开入口 `packages/neuro-book/runtime/services/services.ts`（`defineServiceKey`、`createServiceAssembly(instance, {keys, observer?})`、`export type *`）。`contracts.ts` 是类型合同，`assembly.ts`（声明校验与依赖图）与 `composition.ts`（解析与初始化）是实现。
+- **依赖方向**：只允许同目录相对导入与 `../lifecycle/lifecycle`；合同测试用源码守卫锁定。[`runtime.plugins`](./plugins.md) 与 [`runtime.application`](./application.md) 依赖本机制。
+- **关键不变量**：
+  - 服务键以身份区分（`defineServiceKey` 返回的对象），声明只能引用装配时登记的键；未登记键、重复 id、位置不符、跨实例作用域、已停止作用域的声明整体拒绝并留诊断。
+  - 唯一提供者按祖先链判定：同一键在同一祖先链上出现两个提供者即全部隔离（`conflict`），不按顺序挑选。
+  - 初始化 single-flight 按提供者 owner 作用域：首次解析创建服务作用域（owner 的子作用域）并在其中调用 `create`；并发等待者共享同一结果，单个等待方的 `signal` 只结束自己的等待。
+  - 失败稳定：`create` 抛错或迟到成功后提供者状态为 `failed`，同作用域后续解析得到同一失败；`recover(providerId)` 只在上次服务作用域收口完成后重置为 `unresolved`，不自动重新初始化。
+  - 解析结果的借用登记在访问作用域上：访问作用域必须是入口声明作用域的严格后代或自身；长寿命入口解析短寿命提供者、已关闭作用域或旧代次的绑定返回 `Unavailable`，不返回旧实例。
+  - 静态环在声明阶段拒绝（含可选边）；运行时等待环在初始化已开始后检测，阻断受影响解析并收口本次服务作用域，不回滚已发生副作用。
+  - 诊断与报告只含位置/作用域/服务键/入口/阶段/原因，不含实例值或声明附加字段。
+- **合同测试**：`packages/neuro-book/runtime/services/services.test.ts`（20 例），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
+- **实际 smoke**：`bun run smoke:runtime-foundation -- --host server|browser`，见 [`runtime.application`](./application.md#实现合同)。
 
 ## 证据
 
 - 批准目标：[应用运行时、生命周期与内置插件架构](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)。2026-09-20 开发者接受基础架构与分段推进方向，并明确要求把第一实现切片（环境适配入口与小内核）与第二切片（以内置服务插件检验底座）沉淀为 Spec；不包含任意热卸载扩展。
-- 本 Spec 尚未实现；实现与验证闭合前保持 `planned`。
+- 实现与验证：[w00017 t06](../../../.agents/works/w00017-application-runtime-architecture/tasks/t06-runtime-services/README.md)（机制与合同测试）、[t08](../../../.agents/works/w00017-application-runtime-architecture/tasks/t08-runtime-application/README.md)（真实双宿主 smoke）、[t09 首片集成复核](../../../.agents/works/w00017-application-runtime-architecture/tasks/t09-foundation-integration-review/README.md)（对照本文逐条核对并晋升）。
+- 已知限制：第一片只有受控内存能力作为提供者；真实 I/O 提供者（诊断、文件、SQLite）归第二片，其运行期绑定（精确 Project 代次）尚无真实消费者。

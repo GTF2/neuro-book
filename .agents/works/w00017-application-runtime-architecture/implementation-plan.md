@@ -66,7 +66,7 @@
 
 ## 切片一实施单元与验收
 
-这些是工程顺序，不是提前创建的 Task 队列。当前只登记 [t05 资源生命周期](tasks/t05-runtime-lifecycle/README.md)；完成后按其真实接口与证据创建下一个 Task。每单元聚焦一个可判定结果，通常 3–5 个实质文件，涉及配置的机械接线明确计入。
+这些是工程顺序，不是提前创建的 Task 队列。已按真实接口与证据依次执行：[t05](tasks/t05-runtime-lifecycle/README.md) 资源生命周期、[t06](tasks/t06-runtime-services/README.md) 服务装配、[t07](tasks/t07-runtime-plugins/README.md) 插件与贡献事务、[t08](tasks/t08-runtime-application/README.md) 后端与浏览器环境适配（合并为一个单元）、[t09](tasks/t09-foundation-integration-review/README.md) 首片集成复核；四项 Spec 已晋升 `implemented`。每单元聚焦一个可判定结果，通常 3–5 个实质文件，涉及配置的机械接线明确计入。
 
 | 单元 | 文件与修改方向 | 验收 / 停止点 |
 |---|---|---|
@@ -79,13 +79,13 @@
 
 测试配置现状已核实：应用 `vitest.config.ts` 默认加载 Agent setup，且 include 不含新 `runtime/**`；应用 tsconfig include 也未直接覆盖新机制目录。因此第一单元必须提供/接入显式 `root`、统一 Temp setup 且无 Agent setup 的机制验证配置，不能只写测试文件然后误以为它会被运行。建议新 `vitest.runtime-foundation.config.ts` + `tsconfig.runtime-foundation.json`，保留应用原配置用于后续集成；不要修改全仓配置来孤立绕过失败。
 
-### 第一片拟新增命令（尚未存在）
+### 第一片验证命令（已由 t05–t08 新增）
 
-在应用包 cwd，由实施单元随入口一起新增：
+在应用包 cwd 运行：
 
 - `bun run test:runtime-foundation`：运行上述专用 Vitest 配置，覆盖 runtime、环境适配与基础服务相邻测试；测试支持 Temp setup 第一项，不加载产品/Agent 初始化。
 - `bun run typecheck:runtime-foundation`：`tsc --noEmit -p tsconfig.runtime-foundation.json`，strict；验证机制、适配器和最小消费者，显式区分 DOM/后端能力，不依赖 `.nuxt` 生成态。
-- `bun run smoke:runtime-foundation -- --host server`、`bun run smoke:runtime-foundation -- --host browser`：同一CLI按宿主模式运行公共入口；浏览器模式使用隔离自动化tab和临时页面，不借Component Lab。已有进程/浏览器工具按各自授权/管理合同使用，不新增发布路由。
+- `bun run smoke:runtime-foundation -- --host server`、`bun run smoke:runtime-foundation -- --host browser`：同一CLI按宿主模式运行公共入口；浏览器模式使用隔离自动化tab和临时页面，不借Component Lab。已有进程/浏览器工具按各自授权/管理合同使用，不新增发布路由。实际在 Node（`node --import tsx`）下运行：Bun 1.3 在 Windows 与 playwright-core 的启动管道不兼容。
 
 同一 CLI 的 host 模式是验证选择，不是自动模拟环境；browser 模式未真实运行只能记未验证。后端真实进程在 hub 启动/监督，等实际就绪后再触发停止；仅进程创建成功不计成功。
 
@@ -163,7 +163,8 @@
 ## 当前 Task 与下一步生成规则
 
 - [t04](tasks/t04-foundation-spec-plan/README.md)：本次Spec、整体方案、治理与审查集成。
-- [t05](tasks/t05-runtime-lifecycle/README.md)：已知的首个实现单元，准备好checkout后实施资源生命周期及独立验证入口；不是整个第一片完成。
+- [t05](tasks/t05-runtime-lifecycle/README.md)–[t08](tasks/t08-runtime-application/README.md)：第一片四个实现单元（生命周期、服务装配、插件、环境适配）。
+- [t09](tasks/t09-foundation-integration-review/README.md)：首片集成复核；四项 Spec 晋升 `implemented`，产品行为未切换。
 - [t02](tasks/t02-runtime-contract-review/README.md)、[t03](tasks/t03-document-governance-review/README.md)：复用独立审查职责，新报告区分每轮。
 
-t05验收后Leader按实际API/证据创建服务装配Task，再依次推进插件、环境适配与首片集成；第二片诊断/文件/SQLite可在公共合同稳定且文件owner独立后并行。后续任务编号当时从Work最大值连续分配。每Task必须列引用Spec、准确文件、旧入口退出、定向测试/实际smoke和受限参与点；不把本文的未来单元表当作已派发任务。
+第一片闭合后，第二片诊断/文件/SQLite 可在公共合同稳定且文件owner独立后并行，产品装配接线随首条真实链（Files）迁移旧入口。后续任务编号当时从Work最大值连续分配。每Task必须列引用Spec、准确文件、旧入口退出、定向测试/实际smoke和受限参与点；不把本文的未来单元表当作已派发任务。

@@ -108,6 +108,10 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Component Lab | [`ui/component-lab.md`](ui/component-lab.md) | Source Dev-only 确定性 fixture、组件导航、检视面板、响应式容器、偏好和 Product 排除合同；产品主题与渐进组件迁移仍属后续切片 |
 | Workbench 命令系统 | [`workbench/commands.md`](workbench/commands.md) | 注册登记、`when` 求值、执行管线、暴露策略与审计；六条首批命令在 Component Lab 闭环，实现与合同测试闭合 |
 | Workbench 快速打开 | [`workbench/quick-open.md`](workbench/quick-open.md) | 单控件两模（命令搜索与行号跳转）、会话 MRU、S4 浮层键盘与焦点交接；实现与 Lab 验收闭合，主页面接入不在本批 |
+| 资源生命周期 | [`runtime/lifecycle.md`](runtime/lifecycle.md) | `runtime.lifecycle`；作用域、资源 owner、操作接纳与取消/终止、关闭尝试与显式恢复；第一切片由合同测试与双宿主 smoke 闭合 |
+| 显式服务装配 | [`runtime/services.md`](runtime/services.md) | `runtime.services`；唯一 provider、依赖与寿命检查、并发初始化共享与失败稳定；第一切片闭合 |
+| 插件描述与激活 | [`runtime/plugins.md`](runtime/plugins.md) | `runtime.plugins`；描述目录、入口/代次、贡献事务、局部失败与普通关闭；不含热卸载 |
+| 环境适配与应用门禁 | [`runtime/application.md`](runtime/application.md) | `runtime.application`；浏览器/后端环境适配、启动门禁、接纳、有界停止与实例身份；受控装配入口闭合，产品启动链尚未迁入 |
 
 ## 待实现规范
 以下已获批准但尚未实现的目标合同必须在代码切换前满足；实现和验证闭合后原地晋升为 `implemented`。
@@ -115,10 +119,6 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | 功能域 | 当前规范 | 缺口 |
 |---|---|---|
 | Agent Session Store 租约 | [`agent/session-store-lease.md`](agent/session-store-lease.md) | proper-lockfile 租约互斥、mtime 心跳、失效与 Windows 文件系统兼容目标；修复验证闭合前保持 `planned` |
-| 资源生命周期 | [`runtime/lifecycle.md`](runtime/lifecycle.md) | `runtime.lifecycle`；作用域、资源owner、取消与关闭失败；第一切片目标，尚未实现 |
-| 显式服务装配 | [`runtime/services.md`](runtime/services.md) | `runtime.services`；唯一provider、依赖与寿命检查、并发初始化与失败稳定；第一切片目标 |
-| 插件描述与激活 | [`runtime/plugins.md`](runtime/plugins.md) | `runtime.plugins`；描述目录、入口/代次、贡献事务、局部失败与普通关闭；不含热卸载 |
-| 环境适配与应用门禁 | [`runtime/application.md`](runtime/application.md) | `runtime.application`；浏览器/后端入口、接纳与停止合同；首片受控装配，不代表完整产品已迁移 |
 | 运行时诊断 | [`runtime/diagnostics.md`](runtime/diagnostics.md) | `runtime.diagnostics`；紧急输出与诊断插件分离、脱敏、降级与关闭；第二切片真实服务 |
 | 平台文件 | [`platform/files.md`](platform/files.md) | `platform.files`；受根约束I/O、watch/锁与owner；不是业务文件树服务；第二切片真实服务 |
 | SQLite机制 | [`platform/sqlite.md`](platform/sqlite.md) | `platform.sqlite`；具名资源owner、连接借用、单库事务与关闭；不自动迁移；第二切片真实服务 |
@@ -145,7 +145,7 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 
 | 优先级 | 功能域 | 现有证据 | 缺口 |
 |---|---|---|---|
-| P0 | 应用运行时与功能插件接入 | [总体架构提案与能力地图](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md#能力地图与规范归属)（基础方向 `accepted`） | 前两片七项 `planned` 已登记，尚未实现。后续按 Lab → Files → Settings → World/Plot 在既有能力正文接入；各领域门禁/贡献/权限/恢复细节在首次消费前补齐。等待 w00003 合并 master 后再开始实现。Desktop/安装域仍拥有安装、UAC、升级、卸载与发布；热卸载只评估 |
+| P0 | 应用运行时与功能插件接入 | [总体架构提案与能力地图](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md#能力地图与规范归属)（基础方向 `accepted`） | 第一切片四项（lifecycle、services、plugins、application）已晋升 `implemented`；第二切片三项（diagnostics、platform.files、platform.sqlite）仍 `planned`。产品启动链尚未迁入新入口。后续按 Lab → Files → Settings → World/Plot 在既有能力正文接入；各领域门禁/贡献/权限/恢复细节在首次消费前补齐。Desktop/安装域仍拥有安装、UAC、升级、卸载与发布；热卸载只评估 |
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
 | P0 | Project 生命周期与身份 | [ADR 0007](../../packages/neuro-book/docs/adr/0007-project-close-then-open.md)、[Project Session 入口](../../packages/neuro-book/server/workspace-files/project-session.ts)、[Root Identity](../../packages/neuro-book/server/workspace-files/project-root-identity.ts) | Project / Workspace 模块负责；完整领域生命周期仍缺 implemented Spec。首期 Storage 所需的目录携带、代次与关闭/删除边界已在 [storage.persistence](storage/persistence.md) 固定；不因此宣称全域规范完成 |

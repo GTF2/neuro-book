@@ -1,0 +1,28 @@
+# 包级全量 `bun run test`（cwd packages/neuro-book，node 运行时）
+# 分支 HEAD 728acd40（运行时代码已提交）；之后的 b53753b9 只改 runtime/application/*（默认 vitest.config.ts 不收录 runtime/**），其唯一进入包级套件的消费者 server-host.test.ts 已在 b53753b9 用默认配置重跑：5 passed，见 server-host-default-config.txt；worktree 先执行 `bunx nuxt prepare --dotenv .env.typecheck`
+# 运行 1（文本 reporter，2026-09-23 18:02）：Test Files 7 failed | 562 passed | 1 skipped (570)；Tests 11 failed | 4834 passed | 3 skipped (4848)；794.45s
+# 运行 2（--reporter=json）：Tests 7 failed | 4838 passed | 3 skipped；exit 1
+
+## 运行 2 失败清单
+app/utils/novel-ide-settings-current-project.contract.test.ts > Novel IDE Settings Current Project contract Project scope 只消费当前已打开的 Project，不读取或选择 Catalog
+server/agent/profiles/profile-compile-worker-preview.test.ts > profile compile worker preview 与 lifecycle dry-run preview 不写入真实用户源码或 compiled artifact
+server/agent/profiles/rp-profiles.test.ts > RP builtin profiles rp.leader 作为 RP 用户交流层，读取 manual 并调用 simulator.leader
+server/agent/profiles/rp-profiles.test.ts > RP builtin profiles simulator.leader 作为 simulation runtime owner 并负责调度 actor
+server/agent/profiles/simulation-director-profiles.test.ts > simulation and director builtin profiles simulator.leader 暴露世界模拟合同和受限工具
+server/agent/profiles/simulation-director-profiles.test.ts > simulation and director builtin profiles director 暴露 Plot System 合同和 Scene World Context
+server/agent/profiles/world-engine-profile.test.ts > world.engine profile 只暴露 World Engine 维护所需工具，并注入第一版边界
+
+## 与主工作区 master 24758741 对照（同一台机器、同一命令）
+$ bunx vitest run app/utils/novel-ide-settings-current-project.contract.test.ts server/agent/profiles/{profile-compile-worker-preview,rp-profiles,simulation-director-profiles,world-engine-profile}.test.ts server/agent/harness/neuro-agent-harness.test.ts
+master: Test Files 5 failed | 1 passed (6)；Tests 7 failed | 207 passed (214)
+branch: Test Files 6 failed (6)；Tests 8 failed | 206 passed (214)   # 多出的 1 例为 neuro-agent-harness（见下）
+
+## neuro-agent-harness.test.ts 抖动核对（master/branch 交替各 3 次）
+master: 195 passed / 195 passed / 1 failed | 194 passed
+branch: 195 passed / 195 passed / 195 passed
+结论：该用例在 master 上同样间歇失败，属既有抖动。
+
+## 失败原因分类（均与本分支改动无关）
+- server/agent/profiles/* ：`Error: Import.path 缺少显式 NEURO_BOOK_REPOSITORY_ROOT。Product Runtime 不允许从 checkout 或 import.meta.dirname 推断仓库根。`（环境变量缺失）
+- app/utils/novel-ide-settings-current-project.contract.test.ts、neuro-agent-harness：master 同样失败/抖动
+- 本分支对 packages/neuro-book 的改动（411449ec..HEAD）只新增 runtime/、server/runtime/foundation/、app/runtime/、scripts/smoke/runtime-foundation*、两份 runtime-foundation 配置与 package.json 三条脚本：31 files changed, 8067 insertions(+), 0 deletions；产品代码无任何导入这些模块。

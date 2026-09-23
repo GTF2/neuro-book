@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: runtime.lifecycle
 owners:
   - runtime
@@ -131,9 +131,24 @@ owners:
 6. **两种作用域 × 两个 host 复用**：同一机制在两种不同寿命的作用域（实例级共享作用域与操作级短寿命作用域）和两个不同 host（浏览器运行实例与后端进程实例）上装配：各自独立创建、独立关闭，短寿命作用域关闭不影响实例级资源；机制实现不含产品领域 import。
 7. **强制终止**：模拟无清理回调的终止；不产生正常关闭报告，下一次启动按领域合同恢复（本能力不承诺回调执行）。
 
-Smoke 以场景操作序列为主，通过公开查询与宿主观察结果判定；具体场景入口与执行脚本由实施计划确定，本 Spec 不把尚未存在的脚本列为证据。
+Smoke 以场景操作序列为主，通过公开查询与宿主观察结果判定。场景 1–7 由下节合同测试逐条覆盖；场景 6 的真实双宿主半边由 `smoke:runtime-foundation` 在真实后端子进程与真实 Chromium 上运行同一份受控清单验证。
+
+## 实现合同
+
+- **实现 owner 与入口**：runtime；唯一公开入口 `packages/neuro-book/runtime/lifecycle/lifecycle.ts`（`createRuntimeInstance(identity, {observer?})`、`summarizeFailure`、`LifecycleStateError`、`export type *`）。`contracts.ts` 是类型合同，`scope.ts` 是实现；调用方不得 import `scope.ts`。
+- **依赖方向**：目录内只允许同目录相对导入；不 import 框架、DOM、进程、文件/数据库驱动或产品领域。合同测试用源码守卫锁定。
+- **关键不变量**：
+  - 作用域四阶段 `creating | available | stopping | closed`；`close()` 幂等返回同一次 `CloseResult`；只有 `recover()` 另起尝试，且在途尝试未结算时返回它而不重入。
+  - 关闭门禁：全部资源 `released`、无待返回受管获取、无在途操作、无未关闭子作用域才 `closed`；否则 `incomplete` 且 `reason ∈ release-failed | deadline | blocked`，报告列出失败/待释放/被阻塞资源、借用、待返回获取、在途操作与未关闭子作用域。
+  - 释放顺序按依赖图：消费者先于提供者，被借用资源等借用结束；无依赖资源并行释放。
+  - 在途操作分两个视角：等待方 `outcome` 在取消或作用域停止时立即 `cancelled`；执行方 `termination` 只在 `run` 实际结束后结算，取消竞态中成功仍记 `completed`，占用资源以 `termination` 为准释放。
+  - `stopping` 时 `register` 仍接受但标记 `late: true`，只收口不出借；`closed` 后一切登记抛 `LifecycleStateError`。
+  - 失败记录只含 `name/message`，不携带资源值。
+- **合同测试**：`packages/neuro-book/runtime/lifecycle/lifecycle.test.ts`（28 例），经 `bun run test:runtime-foundation`（`vitest.runtime-foundation.config.ts`，无产品/Agent setup）与 `bun run typecheck:runtime-foundation`（`tsconfig.runtime-foundation.json`，strict，无 DOM lib）运行。
+- **实际 smoke**：`bun run smoke:runtime-foundation -- --host server|browser`，见 [`runtime.application`](./application.md#实现合同)。
 
 ## 证据
 
 - 批准目标：[应用运行时、生命周期与内置插件架构](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)。2026-09-20 开发者接受基础架构与分段推进方向，并明确要求把第一实现切片（环境适配入口与小内核）与第二切片（以内置服务插件检验底座）沉淀为 Spec；不包含任意热卸载扩展。
-- 本 Spec 尚未实现；实现与验证闭合前保持 `planned`。
+- 实现与验证：[w00017 t05](../../../.agents/works/w00017-application-runtime-architecture/tasks/t05-runtime-lifecycle/README.md)（机制与合同测试）、[t08](../../../.agents/works/w00017-application-runtime-architecture/tasks/t08-runtime-application/README.md)（真实双宿主 smoke）、[t09 首片集成复核](../../../.agents/works/w00017-application-runtime-architecture/tasks/t09-foundation-integration-review/README.md)（对照本文逐条核对并晋升）。
+- 已知限制：POSIX 信号路径的真实进程 smoke 未在本机（Windows）运行；受管 Worker、Desktop 位置无实测，仅保留 `RuntimeLocation` 边界。

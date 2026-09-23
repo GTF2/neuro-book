@@ -15,6 +15,8 @@ taskId: t08-runtime-application
 
 内核、两个适配器、合同测试、双宿主 smoke 全部通过，已在实现分支提交（本快照所在提交）。四项第一片 Spec 与注册表保持 `planned`：本 Task 的浏览器 smoke 已在真实 Chromium 跑过 `runtime.application` 的浏览器半边，但 lifecycle / services / plugins 三个 Spec 的浏览器场景只被受控清单间接覆盖，首片集成复核尚未对照 Spec 全文逐条核对。
 
+后续：[t09 首片集成复核](../t09-foundation-integration-review/README.md) 删除了 `createApplicationRegistry`（实例表改为内核 `createInstanceTable`，已关闭实例的 id 退役），新增 `stopped`、`closed`、`recover`、宿主有界停止（`stopTimeoutMs`）与清单观察者，并把四项 Spec 晋升 `implemented`。本快照的接口描述保留 t08 提交时的状态；当前接口以 [runtime.application](../../../../../docs/specs/runtime/application.md) 的实现合同为准。
+
 执行位置：`.worktree/w00017-application-runtime-architecture` / `refactor/w00017-runtime-foundation`，基线 `492bc849`。
 
 ## 授权与限制

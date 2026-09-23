@@ -1,7 +1,7 @@
 ---
 schema: nbook.spec/v1
 kind: behavior
-status: planned
+status: implemented
 capability: runtime.plugins
 owners:
   - runtime
@@ -125,9 +125,25 @@ owners:
 10. **重试前置收口**：激活失败后资源收口完成前不允许重试；收口完成后按显式策略重试产生新代次并成功，且不与在途 cleanup 并发。
 11. **多接收者事务**：一次激活向多个接收者提交贡献，在第二个接收者的准备或提交处注入失败；通过第一个接收者尝试调用也必须失败，全部本次暂存项撤回，其它插件仍可调用。成功路径只有全部接收者完成后才可调用；不要求网络原子性。
 
-Smoke 以目录查询、激活结果与贡献可见性为准；场景入口与执行脚本由实施计划确定，本 Spec 不把尚未存在的脚本列为证据。
+Smoke 以目录查询、激活结果与贡献可见性为准。场景 1–11 由下节合同测试逐条覆盖；场景 8、9 的真实浏览器半边由 `smoke:runtime-foundation` 在真实 Chromium 上运行同一份受控清单验证（greeter 插件在两个窗口各自激活并向命令接收者贡献一条命令，可选 flaky 插件在浏览器与后端分别失败且不影响 greeter）。
+
+## 实现合同
+
+- **实现 owner 与入口**：runtime；唯一公开入口 `packages/neuro-book/runtime/plugins/plugins.ts`（`createPluginHost(instance, assembly, {receivers, observer?})`、`provide(key, instance, release?)`、`PluginStateError`、`export type *`）。`contracts.ts` 是类型合同，`registration.ts`（登记纯校验）与 `host.ts`（目录、激活事务、恢复）是实现。
+- **依赖方向**：只允许同目录相对导入与 `../lifecycle/lifecycle`、`../services/services`；合同测试用源码守卫锁定。不内置命令/View/设置的领域语义：接收者由各能力 owner 提供。
+- **关键不变量**：
+  - 登记整体判定：任一入口/贡献/服务键校验失败，整个定义不登记且不向 services 留下部分声明（登记前用 `assembly.hasKey` 预检）。登记不调用 `activate`、不创建资源。
+  - 代次 = 一次激活新建的 lifecycle 子作用域 `plugin:<id>/<entry>#<n>`；依赖借用、入口登记资源与发布记录都挂在它上面；失败整体收口，正常关闭由 lifecycle 级联，发布记录资源的释放即撤回贡献（逆序、幂等）。
+  - 提供项协作：登记阶段向 services 声明提供者，其 `create` 触发或加入入口激活并等待结果；成功后实例交给服务作用域，并在激活作用域挂一条「关闭服务作用域」租约使两者同寿命；实例只释放一次。入口不等待自己的提供项。
+  - 贡献事务 `prepare`（按声明顺序）→ `commit`（全部准备成功后）→ 发布；任一步失败逆序 `revoke` 全部已准备项；`ContributionHandle.implementation()` 是唯一取实现路径，发布前/撤回后/关闭后抛 `PluginStateError`。
+  - 已结算且实例已离开可用的代次再触发一律 `rejected: scope-closed`，不返回旧结果、不复活；`recover(ref)` 等待上次激活作用域收口，同时重置该入口在 services 的提供者，不自动重新激活。
+  - 缺失实现、缺失提供项、产出未声明的键都是 `output` 阶段失败；不接受空 handler 或占位。
+  - 诊断只含 `{sequence, instanceId, location, plugin, entry, generation, stage, reason, capability, contribution, error{name,message}}`。
+- **合同测试**：`packages/neuro-book/runtime/plugins/plugins.test.ts`（24 例），经 `bun run test:runtime-foundation` 与 `bun run typecheck:runtime-foundation` 运行。
+- **实际 smoke**：`bun run smoke:runtime-foundation -- --host server|browser`，见 [`runtime.application`](./application.md#实现合同)。
 
 ## 证据
 
 - 批准目标：[应用运行时、生命周期与内置插件架构](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)。2026-09-20 开发者接受基础架构与分段推进方向，并明确要求把第一实现切片（环境适配入口与小内核）与第二切片（以内置服务插件检验底座）沉淀为 Spec；不包含任意热卸载扩展。
-- 本 Spec 尚未实现；实现与验证闭合前保持 `planned`。
+- 实现与验证：[w00017 t07](../../../.agents/works/w00017-application-runtime-architecture/tasks/t07-runtime-plugins/README.md)（机制与合同测试）、[t08](../../../.agents/works/w00017-application-runtime-architecture/tasks/t08-runtime-application/README.md)（真实双宿主 smoke）、[t09 首片集成复核](../../../.agents/works/w00017-application-runtime-architecture/tasks/t09-foundation-integration-review/README.md)（对照本文逐条核对并晋升）。
+- 已知限制：首批真实内置插件（diagnostics、platform-files、sqlite）归第二片；第一片只有受控插件证明机制。命令/View/设置等接收者的领域字段与校验由各能力 Spec 在首次消费时补齐。

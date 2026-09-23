@@ -7,7 +7,7 @@
 - **已确认方向**：Lab 只承担组件展示；生命周期按运行位置与资源作用域设计；允许重构现有前后端。这些方向继续有效，不等于批准全部具体机制。
 - **三项已批准取舍**：A1，必需服务也以插件提供，首批随产品发布且不做任意热卸载；A2，显式关闭先处理 dirty/在途操作，强制退出不保证保存，窗口离开不自动关闭后台共享资源；A3，先收回 Lab 产品宿主，再验证 Files、Settings 两条真实链路。
 - **本轮接受与授权**：开发者明确第一实现切片止于环境适配入口和小内核，第二以内置服务插件验证，再按外部插件作者视角推进 Lab → Files → Settings → World/Plot；授权先落前两片 Spec、整体实施路径、Work 与 Task。代码布局是实施规划，不是对外包承诺；本轮不执行产品实现、worktree 创建、提交或远端操作。
-- 本文不是当前行为 Spec。前两片目标已分别沉淀为七项 `planned` 合同，见[规范注册表](../../../../docs/specs/README.md)；已有 `implemented` 合同在各条真实链完成切换前继续有效。未做的 Desktop/Worker 适配、领域迁移细节与热卸载扩展不冒称已实现或已完整批准。
+- 本文不是当前行为 Spec。前两片目标已分别沉淀为七项合同，见[规范注册表](../../../../docs/specs/README.md)：第一切片四项（lifecycle、services、plugins、application）已由 w00017 实现并晋升 `implemented`，第二切片三项仍为 `planned`；已有 `implemented` 合同在各条真实链完成切换前继续有效。产品启动链尚未迁入新入口；未做的 Desktop/Worker 适配、领域迁移细节与热卸载扩展不冒称已实现或已完整批准。
 
 ## 问题
 
@@ -169,10 +169,10 @@ w00003 表中的路径均相对该树的 `packages/neuro-book/`，不是主树�
 
 | 模块 id | 职责与 owner | 依赖 | 规范归属与独立验收 |
 |---|---|---|---|
-| `runtime-lifecycle` | 运行实例、作用域、资源所有权、取消与结束；owner：runtime | 无产品能力依赖 | [runtime.lifecycle](../../../../docs/specs/runtime/lifecycle.md)，`planned`；关闭与迟到发布 |
-| `service-composition` | 服务绑定、依赖图、实例寿命和解析失败；owner：runtime | runtime-lifecycle | [runtime.services](../../../../docs/specs/runtime/services.md)，`planned`；缺依赖、环、并发初始化、越域捕获 |
-| `plugin-runtime` | 插件描述、贡献所有权、激活与失败收口；owner：runtime | service-composition | [runtime.plugins](../../../../docs/specs/runtime/plugins.md)，`planned`；描述先登记、激活一次、局部失败 |
-| `application-bootstrap` | 环境适配、装配选择与启动/停止门禁；owner：application-runtime | plugin-runtime；按清单选择服务插件 | [runtime.application](../../../../docs/specs/runtime/application.md)，`planned`；首片验证浏览器/后端宿主，不宣称完整产品/桌面已迁移 |
+| `runtime-lifecycle` | 运行实例、作用域、资源所有权、取消与结束；owner：runtime | 无产品能力依赖 | [runtime.lifecycle](../../../../docs/specs/runtime/lifecycle.md)，`implemented`；关闭与迟到发布 |
+| `service-composition` | 服务绑定、依赖图、实例寿命和解析失败；owner：runtime | runtime-lifecycle | [runtime.services](../../../../docs/specs/runtime/services.md)，`implemented`；缺依赖、环、并发初始化、越域捕获 |
+| `plugin-runtime` | 插件描述、贡献所有权、激活与失败收口；owner：runtime | service-composition | [runtime.plugins](../../../../docs/specs/runtime/plugins.md)，`implemented`；描述先登记、激活一次、局部失败 |
+| `application-bootstrap` | 环境适配、装配选择与启动/停止门禁；owner：application-runtime | plugin-runtime；按清单选择服务插件 | [runtime.application](../../../../docs/specs/runtime/application.md)，`implemented`（受控装配入口）；浏览器/后端宿主已实测，不宣称完整产品/桌面已迁移 |
 | `capability-adapters` | 命令、Storage、Config、View 等各自贡献入口；owner：各能力 owner | plugin-runtime 的扩展合同，不依赖具体页面 | 沿用能力自身 Spec；文件与设置两条纵向链路 |
 | `component-lab` | 纯组件展示及局部样板依赖；owner：ui | 组件与显式局部依赖，不依赖产品装配 | 原位修订 `ui.component-lab`；切场景无共享产品状态 |
 | `runtime-diagnostics` | 生命周期诊断服务；owner：runtime-diagnostics | 内核事件与宿主紧急输出 | [runtime.diagnostics](../../../../docs/specs/runtime/diagnostics.md)，`planned`；早期失败可见、脱敏、输出异常不阻断收口 |
@@ -546,4 +546,4 @@ World 工作面的 subject RAG 是另一个真实依赖：现有 subject-memory/
 | 2026-09-20 | 开发者接受并要求规范规划 | 第一实现切片止于环境适配入口与小内核，要求可验证、规范、灵活；第二以内置服务插件验证；之后从外部插件作者角度推进功能。先落前两片 Spec、Work、整体实施方案与 Task，不立即实施 |
 | 2026-09-20 | 开发者决定实施基线 | 等 w00003 完成并合并到 master，再考虑从 master 创建 w00017 worktree；不在 w00003 继续开发，不从其中途检查点分叉。当前继续规范与治理文档，不提前实施 |
 
-前两片行为真相源现为注册表的七项 `planned` Spec；实施路线和具体任务由 w00017 拥有。下一步等待 w00003 合并 master 并满足治理登记基线，再落实从 master 创建 worktree 后执行首个实现 Task。后续功能按真实结果细化原有 Spec；第三方 SDK、热卸载扩展、数据迁移或公开协议变化仍需独立取舍。规划批准不代表已有实现、验收或远端授权。
+前两片行为真相源为注册表的七项 Spec：第一切片四项已在 w00017 实现分支晋升 `implemented`（t05–t09），第二切片三项仍 `planned`；实施路线和具体任务由 w00017 拥有。下一步是第二切片（诊断、平台文件、SQLite）与产品装配接线。后续功能按真实结果细化原有 Spec；第三方 SDK、热卸载扩展、数据迁移或公开协议变化仍需独立取舍。规划批准不代表已有验收或远端授权。
