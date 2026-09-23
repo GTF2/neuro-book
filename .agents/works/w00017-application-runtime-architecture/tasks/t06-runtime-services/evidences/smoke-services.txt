@@ -1,0 +1,166 @@
+# 临时 smoke：runtime.services 公开入口消费（脚本已删除，不进仓库）
+# cwd: packages/neuro-book (worktree .worktree/w00017-application-runtime-architecture)
+# command: bun run <系统 Temp>/neuro-book/w00017-t06-smoke-script/smoke-services.ts
+# bun: 1.3.14
+# date: 2026-09-22T17:05:00Z
+# HEAD: 3defd3dc6c9f8b5780c47f73f2864bc0b2f179c0（services 实现与 lifecycle 的 parent 字段未提交，验证覆盖的是工作区 diff）
+# 说明：脚本用 @notnotype/neuro-book-test-support/paths 的 resolveAgentScratchPath 分配 scratch 目录，
+#       logger 服务向其中追加 service.log，finally 删除；进程不调用 process.exit，靠资源全部释放后自然退出。
+#       首次运行即全部 PASS，下面是原始输出。
+
+## stdout
+[+   6ms] scratch=C:\Users\NOTNOT~1\AppData\Local\Temp\neuro-book\w00017-t06-smoke\run-63692
+[+   9ms] PASS 报告 5 个入口全部 usable，且未实例化 (clockCreates=0)
+[+  46ms] PASS 并发首次解析只初始化 clock 一次 (clockCreates=1)
+[+  46ms] PASS clock/logger 均 available
+[+  94ms] PASS logger 写入 2 行，clock ticks=3
+[+  94ms] PASS 操作级作用域拿到同一 clock 实例
+[+  95ms] PASS 操作关闭后借用释放，clock 未受影响
+[+  97ms]   diag initialize flaky initialization-failed (Error: flaky boot failed)
+[+  97ms] PASS flaky 稳定失败，同一结果，attempts=1
+[+  97ms]   diag recover flaky reset
+[+  97ms] PASS recover 后重新初始化 -> flaky#2
+[+  97ms] PASS root.close -> closed
+[+  97ms] PASS 释放顺序: logger-released,clock-released
+[+  97ms] PASS 关闭后旧绑定 stale
+[+  97ms] PASS 关闭后 providerState=stopped
+[+  97ms] PASS 关闭后解析 -> consumer-stopped
+[+ 137ms] PASS 定时器已停止 (3 -> 3)
+[+ 138ms] scratch 已删除: exists=false
+[+ 138ms] failures=0; 等待进程自然退出
+
+## stderr
+(空)
+# exit code: 0
+
+## 脚本源码（供复现；运行后已随临时目录删除）
+```ts
+import {appendFileSync, existsSync, mkdirSync, readFileSync, rmSync} from "node:fs";
+import {join} from "node:path";
+import {resolveAgentScratchPath} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book-test-support/src/paths.ts";
+import {createRuntimeInstance} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/lifecycle/lifecycle.ts";
+import {createServiceAssembly, defineServiceKey} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/services/services.ts";
+
+const started = performance.now();
+let failures = 0;
+function log(message: string): void {
+    console.log(`[+${Math.round(performance.now() - started).toString().padStart(4, " ")}ms] ${message}`);
+}
+function check(condition: boolean, message: string): void {
+    if (!condition) failures += 1;
+    log(`${condition ? "PASS" : "FAIL"} ${message}`);
+}
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const scratch = resolveAgentScratchPath("w00017-t06-smoke", `run-${process.pid}`);
+mkdirSync(scratch, {recursive: true});
+log(`scratch=${scratch}`);
+const logFile = join(scratch, "service.log");
+
+interface Clock { ticks(): number }
+interface Logger { write(line: string): void; lines(): number }
+const clockKey = defineServiceKey<Clock>("clock");
+const loggerKey = defineServiceKey<Logger>("logger");
+const flakyKey = defineServiceKey<{name: string}>("flaky");
+const order: string[] = [];
+
+try {
+    const runtime = createRuntimeInstance({location: "server", instanceId: `smoke-${process.pid}`});
+    const root = runtime.root;
+    root.open();
+    const assembly = createServiceAssembly(runtime, {
+        keys: [clockKey, loggerKey, flakyKey],
+        observer: {diagnosticRecorded: (d) => log(`  diag ${d.stage} ${d.entryId} ${d.reason}${d.error ? ` (${d.error.name}: ${d.error.message})` : ""}`)},
+    });
+
+    let clockCreates = 0;
+    assembly.declare({
+        id: "clock", key: clockKey, location: "server", scope: root,
+        create: async () => {
+            clockCreates += 1;
+            await sleep(30); // 模拟真实异步启动，让并发首次解析真正重叠
+            let ticks = 0;
+            const timer = setInterval(() => { ticks += 1; }, 5);
+            return {timer, ticks: () => ticks};
+        },
+        release: (clock) => { clearInterval((clock as {timer: ReturnType<typeof setInterval>}).timer); order.push("clock-released"); },
+    });
+    assembly.declare({
+        id: "logger", key: loggerKey, location: "server", scope: root,
+        dependencies: [{key: clockKey}],
+        create: (context) => {
+            const clock = context.services.require(clockKey);
+            let count = 0;
+            return {
+                write: (line: string) => { count += 1; appendFileSync(logFile, `${clock.ticks()} ${line}\n`); },
+                lines: () => count,
+            };
+        },
+        release: () => { order.push("logger-released"); },
+    });
+    let flakyAttempts = 0;
+    assembly.declare({
+        id: "flaky", key: flakyKey, location: "server", scope: root,
+        create: () => {
+            flakyAttempts += 1;
+            if (flakyAttempts === 1) throw new Error("flaky boot failed");
+            return {name: `flaky#${flakyAttempts}`};
+        },
+    });
+    assembly.declare({id: "app", location: "server", scope: root, dependencies: [{key: loggerKey}, {key: flakyKey}]});
+    assembly.declare({id: "worker", location: "server", scope: root, dependencies: [{key: clockKey}]});
+
+    const report = assembly.report();
+    check(report.entries.every((e) => e.verdict === "usable") && clockCreates === 0, `报告 5 个入口全部 usable，且未实例化 (clockCreates=${clockCreates})`);
+
+    // 并发首次解析：app 经 logger 间接需要 clock；worker 直接需要 clock。
+    const [loggerResult, clockResult] = await Promise.all([
+        assembly.access("app").resolve(loggerKey),
+        assembly.access("worker").resolve(clockKey),
+    ]);
+    if (loggerResult.status !== "resolved" || clockResult.status !== "resolved") throw new Error("首次解析失败");
+    check(clockCreates === 1, `并发首次解析只初始化 clock 一次 (clockCreates=${clockCreates})`);
+    check(assembly.providerState("clock") === "available" && assembly.providerState("logger") === "available", "clock/logger 均 available");
+
+    // 真实定时器与真实文件写入
+    await sleep(40);
+    const logger = loggerResult.instance;
+    logger.write("hello");
+    logger.write("world");
+    const content = readFileSync(logFile, "utf8");
+    check(content.split("\n").filter(Boolean).length === 2 && clockResult.instance.ticks() > 0, `logger 写入 2 行，clock ticks=${clockResult.instance.ticks()}`);
+
+    // 操作级作用域借用精确代次，操作结束后借用释放、实例仍在
+    const op = root.createChild("op");
+    op.open();
+    const opBound = await assembly.access("worker", op).resolve(clockKey);
+    check(opBound.status === "resolved" && opBound.instance === clockResult.instance, "操作级作用域拿到同一 clock 实例");
+    await op.close();
+    check(opBound.status === "resolved" && !opBound.binding.stale && assembly.providerState("clock") === "available", "操作关闭后借用释放，clock 未受影响");
+
+    // 稳定失败与显式恢复
+    const flaky1 = await assembly.access("app").resolve(flakyKey);
+    const flaky2 = await assembly.access("app").resolve(flakyKey);
+    check(flaky1.status === "unavailable" && flaky1.reason === "initialization-failed" && flaky2 === flaky1 && flakyAttempts === 1, `flaky 稳定失败，同一结果，attempts=${flakyAttempts}`);
+    const recovered = await assembly.recover("flaky");
+    const flaky3 = await assembly.access("app").resolve(flakyKey);
+    check(recovered.status === "reset" && flaky3.status === "resolved" && flaky3.instance.name === "flaky#2", `recover 后重新初始化 -> ${flaky3.status === "resolved" ? flaky3.instance.name : flaky3.reason}`);
+
+    // 关闭根：消费者先、提供者后；logger 依赖 clock，所以 logger 先释放
+    const closed = await root.close();
+    check(closed.status === "closed", `root.close -> ${closed.status}`);
+    check(order.join(",") === "logger-released,clock-released", `释放顺序: ${order.join(",")}`);
+    check(loggerResult.binding.stale && clockResult.binding.stale, "关闭后旧绑定 stale");
+    check(assembly.providerState("clock") === "stopped", `关闭后 providerState=${assembly.providerState("clock")}`);
+    const afterClose = await assembly.access("worker").resolve(clockKey);
+    check(afterClose.status === "unavailable" && afterClose.reason === "consumer-stopped", `关闭后解析 -> ${afterClose.status === "unavailable" ? afterClose.reason : afterClose.status}`);
+    const ticksAtClose = clockResult.instance.ticks();
+    await sleep(30);
+    check(clockResult.instance.ticks() === ticksAtClose, `定时器已停止 (${ticksAtClose} -> ${clockResult.instance.ticks()})`);
+} finally {
+    rmSync(scratch, {recursive: true, force: true});
+    log(`scratch 已删除: exists=${existsSync(scratch)}`);
+}
+process.exitCode = failures === 0 ? 0 : 1;
+log(`failures=${failures}; 等待进程自然退出`);
+```

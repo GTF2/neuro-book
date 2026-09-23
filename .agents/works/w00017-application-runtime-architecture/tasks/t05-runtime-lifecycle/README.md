@@ -13,7 +13,7 @@ taskId: t05-runtime-lifecycle
 
 ## 当前状态
 
-机制、合同测试与独立验证入口已实现，定向验证与临时 smoke 全部通过；已授权在实现分支落两个原子提交（见下文验证与提交）。`docs/specs/runtime/lifecycle.md` 与注册表保持 `planned`：Spec 场景 6（同一装配在真实浏览器宿主复用）没有浏览器证据，只在 Node 宿主用 `location: "browser"` 跑过同装配对照。
+机制、合同测试与独立验证入口已实现并提交：`a03c7169`（独立验证入口）、`3defd3dc`（机制、测试、文档与证据）。`docs/specs/runtime/lifecycle.md` 与注册表保持 `planned`：Spec 场景 6（同一装配在真实浏览器宿主复用）没有浏览器证据，只在 Node 宿主用 `location: "browser"` 跑过同装配对照。[t06](../t06-runtime-services/README.md) 追加了只读字段 `Scope.parent` 与 `summarizeFailure` 导出，见其快照。
 
 执行位置：`.worktree/w00017-application-runtime-architecture` / `refactor/w00017-runtime-foundation`，基线 `411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0`（master 含 w00003 合并 `bb688931` 与七项 Spec `bc144b2d`）。
 
@@ -78,4 +78,4 @@ smoke 用公开入口跑真实 `setInterval` 与 `EventTarget` 订阅、两个�
 
 ## 下一步
 
-t05 闭合后由 Work owner 按实际公开接口与证据创建服务装配 Task（`runtime/services`），再推进 plugins、环境适配与首片集成复核；`runtime.lifecycle` 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。
+服务装配 Task 已创建为 [t06](../t06-runtime-services/README.md)；之后推进 plugins、环境适配与首片集成复核。`runtime.lifecycle` 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。
