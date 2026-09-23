@@ -8,8 +8,8 @@
  * 同一 `window` 内的两个实例按 instanceId 隔离，互不共享对象；释放一个实例不发送共享后端的全局关闭。
  */
 
-import {createApplicationRegistry} from "../../runtime/application/application";
-import type {Application, ApplicationManifest, ApplicationRegistry, EmergencyReport, StopResult} from "../../runtime/application/application";
+import {createApplication} from "../../runtime/application/application";
+import type {Application, ApplicationManifest, EmergencyReport, StopResult} from "../../runtime/application/application";
 
 /** 适配器需要的最小页面事件接口：`pagehide` 的挂接与移除；测试可传入 EventTarget 替身。 */
 export interface PageLifecycleTarget {
@@ -60,10 +60,10 @@ class BrowserHostImpl implements BrowserHost {
     readonly #page: PageLifecycleTarget;
     readonly #onPageHide = (): void => this.#requestStop("unload");
 
-    constructor(registry: ApplicationRegistry, options: BrowserHostOptions) {
+    constructor(options: BrowserHostOptions) {
         this.#page = resolvePage(options.page);
         this.#page.addEventListener("pagehide", this.#onPageHide);
-        this.application = registry.start(
+        this.application = createApplication(
             {
                 identity: {location: "browser", instanceId: options.instanceId},
                 stopSignal: this.#controller.signal,
@@ -71,7 +71,8 @@ class BrowserHostImpl implements BrowserHost {
             },
             options.manifest,
         );
-        void this.#settled().then(() => this.#detach());
+        // 停止结算（无论由销毁、卸载还是启动失败触发）后移除监听；之后的页面事件不再触碰该实例。
+        void this.application.stopped.then(() => this.#detach());
     }
 
     destroy(): Promise<StopResult> {
@@ -87,18 +88,6 @@ class BrowserHostImpl implements BrowserHost {
         this.#controller.abort();
     }
 
-    async #settled(): Promise<StopResult | null> {
-        const startup = await this.application.startup;
-        if (startup.status !== "available") {
-            return startup.stop;
-        }
-        const stopSignal = this.application.root.stopSignal;
-        if (!stopSignal.aborted) {
-            await new Promise<void>((resolve) => stopSignal.addEventListener("abort", () => resolve(), {once: true}));
-        }
-        return this.application.stop();
-    }
-
     #detach(): void {
         this.#page.removeEventListener("pagehide", this.#onPageHide);
         this.detached = true;
@@ -107,7 +96,6 @@ class BrowserHostImpl implements BrowserHost {
 
 /** 浏览器宿主：一个页面可以持有多个实例（按 instanceId 隔离）；同一 instanceId 存活期间重复启动共享同一实例。 */
 export class BrowserRuntimeHost {
-    readonly #registry: ApplicationRegistry = createApplicationRegistry();
     readonly #hosts = new Map<string, BrowserHostImpl>();
 
     start(options: BrowserHostOptions): BrowserHost {
@@ -115,7 +103,7 @@ export class BrowserRuntimeHost {
         if (existing !== undefined && existing.application.root.phase !== "closed") {
             return existing;
         }
-        const host = new BrowserHostImpl(this.#registry, options);
+        const host = new BrowserHostImpl(options);
         this.#hosts.set(options.instanceId, host);
         return host;
     }

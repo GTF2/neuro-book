@@ -6,7 +6,7 @@
  */
 
 import {createRuntimeInstance, LifecycleStateError, summarizeFailure} from "../lifecycle/lifecycle";
-import type {CloseRequest, OperationSpec, RuntimeInstance, Scope} from "../lifecycle/lifecycle";
+import type {CloseRequest, CloseResult, OperationSpec, RuntimeInstance, Scope} from "../lifecycle/lifecycle";
 import {createPluginHost} from "../plugins/plugins";
 import type {PluginHost} from "../plugins/plugins";
 import {createServiceAssembly} from "../services/services";
@@ -43,15 +43,17 @@ export class ApplicationImpl implements Application {
     #startup: StartupResult | null = null;
     #stop: Promise<StopResult> | null = null;
     #stopResult: StopResult | null = null;
+    readonly #stopped = Promise.withResolvers<StopResult>();
+    readonly stopped: Promise<StopResult> = this.#stopped.promise;
 
     constructor(host: HostContext, manifest: ApplicationManifest) {
         this.#host = host;
         this.#manifest = manifest;
-        this.#instance = createRuntimeInstance(host.identity);
+        this.#instance = createRuntimeInstance(host.identity, {observer: manifest.observers?.lifecycle});
         this.identity = this.#instance.identity;
         this.root = this.#instance.root;
-        this.assembly = createServiceAssembly(this.#instance, {keys: manifest.keys});
-        this.plugins = createPluginHost(this.#instance, this.assembly, {receivers: manifest.receivers});
+        this.assembly = createServiceAssembly(this.#instance, {keys: manifest.keys, observer: manifest.observers?.services});
+        this.plugins = createPluginHost(this.#instance, this.assembly, {receivers: manifest.receivers, observer: manifest.observers?.plugins});
         if (host.stopSignal.aborted) {
             void this.stop();
         } else {
@@ -89,17 +91,27 @@ export class ApplicationImpl implements Application {
 
     stop(request?: CloseRequest): Promise<StopResult> {
         if (this.#stop === null) {
-            this.#stop = this.root.close(request).then((result): StopResult => {
-                const stop: StopResult = result.status === "closed" ? {status: "closed"} : {status: "incomplete", reason: result.reason, report: result};
-                this.#stopResult = stop;
-                if (stop.status === "incomplete") {
-                    const report = stop.report;
-                    this.#emergency("stop", `关闭未完成：${stop.reason}`, `failedResources=${report.failedResources.length} pendingReleases=${report.pendingReleases.length} unclosedChildren=${report.unclosedChildren.length}`);
-                }
-                return stop;
-            });
+            this.#stop = this.#settleStop(this.root.close(request));
+            this.#stopped.resolve(this.#stop);
         }
         return this.#stop;
+    }
+
+    recover(request?: CloseRequest): Promise<StopResult> {
+        this.#stop = this.#settleStop(this.root.recover(request));
+        return this.#stop;
+    }
+
+    #settleStop(closing: Promise<CloseResult>): Promise<StopResult> {
+        return closing.then((result): StopResult => {
+            const stop: StopResult = result.status === "closed" ? {status: "closed"} : {status: "incomplete", reason: result.reason, report: result};
+            this.#stopResult = stop;
+            if (stop.status === "incomplete") {
+                const report = stop.report;
+                this.#emergency("stop", `关闭未完成：${stop.reason}`, `failedResources=${report.failedResources.length} pendingReleases=${report.pendingReleases.length} unclosedChildren=${report.unclosedChildren.length}`);
+            }
+            return stop;
+        });
     }
 
     async #start(): Promise<StartupResult> {
@@ -191,9 +203,15 @@ export class ApplicationImpl implements Application {
                     }
                     return {...base, status: "failed", reason: `resolve:${result.reason}`, error: result.error};
                 }
-                case "check":
-                    await gate.check({signal: this.root.stopSignal, root: this.root});
+                case "check": {
+                    const consumerId = `application:gate:${gate.id}`;
+                    const declared = this.assembly.declare({id: consumerId, location: this.identity.location, scope: this.root, dependencies: gate.dependencies ?? []});
+                    if (declared.status === "rejected") {
+                        return failed(`check:${declared.reason}`);
+                    }
+                    await gate.check({signal: this.root.stopSignal, root: this.root, services: this.assembly.access(consumerId)});
                     return {...base, status: "passed"};
+                }
             }
         } catch (error) {
             return failed(`${gate.kind}:threw`, error);

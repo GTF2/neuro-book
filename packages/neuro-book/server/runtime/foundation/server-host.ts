@@ -6,8 +6,8 @@
  * 第一切片用受控装配验证真实宿主事件，正式产品的 product-startup/shutdown 尚未接入这里。
  */
 
-import {createApplicationRegistry} from "../../../runtime/application/application";
-import type {Application, ApplicationManifest, ApplicationRegistry, EmergencyReport, StopResult} from "../../../runtime/application/application";
+import {createApplication} from "../../../runtime/application/application";
+import type {Application, ApplicationManifest, EmergencyReport} from "../../../runtime/application/application";
 
 /** 适配器需要的最小进程接口：只用到信号事件的挂接与移除；测试可传入 EventEmitter 替身。 */
 export interface SignalSource {
@@ -51,13 +51,13 @@ class ServerHostImpl implements ServerHost {
     readonly #signals: ReadonlyArray<NodeJS.Signals>;
     readonly #onSignal = (signal: NodeJS.Signals): void => this.requestStop(`signal:${signal}`);
 
-    constructor(registry: ApplicationRegistry, options: ServerHostOptions) {
+    constructor(options: ServerHostOptions) {
         this.#source = options.process ?? process;
         this.#signals = options.signals ?? DEFAULT_SIGNALS;
         for (const signal of this.#signals) {
             this.#source.on(signal, this.#onSignal);
         }
-        this.application = registry.start(
+        this.application = createApplication(
             {
                 identity: {location: "server", instanceId: options.instanceId},
                 stopSignal: this.#controller.signal,
@@ -65,7 +65,8 @@ class ServerHostImpl implements ServerHost {
             },
             options.manifest,
         );
-        void this.#settled().then(() => this.#detach());
+        // 停止结算（无论由信号、启动失败还是 requestStop 触发）后移除监听；之后到达的信号不再触碰该实例。
+        void this.application.stopped.then(() => this.#detach());
     }
 
     requestStop(source: string): void {
@@ -74,19 +75,6 @@ class ServerHostImpl implements ServerHost {
         }
         this.stopSource = source;
         this.#controller.abort();
-    }
-
-    /** 实例停止结算：启动未成功即已结算；否则等待根作用域进入停止后的关闭结果。 */
-    async #settled(): Promise<StopResult | null> {
-        const startup = await this.application.startup;
-        if (startup.status !== "available") {
-            return startup.stop;
-        }
-        const stopSignal = this.application.root.stopSignal;
-        if (!stopSignal.aborted) {
-            await new Promise<void>((resolve) => stopSignal.addEventListener("abort", () => resolve(), {once: true}));
-        }
-        return this.application.stop();
     }
 
     #detach(): void {
@@ -102,7 +90,6 @@ class ServerHostImpl implements ServerHost {
  * 共享同一实例与同一组监听，不再挂接第二份。
  */
 export class ServerRuntimeHost {
-    readonly #registry: ApplicationRegistry = createApplicationRegistry();
     readonly #hosts = new Map<string, ServerHostImpl>();
 
     start(options: ServerHostOptions): ServerHost {
@@ -110,7 +97,7 @@ export class ServerRuntimeHost {
         if (existing !== undefined && existing.application.root.phase !== "closed") {
             return existing;
         }
-        const host = new ServerHostImpl(this.#registry, options);
+        const host = new ServerHostImpl(options);
         this.#hosts.set(options.instanceId, host);
         return host;
     }

@@ -4,11 +4,12 @@ import {readdir, readFile} from "node:fs/promises";
 import {dirname, join} from "node:path";
 import {fileURLToPath} from "node:url";
 
+import {LifecycleStateError} from "../lifecycle/lifecycle";
 import type {PluginDefinition} from "../plugins/plugins";
 import {provide} from "../plugins/plugins";
 import {defineServiceKey} from "../services/services";
 
-import {createApplication, createApplicationRegistry} from "./application";
+import {createApplication} from "./application";
 import type {ApplicationManifest, EmergencyReport, HostContext, StartupGate} from "./application";
 
 const moduleDir = dirname(fileURLToPath(import.meta.url));
@@ -98,6 +99,34 @@ describe("启动与接纳", () => {
         }
     });
 
+    it("清单里的机制观察者在任何插件激活前就收到生命周期与装配事件；观察者抛错不改变启动结果", async () => {
+        const phases: string[] = [];
+        const assemblyDiagnostics: string[] = [];
+        const pluginDiagnostics: string[] = [];
+        const {context} = host();
+        const application = createApplication(
+            context,
+            manifest({
+                extraGates: [{id: "missing", kind: "resolve", required: false, key: defineServiceKey("missing")}],
+                observers: {
+                    lifecycle: {phaseChanged: (change) => {
+                        phases.push(`${change.scopeId}:${change.from}>${change.to}`);
+                        throw new Error("观察者崩溃");
+                    }},
+                    services: {diagnosticRecorded: (diagnostic) => void assemblyDiagnostics.push(diagnostic.reason)},
+                    plugins: {diagnosticRecorded: (diagnostic) => void pluginDiagnostics.push(diagnostic.reason)},
+                },
+            }),
+        );
+        const startup = await application.startup;
+        expect(startup.status).toBe("available");
+        // 首个事件是 greeter 激活作用域的创建，早于任何插件可调用；根作用域 open 也被记录。
+        expect(phases.some((entry) => entry.endsWith(":creating>available"))).toBe(true);
+        expect(phases.at(-1)).toMatch(/^scope-1:creating>available$/u);
+        expect(assemblyDiagnostics).toContain("unknown-key");
+        expect(pluginDiagnostics).toEqual(["published"]);
+    });
+
     it("必需门禁失败：不接纳、紧急输出可见、已取得资源收口；可选门禁失败只报告，无关能力继续可用", async () => {
         const releaseClock = vi.fn();
         const {context, emergencies} = host();
@@ -176,13 +205,16 @@ describe("启动与关闭竞态", () => {
         expect(await application.stop()).toEqual({status: "closed"});
     });
 
-    it("停止进入后拒绝新业务，已接纳操作仍完成；依赖关闭失败则不报整实例 closed，重复停止观察同一结果", async () => {
+    it("停止进入后拒绝新业务，已接纳操作仍完成；依赖关闭失败则不报整实例 closed，重复停止观察同一结果；显式恢复才另起尝试", async () => {
         const {context, emergencies} = host();
+        let failRelease = true;
         const application = createApplication(
             context,
             manifest({
                 capabilities: [{id: "clock", key: clockKey, create: (): Clock => ({now: () => 1}), release: () => {
-                    throw new Error("clock 释放失败");
+                    if (failRelease) {
+                        throw new Error("clock 释放失败");
+                    }
                 }}],
             }),
         );
@@ -204,28 +236,51 @@ describe("启动与关闭竞态", () => {
         // clock 由 services 的服务作用域持有：它释放失败留在 stopping，根作用域因未关闭的子作用域报 blocked。
         expect(stop).toMatchObject({status: "incomplete", reason: "blocked", report: {failedResources: [], unclosedChildren: [expect.any(String)]}});
         expect(await application.stop()).toBe(stop);
+        expect(await application.stopped).toBe(stop);
         expect(application.status()).toMatchObject({phase: "stopping", stop});
         expect(emergencies.at(-1)).toEqual({instanceId: "app-1", stage: "stop", reason: "关闭未完成：blocked", detail: "failedResources=0 pendingReleases=0 unclosedChildren=1"});
+
+        // 显式恢复：释放不再失败后，恢复级联到持有 clock 的服务作用域并完成关闭；之后 stop() 观察恢复结果。
+        failRelease = false;
+        const recovered = await application.recover();
+        expect(recovered).toEqual({status: "closed"});
+        expect(await application.stop()).toBe(recovered);
+        expect(application.status()).toMatchObject({phase: "closed", stop: recovered});
+        // 首次停止结算不因恢复改写。
+        expect(await application.stopped).toBe(stop);
+    });
+
+    it("stopped 在宿主信号触发的停止结算后兑现；未停止的实例 recover 抛 LifecycleStateError", async () => {
+        const {context, controller} = host();
+        const application = createApplication(context, manifest());
+        await application.startup;
+        expect(() => application.recover()).toThrow(LifecycleStateError);
+        controller.abort();
+        expect(await application.stopped).toEqual({status: "closed"});
+        expect(application.status()).toMatchObject({phase: "closed"});
     });
 });
 
-describe("隔离与登记", () => {
-    it("同一 instanceId 存活期间重复启动共享同一实例；关闭后同 id 得到新实例；不同 id 与位置互相隔离", async () => {
-        const registry = createApplicationRegistry();
-        const a = host("shared");
-        const first = registry.start(a.context, manifest());
-        const again = registry.start(host("shared").context, manifest());
-        expect(again).toBe(first);
-        const other = registry.start(host("other", "browser").context, manifest({plugins: [greeterPlugin("browser")]}));
-        expect(other).not.toBe(first);
-        expect((await first.startup).status).toBe("available");
-        expect((await other.startup).status).toBe("available");
-        expect(registry.alive()).toHaveLength(2);
-        await first.stop();
-        expect(registry.get("shared")).toBeNull();
-        expect(other.status().admission).toBe("open");
-        const fresh = registry.start(host("shared").context, manifest());
-        expect(fresh).not.toBe(first);
-        expect((await fresh.startup).status).toBe("available");
+describe("检查门禁的服务访问", () => {
+    it("check 门禁只能解析自己声明的依赖；未声明的键解析失败，声明了缺失键时门禁在检查前即失败", async () => {
+        const seen: string[] = [];
+        const {context} = host();
+        const application = createApplication(
+            context,
+            manifest({
+                extraGates: [
+                    {id: "reads-clock", kind: "check", dependencies: [{key: clockKey}], check: async ({services}) => {
+                        const clock = await services.resolve(clockKey);
+                        seen.push(clock.status === "resolved" ? `clock:${clock.instance.now()}` : clock.reason);
+                        const greeter = await services.resolve(greeterKey);
+                        seen.push(greeter.status === "resolved" ? "greeter" : greeter.reason);
+                    }},
+                    {id: "missing-dependency", kind: "check", required: false, dependencies: [{key: defineServiceKey("nowhere")}], check: () => void seen.push("should-not-run")},
+                ],
+            }),
+        );
+        const startup = await application.startup;
+        expect(startup).toMatchObject({status: "available", gates: [{id: "greeter", status: "passed"}, {id: "reads-clock", status: "passed"}, {id: "missing-dependency", status: "failed", reason: "check:unknown-key"}]});
+        expect(seen).toEqual(["clock:1", "undeclared-dependency"]);
     });
 });

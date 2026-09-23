@@ -9,14 +9,15 @@ import type {
     CloseIncomplete,
     CloseRequest,
     FailureError,
+    LifecycleObserver,
     OperationHandle,
     OperationSpec,
     RuntimeInstanceIdentity,
     Scope,
     ScopePhase,
 } from "../lifecycle/lifecycle";
-import type {ContributionReceiver, EntryRef, PluginDefinition, PluginHost} from "../plugins/plugins";
-import type {ServiceAssembly, ServiceCreateContext, ServiceDependency, ServiceKey} from "../services/services";
+import type {ContributionReceiver, EntryRef, PluginDefinition, PluginHost, PluginObserver} from "../plugins/plugins";
+import type {AssemblyObserver, ServiceAccess, ServiceAssembly, ServiceCreateContext, ServiceDependency, ServiceKey} from "../services/services";
 
 export type {FailureError} from "../lifecycle/lifecycle";
 
@@ -48,11 +49,36 @@ export interface CapabilityProvider<T = unknown> {
     release?(instance: T): void | Promise<void>;
 }
 
+/** 只读检查门禁的上下文：停止信号、根作用域与该门禁声明依赖的服务访问。 */
+export interface GateCheckContext {
+    readonly signal: AbortSignal;
+    readonly root: Scope;
+    /** 只能解析本门禁 `dependencies` 声明过的键；借用登记在根作用域上。 */
+    readonly services: ServiceAccess;
+}
+
 /** 启动门禁：装配方声明的就绪条件；`required` 默认 true。 */
 export type StartupGate =
     | {readonly id: string; readonly required?: boolean; readonly kind: "activate"; readonly entry: EntryRef}
     | {readonly id: string; readonly required?: boolean; readonly kind: "resolve"; readonly key: ServiceKey<unknown>}
-    | {readonly id: string; readonly required?: boolean; readonly kind: "check"; check(context: {readonly signal: AbortSignal; readonly root: Scope}): void | Promise<void>};
+    | {
+          readonly id: string;
+          readonly required?: boolean;
+          readonly kind: "check";
+          /** 检查需要读取的服务（例如根路径、数据库配置能力）；未声明的键在 check 内解析失败。 */
+          readonly dependencies?: ReadonlyArray<ServiceDependency>;
+          check(context: GateCheckContext): void | Promise<void>;
+      };
+
+/**
+ * 机制诊断观察者：装配方在创建实例前提供，使启动初期的生命周期/装配/插件事件在任何诊断插件激活前
+ * 就被记录（记录能力先于订阅存在）。回调异常由各机制吞掉，不改变机制状态。
+ */
+export interface MechanismObservers {
+    readonly lifecycle?: LifecycleObserver;
+    readonly services?: AssemblyObserver;
+    readonly plugins?: PluginObserver;
+}
 
 /** 静态受信清单：键登记表、接收者、本地能力、插件定义与门禁；顺序即登记与执行顺序。 */
 export interface ApplicationManifest {
@@ -61,6 +87,7 @@ export interface ApplicationManifest {
     readonly capabilities?: ReadonlyArray<CapabilityProvider>;
     readonly plugins: ReadonlyArray<PluginDefinition>;
     readonly gates: ReadonlyArray<StartupGate>;
+    readonly observers?: MechanismObservers;
 }
 
 export type GateOutcome =
@@ -121,6 +148,13 @@ export interface Application {
     status(): ApplicationStatus;
     /** 等待同一启动结果后接纳业务操作；未开放接纳时明确拒绝，不绕过启动。 */
     admit<T>(spec: OperationSpec<T>): Promise<AdmissionResult<T>>;
-    /** 幂等：重复停止观察同一次结果。 */
+    /** 幂等：重复停止观察同一次结果；显式恢复才另起一次尝试。 */
     stop(request?: CloseRequest): Promise<StopResult>;
+    /**
+     * 显式恢复：对上一次未完成的停止另起一次关闭尝试（只重试失败资源，不与在途清理重入）；
+     * 之后 `stop()`、`status().stop` 观察这次的结果。未进入停止时抛 LifecycleStateError。
+     */
+    recover(request?: CloseRequest): Promise<StopResult>;
+    /** 本实例首次停止尝试的结算（无论由宿主信号、启动失败还是显式 stop 触发）；不触发停止。 */
+    readonly stopped: Promise<StopResult>;
 }
