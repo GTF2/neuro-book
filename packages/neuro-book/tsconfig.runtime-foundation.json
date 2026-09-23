@@ -20,6 +20,10 @@
         }
     },
     "include": [
-        "runtime/**/*.ts"
+        "runtime/**/*.ts",
+        "server/runtime/foundation/**/*.ts",
+        "app/runtime/**/*.ts",
+        "scripts/smoke/runtime-foundation.ts",
+        "scripts/smoke/runtime-foundation/**/*.ts"
     ]
 }
