@@ -136,6 +136,10 @@ export class ServiceAssemblyImpl implements ServiceAssembly {
         this.#observer = options.observer;
     }
 
+    hasKey(key: ServiceKey<unknown>): boolean {
+        return this.#keys.has(key);
+    }
+
     declare<T>(declaration: ProviderDeclaration<T>): DeclareResult;
     declare(declaration: ConsumerDeclaration): DeclareResult;
     declare(declaration: ProviderDeclaration<unknown> | ConsumerDeclaration): DeclareResult {

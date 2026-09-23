@@ -190,6 +190,8 @@ export interface AssemblyObserver {
 export interface ServiceAssembly {
     readonly instanceId: string;
     readonly location: RuntimeLocation;
+    /** 键是否在受信登记表中；纯查询，供上层在登记前预检声明。 */
+    hasKey(key: ServiceKey<unknown>): boolean;
     /** 登记声明；被拒绝的声明不进入依赖图，只留诊断。登记不实例化任何服务。 */
     declare<T>(declaration: ProviderDeclaration<T>): DeclareResult;
     declare(declaration: ConsumerDeclaration): DeclareResult;
