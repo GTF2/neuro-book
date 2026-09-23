@@ -13,9 +13,9 @@ issueId: null
 1. 第一实现切片止于**环境适配入口 + 小内核**，必须可验证、代码规范、能适配不同宿主与作用域。
 2. 第二切片以内置服务插件检验地基；当前最小真实集合为**诊断、平台文件、SQLite**。其它应用服务随首次真实功能消费接入，不先搬完所有后台。
 3. 后续按**外部插件开发者视角**推进 Lab → Files → Settings → World/Plot，不把第三方市场/SDK/沙箱引入当前范围。
-4. 开发者要求先等 w00003 合并 master 再创建 w00017 worktree；该条件已于 `bb688931`（Merge branch `refactor/w00003-nb-ui-adoption` into master）满足，实现 worktree 已创建，t05、t06 已按批准的实施计划执行。
+4. 开发者要求先等 w00003 合并 master 再创建 w00017 worktree；该条件已于 `bb688931`（Merge branch `refactor/w00003-nb-ui-adoption` into master）满足，实现 worktree 已创建，t05、t06、t07 已按批准的实施计划执行。
 
-规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。当前实现分支做到 t06（lifecycle、services 两个机制单元）；未执行 plugins／环境适配、产品接线、push、PR、合并、迁移或浏览器／真实模型验收。本地原子提交在实现分支自主进行；push、PR、合并仍需授权。
+规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。当前实现分支做到 t07（lifecycle、services、plugins 三个机制单元）；未执行环境适配、产品接线、push、PR、合并、迁移或浏览器／真实模型验收。本地原子提交在实现分支自主进行；push、PR、合并仍需授权。
 
 ## 规范与实施入口
 
@@ -34,13 +34,14 @@ issueId: null
 | [t03](tasks/t03-document-governance-review/README.md) | 独立读者／治理与计划可执行性复核 |
 | [t04](tasks/t04-foundation-spec-plan/README.md) | 当前规范、整体实施方案与治理集成 |
 | [t05](tasks/t05-runtime-lifecycle/README.md) | 首个实现单元：资源生命周期机制与独立验证入口；已提交 `a03c7169`、`3defd3dc`，`runtime.lifecycle` 保持 `planned` |
-| [t06](tasks/t06-runtime-services/README.md) | 第二实现单元：服务装配与依赖解析；机制、合同测试、smoke 已通过并提交，`runtime.services` 保持 `planned` |
+| [t06](tasks/t06-runtime-services/README.md) | 第二实现单元：服务装配与依赖解析；已提交 `c8d7000e`、`b7e7b41c`，`runtime.services` 保持 `planned` |
+| [t07](tasks/t07-runtime-plugins/README.md) | 第三实现单元：插件描述、激活与贡献事务；机制、合同测试、smoke 已通过并提交，`runtime.plugins` 保持 `planned` |
 
-后续单元在整体路径中规划，但不预建依赖未知实现结果的Task链。t06闭合后按其实际公开接口与证据创建plugins单元；再推进环境适配与首片验收。第二片可在公共合同稳定、文件owner独立后并行。Task completed不等于整个切片或产品完成。
+后续单元在整体路径中规划，但不预建依赖未知实现结果的Task链。三项机制闭合后进入环境适配（`runtime.application`）与首片验收。第二片可在公共合同稳定、文件owner独立后并行。Task completed不等于整个切片或产品完成。
 
 ## 执行位置与版本
 
-实现 checkout：`.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，基线 `411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0`（master，含 w00003 合并 `bb688931` 与本 Work 七项 Spec 提交 `bc144b2d`）。分支上依次有 t05 提交 `a03c7169`、`3defd3dc`，t06 提交 `c8d7000e` 及其后的 services 提交。各 Task 的 `governance:context` 在该 checkout 核实身份，原始输出见各自 evidences。
+实现 checkout：`.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，基线 `411449ec4c1fbc57cceaeb7aa9d2385132a0d3e0`（master，含 w00003 合并 `bb688931` 与本 Work 七项 Spec 提交 `bc144b2d`）。分支上依次有 t05 提交 `a03c7169`、`3defd3dc`，t06 提交 `c8d7000e`、`b7e7b41c`，规则调整 `e457375d`，以及 t07 的提交。各 Task 的 `governance:context` 在该 checkout 核实身份，原始输出见各自 evidences。
 
 Work／Task 进度只在实现分支维护；主工作区保持 `master`，其 Work 目录副本是 `bc144b2d` 的占号记录，不回填进度、不在主树切分支。登记按 [编号合同](../README.md#编号分配与记录位置) 本地协调，不要求独立登记 PR 或非 squash 祖先关系。
 
@@ -55,7 +56,7 @@ Work／Task 进度只在实现分支维护；主工作区保持 `master`，其 W
 
 ## 质量与证据
 
-纯文档检查链接、结构、capability唯一性、成熟度与批准边界，并用独立Reviewer反证生命周期/资源/依赖合同和实施计划。t05、t06 的机制验证为应用包 `test:runtime-foundation`、`typecheck:runtime-foundation`、各一次临时 smoke，以及仓库根 `docs:check` 与 Task `governance:context`；全量 `bun run test`、`nuxt typecheck`、build、浏览器、迁移和Provider不属于已运行项。
+纯文档检查链接、结构、capability唯一性、成熟度与批准边界，并用独立Reviewer反证生命周期/资源/依赖合同和实施计划。t05、t06、t07 的机制验证为应用包 `test:runtime-foundation`、`typecheck:runtime-foundation`、各一次临时 smoke，以及仓库根 `docs:check` 与 Task `governance:context`；全量 `bun run test`、`nuxt typecheck`、build、浏览器、迁移和Provider不属于已运行项。
 
 规划阶段 `governance:check` 的两项失败见 [原始输出](tasks/t01-architecture-proposal/evidences/governance-check-tracer.txt)：w00003/t14缺README、根AGENTS固定标记不匹配。前者已由主线 `34c3d5db` 补齐；本 Work 未重跑全仓 `governance:check`，不宣称全仓治理通过。
 
@@ -65,4 +66,4 @@ Work／Task 进度只在实现分支维护；主工作区保持 `master`，其 W
 
 本轮新审查分别写 t02/t03 的 `walkthroughs/foundation-review.md`；t04 记录处理与最终质量证据，不用旧报告为新Spec背书。
 
-本轮规范规划的处理与验证入口：[t04交付记录](tasks/t04-foundation-spec-plan/walkthroughs/foundation-resolution.md)、[身份检查](tasks/t04-foundation-spec-plan/evidences/context-checks.txt)。实现单元的公开接口、验证结果与未运行项见各自快照：[t05](tasks/t05-runtime-lifecycle/README.md)、[t06](tasks/t06-runtime-services/README.md)。
+本轮规范规划的处理与验证入口：[t04交付记录](tasks/t04-foundation-spec-plan/walkthroughs/foundation-resolution.md)、[身份检查](tasks/t04-foundation-spec-plan/evidences/context-checks.txt)。实现单元的公开接口、验证结果与未运行项见各自快照：[t05](tasks/t05-runtime-lifecycle/README.md)、[t06](tasks/t06-runtime-services/README.md)、[t07](tasks/t07-runtime-plugins/README.md)。

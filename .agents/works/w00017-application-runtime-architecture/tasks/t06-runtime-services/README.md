@@ -81,4 +81,4 @@ smoke 用公开入口装配真实 `setInterval` 时钟服务、依赖它并向 s
 
 ## 下一步
 
-按本 Task 的实际接口创建 plugins 单元（t07）；`runtime.services` 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。
+plugins 单元已按本 Task 的实际接口创建为 [t07](../t07-runtime-plugins/README.md)（其追加了 `ServiceAssembly.hasKey` 纯查询）；`runtime.services` 晋升需要首片集成证据覆盖 Spec 全文，含真实浏览器宿主。

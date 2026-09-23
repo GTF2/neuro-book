@@ -1,0 +1,208 @@
+# 临时 smoke：runtime.plugins 公开入口消费（脚本已删除，不进仓库）
+# cwd: packages/neuro-book (worktree .worktree/w00017-application-runtime-architecture)
+# command: bun run <系统 Temp>/neuro-book/w00017-t07-smoke-script/smoke-plugins.ts
+# bun: 1.3.14
+# date: 2026-09-23T02:52:49Z
+# HEAD: e457375d2f791f35ef281418f363b1e4660cf95d（plugins 实现与 services 的 hasKey 追加未提交，验证覆盖的是工作区 diff）
+# 说明：脚本用 @notnotype/neuro-book-test-support/paths 的 resolveAgentScratchPath 分配 scratch 目录，
+#       logger 插件的命令向其中追加 commands.log，finally 删除；进程不调用 process.exit，靠 clock 插件
+#       的 setInterval 随 root.close 释放后自然退出（定时器未释放会让进程挂住直到超时）。
+#       第一次运行即全部 PASS；本文是修正一处标签文字后的第二次运行原始输出，检查项与结果相同。
+
+## stdout
+[+   2ms] scratch=C:\Users\NOTNOT~1\AppData\Local\Temp\neuro-book\w00017-t07-smoke\run-43308
+[+   3ms] PASS 登记 clock -> accepted
+[+   3ms] PASS 登记 logger -> accepted
+[+   3ms] PASS 登记 broken -> accepted
+[+   3ms] PASS 重复登记 clock 被拒绝
+[+   4ms] PASS 目录 3 个插件，未激活 (clockActivations=0)
+[+   4ms] PASS logger.write 描述已登记、实现待激活
+[+   4ms] PASS 激活前调用命令失败（命令表为空）
+[+  33ms] PASS logger 并发触发合并 (activated/activated)
+[+  33ms] PASS clock 经依赖解析只激活一次 (clockActivations=1)
+[+  33ms] PASS clock 入口 available
+[+  34ms] PASS 两次命令调用各自独立执行
+[+  34ms] PASS 日志文件写入 2 行
+[+  77ms] PASS clock 命令读到真实定时器计数 ticks=2
+[+  78ms] PASS broken 激活失败 failed
+[+  78ms] PASS broken.run 标记激活失败，描述保留
+[+  79ms] PASS broken 失败不影响 logger 可用
+[+  79ms] PASS 诊断只含错误 name/message 与身份字段
+[+  79ms] PASS 失败稳定，不自动重试
+[+  79ms] logger 文件句柄已释放
+[+  80ms] clock 定时器已释放
+[+  80ms] PASS root.close -> closed
+[+  80ms] PASS 撤回顺序: logger.write:scope-closed,clock.ticks:scope-closed
+[+  80ms] PASS 关闭后命令不可调用
+[+  80ms] PASS 关闭后描述保留并标记 revoked
+[+  80ms] PASS clock.ticks 已撤回
+[+  80ms] PASS 重复关闭返回同一结果，不重复副作用
+[+  80ms] PASS 已关闭作用域拒绝再触发 rejected
+[+  80ms] PASS 关闭不删除日志文件（持久记录归领域）
+[+  80ms] scratch 已删除: exists=false
+[+  80ms] failures=0; 等待进程自然退出
+
+## stderr
+(空)
+# exit code: 0
+
+## 脚本源码（供复现；运行后已随临时目录删除）
+```ts
+import {appendFileSync, existsSync, mkdirSync, readFileSync, rmSync} from "node:fs";
+import {join} from "node:path";
+
+import {resolveAgentScratchPath} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book-test-support/src/paths.ts";
+
+import {createRuntimeInstance} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/lifecycle/lifecycle.ts";
+import {createServiceAssembly, defineServiceKey} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/services/services.ts";
+import {createPluginHost, PluginStateError, provide} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/plugins/plugins.ts";
+import type {ContributionHandle, ContributionReceiver, PluginDefinition, RevokeReason} from "C:/Users/notnotype/Documents/CodeRepository/GithubProjects/neuro-book/.worktree/w00017-application-runtime-architecture/packages/neuro-book/runtime/plugins/plugins.ts";
+
+const started = Date.now();
+let failures = 0;
+function log(line: string): void {
+    console.log(`[+${String(Date.now() - started).padStart(4, " ")}ms] ${line}`);
+}
+function check(ok: boolean, label: string): void {
+    if (!ok) failures += 1;
+    log(`${ok ? "PASS" : "FAIL"} ${label}`);
+}
+
+interface Clock { ticks(): number; }
+interface Logger { log(line: string): void; }
+type Command = (argument: string) => string;
+
+const scratch = resolveAgentScratchPath("w00017-t07-smoke", `run-${process.pid}`);
+mkdirSync(scratch, {recursive: true});
+const logFile = join(scratch, "commands.log");
+log(`scratch=${scratch}`);
+
+const clockKey = defineServiceKey<Clock>("clock");
+const loggerKey = defineServiceKey<Logger>("logger");
+
+// 命令接收者：维护自己的命令表；执行时经句柄取实现，门禁由 runtime 保证。
+const commandTable = new Map<string, ContributionHandle<{title: string}, Command>>();
+const revocations: string[] = [];
+const commands: ContributionReceiver<{title: string}, Command, string> = {
+    capability: "commands",
+    validate: (descriptor) => (descriptor.declaration.title ? null : "缺 title"),
+    prepare: (handle) => `${handle.id}#${handle.generation}`,
+    commit: (handle) => { commandTable.set(handle.id, handle); },
+    revoke: (handle, _prepared, reason: RevokeReason) => { commandTable.delete(handle.id); revocations.push(`${handle.id}:${reason}`); },
+};
+function runCommand(id: string, argument: string): string | PluginStateError {
+    const handle = commandTable.get(id);
+    if (handle === undefined) return new PluginStateError({plugin: "?", entry: "?", generation: null, reason: "命令表中没有该命令"});
+    try { return handle.implementation()(argument); } catch (error) { return error as PluginStateError; }
+}
+
+const runtime = createRuntimeInstance({location: "server", instanceId: `smoke-${process.pid}`});
+runtime.root.open();
+const assembly = createServiceAssembly(runtime, {keys: [clockKey, loggerKey]});
+const host = createPluginHost(runtime, assembly, {receivers: [commands]});
+
+let clockActivations = 0;
+const clockPlugin: PluginDefinition = {
+    id: "clock",
+    entries: [{
+        id: "server",
+        location: "server",
+        provides: [clockKey],
+        contributions: [{capability: "commands", id: "clock.ticks", declaration: {title: "ticks"}}],
+        activate: async (context) => {
+            clockActivations += 1;
+            await new Promise((resolve) => setTimeout(resolve, 20));
+            let ticks = 0;
+            const timer = setInterval(() => { ticks += 1; }, 10);
+            const clock: Clock = {ticks: () => ticks};
+            return {
+                services: [provide(clockKey, clock, () => { clearInterval(timer); log("clock 定时器已释放"); })],
+                contributions: {commands: {"clock.ticks": () => String(clock.ticks())}},
+            };
+        },
+    }],
+};
+const loggerPlugin: PluginDefinition = {
+    id: "logger",
+    entries: [{
+        id: "server",
+        location: "server",
+        dependencies: [{key: clockKey}],
+        provides: [loggerKey],
+        contributions: [{capability: "commands", id: "logger.write", declaration: {title: "write"}}],
+        activate: (context) => {
+            const clock = context.services.require(clockKey);
+            const logger: Logger = {log: (line) => appendFileSync(logFile, `${clock.ticks()} ${line}\n`)};
+            context.scope.register({kind: "file", label: "commands.log", value: logFile, release: () => log("logger 文件句柄已释放")});
+            return {
+                services: [provide(loggerKey, logger)],
+                contributions: {commands: {"logger.write": (argument) => { logger.log(argument); return "written"; }}},
+            };
+        },
+    }],
+};
+const brokenPlugin: PluginDefinition = {
+    id: "broken",
+    entries: [{
+        id: "server",
+        location: "server",
+        contributions: [{capability: "commands", id: "broken.run", declaration: {title: "broken"}}],
+        activate: () => { throw new Error("boot failed: apiKey=sk-secret"); },
+    }],
+};
+
+try {
+    for (const definition of [clockPlugin, loggerPlugin, brokenPlugin]) {
+        const result = host.register(definition, {scope: runtime.root});
+        check(result.status === "accepted", `登记 ${definition.id} -> ${result.status}`);
+    }
+    check(host.register(clockPlugin, {scope: runtime.root}).status === "rejected", "重复登记 clock 被拒绝");
+    const catalog = host.catalog();
+    check(catalog.plugins.length === 3 && clockActivations === 0, `目录 3 个插件，未激活 (clockActivations=${clockActivations})`);
+    check(host.contribution("commands", "logger.write")?.status === "declared", "logger.write 描述已登记、实现待激活");
+    check(runCommand("logger.write", "early") instanceof PluginStateError, "激活前调用命令失败（命令表为空）");
+
+    // 两个"协议入口"并发首次触发 logger：logger 依赖 clock，clock 经服务解析被触发激活一次。
+    const [a, b] = await Promise.all([
+        host.activate({plugin: "logger", entry: "server"}),
+        host.activate({plugin: "logger", entry: "server"}),
+    ]);
+    check(a.status === "activated" && b.status === "activated" && a.generation === b.generation, `logger 并发触发合并 (${a.status}/${b.status})`);
+    check(clockActivations === 1, `clock 经依赖解析只激活一次 (clockActivations=${clockActivations})`);
+    check(host.entryState({plugin: "clock", entry: "server"})?.status === "available", "clock 入口 available");
+    const w1 = runCommand("logger.write", "first");
+    const w2 = runCommand("logger.write", "second");
+    check(w1 === "written" && w2 === "written", "两次命令调用各自独立执行");
+    check(readFileSync(logFile, "utf8").split("\n").filter(Boolean).length === 2, "日志文件写入 2 行");
+    await new Promise((resolve) => setTimeout(resolve, 35));
+    const ticks = Number(runCommand("clock.ticks", ""));
+    check(ticks >= 2, `clock 命令读到真实定时器计数 ticks=${ticks}`);
+
+    const broken = await host.activate({plugin: "broken", entry: "server"});
+    check(broken.status === "failed" && broken.reason === "activation-threw", `broken 激活失败 ${broken.status}`);
+    check(host.contribution("commands", "broken.run")?.status === "activation-failed", "broken.run 标记激活失败，描述保留");
+    check(runCommand("logger.write", "after-broken") === "written", "broken 失败不影响 logger 可用");
+    const diag = host.diagnostics().find((item) => item.reason === "activation-threw");
+    check(diag !== undefined && JSON.stringify(diag).includes("sk-secret") === true && !("implementation" in (diag ?? {})), "诊断只含错误 name/message 与身份字段");
+    const again = await host.activate({plugin: "broken", entry: "server"});
+    check(again.status === "failed" && again.generation === 1, "失败稳定，不自动重试");
+
+    const closed = await runtime.root.close();
+    check(closed.status === "closed", `root.close -> ${closed.status}`);
+    check(revocations.join(",") === "logger.write:scope-closed,clock.ticks:scope-closed", `撤回顺序: ${revocations.join(",")}`);
+    check(runCommand("logger.write", "late") instanceof PluginStateError, "关闭后命令不可调用");
+    check(host.contribution("commands", "logger.write")?.status === "revoked", "关闭后描述保留并标记 revoked");
+    const clockHandle = host.contribution<unknown, Command>("commands", "clock.ticks");
+    check(clockHandle?.status === "revoked", "clock.ticks 已撤回");
+    const closedAgain = await runtime.root.close();
+    check(closedAgain === closed, "重复关闭返回同一结果，不重复副作用");
+    const retrigger = await host.activate({plugin: "logger", entry: "server"});
+    check(retrigger.status === "rejected" && retrigger.reason === "scope-closed", `已关闭作用域拒绝再触发 ${retrigger.status}`);
+    check(existsSync(logFile), "关闭不删除日志文件（持久记录归领域）");
+} finally {
+    rmSync(scratch, {recursive: true, force: true});
+    log(`scratch 已删除: exists=${existsSync(scratch)}`);
+}
+process.exitCode = failures === 0 ? 0 : 1;
+log(`failures=${failures}; 等待进程自然退出`);
+```
