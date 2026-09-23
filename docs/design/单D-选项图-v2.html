@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单D · UI 选项图 v2</title>
+<style>
+:root {
+  --ink: #1e2328;
+  --muted: #68727d;
+  --faint: #8d969f;
+  --line: #cfd5da;
+  --line-strong: #8d979f;
+  --paper: #ffffff;
+  --canvas: #eef1f3;
+  --panel: #f5f7f8;
+  --panel-2: #e7ebee;
+  --accent: #2f5d7c;
+  --accent-soft: #e3eef5;
+  --warn: #8d5e16;
+  --warn-soft: #fff3dc;
+  --danger: #8b3535;
+  --danger-soft: #f9e8e8;
+  --success: #31694e;
+  --success-soft: #e4f1e8;
+  --shadow: 0 10px 24px rgba(35, 43, 49, .12);
+  --radius: 8px;
+}
+* { box-sizing: border-box; }
+html { background: var(--canvas); }
+body { margin: 0; color: var(--ink); background: var(--canvas); font: 14px/1.55 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; }
+button, input, textarea { font: inherit; }
+button { color: inherit; cursor: pointer; }
+button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(47,93,124,.35); outline-offset: 2px; }
+svg { display: block; }
+.icon { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+.page { width: min(1800px, calc(100vw - 32px)); margin: 18px auto 48px; }
+.page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 14px; }
+.eyebrow { color: var(--muted); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+h1 { margin: 2px 0 4px; font-size: clamp(22px, 2vw, 30px); line-height: 1.2; letter-spacing: -.02em; }
+.lede { max-width: 760px; margin: 0; color: var(--muted); }
+.page-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 7px 11px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--paper); font-size: 12px; }
+.btn:hover { background: var(--panel-2); }
+.btn.primary { border-color: var(--ink); background: var(--ink); color: white; }
+.btn.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+.btn.small { min-height: 28px; padding: 4px 8px; font-size: 11px; }
+.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); box-shadow: 0 2px 5px rgba(30,35,40,.04); }
+.toolbar .label { color: var(--muted); font-size: 12px; font-weight: 650; }
+.segmented { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.segmented button { border: 0; border-radius: 5px; padding: 5px 10px; background: transparent; color: var(--muted); font-size: 12px; }
+.segmented button.active { background: var(--paper); color: var(--ink); box-shadow: 0 1px 4px rgba(30,35,40,.12); font-weight: 700; }
+.toolbar-spacer { flex: 1; }
+.prototype-wrap { position: relative; margin-top: 14px; }
+.prototype { --left-panel: 200px; --agent: minmax(430px, 1.52fr); --paper-col: minmax(260px, .92fr); display: grid; grid-template-columns: var(--left-panel) var(--agent) var(--paper-col); gap: 8px; min-height: 750px; padding: 8px; border: 1px solid var(--line-strong); border-radius: 12px; background: #dfe4e7; box-shadow: var(--shadow); overflow: hidden; }
+.prototype.layout-a { --left-panel: 215px; --agent: minmax(380px, 1.25fr); --paper-col: minmax(270px, .76fr); grid-template-columns: var(--left-panel) 190px var(--agent) var(--paper-col); }
+.prototype.layout-c { --left-panel: 235px; --agent: minmax(470px, 1.35fr); --paper-col: minmax(250px, .72fr); }
+.prototype.stage-review { --agent: minmax(270px, .62fr); --paper-col: minmax(650px, 2.25fr); }
+.rail, .left-panel, .cockpit-column, .agent, .manuscript { min-width: 0; min-height: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); overflow: hidden; }
+.rail { display: flex; flex-direction: column; align-items: center; gap: 7px; padding: 9px 6px; background: #e9edef; }
+.rail-label { margin: 2px 0 3px; color: var(--faint); font-size: 9px; writing-mode: vertical-rl; letter-spacing: .12em; }
+.rail-button { position: relative; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--line); border-radius: 7px; background: var(--paper); color: var(--muted); }
+.rail-button:hover, .rail-button.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.rail-button .badge { position: absolute; right: -5px; top: -5px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 10px; background: var(--danger); color: white; font-size: 9px; line-height: 16px; text-align: center; }
+.panel-head, .agent-head, .paper-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 42px; padding: 8px 11px; border-bottom: 1px solid var(--line); background: var(--panel); }
+.panel-head strong, .agent-head strong, .paper-head strong { font-size: 12px; }
+.panel-head small, .agent-head small, .paper-head small { color: var(--muted); font-size: 10px; }
+.panel-body, .agent-body, .paper-body { min-height: 0; overflow: auto; }
+.left-panel { display: flex; flex-direction: column; }
+.left-panel[data-mode="dashboard"] .panel-body { padding: 10px; }
+.nav-list { display: grid; gap: 5px; padding: 9px; border-bottom: 1px solid var(--line); }
+.nav-link { display: flex; align-items: center; gap: 8px; width: 100%; padding: 7px 8px; border: 1px solid transparent; border-radius: 6px; background: transparent; text-align: left; color: var(--muted); font-size: 12px; }
+.nav-link:hover, .nav-link.active { border-color: var(--line); background: var(--panel); color: var(--ink); }
+.nav-link .count { margin-left: auto; color: var(--danger); font-size: 10px; font-weight: 700; }
+.cockpit { margin-top: auto; padding: 9px; border-top: 1px solid var(--line); background: #f7f9fa; }
+.cockpit h3 { display: flex; align-items: center; gap: 6px; margin: 0 0 7px; font-size: 11px; }
+.cockpit-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 4px 0; color: var(--muted); font-size: 11px; }
+.cockpit-row strong { color: var(--ink); font-weight: 700; }
+.cockpit-row.warn strong { color: var(--warn); }
+.left-detail { padding: 10px; }
+.detail-card { padding: 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
+.detail-card + .detail-card { margin-top: 8px; }
+.detail-card h3 { margin: 0 0 5px; font-size: 12px; }
+.detail-card p { margin: 0; color: var(--muted); font-size: 11px; }
+.cockpit-column { display: flex; flex-direction: column; }
+.cockpit-column .cockpit { margin-top: 0; border: 0; }
+.cockpit-column .detail-card { margin: 10px; }
+.cockpit-column .panel-body { padding: 0 10px 10px; }
+.tag { position: relative; display: inline-grid; place-items: center; min-width: 19px; height: 19px; padding: 0 4px; border: 1px solid var(--accent); border-radius: 50%; background: var(--accent); color: white; font-size: 10px; font-weight: 800; line-height: 1; vertical-align: middle; cursor: pointer; z-index: 5; }
+.tag:hover::after, .tag:focus-visible::after { content: attr(data-tip); position: absolute; z-index: 50; top: calc(100% + 6px); left: 0; width: max-content; max-width: 240px; padding: 6px 8px; border-radius: 5px; background: var(--ink); color: white; font-size: 11px; font-weight: 500; line-height: 1.4; box-shadow: var(--shadow); }
+body.hide-tags .tag { display: none; }
+.mini-note { padding: 8px; border: 1px dashed var(--line-strong); border-radius: 6px; color: var(--muted); font-size: 11px; }
+.agent { display: flex; flex-direction: column; background: #fbfcfc; }
+.agent-head { background: var(--paper); }
+.agent-head .head-left, .agent-head .head-right { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px var(--success-soft); }
+.agent-body { display: flex; flex-direction: column; gap: 10px; padding: 14px 14px 10px; }
+.feed { display: flex; flex-direction: column; gap: 10px; }
+.message-user { align-self: flex-end; max-width: 72%; padding: 8px 11px; border: 1px solid #c3d5e3; border-radius: 10px 10px 3px 10px; background: #e7f0f6; font-size: 12px; }
+.work-block { padding: 0 0 9px; border-bottom: 1px solid var(--line); }
+.work-head { display: flex; align-items: center; gap: 7px; width: 100%; padding: 3px 0; border: 0; background: transparent; color: var(--muted); text-align: left; font-size: 11px; }
+.work-head:hover { color: var(--ink); }
+.work-head .chev { width: 13px; height: 13px; }
+.work-content { display: grid; gap: 6px; margin-top: 5px; }
+.process-row { display: flex; align-items: center; gap: 6px; min-width: 0; color: var(--muted); font-size: 11px; }
+.process-row .process-arrow { color: var(--faint); }
+.process-row .process-label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.process-row .count { margin-left: auto; color: var(--faint); font-size: 10px; }
+.process-row button { display: inline-flex; align-items: center; gap: 6px; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; }
+.process-detail { margin-left: 19px; padding: 7px 8px; border-left: 2px solid var(--line); background: var(--panel); color: var(--muted); font: 10px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.ai-copy { color: var(--ink); font-size: 13px; line-height: 1.7; }
+.ai-copy strong { font-weight: 750; }
+.system-row { display: flex; align-items: center; gap: 7px; padding: 5px 8px; border: 1px dashed var(--line-strong); border-radius: 6px; color: var(--muted); background: #f8fafb; font-size: 11px; }
+.choice-card, .approval-card { padding: 10px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--paper); }
+.choice-card h3, .approval-card h3 { margin: 0 0 5px; font-size: 12px; }
+.choice-card p, .approval-card p { margin: 0; color: var(--muted); font-size: 11px; }
+.choice-list { display: grid; gap: 5px; margin-top: 8px; }
+.choice { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--paper); text-align: left; font-size: 11px; }
+.choice:hover, .choice.selected { border-color: var(--accent); background: var(--accent-soft); }
+.choice small { color: var(--muted); }
+.impact { margin-top: 8px; padding: 7px 8px; border-radius: 5px; background: var(--warn-soft); color: var(--warn); font-size: 11px; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+.composer { position: relative; margin-top: auto; padding: 9px; border: 1px solid var(--line); border-radius: 9px; background: var(--paper); }
+.composer textarea { width: 100%; min-height: 46px; resize: vertical; border: 0; background: transparent; color: var(--ink); font-size: 12px; outline: 0; }
+.composer-foot { display: flex; align-items: center; gap: 7px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+.composer-foot .push { margin-left: auto; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px; border: 1px solid var(--line); border-radius: 5px; background: var(--panel); color: var(--muted); font-size: 10px; }
+.composer-foot button { border: 0; background: transparent; color: inherit; }
+.paper { display: flex; flex-direction: column; }
+.paper-body { position: relative; padding: 14px; background: #fbfaf6; }
+.paper-empty { display: grid; place-items: center; min-height: 100%; padding: 22px; text-align: center; color: var(--muted); }
+.paper-empty .pulse { width: 10px; height: 10px; margin-bottom: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 7px var(--accent-soft); }
+.paper-preview { max-width: 40ch; margin-top: 12px; padding: 10px 12px; border: 1px solid #d6d0c3; border-radius: 6px; background: white; color: var(--ink); font: 12px/1.8 Georgia, "Songti SC", serif; text-align: left; }
+.paper-text { max-width: 42ch; margin: 0 auto; color: #34312d; font: 15px/1.9 Georgia, "Songti SC", serif; }
+.paper-text p { margin: 0 0 12px; }
+.selection-bar { position: absolute; z-index: 7; left: 22px; top: 78px; display: inline-flex; gap: 5px; padding: 5px 6px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--ink); color: white; box-shadow: var(--shadow); }
+.selection-bar button { border: 0; background: transparent; color: white; font-size: 11px; }
+.scale { position: absolute; top: 8px; right: 3px; bottom: 8px; display: flex; flex-direction: column; align-items: center; justify-content: space-between; width: 18px; padding: 2px 0; }
+.scale button { width: 12px; height: 2px; padding: 0; border: 0; background: var(--faint); }
+.scale button.short { width: 7px; }
+.scale button.active { width: 15px; height: 3px; background: var(--accent); }
+.pending-pill { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 4px; padding: 4px 7px; border: 1px solid #d8b980; border-radius: 5px; background: var(--warn-soft); color: var(--warn); font-size: 11px; }
+.overview-toast { padding: 7px 9px; border: 1px dashed var(--line-strong); border-radius: 6px; color: var(--muted); font-size: 11px; }
+.dialog-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 20px; background: rgba(20,25,29,.45); }
+.dialog { width: min(640px, calc(100vw - 30px)); max-height: min(740px, calc(100vh - 40px)); overflow: auto; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--paper); box-shadow: var(--shadow); }
+.dialog-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+.dialog-head h2 { margin: 0; font-size: 15px; }
+.dialog-body { padding: 14px 15px 18px; }
+.inspector { position: fixed; right: 20px; bottom: 20px; z-index: 90; width: min(320px, calc(100vw - 40px)); padding: 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--ink); color: white; box-shadow: var(--shadow); }
+.inspector strong { display: block; margin-bottom: 3px; font-size: 12px; }
+.inspector p { margin: 0; color: #d9e0e5; font-size: 11px; }
+.feedback { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; margin-top: 12px; padding: 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+.feedback textarea { min-height: 42px; resize: vertical; border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; font-size: 11px; }
+.feedback small { grid-column: 1 / -1; color: var(--muted); font-size: 10px; }
+.legend { display: flex; flex-wrap: wrap; gap: 7px 12px; margin-top: 9px; color: var(--muted); font-size: 11px; }
+.legend span { display: inline-flex; align-items: center; gap: 5px; }
+.legend i { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--line-strong); border-radius: 3px; background: var(--paper); }
+.layout-caption { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 10px 2px 6px; }
+.layout-caption strong { font-size: 12px; }
+.layout-caption span { color: var(--muted); font-size: 11px; }
+.hidden { display: none !important; }
+@media (max-width: 1200px) {
+  .prototype, .prototype.layout-a, .prototype.layout-c { grid-template-columns: 46px 170px minmax(360px, 1.2fr) minmax(240px, .8fr); }
+  .prototype.layout-a { grid-template-columns: 46px 170px 160px minmax(320px, 1fr) minmax(220px, .7fr); }
+}
+@media (max-width: 900px) {
+  .page { width: min(100% - 16px, 760px); margin-top: 8px; }
+  .page-head { display: block; }
+  .page-actions { justify-content: flex-start; margin-top: 10px; }
+  .prototype, .prototype.layout-a, .prototype.layout-c, .prototype.stage-review { display: flex; flex-direction: column; min-height: 0; overflow: visible; }
+  .rail { flex-direction: row; flex-wrap: wrap; align-items: center; }
+  .rail-label { writing-mode: horizontal-tb; }
+  .left-panel, .cockpit-column, .agent, .manuscript { min-height: 320px; }
+  .prototype.layout-a .cockpit-column { order: 2; }
+  .prototype.layout-a .agent { order: 3; }
+  .prototype.layout-a .manuscript { order: 4; }
+  .message-user { max-width: 82%; }
+}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" width="0" height="0" style="position:absolute"><defs>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14v10H9l-4 4z"/><path d="M8 9h8M8 12h5"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M4 5h16l2 12H2z"/><path d="M4 14h4l2 3h4l2-3h4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c.5-4 2.5-6 6-6s5.5 2 6 6M16 11c3.5-.2 5 2 5 5M16 5a3 3 0 0 1 0 6"/></symbol>
+  <symbol id="i-plot" viewBox="0 0 24 24"><path d="M5 4v16M5 18h14"/><path d="m8 15 3-3 3 2 4-6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.4 2.5 3.3 5.5 3.3 9S14.4 18.5 12 21M12 3c-2.4 2.5-3.3 5.5-3.3 9s.9 6.5 3.3 9"/></symbol>
+  <symbol id="i-settings" viewBox="0 0 24 24"><path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="m4 13-1-1 1-2 2-.3a7 7 0 0 1 1-1.7L6.5 6.2 8 5l1.7 1a7 7 0 0 1 2-.4L12.7 4h2.6l1 1.6a7 7 0 0 1 1.9.9l2-.3 1.3 1.7-1 1.8a7 7 0 0 1 .4 2l1.6 1v2.6l-1.6 1a7 7 0 0 1-.9 1.9l.3 2-1.7 1.3-1.8-1a7 7 0 0 1-2 .4l-1 1.6h-2.6l-1-1.6a7 7 0 0 1-1.9-.9l-2 .3-1.3-1.7 1-1.8a7 7 0 0 1-.4-2L3 15.6V13z"/></symbol>
+  <symbol id="i-bot" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M8 12h.01M16 12h.01M8 16h8"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevron-up" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="m4 16-.8 4.8L8 20l11-11a3 3 0 0 0-4-4z"/><path d="m13 6 4 4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 9 17H3z"/><path d="M12 9v5M12 18h.01"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m3 11 18-8-8 18-2-8z"/><path d="m11 13 10-10"/></symbol>
+  <symbol id="i-panel" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 4v16"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+</defs></svg>
+
+<div id="app"></div>
+<script>
+(() => {
+  const KEY = "neurobook-single-d-option-v2";
+  const icons = {
+    grid: "i-grid", file: "i-file", chat: "i-chat", inbox: "i-inbox", users: "i-users", plot: "i-plot", globe: "i-globe", settings: "i-settings", bot: "i-bot", clock: "i-clock", chev: "i-chevron", down: "i-chevron-down", up: "i-chevron-up", x: "i-x", search: "i-search", edit: "i-edit", check: "i-check", alert: "i-alert", send: "i-send", panel: "i-panel", list: "i-list", eye: "i-eye"
+  };
+  const state = Object.assign({
+    layout: "B",
+    stage: "normal",
+    scenario: "normal",
+    tags: true,
+    inspector: null,
+    dialog: null,
+    activeNav: "inbox",
+    expandedBlock: true,
+    expandedTools: {},
+    selectedChoice: null,
+    cockpitExpanded: false,
+    feedback: {},
+    picks: {}
+  }, JSON.parse(localStorage.getItem(KEY) || "{}"));
+  const app = document.getElementById("app");
+  const h = (value) => String(value).replace(/[&<>\"']/g, (ch) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
+  const icon = (name, cls = "icon") => `<svg class="${cls}" aria-hidden="true"><use href="#${icons[name] || name}"></use></svg>`;
+  const tag = (id, name, desc) => state.tags ? `<button class="tag" data-action="inspect" data-id="${id}" data-name="${h(name)}" data-tip="${h(name)}：${h(desc)}" aria-label="${h(name)}">${id}</button>` : "";
+  const persist = () => localStorage.setItem(KEY, JSON.stringify({layout: state.layout, stage: state.stage, scenario: state.scenario, tags: state.tags, activeNav: state.activeNav, expandedBlock: state.expandedBlock, expandedTools: state.expandedTools, selectedChoice: state.selectedChoice, cockpitExpanded: state.cockpitExpanded, feedback: state.feedback, picks: state.picks}));
+  const action = (label, name, extra = "") => `<button class="btn small ${extra}" data-action="${name}">${label}</button>`;
+
+  const navItems = [
+    ["files", "file", "稿件"], ["history", "chat", "历史对话"], ["inbox", "inbox", "待拍板"], ["characters", "users", "角色"], ["plot", "plot", "剧情"], ["world", "globe", "世界书"], ["settings", "settings", "设置"]
+  ];
+  const scenarioItems = [
+    ["normal", "正常对话"], ["thinking", "AI 工作中"], ["tools", "工具工作块"], ["question", "AI 选择题"], ["approval", "审批人话卡"], ["workflow", "Workflow 待应答"], ["review", "审稿对照态"], ["long", "长会话刻度"]
+  ];
+
+  function scenarioLabel() { return scenarioItems.find(([id]) => id === state.scenario)?.[1] || "正常对话"; }
+  function layoutLabel() { return state.layout === "A" ? "A · 独立驾驶舱栏" : state.layout === "C" ? "C · 左栏页签" : "B · 单栏导航（推荐）"; }
+  function topBar() {
+    return `<header class="page-head">
+      <div><div class="eyebrow">单D · UI 总攻 / 可交互选项图 v2</div><h1>先看成品，再定图纸</h1><p class="lede">这是设计原型，不是运行中的 NeuroBook。你可以直接点开审批、选择题、工作块和审稿态，用编号说“①删掉”“⑦太挤”。</p></div>
+      <div class="page-actions">${action("导出我的选择", "export", "primary")}${action(state.tags ? "隐藏编号" : "显示编号", "toggle-tags")}${action("清空本地反馈", "reset", "ghost")}</div>
+    </header>`;
+  }
+  function toolbar() {
+    return `<div class="toolbar">
+      <span class="label">布局候选</span>
+      <div class="segmented">${["B","A","C"].map((id) => `<button class="${state.layout === id ? "active" : ""}" data-action="layout" data-value="${id}">${id === "B" ? "B · 单栏导航" : id === "A" ? "A · 独立驾驶舱" : "C · 左栏页签"}${id === "B" ? "（推荐）" : ""}</button>`).join("")}</div>
+      <span class="label">主舞台</span>
+      <div class="segmented">${[["normal","常态"],["review","审稿接管"]].map(([id, label]) => `<button class="${state.stage === id ? "active" : ""}" data-action="stage" data-value="${id}">${label}</button>`).join("")}</div>
+      <span class="toolbar-spacer"></span><span class="chip">当前：${layoutLabel()}</span><span class="chip">场景：${scenarioLabel()}</span>
+    </div>`;
+  }
+  function scenarioBar() {
+    return `<div class="toolbar" style="margin-top:8px"><span class="label">场景切换</span><div class="segmented">${scenarioItems.map(([id, label]) => `<button class="${state.scenario === id ? "active" : ""}" data-action="scenario" data-value="${id}">${label}</button>`).join("")}</div><span class="toolbar-spacer"></span><span class="mini-note">一键直达真实难复现状态</span></div>`;
+  }
+  function rail() {
+    const items = [["files","file","稿件"],["history","chat","历史"],["inbox","inbox","待审"],["characters","users","角色"],["plot","plot","剧情"],["world","globe","世界"],["settings","settings","设置"]];
+    return `<aside class="rail"><span class="rail-label">去哪儿</span>${items.map(([id, ico, label]) => `<button class="rail-button ${state.activeNav === id ? "active" : ""}" data-action="nav" data-value="${id}" title="${label}">${icon(ico)}${id === "inbox" ? '<span class="badge">2</span>' : ""}${tag({files:1,history:2,inbox:3,characters:4,plot:5,world:6,settings:7}[id], label, "左侧功能入口")}</button>`).join("")}<span style="flex:1"></span><span class="chip">2 待审</span>${tag(8,"功能栏","最左侧固定导航，不随面板宽度变化")}</aside>`;
+  }
+  function navPanel() {
+    const navTagMap = {files:1, history:2, inbox:3, characters:4, plot:5, world:6, settings:7};
+    const detail = {
+      files: ["稿件", "第 3 章 / 断崖藏身", "查看卷章、正文和最近产出。"],
+      history: ["历史对话", "主线 / 支线 / 已归档", "把跨会话讨论留在一个可回到的地方。"],
+      inbox: ["待拍板", "2 件变更等你决定", "入口常驻但不抢屏，点开查看影响和人话摘要。"],
+      characters: ["角色", "12 个角色档案", "AI 整理过的条目带来源标记。"],
+      plot: ["剧情", "第 1 卷 / 第 3 章", "大纲、细纲、承诺和回收状态。"],
+      world: ["世界书", "24 条设定 / 3 条规则", "世界底层规则守边界，其余新元素自由登记。"],
+      settings: ["设置", "模型 / Profile / 主题", "按需打开，不把高级参数铺满首屏。"]
+    }[state.activeNav];
+    return `<aside class="left-panel" data-mode="${state.activeNav}">
+      <div class="panel-head"><strong>${detail[0]}</strong><span>${tag(9,"左侧内容面板","功能入口的列表与详情区域")}</span></div>
+      <nav class="nav-list">${navItems.map(([id, ico, label]) => `<button class="nav-link ${state.activeNav === id ? "active" : ""}" data-action="nav" data-value="${id}">${icon(ico)}<span>${label}</span>${id === "inbox" ? '<span class="count">2</span>' : ""}${tag(navTagMap[id], label, "左侧功能入口")}</button>`).join("")}</nav>
+      <div class="panel-body left-detail"><div class="detail-card"><h3>${detail[1]}</h3><p>${detail[2]}</p></div>${state.activeNav === "inbox" ? `<div class="detail-card"><h3>影响先说清</h3><p>张三设定卡 · 影响第 5 章令牌伏笔 · 需要你确认</p><div class="card-actions">${action("打开审查", "review", "small")} ${action("先不处理", "noop", "small")}</div></div>` : ""}${state.activeNav === "world" ? `<div class="detail-card"><h3>沉淀状态</h3><p>AI 整理 18 条 · 人工确认 12 条 · 待整理 6 条</p>${action("AI 整理", "noop", "small")}</div>` : ""}</div>
+      ${state.layout !== "C" ? cockpit(true) : ""}
+    </aside>`;
+  }
+  function cockpit(compact = false) {
+    const rows = state.cockpitExpanded || !compact ? `<div class="cockpit-row"><span>进度</span><strong>第 3 章 / 40</strong></div><div class="cockpit-row"><span>正在做</span><strong>AI 写作中</strong></div><div class="cockpit-row warn"><span>待你拍板</span><strong>2 件</strong></div><div class="cockpit-row"><span>未回收伏笔</span><strong>3 个</strong></div>` : `<div class="cockpit-row"><span>进度</span><strong>第 3 章 · 写中</strong></div><div class="cockpit-row warn"><span>待拍板</span><strong>2</strong></div>`;
+    return `<section class="cockpit" data-action="cockpit" tabindex="0"><h3>${icon("clock")}驾驶舱 ${tag(10,"驾驶舱","常驻进度仪表盘，不是开局向导")}</h3>${rows}<button class="btn small" data-action="cockpit">${state.cockpitExpanded ? "收起详情" : "展开进度"}</button></section>`;
+  }
+  function cockpitColumn() {
+    return `<aside class="cockpit-column"><div class="panel-head"><strong>驾驶舱</strong><span>${tag(10,"独立驾驶舱栏","A 方案：状态中心独立占一栏")}</span></div><div class="panel-body">${cockpit(false)}<div class="detail-card"><h3>待拍板队列</h3><p>2 件：章纲路线、巡山令牌入档</p>${action("逐项处理", "scenario", "small")}</div><div class="detail-card"><h3>伏笔回收</h3><p>3 个未回收 · 1 个可能受影响</p></div></div></aside>`;
+  }
+  function processRow(label, key, count = "") {
+    const open = !!state.expandedTools[key];
+    return `<div class="process-row"><button data-action="tool" data-key="${key}" aria-expanded="${open}">${icon("chev", "icon process-arrow")}<span class="process-label">${h(label)}</span>${count ? `<span class="count">${count}</span>` : ""}</button>${open ? `<div class="process-detail">${h(label)}：这是原型里的可展开过程详情。真实产品里这里接工具摘要与人话解释。</div>` : ""}</div>`;
+  }
+  function workBlock() {
+    const collapsed = !state.expandedBlock;
+    const rows = state.scenario === "tools" ? [processRow("查阅 · 3 读，1 搜索 · 2 个文件", "read", "4"), processRow("终端 · 2 次只读命令", "bash", "2"), processRow("改稿 · 1 个文件 · +12 −2", "edit", "1")] : state.scenario === "thinking" ? [processRow("思考 · 正在整理下一步", "think", "进行中"), processRow("查阅 · 读取第 2 章与世界书", "read", "2") ] : [processRow("查阅 · 第 2 章正文、世界书·黑风寨", "read", "2"), processRow("改稿 · 章纲-第 3 章.md", "edit", "待审")];
+    const body = collapsed ? "" : `<div class="work-content">${state.scenario === "tools" ? "" : `<div class="ai-copy">我把本轮工作分成几步，先查前文，再整理章纲，最后把影响写成可审的变更。</div>`}${rows}<div class="ai-copy">第 3 章安排“断崖藏身”的脱险路线：陈戈借铜镜反光引开巡山火把，滚入废弃矿道，并在尽头捡到巡山令牌，为第 5 章混入山寨埋下伏笔。</div></div>`;
+    return `<section class="work-block"><button class="work-head" data-action="block" aria-expanded="${!collapsed}">${icon(collapsed ? "chev" : "down")}<span>已工作 ${state.scenario === "thinking" ? "29 秒" : "4 分 12 秒"} · glm-5.3-flash</span>${tag(14,"轮块头","一轮 AI 活动只保留一个身份头")}</button>${body}</section>`;
+  }
+  function scenarioContent() {
+    if (state.scenario === "question") return `<div class="choice-card"><h3>这条伏笔怎么处理？ ${tag(15,"AI 选择题","点选即自动作答，避免用户复述问题")}</h3><p>第 3 章需要交代巡山令牌的来历，下面是 AI 提案。</p><div class="choice-list">${[["A","本章只埋线索","高置信：与第 2 章设定一致"],["B","本章直接揭晓","低置信：AI 设计的加速方案"],["C","暂时留白","高置信：保留悬念"]].map(([key, title, sub]) => `<button class="choice ${state.selectedChoice === key ? "selected" : ""}" data-action="choice" data-value="${key}"><span><strong>${key} · ${title}</strong><br><small>${sub}</small></span>${state.selectedChoice === key ? icon("check") : icon("chev")}</button>`).join("")}</div></div>`;
+    if (state.scenario === "approval") return `<div class="approval-card"><h3>${icon("inbox")} AI 想把“巡山令牌”写入设定档案 ${tag(16,"审批人话卡","显示意图与影响，不直接把 YAML 怼给用户")}</h3><p>新增：道具「巡山令牌」；来源：第 3 章正文；状态：尚未确认。</p><div class="impact"><strong>影响：</strong>第 5 章“混入山寨”会引用这件道具；目前没有冲突。</div><div class="card-actions">${action("接受并入档", "accept", "small")} ${action("拒绝", "reject", "small")} ${action("展开原始数据", "tool", "small")}</div></div>`;
+    if (state.scenario === "workflow") return `<button class="pending-pill" data-action="dialog" data-value="workflow">${icon("inbox")} 2 个流程等应答 · 点击处理中 ${tag(17,"Workflow 徽标","后台工作流不占常驻大块")}</button>`;
+    if (state.scenario === "long") return `<div class="overview-toast">长会话场景：右侧细线刻度 50 格，悬停预览，点格直接定位；“查看全部”保留为一个小入口。</div>`;
+    return "";
+  }
+  function agent() {
+    const system = state.scenario === "normal" ? `<div class="system-row">${icon("list")}系统上下文注入 × 7 · 点击展开 ${tag(13,"系统注入收拢行","连续 system reminder/custom:user 不逐条刷屏")}</div>` : "";
+    return `<section class="agent"><div class="agent-head"><div class="head-left"><span class="status-dot"></span><strong>AI 主舞台</strong>${tag(11,"AI 面板","常态的主交互区")}</div><div class="head-right"><small>${scenarioLabel()}</small>${action("ⓘ", "dialog", "small")}</div></div><div class="agent-body"><div class="feed">${system}<div class="message-user">第 3 章让陈戈脱险，并捡到关键道具。${tag(12,"用户消息","右侧内容自适应气泡")}</div>${workBlock()}${scenarioContent()}</div><div class="composer"><div style="color:var(--muted);font-size:12px">跟 AI 说点什么……（@引用 /选择能力）${tag(18,"输入栏","左边喂素材，右边调参数")}</div><div class="composer-foot"><button data-action="noop" title="导入图片">${icon("file")} 图片</button><span class="chip">上下文 9%</span><button class="chip" data-action="dialog" data-value="model">glm-5.3-flash⌄</button><button class="chip" data-action="noop">档位：高⌄</button><button class="btn small push" data-action="noop">${icon("send")} 发送</button></div></div></div></section>`;
+  }
+  function manuscript() {
+    if (state.stage === "review" || state.scenario === "review") return `<section class="manuscript"><div class="paper-head"><strong>审稿视图 · 第 3 章</strong><button class="btn small" data-action="stage" data-value="normal">返回常态</button></div><div class="paper-body"><div class="review-layout"><div class="detail-card"><h3>本次变更</h3><p>① 新增章纲<br>② 登记巡山令牌<br>③ 影响第 5 章伏笔</p><div class="card-actions">${action("全部采纳", "accept", "small")} ${action("让 AI 重来", "reject", "small")}</div></div><div class="paper-text"><p>第 3 章 · 断崖藏身</p><p>矿道里的风带着铁锈味。陈戈贴着岩壁数着火把的间距，手指在黑暗里摸到一块冰冷的金属。</p><p>他没有立刻拿出来。先听见山腰传来的脚步，才把那件东西攥进掌心。</p></div></div></div></section>`;
+    const preview = state.scenario === "normal" ? `<div class="paper-empty"><span class="pulse"></span><div>AI 正在写第 3 章 · 已产出 1,800 字</div><div class="paper-preview">矿道里的风带着铁锈味。陈戈贴着岩壁数着火把的间距……</div><button class="btn small" data-action="stage" data-value="review">审这章</button></div>` : `<div class="paper-text"><p>第 3 章 · 断崖藏身</p><p>矿道里的风带着铁锈味。陈戈贴着岩壁数着火把的间距——三步一岗，比黑风寨的账本记得还清楚。</p><p>他摸到腰间铜镜，镜面在黑暗里划出一道冷光。</p>${tag(19,"稿面","常态右侧稿面；审稿时扩张接管")}</div>`;
+    return `<section class="manuscript"><div class="paper-head"><strong>稿面 · 第 3 章</strong><small>写 / 预览 / 审稿</small></div><div class="paper-body">${preview}<div class="scale" aria-label="会话刻度">${[1,2,3,4,5,6,7,8,9,10].map((n) => `<button class="${n === 5 ? "active" : n % 2 ? "short" : ""}" data-action="scale" data-value="${n}" title="第 ${n} 段"></button>`).join("")}</div><button class="selection-bar" data-action="dialog" data-value="selection">${icon("edit")} 改这段　问这段　续写</button></div></section>`;
+  }
+  function dialog() {
+    if (!state.dialog) return "";
+    const title = state.dialog === "workflow" ? "Workflow 待处理" : state.dialog === "model" ? "模型与档位" : "稿面选区操作";
+    const body = state.dialog === "workflow" ? `<div class="pending-pill">${icon("inbox")} 2 个流程等应答</div><div class="detail-card"><h3>生成第 3 章章纲</h3><p>请选择是否继续写入草稿。</p><div class="card-actions">${action("继续", "accept", "small")} ${action("暂停", "reject", "small")}</div></div><div class="detail-card"><h3>审查变更</h3><p>1 个文件等你确认，影响第 5 章伏笔。</p>${action("打开审查", "stage", "small")}</div>` : state.dialog === "model" ? `<div class="detail-card"><h3>当前模型</h3><p>glm-5.3-flash</p></div><div class="detail-card"><h3>可用档位</h3><div class="choice-list"><button class="choice selected">关闭</button><button class="choice">低</button><button class="choice">中</button><button class="choice">高</button></div></div>` : `<div class="detail-card"><h3>已选择一段正文</h3><p>“矿道里的风带着铁锈味……”</p><div class="card-actions">${action("改这段", "noop", "small")} ${action("问这段", "noop", "small")} ${action("续写", "noop", "small")}</div></div>`;
+    return `<div class="dialog-backdrop" data-action="close-dialog"><div class="dialog" role="dialog" aria-modal="true" data-dialog-inner><div class="dialog-head"><h2>${title}</h2><button class="btn small" data-action="close-dialog">${icon("x")} 关闭</button></div><div class="dialog-body">${body}</div></div></div>`;
+  }
+  function render() {
+    const classes = `prototype layout-${state.layout.toLowerCase()} ${state.stage === "review" ? "stage-review" : ""}`;
+    const left = state.layout === "A" ? `${navPanel()}${cockpitColumn()}` : `${navPanel()}`;
+    app.innerHTML = `${topBar()}${toolbar()}${scenarioBar()}<main class="prototype-wrap"><div class="${classes}">${left}${agent()}${manuscript()}</div><div class="feedback"><textarea id="feedback" placeholder="看到哪一号不对，直接写：①和⑦太近、③删掉、⑫点开后应该……">${h(state.feedback[state.layout] || "")}</textarea>${action("保存这版意见", "save-feedback", "primary")}<small>当前记录：${h(state.feedback[state.layout] ? "已写入本地" : "还没写意见")} · 你可以先切 A/B/C，再切场景比较。</small></div><div class="legend"><span><i style="background:var(--accent)"></i>蓝色编号=可指认元素</span><span><i style="background:var(--accent-soft)"></i>浅蓝=当前主舞台</span><span><i style="background:var(--warn-soft)"></i>橙色=需要你拍板</span></div></main>${state.inspector ? `<aside class="inspector"><strong>${h(state.inspector.name)}</strong><p>${h(state.inspector.desc)}</p><button class="btn small" data-action="clear-inspector" style="margin-top:8px">知道了</button></aside>` : ""}${dialog()}`;
+  }
+  function exportData() {
+    const result = {layout: state.layout, layoutName: layoutLabel(), stage: state.stage, scenario: state.scenario, feedback: state.feedback, timestamp: new Date().toISOString()};
+    const blob = new Blob([JSON.stringify(result, null, 2)], {type: "application/json"});
+    const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = "单D-选项图-v2-我的选择.json"; a.click(); URL.revokeObjectURL(url);
+  }
+  document.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-action]"); if (!target) return;
+    const act = target.dataset.action;
+    if (act === "layout") state.layout = target.dataset.value;
+    else if (act === "stage") state.stage = target.dataset.value;
+    else if (act === "scenario") state.scenario = target.dataset.value;
+    else if (act === "toggle-tags") state.tags = !state.tags;
+    else if (act === "nav") state.activeNav = target.dataset.value;
+    else if (act === "cockpit") state.cockpitExpanded = !state.cockpitExpanded;
+    else if (act === "block") state.expandedBlock = !state.expandedBlock;
+    else if (act === "tool") state.expandedTools[target.dataset.key] = !state.expandedTools[target.dataset.key];
+    else if (act === "choice") state.selectedChoice = target.dataset.value;
+    else if (act === "inspect") state.inspector = {name: target.dataset.name, desc: target.dataset.name === "AI 面板" ? "常态的主交互区：构思、选择、指挥、查看 AI 工作过程。" : "这是蓝图中的一个可指认区域。你可以直接对这个编号提修改意见。"};
+    else if (act === "clear-inspector") state.inspector = null;
+    else if (act === "dialog") state.dialog = target.dataset.value || "model";
+    else if (act === "close-dialog" && (target.dataset.dialogInner === undefined || target.closest(".dialog-head"))) state.dialog = null;
+    else if (act === "export") return exportData();
+    else if (act === "reset") { localStorage.removeItem(KEY); location.reload(); return; }
+    else if (act === "save-feedback") { const el = document.getElementById("feedback"); state.feedback[state.layout] = el?.value || ""; }
+    else if (act === "accept") { state.inspector = {name: "已接受", desc: "原型状态已变成“已接受”，真实项目里这里会保留回执和影响。"}; }
+    else if (act === "reject") { state.inspector = {name: "已拒绝", desc: "原型状态已变成“已拒绝”，真实项目里这里会进入重来或自己修改的二级路径。"}; }
+    else if (act === "scale") { state.inspector = {name: `刻度 ${target.dataset.value}`, desc: "点击刻度直接定位，不弹中间全览层；右侧稿面只在审稿态接管。"}; }
+    else if (act === "noop") { state.inspector = {name: "这是原型占位动作", desc: "这里用于确认位置和层级，真实接线在蓝图定稿后施工。"}; }
+    persist(); render();
+  });
+  document.addEventListener("input", (event) => { if (event.target.id === "feedback") { state.feedback[state.layout] = event.target.value; persist(); } });
+  render();
+})();
+</script>
+</body>
+</html>

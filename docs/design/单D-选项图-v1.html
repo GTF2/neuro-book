@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>单D 选项图 v1.4 · 布局/左栏三态/驾驶舱/AI入口/能力对照</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:"Microsoft YaHei",system-ui,sans-serif; background:#e8e8ec; color:#333; padding:20px; }
+  h1 { font-size:20px; margin-bottom:6px; }
+  h2 { font-size:17px; margin:28px 0 10px; padding-left:10px; border-left:4px solid #4a6fa5; }
+  .note { font-size:13px; color:#777; margin-bottom:14px; line-height:1.6; }
+  .stage { display:flex; gap:8px; height:520px; background:#fff; border:1px solid #bbb; border-radius:8px; padding:8px; overflow:hidden; }
+  .col { border-radius:6px; position:relative; display:flex; flex-direction:column; gap:5px; padding:10px 8px 8px; overflow:visible; }
+  .rail { width:44px; background:#ececf2; border:1px solid #ccc; border-radius:6px; display:flex; flex-direction:column; align-items:center; gap:5px; padding:8px 3px; }
+  .col-mid   { width:47%; background:#fafafa; border:1.5px solid #4a6fa5; }
+  .col-right { width:33%; background:#f7f4ec; border:1px solid #ccc; }
+  .col-title { font-size:12px; font-weight:bold; color:#555; text-align:center; padding:2px 0 4px; }
+  .rel { position:relative; }
+  .tg { position:absolute; top:-8px; right:-8px; min-width:19px; height:19px; border-radius:50%; background:#4a6fa5; color:#fff; font-size:11px; font-weight:bold; display:flex; align-items:center; justify-content:center; cursor:help; z-index:6; padding:0 3px; }
+  .tg:hover::after { content:attr(data-tip); position:absolute; top:-6px; left:26px; background:#223; color:#fff; font-size:12px; font-weight:normal; padding:3px 8px; border-radius:4px; white-space:nowrap; z-index:9; }
+  body.hide-tags .tg { display:none; }
+  .btn-bar { margin:8px 0; }
+  .btn-bar button { padding:5px 14px; border:1px solid #4a6fa5; background:#fff; color:#4a6fa5; border-radius:5px; cursor:pointer; font-size:13px; }
+  .ic { width:32px; height:32px; border-radius:6px; background:#fff; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; font-size:14px; position:relative; cursor:pointer; flex-shrink:0; }
+  .ic:hover, .ic.on { border-color:#4a6fa5; background:#eaf1fb; }
+  .ic .bdg { position:absolute; bottom:-4px; right:-4px; min-width:14px; height:14px; border-radius:7px; background:#c0392b; color:#fff; font-size:9px; display:flex; align-items:center; justify-content:center; padding:0 3px; }
+  .nav-item { display:flex; align-items:center; gap:7px; background:#fff; border:1px solid #ddd; border-radius:5px; padding:5px 8px; font-size:12px; position:relative; }
+  .nav-item .dot { font-size:13px; }
+  .nav-item .badge { margin-left:auto; background:#c0392b; color:#fff; font-size:10px; border-radius:8px; padding:1px 6px; }
+  .dash { background:#fff; border:1px solid #c9d4e5; border-radius:6px; padding:6px 8px; position:relative; }
+  .dash h4 { font-size:11px; color:#4a6fa5; margin-bottom:3px; }
+  .dash .row { font-size:11px; color:#444; padding:2px 0; }
+  .dash .warn { color:#c0392b; font-weight:bold; }
+  .msg-user { align-self:flex-end; max-width:70%; background:#dce8f8; border-radius:10px 10px 2px 10px; padding:6px 10px; font-size:12px; position:relative; }
+  .blk-head { font-size:11px; color:#999; position:relative; display:inline-block; }
+  .proc { font-size:11px; color:#aaa; padding-left:6px; border-left:2px solid #ddd; margin:4px 0; position:relative; display:inline-block; }
+  .ai-text { font-size:12px; line-height:1.7; color:#333; position:relative; }
+  .composer { margin-top:auto; border:1px solid #ccc; border-radius:8px; background:#fff; padding:6px; font-size:11px; color:#999; position:relative; }
+  .composer .tools { display:flex; gap:8px; margin-top:6px; color:#666; }
+  .paper-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; color:#999; font-size:13px; }
+  .paper-empty .pulse { width:10px; height:10px; border-radius:50%; background:#7fa8d9; animation:p 1.2s infinite; }
+  @keyframes p { 50% { opacity:.3; } }
+  .paper-preview { background:#fff; border:1px solid #e0d9c8; border-radius:6px; padding:10px; width:86%; font-size:12px; line-height:1.8; color:#555; position:relative; }
+  .qa { background:#fff; border:1px solid #bbb; border-radius:8px; padding:14px; margin:10px 0 30px; font-size:14px; line-height:1.9; }
+  .qa b { color:#4a6fa5; }
+  .opts { display:flex; gap:10px; margin-top:10px; }
+  .opt { flex:1; border:1.5px solid #4a6fa5; border-radius:8px; background:#fff; padding:10px; }
+  .opt h3 { font-size:14px; margin-bottom:6px; color:#4a6fa5; }
+  .opt.pick { outline:3px solid #2e7d32; outline-offset:2px; }
+  .opt p { font-size:12px; color:#555; line-height:1.7; }
+  .sel { background:#fff3d6; border-radius:3px; padding:0 3px; box-shadow:0 0 0 2px #7fa8d9; }
+  .float-bar { display:inline-flex; gap:6px; background:#333; color:#fff; border-radius:6px; padding:5px 10px; font-size:12px; margin:6px 0; }
+  .inbox-item { background:#fff; border:1px solid #e0e0e0; border-radius:6px; padding:7px 8px; font-size:11.5px; line-height:1.6; position:relative; }
+  .inbox-item .sub { color:#888; font-size:11px; }
+  .tri { display:flex; gap:10px; align-items:stretch; margin-top:6px; }
+  .tri-label { font-size:11px; color:#889; margin-bottom:4px; }
+  table { width:100%; border-collapse:collapse; background:#fff; font-size:12.5px; margin-top:8px; }
+  th, td { border:1px solid #ddd; padding:6px 10px; text-align:left; line-height:1.5; }
+  th { background:#f0f3f8; color:#445; }
+  .ok { color:#2e7d32; } .miss { color:#c0392b; font-weight:bold; } .part { color:#b8860b; }
+</style>
+</head>
+<body>
+
+<h1>单D 选项图 v1.4 —— 图 + 能力对照表 + 剩三个问题</h1>
+<div class="note">结构示意图（灰盒级）：只定"什么东西住哪、多大"，<b>不定颜色字体气质</b>（气质=下一张设计底座样张页）。<br>
+蓝数字圆标=编号（共 22 个），鼠标悬停显名字；右上按钮一键隐藏编号看整体。<br>
+<b>v1.4 修正：左栏结构统一为"图标栏恒在最左（不动的 44px 窄条）+ 右侧内容面板可拖宽窄"——拖的是面板，图标位置永远不跳。你的三态=面板收起/窄(列表)/宽(列表+详情)。</b></div>
+<div class="btn-bar"><button onclick="document.body.classList.toggle('hide-tags')">显示/隐藏 编号标注</button></div>
+
+<h2>图 1 · 新布局总览（左栏=图标栏+窄面板[默认]，AI=主舞台）</h2>
+<div class="note">最左 44px 图标栏永远不动；旁边的面板默认"窄档"（显示你点的功能的列表，主图以收件箱为例）。AI 面板始终最宽。</div>
+<div class="stage">
+  <!-- 左栏：图标栏 + 窄面板 -->
+  <div class="rail">
+    <span class="tg" data-tip="1 图标栏：恒在最左 44px 不动（八个小图标，点谁面板显示谁）" style="top:2px;right:2px">1</span>
+    <div class="rel"><div class="ic" data-tip="文件">📄<span class="tg" data-tip="2 文件（卷章正文文件树）">2</span></div></div>
+    <div class="rel"><div class="ic">💬<span class="tg" data-tip="3 历史对话">3</span></div></div>
+    <div class="rel"><div class="ic on">📥<span class="bdg">2</span><span class="tg" data-tip="4 收件箱（角标=待审数；当前选中=高亮）">4</span></div></div>
+    <div class="rel"><div class="ic">👤<span class="tg" data-tip="5 角色档案">5</span></div></div>
+    <div class="rel"><div class="ic">📋<span class="tg" data-tip="6 剧情大纲/细纲">6</span></div></div>
+    <div class="rel"><div class="ic">🌏<span class="tg" data-tip="7 世界书/设定库（内进世界引擎工作台）">7</span></div></div>
+    <div class="rel"><div class="ic">⚡<span class="tg" data-tip="8 流水线（7 个成书编排件入口）——底层引擎零界面入口，新增">8</span></div></div>
+    <div class="rel"><div class="ic">⚙️<span class="tg" data-tip="9 设置">9</span></div></div>
+    <div style="margin-top:auto;background:#fff;border:1px solid #c9d4e5;border-radius:5px;font-size:9px;color:#4a6fa5;padding:3px 4px;text-align:center">📥2<br>⏳2</div>
+  </div>
+  <div class="col" style="width:14%; background:#f4f6fa; border:1px solid #ccc;">
+    <div class="col-title">📥 收件箱<span class="rel"><span class="tg" data-tip="10 内容面板（窄档）：当前选中功能的列表层，可拖宽" style="top:4px;right:2px">10</span></span></div>
+    <div class="inbox-item">📄 章纲-第3章 <span class="part">新</span><div class="sub">脱险路线+令牌伏笔</div></div>
+    <div class="inbox-item">🌏 世界书+令牌 <span class="part">新</span><div class="sub">道具登记·关联第5章</div></div>
+    <div style="font-size:10.5px;color:#888;margin-top:2px">点一条 → 稿面切审稿态（图2）</div>
+    <div class="dash" style="margin-top:auto">
+      <span class="tg" data-tip="11 驾驶舱（随面板宽度变形：窄=缩略两行/宽=四行详情/面板收起时=图标栏底部角标）">11</span>
+      <h4>▹ 驾驶舱</h4>
+      <div class="row">📖 第3章 · ✍️写中</div>
+      <div class="row warn">⏳2 待拍板 · 🧩伏笔3</div>
+    </div>
+  </div>
+  <!-- AI 面板 -->
+  <div class="col col-mid">
+    <div class="col-title">AI 面板（主舞台）<span class="rel"><span class="tg" data-tip="12 AI 面板=主舞台（最宽）">12</span></span></div>
+    <div class="msg-user">第 2 章结尾陈戈进山遇险了，第 3 章让他脱险并捡到关键道具<span class="tg" data-tip="13 你的消息（右侧气泡）">13</span></div>
+    <div style="margin-top:8px">
+      <div class="blk-head">▾ 已工作 4 分 12 秒 · glm-5.3<span class="tg" data-tip="14 轮块头（一轮一块）">14</span></div><br>
+      <div class="proc">▸ 读 第2章正文、世界书·黑风寨<span class="tg" data-tip="15 工具过程行（灰小字可展开）">15</span></div><br>
+      <div class="proc">▸ 写 章纲-第3章.md（待你审）</div>
+      <div class="ai-text" style="margin-top:6px">第 3 章我安排了"断崖藏身"的脱险路线：陈戈利用随身铜镜反光引来巡山火把，借乱滚入废弃矿道……矿道尽头他会捡到<b>巡山令牌</b>，为第 5 章混入山寨埋下伏笔。<span class="tg" data-tip="16 AI 正文（连续文档流）">16</span></div>
+    </div>
+    <div class="composer">
+      <span class="tg" data-tip="17 输入栏（图片最左/芯片化/统计贴底/'/'斜杠菜单=技能库入口）">17</span>
+      跟 AI 说点什么…（/技能菜单 @引用章节 #引用设定）
+      <div class="tools"><span>🖼</span><span>🔍</span><span>glm-5.3 ▾</span><span>档位:高 ▾</span><span style="margin-left:auto">发送 ➤</span></div>
+    </div>
+  </div>
+  <!-- 稿面 -->
+  <div class="col col-right">
+    <div class="col-title">稿面（第 3 章）<span class="rel"><span class="tg" data-tip="18 稿面=多功能舞台（写/审/预览）">18</span></span></div>
+    <div class="paper-empty">
+      <div class="pulse"></div>
+      <div>AI 正在写第 3 章 · 已产出 1800 字</div>
+      <div class="paper-preview"><b>实时预览（最新一段）</b><br>矿道里的风带着铁锈味。陈戈贴着岩壁数着火把的间距——三步一岗，比黑风寨的账本记得还清楚……<span class="tg" data-tip="19 空白态：给内容不给白墙">19</span></div>
+      <div style="font-size:11px;color:#4a6fa5">▶ 点开全文预览　⏸ 暂停阅读</div>
+    </div>
+  </div>
+</div>
+
+<h2>图 1.2 · 左栏三态（图标栏不动，拖的是旁边面板）</h2>
+<div class="note">同一个左栏的三种宽度。图标栏（44px）在三种状态里<b>位置、样子完全不变</b>；变的是它旁边的面板：<b>收起 → 窄档（列表）→ 宽档（列表+详情）</b>。驾驶舱跟着面板走。</div>
+<div class="tri">
+  <div style="width:52px;">
+    <div class="tri-label">① 最窄（面板收起）</div>
+    <div class="rail" style="height:230px">
+      <div class="ic" style="width:28px;height:28px;font-size:12px">📄</div><div class="ic" style="width:28px;height:28px;font-size:12px">💬</div><div class="ic on" style="width:28px;height:28px;font-size:12px">📥<span class="bdg">2</span></div><div class="ic" style="width:28px;height:28px;font-size:12px">👤</div><div class="ic" style="width:28px;height:28px;font-size:12px">📋</div><div class="ic" style="width:28px;height:28px;font-size:12px">🌏</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚡</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚙️</div>
+      <div style="margin-top:auto;background:#fff;border:1px solid #c9d4e5;border-radius:5px;font-size:9px;color:#4a6fa5;padding:3px 4px;text-align:center">📥2<br>⏳2</div>
+    </div>
+  </div>
+  <div style="width:190px;">
+    <div class="tri-label">② 中=窄面板（默认档）= 图1 主图左栏</div>
+    <div style="display:flex;gap:5px;">
+      <div class="rail" style="height:230px">
+        <div class="ic" style="width:28px;height:28px;font-size:12px">📄</div><div class="ic" style="width:28px;height:28px;font-size:12px">💬</div><div class="ic on" style="width:28px;height:28px;font-size:12px">📥<span class="bdg">2</span></div><div class="ic" style="width:28px;height:28px;font-size:12px">👤</div><div class="ic" style="width:28px;height:28px;font-size:12px">📋</div><div class="ic" style="width:28px;height:28px;font-size:12px">🌏</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚡</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚙️</div>
+      </div>
+      <div class="col" style="flex:1;background:#f4f6fa;border:1px solid #ccc;padding:6px;">
+        <b style="font-size:11px">📥 收件箱（列表层）</b>
+        <div class="inbox-item" style="margin-top:4px">📄 章纲-第3章 <span class="part">新</span></div>
+        <div class="inbox-item">🌏 世界书+令牌 <span class="part">新</span></div>
+        <div class="dash" style="margin-top:auto"><h4>▹ 驾驶舱（缩略）</h4><div class="row">📖第3章·✍️写中</div><div class="row warn">⏳2 待拍板</div></div>
+      </div>
+    </div>
+  </div>
+  <div style="flex:1; min-width:230px;">
+    <div class="tri-label">③ 宽=宽面板（列表+详情+驾驶舱四行）</div>
+    <div style="display:flex;gap:5px;">
+      <div class="rail" style="height:230px">
+        <div class="ic" style="width:28px;height:28px;font-size:12px">📄</div><div class="ic" style="width:28px;height:28px;font-size:12px">💬</div><div class="ic on" style="width:28px;height:28px;font-size:12px">📥<span class="bdg">2</span></div><div class="ic" style="width:28px;height:28px;font-size:12px">👤</div><div class="ic" style="width:28px;height:28px;font-size:12px">📋</div><div class="ic" style="width:28px;height:28px;font-size:12px">🌏</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚡</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚙️</div>
+      </div>
+      <div class="col" style="flex:1;background:#f4f6fa;border:1px solid #ccc;padding:6px;">
+        <b style="font-size:11px">📥 收件箱</b>
+        <div class="inbox-item" style="margin-top:4px;border-color:#4a6fa5">📄 章纲-第3章 <span class="part">新</span><div class="sub"><b>详情：</b>新增脱险路线（断崖藏身）+巡山令牌伏笔（→第5章）。<span style="color:#c0392b">⚠ 1 处与第 2 章冲突待裁</span></div></div>
+        <div class="inbox-item">🌏 世界书+令牌 <span class="part">新</span></div>
+        <div class="dash" style="margin-top:auto"><h4>▹ 驾驶舱（四行全显）</h4><div class="row">📖 第1卷·第3章（共40章）</div><div class="row">✍️ AI 写第3章·已4分钟</div><div class="row warn">⏳ 2 件事等你拍板</div><div class="row">🧩 伏笔 3 个未回收</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>图 2 · 审稿态（主次翻转：稿面接管）</h2>
+<div class="stage" style="height:340px">
+  <div class="rail">
+    <div class="ic" style="width:28px;height:28px;font-size:12px">📄</div><div class="ic" style="width:28px;height:28px;font-size:12px">💬</div><div class="ic on" style="width:28px;height:28px;font-size:12px">📥<span class="bdg">2</span></div><div class="ic" style="width:28px;height:28px;font-size:12px">👤</div><div class="ic" style="width:28px;height:28px;font-size:12px">📋</div><div class="ic" style="width:28px;height:28px;font-size:12px">🌏</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚡</div><div class="ic" style="width:28px;height:28px;font-size:12px">⚙️</div>
+  </div>
+  <div class="col col-right" style="width:60%; border:1.5px solid #4a6fa5">
+    <div class="col-title">审稿视图 · 第 3 章（对照模式）</div>
+    <div style="display:flex;gap:6px;flex:1">
+      <div style="width:38%;background:#f0f0f4;border-radius:5px;padding:8px;font-size:12px;line-height:1.8;position:relative">
+        <span class="tg" data-tip="20 对照摘要列：改了什么（人话卡片）">20</span>
+        <b style="font-size:12px">本次变更</b><br>
+        ① 新增 章纲-第3章.md<br>
+        ② 世界书 +巡山令牌（道具）<br>
+        ③ 伏笔登记：令牌→第5章<br>
+        <span style="color:#c0392b">⚠ 1 处与第 2 章冲突待你裁</span><br><br>
+        <span class="float-bar" style="background:#2e7d32">✓ 全部采纳</span><br>
+        <span class="float-bar" style="background:#c0392b">✗ 拒绝（让 AI 重来）</span>
+      </div>
+      <div style="width:62%;background:#fffdf6;border:1px solid #e0d9c8;border-radius:5px;padding:10px;font-size:12px;line-height:1.8;position:relative">
+        <span class="tg" data-tip="21 正文对照/全文阅读">21</span>
+        第 3 章 · 断崖藏身（草稿）<br><br>
+        矿道里的风带着铁锈味。陈戈贴着岩壁数着火把的间距……<br><br>
+        <span class="sel">他摸到腰间铜镜，镜面在黑暗里划出一道冷光。</span><br><br>
+        ……全文 2,140 字，滚动阅读 ▾
+      </div>
+    </div>
+    <div class="rel" style="text-align:center;font-size:12px;color:#4a6fa5;margin-top:6px">⇦ 审完一键回常态<span class="tg" data-tip="22 回常态按钮">22</span></div>
+  </div>
+  <div class="col col-mid" style="width:30%;border:1px solid #ccc">
+    <div class="col-title">AI 面板（收窄）</div>
+    <div class="msg-user" style="font-size:11px">冲突那处怎么改好？</div>
+    <div class="ai-text" style="font-size:11px;margin-top:6px">两版都行：A 改第 2 章旧账，B 本章绕开。我建议 B……</div>
+  </div>
+</div>
+
+<h2>图 3 · AI 入口（已答：A+B 都要 ✓）</h2>
+<div class="opts">
+  <div class="opt pick">
+    <h3>A · 稿面选中就弹 ✓ 已定</h3>
+    <p>在稿面里<b>选中一段文字</b>，旁边弹出小浮条：<br><br>
+    <span class="float-bar">✏️ 改这段　💬 问这段　➡️ 续写这段</span><br><br>
+    想改哪段点哪段，不用回对话栏描述"第三章第二段那个"。</p>
+  </div>
+  <div class="opt pick">
+    <h3>B · 大纲/细纲带生成按钮 ✓ 已定</h3>
+    <p>剧情大纲的每个章节卡片直接带：<br><br>
+    <span class="float-bar">✍️ 让 AI 写这章</span><br><br>
+    定完细纲一键开工，章纲→正文流程自动走。</p>
+  </div>
+  <div class="opt">
+    <h3>C · 只要对话栏（未选）</h3>
+    <p>所有指令都去 AI 面板打字说。<br><br>入口最少，但指挥要"绕路"——你已裁定要直达现场入口，此项落选。</p>
+  </div>
+</div>
+
+<h2>表 · 底层能力 ↔ 界面入口 对照账（治"底层有、界面没有"的担心）</h2>
+<div class="note">底层每样能力都有归属；标红的三个是"引擎有、界面零入口"的大缺口，全部安排了去处。施工时此表逐行核对，漏一行算欠账。</div>
+<table>
+  <tr><th>底层能力（实查）</th><th>入口现状</th><th>本蓝图归属</th></tr>
+  <tr><td>文件/卷章正文管理</td><td class="ok">已有</td><td>图标 2</td></tr>
+  <tr><td>历史对话/会话管理</td><td class="ok">已有</td><td>图标 3</td></tr>
+  <tr><td>收件箱（文件变更审查）</td><td class="part">对话框有，常驻入口弱</td><td>图标 4（角标=待审数；主图示例）</td></tr>
+  <tr><td>角色档案+主题记忆</td><td class="ok">已有</td><td>图标 5</td></tr>
+  <tr><td>剧情大纲/剧本工作台/伏笔账本</td><td class="ok">已有</td><td>图标 6（伏笔数进驾驶舱）</td></tr>
+  <tr><td>世界书+世界引擎工作台</td><td class="ok">已有</td><td>图标 7（内进引擎工作台）</td></tr>
+  <tr><td><b>7 个成书编排件</b>（写章评审循环/一致性体检/脑暴/拆书…）</td><td class="miss">引擎全有，零界面入口</td><td><b>图标 8 流水线（新增）</b></td></tr>
+  <tr><td>设置（Provider/模型/主题/Profile）</td><td class="ok">已有</td><td>图标 9</td></tr>
+  <tr><td><b>记忆整理 AI</b>（memory.curator）</td><td class="miss">引擎有，零入口</td><td>设定面板"🪄 AI 整理"按钮（已决议）</td></tr>
+  <tr><td><b>技能库</b>（灵感探索/角色工坊/四阶段建书…）</td><td class="miss">说话可触发，无显式菜单</td><td>AI 输入栏"/"斜杠菜单（17）</td></tr>
+  <tr><td>14 个内置 AI 角色</td><td class="part">新建会话可选，入口深</td><td>新建会话时的角色选择卡</td></tr>
+  <tr><td>后台任务/工作流待应答</td><td class="ok">已有（徽标化）</td><td>驾驶舱 11+任务胶囊</td></tr>
+  <tr><td>去 AI 味（llmlint）</td><td class="part">会话内工具</td><td>审稿视图内嵌按钮</td></tr>
+  <tr><td>变量系统/请求追踪（开发向）</td><td class="ok">已有</td><td>收进设置-高级，不占主位</td></tr>
+</table>
+
+<div class="qa">
+  <b>答题（照编号说；Q4 你已答 A+B，只剩三题）：</b><br>
+  <b>Q1</b>：图 1 布局——图标栏 1~9 + 面板 10/11 + AI 主舞台 12~17 + 稿面 18~19，对不对？哪里不对指编号。<br>
+  <b>Q2</b>：图 1.2 三态（图标栏不动+面板收起/窄/宽）这个结构行不行？八个图标（2~9）够不够/多不多？对照表里有没有不想要的？<br>
+  <b>Q3</b>：图 2 审稿态（20~22）能接受吗？
+</div>
+
+</body>
+</html>

@@ -14,6 +14,11 @@
   - 目标模式示例：`/goal 任务NNN-短名：完成 <一句话目标>，按任务书验收标准交付`
   - 工作流示例：`/workflow 按 docs/tasks/任务NNN-短名.md 并行执行，子代理用 GLM-5.3-Flash$high`
 - **工作流子代理模型**（仅工作流模式需要，写全）：`subagent_model: "GLM-5.3-Flash$<档位>"`——完整 ID + $档位后缀，缺一不可，简写"Flash+high"无法直接设置。
+- **工作流发布纪律**（2026-09-22 参谋部立规，凡工作流模式必写进脚本；复盘见 `docs/design/009-单D-阶段复盘.md` 第五节）：
+  1. 施工类子代理的 ask 必须以「写完用 ls 验证文件存在且非空，返回绝对路径」收尾——落盘验证压进子代理职责，脚本不得信任裸返回；
+  2. artifact 发布前脚本先预检 `world.run("ls", ["-la", path])`，exitCode 非零先打回施工员重写，不进发布（win32 下 ls 若无法直接 spawn，改用 `world.run("node", ["-e", "const fs=require('fs');const s=fs.statSync(process.argv[1]);process.exit(s.isFile()&&s.size>0?0:1)", path])` 同义预检）；
+  3. catch 兜底发布也要 try 包裹，最终失败降级为 log + 把文件路径写进 return——发布失败不得判整个 run 死刑（活儿完成即完成）。
+  - 顺带两规：脚本中文文本内引号一律全角「」防嵌套编译错；DOM/文案断言词表必须先核对 i18n 真实用词（R2「4 项档位」误教案）。
 - **对口技能与命令**（必填；没有合适的写"无"）：列出本任务用得上的已装技能名 + 触发时机，让工程队直接调用而不是手工摸索。常用对照：
   - 代码/diff 审查 → `ocr-review`；过度工程检查 → `ponytail-review`
   - UI 设计/评审/打磨 → `impeccable`（detect 命令在仓库外跑）；UI/UX 方案检索 → `ui-ux-pro-max`
