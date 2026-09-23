@@ -25,13 +25,16 @@ export function createApplication(host: HostContext, manifest: ApplicationManife
     return new ApplicationImpl(host, manifest);
 }
 
+/** 定时器可表示的最大延迟（有符号 32 位）；更大的值会被运行时缩成 1ms 并立即触发。 */
+const MAX_TIMER_DELAY_MS = 2 ** 31 - 1;
+
 /**
  * 宿主有界停止的常用形态：首次停止开始后 `ms` 毫秒截止。`AbortSignal.timeout` 在 Node 与浏览器
- * 都可用，且不阻止进程退出；停止先结算时无需清理。
+ * 都可用，且不阻止进程退出；停止先结算时无需清理。只接受 1..2^31-1 的整数毫秒。
  */
 export function stopTimeout(ms: number): NonNullable<HostContext["stopDeadline"]> {
-    if (!Number.isInteger(ms) || ms <= 0) {
-        throw new TypeError(`stopTimeoutMs 必须是正整数毫秒，收到 ${String(ms)}`);
+    if (!Number.isInteger(ms) || ms <= 0 || ms > MAX_TIMER_DELAY_MS) {
+        throw new TypeError(`stopTimeoutMs 必须是 1..${MAX_TIMER_DELAY_MS} 的整数毫秒，收到 ${String(ms)}`);
     }
     return () => AbortSignal.timeout(ms);
 }

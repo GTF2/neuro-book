@@ -56,6 +56,8 @@ export class ApplicationImpl implements Application {
     #reportedClose: CloseResult | null = null;
     readonly #stopped = Promise.withResolvers<StopResult>();
     readonly stopped: Promise<StopResult> = this.#stopped.promise;
+    readonly #closed = Promise.withResolvers<void>();
+    readonly closed: Promise<void> = this.#closed.promise;
 
     constructor(host: HostContext, manifest: ApplicationManifest) {
         this.#host = host;
@@ -119,6 +121,9 @@ export class ApplicationImpl implements Application {
         return closing.then((result): StopResult => {
             const stop: StopResult = result.status === "closed" ? {status: "closed"} : {status: "incomplete", reason: result.reason, report: result};
             this.#stopResult = stop;
+            if (stop.status === "closed") {
+                this.#closed.resolve();
+            }
             if (stop.status === "incomplete" && result !== this.#reportedClose) {
                 this.#reportedClose = result;
                 const report = stop.report;

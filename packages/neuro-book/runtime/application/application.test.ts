@@ -294,10 +294,11 @@ describe("启动与关闭竞态", () => {
         expect(emergencies.filter((report) => report.stage === "stop")).toHaveLength(1);
     });
 
-    it("stopTimeout 只接受正整数毫秒", () => {
-        for (const invalid of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY]) {
+    it("stopTimeout 只接受 1..2^31-1 的整数毫秒；超出定时器范围的值会被运行时缩成立即触发，必须拒绝", () => {
+        for (const invalid of [0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, 2 ** 31]) {
             expect(() => stopTimeout(invalid)).toThrow(TypeError);
         }
+        expect(stopTimeout(2 ** 31 - 1)().aborted).toBe(false);
     });
 });
 
@@ -316,6 +317,25 @@ describe("宿主实例表", () => {
         const second = table.start("app-2", () => ({application: createApplication(host("app-2").context, manifest())}));
         expect(table.get("app-2")).toBe(second);
         await second.application.stop();
+    });
+
+    it("停止未完成的实例保留在表中；之后恢复关闭时立即退役，不等下一次查询", async () => {
+        const table = createInstanceTable<{readonly application: ReturnType<typeof createApplication>}>();
+        let failRelease = true;
+        const entry = table.start("app-1", () => ({application: createApplication(host("app-1").context, manifest({releaseClock: () => {
+            if (failRelease) {
+                throw new Error("clock 释放失败");
+            }
+        }}))}));
+        await entry.application.startup;
+        expect((await entry.application.stop()).status).toBe("incomplete");
+        await tick();
+        expect(table.get("app-1")).toBe(entry);
+        failRelease = false;
+        expect(await entry.application.recover()).toEqual({status: "closed"});
+        await tick();
+        expect(table.get("app-1")).toBeNull();
+        expect(() => table.start("app-1", () => entry)).toThrow(TypeError);
     });
 });
 

@@ -146,6 +146,10 @@ export interface ApplicationStatus {
 
 export interface Application {
     readonly identity: RuntimeInstanceIdentity;
+    /**
+     * 根作用域：用于观察阶段、停止信号与创建子作用域（如 Project）。停止与恢复只经 `stop()` / `recover()`：
+     * 直接关闭根作用域会绕过宿主截止、`stopped` 与 `closed` 通知。
+     */
     readonly root: Scope;
     readonly assembly: ServiceAssembly;
     readonly plugins: PluginHost;
@@ -164,4 +168,6 @@ export interface Application {
     recover(request?: CloseRequest): Promise<StopResult>;
     /** 本实例首次停止尝试的结算（无论由宿主信号、启动失败还是显式 stop 触发）；不触发停止。 */
     readonly stopped: Promise<StopResult>;
+    /** 实例真正关闭（首次停止或之后某次恢复结算为 closed）时兑现；未完成的停止不兑现。适配器据此释放实例表条目。 */
+    readonly closed: Promise<void>;
 }
