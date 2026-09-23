@@ -66,7 +66,8 @@ export function createInstanceContext(
 
 type NodeId = ResourceId | BorrowId;
 
-function toFailureError(error: unknown): FailureError {
+/** 失败摘要：只保留 name/message，不携带 cause、资源值或凭据。 */
+export function summarizeFailure(error: unknown): FailureError {
     if (error instanceof Error) {
         return {name: error.name, message: error.message};
     }
@@ -406,6 +407,10 @@ export class ScopeImpl implements Scope {
         return this.#parent?.id ?? null;
     }
 
+    get parent(): Scope | null {
+        return this.#parent;
+    }
+
     get phase(): ScopePhase {
         return this.#phase;
     }
@@ -650,7 +655,7 @@ export class ScopeImpl implements Scope {
             stage,
             attempt: attempt?.number ?? null,
             resourceId,
-            error: toFailureError(error),
+            error: summarizeFailure(error),
         };
         this.#failures.push(failure);
         attempt?.failures.push(failure);

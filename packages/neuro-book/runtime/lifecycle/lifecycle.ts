@@ -18,6 +18,7 @@ import {createInstanceContext, ScopeImpl} from "./scope";
 
 export type * from "./contracts";
 export {LifecycleStateError} from "./contracts";
+export {summarizeFailure} from "./scope";
 
 /**
  * 创建一个运行实例。两次调用得到的实例互不共享任何状态；根作用域从 creating 开始，

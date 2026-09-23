@@ -263,6 +263,8 @@ export interface Scope {
     readonly id: ScopeId;
     readonly instanceId: string;
     readonly parentId: ScopeId | null;
+    /** 父作用域引用；根作用域为 null。寿命比较（祖先即更长寿命）沿此链进行。 */
+    readonly parent: Scope | null;
     readonly label: string;
     readonly phase: ScopePhase;
     /** 进入 stopping 即 abort；受管获取与在途操作都收到它。 */
