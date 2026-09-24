@@ -1,4 +1,4 @@
-import {computed, type ComputedRef, type Ref} from "vue";
+import {computed, type ComputedRef} from "vue";
 import type {AgentPendingUserInputSession} from "nbook/app/components/novel-ide/agent/agent-message";
 import {
     aggregateTodoItems,
@@ -22,10 +22,11 @@ export type UnifiedTodoStore = {
 };
 
 export function createUnifiedTodoStore(input: {
-    agentPending: Ref<readonly AgentPendingUserInputSession[]>;
-    workflowWaiting: Ref<readonly WorkflowWaitingRef[]> | ComputedRef<readonly WorkflowWaitingRef[]>;
+    /** 最小结构接口（鸭子类型）：绕开 Vue Ref 泛型在深 zod 类型上的递归推导（TS2589 实测）。 */
+    agentPending: {readonly value: readonly AgentPendingUserInputSession[]};
+    workflowWaiting: {readonly value: readonly WorkflowWaitingRef[]};
     /** 当前会话 ID：agent_resolution 回传通道的组成部分（null=无活跃会话，主会话件不填通道）。 */
-    sessionId: Ref<number | null> | ComputedRef<number | null>;
+    sessionId: {readonly value: number | null};
 }): UnifiedTodoStore {
     const items = computed<UnifiedTodoItem[]>(() => {
         const sessionId = input.sessionId.value;
@@ -36,7 +37,7 @@ export function createUnifiedTodoStore(input: {
             if (item.source === "agent_pending" && sessionId !== null) {
                 const raw = item.raw as {session: AgentPendingUserInputSession; questionIndex: number};
                 const question = raw.session.questions[raw.questionIndex];
-                if (question.toolCallId) {
+                if (question?.toolCallId) {
                     return {...item, replyChannel: {kind: "agent_resolution", sessionId, toolCallId: question.toolCallId}};
                 }
                 return item;

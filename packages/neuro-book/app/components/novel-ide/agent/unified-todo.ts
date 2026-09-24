@@ -95,14 +95,14 @@ export type TodoSources = {
     storyPromises?: StoryPromiseInput[];
 };
 
-function questionItemId(session: AgentPendingUserInputSession, questionIndex: number): string {
-    const question = session.questions[questionIndex];
+type AgentPendingUserInputQuestionOf = AgentPendingUserInputSession["questions"][number];
+
+function questionItemId(session: AgentPendingUserInputSession, question: AgentPendingUserInputQuestionOf): string {
     const key = question.toolCallId ?? `${session.assistantMessageId}:${question.toolNodeId}:${question.questionIndex}`;
     return `agent_pending:${key}`;
 }
 
-function questionItemTitle(session: AgentPendingUserInputSession, questionIndex: number): string {
-    const question = session.questions[questionIndex];
+function questionItemTitle(question: AgentPendingUserInputQuestionOf): string {
     return question.approvalAction === "switch_mode"
         ? `切换模式审批：${question.switchTargetMode ?? ""}`.trim()
         : question.question;
@@ -113,11 +113,14 @@ export function aggregateTodoItems(sources: TodoSources): UnifiedTodoItem[] {
     const items: UnifiedTodoItem[] = [];
     for (const session of sources.agentPending ?? []) {
         session.questions.forEach((question, questionIndex) => {
+            if (!question) {
+                return;
+            }
             items.push({
-                id: questionItemId(session, questionIndex),
+                id: questionItemId(session, question),
                 kind: question.kind === "tool_approval" ? "tool_approval" : "setting_decision",
                 source: "agent_pending",
-                title: questionItemTitle(session, questionIndex),
+                title: questionItemTitle(question),
                 raw: {session, questionIndex},
             });
         });

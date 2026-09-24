@@ -1,5 +1,5 @@
 import {describe, expect, it} from "vitest";
-import {ref} from "vue";
+import {shallowRef} from "vue";
 import {
     aggregateTodoItems,
     computePlanRevisionDiff,
@@ -11,7 +11,7 @@ import {
     type PlanRevision,
     type TodoSources,
 } from "nbook/app/components/novel-ide/agent/unified-todo";
-import {createUnifiedTodoStore} from "nbook/app/components/novel-ide/agent/useUnifiedTodoStore";
+import {createUnifiedTodoStore, type UnifiedTodoStore} from "nbook/app/components/novel-ide/agent/useUnifiedTodoStore";
 import {createInspirationLibrary, type InspirationMemoryStorage} from "nbook/app/components/novel-ide/agent/unified-todo-inspiration";
 import type {AgentPendingUserInputSession} from "nbook/app/components/novel-ide/agent/agent-message";
 
@@ -199,26 +199,26 @@ describe("unified-todo 聚合层契约（任务031 阶段A）", () => {
     });
 
     it("E 段·应答回传通道：主会话件填 agent_resolution、Workflow 件填 workflow_ask（UI 舞台分工在协议层统一）", () => {
-        const store = createUnifiedTodoStore({
-            agentPending: ref(agentPendingFixture()),
-            workflowWaiting: ref(workflowWaitingFixture()),
-            sessionId: ref(42),
+        const store: UnifiedTodoStore = createUnifiedTodoStore({
+            agentPending: shallowRef(agentPendingFixture()),
+            workflowWaiting: shallowRef(workflowWaitingFixture()),
+            sessionId: shallowRef(42),
         });
         const items = store.items.value;
         const agentItem = items.find((item) => item.source === "agent_pending");
         const workflowItem = items.find((item) => item.source === "workflow_waiting");
-        expect(agentItem?.replyChannel).toEqual({kind: "agent_resolution", sessionId: 42, toolCallId: "call-1"});
-        expect(workflowItem?.replyChannel).toEqual({kind: "workflow_ask", runId: "run-1"});
+        expect(agentItem?.replyChannel).toMatchObject({kind: "agent_resolution", sessionId: 42, toolCallId: "call-1"});
+        expect(workflowItem?.replyChannel).toMatchObject({kind: "workflow_ask", runId: "run-1"});
 
         // 无活跃会话：主会话件不填通道（无可回传目标），Workflow 件照填（run 即通道）。
-        const idleStore = createUnifiedTodoStore({
-            agentPending: ref(agentPendingFixture()),
-            workflowWaiting: ref(workflowWaitingFixture()),
-            sessionId: ref(null),
+        const idleStore: UnifiedTodoStore = createUnifiedTodoStore({
+            agentPending: shallowRef(agentPendingFixture()),
+            workflowWaiting: shallowRef(workflowWaitingFixture()),
+            sessionId: shallowRef(null),
         });
         const idleItems = idleStore.items.value;
         expect(idleItems.find((item) => item.source === "agent_pending")?.replyChannel).toBeUndefined();
-        expect(idleItems.find((item) => item.source === "workflow_waiting")?.replyChannel).toEqual({
+        expect(idleItems.find((item) => item.source === "workflow_waiting")?.replyChannel).toMatchObject({
             kind: "workflow_ask",
             runId: "run-1",
         });

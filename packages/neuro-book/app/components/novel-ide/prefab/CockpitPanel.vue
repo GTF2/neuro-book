@@ -4,7 +4,6 @@ export type CockpitEntryKind = "pending" | "foreshadow" | "workflow";
 
 /** 「正在做」行相位；workflow 相位时该行改显流程名（场景 6 加载中）。 */
 export type CockpitActivityPhase = "idle" | "writing" | "workflow";
-
 /**
  * 骨架件：不 import store/API/运行时服务，默认值即组件内占位常量；
  * 挂载侧接真机数据时逐项传 props 覆盖（契约不变）。
@@ -25,6 +24,8 @@ const props = withDefaults(
         workflowPendingCount?: number;
         /** 流程卡住/超时：行转警示色+人话+行内「重试/放弃」横条（场景 6 错误） */
         workflowError?: boolean;
+        /** K1 灵感库（任务031）：可回捡条数；0=行不渲染（空态不留灰行） */
+        inspirationCount?: number;
     }>(),
     {
         chapterNumber: 3,
@@ -34,6 +35,7 @@ const props = withDefaults(
         foreshadowOpenCount: 1,
         workflowPendingCount: 0,
         workflowError: false,
+        inspirationCount: 0,
     },
 );
 
@@ -44,6 +46,8 @@ const emit = defineEmits<{
     (e: "retryWorkflow"): void;
     /** 错误行行内「放弃」（场景 6 错误） */
     (e: "abandonWorkflow"): void;
+    /** K1 灵感库行点击→挂载侧弹出回捡列表（数据层 unified-todo-inspiration 已落） */
+    (e: "openInspiration"): void;
 }>();
 
 const {t} = useI18n();
@@ -135,6 +139,16 @@ const activityDotClass = computed(() =>
                     </button>
                 </div>
             </div>
+
+            <!-- K1 灵感库行（任务031）：仅可回捡数>0 渲染（空态不留灰行）；点击上报，回捡列表由挂载侧承载 -->
+            <button
+                v-if="inspirationCount > 0"
+                type="button"
+                class="cockpit-entry"
+                @click="emit('openInspiration')"
+            >
+                <span class="cockpit-entry-label">{{ t("cockpit.inspirationRow", {count: inspirationCount}) }}</span>
+            </button>
         </div>
     </section>
 </template>

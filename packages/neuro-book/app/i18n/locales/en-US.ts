@@ -2515,6 +2515,7 @@ const enUS = {
         workflowError: "A workflow is stuck",
         workflowRetry: "Retry",
         workflowAbandon: "Abandon",
+        inspirationRow: "Inspiration · {count} to reclaim",
     }, // [i18n-add] cockpit
     decisionStack: {
         demo: {
