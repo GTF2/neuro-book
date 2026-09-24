@@ -261,6 +261,7 @@ const unifiedTodo = createUnifiedTodoStore({
     agentPending: session.pendingUserInputSessions,
     workflowWaiting: computed(() => toWorkflowWaitingRefs(unifiedTodoJobsFeed.jobs.value, activeSessionId.value)),
 });
+const unifiedTodoWorkflowCount = computed(() => unifiedTodo.countByKind.value.workflow_answer ?? 0);
 const {confirm, prompt} = useDialog();
 const notification = useNotification();
 const {t} = useI18n();
@@ -4383,7 +4384,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @expand-session-tree="sessionTreeDialogOpen = true"
             />
 
-            <AgentWorkflowPendingPanel :session-id="activeSessionId" />
+            <AgentWorkflowPendingPanel :session-id="activeSessionId" :workflow-answer-count="unifiedTodoWorkflowCount" />
 
             <AgentComposer
                 :key="composerContextGeneration"

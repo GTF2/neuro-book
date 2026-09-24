@@ -12,6 +12,8 @@ import type {AgentJobSnapshot} from "nbook/shared/dto/agent-job.dto";
 const props = defineProps<{
     /** 当前 Composer 所属的 chat Session；后台 workflow 以 ownerSessionId 回流。 */
     sessionId: number | null;
+    /** G1 统一待办库（任务031）供给的 workflow 类计数；徽标不再本地数数（A8 唯一真源）。 */
+    workflowAnswerCount: number;
 }>();
 
 type AskDraftValue = string | string[] | boolean;
@@ -52,7 +54,8 @@ const waitingJobs = computed(() => {
     });
 });
 
-const waitingCount = computed(() => waitingJobs.value.length);
+// 徽标计数由统一待办库经 props 供给（waitingJobs 仅承载面板渲染队列，不再兼任计数源）。
+const waitingCount = computed(() => props.workflowAnswerCount);
 
 /** 清掉某个 Run 的轮询 timer，并使迟到响应失效。 */
 function stopRunPolling(runId: string): void {

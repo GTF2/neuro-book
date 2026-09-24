@@ -7,10 +7,13 @@ import zhCN from "nbook/app/i18n/locales/zh-CN";
 const componentPath = fileURLToPath(new URL("./AgentWorkflowPendingPanel.vue", import.meta.url));
 
 describe("AgentWorkflowPendingPanel 契约（R4 件10：计数同源+三路关闭）", () => {
-    it("徽标计数与面板队列计数同源（waitingCount 单一数据源）", async () => {
+    it("徽标计数与统一待办库同源（G1：waitingCount 由 workflowAnswerCount props 供给，面板不再本地数数）", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("const waitingCount = computed(() => waitingJobs.value.length);");
-        // 面板内队列计数也用 waitingCount，不得另起数据源
+        // G1 任务031 D 段：徽标计数唯一真源=统一待办库（AgentChatSurface 的 unifiedTodo 供给），
+        // 面板内 waitingJobs 只承载渲染队列，禁止回退为本地计数源。
+        expect(source).toContain("const waitingCount = computed(() => props.workflowAnswerCount);");
+        expect(source).not.toContain("computed(() => waitingJobs.value.length)");
+        // 面板内队列/关闭/渲染条件仍用 waitingCount，不得另起数据源
         expect(source.match(/waitingCount/g)?.length).toBeGreaterThanOrEqual(3);
     });
 
