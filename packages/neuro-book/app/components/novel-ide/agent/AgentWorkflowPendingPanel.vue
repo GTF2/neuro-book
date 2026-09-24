@@ -2,6 +2,7 @@
 import {computed, onBeforeUnmount, ref, shallowRef, watch} from "vue";
 import AgentMarkdownContent from "nbook/app/components/novel-ide/agent/AgentMarkdownContent.vue";
 import {useAgentJobsFeed} from "nbook/app/composables/useAgentJobsFeed";
+import {toWorkflowWaitingRefs} from "nbook/app/components/novel-ide/agent/unified-todo";
 import {resolveApiErrorMessage, resolveApiErrorStatus} from "nbook/app/utils/api-error";
 import {workflowPendingAskSignature} from "nbook/app/components/novel-ide/agent/workflow-bubble";
 import type {WorkflowDemoRunState} from "nbook/server/agent/workflow/workflow-demo-service";
@@ -42,12 +43,13 @@ function readRunRef(job: AgentJobSnapshot): RunRef | null {
 
 /** 当前 Session 中等待用户应答的后台 workflow；每个 Run 独立展示。 */
 const waitingJobs = computed(() => {
-    const sessionId = props.sessionId;
-    if (sessionId === null) return [];
-    return feed.jobs.value.filter((job) => job.kind === "workflow"
-        && job.ownerSessionId === sessionId
-        && job.status === "waiting"
-        && readRunRef(job) !== null);
+    if (props.sessionId === null) return [];
+    // 过滤判定走共享适配（G1 任务031）：与统一待办库同源，防徽标与库计数漂移。
+    const waitingRunIds = new Set(toWorkflowWaitingRefs(feed.jobs.value, props.sessionId).map((ref) => ref.runId));
+    return feed.jobs.value.filter((job) => {
+        const ref = readRunRef(job);
+        return ref !== null && waitingRunIds.has(ref.runId);
+    });
 });
 
 const waitingCount = computed(() => waitingJobs.value.length);

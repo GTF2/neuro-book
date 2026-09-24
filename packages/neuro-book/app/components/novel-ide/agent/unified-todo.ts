@@ -1,3 +1,4 @@
+import type {AgentJobSnapshot} from "nbook/shared/dto/agent-job.dto";
 import type {AgentPendingUserInputSession} from "nbook/app/components/novel-ide/agent/agent-message";
 
 /**
@@ -35,6 +36,33 @@ export type WorkflowWaitingRef = {
     runId: string;
     workflowKey: string;
 };
+
+/**
+ * jobs feed → Workflow 源的共享适配（原 AgentWorkflowPendingPanel 内部过滤逻辑提升）：
+ * 只收当前 Session、kind=workflow、status=waiting、带正式 run 引用的后台作业。
+ * Panel 徽标与统一待办库必须共用此判定，两处数字才可能同源（A8）。
+ */
+export function toWorkflowWaitingRefs(jobs: readonly AgentJobSnapshot[], sessionId: number | null): WorkflowWaitingRef[] {
+    if (sessionId === null) {
+        return [];
+    }
+    const refs: WorkflowWaitingRef[] = [];
+    for (const job of jobs) {
+        if (job.kind !== "workflow" || job.ownerSessionId !== sessionId || job.status !== "waiting") {
+            continue;
+        }
+        const ref = job.ref;
+        if (!ref || typeof ref !== "object" || Array.isArray(ref)) {
+            continue;
+        }
+        const {runId, workflowKey} = ref as {runId?: unknown; workflowKey?: unknown};
+        if (typeof runId !== "string" || !runId || typeof workflowKey !== "string" || !workflowKey) {
+            continue;
+        }
+        refs.push({runId, workflowKey});
+    }
+    return refs;
+}
 
 export type SettingProposalInput = {
     proposalId: string;

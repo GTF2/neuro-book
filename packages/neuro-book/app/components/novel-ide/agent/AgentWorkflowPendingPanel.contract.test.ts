@@ -27,9 +27,13 @@ describe("AgentWorkflowPendingPanel 契约（R4 件10：计数同源+三路关�
         expect(source).toContain('v-if="waitingCount || feed.error"');
     });
 
-    it("owner 过滤=当前 sessionId（API 直建的 run 不误入本会话徽标）", async () => {
+    it("owner 过滤=当前 sessionId（API 直建的 run 不误入本会话徽标；判定与统一待办库共享）", async () => {
         const source = await readFile(componentPath, "utf-8");
-        expect(source).toContain("job.ownerSessionId === sessionId");
+        // G1 任务031：过滤判定提升到 toWorkflowWaitingRefs（Panel 与统一待办库共用同一实现），防徽标与库计数漂移。
+        expect(source).toContain("toWorkflowWaitingRefs");
+        const sharedPath = fileURLToPath(new URL("./unified-todo.ts", import.meta.url));
+        const sharedSource = await readFile(sharedPath, "utf-8");
+        expect(sharedSource).toContain("job.ownerSessionId !== sessionId");
     });
 
     it("i18n 键双语齐备（面板文案）", () => {
