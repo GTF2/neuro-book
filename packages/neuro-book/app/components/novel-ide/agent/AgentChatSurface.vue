@@ -260,6 +260,7 @@ const unifiedTodoJobsFeed = useAgentJobsFeed(() => activeSessionId.value !== nul
 const unifiedTodo = createUnifiedTodoStore({
     agentPending: session.pendingUserInputSessions,
     workflowWaiting: computed(() => toWorkflowWaitingRefs(unifiedTodoJobsFeed.jobs.value, activeSessionId.value)),
+    sessionId: activeSessionId,
 });
 const unifiedTodoWorkflowCount = computed(() => unifiedTodo.countByKind.value.workflow_answer ?? 0);
 const {confirm, prompt} = useDialog();

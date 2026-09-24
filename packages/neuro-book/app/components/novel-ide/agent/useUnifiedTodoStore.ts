@@ -24,11 +24,30 @@ export type UnifiedTodoStore = {
 export function createUnifiedTodoStore(input: {
     agentPending: Ref<readonly AgentPendingUserInputSession[]>;
     workflowWaiting: Ref<readonly WorkflowWaitingRef[]> | ComputedRef<readonly WorkflowWaitingRef[]>;
+    /** 当前会话 ID：agent_resolution 回传通道的组成部分（null=无活跃会话，主会话件不填通道）。 */
+    sessionId: Ref<number | null> | ComputedRef<number | null>;
 }): UnifiedTodoStore {
-    const items = computed(() => aggregateTodoItems({
-        agentPending: input.agentPending.value as AgentPendingUserInputSession[],
-        workflowWaiting: input.workflowWaiting.value as WorkflowWaitingRef[],
-    }));
+    const items = computed<UnifiedTodoItem[]>(() => {
+        const sessionId = input.sessionId.value;
+        return aggregateTodoItems({
+            agentPending: input.agentPending.value as AgentPendingUserInputSession[],
+            workflowWaiting: input.workflowWaiting.value as WorkflowWaitingRef[],
+        }).map((item) => {
+            if (item.source === "agent_pending" && sessionId !== null) {
+                const raw = item.raw as {session: AgentPendingUserInputSession; questionIndex: number};
+                const question = raw.session.questions[raw.questionIndex];
+                if (question.toolCallId) {
+                    return {...item, replyChannel: {kind: "agent_resolution", sessionId, toolCallId: question.toolCallId}};
+                }
+                return item;
+            }
+            if (item.source === "workflow_waiting") {
+                const waiting = item.raw as WorkflowWaitingRef;
+                return {...item, replyChannel: {kind: "workflow_ask", runId: waiting.runId}};
+            }
+            return item;
+        });
+    });
     const countByKind = computed(() => {
         const counts = {} as Record<UnifiedTodoKind, number>;
         for (const item of items.value) {

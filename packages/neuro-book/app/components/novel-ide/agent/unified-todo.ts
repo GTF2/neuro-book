@@ -18,6 +18,15 @@ export type UnifiedTodoKind =
 
 export type UnifiedTodoSource = "agent_pending" | "workflow_waiting" | "story_promise" | "setting_proposal";
 
+/**
+ * 统一应答协议（G1 契约基线⑤）：每件待办声明应答回传通道。
+ * 阻塞型走 agent_resolution（会话 resolution 提交链），后台型走 workflow_ask（PendingAsk 回传链）；
+ * UI 舞台分工（输入框上方阻塞卡 vs 后台面板行）保留，仅在协议层统一表达。
+ */
+export type TodoReplyChannel =
+    | {kind: "agent_resolution"; sessionId: number; toolCallId: string}
+    | {kind: "workflow_ask"; runId: string};
+
 export type UnifiedTodoItem = {
     /** 全局唯一：`<source>:<源内 ID>`（或 question 级 toolCallId）。 */
     id: string;
@@ -27,6 +36,8 @@ export type UnifiedTodoItem = {
     title: string;
     /** 设定拍板族：提案 ID；影响项与提案绑定（K4 整组销号的依据）。 */
     proposalId?: string;
+    /** 应答回传通道（store 组装时填；纯聚合函数不掌握会话上下文故可缺省）。 */
+    replyChannel?: TodoReplyChannel;
     /** 源原始载荷（渲染层按 kind 取用）。 */
     raw: unknown;
 };
