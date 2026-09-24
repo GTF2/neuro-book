@@ -1232,8 +1232,45 @@ describe("NeuroAgentHarness black-box contract", () => {
             await observer.stop();
         }
     });
-    it("Archived 且没有 active invocation 时 abort 返回 409", async () => {
+    it("终态会话残留的未应答审批不投影进 recovery/live state（僵尸审批防线·任务032）", async () => {
+        harness.profiles.register(defineAgentProfile({
+            manifest: {
+                key: "test.blackbox.zombie-pending",
+                name: "BlackBox Zombie Pending",
+            },
+            initialSchema: Type.Object({}),
+            allowedToolKeys: ["request_user_input"],
+            prepare() {
+                return {};
+            },
+        }), false);
+        faux.setResponses([fauxAssistantMessage("done")]);
         const created = await harness.createAgent({
+            profileKey: "test.blackbox.zombie-pending",
+            initial: {},
+        });
+        await harness.invokeAgent({
+            sessionId: created.sessionId,
+            mode: "prompt",
+            message: {text: "start"},
+        });
+        // 模拟进程崩溃/历史遗留的脏数据：会话已到终态，盘上残留无 toolResult 的审批 toolCall（R5f 死卡病灶的盘面形状）。
+        await harness.repo.appendMessage(created.sessionId, fauxAssistantMessage([
+            fauxText("asking"),
+            fauxToolCall("request_user_input", {
+                questions: [{question: "stale?"}],
+            }, {id: "zombie-call-1"}),
+        ], {stopReason: "toolUse"}), "harness");
+
+        const recovery = await harness.getSessionRecovery(created.sessionId);
+        const live = await harness.getSessionLiveState(created.sessionId);
+
+        expect(recovery.activeInvocation).toBeNull();
+        expect(recovery.pendingUserInputs).toEqual([]);
+        expect(live.activeInvocation).toBeNull();
+        expect(live.pendingUserInputs).toEqual([]);
+    });
+    it("Archived 且没有 active invocation 时 abort 返回 409", async () => {        const created = await harness.createAgent({
             profileKey: "leader.default",
             initial: {},
         });
