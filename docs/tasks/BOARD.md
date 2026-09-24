@@ -54,6 +54,10 @@
 
 | 030 | BUG 书架空 title 消失（P1 数据安全：Project.yaml 删 title 值→切书架该书不可见） | 前线（并入 009C1R4 施工） | GLM-5.3 + high | 目标模式（R4 任务书 BUG 节） | **修复完成·随 R4 待审**（2026-09-22 调查+修复同日：①磁盘完好实测 xin-xiao-shuo-3 目录 56 文件全在仅列表不显示；②根因四环=readManifest 把 title 非字符串归 normalizable→inspectionFromRead 折叠 repairable→scan 归 candidates→列表 API 只返回 projects 且 candidates 无暴露=书彻底不可见；后端原有 proposedManifest 兜底+prepareOpen 自动 ensure 自愈设计但被列表层断链；③双保险修复=scan 字段级 repairable（issues 全 FIELD_INVALID）降级入列 title 兜底目录名（missing/corrupt 仍 candidates）+write.put 对 project.yaml 空 title 400 拦截；④测试=lifecycle 新增 BUG030 用例+两个既有断言随语义更新 93 过 1 skip+write.put 新用例过；⑤用户书已回填 title 即时脱困。前端表单必填校验联动 R4 件9C） | ✅ 并入：`任务009C1R4-四轮走查返修.md` BUG 节 |
 
+| 031 | G1 统一待办库契约（六类待办单一真源+落库持久化+重进恢复+三处计数同减；含统一应答协议/红框条目归位/K1 灵感库落库/K2 置信度协议扩展/K4 影响项 ID 化/K5 计划修订 diff 回传） | 前线（5.3 巨石串行独占） | GLM-5.3 + max | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-031`，无 worktree） | **待办**（2026-09-25 参谋部执行序列③立单：阶段0 核销+用户五组拍板后 P0 主轨首单；聚合层方案①基线已定入任务书；⑤正文变更审/⑥计划确认只占枚举，界面归 G2/G3 与堆叠卡一族拍板后） | ✅ 已建：`任务031-G1统一待办库契约.md` |
+
+| 032 | GC 僵尸审批修复（harness 恢复投影不再无条件带出 interrupted 会话的 pending 审批，根治 R5f 放弃按钮无反应病灶） | 前线（5.3 巨石串行独占） | GLM-5.3 + max | 目标模式 + 完全访问（**涉码**，主仓库分支 `task-032`，无 worktree） | **待办**（2026-09-25 用户拍板独立先修（核销表 §6-2/§9），不被任务031 阻塞；同一 5.3 窗口串行穿插排） | ✅ 已建：`任务032-GC僵尸审批修复.md` |
+
 ## 状态规则
 
 - 状态只能由负责窗口或前线指挥部改写；工程队改状态必须同时附交付报告。
