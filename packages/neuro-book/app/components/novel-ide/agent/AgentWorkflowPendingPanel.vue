@@ -49,8 +49,8 @@ const waitingJobs = computed(() => {
     // 过滤判定走共享适配（G1 任务031）：与统一待办库同源，防徽标与库计数漂移。
     const waitingRunIds = new Set(toWorkflowWaitingRefs(feed.jobs.value, props.sessionId).map((ref) => ref.runId));
     return feed.jobs.value.filter((job) => {
-        const ref = readRunRef(job);
-        return ref !== null && waitingRunIds.has(ref.runId);
+        const runRef = readRunRef(job);
+        return runRef !== null && waitingRunIds.has(runRef.runId);
     });
 });
 
