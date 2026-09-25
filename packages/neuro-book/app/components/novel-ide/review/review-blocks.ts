@@ -87,17 +87,20 @@ export function revokeAccepted(group: ReviewGroup, blockId: string): ReviewGroup
     return mapBlock(group, blockId, "pending");
 }
 
-/** 把 accepted 块应用到正文（old 精确匹配替换）；pending/rejected/void 块不碰正文。 */
+/** 把 accepted 块应用到正文（old 按出现顺序逐段替换，游标推进防同文多块错位）；未 accepted 不碰正文。 */
 export function applyReviewToBody(body: string, blocks: Array<Pick<ReviewBlock, "blockId" | "old" | "new" | "status">>): string {
     let content = body;
+    let cursor = 0;
     for (const block of blocks) {
         if (block.status !== "accepted" || !block.old) {
             continue;
         }
-        if (!content.includes(block.old)) {
+        const index = content.indexOf(block.old, cursor);
+        if (index < 0) {
             continue;
         }
-        content = content.replace(block.old, block.new);
+        content = content.slice(0, index) + block.new + content.slice(index + block.old.length);
+        cursor = index + block.new.length;
     }
     return content;
 }

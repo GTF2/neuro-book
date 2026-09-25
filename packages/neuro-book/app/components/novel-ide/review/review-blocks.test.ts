@@ -109,4 +109,15 @@ describe("review-blocks 状态机契约（任务033 阶段A，P0-02）", () => {
         expect(content).toContain("他推门进来。");
         expect(content).not.toContain("不应出现。");
     });
+
+    it("基线1/5 同文多块：两块 old 相同时按出现顺序各自替换，不错位", () => {
+        const body = "A\n\n重复段。\n\nB\n\n重复段。\n\nC";
+        const content = applyReviewToBody(body, [
+            {blockId: "b1", old: "重复段。", new: "第一次改。", status: "accepted"},
+            {blockId: "b2", old: "重复段。", new: "第二次改。", status: "accepted"},
+        ]);
+        expect(content).toContain("第一次改。");
+        expect(content).toContain("第二次改。");
+        expect(content.match(/重复段。/g)).toBeNull();
+    });
 });
