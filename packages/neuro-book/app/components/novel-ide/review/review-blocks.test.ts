@@ -120,4 +120,17 @@ describe("review-blocks 状态机契约（任务033 阶段A，P0-02）", () => {
         expect(content).toContain("第二次改。");
         expect(content.match(/重复段。/g)).toBeNull();
     });
+
+    it("基线1/5 同文多块且 new 以 old 开头（参谋部实测真缺陷场景）：第一处不得被第二块二次改写", () => {
+        const body = "A\n\n重复段。\n\nB\n\n重复段。\n\nC";
+        const content = applyReviewToBody(body, [
+            {blockId: "b1", old: "重复段。", new: "重复段。改一", status: "accepted"},
+            {blockId: "b2", old: "重复段。", new: "重复段。改二", status: "accepted"},
+        ]);
+        // 游标版：两处各自正确替换
+        expect(content).toBe("A\n\n重复段。改一\n\nB\n\n重复段。改二\n\nC");
+        // 旧实现（无游标 replace）下第二块命中第一块替换结果的 old 前缀→产出「重复段。改二一」（二次改写）——本断言在旧实现下必红
+        expect(content).not.toContain("改二一");
+        expect(content.match(/重复段。改/g)?.length).toBe(2);
+    });
 });
