@@ -115,6 +115,11 @@ export function deserializeReviewState(text: string): ReviewGroup {
     return parsed as ReviewGroup;
 }
 
+/** 章节伴随状态文件路径（基线 11）：`<章节>.review.json` 与正文同目录。 */
+export function reviewStatePathFor(chapterPath: string): string {
+    return chapterPath.replace(/\.md$/i, ".review.json");
+}
+
 /** 半完成态对账：状态 accepted 但正文 hash 记账缺失或不符→该块 void 建议（禁静默重写）。 */
 export function detectHalfApplied(group: ReviewGroup, currentBodyHash: string): Array<{blockId: string; action: "void"}> {
     if (group.appliedBodyHash === currentBodyHash) {
