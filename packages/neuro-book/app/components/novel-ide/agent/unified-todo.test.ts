@@ -198,6 +198,24 @@ describe("unified-todo 聚合层契约（任务031 阶段A）", () => {
         expect(confidenceToRoute(null)).toBe("direct");
     });
 
+    it("033-D 审稿块入统一库：pending 块产 content_review 件（accepted/rejected/void 不是待办）", () => {
+        const items = aggregateTodoItems({
+            reviewBlocks: [
+                {groupId: "grp-1", chapterPath: "manuscript/001/ch-003.md", blockId: "blk-1", title: "改：夜色像一张网"},
+                {groupId: "grp-1", chapterPath: "manuscript/001/ch-003.md", blockId: "blk-2", title: "改：他推门进来"},
+            ],
+            workflowWaiting: workflowWaitingFixture(),
+        });
+        expect(items.filter((item) => item.kind === "content_review")).toHaveLength(2);
+        expect(items.find((item) => item.kind === "content_review")).toMatchObject({id: "review:blk-1", kind: "content_review", source: "review_block"});
+        // 基线 2：rejected/void/accepted 块由调用方过滤后才入源——聚合层对非 pending 形状同样只产出所给项
+        const afterResolve = aggregateTodoItems({
+            reviewBlocks: [{groupId: "grp-1", chapterPath: "manuscript/001/ch-003.md", blockId: "blk-2", title: "改：他推门进来"}],
+        });
+        // 应答一件后重聚合：content_review 计数同减（A8 延续）
+        expect(afterResolve.filter((item) => item.kind === "content_review")).toHaveLength(1);
+    });
+
     it("E 段·应答回传通道：主会话件填 agent_resolution、Workflow 件填 workflow_ask（UI 舞台分工在协议层统一）", () => {
         const store: UnifiedTodoStore = createUnifiedTodoStore({
             agentPending: shallowRef(agentPendingFixture()),

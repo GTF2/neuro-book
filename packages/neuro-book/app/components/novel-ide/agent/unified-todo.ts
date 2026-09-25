@@ -16,7 +16,7 @@ export type UnifiedTodoKind =
     | "content_review"
     | "plan_confirm";
 
-export type UnifiedTodoSource = "agent_pending" | "workflow_waiting" | "story_promise" | "setting_proposal";
+export type UnifiedTodoSource = "agent_pending" | "workflow_waiting" | "story_promise" | "setting_proposal" | "review_block";
 
 /**
  * 统一应答协议（G1 契约基线⑤）：每件待办声明应答回传通道。
@@ -88,11 +88,20 @@ export type StoryPromiseInput = {
     dueChapter?: string;
 };
 
+/** G2/G3（任务033）：审稿块进统一库的最小输入（只收 pending 块的调用方过滤后的形状）。 */
+export type ReviewBlockTodoInput = {
+    groupId: string;
+    chapterPath: string;
+    blockId: string;
+    title: string;
+};
+
 export type TodoSources = {
     agentPending?: AgentPendingUserInputSession[];
     workflowWaiting?: WorkflowWaitingRef[];
     settingProposals?: SettingProposalInput[];
     storyPromises?: StoryPromiseInput[];
+    reviewBlocks?: ReviewBlockTodoInput[];
 };
 
 type AgentPendingUserInputQuestionOf = AgentPendingUserInputSession["questions"][number];
@@ -161,6 +170,15 @@ export function aggregateTodoItems(sources: TodoSources): UnifiedTodoItem[] {
             source: "story_promise",
             title: promise.title,
             raw: promise,
+        });
+    }
+    for (const block of sources.reviewBlocks ?? []) {
+        items.push({
+            id: `review:${block.blockId}`,
+            kind: "content_review",
+            source: "review_block",
+            title: block.title,
+            raw: block,
         });
     }
     return items;
