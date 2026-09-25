@@ -2515,6 +2515,7 @@ const zhCN = {
         workflowError: "流程卡住了",
         workflowRetry: "重试",
         workflowAbandon: "放弃",
+        inspirationRow: "灵感库 · {count} 条可回捡",
     }, // [i18n-add] cockpit
     decisionStack: {
         demo: {

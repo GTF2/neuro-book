@@ -18,6 +18,9 @@ import AgentChatFlow from "nbook/app/components/novel-ide/agent/AgentChatFlow.vu
 import AgentSystemPromptPanel from "nbook/app/components/novel-ide/agent/AgentSystemPromptPanel.vue";
 import AgentComposer from "nbook/app/components/novel-ide/agent/AgentComposer.vue";
 import AgentWorkflowPendingPanel from "nbook/app/components/novel-ide/agent/AgentWorkflowPendingPanel.vue";
+import {createUnifiedTodoStore} from "nbook/app/components/novel-ide/agent/useUnifiedTodoStore";
+import {toWorkflowWaitingRefs} from "nbook/app/components/novel-ide/agent/unified-todo";
+import {useAgentJobsFeed} from "nbook/app/composables/useAgentJobsFeed";
 
 // ponytail TOP1：单类型文件已删，类型就近持有一份
 export type AgentSessionModelDraft = {
@@ -251,6 +254,15 @@ const connectionStatus = session.connectionStatus;
 const runPhase = session.runPhase;
 const pendingUserInputSession = session.pendingUserInputSession;
 const pendingUserInputSessions = session.pendingUserInputSessions;
+// G1 统一待办库（任务031）：主会话源（harness 投影下游）+ Workflow 源（jobs feed singleton）
+// 在此汇聚；驾驶舱/徽标/堆叠卡的计数一律从 unifiedTodo 派生（A8 计数唯一真源）。
+const unifiedTodoJobsFeed = useAgentJobsFeed(() => activeSessionId.value !== null);
+const unifiedTodo = createUnifiedTodoStore({
+    agentPending: session.pendingUserInputSessions,
+    workflowWaiting: computed(() => toWorkflowWaitingRefs(unifiedTodoJobsFeed.jobs.value, activeSessionId.value)),
+    sessionId: activeSessionId,
+});
+const unifiedTodoWorkflowCount = computed(() => unifiedTodo.countByKind.value.workflow_answer ?? 0);
 const {confirm, prompt} = useDialog();
 const notification = useNotification();
 const {t} = useI18n();
@@ -4373,7 +4385,7 @@ function saveLastSession(sessionId: number, sessionIdentity: AgentSessionIdentit
                 @expand-session-tree="sessionTreeDialogOpen = true"
             />
 
-            <AgentWorkflowPendingPanel :session-id="activeSessionId" />
+            <AgentWorkflowPendingPanel :session-id="activeSessionId" :workflow-answer-count="unifiedTodoWorkflowCount" />
 
             <AgentComposer
                 :key="composerContextGeneration"

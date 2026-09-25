@@ -28,6 +28,7 @@ const referencedKeys = [
     "cockpit.workflowError",
     "cockpit.workflowRetry",
     "cockpit.workflowAbandon",
+    "cockpit.inspirationRow",
 ];
 
 const optionalProps = [
@@ -38,9 +39,10 @@ const optionalProps = [
     "foreshadowOpenCount",
     "workflowPendingCount",
     "workflowError",
+    "inspirationCount",
 ];
 
-const emitNames = ["open", "retryWorkflow", "abandonWorkflow"];
+const emitNames = ["open", "retryWorkflow", "abandonWorkflow", "openInspiration"];
 
 /** 按点路径从 locale 对象取值；键缺失返回 undefined，由断言兜住。 */
 function readLocaleKey(locale: unknown, key: string): unknown {
@@ -81,5 +83,13 @@ describe("CockpitPanel 骨架契约（009 prefab）", () => {
         const source = await readFile(sourcePath, "utf-8");
         expect(source).not.toMatch(/use\w+Store/);
         expect(source).not.toContain("$fetch");
+    });
+
+    it("K1 灵感库行（任务031）：仅可回捡数>0 渲染，点击只上报 openInspiration", async () => {
+        const source = await readFile(sourcePath, "utf-8");
+        expect(source).toContain('v-if="inspirationCount > 0"');
+        expect(source).toContain(`emit('openInspiration')`);
+        expect(readLocaleKey(zhCN, "cockpit.inspirationRow")).toBe("灵感库 · {count} 条可回捡");
+        expect(readLocaleKey(enUS, "cockpit.inspirationRow")).toBe("Inspiration · {count} to reclaim");
     });
 });
