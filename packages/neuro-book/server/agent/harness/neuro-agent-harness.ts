@@ -2484,9 +2484,14 @@ export class NeuroAgentHarness {
         const model = await this.snapshotModel(projection.snapshot, projection.context);
         const summarizer = this.sessionSummarizerStateDto(projection.context);
         const pendingArgsBudget = createPublicProjectionBudget(PUBLIC_TOOL_ARGS_TEXT_BYTES);
+        // 与 recovery 同一门：activeInvocation 为 null（会话中断/悬置/终态）= 当前无可应答输入，
+        // 盘上残留的未应答审批（进程崩溃等未写 resolution 的路径）不投影——R5f 死卡病灶根治；
+        // 前端 waiting 门（useAgentSession）保留为纵深防御。
         const pendingUserInputs: AgentPendingApprovalDto[] = [];
-        for (const pending of projection.pendingApprovals) {
-            pendingUserInputs.push(await this.pendingApprovalDto(projection.snapshot, pending, false, pendingArgsBudget));
+        if (projection.activeInvocation) {
+            for (const pending of projection.pendingApprovals) {
+                pendingUserInputs.push(await this.pendingApprovalDto(projection.snapshot, pending, false, pendingArgsBudget));
+            }
         }
         return {
             summary: projection.summary,
@@ -2739,7 +2744,9 @@ export class NeuroAgentHarness {
             ...(relations.unavailableLinkedAgents
                 ? {unavailableLinkedAgents: relations.unavailableLinkedAgents}
                 : {}),
-            pendingUserInputs: await Promise.all(projection.pendingApprovals.map((pending) => this.pendingApprovalDto(snapshot, pending, true))),
+            pendingUserInputs: projection.activeInvocation
+                ? await Promise.all(projection.pendingApprovals.map((pending) => this.pendingApprovalDto(snapshot, pending, true)))
+                : [],
             steerQueue: projectQueuedMessages(this.steerQueues.get(sessionId) ?? []),
             followUpQueue: this.publicFollowUpQueue(followUpQueue),
             activeInvocation: projection.activeInvocation,
