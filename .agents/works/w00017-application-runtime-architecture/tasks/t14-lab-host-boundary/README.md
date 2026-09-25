@@ -13,7 +13,7 @@ taskId: t14-lab-host-boundary
 
 ## 当前状态
 
-本地实现、专项验证与文档/治理门禁已完成，待本地提交。执行位置 `.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，开始基线 `25550660`。w00016 当时交付的命令底座与验收保留；新边界由本 Task 接手，并在 [w00016 Work](../../../w00016-workbench-commands/README.md#2026-09-25-lab-宿主边界交接) 留交接指针。
+本地实现、专项验证与文档/治理门禁已完成；实现提交 `12c4c4e3`。执行位置 `.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，开始基线 `25550660`。w00016 当时交付的命令底座与验收保留；新边界由本 Task 接手，并在 [w00016 Work](../../../w00016-workbench-commands/README.md#2026-09-25-lab-宿主边界交接) 留交接指针。
 
 ## 实现边界
 
@@ -45,4 +45,4 @@ taskId: t14-lab-host-boundary
 
 ## 授权与下一步
 
-开发者批准方案 B 继续 Lab 切片；本地可逆开发与提交可自主执行。push、PR、合并、发布、真实产品数据迁移与人工浏览器验收须各自授权。下一步本地提交；Files 纵向链另立实际实施单元，产品启动链在该链迁移旧 owner。完整包级测试与远端交付的取舍仍待开发者决定。
+开发者批准方案 B 继续 Lab 切片；本地可逆开发与提交已完成。push、PR、合并、发布、真实产品数据迁移与人工浏览器验收须各自授权。Files 纵向链另立实际实施单元，产品启动链在该链迁移旧 owner。完整包级测试与远端交付的取舍仍待开发者决定。
