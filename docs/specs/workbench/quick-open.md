@@ -19,7 +19,7 @@ owners:
 - 符号导航 `@`：不解析、不注册、不加入语言服务依赖；以 `@` 开头的输入按普通命令查询文本处理（通常得到空态）。
 - 多步向导（前进 / 后退、多输入链条、异步分页加载）。
 - 跨 Project 检索与远程检索。
-- MRU 持久化：本批只在 Lab 会话内保留（见「副作用与数据」）。
+- MRU 持久化：本批只在宿主实例内保留（见「副作用与数据」）。
 
 ## 术语与参与者
 
@@ -60,7 +60,7 @@ owners:
 
 ## 副作用与数据
 
-- **会话 MRU**：命令模式记录最近执行的命令 id（去重前插、上限 30），不持久化，页面刷新即清空；只读/失败/取消不记录。持久化按 Storage 规范留待后续批次，本批不写任何存储。
+- **会话 MRU**：命令模式记录最近执行的命令 id（去重前插、上限 30），只存在于提供面板的宿主实例里，不持久化；页面刷新或宿主释放（Lab 中即切换组件或场景）即清空；只读/失败/取消不记录。持久化按 Storage 规范留待后续批次，本批不写任何存储。
 - 面板不缓存可用性决定：候选集在注册表版本或上下文变化时重算，不做每帧轮询。
 
 ## 失败与恢复
@@ -92,7 +92,7 @@ owners:
 已实现（合同测试与 Component Lab / nb-ui playground 真实浏览器验收闭合）：
 
 - 原语：`packages/nb-ui/src/components/feedback/QuickInput.vue`（受控 props/emits、S4 层级 `NB_Z_INDEX.commandPalette`、modal 键盘、`closed` 交接）。
-- 宿主：`packages/neuro-book/app/components/workbench/WorkbenchCommandPalette.vue`（S4 实例）与 `app/component-lab/LabShell.vue`（全局唯一实例、查询/匹配、MRU 与错误呈现）。
+- 宿主：`packages/neuro-book/app/components/workbench/WorkbenchCommandPalette.vue`（S4 实例、查询/匹配与 MRU 回写）；Component Lab 中由命令场景的局部宿主 `app/component-lab/fixtures/lab-command-scene.ts` 挂载（与场景同寿，负责确认与错误呈现），LabShell 不持有面板。
 - 查询：`app/utils/workbench/command-query.ts`（前缀解析、子序列匹配与排序）。
 
 ## 证据

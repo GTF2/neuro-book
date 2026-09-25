@@ -12,10 +12,16 @@ import type {ConfigBootstrapDto} from "nbook/shared/dto/config.dto";
  * 读不到就维持内置配色（登录页没有会话、离线、服务端没起来都会这样）：配色是渲染偏好，
  * 不该在控制台留 error / warning，也不该挡住页面。用户改配色时走 `useThemeSettings` 写回，
  * 那条路径失败会明确提示并回滚。
+ *
+ * 不承载产品宿主的文档（Component Lab）不读产品配置：Lab 主题只属于 Lab 自己的偏好。
  */
 export default defineNuxtPlugin({
     name: "theme-colorway",
-    async setup() {
+    dependsOn: ["product-host"],
+    async setup(nuxtApp) {
+        if (nuxtApp.$productHost === false) {
+            return;
+        }
         const theme = useProductTheme();
         try {
             const settings = await $fetch<ConfigBootstrapDto>("/api/config/bootstrap", {

@@ -4,7 +4,7 @@
 
 2026-09-20 开发者批准分段推进：环境适配入口与小内核 → 内置服务插件 → 从外部插件作者视角实现功能；实际功能顺序 Lab → Files → Settings → World/Plot。前两片先落目标 Spec，再规划实施。本文是 [Work](README.md) 的工程路径，不是第二份行为合同；行为唯一正文见 [Spec 注册表](../../../docs/specs/README.md)。
 
-当前只有治理与规范交付，没有产品代码、服务运行、数据迁移、提交或 worktree 创建。下面新增的目录、符号方向和 smoke 命令均为实施目标，不能直接当作已存在工具。本轮不会执行它们。
+第一、二片已按 t09、t13 的证据完成并将七项 Spec 晋升 `implemented`；第三片 Lab 在 t14 收回常驻产品命令宿主、隔离 `/lab` 文档启动并保留命令场景局部宿主。下面的模块与烟雾测试清单保留原实施路径，后续 Files / Settings / World/Plot 仍是目标，不是已完成的产品接线。
 
 ## 分段原则
 
@@ -108,11 +108,9 @@
 
 ### Lab
 
-入口条件：前两片真实验证已完成，且w00003组件/命令/Storage基线已在当前实现checkout。原位修订该树 `ui.component-lab` 合同；本树 planned/共享树 implemented 的差异先整合，不能复制第二份Spec。
+入口条件已满足：前两片通过真实验证，w00003 的组件、命令与 Storage 基线已在当前实现 checkout。按 [t14](tasks/t14-lab-host-boundary/README.md) 在现行 `ui.component-lab`、`workbench.commands`、`workbench.quick-open` 原位调整，不复制第二份 Spec。
 
-其中命令底座、常驻palette/confirmation与第五命令tab实际由 [w00016](../w00016-workbench-commands/README.md) 在w00003树交付；不能因checkout名称把该批当无主遗留。合并基线须包含此批实现/Spec；Lab切片执行前由本Work Leader记录与w00016交付owner的交接，在合并后的 `workbench.commands`、`workbench.quick-open`、`ui.component-lab` 原位调整宿主边界，保留命令底座能力与局部真实样板。历史w00016验收保留，不倒改成当时失败；新边界以w00017证据替代。
-
-修改主要落 `app/component-lab/LabShell.vue`、命令专门fixture、场景注入与相关bootstrap。撤全局registry/palette/confirmation/命令tab；命令fixture创建并释放局部host，不依赖LabShell隐式产品注入。保留主题、场景、文档、元素检查器、事件/数据、Lab自有偏好。验收含切场景监听不残留、真实Monaco样板仍可用、无默认产品配置/Project请求；浏览器证据另按授权运行。
+命令底座、常驻 palette / confirmation 与第五个命令 tab 是 [w00016](../w00016-workbench-commands/README.md) 在 w00003 树的历史交付；交接在 t14 和 w00016 的指针中记录，历史验收不倒改。LabShell 已撤出全局 registry、palette、confirmation、命令 tab；`CodeEditorView` 与 `WorkbenchCommandPalette` 夹具按场景提供并释放局部 host。保留主题、场景、文档、元素检查器、事件/数据和 Lab 自有偏好。直接加载 `/lab` 跳过产品配色和旧桶迁移，旧写入路径锁定，跨入产品页整页加载；鉴权仍在。core 自动浏览器 smoke 与局部宿主测试覆盖启动请求、真实 Monaco、键位与离场释放；完整 Lab 组合 smoke 的既有失败单列于 t14。产品启动链仍未迁入 runtime.application。
 
 ### Files
 

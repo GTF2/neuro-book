@@ -1,4 +1,5 @@
 import {retireLegacyBucketWriterWhenPreserved} from "nbook/app/utils/workbench/legacy-bucket-retirement";
+import {installLegacyBucketWriterPolicy} from "nbook/app/utils/workbench/storage-migration-legacy-bucket";
 import {storageMigrationController} from "nbook/app/utils/workbench/storage-migration";
 
 /**
@@ -18,13 +19,22 @@ import {storageMigrationController} from "nbook/app/utils/workbench/storage-migr
  * data 备份与逐项导入不阻塞启动（后端不可达不能扩大为整桶不可持久化），状态由迁移快照观察。
  * 旧桶三字段此时还在 `novel.ide.local` 里（`pick` 已不含它们，但序列化器继续从捕获原件补齐），
  * 只有在原件确实安全保留之后才退役——见下。
+ *
+ * 不承载产品宿主的文档（Component Lab）不暂存、不导入、不发迁移请求，但 fixture 仍可能间接实例化
+ * 旧 store：这份文档里旧 writer 一律冻结（`locked`），`novel.ide.local` 保持原样，偏好只在内存生效。
+ * 跨宿主导航守卫保证这种文档不会在同一次加载里变成产品页。
  */
 
 export default defineNuxtPlugin({
     name: "storage-migration",
     enforce: "pre",
-    async setup() {
+    dependsOn: ["product-host"],
+    async setup(nuxtApp) {
         const migration = storageMigrationController();
+        if (nuxtApp.$productHost === false) {
+            installLegacyBucketWriterPolicy({mode: "locked", reason: "当前页面不是产品宿主，不迁移也不重写旧桶"});
+            return {provide: {storageMigration: migration}};
+        }
         retireLegacyBucketWriterWhenPreserved(migration);
         void migration.start();
         await migration.staged;

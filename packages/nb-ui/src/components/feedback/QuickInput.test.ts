@@ -115,6 +115,19 @@ describe("QuickInput 受控合同", () => {
         }
     });
 
+    it("面板没有描述节点时不留悬空的 aria-describedby", async () => {
+        const {wrapper} = mountHarness();
+        try {
+            await settleHandoff();
+            const dialog = document.body.querySelector('[role="dialog"]');
+            expect(dialog).not.toBeNull();
+            const describedBy = (dialog?.getAttribute("aria-describedby") ?? "").split(/\s+/u).filter(Boolean);
+            expect(describedBy.filter((id) => document.getElementById(id) === null)).toEqual([]);
+        } finally {
+            cleanup(wrapper);
+        }
+    });
+
     it("全禁用列表里方向键清空失效活动项，且提交始终被抑制", async () => {
         const items: readonly QuickInputItem[] = [
             {id: "export.mobi", label: "导出 MOBI（转换器未安装）", disabled: true},

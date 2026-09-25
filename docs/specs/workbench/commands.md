@@ -167,7 +167,7 @@ owners:
 7. **审计单一**：Given 同一命令由用户与 agent 各触发一次；Then 每条调用恰好一条审计、来源可区分；一个监听器抛错不影响结果与其它监听器。
 8. **执行错误边界**：Given 命令执行抛出异常；When 触发；Then 返回 `execution-error` 且页面不崩溃。
 9. **键位裁决**：Given 两个命令声明同一规范化键位；Then 后来的绑定不启用并报告一次；原持有者释放后重建、新首个接管；不满足 `when` 时按键不拦截。
-10. **Smoke 入口**：在 Component Lab 以真实浏览器触发 `Ctrl+Shift+P`，检索并执行 `nbook.edit.undo`，在「命令」检视 tab 观察审计事件与结果；对不可用命令确认拒绝原因可读。
+10. **Smoke 入口**：在 Component Lab 的命令场景（`WorkbenchCommandPalette` / `CodeEditorView`）以真实浏览器触发 `Ctrl/Cmd+Shift+P`，检索并执行 `nbook.edit.undo`，在场景控制抽屉的命令检视与「事件」tab 观察审计事件与结果；对不可用命令确认拒绝原因可读；切到其它组件后同一快捷键不再响应。自动 core smoke 当前只覆盖快捷键打开/关闭、入口命令审计与离场释放；执行 undo 等完整历史验收见 w00016 证据，不冒充本轮重测。
 
 ## 实现合同
 
@@ -175,7 +175,7 @@ owners:
 
 - 底座：`packages/neuro-book/app/utils/workbench/context-keys.ts`（共享键登记与求值）、`commands.ts`（注册表与执行管线）、`keymap.ts`（键位解析与分发）、`app/composables/useWorkbenchCommands.ts`（宿主 provide/inject 与上下文投影）。
 - 真实样板：`app/utils/workbench/editor-commands.ts` 注册四条编辑器命令；`CodeEditorView` 暴露行导航能力。
-- 面板宿主：`app/components/workbench/WorkbenchCommandPalette.vue` 与 `app/component-lab/LabShell.vue`（全局唯一的 S4 面板实例、确认宿主、只读命令调试 tab）。
+- 面板宿主：`app/components/workbench/WorkbenchCommandPalette.vue`；产品页由 `app/pages/index.vue` 提供宿主，Component Lab 不提供全局宿主——命令场景经 `app/component-lab/fixtures/lab-command-scene.ts` 创建与场景同寿的局部宿主（S4 面板、确认框、键位监听与只读命令检视），切场景即释放。2026-09-25 由 w00017 t14 从 LabShell 常驻宿主收窄为场景局部宿主，w00016 的历史验收保留。
 
 ## 证据
 

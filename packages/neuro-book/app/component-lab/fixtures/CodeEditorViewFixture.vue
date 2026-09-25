@@ -10,6 +10,8 @@
  * 5. 按钮与命令同源：disabled 与执行都走宿主注册表，命令注册生命周期绑定当前 ready 身份。
  *
  * 夹具扮演宿主，不读写磁盘、不接 store、不做保存排队：这里没有「已保存」这种结论。
+ * 命令宿主（注册表、面板、键位、确认闸门）由 `useLabCommandScene` 在本实例内建立并随场景释放，
+ * 不依赖 LabShell 注入。
  */
 import {computed, onBeforeUnmount, ref, watch} from "vue";
 import CodeEditorView from "nbook/app/components/editor-workbench/CodeEditorView.vue";
@@ -21,17 +23,25 @@ import type {
     EditorDocumentTarget,
     EditorViewHandle,
 } from "nbook/app/components/editor-workbench/editor-view.types";
-import {useWorkbenchCommands} from "nbook/app/composables/useWorkbenchCommands";
 import {registerEditorCommands} from "nbook/app/utils/workbench/editor-commands";
 import type {CommandInvocation, CommandResult, Release} from "nbook/app/utils/workbench/commands";
 import {DEFAULT_MONACO_EDITOR_PREFERENCES} from "nbook/shared/editor-workbench";
 import {useLabEventSink} from "../lab-event-sink";
 import LabFixtureControls from "../LabFixtureControls.vue";
+import LabCommandInspector from "./LabCommandInspector.vue";
+import LabCommandSceneLayer from "./LabCommandSceneLayer.vue";
+import {useLabCommandScene} from "./lab-command-scene";
 
-const props = defineProps<{scene: string; data?: unknown}>();
+const props = defineProps<{
+    scene: string;
+    data?: unknown;
+    /** 受检零件包含命令面板时为真：打开中的面板也标成受检零件，并在控制抽屉给出打开方式。 */
+    paletteSubject?: boolean;
+}>();
 
 const emitLabEvent = useLabEventSink();
-const host = useWorkbenchCommands();
+const commandScene = useLabCommandScene();
+const host = commandScene.host;
 
 type SceneData = {
     path: string;
@@ -164,17 +174,13 @@ function commandEnabled(id: string): boolean {
     return result.ok && result.value === true;
 }
 
-/** 按钮与面板是同一入口：按钮只是「以 user 身份执行这条命令」的触发面。 */
+/**
+ * 按钮与面板是同一入口：按钮只是「以 user 身份执行这条命令」的触发面。
+ * Lab 的 `command` 事件由场景宿主的执行审计统一发出，这里只更新控制栏回显。
+ */
 async function runCommand(id: string, args?: unknown, invocation?: CommandInvocation): Promise<void> {
     const result: CommandResult<unknown> = await host.registry.executeCommand(id, args, invocation);
     lastCommandResult.value = result.ok ? `${id}：完成` : `${id}：${result.code}（${result.reason}）`;
-    emitLabEvent("command", {
-        id,
-        ok: result.ok,
-        invocation: invocation?.source ?? "user",
-        code: result.ok ? null : result.code,
-        reason: result.ok ? null : result.reason,
-    });
 }
 
 /**
@@ -413,7 +419,13 @@ onBeforeUnmount(releaseEditorCommands);
                     命令面板
                 </button>
             </div>
+            <p v-if="props.paletteSubject" class="mt-1.5 text-[11px] text-[var(--text-muted)]">
+                面板由本场景的局部命令宿主挂载：点「命令面板」或在本场景内按 Ctrl/Cmd+Shift+P 打开；打开时它会作为受检零件被标出。
+            </p>
+            <LabCommandInspector :scene="commandScene" />
         </LabFixtureControls>
+
+        <LabCommandSceneLayer :scene="commandScene" :palette-subject="props.paletteSubject === true" />
 
         <div v-if="editorless" class="flex min-h-0 flex-1 flex-col items-center justify-center gap-2 p-6 text-center text-[12px] text-[var(--text-muted)]">
             <p class="text-[var(--text-main)]">这个场景没有活动编辑器。</p>

@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import {computed, nextTick, onBeforeUnmount, onMounted, provide, ref, shallowRef, watch} from "vue";
-import {Type, type TSchema} from "typebox";
 import {
-    AlertDialog as NbAlertDialog,
     FormInput as NbFormInput,
     FormSelect as NbFormSelect,
     SegmentedControl as NbSegmentedControl,
@@ -28,19 +26,6 @@ import type {InspectedNode} from "./inspect";
 import {INSPECT_CLASS_LIMIT, describeNode, nodeLabel, nodeReport} from "./inspect";
 import {clearLabWallpaper, loadLabWallpaper, saveLabWallpaper} from "./lab-wallpaper-store";
 import {useLabPreferences} from "./use-lab-preferences";
-import {provideWorkbenchCommands} from "nbook/app/composables/useWorkbenchCommands";
-import WorkbenchCommandPalette from "nbook/app/components/workbench/WorkbenchCommandPalette.vue";
-import {
-    effectiveAgentExposure,
-    type CommandConfirmationRequest,
-    type CommandDescriptor,
-    type CommandInvocation,
-    type CommandMetadata,
-    type CommandResult,
-    type Release,
-} from "nbook/app/utils/workbench/commands";
-import {evaluateContextWhen} from "nbook/app/utils/workbench/context-keys";
-import {createKeymapDispatcher} from "nbook/app/utils/workbench/keymap";
 import {LAB_PANEL_WIDTH_LIMITS} from "./lab-preferences-store";
 import type {LabPanelSide} from "./lab-preferences-store";
 import {
@@ -275,7 +260,6 @@ const tabItems = computed<TabsItem[]>(() => [
     {value: "element", label: "元素"},
     {value: "events", label: "事件", count: events.value.length},
     {value: "data", label: "数据"},
-    {value: "commands", label: "命令"},
 ]);
 
 const backdropOptions: FormSelectOption[] = labBackdrops.map((item) => ({value: item.id, label: item.label}));
@@ -695,295 +679,15 @@ provide(LAB_CONTROLS_REGISTER, (active: boolean) => {
     hasFixtureControls.value = active;
 });
 
-// ——— 命令宿主 ———
-//
-// Lab 是全局 S4 面板、键位与确认闸门的唯一挂载点：这里建立注册表、上下文键与键位分发，
-// 业务命令由各域（编辑器样板、面板入口）自己注册。执行记录只留内存，不写 Lab 偏好；
-// 失败在下面唯一的 role=alert 区域显示一次，宿主本身不弹 Toast。
-const {t} = useI18n();
-
-const workbenchCommands = provideWorkbenchCommands({
-    development: import.meta.dev,
-    report: (error) => recordEvent("command-error", error.message),
-    confirm: requestConfirmation,
-});
-
-/** 面板与命令 tab 共用的 i18n 解析；带 params 以支持「跳转到第 N 行」这类参数化文案。 */
-function titleOf(key: string, params?: Record<string, unknown>): string {
-    return params === undefined ? t(key) : t(key, params);
-}
-
-const COMMAND_LOG_LIMIT = EVENT_LIMIT;
-
-type CommandLogEntry = Readonly<{
-    seq: number;
-    requestedId: string;
-    id: string;
-    invocation: CommandInvocation;
-    args: unknown;
-    result: CommandResult<unknown>;
-    durationMs: number;
-}>;
-
-const commandLog = ref<CommandLogEntry[]>([]);
-const commandError = ref("");
-let commandLogSeq = 0;
-
-const releaseCommandAudit = workbenchCommands.registry.onDidExecuteCommand((event) => {
-    commandLogSeq += 1;
-    commandLog.value = [{seq: commandLogSeq, ...event}, ...commandLog.value].slice(0, COMMAND_LOG_LIMIT);
-    if (!event.result.ok) {
-        commandError.value = `${event.id}：${event.result.reason}`;
-    }
-});
-
-/**
- * 两条面板入口命令：open-commands 是 S4 的键盘/按钮入口（human=false 不在候选里），
- * open-line 只在有行导航能力时可用。注册失败不留半截注册表。
- */
-function registerPaletteCommands(): Release | null {
-    const noArguments = Type.Object({}, {additionalProperties: false});
-    const descriptors: CommandDescriptor<TSchema, null>[] = [
-        {
-            id: "nbook.quick-open.open-commands",
-            titleKey: "workbenchCommands.openCommands",
-            description: "Open the command palette.",
-            argsSchema: noArguments,
-            effect: "read",
-            defaultKeybinding: "Mod+Shift+P",
-            expose: {human: false, agent: "never"},
-            run: () => {
-                workbenchCommands.openPalette("commands");
-                return {ok: true, value: null};
-            },
-        },
-        {
-            id: "nbook.quick-open.open-line",
-            titleKey: "workbenchCommands.openLine",
-            description: "Switch the open command palette to line navigation.",
-            argsSchema: noArguments,
-            effect: "read",
-            when: {requires: ["editor-line-navigation"]},
-            expose: {human: true, agent: "never"},
-            run: () => {
-                workbenchCommands.openPalette("line");
-                return {ok: true, value: null};
-            },
-        },
-    ];
-
-    const registered: Release[] = [];
-    for (const descriptor of descriptors) {
-        const result = workbenchCommands.registry.registerCommand(descriptor);
-        if (!result.ok) {
-            commandError.value = `面板命令注册失败：${descriptor.id}：${result.reason}`;
-            for (const release of registered) {
-                release();
-            }
-            return null;
-        }
-        registered.push(result.value);
-    }
-    return () => {
-        for (const release of registered.splice(0)) {
-            release();
-        }
-    };
-}
-
-const releasePaletteCommands = registerPaletteCommands();
-
-/** 面板打开时到达的确认请求要等它真正关闭再显示；这个队列在面板关闭或宿主卸载时清空。 */
-const paletteCloseWaiters: (() => void)[] = [];
-watch(workbenchCommands.palette.open, (open) => {
-    if (open) {
-        return;
-    }
-    for (const notify of paletteCloseWaiters.splice(0)) {
-        notify();
-    }
-}, {flush: "sync"});
-
-type PendingConfirmation = {
-    request: CommandConfirmationRequest;
-    decision: "pending" | "approved" | "denied";
-    resolve: (approved: boolean) => void;
-};
-
-const confirmationVisible = ref(false);
-const pendingConfirmation = shallowRef<PendingConfirmation | null>(null);
-
-function waitForPaletteClosed(): Promise<void> {
-    if (!workbenchCommands.palette.open.value) {
-        return Promise.resolve();
-    }
-    return new Promise<void>((resolve) => paletteCloseWaiters.push(resolve));
-}
-
-/** 确认闸门：从收到请求到 AlertDialog 的 closed 结算前一直非 null。 */
-function requestConfirmation(request: CommandConfirmationRequest): Promise<boolean> {
-    if (pendingConfirmation.value !== null) {
-        return Promise.resolve(false);
-    }
-    return new Promise<boolean>((resolve) => {
-        const pending: PendingConfirmation = {request, decision: "pending", resolve};
-        pendingConfirmation.value = pending;
-        void (async () => {
-            await waitForPaletteClosed();
-            if (pendingConfirmation.value === pending) {
-                confirmationVisible.value = true;
-            }
-        })();
-    });
-}
-
-function settleConfirmation(approved: boolean): void {
-    const pending = pendingConfirmation.value;
-    if (pending === null || pending.decision !== "pending") {
-        return;
-    }
-    pending.decision = approved ? "approved" : "denied";
-    confirmationVisible.value = false;
-}
-
-/**
- * Reka 的 Action 会先触发我们的 confirm 再发 update:open(false)。把「关闭即拒绝」推迟一个
- * 微任务，显式批准才不会被同一次点击的关闭事件覆盖成拒绝。
- */
-function onConfirmationOpenChange(open: boolean): void {
-    if (open) {
-        return;
-    }
-    queueMicrotask(() => settleConfirmation(false));
-}
-
-function onConfirmationClosed(): void {
-    const pending = pendingConfirmation.value;
-    if (pending === null) {
-        return;
-    }
-    pendingConfirmation.value = null;
-    pending.resolve(pending.decision === "approved");
-}
-
-const confirmationTitle = computed(() => pendingConfirmation.value === null
-    ? ""
-    : titleOf(pendingConfirmation.value.request.command.titleKey));
-const confirmationArgs = computed(() => pendingConfirmation.value === null
-    ? ""
-    : JSON.stringify(pendingConfirmation.value.request.args));
-const confirmationDestructive = computed(() =>
-    pendingConfirmation.value?.request.command.expose?.hints?.destructive === true);
-
-let keymapDispatcher: {handle: (event: KeyboardEvent) => void; dispose: () => void} | null = null;
-
-function handleWorkbenchKeydown(event: KeyboardEvent): void {
-    // 确认界面开着时不派发面板键：既不打开新面板，也不制造失败审计
-    if (pendingConfirmation.value !== null) {
-        return;
-    }
-    keymapDispatcher?.handle(event);
-}
-
-/** 快捷键的平台口径：macOS 上 Mod 是 Meta，其它平台是 Ctrl。 */
-function isMacPlatform(): boolean {
-    if (typeof navigator === "undefined") {
-        return false;
-    }
-    return /Mac|iPhone|iPad/u.test(navigator.platform || navigator.userAgent);
-}
-
-onMounted(() => {
-    keymapDispatcher = createKeymapDispatcher(
-        workbenchCommands.registry,
-        isMacPlatform() ? "mac" : "other",
-        (error) => recordEvent("command-error", error.message),
-    );
-    window.addEventListener("keydown", handleWorkbenchKeydown, true);
-});
-onBeforeUnmount(() => {
-    window.removeEventListener("keydown", handleWorkbenchKeydown, true);
-    keymapDispatcher?.dispose();
-    keymapDispatcher = null;
-    releaseCommandAudit();
-    releasePaletteCommands?.();
-    for (const notify of paletteCloseWaiters.splice(0)) {
-        notify();
-    }
-    const pending = pendingConfirmation.value;
-    pendingConfirmation.value = null;
-    // 卸载同时结算未决确认：registry 里等待的调用不能永远挂着
-    pending?.resolve(false);
-});
-
-// 换组件/换场景先收起面板、清掉活动编辑器：旧 identity 的命令注册由 fixture 自己释放，
-// 面板里未执行的选择也会因目标不再匹配而作废。
-watch([selectedName, selectedScene], () => {
-    workbenchCommands.closePalette();
-    workbenchCommands.activeEditor.value = null;
-});
-
 watch(selectedName, () => {
-    // 切换组件时将视口重置回自适应（free），避免上一组件的自定义拖拽尺寸残留影响新组件判读
+    // 切换组件时将视口重置回自适应（free），避免上一组件的自定义拖拽尺寸残留影响新组件判读。
+    // 恢复偏好时组件与画布尺寸一起还原，这次换组件不是用户切换，不能清掉刚恢复的尺寸。
+    if (preferencesHydrating.value) {
+        return;
+    }
     canvasWidth.value = 0;
     canvasHeight.value = 0;
 });
-
-type CommandRow = Readonly<{
-    command: CommandMetadata;
-    title: string;
-    whenText: string;
-    exposeText: string;
-}>;
-
-/** 命令 tab 只读展示：metadata + 共享 when 求值 + 有效 expose。这里不执行命令、不改 context。 */
-const commandRows = computed<readonly CommandRow[]>(() => {
-    void workbenchCommands.revision.value;
-    return workbenchCommands.registry.getAllCommands().map((command) => {
-        const requires = command.when?.requires ?? [];
-        const evaluation = evaluateContextWhen(command.when, workbenchCommands.context.value);
-        const verdict = evaluation.ok
-            ? (evaluation.value.matches ? "满足" : `缺少：${evaluation.value.reasons.join("；")}`)
-            : `求值失败：${evaluation.reason}`;
-        return {
-            command,
-            title: titleOf(command.titleKey),
-            whenText: requires.length === 0 ? "无 requires" : `${requires.join("、")} → ${verdict}`,
-            exposeText: exposeTextOf(command),
-        };
-    });
-});
-
-/** 按 id 的 domain 段分组；分组顺序＝首次出现的注册顺序。 */
-const commandGroups = computed(() => {
-    const groups = new Map<string, CommandRow[]>();
-    for (const row of commandRows.value) {
-        const domain = row.command.id.split(".")[1] ?? row.command.id;
-        const bucket = groups.get(domain);
-        if (bucket) {
-            bucket.push(row);
-        } else {
-            groups.set(domain, [row]);
-        }
-    }
-    return [...groups].map(([domain, rows]) => ({domain, rows}));
-});
-
-function exposeTextOf(command: CommandMetadata): string {
-    const hints = command.expose?.hints;
-    const flags = hints === undefined
-        ? []
-        : [
-            hints.readOnly === true ? "readOnly" : "",
-            hints.destructive === true ? "destructive" : "",
-            hints.idempotent === true ? "idempotent" : "",
-        ].filter((flag) => flag !== "");
-    return [
-        `human=${command.expose?.human === false ? "false" : "true"}`,
-        `agent=${effectiveAgentExposure(command.expose)}`,
-        ...flags,
-    ].join(" · ");
-}
 
 function resetScene(): void {
     const initialData = structuredClone(scene.value?.data);
@@ -1261,13 +965,6 @@ watch([sceneData, canvasWidth, canvasHeight], () => {
                     </div>
                 </div>
 
-                <!-- 命令失败只有这一处可见出口：reason 原样显示，并可手动清掉 -->
-                <div v-if="commandError !== ''" role="alert" class="lab-strip shrink-0 text-[11px]">
-                    <span class="i-lucide-triangle-alert h-3.5 w-3.5 shrink-0 text-[var(--status-danger)]" aria-hidden="true"></span>
-                    <span class="min-w-0 flex-1 truncate" :title="commandError">{{ commandError }}</span>
-                    <button type="button" class="lab-btn shrink-0" @click="commandError = ''">关闭</button>
-                </div>
-
                 <div class="relative min-h-0 flex-1 overflow-hidden">
                     <!-- 切换组件加载遮罩与动画 -->
                     <div
@@ -1493,51 +1190,6 @@ watch([sceneData, canvasWidth, canvasHeight], () => {
                             <EventLogPanel :entries="events" empty-text="操作一下组件，事件会记在这里" />
                         </div>
 
-                        <div v-else-if="rightTab === 'commands'" class="lab-pad" data-lab-panel="commands">
-                            <!-- 只读检查器：看的是注册表与共享求值，不在这里执行命令、也不改 context -->
-                            <p class="lab-panel-label">当前 context</p>
-                            <JsonViewer :value="workbenchCommands.context.value" :read-only="true" :max-height="140" />
-
-                            <p class="lab-panel-label">命令 {{ commandRows.length }} 条</p>
-                            <p v-if="commandRows.length === 0" class="lab-note">当前场景没有注册命令。</p>
-                            <section v-for="group in commandGroups" :key="group.domain" class="mt-3">
-                                <p class="lab-panel-label">{{ group.domain }}</p>
-                                <div
-                                    v-for="row in group.rows"
-                                    :key="row.command.id"
-                                    class="mt-2 rounded-[var(--radius-control)] border border-[var(--divider)] p-2"
-                                >
-                                    <div class="flex items-baseline justify-between gap-2">
-                                        <code class="min-w-0 break-all font-mono text-[11px] text-[var(--text-main)]">{{ row.command.id }}</code>
-                                        <span class="shrink-0 text-[11px] text-[var(--text-secondary)]">{{ row.title }}</span>
-                                    </div>
-                                    <dl class="lab-meta lab-meta--flush">
-                                        <div class="lab-meta-row">
-                                            <dt class="lab-meta-key">effect</dt>
-                                            <dd>{{ row.command.effect }}</dd>
-                                        </div>
-                                        <div class="lab-meta-row">
-                                            <dt class="lab-meta-key">when</dt>
-                                            <dd class="min-w-0 break-words">{{ row.whenText }}</dd>
-                                        </div>
-                                        <div class="lab-meta-row">
-                                            <dt class="lab-meta-key">expose</dt>
-                                            <dd>{{ row.exposeText }}</dd>
-                                        </div>
-                                        <div class="lab-meta-row">
-                                            <dt class="lab-meta-key">键位</dt>
-                                            <dd class="font-mono">{{ row.command.defaultKeybinding ?? "—" }}</dd>
-                                        </div>
-                                    </dl>
-                                    <JsonViewer :value="row.command.argsSchema" :read-only="true" :max-height="200" />
-                                </div>
-                            </section>
-
-                            <p class="lab-panel-label">最近执行 {{ commandLog.length }} / {{ COMMAND_LOG_LIMIT }}</p>
-                            <p v-if="commandLog.length === 0" class="lab-note">这个场景里还没有命令执行记录。</p>
-                            <JsonViewer v-else :value="commandLog" :read-only="true" :max-height="320" />
-                        </div>
-
                         <div v-else-if="rightTab === 'data'" class="lab-pad lab-data" data-lab-panel="data">
                             <template v-if="sceneHasData">
                                 <div class="flex shrink-0 items-center justify-between">
@@ -1558,35 +1210,6 @@ watch([sceneData, canvasWidth, canvasHeight], () => {
                 </div>
             </CollapsibleSidePanel>
         </div>
-
-        <!-- S4：全局面板挂在画布外并 portal 到 body，缩放画布不缩放也不裁切它。
-             检视 WorkbenchCommandPalette 时把打开中的面板标成受检零件（属性只在打开时存在）。 -->
-        <WorkbenchCommandPalette
-            :host="workbenchCommands"
-            :title-of="titleOf"
-            :data-lab-subject="selectedName === 'WorkbenchCommandPalette' ? '' : undefined"
-        />
-
-        <!-- 确认闸门：agent 调用的受控 AlertDialog。等面板 closed 后才显示，关闭并完成焦点释放后才结算 Promise -->
-        <NbAlertDialog
-            :open="confirmationVisible"
-            :title="confirmationTitle"
-            :tone="confirmationDestructive ? 'danger' : 'warning'"
-            confirm-text="批准执行"
-            cancel-text="取消"
-            @update:open="onConfirmationOpenChange"
-            @confirm="settleConfirmation(true)"
-            @cancel="settleConfirmation(false)"
-            @closed="onConfirmationClosed"
-        >
-            <template #description>
-                <template v-if="pendingConfirmation">
-                    <span class="block">{{ pendingConfirmation.request.callerId }} 请求执行「{{ confirmationTitle }}」。</span>
-                    <span class="mt-1 block break-all font-mono text-[11px]">{{ confirmationArgs }}</span>
-                    <span class="mt-1 block">仅操作当前 Lab 内存文档。</span>
-                </template>
-            </template>
-        </NbAlertDialog>
 
         <!-- 选中元素只留贴边标签，避免大块元素的常驻框退化成一条左竖线；虚线框仅在取色时跟随鼠标。 -->
         <HighlightBox class="lab-picked-marker" :rect="pickedRect" :label="selectionLabel" tone="subject" :show-box="false" />

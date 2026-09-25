@@ -1,7 +1,8 @@
 /**
- * Workbench 命令宿主：一个 app 实例里的命令注册表 + 上下文键 + 面板状态。
+ * Workbench 命令宿主：一棵组件子树里的命令注册表 + 上下文键 + 面板状态。
  *
- * 生命周期与 `useWorkbenchChrome` 同形：宿主在 setup 里 provide，子组件 inject。
+ * 生命周期与 `useWorkbenchChrome` 同形：宿主在 setup 里 provide，子组件 inject，宿主卸载即释放。
+ * 产品工作台页与 Lab 的命令场景各建各的实例，互不共享——没有 app 级的全局命令宿主。
  * 这里只建立通道与状态，命令由各域自己注册——核心不内置任何业务命令。
  */
 import {

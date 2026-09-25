@@ -41,10 +41,11 @@ describe("Lab preferences store", () => {
         expect(saveLabPreferences(storage, preferences)).toBe(true);
         expect(loadLabPreferences(storage, catalog)).toEqual(preferences);
 
-        // 第五个检视 tab 也走同一份白名单往返
+        // 命令检视随 LabShell 的产品命令宿主一起撤掉：旧版本存下的 commands 不再是合法 tab，丢弃后回默认。
         storage.clear();
-        expect(saveLabPreferences(storage, {...preferences, activeInspectTab: "commands"})).toBe(true);
-        expect(loadLabPreferences(storage, catalog)).toEqual({...preferences, activeInspectTab: "commands"});
+        storage.setItem(LAB_PREFERENCES_STORAGE_KEY, JSON.stringify({...preferences, activeInspectTab: "commands"}));
+        const {activeInspectTab: _dropped, ...withoutTab} = preferences;
+        expect(loadLabPreferences(storage, catalog)).toEqual(withoutTab);
     });
 
     it("keeps valid fields and drops untrusted values independently", () => {

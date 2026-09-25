@@ -11,6 +11,7 @@ import {assertSettingsViewSmoke} from "./settings-view";
 import {assertProjectPickerViewSmoke} from "./project-picker-view";
 import {assertWorkbenchContainerSmoke} from "./workbench-containers";
 import {assertWorkbenchShellSmoke} from "./workbench-shell";
+import {assertLabCommandSceneSmoke, leaveLabThroughRouter, watchLabBootstrapRequests} from "./lab-command-scene";
 
 type ComponentLabSmokeSuite = "all" | "core" | "agent-profile" | "project-picker" | "workbench-shell";
 
@@ -24,7 +25,8 @@ type ComponentLabSmokeOptions = {
 type BrowserFailure = import("./agent-profile-nav").SmokeFailure;
 
 /**
- * 验证主应用 Component Lab 的真实开发路径：路由、四个检查面板、场景数据、主题恢复和窄屏溢出。
+ * 验证主应用 Component Lab 的真实开发路径：路由、四个检查面板、场景数据、主题恢复和窄屏溢出；
+ * Lab 文档启动不发产品配置 / Project / Storage 请求，命令场景的宿主随场景建立与释放。
  * 必须由 Node 启动 Playwright；Windows 下 Bun 连接 Chromium pipe 不稳定。
  */
 export async function runComponentLabSmoke(input: ComponentLabSmokeOptions): Promise<void> {
@@ -44,28 +46,28 @@ export async function runComponentLabSmoke(input: ComponentLabSmokeOptions): Pro
         const page = await browser.newPage({viewport: {width: 1600, height: 1000}});
         observePage(page, failures);
 
+        const bootstrap = watchLabBootstrapRequests(page, new URL(input.url).origin);
         await page.goto(new URL("/lab", input.url).href, {waitUntil: "domcontentloaded", timeout: 30_000});
         await page.locator(".lab-root").waitFor({state: "visible", timeout: 30_000});
+        await bootstrap.settle(failures);
         assert(await page.locator('[aria-label="主题"]').count() === 1, failures, "Lab 路由应提供主题选择器");
-        assert(await page.locator('[role="tab"]').count() === 5, failures, "右侧检查器应提供五个 tab");
+        assert(await page.locator('[role="tab"]').count() === 4, failures, "右侧检查器应提供四个 tab");
         assert(
             await page.locator('[role="tab"]').allTextContents().then((items) => items.map((item) => item.replace(/\s+/gu, "").replace(/\d+$/u, "")))
                 .then((items) => items.some((name) => name === "文档")
                     && items.some((name) => name === "元素")
                     && items.some((name) => name === "事件")
-                    && items.some((name) => name === "数据")
-                    && items.some((name) => name === "命令")),
+                    && items.some((name) => name === "数据")),
             failures,
-            "右侧检查器应包含文档、元素、事件、数据、命令五个面板",
+            "右侧检查器应包含文档、元素、事件、数据四个面板",
         );
 
-        // 五个 tab 要真能切：逐个切过去，只应留下该面板自己的容器（不只数标签个数）
+        // 四个 tab 要真能切：逐个切过去，只应留下该面板自己的容器（不只数标签个数）
         const panelTabs: {panel: string; tab: string; label: string}[] = [
             {panel: "doc", tab: "文档", label: "文档面板"},
             {panel: "element", tab: "元素", label: "元素面板"},
             {panel: "events", tab: "事件", label: "事件面板"},
             {panel: "data", tab: "数据", label: "数据面板"},
-            {panel: "commands", tab: "命令", label: "命令面板"},
         ];
         for (const item of panelTabs) {
             await page.locator('[role="tab"]').filter({hasText: item.tab}).click();
@@ -138,6 +140,8 @@ export async function runComponentLabSmoke(input: ComponentLabSmokeOptions): Pro
             return;
         }
 
+        await assertLabCommandSceneSmoke(page, failures);
+
         const viewportCanvasItem = page.locator('.lab-columns > .nb-lab-panel--nav [role="treeitem"]').filter({hasText: /^ViewportCanvas$/u});
         await viewportCanvasItem.click();
         await page.locator('[role="radio"]').filter({hasText: "不限尺寸"}).click();
@@ -205,7 +209,7 @@ export async function runComponentLabSmoke(input: ComponentLabSmokeOptions): Pro
             failures,
             "刷新后应恢复已保存的 Lab 主题",
         );
-        await page.goto(new URL("/", input.url).href, {waitUntil: "domcontentloaded", timeout: 30_000});
+        await leaveLabThroughRouter(page, "/", failures);
         await page.waitForFunction(
             () => location.pathname === "/" && !document.documentElement.hasAttribute("data-nb-theme"),
             undefined,

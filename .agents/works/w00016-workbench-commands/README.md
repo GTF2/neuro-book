@@ -41,3 +41,7 @@ issueId: i192
 ## 2026-09-22 主线接手提交
 
 治理文档提交为 `b048b226`；实现（命令运行时、`QuickInput`、命令面板与 Lab 夹具）位于 w00003 分支的 `39e50767` / `565f792d`，**尚未合并 master**——该分支主应用 typecheck 有 123 条错误（见 w00003 的 `merge-readiness-2026-09-22.md`），按红分支规则未合并。
+
+## 2026-09-25 Lab 宿主边界交接
+
+[w00017 t14](../w00017-application-runtime-architecture/tasks/t14-lab-host-boundary/README.md) 在含 w00016 实现的合并基线上把 LabShell 常驻命令宿主、面板、确认框与第五个命令检视 tab 收回到命令场景局部宿主；命令底座与真实 Monaco 样板保留，`ui.component-lab`、`workbench.commands`、`workbench.quick-open` 在原 Spec 原位修订。w00016 当时的交付与验收不倒改；新的宿主生命周期与 `/lab` 启动边界以 t14 证据为准。本地记录不代表 push、PR 或合并已授权。

@@ -15,7 +15,7 @@ issueId: null
 3. 后续按**外部插件开发者视角**推进 Lab → Files → Settings → World/Plot，不把第三方市场/SDK/沙箱引入当前范围。
 4. 开发者要求先等 w00003 合并 master 再创建 w00017 worktree；该条件已于 `bb688931`（Merge branch `refactor/w00003-nb-ui-adoption` into master）满足，实现 worktree 已创建，t05–t09 已按批准的实施计划执行。
 
-规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。当前实现分支完成第一片（t05–t08 四个实现单元 + t09 首片集成复核）与第二片（t10 诊断、t11 平台文件、t12 SQLite + t13 第二片集成复核）：七项 Spec 均已晋升 `implemented`，产品行为未切换（产品启动链、产品日志器与既有数据库仍走旧入口）；未执行产品接线、push、PR、合并、迁移或人工浏览器／真实模型验收。开发者 2026-09-23 决定两片一起合；本地原子提交在实现分支自主进行，push、PR、合并仍需授权。
+规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。当前实现分支完成第一片（t05–t09）与第二片（t10–t13）：七项 Spec 均已晋升 `implemented`；第三片 [t14 Lab 宿主边界](tasks/t14-lab-host-boundary/README.md) 将 LabShell 常驻产品命令宿主收回命令场景，直接打开 `/lab` 跳过产品配色与旧桶迁移，保持 Lab 自有检视和偏好。产品启动链、产品日志器与既有数据库仍走旧入口；未执行产品接线、push、PR、合并、人工浏览器／真实模型验收。开发者 2026-09-23 决定首两片一起合；第三片按方案 B 继续本地实施，本地原子提交自主进行，push、PR、合并仍需授权。
 
 ## 规范与实施入口
 
@@ -42,8 +42,9 @@ issueId: null
 | [t11](tasks/t11-platform-files/README.md) | 第二片：受根约束的文件能力插件（授予、包含校验、watch、锁、关闭门禁） |
 | [t12](tasks/t12-platform-sqlite/README.md) | 第二片：受管 SQLite 机制插件（具名资源 owner、借用、事务、代次） |
 | [t13](tasks/t13-services-integration-review/README.md) | 第二片集成复核：`--services` 组合 smoke、逐条对照三项 Spec、修复插件释放重试等缺口后晋升 `implemented` |
+| [t14](tasks/t14-lab-host-boundary/README.md) | 第三片：Lab 文档启动边界、命令场景局部宿主、四个检视 tab、core 浏览器 smoke 与 w00016 交接 |
 
-后续单元在整体路径中规划，但不预建依赖未知实现结果的Task链。第一片与第二片已闭合；产品装配接线随首条真实链（Files）迁移旧入口，诊断出口接管产品日志位置、workspace-files 消费 platform.files。Task completed不等于整个切片或产品完成。
+后续单元在整体路径中规划，不预建依赖未知实现结果的 Task 链。第一片与第二片已闭合；Lab 第三片的专项证据与完整组合 smoke 既有失败见 t14。产品装配接线随首条真实链（Files）迁移旧入口，诊断出口接管产品日志位置、workspace-files 消费 platform.files。Task completed 不等于整个产品完成。
 
 ## 执行位置与版本
 
@@ -72,4 +73,4 @@ Work／Task 进度只在实现分支维护；主工作区保持 `master`，其 W
 
 本轮新审查分别写 t02/t03 的 `walkthroughs/foundation-review.md`；t04 记录处理与最终质量证据，不用旧报告为新Spec背书。
 
-本轮规范规划的处理与验证入口：[t04交付记录](tasks/t04-foundation-spec-plan/walkthroughs/foundation-resolution.md)、[身份检查](tasks/t04-foundation-spec-plan/evidences/context-checks.txt)。实现单元的公开接口、验证结果与未运行项见各自快照：[t05](tasks/t05-runtime-lifecycle/README.md)、[t06](tasks/t06-runtime-services/README.md)、[t07](tasks/t07-runtime-plugins/README.md)、[t08](tasks/t08-runtime-application/README.md)；首片复核结论见 [t09](tasks/t09-foundation-integration-review/README.md)；第二片见 [t10](tasks/t10-runtime-diagnostics/README.md)、[t11](tasks/t11-platform-files/README.md)、[t12](tasks/t12-platform-sqlite/README.md) 与复核 [t13](tasks/t13-services-integration-review/README.md)。
+本轮规范规划的处理与验证入口：[t04交付记录](tasks/t04-foundation-spec-plan/walkthroughs/foundation-resolution.md)、[身份检查](tasks/t04-foundation-spec-plan/evidences/context-checks.txt)。实现单元的公开接口、验证结果与未运行项见各自快照：[t05](tasks/t05-runtime-lifecycle/README.md)、[t06](tasks/t06-runtime-services/README.md)、[t07](tasks/t07-runtime-plugins/README.md)、[t08](tasks/t08-runtime-application/README.md)；首片复核结论见 [t09](tasks/t09-foundation-integration-review/README.md)；第二片见 [t10](tasks/t10-runtime-diagnostics/README.md)、[t11](tasks/t11-platform-files/README.md)、[t12](tasks/t12-platform-sqlite/README.md) 与复核 [t13](tasks/t13-services-integration-review/README.md)；Lab 第三片见 [t14](tasks/t14-lab-host-boundary/README.md)。

@@ -4,6 +4,8 @@ import {THEME_HOST_CLASS} from "nbook/app/utils/theme/host";
 
 // 这个页面只在源码开发环境注册。排除发生在 nuxt.config 的路由生成阶段，
 // 不是运行时守卫——产物里根本没有这条路由，也就到不了这里。
+// Lab 不是产品宿主：文档启动时不读产品配置、不跑旧桶迁移（见 app/utils/product-host.ts）。
+definePageMeta({productHost: false});
 useHead({title: "组件 Lab"});
 </script>
 
