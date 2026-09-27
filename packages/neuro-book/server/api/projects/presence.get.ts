@@ -1,7 +1,7 @@
 import {createEventStream} from "h3";
 import {requireProjectReadyQuery} from "nbook/server/api/projects/project-control-plane";
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
-import {acquireUserPresence} from "nbook/server/workspace-files/project-session";
+import {acquireUserPresence} from "nbook/server/runtime/product-project";
 import {isClosingEventStreamError} from "nbook/server/utils/event-stream";
 import type {ProjectPresenceEventDto} from "nbook/shared/dto/project.dto";
 

@@ -15,7 +15,7 @@ import {absoluteFsPath, type AbsoluteFsPath} from "nbook/server/runtime/paths/fi
 import {closeAllProjects,
     closeProject,
     openProject,
-    resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
+    resetProjectSessionsForTest} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {
     projectModuleToken,

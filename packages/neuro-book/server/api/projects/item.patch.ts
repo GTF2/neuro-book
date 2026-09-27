@@ -1,5 +1,5 @@
 import {validateBody} from "nbook/server/utils/novel-chapter";
-import {updateProjectMetadata} from "nbook/server/workspace-files/project-session";
+import {updateProjectMetadata} from "nbook/server/runtime/product-project";
 import {throwProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {requireProjectRefQuery, toProjectMetadataDto} from "nbook/server/api/projects/project-control-plane";
 import {

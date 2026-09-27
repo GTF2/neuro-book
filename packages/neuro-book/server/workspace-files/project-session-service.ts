@@ -71,6 +71,14 @@ export type ProjectControlLifecycle = {
 export type ProjectSessionServiceOptions = {
     readonly lifecycle: ProjectControlLifecycle;
     readonly runtime?: ProjectSessionRuntime;
+    /** 物理root失效时同步封住owner的同代generation，早于任何异步close。 */
+    readonly onRootReplacementDetected?: (ref: ProjectWorkspaceRef, opening: Promise<ProjectControlOpenResult> | null) => void;
+    /** 产品owner在Facade移除entry之前关闭对应的精确Project Scope。 */
+    readonly onRootReplaced?: (
+        ref: ProjectWorkspaceRef,
+        ready: ReadyProjectSessionRef | null,
+        opening: Promise<ProjectControlOpenResult> | null,
+    ) => Promise<void>;
 };
 
 /** 产品open同时返回Session精确generation与Lifecycle已发布的Project metadata。 */
@@ -110,6 +118,8 @@ type ProjectServiceEntry = {
     handoffReady: Promise<void>;
     settleHandoff(): void;
     opening: Promise<ProjectControlOpenResult> | null;
+    /** 创建该 entry 的原始 opening token；settled 后仍可精确定位失败留存。 */
+    openingIdentity: Promise<ProjectControlOpenResult> | null;
     ready: ReadyProjectSessionRef | null;
     publication: ProjectEnsureResult | null;
     workspace: ResolvedProjectWorkspace | null;
@@ -125,6 +135,8 @@ type ProjectServiceEntry = {
 export class ProjectSessionService {
     private readonly lifecycle: ProjectControlLifecycle;
     private readonly runtime: ProjectSessionRuntime;
+    private readonly onRootReplaced: ProjectSessionServiceOptions["onRootReplaced"];
+    private readonly onRootReplacementDetected: ProjectSessionServiceOptions["onRootReplacementDetected"];
     private readonly entries = new Map<string, ProjectServiceEntry>();
     private state: "running" | "closing" | "closed" = "running";
     private closeAllPromise: Promise<void> | null = null;
@@ -137,6 +149,8 @@ export class ProjectSessionService {
     ) {
         this.lifecycle = options.lifecycle;
         this.runtime = options.runtime ?? new ProjectSessionRuntime();
+        this.onRootReplaced = options.onRootReplaced;
+        this.onRootReplacementDetected = options.onRootReplacementDetected;
     }
 
     /**
@@ -198,6 +212,7 @@ export class ProjectSessionService {
             handoffReady,
             settleHandoff,
             opening: null,
+            openingIdentity: null,
             ready: null,
             publication: null,
             workspace: null,
@@ -213,8 +228,10 @@ export class ProjectSessionService {
                 entry.stopRootObservation = this.lifecycle.observeWorkspace(
                     prepared.workspace,
                     () => {
-                        // 先同步失效写入目标，再排空：等锁中的 Storage 操作不能写已替换的根。
+                        // 同步失效并封住owner与Service admission，才开始异步资源排空。
                         entry.targetInvalid = true;
+                        entry.terminalGates.add(Symbol("project-root-replaced"));
+                        this.onRootReplacementDetected?.(prepared.workspace.ref, entry.openingIdentity);
                         void this.closeRootReplaced(locator, entry).catch(() => undefined);
                     },
                 );
@@ -228,6 +245,7 @@ export class ProjectSessionService {
                 entry.settleHandoff();
                 if (
                     this.entries.get(locator) === entry
+                    && entry.terminalGates.size === 0
                     && (!entry.workspace || !this.runtime.hasProjectGeneration(entry.workspace.key))
                 ) {
                     this.removeEntry(locator, entry);
@@ -240,6 +258,7 @@ export class ProjectSessionService {
                 }
             });
         entry.opening = opening;
+        entry.openingIdentity = opening;
         return opening;
     }
 
@@ -486,7 +505,7 @@ export class ProjectSessionService {
     }
 
     /** 执行presence/grace维护，并删除Runtime已完整关闭的Facade entries。 */
-    async sweepProjectSessions(now?: number): Promise<ProjectWorkspaceRef[]> {
+    async sweepProjectSessions(now?: number): Promise<ReadyProjectSessionRef[]> {
         const entries = [...this.entries.entries()].map(([locator, entry]) => ({
             locator,
             entry,
@@ -524,7 +543,7 @@ export class ProjectSessionService {
                 this.removeEntry(locator, entry);
             }
         }
-        return closed.map((session) => session.workspace.ref);
+        return closed;
     }
 
     /** 从调用方已经捕获的精确 ready generation 取得 Module handle，拒绝 close/reopen 后的旧引用。 */
@@ -685,24 +704,40 @@ export class ProjectSessionService {
         this.runtime.assertProjectOperationTarget(ready);
     }
 
-    /**
-     * 关闭locator当前generation；Runtime成功释放全部Module与Occupancy后才删除Facade entry。
-     */
-    async closeProject(ref: ProjectWorkspaceRef, reason: ProjectSessionCloseReason): Promise<void> {
+    /** 精确代次关闭：旧调用方不能按相同 locator 关闭重开的新 entry。 */
+    closeReadyProject(ready: ReadyProjectSessionRef, reason: ProjectSessionCloseReason): Promise<void> {
+        const locator = canonicalProjectLocator(this.workspaceRoot, ready.workspace.ref);
+        const entry = this.entries.get(locator);
+        if (entry?.ready !== ready) return Promise.resolve();
+        return this.closeEntry(locator, entry, ready.workspace.ref, reason);
+    }
+
+    /** Opening尚未发布ready时按创建时的精确entry关闭，不能按路径碰到重开代次。 */
+    closeOpeningProject(ref: ProjectWorkspaceRef, opening: Promise<ProjectControlOpenResult>, reason: ProjectSessionCloseReason): Promise<void> {
         const locator = canonicalProjectLocator(this.workspaceRoot, ref);
         const entry = this.entries.get(locator);
-        if (!entry) {
-            return;
-        }
+        if (!entry || entry.openingIdentity !== opening) return Promise.resolve();
+        return this.closeEntry(locator, entry, ref, reason);
+    }
+
+    /** 关闭locator当前generation；Runtime成功释放全部Module与Occupancy后才删除Facade entry。 */
+    closeProject(ref: ProjectWorkspaceRef, reason: ProjectSessionCloseReason): Promise<void> {
+        const locator = canonicalProjectLocator(this.workspaceRoot, ref);
+        const entry = this.entries.get(locator);
+        if (!entry) return Promise.resolve();
+        return this.closeEntry(locator, entry, ref, reason);
+    }
+
+    private async closeEntry(locator: string, entry: ProjectServiceEntry, ref: ProjectWorkspaceRef, reason: ProjectSessionCloseReason): Promise<void> {
         const controlGate = Symbol("project-session-close");
         entry.terminalGates.add(controlGate);
+        if (this.entries.get(locator) !== entry) return;
         await Promise.all([...entry.controlOperations]);
+        if (this.entries.get(locator) !== entry) return;
         let ready = entry.ready;
         if (!ready && entry.opening && !entry.workspace) {
             await entry.handoffReady;
-            if (this.entries.get(locator) !== entry) {
-                return;
-            }
+            if (this.entries.get(locator) !== entry) return;
             ready = entry.ready;
         }
         if (!ready && entry.workspace) {
@@ -786,9 +821,10 @@ export class ProjectSessionService {
         if (this.entries.get(locator) !== entry || !entry.workspace) {
             return;
         }
-        entry.terminalGates.add(Symbol("project-root-replaced"));
+        // Observer已同步登记terminal gate；保留至Runtime与owner Scope全部完整收口。
         await Promise.all([...entry.controlOperations]);
         await this.runtime.closeProjectGeneration(entry.workspace.key, "root-replaced");
+        await this.onRootReplaced?.(entry.workspace.ref, entry.ready, entry.openingIdentity);
         if (
             this.entries.get(locator) === entry
             && !this.runtime.hasProjectGeneration(entry.workspace.key)

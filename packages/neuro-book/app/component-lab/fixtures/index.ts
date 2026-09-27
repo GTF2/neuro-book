@@ -861,6 +861,17 @@ export const labFixtures: LabFixture[] = [
         load: async () => (await import("./EditorWorkbenchFixture.vue")).default,
     },
     {
+        component: "FilesExplorerView",
+        scenes: [
+            {id: "ordinary", label: "普通文件与 index.md"},
+            {id: "content", label: "内容节点与目录正文"},
+            {id: "loading", label: "读取中"},
+            {id: "error", label: "读取失败与重试"},
+            {id: "empty", label: "空目录"},
+        ],
+        load: async () => (await import("./FilesExplorerViewFixture.vue")).default,
+    },
+    {
         component: "CodeEditorView",
         scenes: [
             {

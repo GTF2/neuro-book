@@ -1,5 +1,5 @@
 import {createError} from "h3";
-import {listProjects} from "nbook/server/workspace-files/project-session";
+import {listProjects} from "nbook/server/runtime/product-project";
 import {throwProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {requireProjectRefQuery, toProjectMetadataDto} from "nbook/server/api/projects/project-control-plane";
 import type {ProjectMetadataDto} from "nbook/shared/dto/project.dto";

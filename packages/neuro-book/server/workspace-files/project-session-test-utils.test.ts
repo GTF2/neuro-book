@@ -7,7 +7,7 @@ import {
     openProjectForTest,
     removeProjectWorkspaceForTest,
 } from "nbook/server/workspace-files/project-session-test-utils";
-import {closeAllProjects, resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
+import {closeAllProjects, resetProjectSessionsForTest} from "nbook/server/runtime/product-project";
 import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 
 describe("Project Session测试边界", () => {

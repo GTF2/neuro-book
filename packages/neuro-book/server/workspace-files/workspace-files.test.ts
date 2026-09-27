@@ -35,9 +35,9 @@ import {prepareSystemAssets} from "nbook/server/workspace-files/system-assets-pr
 import {getSystemWorkspaceAssetContextForTest, resolveSystemNbookRoot, setSystemWorkspaceAssetContextForTest} from "nbook/server/workspace-files/system-workspace-assets";
 import {getWorkspaceRuntimeRootContextForTest, resolveRuntimeWorkspaceRoot, resolveUserNbookRoot, setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 import {createIsolatedWorkspaceAssets, withIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
-import {createWorkspaceContentState, createWorkspaceDirectory, readWorkspaceTextFile, scanWorkspaceTree, validateWorkspaceContentNodes, validateWorkspaceTree, writeWorkspaceTextFile} from "nbook/server/workspace-files/workspace-files";
+import {copyWorkspacePath, createWorkspaceContentState, createWorkspaceDirectory, createWorkspaceFile, deleteWorkspacePath, readWorkspaceTextFile, renameWorkspacePath, scanWorkspaceTree, validateWorkspaceContentNodes, validateWorkspaceTree, writeWorkspaceTextFile} from "nbook/server/workspace-files/workspace-files";
 import {closeProjectForTest, openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
-import {activateReadyProjectModule, closeAllProjects, openProject, requireReadyModuleHandle, requireReadyProject} from "nbook/server/workspace-files/project-session";
+import {activateReadyProjectModule, closeAllProjects, openProject, requireReadyModuleHandle, requireReadyProject} from "nbook/server/runtime/product-project";
 
 const execFileAsync = promisify(execFile);
 
@@ -107,6 +107,121 @@ describe("workspace-files", {timeout: 60_000}, () => {
         expect(process.cwd()).toBe(outerCwd);
         expect(resolveSystemNbookRoot()).toBe(outerSystemRoot);
         expect(resolveUserNbookRoot()).toBe(outerUserRoot);
+    });
+
+    it("基础文件操作拒绝危险目标并保持排他语义", async () => {
+        await fs.mkdir(path.join(root, "plain", "child"), {recursive: true});
+        await fs.writeFile(path.join(root, "plain", "child", "note.md"), "note", "utf-8");
+        await expect(renameWorkspacePath(root, "plain", "plain/child/moved")).rejects.toThrow();
+        await expect(fs.readFile(path.join(root, "plain", "child", "note.md"), "utf-8")).resolves.toBe("note");
+
+        await fs.writeFile(path.join(root, "source.md"), "source", "utf-8");
+        await fs.writeFile(path.join(root, "target.md"), "target", "utf-8");
+        await expect(renameWorkspacePath(root, "source.md", "target.md")).rejects.toThrow("目标路径已存在");
+        await expect(fs.readFile(path.join(root, "source.md"), "utf-8")).resolves.toBe("source");
+        await expect(fs.readFile(path.join(root, "target.md"), "utf-8")).resolves.toBe("target");
+
+        await expect(deleteWorkspacePath(root, "plain", false)).rejects.toThrow();
+        await expect(fs.access(path.join(root, "plain", "child", "note.md"))).resolves.toBeUndefined();
+        await deleteWorkspacePath(root, "plain", true);
+        await expect(fs.access(path.join(root, "plain"))).rejects.toMatchObject({code: "ENOENT"});
+    });
+    it("目标在最后预检后出现时，文件和目录移动均不覆盖外部目标", async () => {
+        for (const isDirectory of [false, true]) {
+            const source = isDirectory ? "incoming-dir" : "incoming.md";
+            const target = isDirectory ? "occupied-dir" : "occupied.md";
+            if (isDirectory) {
+                await fs.mkdir(path.join(root, source));
+                await fs.writeFile(path.join(root, source, "source.md"), "source");
+            } else {
+                await fs.writeFile(path.join(root, source), "source");
+            }
+            const mkdir = fs.mkdir.bind(fs);
+            const mkdirSpy = vi.spyOn(fs, "mkdir").mockImplementation(async (...args) => {
+                const result = await mkdir(...args);
+                if (String(args[0]) === root) {
+                    if (isDirectory) {
+                        await mkdir(path.join(root, target));
+                        await fs.writeFile(path.join(root, target, "external.md"), "external");
+                    } else {
+                        await fs.writeFile(path.join(root, target), "external");
+                    }
+                    mkdirSpy.mockRestore();
+                }
+                return result;
+            });
+            try {
+                await expect(renameWorkspacePath(root, source, target)).rejects.toThrow("目标路径已存在");
+            } finally {
+                mkdirSpy.mockRestore();
+            }
+            expect(await fs.readFile(path.join(root, source, ...(isDirectory ? ["source.md"] : [])), "utf8")).toBe("source");
+            expect(await fs.readFile(path.join(root, target, ...(isDirectory ? ["external.md"] : [])), "utf8")).toBe("external");
+        }
+    });
+
+    it("基础文件操作在成功后返回实际节点并保持正文内容", async () => {
+        const created = await createWorkspaceFile({root, filePath: "notes/draft.md", content: "draft"});
+        expect(created.path).toBe("notes/draft.md");
+
+        const moved = await renameWorkspacePath(root, created.path, "notes/final.md");
+        expect(moved.path).toBe("notes/final.md");
+        expect(await readWorkspaceTextFile(root, moved.path)).toBe("draft");
+        const same = await renameWorkspacePath(root, moved.path, moved.path);
+        expect(same.path).toBe(moved.path);
+        expect(await readWorkspaceTextFile(root, same.path)).toBe("draft");
+        await expect(fs.access(path.join(root, "notes", "final.md"))).resolves.toBeUndefined();
+        await expect(createWorkspaceFile({root, filePath: moved.path, content: "overwrite"})).rejects.toThrow("目标文件已存在");
+    });
+
+    it("批量目录复制保留隐藏正文与附件且拒绝覆盖", async () => {
+        await fs.mkdir(path.join(root, "source", "chapter"), {recursive: true});
+        await fs.writeFile(path.join(root, "source", "chapter", "index.md"), "正文", "utf-8");
+        await fs.writeFile(path.join(root, "source", "chapter", "asset.bin"), Buffer.from([0, 255, 127]));
+
+        await copyWorkspacePath(root, "source", "copies/source");
+        await expect(fs.readFile(path.join(root, "copies", "source", "chapter", "index.md"), "utf-8")).resolves.toBe("正文");
+        expect(await fs.readFile(path.join(root, "copies", "source", "chapter", "asset.bin"))).toEqual(Buffer.from([0, 255, 127]));
+        await expect(copyWorkspacePath(root, "source", "copies/source")).rejects.toThrow("目标路径已存在");
+        await expect(copyWorkspacePath(root, "source", "source/chapter/copy")).rejects.toThrow("自身或自身后代");
+        await expect(fs.readFile(path.join(root, "source", "chapter", "index.md"), "utf-8")).resolves.toBe("正文");
+    });
+
+    it("复制拒绝目录中的链接并报告已创建残留，不写入链接目标", async () => {
+        await fs.mkdir(path.join(root, "source"));
+        await fs.mkdir(path.join(root, "outside"));
+        await fs.writeFile(path.join(root, "outside", "secret.md"), "secret");
+        await fs.symlink(path.join(root, "outside"), path.join(root, "source", "linked"), process.platform === "win32" ? "junction" : "dir");
+        await expect(copyWorkspacePath(root, "source", "copies/source")).rejects.toMatchObject({
+            name: "WorkspacePathCopyError", mappings: ["copies/source/"],
+        });
+        await expect(fs.access(path.join(root, "copies/source/linked"))).rejects.toMatchObject({code: "ENOENT"});
+        expect(await fs.readFile(path.join(root, "outside/secret.md"), "utf8")).toBe("secret");
+        await expect(copyWorkspacePath(root, "source/linked", "copied-link")).rejects.toThrow("符号链接");
+    });
+
+    it("排他创建后的复制I/O故障列出本次残留并保留源文件", async () => {
+        await fs.mkdir(path.join(root, "source"));
+        await fs.writeFile(path.join(root, "source", "a.md"), "source content");
+        const originalOpen = fs.open.bind(fs);
+        const destination = path.join(root, "copies", "source", "a.md");
+        const openSpy = vi.spyOn(fs, "open").mockImplementation(async (...args: Parameters<typeof fs.open>) => {
+            const handle = await originalOpen(...args);
+            if (String(args[0]) === destination && args[1] === "wx") {
+                await handle.writeFile("partial");
+                return Object.assign(handle, {write: async () => {throw new Error("injected copy stream failure");}});
+            }
+            return handle;
+        });
+        try {
+            await expect(copyWorkspacePath(root, "source", "copies/source")).rejects.toMatchObject({
+                name: "WorkspacePathCopyError", mappings: ["copies/source/", "copies/source/a.md"],
+            });
+            await expect(fs.readFile(destination, "utf8")).resolves.toBe("partial");
+            await expect(fs.readFile(path.join(root, "source", "a.md"), "utf8")).resolves.toBe("source content");
+        } finally {
+            openSpy.mockRestore();
+        }
     });
 
     it("允许 lorebook 使用目录 index.md 表达嵌套设定节点", async () => {
@@ -323,7 +438,7 @@ describe("workspace-files", {timeout: 60_000}, () => {
             });
             await expect(resolveWorkspaceFileTarget(testRuntimePaths, {projectRoot})).resolves.toEqual({
                 kind: "project-workspace",
-                root: path.resolve(projectDirectory),
+                root: await fs.realpath(projectDirectory),
                 projectRoot,
             });
         } finally {

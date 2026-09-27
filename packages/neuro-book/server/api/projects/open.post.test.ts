@@ -6,7 +6,7 @@ vi.mock("nbook/server/api/projects/project-control-plane", () => ({
     requireProjectRefBody: vi.fn(async () => ({projectRoot: "novel-a"})),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     openProjectControl,
 }));
 

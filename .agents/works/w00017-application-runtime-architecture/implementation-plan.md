@@ -4,7 +4,9 @@
 
 2026-09-20 开发者批准分段推进：环境适配入口与小内核 → 内置服务插件 → 从外部插件作者视角实现功能；实际功能顺序 Lab → Files → Settings → World/Plot。前两片先落目标 Spec，再规划实施。本文是 [Work](README.md) 的工程路径，不是第二份行为合同；行为唯一正文见 [Spec 注册表](../../../docs/specs/README.md)。
 
-第一、二片已按 t09、t13 的证据完成并将七项 Spec 晋升 `implemented`；第三片 Lab 在 t14 收回常驻产品命令宿主、隔离 `/lab` 文档启动并保留命令场景局部宿主。下面的模块与烟雾测试清单保留原实施路径，后续 Files / Settings / World/Plot 仍是目标，不是已完成的产品接线。
+第一、二片已按 t09、t13 的证据完成并将七项 Spec 晋升 `implemented`；第三片 Lab 在 t14 收回常驻产品命令宿主、隔离 `/lab` 文档启动并保留命令场景局部宿主。Files 已按 t16–t24 实施，当前 [t25](tasks/t25-files-contract-closure/README.md) 已逐条复核并完成本机修复验收；原子 no-replace move 在 Windows 单机抢占目标时保住源与目标，完整 Windows 产品镜像构建通过。Linux/macOS、其它文件系统与跨机器操作仍未闭合，两项 Files Spec 保持 `planned`。Settings / World/Plot 尚未实施。下面的模块与烟雾测试清单保留整体路径，不以局部运行证据代替完整验收。
+
+2026-09-26 开发者确认 Files 首版 F1–F9，批准首版实施计划并要求逐步执行、逐步验证；2026-09-27 又明确批准合同逐条复核、收口。第一版[独立设计](../../../packages/neuro-book/docs/proposals/files-explorer.md)与两项 `planned` 合同是本轮依据；[第二版](../../../packages/neuro-book/docs/proposals/files-explorer-v2.md)仍为 `draft`，不改变切片顺序，也不纳入本轮。仅允许既定本地可逆开发及自建 Temp/隔离服务验证，提交与远端动作仍需分别授权。
 
 ## 分段原则
 
@@ -20,7 +22,7 @@
 | 一：环境与小内核 | application-bootstrap；runtime-lifecycle；service-composition；plugin-runtime | 浏览器和后端适配器启动受控清单，登记/激活/调用/停止；并发、缺依赖、取消、失败和迟到完成都有明确结果 | 真实产品服务接线、Files/UI、全局单例兼容层、Desktop/Worker 全适配、热卸载 |
 | 二：真实基础服务 | runtime-diagnostics；platform-files；sqlite | 经同一插件机制真实写文件/事务提交回滚/关闭重开，资源无残留；失败不假 ready/closed | Project/Agent 全量迁移、跨库事务、自动迁移、网络模型、日志平台 |
 | 三：Lab 边界 | Lab 独立清单；场景局部命令/依赖宿主 | 无默认产品 registry/Project/Storage；组件、元素检查器、数据/事件检视仍可用 | 新建“插件 Lab”；删除真实组件样板 |
-| 四：Files 纵向链 | 进程装配 + identity-access/configuration 核心/session-persistence/project-directory；Project/database/history/file-index；workspace-files/storage；command-system/workbench-host/files-view | URL→身份→配置/列表→打开/ready→Grid/View→真实文件树/刷新/状态恢复→释放绑定；第二窗口与后台不被顺带关闭 | 先搬完 World/Plot；对原 API 空实现；未登记的第二数据库 owner |
+| 四：Files 纵向链 | 既有进程/身份/配置/Project 最小接线；workspace-files/storage；command-system/workbench-host/files-view/document-session/editor-support | 主页面真实项目→双模式基础资源管理器→多选/复制/剪切/粘贴等实际文件操作→正文可交互→保存/恢复→释放；Lab 复用局部链，第二窗口与后台不被关闭 | 领域明细/模板接入；先搬完 World/Plot；外部插件安装与动态 API；重复数据库/索引 owner；只在 Lab 展示便宣称贯通 |
 | 五：Settings 纵向链 | configuration 定义/有效值/受控写入；用户/Project 适配；settings-ui；theme-presentation；需要时独立 Profile Catalog | 用户设置在切 Project 后保留，项目设置精确绑定；设置定义无需领域激活，秘密字段不泄漏 | 把通用设置塞 Storage；把整个 Harness 作为基础配置前置 |
 | 六：World/Plot 纵向链 | world-engine；plotbench→world-engine；artifact-compiler；agent-tool-catalog；可选 embedding/subject-memory-rag 适配 | 配置/View/命令/tool 仅经公开合同接入；UI与工具消费同一领域服务，无需改内核或页面总编排 | 第三方安装市场；Plot 缺 World 仍假成功；真实模型默认调用；改领域表/数据格式 |
 
@@ -112,13 +114,15 @@
 
 命令底座、常驻 palette / confirmation 与第五个命令 tab 是 [w00016](../w00016-workbench-commands/README.md) 在 w00003 树的历史交付；交接在 t14 和 w00016 的指针中记录，历史验收不倒改。LabShell 已撤出全局 registry、palette、confirmation、命令 tab；`CodeEditorView` 与 `WorkbenchCommandPalette` 夹具按场景提供并释放局部 host。保留主题、场景、文档、元素检查器、事件/数据和 Lab 自有偏好。直接加载 `/lab` 跳过产品配色和旧桶迁移，旧写入路径锁定，跨入产品页整页加载；鉴权仍在。core 自动浏览器 smoke 与局部宿主测试覆盖启动请求、真实 Monaco、键位与离场释放；完整 Lab 组合 smoke 的既有失败单列于 t14。产品启动链仍未迁入 runtime.application。
 
+2026-09-26 开发者在 w00017 的 `http://localhost:3000/lab` 完成人工验证，目前未发现问题；原始反馈范围与自动化既有失败仍由 t14 保存，不据此声称全量测试已通过。
+
 ### Files
 
-入口条件：Lab边界已验收；补齐身份/配置/Project最小规范缺口并沿既有Storage/命令合同迁移。按后端进程服务→Project内部opening资源→外部ready文件入口→浏览器Host/View推进，允许在本切片内再拆多个已知Task，但最终必须贯通真实URL到文件树。
+入口条件已满足：Lab 边界已有专项验证与开发者体验反馈，Files 首版 F1–F9 已确认。设计见 [t15](tasks/t15-files-explorer-design/README.md)，实施及运行证据见 t16–t24，合同逐条复核与本机修复验收见 [t25](tasks/t25-files-contract-closure/README.md)。[workspace.files](../../../docs/specs/workspace/files.md) 与 [workbench.files-explorer](../../../docs/specs/workbench/files-explorer.md) 仍为 `planned`：Windows 单机 no-replace 提交及完整产品镜像构建已验，Linux/macOS、其它文件系统及跨机器基础操作尚未闭合。身份/配置/Project 接入见[产品装配设计](../../../packages/neuro-book/docs/proposals/application-runtime-product-integration.md)，不先水平迁移整个产品。
 
-主要迁移源：`server/runtime/product-startup.ts` 与 shutdown、`server/config/config-service.ts`、`server/workspace-files/project-session.ts`及模块工厂、`server/storage/`、`app/pages/index.vue`、`useProjectSession`、WorkbenchShell/Layout/ViewInstances、view-factories、commands。每个owner移交在同一子任务改所有调用者；Project↔Config/History与Config↔Harness环按提案断开，不能用dynamic import隐藏。
+实际接线覆盖 `server/runtime/product-startup.ts` / shutdown、唯一 Project owner `server/runtime/product-project.ts`、`server/workspace-files/`、`server/api/workspace-files/`、Storage/命令与 Workbench Host，以及 `app/stores/novel-ide.ts` 的文件/正文职责、`WorkspaceFilePanel`、EditorViewHost 与实际编辑器。资源管理器领域明细/模板耦合已退出，独立领域功能和用户数据不属删除范围。每条实现链必须迁移所有相关调用者和 owner，不能用 dynamic import 或兼容壳隐藏循环依赖。
 
-退出证据：多窗口同Project、关闭重开同路径、切换时迟到请求、刷新命令、状态恢复、绑定释放、停止失败；不启动World/Plot/真实模型。Grid算法不重写，描述先于恢复、实例独立于落点。
+退出证据以两项 Files Spec 为准：主页面双模式、基础/多选操作及打开编辑保存；同条件冷开/热切换测量；冲突/部分失败/dirty/旧代次与多窗口；同一基础面板 Lab 场景及跨机器基础操作。HTTP + SSE 先沿用，协议替换不作为提速前提；复用现有索引与正文缓冲，不放宽路径/权限/History 保护。t16 冻结预算，t24 热切换与资源释放已实测；t25 验证本机多选拖动、同目录复制、批量删除、结果未知及事件断开。路径 move 的 no-replace 提交已在 Windows 本机验证文件/目录同名抢占，原语不支持则失败关闭；完整 Windows 产品镜像构建通过。Linux/macOS 和其它文件系统尚未实测，跨机器仍缺第二隔离宿主；未因局部通过晋升 Spec。
 
 ### Settings
 

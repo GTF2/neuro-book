@@ -27,6 +27,7 @@ import type {
 } from "nbook/shared/dto/project.dto";
 import {ProjectCatalogRefreshError} from "nbook/app/utils/project-mutation-error";
 import {triggerBrowserDownload} from "nbook/app/utils/browser-download";
+import {FilesClient, createHttpFilesTransport} from "nbook/app/features/files/files-client";
 import type { WorkbenchToolViewFocus } from "nbook/app/utils/workbench/tool-context";
 import {
     DEFAULT_MARKDOWN_EDITOR_PREFERENCES,
@@ -44,6 +45,7 @@ import {
     WorkspaceWriteConflictDtoSchema,
     type WorkspaceWriteConflictDto,
 } from "nbook/shared/dto/workspace-file-conflict.dto";
+import type {WorkspaceFileOperationKind, WorkspaceFileOperationResponse} from "nbook/shared/dto/workspace-file-operation.dto";
 import type {
     UserAssetsSyncConflictDetailDto,
     UserAssetsSyncConflictKindDto,
@@ -102,6 +104,7 @@ export type WorkspaceFileNode = {
     } | null;
     size: number;
     mtimeMs: number;
+    sourceIdentity?: {dev: number; ino: number; birthtimeMs: number; mtimeMs: number; size: number};
     editable: boolean;
     issueSummary?: WorkspaceIssueSummaryDto;
 };
@@ -145,15 +148,6 @@ type WorkspaceFileBuffer = {
 
 type WorkspaceActiveFile = WorkspaceFileBuffer;
 
-type WorkspaceReadResponse = {
-    path: string;
-    absolutePath: string;
-    entryType: string | null;
-    editable: boolean;
-    mtimeMs: number;
-    content: string;
-};
-
 type WorkspaceLoadOptions = {
     forceDisk?: boolean;
 };
@@ -180,7 +174,6 @@ export type WorkspaceUploadResult = {
 };
 
 export type WorkspaceKind = "novel" | "user-assets";
-type WorkspaceQueryInput = {projectRoot: string} | {workspaceKind: "user-assets"};
 type ProjectCatalogMutation = "create" | "delete" | "cover-update";
 
 type WorkspaceSessionState = {
@@ -246,11 +239,15 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     const workspaceKind = ref<WorkspaceKind>("novel");
     const configRevision = ref(0);
     const workspaceGeneration = ref(0);
+    let filesClient: FilesClient | null = null;
+    const filesBound = ref(false);
+    const filesTransport = createHttpFilesTransport();
     let documentSequence = 0;
     const documentIds = new Map<string, string>();
     /** 在途保存按路径登记：同一文档合并在途保存，不同文档的确认互不覆盖。 */
     const savingPaths = ref<string[]>([]);
     const inflightSaves = new Map<string, Promise<WorkspaceFileNode | null>>();
+    const movingWorkspacePaths = new Map<FilesClient, Set<string>>();
 
     /**
      * 编辑会话（组集合、标签实例、活动组）与布局树：**唯一 authority**。
@@ -360,8 +357,11 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         : currentProjectRoot.value ? `workspace/${currentProjectRoot.value}` : "");
     const workspaceSessionKey = computed(() => workspaceKind.value === "user-assets" ? "user-assets" : `novel:${currentProjectRoot.value}`);
     const isUserAssetsWorkspace = computed(() => workspaceKind.value === "user-assets");
-    const canAccessWorkspace = computed(() => workspaceKind.value === "user-assets" || Boolean(currentProjectRoot.value));
-
+    const canAccessWorkspace = computed(() => filesBound.value);
+    const requireFilesClient = (): FilesClient => {
+        if (!filesClient) throw new Error("当前工作区没有已就绪的文件绑定");
+        return filesClient;
+    };
     const documentTarget = (path: string): EditorDocumentTarget => {
         let documentId = documentIds.get(path);
         if (!documentId) {
@@ -386,6 +386,8 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     };
 
     const resetDocumentLifecycle = (): void => {
+        filesClient = null;
+        filesBound.value = false;
         workspaceGeneration.value += 1;
         activationSequences.clear();
         documentIds.clear();
@@ -597,22 +599,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         workspaceSessions.value = nextSessions;
     };
 
-    /**
-     * 构造当前 workspace 查询参数。
-     */
-    const workspaceQuery = (): WorkspaceQueryInput => {
-        if (workspaceKind.value === "user-assets") {
-            return {workspaceKind: "user-assets"};
-        }
-        if (!currentProjectRoot.value) {
-            throw new Error("当前未选择小说，无法访问 workspace");
-        }
-        return {projectRoot: currentProjectRoot.value};
-    };
-
-    /**
-     * 当前 tree 请求的去重键。Project Workspace 与 user-assets 必须隔离。
-     */
+    /** Project Workspace 与 user-assets 的请求不能共享在途读取。 */
     const workspaceTreeRequestKey = (): string => workspaceSessionKey.value;
 
     /**
@@ -662,6 +649,10 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     };
     const hasUnresolvedEditorChangeForPath = (path: string): boolean =>
         unresolvedEditorChanges.value.some((item) => item.target.path === path);
+    const hasUnresolvedEditorChangeInGroup = (groupId: string): boolean => {
+        const paths = new Set(findEditorSessionGroup(editorSession.value, groupId)?.tabs.map((tab) => tab.path) ?? []);
+        return unresolvedEditorChanges.value.some((item) => paths.has(item.target.path));
+    };
     const readUnresolvedEditorChange = (token: string): EditorChangeRequest | null =>
         unresolvedEditorChanges.value.find((item) => item.token === token) ?? null;
 
@@ -858,6 +849,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 加载工作区文件树。
      */
     const loadWorkspaceTree = async (options: WorkspaceTreeLoadOptions = {}): Promise<WorkspaceFileNode[]> => {
+        const client = requireFilesClient();
         const requestKey = workspaceTreeRequestKey();
         const generation = workspaceGeneration.value;
         if (!options.bypassPendingRequest && workspaceTreeRequest?.key === requestKey) {
@@ -865,10 +857,8 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         }
         loadingWorkspaceTree.value = true;
         const promise = (async () => {
-            const snapshot = await $fetch<WorkspaceTreeSnapshotDto<WorkspaceFileNode>>("/api/workspace-files/tree", {
-                query: workspaceQuery(),
-            });
-            if (generation !== workspaceGeneration.value || workspaceSessionKey.value !== requestKey) {
+            const snapshot = await client.tree<WorkspaceTreeSnapshotDto<WorkspaceFileNode>>();
+            if (generation !== workspaceGeneration.value || filesClient !== client) {
                 return snapshot.nodes;
             }
             workspaceTree.value = snapshot.nodes;
@@ -876,16 +866,8 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             workspaceTreeRevision.value = snapshot.revision;
             for (const [path, buffer] of Object.entries(workspaceBuffers.value)) {
                 const nextNode = snapshot.nodes.find((node) => node.path === path);
-                if (!nextNode) {
-                    continue;
-                }
-                workspaceBuffers.value = {
-                    ...workspaceBuffers.value,
-                    [path]: {
-                        ...buffer,
-                        node: nextNode,
-                    },
-                };
+                if (!nextNode) continue;
+                workspaceBuffers.value = {...workspaceBuffers.value, [path]: {...buffer, node: nextNode}};
             }
             return snapshot.nodes;
         })();
@@ -900,18 +882,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         }
     };
 
-    /**
-     * 读取工作区路径元信息。
-     */
-    const statWorkspacePath = async (filePath: string): Promise<WorkspaceFileNode> => {
-        return await $fetch<WorkspaceFileNode>("/api/workspace-files/stat", {
-            query: {...workspaceQuery(), path: filePath},
-        });
-    };
-
-    /**
-     * 从已加载的 tree snapshot 中读取节点元信息，避免文件树点击时重复请求 stat。
-     */
+    /** 从当前 snapshot 读取节点，文件树点击无需重复 stat。 */
     const findWorkspaceNode = (filePath: string): WorkspaceFileNode | undefined => {
         const normalizedPath = normalizeWorkspaceFilePath(filePath);
         return workspaceTree.value.find((node) => normalizeWorkspaceFilePath(node.path) === normalizedPath);
@@ -921,14 +892,14 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 一次文档激活的身份：工作面 + 代次 + **组** + 该组自己的激活序号。
      * 序号按组持有，因此组 A 打开文档不会取消组 B 的在途读取。
      */
-    type DocumentActivation = {generation: number; workspaceKey: string; groupId: string; sequence: number; query: WorkspaceQueryInput};
+    type DocumentActivation = {generation: number; workspaceKey: string; groupId: string; sequence: number; client: FilesClient};
     const beginDocumentActivation = (groupId: string): DocumentActivation => {
         const operation = {
             generation: workspaceGeneration.value,
             workspaceKey: workspaceSessionKey.value,
             groupId,
             sequence: (activationSequences.get(groupId) ?? 0) + 1,
-            query: workspaceQuery(),
+            client: requireFilesClient(),
         };
         activationSequences.set(groupId, operation.sequence);
         editorGroupLoading.value = {...editorGroupLoading.value, [groupId]: true};
@@ -937,6 +908,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     };
     const acceptsActivation = (operation: DocumentActivation): boolean => operation.generation === workspaceGeneration.value
         && operation.workspaceKey === workspaceSessionKey.value
+        && filesClient === operation.client
         && (activationSequences.get(operation.groupId) ?? 0) === operation.sequence;
     const finishGroupActivation = (groupId: string, sequence: number): void => {
         if ((activationSequences.get(groupId) ?? 0) !== sequence) {
@@ -969,14 +941,14 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             openEditorTabInGroup(groupId, cached.node, openMode);
             return cached.node;
         }
-        const detail = knownDetail ?? await $fetch<WorkspaceFileNode>("/api/workspace-files/stat", {query: {...operation.query, path: filePath}});
+        const detail = knownDetail ?? await operation.client.stat<WorkspaceFileNode>(filePath);
         if (!acceptsActivation(operation)) return null;
         if (!detail.editable) {
             setBuffer(detail.path, detail, "", "", detail.mtimeMs);
             openEditorTabInGroup(groupId, detail, openMode);
             return detail;
         }
-        const file = await $fetch<WorkspaceReadResponse>("/api/workspace-files/read", {query: {...operation.query, path: filePath}});
+        const file = await operation.client.read(filePath);
         if (!acceptsActivation(operation)) return null;
         setBuffer(detail.path, detail, file.content, file.content, file.mtimeMs);
         openEditorTabInGroup(groupId, detail, openMode);
@@ -992,7 +964,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             return activateEditableWorkspaceFile(groupId, filePath, cached.node, openMode, options, operation);
         }
         const detail = knownDetail ?? findWorkspaceNode(filePath)
-            ?? await $fetch<WorkspaceFileNode>("/api/workspace-files/stat", {query: {...operation.query, path: filePath}});
+            ?? await operation.client.stat<WorkspaceFileNode>(filePath);
         if (!acceptsActivation(operation)) return null;
         if (detail.isDirectory && detail.contentNode) {
             const indexPath = `${detail.path.replace(/\/$/, "")}/index.md`;
@@ -1002,6 +974,10 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     };
 
     const requestWorkspaceActivation = async (groupId: string, filePath: string, openMode: WorkspaceOpenMode, options: WorkspaceLoadOptions, detail?: WorkspaceFileNode): Promise<WorkspaceFileNode | null> => {
+        if (flushEditorPending(groupId) === "conflict" || hasUnresolvedEditorChangeInGroup(groupId)) {
+            editorGroupErrors.value = {...editorGroupErrors.value, [groupId]: "当前编辑内容存在待裁决冲突，请先处理后再打开文件"};
+            return null;
+        }
         const operation = beginDocumentActivation(groupId);
         try {
             return await activateWorkspaceFile(groupId, filePath, openMode, options, operation, detail);
@@ -1032,6 +1008,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 按**文档身份**保存。不依赖活动组、不借选择标签驱动保存；同一文档合并在途保存。
      */
     const saveDocumentByTarget = async (target: EditorDocumentTarget, options: WorkspaceSaveOptions = {}): Promise<WorkspaceFileNode | null> => {
+        if (filesClient && [...(movingWorkspacePaths.get(filesClient) ?? [])].some(path => target.path === path || target.path.startsWith(`${path}/`))) return null;
         const previous = inflightSaves.get(target.path);
         if (previous) {
             await previous.catch(() => undefined);
@@ -1047,8 +1024,8 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         } finally {
             if (inflightSaves.get(target.path) === operation) {
                 inflightSaves.delete(target.path);
+                savingPaths.value = savingPaths.value.filter((path) => path !== target.path);
             }
-            savingPaths.value = savingPaths.value.filter((path) => path !== target.path);
         }
     };
 
@@ -1060,19 +1037,16 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         if (!buffer?.node.editable) {
             return null;
         }
+        const client = requireFilesClient();
         const pathToSave = buffer.node.path;
         const contentToSave = options.content ?? buffer.content;
         try {
-            const nextNode = await $fetch<WorkspaceFileNode>("/api/workspace-files/write", {
-                method: "PUT",
-                body: {
-                    ...workspaceQuery(),
-                    path: pathToSave,
-                    content: contentToSave,
-                    baseContent: buffer.lastSyncedContent,
-                    expectedMtimeMs: options.expectedMtimeMs ?? buffer.lastSyncedMtimeMs,
-                    force: options.force ?? false,
-                },
+            const nextNode = await client.write<WorkspaceFileNode>({
+                path: pathToSave,
+                content: contentToSave,
+                baseContent: buffer.lastSyncedContent,
+                expectedMtimeMs: options.expectedMtimeMs ?? buffer.lastSyncedMtimeMs,
+                force: options.force ?? false,
             });
             if (!acceptsDocument(target)) return null;
             const latest = workspaceBuffers.value[nextNode.path];
@@ -1115,13 +1089,32 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         return await saveDocumentByTarget(target, options);
     };
 
+    /** 切换工作面前等待已经发出的写入确认；失败/换代不被当作成功保存。 */
+    const settleWorkspaceSaves = async (): Promise<boolean> => {
+        const generation = workspaceGeneration.value;
+        const client = filesClient;
+        const pending = [...inflightSaves.values()];
+        const outcomes = await Promise.allSettled(pending);
+        return generation === workspaceGeneration.value && client === filesClient
+            && inflightSaves.size === 0
+            && outcomes.every((outcome) => outcome.status === "fulfilled" && outcome.value !== null);
+    };
+    const settleBeforeWorkspaceMutation = async (client: FilesClient): Promise<void> => {
+        if (filesClient !== client || flushEditorPending() === "conflict" || unresolvedEditorChanges.value.length > 0
+            || !await settleWorkspaceSaves() || filesClient !== client
+            || flushEditorPending() === "conflict" || unresolvedEditorChanges.value.length > 0) {
+            throw new Error("还有未解决的编辑输入或保存，或工作区已切换");
+        }
+    };
+
     /**
      * 保存全部带未保存改动的文档：按缓冲去重，不切换活动组、不借标签驱动。
+     * 返回 false 表示仍有未决输入、代次已失效或至少一项没有落盘；调用方不得继续切换工作面。
      */
-    const saveDirtyWorkspaceFiles = async (): Promise<void> => {
-        if (flushEditorPending() === "conflict" || unresolvedEditorChanges.value.length > 0) {
-            return;
-        }
+    const saveDirtyWorkspaceFiles = async (): Promise<boolean> => {
+        if (flushEditorPending() === "conflict" || unresolvedEditorChanges.value.length > 0) return false;
+        if (!await settleWorkspaceSaves()) return false;
+        if (flushEditorPending() === "conflict" || unresolvedEditorChanges.value.length > 0) return false;
         const generation = workspaceGeneration.value;
         const key = workspaceSessionKey.value;
         const dirtyPaths = Object.entries(workspaceBuffers.value)
@@ -1129,11 +1122,16 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             .map(([path]) => path);
 
         for (const filePath of dirtyPaths) {
-            if (generation !== workspaceGeneration.value || key !== workspaceSessionKey.value) return;
+            if (generation !== workspaceGeneration.value || key !== workspaceSessionKey.value) return false;
             const buffer = workspaceBuffers.value[filePath];
             if (!buffer || buffer.content === buffer.lastSyncedContent) continue;
-            await saveDocumentByTarget(documentTarget(filePath), {});
+            const saved = await saveDocumentByTarget(documentTarget(filePath), {});
+            if (!saved) return false;
         }
+        return generation === workspaceGeneration.value
+            && key === workspaceSessionKey.value
+            && !hasUnsavedWorkspaceChanges.value
+            && unresolvedEditorChanges.value.length === 0;
     };
 
     /**
@@ -1143,14 +1141,17 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         if (workspaceKind.value !== "user-assets" && !currentProjectRoot.value) {
             throw new Error("当前没有可下载的 Project Workspace");
         }
-
-        await saveDirtyWorkspaceFiles();
+        const client = requireFilesClient();
+        const saved = await saveDirtyWorkspaceFiles();
+        if (!saved) {
+            throw new Error("还有未保存的 Project Workspace 文件，请处理后再下载");
+        }
         if (hasUnsavedWorkspaceChanges.value) {
             throw new Error("还有未保存的 Project Workspace 文件，请处理后再下载");
         }
 
         const response = await $fetch.raw<Blob>("/api/workspace-files/download", {
-            query: workspaceQuery(),
+            query: client.binding,
             responseType: "blob",
         });
         const filename = resolveDownloadFilename(response.headers.get("content-disposition")) ?? "workspace.zip";
@@ -1167,16 +1168,17 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 上传单个文件到当前挂载根的 upload/ 目录。
      */
     const uploadFileToUploadFolder = async (file: File): Promise<WorkspaceUploadResult> => {
-        const formData = createWorkspaceUploadFormData();
+        const client = requireFilesClient();
+        const formData = createWorkspaceUploadFormData(client);
         formData.append("file", file, file.name);
         const result = await $fetch<WorkspaceUploadResult>("/api/workspace-files/upload-file", {
             method: "POST",
             body: formData,
         });
-        await loadWorkspaceTree();
-        const uploadedPath = result.files.find((item) => item.path.startsWith("upload/"))?.path;
-        if (uploadedPath) {
-            await selectWorkspacePath(uploadedPath, "permanent").catch(() => null);
+        if (filesClient === client) {
+            await loadWorkspaceTree();
+            const uploadedPath = result.files.find((item) => item.path.startsWith("upload/"))?.path;
+            if (uploadedPath) await selectWorkspacePath(uploadedPath, "permanent").catch(() => null);
         }
         return result;
     };
@@ -1185,7 +1187,8 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 上传 Project 文件集合，目录结构由浏览器 relative path 保留。
      */
     const uploadProjectFiles = async (files: File[]): Promise<WorkspaceUploadResult> => {
-        const formData = createWorkspaceUploadFormData();
+        const client = requireFilesClient();
+        const formData = createWorkspaceUploadFormData(client);
         formData.append("mode", "files");
         for (const file of files) {
             formData.append("files", file, file.name);
@@ -1195,7 +1198,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             method: "POST",
             body: formData,
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
         return result;
     };
 
@@ -1203,24 +1206,26 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 上传 Project zip 压缩包，服务端解包并跳过已有文件。
      */
     const uploadProjectZip = async (file: File): Promise<WorkspaceUploadResult> => {
-        const formData = createWorkspaceUploadFormData();
+        const client = requireFilesClient();
+        const formData = createWorkspaceUploadFormData(client);
         formData.append("mode", "zip");
         formData.append("zip", file, file.name);
         const result = await $fetch<WorkspaceUploadResult>("/api/workspace-files/upload-project", {
             method: "POST",
             body: formData,
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
         return result;
     };
 
-    const createWorkspaceUploadFormData = (): FormData => {
+    const createWorkspaceUploadFormData = (client: FilesClient): FormData => {
         const formData = new FormData();
-        const query = workspaceQuery();
-        if ("workspaceKind" in query) {
-            formData.append("workspaceKind", query.workspaceKind);
+        const binding = client.binding;
+        if ("workspaceKind" in binding) {
+            formData.append("workspaceKind", binding.workspaceKind);
         } else {
-            formData.append("projectRoot", query.projectRoot);
+            formData.append("projectRoot", binding.projectRoot);
+            formData.append("publicId", binding.publicId);
         }
         return formData;
     };
@@ -1237,10 +1242,12 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         if (workspaceKind.value !== "user-assets") {
             throw new Error("只有用户资产工作区可以同步系统 assets");
         }
+        const client = requireFilesClient();
         const result = await $fetch<UserAssetsSyncResultDto>("/api/workspace-files/sync-user-assets", {
             method: "POST",
+            body: client.binding,
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
         return result;
     };
 
@@ -1252,8 +1259,9 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         fileName?: string;
         assetPath?: string;
     }): Promise<UserAssetsSyncConflictDetailDto> => {
+        if (workspaceKind.value !== "user-assets") throw new Error("仅用户资产工作区可读取资产同步差异");
         return await $fetch<UserAssetsSyncConflictDetailDto>("/api/workspace-files/user-assets-sync-conflict", {
-            query: input,
+            query: {...requireFilesClient().binding, ...input},
         });
     };
 
@@ -1261,15 +1269,17 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 创建工作区文本文件。
      */
     const createWorkspaceFile = async (filePath: string, nextContent = ""): Promise<WorkspaceFileNode> => {
+        const client = requireFilesClient();
+        await settleBeforeWorkspaceMutation(client);
         const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/create-file", {
             method: "POST",
             body: {
-                ...workspaceQuery(),
+                ...client.binding,
                 path: filePath,
                 content: nextContent,
             },
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
         return node;
     };
 
@@ -1277,15 +1287,17 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 创建工作区目录。
      */
     const createWorkspaceDirectory = async (dirPath: string, indexContent: string | null = null): Promise<WorkspaceFileNode> => {
+        const client = requireFilesClient();
+        await settleBeforeWorkspaceMutation(client);
         const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/create-directory", {
             method: "POST",
             body: {
-                ...workspaceQuery(),
+                ...client.binding,
                 path: dirPath,
                 indexContent,
             },
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
         return node;
     };
 
@@ -1293,28 +1305,100 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 将文本文件转换成同名目录节点。
      */
     const convertWorkspaceFileToDirectory = async (filePath: string): Promise<WorkspaceFileNode> => {
+        const client = requireFilesClient();
+        await settleBeforeWorkspaceMutation(client);
         const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/convert-file-to-directory", {
             method: "POST",
             body: {
-                ...workspaceQuery(),
+                ...client.binding,
                 path: filePath,
             },
         });
-        await loadWorkspaceTree();
+        if (filesClient === client) await loadWorkspaceTree();
+        return node;
+    };
+
+    const statWorkspacePath = async (path: string): Promise<WorkspaceFileNode> => {
+        const client = requireFilesClient();
+        const node = await client.stat<WorkspaceFileNode>(path);
+        if (client !== filesClient) throw new Error("工作区已切换");
         return node;
     };
 
     /**
      * 移动或重命名工作区路径。
      */
-    const renameWorkspacePath = async (from: string, to: string): Promise<WorkspaceFileNode> => {
-        const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/rename", {
-            method: "PATCH",
-            body: {...workspaceQuery(), from, to},
-        });
-        await loadWorkspaceTree();
-        return node;
+    const renameWorkspacePath = async (from: string, to: string): Promise<WorkspaceFileNode & {refreshError?: string}> => {
+        const client = requireFilesClient();
+        await settleBeforeWorkspaceMutation(client);
+        const moving = normalizeWorkspaceFilePath(from);
+        const pendingMoves = movingWorkspacePaths.get(client) ?? new Set<string>();
+        if (pendingMoves.has(moving)) throw new Error("该路径正在移动");
+        pendingMoves.add(moving);
+        movingWorkspacePaths.set(client, pendingMoves);
+        try {
+            const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/rename", {
+                method: "PATCH", body: {...client.binding, from, to},
+            });
+            if (filesClient === client) {
+                migrateWorkspacePaths(from, node.path, node.isDirectory);
+                try {
+                    await loadWorkspaceTree();
+                } catch (error) {
+                    return {...node, refreshError: error instanceof Error ? error.message : "文件树刷新失败"};
+                }
+            }
+            return node;
+        } finally {
+            pendingMoves.delete(moving);
+            if (pendingMoves.size === 0) movingWorkspacePaths.delete(client);
+        }
     };
+    /** 批量操作只消费发起时捕获的绑定和源/目标；迟到结果不刷新新代次。 */
+    const batchWorkspacePaths = async (
+        kind: WorkspaceFileOperationKind,
+        sources: string[],
+        destination: string,
+        options: {targetNames?: Record<string, string>; expectedSources?: Record<string, NonNullable<WorkspaceFileNode["sourceIdentity"]>>} = {},
+    ): Promise<WorkspaceFileOperationResponse & {refreshError?: string}> => {
+        const client = requireFilesClient();
+        const frozenSources = [...sources];
+        const frozenDestination = destination;
+        const frozenOptions = {
+            ...(options.targetNames ? {targetNames: {...options.targetNames}} : {}),
+            ...(options.expectedSources ? {expectedSources: {...options.expectedSources}} : {}),
+        };
+        const sourceDirectories = new Map(workspaceTree.value.map(node => [normalizeWorkspaceFilePath(node.path), node.isDirectory]));
+        await settleBeforeWorkspaceMutation(client);
+        if (filesClient !== client) throw new Error("工作区已切换");
+        const moving = kind === "move" ? frozenSources.map(normalizeWorkspaceFilePath) : [];
+        const pendingMoves = movingWorkspacePaths.get(client) ?? new Set<string>();
+        if (moving.some(path => pendingMoves.has(path))) throw new Error("来源路径正在移动");
+        for (const path of moving) pendingMoves.add(path);
+        if (moving.length) movingWorkspacePaths.set(client, pendingMoves);
+        try {
+            const result = await $fetch<WorkspaceFileOperationResponse>("/api/workspace-files/batch", {
+                method: "POST", body: {...client.binding, kind, sources: frozenSources, destination: frozenDestination, ...frozenOptions},
+            });
+            if (filesClient === client) {
+                if (kind === "move") {
+                    for (const item of result.items) {
+                        if (item.status === "success") migrateWorkspacePaths(item.source, item.target, sourceDirectories.get(normalizeWorkspaceFilePath(item.source)) ?? false);
+                    }
+                }
+                try {
+                    await loadWorkspaceTree();
+                } catch (error) {
+                    return {...result, refreshError: error instanceof Error ? error.message : "文件树刷新失败"};
+                }
+            }
+            return result;
+        } finally {
+            for (const path of moving) pendingMoves.delete(path);
+            if (pendingMoves.size === 0) movingWorkspacePaths.delete(client);
+        }
+    };
+
 
     /**
      * 路径移动（重命名/移动）后迁移**所有引用**：组标签实例、活动标签、缓冲与文档身份、临时字号。
@@ -1323,6 +1407,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
      * 但旧目标里的 `path` 不再匹配，旧视图回调因此失效——这正是移动该有的语义。
      */
     const migrateWorkspacePaths = (sourcePath: string, targetPath: string, isDirectory: boolean): void => {
+        flushEditorPending();
         const groups = editorSession.value.groups.map((group) => ({
             id: group.id,
             activePath: rewriteWorkspaceMovedPath(group.activePath, sourcePath, targetPath, isDirectory) ?? group.activePath,
@@ -1337,7 +1422,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         const nextIds = new Map<string, string>();
         for (const [path, buffer] of Object.entries(workspaceBuffers.value)) {
             const nextPath = rewriteWorkspaceMovedPath(path, sourcePath, targetPath, isDirectory) ?? path;
-            nextBuffers[nextPath] = buffer;
+            nextBuffers[nextPath] = {...buffer, node: {...buffer.node, path: nextPath}};
             const id = documentIds.get(path);
             if (id) {
                 nextIds.set(nextPath, id);
@@ -1348,6 +1433,10 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         for (const [path, id] of nextIds) {
             documentIds.set(path, id);
         }
+        unresolvedEditorChanges.value = unresolvedEditorChanges.value.map(change => {
+            const path = rewriteWorkspaceMovedPath(change.target.path, sourcePath, targetPath, isDirectory);
+            return path ? {...change, target: {...change.target, path}} : change;
+        });
 
         const nextOverrides: Record<string, number> = {};
         for (const [path, size] of Object.entries(monacoFontSizeOverridesByPath.value)) {
@@ -1356,68 +1445,25 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         monacoFontSizeOverridesByPath.value = nextOverrides;
     };
 
-    /**
-     * 立即在本地树中应用一次路径移动（文件树与全部打开引用一起改）。
-     */
-    const applyOptimisticWorkspaceMove = (sourceNode: WorkspaceFileNode, targetPath: string): void => {
-        workspaceTree.value = workspaceTree.value.map((node) => {
-            const nextPath = rewriteWorkspaceMovedPath(node.path, sourceNode.path, targetPath, sourceNode.isDirectory);
-            return nextPath ? {...node, path: nextPath} : node;
-        });
-        migrateWorkspacePaths(sourceNode.path, targetPath, sourceNode.isDirectory);
-    };
-
-    /**
-     * 乐观移动工作区路径，用于拖拽后立即更新文件树。
-     */
-    const optimisticRenameWorkspacePath = async (from: string, to: string): Promise<WorkspaceFileNode> => {
-        const sourceNode = workspaceTree.value.find((node) => normalizeWorkspaceFilePath(node.path) === normalizeWorkspaceFilePath(from));
-        if (!sourceNode) {
-            return await renameWorkspacePath(from, to);
-        }
-
-        const snapshot = {
-            workspaceTree: workspaceTree.value,
-            workspaceBuffers: workspaceBuffers.value,
-            editorSession: editorSession.value,
-            documentIds: new Map(documentIds),
-            monacoOverrides: monacoFontSizeOverridesByPath.value,
-        };
-        applyOptimisticWorkspaceMove(sourceNode, normalizeWorkspaceMovedPath(to, sourceNode.isDirectory));
-
-        try {
-            const node = await $fetch<WorkspaceFileNode>("/api/workspace-files/rename", {
-                method: "PATCH",
-                body: {...workspaceQuery(), from, to},
-            });
-            await loadWorkspaceTree();
-            return node;
-        } catch (error) {
-            workspaceTree.value = snapshot.workspaceTree;
-            workspaceBuffers.value = snapshot.workspaceBuffers;
-            editorSession.value = snapshot.editorSession;
-            documentIds.clear();
-            for (const [path, id] of snapshot.documentIds) {
-                documentIds.set(path, id);
-            }
-            monacoFontSizeOverridesByPath.value = snapshot.monacoOverrides;
-            publishEditorLayout();
-            throw error;
-        }
-    };
 
     /**
      * 删除工作区路径：所有组里指向它的标签实例与缓冲一起摘掉。
      */
-    const deleteWorkspacePath = async (filePath: string, recursive = false): Promise<void> => {
+    const deleteWorkspacePath = async (filePath: string, recursive = false): Promise<{refreshError?: string}> => {
+        const client = requireFilesClient();
+        await settleBeforeWorkspaceMutation(client);
+        const source = normalizeWorkspaceFilePath(filePath);
+        if (Object.entries(workspaceBuffers.value).some(([path, buffer]) => (path === source || path.startsWith(`${source}/`))
+            && buffer.content !== buffer.lastSyncedContent)) throw new Error("删除前请先结算受影响文件的未保存内容");
         await $fetch("/api/workspace-files/delete", {
             method: "DELETE",
             body: {
-                ...workspaceQuery(),
+                ...client.binding,
                 path: filePath,
                 recursive,
             },
         });
+        if (filesClient !== client) return {};
         const normalizedPath = normalizeWorkspaceFilePath(filePath);
         const touches = (path: string): boolean => {
             const normalized = normalizeWorkspaceFilePath(path);
@@ -1443,7 +1489,12 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             }
         }
         monacoFontSizeOverridesByPath.value = nextMonacoOverrides;
-        await loadWorkspaceTree();
+        try {
+            await loadWorkspaceTree();
+            return {};
+        } catch (error) {
+            return {refreshError: error instanceof Error ? error.message : "文件树刷新失败"};
+        }
     };
 
     /**
@@ -1593,13 +1644,12 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         if (!canAccessWorkspace.value || events.length === 0) return unchanged;
         flushEditorPending();
         const generation = workspaceGeneration.value;
-        const key = workspaceSessionKey.value;
-        const query = workspaceQuery();
+        const client = requireFilesClient();
         const previousTarget = activeWorkspaceDocumentTarget.value;
         const previousPath = previousTarget?.path ?? "";
         const dirtyPaths: string[] = [];
         const deletedPaths: string[] = [];
-        const current = () => generation === workspaceGeneration.value && key === workspaceSessionKey.value;
+        const current = () => generation === workspaceGeneration.value && filesClient === client;
         await loadWorkspaceTree({bypassPendingRequest: true});
         if (!current()) return unchanged;
         for (const [path, buffer] of Object.entries(workspaceBuffers.value)) {
@@ -1618,7 +1668,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
             }
             if (!node.editable) continue;
             try {
-                const file = await $fetch<WorkspaceReadResponse>("/api/workspace-files/read", {query: {...query, path}});
+                const file = await client.read(path);
                 if (!current() || !acceptsDocument(target)) return unchanged;
                 const latest = workspaceBuffers.value[path];
                 if (latest && latest.content !== latest.lastSyncedContent) {
@@ -1945,17 +1995,34 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         persistWorkspaceSession();
         workspaceKind.value = "user-assets";
         restoreWorkspaceSession();
+        filesClient = new FilesClient({workspaceKind: "user-assets"}, filesTransport);
+        filesBound.value = true;
+        workspaceGeneration.value += 1;
         await initializeWorkspace();
+    };
+
+    /** Presence 暂失时撤销旧代次的文件资格，同时保留正文供恢复会话使用。 */
+    const suspendProjectFiles = (): void => {
+        if (workspaceKind.value !== "novel" || !filesClient) return;
+        filesClient = null;
+        filesBound.value = false;
+        workspaceGeneration.value += 1;
+        workspaceTreeRequest = null;
+        loadingWorkspaceTree.value = false;
     };
 
     /**
      * 提交已经通过 Project 激活事务的目标，并初始化其文件树与标签。
      */
-    const switchToNovelWorkspace = async (projectRoot: string): Promise<void> => {
+    const switchToNovelWorkspace = async (ready: Readonly<{projectRoot: string; publicId: string}>): Promise<void> => {
+        if (!ready.projectRoot || !ready.publicId) throw new Error("Project 文件访问需要已就绪的精确绑定");
         persistWorkspaceSession();
         workspaceKind.value = "novel";
-        currentProjectRoot.value = projectRoot;
+        currentProjectRoot.value = ready.projectRoot;
         restoreWorkspaceSession();
+        filesClient = new FilesClient(ready, filesTransport);
+        filesBound.value = true;
+        workspaceGeneration.value += 1;
         await initializeWorkspace();
     };
 
@@ -2062,6 +2129,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         splitEditorTab,
         transferEditorTab,
         convertWorkspaceFileToDirectory,
+        batchWorkspacePaths,
         createWorkspaceDirectory,
         createWorkspaceFile,
         createProject,
@@ -2071,6 +2139,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         canAccessWorkspace,
         deleteProject,
         deleteWorkspacePath,
+        statWorkspacePath,
         downloadCurrentWorkspace,
         forgetProject,
         hasUnsavedFileChanges,
@@ -2096,7 +2165,6 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         openWorkspacePath,
         openWorkspaceNode,
         openWorkspaceNodeInGroup,
-        optimisticRenameWorkspacePath,
         plotWorkbenchOpen,
         plotWorkbenchTab,
         plotPlanningFocusId,
@@ -2111,6 +2179,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         saveCurrentFile,
         saveDocumentByTarget,
         saveDirtyWorkspaceFiles,
+        settleWorkspaceSaves,
         selectedStoryThreadId,
         selectedStorySceneId,
         selectedLorebookEntryId,
@@ -2130,6 +2199,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         setMonacoFontSizeOverride,
         setWorkspaceTabPinned,
         setWorkspaceTabEditor,
+        suspendProjectFiles,
         toggleWorkspaceTabPinned,
         switchToNovelWorkspace,
         closeProjectWorkspace,

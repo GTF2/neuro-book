@@ -9,7 +9,7 @@ import {
 import {resolveProjectDatabasePath, toSqliteFileUrl} from "nbook/server/workspace-files/project-workspace";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
-import {activateReadyProjectModule, requireActiveReadyProject} from "nbook/server/workspace-files/project-session";
+import {activateReadyProjectModule, requireActiveReadyProject} from "nbook/server/runtime/product-project";
 import {
     openProjectForTest,
     removeProjectWorkspaceForTest,

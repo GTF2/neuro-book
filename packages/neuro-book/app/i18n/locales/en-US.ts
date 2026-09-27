@@ -943,6 +943,7 @@ const enUS = {
                 movePending: "View position not saved yet",
                 unavailable: "View position unavailable",
                 actions: "View actions",
+                refreshFiles: "Refresh files",
                 sizeRejected: "View height not saved",
                 revealRejected: "Could not open this view",
                 revealUnmounted: "View {viewId} has no presentable container after the reveal (registry or placement may have changed)",

@@ -10,7 +10,7 @@ import {join, resolve} from "node:path";
 import {pathToFileURL} from "node:url";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {PROJECT_DATABASE_MODULE_TOKEN} from "nbook/server/workspace-files/project-database-module";
-import {requireReadyModuleHandle} from "nbook/server/workspace-files/project-session";
+import {requireReadyModuleHandle} from "nbook/server/runtime/product-project";
 import {openProjectForTest, removeProjectWorkspaceForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {createIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
 import {resolveRuntimeArtifactCompilerContext} from "nbook/server/utils/runtime-artifact-compiler-context";

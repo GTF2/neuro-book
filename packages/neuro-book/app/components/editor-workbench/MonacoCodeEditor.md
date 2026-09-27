@@ -21,7 +21,7 @@ type Props = {
 
 无slots；attrs透传根元素。expose为TextEditorHandle：update、focus、getValue、flushPendingChange、undo、redo、insertText、replaceSelection、appendText、scrollToTop、navigation（getLineCount/revealLine，行号1起、越界拒绝）。
 
-**模型归属**：`modelPath` 由调用者保证实例唯一（文档身份 + 视图实例 token）。每个内核按自己的 URI 新建并独占一个 model，可独立 dispose；不会「同 URI 取已有 model 后各组件都能释放」。同文档的第二个视图是自己的一份 model，正文只通过上层的权威快照同步。
+**模型归属**：`modelPath` 由调用者保证实例唯一（文档身份 + 视图实例 token）。每个内核按自己的 URI 新建并独占一个 model，可独立 dispose；发现 URI 已由其它实例占用则显式失败，不会释放别人的模型。已打开标签的实例复用由 `EditorViewHost` 控制，同文档第二组仍有独立 model 与撤销历史。
 
 ## 交互与状态
 

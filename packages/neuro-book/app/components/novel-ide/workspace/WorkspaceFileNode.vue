@@ -1,21 +1,10 @@
 <script setup lang="ts">
 import {
     getWorkspaceFileIcon,
-    isWorkspaceContentDirectoryNode,
-    isWorkspaceContentIndexNode,
-    isWorkspaceContentScopePath,
-    isWorkspaceLorebookEntry,
     resolveWorkspaceNodeRepresentedPath,
     type WorkspaceTreeNode,
     workspaceFileTreeContextKey,
 } from "nbook/app/components/novel-ide/workspace/workspace-file-tree";
-import {
-    getWorkspaceLorebookStatusIndicatorClass,
-    getWorkspaceLorebookTypeMeta,
-    readWorkspaceLorebookStatus,
-    readWorkspaceLorebookType,
-} from "nbook/app/components/novel-ide/workspace/workspace-entry-meta";
-import {readLucideIconClass} from "nbook/app/utils/lucide-icons";
 
 const props = withDefaults(defineProps<{
     node: WorkspaceTreeNode;
@@ -30,52 +19,20 @@ const treeContext = inject(workspaceFileTreeContextKey);
 if (!treeContext) {
     throw new Error("WorkspaceFileNode must be used inside WorkspaceFileTree");
 }
-
-const {t} = useI18n();
 const isBranch = computed(() => props.node.isDirectory && props.node.children.length > 0);
 const isForcedOpen = computed(() => treeContext.forcedExpandedPathSet.value.has(props.node.path));
 const isOpen = computed(() => props.node.isDirectory && (isForcedOpen.value || treeContext.expandedPathSet.value.has(props.node.path)));
-const representedPath = computed(() => resolveWorkspaceNodeRepresentedPath(props.node));
-const isSelected = computed(() => treeContext.selectedPath.value === props.node.path || treeContext.selectedPath.value === representedPath.value);
+const representedPath = computed(() => treeContext.mode.value === "content" ? resolveWorkspaceNodeRepresentedPath(props.node) : props.node.path);
+const isSelected = computed(() => treeContext.selectedPaths.value.includes(props.node.path) || treeContext.selectedPath.value === representedPath.value);
 const isDragging = computed(() => treeContext.draggedPath.value === props.node.path);
 const isDropTarget = computed(() => treeContext.dropState.value.targetPath === props.node.path);
 const dropVisualKind = computed(() => treeContext.dropState.value.visualKind);
 const isInsideNodeDropTarget = computed(() => isDropTarget.value && dropVisualKind.value === "inside-node");
-const isLorebookEntry = computed(() => isWorkspaceLorebookEntry(props.node));
-const lorebookType = computed(() => readWorkspaceLorebookType(props.node.entryType));
-const lorebookStatus = computed(() => readWorkspaceLorebookStatus(props.node.status));
-const lorebookTypeMeta = computed(() => getWorkspaceLorebookTypeMeta(lorebookType.value));
-const statusIndicatorClass = computed(() => getWorkspaceLorebookStatusIndicatorClass(lorebookStatus.value));
-const statusLabel = computed(() => t(`ide.workspace.common.status${capitalizeStatus(lorebookStatus.value)}`));
 const iconClass = computed(() => getWorkspaceFileIcon(props.node, isOpen.value));
-const configuredIconClass = computed(() => readLucideIconClass(props.node.icon));
-const isContentIndexFile = computed(() => !isLorebookEntry.value && isWorkspaceContentIndexNode(props.node));
-const directoryMeta = computed(() => props.node.isDirectory && isWorkspaceContentScopePath(props.node.path) ? resolveDirectoryMeta(basename(props.node.path)) : null);
-const displayIconClass = computed(() => {
-    if (configuredIconClass.value) {
-        return configuredIconClass.value;
-    }
-    if (isLorebookEntry.value) {
-        return lorebookTypeMeta.value.icon;
-    }
-    if (directoryMeta.value) {
-        return directoryMeta.value.icon;
-    }
-    if (isWorkspaceContentDirectoryNode(props.node)) {
-        return "i-lucide-notebook-tabs";
-    }
-    if (isContentIndexFile.value) {
-        return "i-lucide-notebook-tabs";
-    }
-    return iconClass.value;
-});
-const nodeName = computed(() => basename(props.node.path).replace(/\.md$/i, ""));
-const nodeTitle = computed(() => {
-    if (isWorkspaceContentDirectoryNode(props.node) && (!props.node.title || props.node.title.toLowerCase() === "index.md")) {
-        return nodeName.value || props.node.path;
-    }
-    return props.node.title || nodeName.value || props.node.path;
-});
+const nodeName = computed(() => basename(props.node.path));
+const nodeTitle = computed(() => treeContext.mode.value === "ordinary" ? nodeName.value : props.node.title || nodeName.value || props.node.path);
+const canOpen = computed(() => !props.node.isDirectory || (treeContext.mode.value === "content" && props.node.contentNode));
+const rowTitle = computed(() => `${nodeTitle.value} · ${props.node.path}`);
 let selectTimer: number | null = null;
 
 /**
@@ -92,12 +49,24 @@ const clearSelectTimer = (): void => {
 /**
  * 延迟选中当前文件节点，让双击可以取消预览打开。
  */
-const scheduleSelectNode = (): void => {
+const scheduleSelectNode = (event: MouseEvent): void => {
     clearSelectTimer();
+    treeContext.selectNode(props.node, event, false);
+    if (event.ctrlKey || event.metaKey || event.shiftKey) {
+        return;
+    }
+    if (!canOpen.value) {
+        if (treeContext.mode.value === "ordinary") treeContext.toggleExpanded(props.node);
+        return;
+    }
     selectTimer = window.setTimeout(() => {
-        treeContext.selectNode(props.node);
+        treeContext.previewNode(props.node);
         selectTimer = null;
     }, 180);
+};
+
+const handleSpace = (event: KeyboardEvent): void => {
+    treeContext.selectNode(props.node, event, false);
 };
 
 /**
@@ -105,7 +74,7 @@ const scheduleSelectNode = (): void => {
  */
 const openNode = (): void => {
     clearSelectTimer();
-    treeContext.openNode(props.node);
+    if (canOpen.value) treeContext.openNode(props.node);
 };
 
 /**
@@ -179,35 +148,6 @@ function basename(filePath: string): string {
     return normalizedPath.includes("/") ? normalizedPath.slice(normalizedPath.lastIndexOf("/") + 1) : normalizedPath;
 }
 
-/**
- * 返回约定目录的视觉元数据。
- */
-function resolveDirectoryMeta(name: string): {icon: string; colorClass: string; label: string} | null {
-    if (name === "lorebook") {
-        return {icon: "i-lucide-library", colorClass: "text-[var(--accent-text)]", label: "lore"};
-    }
-    if (name === "manuscript" || name === "chapter" || name === "chapters") {
-        return {icon: "i-lucide-book-open-text", colorClass: "text-[var(--status-info)]", label: "chapter"};
-    }
-    if (name === "location" || name === "character" || name === "item" || name === "rule" || name === "note") {
-        const meta = getWorkspaceLorebookTypeMeta(name);
-        return {icon: meta.icon, colorClass: meta.iconClass.split(" ")[0] ?? "text-[var(--text-main)]", label: name};
-    }
-    return null;
-}
-
-function capitalizeStatus(status: "draft" | "pending" | "active" | "archived"): "Draft" | "Pending" | "Active" | "Archived" {
-    if (status === "draft") {
-        return "Draft";
-    }
-    if (status === "pending") {
-        return "Pending";
-    }
-    if (status === "active") {
-        return "Active";
-    }
-    return "Archived";
-}
 
 onUnmounted(() => {
     clearSelectTimer();
@@ -223,16 +163,24 @@ onUnmounted(() => {
                 isDropTarget ? 'z-10' : '',
                 isInsideNodeDropTarget ? 'bg-[var(--accent-bg)] ring-1 ring-[var(--accent-main)]/50 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--accent-main)_35%,transparent)]' : '',
                 isSelected ? 'bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'text-[var(--text-main)] hover:bg-[var(--bg-hover)]',
-                isLorebookEntry && !isSelected && !isDropTarget && lorebookStatus === 'archived' ? 'opacity-40 grayscale hover:opacity-60' : '',
-                isLorebookEntry && !isSelected && !isDropTarget && lorebookStatus === 'pending' ? 'bg-[var(--status-info-bg)]' : '',
                 isDragging ? 'opacity-45' : '',
                 !node.editable && !node.isDirectory ? 'opacity-70' : ''
             ]"
             :style="{paddingLeft: `${props.depth * props.indent + 4}px`}"
+            :data-path="node.path"
+            :data-directory="node.isDirectory ? 'true' : 'false'"
             data-role="workspace-file-row"
+            role="treeitem"
+            tabindex="0"
             draggable="true"
+            :aria-selected="isSelected"
+            :aria-expanded="node.isDirectory ? isOpen : undefined"
             @click="scheduleSelectNode"
             @dblclick.stop="openNode"
+            @keydown.enter.stop.prevent="canOpen ? openNode() : toggleExpanded()"
+            @keydown.space.stop.prevent="handleSpace"
+            @keydown.right.stop.prevent="node.isDirectory && !isOpen && toggleExpanded()"
+            @keydown.left.stop.prevent="node.isDirectory && isOpen && toggleExpanded()"
             @dragstart.stop="treeContext.startDrag(node, $event)"
             @dragover.stop="treeContext.updateDropState(node, $event)"
             @drop.stop="treeContext.commitDrop"
@@ -260,54 +208,24 @@ onUnmounted(() => {
                 type="button"
                 class="flex h-4 w-4 shrink-0 items-center justify-center opacity-50 transition-all hover:opacity-100"
                 :class="isBranch ? '' : 'invisible'"
+                :aria-label="isOpen ? '收起目录' : '展开目录'"
                 @click.stop="toggleExpanded"
             >
                 <span :class="isOpen ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" class="h-3.5 w-3.5"></span>
             </button>
 
-            <span
-                class="flex h-4 w-4 shrink-0 items-center justify-center transition-transform duration-150 group-hover:scale-[1.08]"
-                :class="isLorebookEntry ? [
-                    isSelected ? 'text-[var(--accent-text)]' : (
-                        lorebookStatus === 'archived' ? 'text-[var(--text-muted)]' :
-                        lorebookStatus === 'pending' ? 'text-[var(--status-info)]' :
-                        lorebookTypeMeta.iconClass.split(' ')[0]
-                    ),
-                    lorebookStatus === 'draft' ? 'opacity-50' : 'opacity-80 group-hover:opacity-100'
-                ] : [
-                    directoryMeta && !isSelected ? directoryMeta.colorClass : '',
-                    isContentIndexFile && !isSelected ? 'text-[var(--text-muted)]' : '',
-                    'opacity-80 group-hover:opacity-100'
-                ]"
-            >
-                <span :class="displayIconClass" class="h-3.5 w-3.5"></span>
+            <span class="flex h-4 w-4 shrink-0 items-center justify-center opacity-80 group-hover:opacity-100">
+                <span :class="iconClass" class="h-3.5 w-3.5"></span>
             </span>
 
             <div class="min-w-0 flex flex-1 items-center gap-1.5">
-                <span
-                    class="min-w-0 flex-1 truncate pr-0.5 text-[13px] transition-colors"
-                    :class="isLorebookEntry ? [
-                        lorebookStatus === 'draft' ? 'italic' : '',
-                        lorebookStatus === 'pending' ? 'underline decoration-dotted underline-offset-2' : '',
-                        !isSelected && lorebookStatus === 'pending' ? 'text-[var(--status-info)]' : ''
-                    ] : ''"
-                >
+                <span class="min-w-0 flex-1 truncate pr-0.5 text-[13px] transition-colors">
                     {{ nodeTitle }}
                 </span>
-                <span v-if="isLorebookEntry" class="max-w-[80px] shrink-0 truncate text-right text-[11px] opacity-60">
+                <span v-if="treeContext.mode.value === 'content' && nodeTitle !== nodeName" class="max-w-[84px] shrink-0 truncate text-right text-[10px] opacity-60">
                     {{ nodeName }}
                 </span>
-                <span v-else-if="node.entryType" class="max-w-[84px] shrink-0 truncate text-[10px] opacity-60">
-                    {{ node.entryType }}
-                </span>
-                <span v-else-if="directoryMeta" class="max-w-[72px] shrink-0 truncate text-right text-[10px] opacity-45">
-                    {{ directoryMeta.label }}
-                </span>
-                <span v-else-if="isContentIndexFile" class="shrink-0 text-[10px] text-[var(--text-muted)] opacity-45">
-                    node
-                </span>
-                <span v-if="isLorebookEntry" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="statusIndicatorClass" :title="statusLabel"></span>
-                <span v-else-if="node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="node.status"></span>
+                <span v-if="treeContext.mode.value === 'content' && node.status" class="ml-auto h-1.5 w-1.5 shrink-0 rounded-full" :class="node.status === 'active' ? 'bg-[var(--status-success)]' : node.status === 'pending' ? 'bg-[var(--status-info)]' : node.status === 'draft' ? 'bg-[var(--status-warning)]' : 'bg-[var(--text-muted)]'" :title="node.status"></span>
             </div>
         </div>
 

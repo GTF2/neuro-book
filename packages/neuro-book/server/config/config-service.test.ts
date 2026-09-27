@@ -22,7 +22,7 @@ import {
     saveGlobalConfig,
     saveProjectConfig,
 } from "nbook/server/config/config-service";
-import {ProjectNotOpenError, resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
+import {ProjectNotOpenError, resetProjectSessionsForTest} from "nbook/server/runtime/product-project";
 import {closeProjectForTest, openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {createIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";
 import type {GlobalConfigUpdateDto} from "nbook/shared/dto/config.dto";

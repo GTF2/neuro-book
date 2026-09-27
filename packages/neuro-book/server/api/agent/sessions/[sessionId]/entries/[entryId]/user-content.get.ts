@@ -1,7 +1,7 @@
 import {createError, getRouterParam} from "h3";
 import {getAgentSessionUserContent, isAgentSessionLifecycleHttpError, requireAgentSessionId} from "nbook/server/agent/http";
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
-import {isProjectNotOpenError} from "nbook/server/workspace-files/project-session";
+import {isProjectNotOpenError} from "nbook/server/runtime/product-project";
 
 /** 按需返回被公开预算截断的完整用户消息 Markdown。 */
 export default defineEventHandler(async (event) => withProjectHttpError(async () => {

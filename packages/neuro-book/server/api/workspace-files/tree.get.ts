@@ -1,10 +1,6 @@
-import {
-    assertFullTreeSnapshotQuery,
-    readPlainWorkspaceTreeSnapshot,
-    readProjectWorkspaceTreeSnapshot,
-} from "nbook/server/workspace-files/project-workspace-index";
 import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
-import {withProjectTargetOperation} from "nbook/server/workspace-files/project-open-guard";
+import {withBoundProjectTargetOperation, parseWorkspaceFileHttpBinding} from "nbook/server/workspace-files/project-open-guard";
+import {withProductWorkspaceFiles} from "nbook/server/runtime/product-startup";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {createServerTiming} from "nbook/server/utils/server-timing";
 
@@ -127,39 +123,20 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
     const timing = createServerTiming(event);
     const query = getQuery(event);
-    const projectRoot = typeof query.projectRoot === "string" ? query.projectRoot : undefined;
-    const workspaceKind = query.workspaceKind === "user-assets" ? query.workspaceKind : undefined;
+    const binding = parseWorkspaceFileHttpBinding(query);
     const type = typeof query.type === "string" && query.type.trim() ? query.type.trim() : null;
     const depth = typeof query.depth === "string" ? Number.parseInt(query.depth, 10) : null;
     const targets = parseTargets(query.target);
     const parsedDepth = Number.isSafeInteger(depth) ? depth : null;
-    assertFullTreeSnapshotQuery({
-        targets,
-        type,
-        depth: parsedDepth,
-    });
 
     const target = await timing.measure("workspace.resolve", () => (
-        resolveWorkspaceFileTarget(runtimePathsFromEnv(), {projectRoot, workspaceKind})
+        resolveWorkspaceFileTarget(runtimePathsFromEnv(), binding)
     ));
-    return withProjectTargetOperation(target, (projectHandles) => {
-        if (target.kind !== "project-workspace") {
-            return timing.measure("workspace.tree", () => readPlainWorkspaceTreeSnapshot({
-                target,
-                targets,
-                type,
-                depth: parsedDepth,
-            }));
-        }
-
-        return timing.measure("workspace.index", () => readProjectWorkspaceTreeSnapshot({
-            target,
-            fileIndex: projectHandles!.fileIndex,
-            targets,
-            type,
-            depth: parsedDepth,
-        }));
-    });
+    return withBoundProjectTargetOperation(target, binding, (handles) => (
+        timing.measure(target.kind === "project-workspace" ? "workspace.index" : "workspace.tree", () => (
+            withProductWorkspaceFiles({target, handles}, files => files.tree({targets, type, depth: parsedDepth}))
+        ))
+    ));
 });
 
 /**

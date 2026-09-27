@@ -11,7 +11,7 @@ import {resolveProjectDatabasePath, toSqliteFileUrl} from "nbook/server/workspac
 import {PROJECT_DATABASE_MODULE_TOKEN} from "nbook/server/workspace-files/project-database-module";
 import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
 import {TrackedPrismaLibSql} from "nbook/server/workspace-files/tracked-prisma-libsql";
-import {ProjectNotOpenError, requireActiveReadyProject, requireReadyModuleHandle} from "nbook/server/workspace-files/project-session";
+import {ProjectNotOpenError, requireActiveReadyProject, requireReadyModuleHandle} from "nbook/server/runtime/product-project";
 import {openProjectForTest, removeProjectWorkspaceForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {createIsolatedWorkspaceAssets, type IsolatedWorkspaceAssets} from "nbook/server/workspace-files/test-workspace-fixture";

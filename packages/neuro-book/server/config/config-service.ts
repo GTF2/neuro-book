@@ -77,7 +77,7 @@ import {
     requireReadyProject,
     requireActiveReadyProject,
     runReadyProjectOperation,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {resolveUserNbookRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {sameProviderConnection} from "nbook/shared/models/provider-connection-identity";
 import type {ResolvedProjectWorkspace} from "nbook/server/workspace-files/project-identity";

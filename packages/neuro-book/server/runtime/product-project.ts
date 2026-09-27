@@ -1,10 +1,10 @@
 import path from "node:path";
-import type {AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
+import {createRuntimeInstance} from "nbook/runtime/lifecycle/lifecycle";
+import type {Scope} from "nbook/runtime/lifecycle/lifecycle";
+import {productProjectOwner} from "nbook/server/runtime/product-startup";
+import {absoluteFsPath, type AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {resolveRuntimeArtifactCompilerContext} from "nbook/server/utils/runtime-artifact-compiler-context";
-import {
-    projectWorkspaceRef,
-    type ProjectWorkspaceRef,
-} from "nbook/server/workspace-files/project-identity";
+import type {ProjectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {
     ProjectLifecycle,
     type ProjectCandidateSnapshot,
@@ -39,7 +39,7 @@ import {
 import type {ProjectOpener} from "nbook/server/workspace-files/project-session-types";
 import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
-import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
+import {getWorkspaceRuntimeRootContextForTest, resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 
 // Production composition root：required与lazy descriptor在任何Project open前完成注册。
 import "nbook/server/workspace-files/project-database-module";
@@ -54,42 +54,28 @@ export type {ProjectOpener, ProjectOperationStart, ReadyProjectSessionRef};
 
 const MAINTENANCE_INTERVAL_MS = 30_000;
 
-type ProjectSessionGlobalState = {
-    lifecycle: ProjectLifecycle | null;
+type ProjectGeneration = {
+    readonly scope: Scope;
+    readonly ready: () => ReadyProjectSessionRef | null;
+    readonly opening: () => Promise<ProjectControlOpenResult> | null;
+    replacementPending: boolean;
+    replacementClosed: boolean;
+    setReady(ready: ReadyProjectSessionRef): void;
+    setOpening(opening: Promise<ProjectControlOpenResult>): void;
+    setCloseReason(reason: ProjectSessionCloseReason): void;
+};
+
+type ProjectOwner = {
+    readonly root: Scope;
     service: ProjectSessionService | null;
     workspaceRoot: AbsoluteFsPath | null;
     compilerRoot: AbsoluteFsPath | null;
-    compilerContext: ReturnType<typeof resolveRuntimeArtifactCompilerContext> | null;
     agentProbe: ((session: ReadyProjectSessionRef) => boolean) | null;
     maintenanceTimer: ReturnType<typeof setInterval> | null;
     sweepInFlight: boolean;
-    /** 升级前各代 owner 的排空；新 owner 取得任何 Occupancy 前必须等待整条链。 */
-    previousClose: Promise<void> | null;
-    /** Facade 关闭次数，令仍等待 HMR 交接的旧请求失效。 */
-    epoch: number;
+    readonly generations: Map<string, ProjectGeneration>;
     closing: Promise<void> | null;
 };
-
-/** V2 槽形状；旧 Service 不认 publicId，只能排空，不能当成本版 owner 复用。 */
-type PreviousProjectSessionV2State = {
-    readonly service: {closeAll(): Promise<void>} | null;
-    readonly agentProbe: ((session: ReadyProjectSessionRef) => boolean) | null;
-    readonly maintenanceTimer: ReturnType<typeof setInterval> | null;
-};
-
-/**
- * V3 槽（基线 `0d66064b`）的排空与探针承接字段。
- *
- * 真实 V3 还带 lifecycle/workspaceRoot/compilerRoot/compilerContext/sweepInFlight/epoch/closing；
- * 本版只读这里的字段，其余不能按本版 `ProjectSessionGlobalState` 复用：V3 的 Service 已有
- * `requireReadyProjectByPublicId`（缺的是旧 Facade 未导出它），真正没有的是本轮新增的
- * `revalidateReadyProject`/写入目标核验，以及 Project Storage lazy Module 登记。
- */
-type PreviousProjectSessionV3State = PreviousProjectSessionV2State & {
-    /** V3 自己尚未排空的更早一代；新 owner 必须继承整条链，不能只交接本版。 */
-    readonly previousClose: Promise<void> | null;
-};
-
 type ProjectOccupancySnapshot = {
     readonly state: "open" | "grace";
     readonly userConnections: number;
@@ -102,77 +88,106 @@ type OpenProjectSnapshot = ProjectOccupancySnapshot & {
     readonly lastActivityAt: string;
 };
 
-const globalForProjectSession = globalThis as typeof globalThis & {
-    __nbookProjectSessionV2?: PreviousProjectSessionV2State;
-    __nbookProjectSessionV3?: PreviousProjectSessionV3State;
-    __nbookProjectSessionV4?: ProjectSessionGlobalState;
-};
-const globalState = globalForProjectSession.__nbookProjectSessionV4
-    ?? (globalForProjectSession.__nbookProjectSessionV4 = createHandoffState(
-        globalForProjectSession.__nbookProjectSessionV3,
-        globalForProjectSession.__nbookProjectSessionV2,
-    ));
+let testOwner: ProjectOwner | null = null;
 
-/**
- * 建立本版合同的 owner，并排空升级前的 owner。
- *
- * V2 不认 publicId：旧 acquireUserPresence 会忽略新增参数，旧 publication 也带不上标识；V3 的 Facade
- * 未导出 `requireReadyProjectByPublicId`（Service 已有），也没有本轮新增的 `revalidateReadyProject`/
- * 写入目标核验与 Project Storage lazy Module 登记。复用旧对象会把「按公开标识取得精确代次」与
- * 「已接纳操作的物理前置」静默降级成运行期 TypeError 或漏建 lazy Module，因此这里先停掉旧维护定时器、
- * 关闭旧 Service（Lifecycle、Module 与 Occupancy），再由新 owner 从空 Session 状态重建；
- * 旧标识属于旧 Runtime，在新 owner 中无法解析。
- */
-function createHandoffState(
-    previousV3: PreviousProjectSessionV3State | undefined,
-    previousV2: PreviousProjectSessionV2State | undefined,
-): ProjectSessionGlobalState {
-    const pending: Promise<void>[] = [];
-    // V3 自己的 previousClose 可能仍在排空更早一代：整条链都要在新 owner 取得 Occupancy 之前完成。
-    if (previousV3?.previousClose) {
-        pending.push(previousV3.previousClose);
-    }
-    for (const previous of [previousV3, previousV2]) {
-        if (previous?.maintenanceTimer) {
-            clearInterval(previous.maintenanceTimer);
+function state(): ProjectOwner {
+    const context = getWorkspaceRuntimeRootContextForTest();
+    if (context?.workspaceRoot) {
+        if (!testOwner) {
+            const runtime = createRuntimeInstance({location: "server", instanceId: "project-test"});
+            runtime.root.open();
+            testOwner = createOwner(runtime.root);
         }
-        try {
-            const closed = previous?.service?.closeAll();
-            if (closed) pending.push(closed);
-        } catch (error) {
-            pending.push(Promise.reject(error));
+        if (testOwner.workspaceRoot && workspaceRootIdentity(testOwner.workspaceRoot) !== workspaceRootIdentity(absoluteFsPath(context.workspaceRoot))) {
+            throw new Error("Project test owner仍绑定另一隔离 Workspace Root，必须先完整关闭");
         }
+        return testOwner;
     }
-    const previousClose: Promise<void> | null = pending.length === 0 ? null : Promise.all(pending).then(() => undefined);
-    // import 本身没有等待方；保留拒绝给所有后续请求和 shutdown，避免未观察的 rejection。
-    void previousClose?.catch(() => undefined);
+    return productProjectOwner(createOwner);
+}
+
+function createOwner(root: Scope): ProjectOwner {
+    const scope = root.createChild("project-owner");
+    scope.open();
     return {
-        lifecycle: null,
+        root: scope,
         service: null,
         workspaceRoot: null,
         compilerRoot: null,
-        compilerContext: null,
-        // 探针属于 Agent owner；它继续按精确 ready 对象核对，而不是让 Facade 建第二份在场状态。
-        agentProbe: previousV3?.agentProbe ?? previousV2?.agentProbe ?? null,
+        agentProbe: null,
         maintenanceTimer: null,
         sweepInFlight: false,
-        previousClose,
-        epoch: 0,
+        generations: new Map(),
         closing: null,
     };
 }
 
-/** 旧 owner 排空完成前不取得任何 Project Occupancy，避免两代同时持有同一 Project 的锁。 */
+/** Project generation 在 Application 子作用域接纳 opening，并由同一作用域负责最终释放。 */
 async function withProjectService<T>(
     workspaceRoot: AbsoluteFsPath,
     operation: (service: ProjectSessionService) => Promise<T>,
 ): Promise<T> {
-    const epoch = globalState.epoch;
-    if (globalState.closing) throw new ProjectSessionRuntimeClosedError();
-    if (globalState.previousClose) await globalState.previousClose;
-    if (globalState.closing || epoch !== globalState.epoch) throw new ProjectSessionRuntimeClosedError();
-    // 核验与操作接纳之间不 await；closeAll 的同步 gate 能覆盖交接完成这一刻的新请求。
-    return operation(serviceFor(workspaceRoot));
+    const owner = state();
+    if (owner.root.phase !== "available" || owner.closing) throw new ProjectSessionRuntimeClosedError();
+    return operation(serviceFor(owner, workspaceRoot));
+}
+
+async function openProjectGeneration(ref: ProjectWorkspaceRef, opener: ProjectOpener, workspaceRoot: AbsoluteFsPath): Promise<ProjectControlOpenResult> {
+    const owner = state();
+    if (owner.root.phase !== "available" || owner.closing) throw new ProjectSessionRuntimeClosedError();
+    const service = serviceFor(owner, workspaceRoot);
+    let generation = owner.generations.get(ref.projectRoot);
+    if (generation && (generation.scope.phase !== "available" || generation.replacementPending)) throw new ProjectSessionRuntimeClosedError();
+    if (!generation) {
+        const scope = owner.root.createChild(`project:${ref.projectRoot}`);
+        let ready: ReadyProjectSessionRef | null = null;
+        let opening: Promise<ProjectControlOpenResult> | null = null;
+        let closeReason: ProjectSessionCloseReason = "shutdown";
+        generation = {
+            scope,
+            ready: () => ready,
+            opening: () => opening,
+            replacementPending: false,
+            replacementClosed: false,
+            setReady: (value) => { ready = value; },
+            setOpening: (value) => { opening ??= value; },
+            setCloseReason: (reason) => { closeReason = reason; },
+        };
+        const captured = generation;
+        scope.register({
+            kind: "project-generation",
+            label: ref.projectRoot,
+            value: ref,
+            release: async () => {
+                if (owner.generations.get(ref.projectRoot) !== captured) return;
+                if (!captured.replacementClosed) {
+                    if (opening) {
+                        try { ready = (await opening).ready; } catch { /* Failed opening retains its entry only if resources remain. */ }
+                    }
+                    if (ready) await service.closeReadyProject(ready, closeReason);
+                    else if (opening) await service.closeOpeningProject(ref, opening, closeReason);
+                }
+                collectReleasedSqliteHandles({force: closeReason === "delete" || closeReason === "shutdown"});
+            },
+        });
+        scope.open();
+        owner.generations.set(ref.projectRoot, generation);
+    }
+    const captured = generation;
+    try {
+        const opened = service.openProjectControl(ref, opener);
+        captured.setOpening(opened);
+        const result = await opened;
+        captured.setReady(result.ready);
+        if (captured.scope.phase !== "available") throw new ProjectSessionRuntimeClosedError();
+        return result;
+    } catch (error) {
+        if (captured.scope.phase === "available" && !captured.replacementPending && !service.projectOccupancy(ref)) {
+            const closed = await captured.scope.close();
+            if (closed.status === "closed" && owner.generations.get(ref.projectRoot) === captured) owner.generations.delete(ref.projectRoot);
+        }
+        throw error;
+    }
 }
 
 /**
@@ -186,7 +201,7 @@ export async function openProject(
     opener: ProjectOpener,
     workspaceRoot?: AbsoluteFsPath,
 ): Promise<ReadyProjectSessionRef> {
-    const ready = await withProjectService(workspaceRoot ?? resolveRuntimeWorkspaceRoot(), (service) => service.openProject(ref, opener));
+    const ready = (await openProjectGeneration(ref, opener, workspaceRoot ?? resolveRuntimeWorkspaceRoot())).ready;
     ensureMaintenanceTimer();
     return ready;
 }
@@ -196,7 +211,7 @@ export async function openProjectControl(
     ref: ProjectWorkspaceRef,
     opener: ProjectOpener,
 ): Promise<ProjectControlOpenResult> {
-    const result = await withProjectService(resolveRuntimeWorkspaceRoot(), (service) => service.openProjectControl(ref, opener));
+    const result = await openProjectGeneration(ref, opener, resolveRuntimeWorkspaceRoot());
     ensureMaintenanceTimer();
     return result;
 }
@@ -233,7 +248,7 @@ export async function deleteProject(ref: ProjectWorkspaceRef): Promise<ProjectDe
 
 /** strict-open accessor：只返回当前结构化Project的ready generation。 */
 export function requireReadyProject(ref: ProjectWorkspaceRef): ReadyProjectSessionRef {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         throw new ProjectNotOpenError(ref.projectRoot);
     }
@@ -255,7 +270,7 @@ export function requireReadyModuleHandle<THandle extends ProjectModuleHandle>(
     ready: ReadyProjectSessionRef,
     token: ProjectModuleToken<THandle>,
 ): THandle {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         throw new ProjectNotOpenError(ready.workspace.ref.projectRoot);
     }
@@ -267,7 +282,7 @@ export function activateReadyProjectModule<THandle extends ProjectModuleHandle>(
     ready: ReadyProjectSessionRef,
     token: ProjectModuleToken<THandle>,
 ): Promise<THandle> {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         return Promise.reject(new ProjectNotOpenError(ready.workspace.ref.projectRoot));
     }
@@ -290,7 +305,7 @@ export function runReadyProjectOperation<TResult>(
         revalidateTarget: () => Promise<void>,
     ) => Promise<TResult>,
 ): Promise<TResult> {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         return Promise.reject(new ProjectNotOpenError(ready.workspace.ref.projectRoot));
     }
@@ -310,7 +325,7 @@ export function startReadyProjectOperation<TResult>(
         revalidateTarget: () => Promise<void>,
     ) => ProjectOperationStart<TResult>,
 ): TResult {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         throw new ProjectNotOpenError(ready.workspace.ref.projectRoot);
     }
@@ -334,7 +349,7 @@ export function isProjectOpen(ref: ProjectWorkspaceRef): boolean {
 
 /** 返回全部ready generation的轻量presence投影。 */
 export function listOpenProjects(): OpenProjectSnapshot[] {
-    return globalState.service?.listOpenProjects().map(({ref, ...presence}) => ({
+    return state().service?.listOpenProjects().map(({ref, ...presence}) => ({
         projectRoot: ref.projectRoot,
         ...presence,
     })) ?? [];
@@ -342,7 +357,7 @@ export function listOpenProjects(): OpenProjectSnapshot[] {
 
 /** 删除控制面读取当前ready generation占用；opening/closing返回null。 */
 export function projectOccupancy(ref: ProjectWorkspaceRef): ProjectOccupancySnapshot | null {
-    const occupancy = globalState.service?.projectOccupancy(ref);
+    const occupancy = state().service?.projectOccupancy(ref);
     if (!occupancy) {
         return null;
     }
@@ -360,7 +375,7 @@ export function projectOccupancy(ref: ProjectWorkspaceRef): ProjectOccupancySnap
  * 标识都拿不到新代次；路径相同不能替代标识。
  */
 export function requireReadyProjectByPublicId(ref: ProjectWorkspaceRef, publicId: string): ReadyProjectSessionRef {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         throw new ProjectNotOpenError(ref.projectRoot);
     }
@@ -369,7 +384,7 @@ export function requireReadyProjectByPublicId(ref: ProjectWorkspaceRef, publicId
 
 /** 复核精确 ready generation 的 Occupancy 与 Project 物理目录；已关闭或被替换时抛出。 */
 export function revalidateReadyProject(ready: ReadyProjectSessionRef): Promise<void> {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         return Promise.reject(new ProjectNotOpenError(ready.workspace.ref.projectRoot));
     }
@@ -378,7 +393,7 @@ export function revalidateReadyProject(ready: ReadyProjectSessionRef): Promise<v
 
 /** 为公开标识指定的精确 ready generation取得一路用户presence。 */
 export function acquireUserPresence(ref: ProjectWorkspaceRef, publicId: string): ProjectUserPresence {
-    const service = globalState.service;
+    const service = state().service;
     if (!service) {
         throw new ProjectNotOpenError(ref.projectRoot);
     }
@@ -387,13 +402,13 @@ export function acquireUserPresence(ref: ProjectWorkspaceRef, publicId: string):
 
 /** 注册 Agent 在场探针；ready 对象身份确保旧 invocation 不会占用重开的 generation。 */
 export function registerAgentPresenceProbe(probe: ((session: ReadyProjectSessionRef) => boolean) | null): void {
-    globalState.agentProbe = probe;
-    globalState.service?.registerAgentPresenceProbe(probe);
+    state().agentProbe = probe;
+    state().service?.registerAgentPresenceProbe(probe);
 }
 
 /** 仅刷新结构化 Project ref 对应 ready generation 的活动时间；未打开保持no-op。 */
 export function markProjectActivity(ref: ProjectWorkspaceRef): void {
-    globalState.service?.markProjectActivity(ref);
+    state().service?.markProjectActivity(ref);
 }
 
 /**
@@ -401,96 +416,123 @@ export function markProjectActivity(ref: ProjectWorkspaceRef): void {
  * Module或Occupancy关闭失败时Service保留entry，调用方必须处理拒绝，delete不得继续。
  */
 export async function closeProject(ref: ProjectWorkspaceRef, reason: ProjectSessionCloseReason): Promise<void> {
-    const service = globalState.service;
-    if (!service) {
-        return;
+    const owner = state();
+    const generation = owner.generations.get(ref.projectRoot);
+    if (!generation) return;
+    if (generation.replacementPending) throw new ProjectSessionRuntimeClosedError();
+    if (reason === "grace-expired") {
+        await owner.service?.closeProject(ref, reason);
+        if (owner.service?.projectOccupancy(ref)) return;
     }
-    await service.closeProject(ref, reason);
-    collectReleasedSqliteHandles({force: reason === "delete" || reason === "shutdown"});
+    generation.setCloseReason(reason);
+    const scope = generation.scope;
+    const result = scope.phase === "available" ? await scope.close() : await scope.recover();
+    if (result.status !== "closed") throw new Error(`Project generation关闭不完整：${ref.projectRoot}；${result.reason}`);
+    if (owner.generations.get(ref.projectRoot) === generation) owner.generations.delete(ref.projectRoot);
 }
 
 /** 执行Agent/presence/grace维护，返回本轮完整关闭的 Project roots。 */
 export async function sweepProjectSessions(now = Date.now()): Promise<string[]> {
-    const service = globalState.service;
-    if (!service) {
-        return [];
+    const owner = state();
+    if (!owner.service) return [];
+    const closed = await owner.service.sweepProjectSessions(now);
+    for (const ready of closed) {
+        const ref = ready.workspace.ref;
+        const generation = owner.generations.get(ref.projectRoot);
+        if (!generation || generation.ready() !== ready) continue;
+        const result = await generation.scope.close();
+        if (result.status === "closed" && owner.generations.get(ref.projectRoot) === generation) owner.generations.delete(ref.projectRoot);
     }
-    const closed = await service.sweepProjectSessions(now);
-    if (closed.length > 0) {
-        collectReleasedSqliteHandles();
-    }
-    return closed.map((ref) => ref.projectRoot);
+    if (closed.length > 0) collectReleasedSqliteHandles();
+    return closed.map((ready) => ready.workspace.ref.projectRoot);
 }
 
-/** Nitro shutdown/HMR最终关闭唯一Service及其Lifecycle、Module与plain adapter资源。 */
-export function closeAllProjects(): Promise<void> {
-    if (globalState.closing) return globalState.closing;
-    const close = Promise.withResolvers<void>();
-    globalState.closing = close.promise;
-    globalState.epoch += 1;
-    stopMaintenanceTimer();
-    const service = globalState.service;
-    const closing = (async () => {
-        // 同步封住现有 Service，随后同时等待旧版交接，避免 shutdown 在交接中提前结束。
-        await Promise.all([service?.closeAll(), globalState.previousClose]);
-        if (globalState.service === service) {
-            globalState.lifecycle = null;
-            globalState.service = null;
-            globalState.workspaceRoot = null;
-            globalState.compilerRoot = null;
-            globalState.compilerContext = null;
-        }
-        collectReleasedSqliteHandles({force: true});
-    })();
-    void closing.then(close.resolve, close.reject);
-    const settled = () => { if (globalState.closing === close.promise) globalState.closing = null; };
-    void close.promise.then(settled, settled);
-    return close.promise;
+/** 测试显式关闭；正式产品随 Application.stop 关闭根作用域。 */
+export async function closeAllProjects(): Promise<void> {
+    if (!testOwner) return;
+    const owner = testOwner;
+    const result = owner.root.phase === "available" ? await owner.root.close() : await owner.root.recover();
+    if (result.status !== "closed") throw new Error(`Project test owner关闭不完整：${result.reason}`);
+    testOwner = null;
 }
 
-/**
- * 测试专用：仅在测试已经显式close后清空HMR容器与探针。
- * 不执行隐藏async cleanup，避免同步reset制造无人观察的关闭失败。
- */
+/** 测试隔离根必须在先前显式 close 之后才可重置。 */
 export function resetProjectSessionsForTest(): void {
-    stopMaintenanceTimer();
-    globalState.lifecycle = null;
-    globalState.service = null;
-    globalState.workspaceRoot = null;
-    globalState.compilerRoot = null;
-    globalState.compilerContext = null;
-    globalState.agentProbe = null;
-    globalState.sweepInFlight = false;
-    globalState.previousClose = null;
-    globalState.closing = null;
-    globalState.epoch += 1;
+    if (testOwner?.root.phase === "closed") testOwner = null;
+    if (testOwner?.service || testOwner?.generations.size) {
+        throw new Error("Project test owner未关闭，不允许重置");
+    }
 }
 
-/** 创建或返回绑定同一Runtime Workspace Root与Application Root的HMR稳定Service。 */
-function serviceFor(workspaceRoot: AbsoluteFsPath): ProjectSessionService {
+/** 服务随 Application 根获取一次；根资源比其所有 Project child scope 后释放。 */
+function serviceFor(owner: ProjectOwner, workspaceRoot: AbsoluteFsPath): ProjectSessionService {
     const compilerRoot = runtimePathsFromEnv().applicationRoot;
-    if (globalState.service) {
-        if (workspaceRootIdentity(globalState.workspaceRoot!) !== workspaceRootIdentity(workspaceRoot)) {
+    if (owner.service) {
+        if (workspaceRootIdentity(owner.workspaceRoot!) !== workspaceRootIdentity(workspaceRoot)) {
             throw new Error("ProjectSession Service已经绑定到另一个Workspace Root");
         }
-        if (workspaceRootIdentity(globalState.compilerRoot!) !== workspaceRootIdentity(compilerRoot)) {
+        if (workspaceRootIdentity(owner.compilerRoot!) !== workspaceRootIdentity(compilerRoot)) {
             throw new Error("ProjectSession Service已经绑定到另一个Application Root");
         }
-        return globalState.service;
+        return owner.service;
     }
     const lifecycle = new ProjectLifecycle(workspaceRoot);
     const compilerContext = resolveRuntimeArtifactCompilerContext(compilerRoot);
     const service = new ProjectSessionService(workspaceRoot, {
         lifecycle,
+        onRootReplacementDetected: (ref, opening) => {
+            const generation = owner.generations.get(ref.projectRoot);
+            if (generation?.opening() === opening) generation.replacementPending = true;
+        },
+        onRootReplaced: async (ref, ready, opening) => {
+            const generation = owner.generations.get(ref.projectRoot);
+            if (!generation || generation.opening() !== opening || (ready && generation.ready() && generation.ready() !== ready)) return;
+            generation.setCloseReason("root-replaced");
+            generation.replacementClosed = true;
+            const scope = generation.scope;
+            const result = scope.phase === "available" ? await scope.close() : await scope.recover();
+            if (result.status !== "closed") throw new Error(`Project generation关闭不完整：${ref.projectRoot}；${result.reason}`);
+            if (owner.generations.get(ref.projectRoot) === generation) owner.generations.delete(ref.projectRoot);
+        },
         runtime: new ProjectSessionRuntime({compilerContext}),
     });
-    service.registerAgentPresenceProbe(globalState.agentProbe);
-    globalState.lifecycle = lifecycle;
-    globalState.service = service;
-    globalState.workspaceRoot = workspaceRoot;
-    globalState.compilerRoot = compilerRoot;
-    globalState.compilerContext = compilerContext;
+    service.registerAgentPresenceProbe(owner.agentProbe);
+    owner.root.register({
+        kind: "project-service",
+        label: "workspace-projects",
+        value: service,
+        release: async () => {
+            await closeOwner(owner);
+        },
+    });
+    owner.service = service;
+    owner.workspaceRoot = workspaceRoot;
+    owner.compilerRoot = compilerRoot;
     return service;
+}
+
+async function closeOwner(owner: ProjectOwner): Promise<void> {
+    if (owner.closing) return owner.closing;
+    stopMaintenanceTimer(owner);
+    const closing = (async () => {
+        for (const generation of owner.generations.values()) {
+            if (generation.scope.phase !== "closed") {
+                throw new Error("Project generation仍未完整关闭，保留Service与Occupancy");
+            }
+        }
+        await owner.service?.closeAll();
+        owner.service = null;
+        owner.generations.clear();
+        owner.workspaceRoot = null;
+        owner.compilerRoot = null;
+        collectReleasedSqliteHandles({force: true});
+    })();
+    owner.closing = closing;
+    try {
+        await closing;
+    } finally {
+        if (owner.closing === closing) owner.closing = null;
+    }
 }
 /** 比较单进程Service的Workspace Root绑定，Windows按文件系统大小写语义处理。 */
 function workspaceRootIdentity(workspaceRoot: AbsoluteFsPath): string {
@@ -500,27 +542,19 @@ function workspaceRootIdentity(workspaceRoot: AbsoluteFsPath): string {
 
 /** 首个ready generation建立后启动唯一维护定时器。 */
 function ensureMaintenanceTimer(): void {
-    if (globalState.maintenanceTimer || globalState.closing || !globalState.service) {
-        return;
-    }
-    globalState.maintenanceTimer = setInterval(() => {
-        if (globalState.sweepInFlight) {
-            return;
-        }
-        globalState.sweepInFlight = true;
-        void sweepProjectSessions()
-            .catch(() => undefined)
-            .finally(() => {
-                globalState.sweepInFlight = false;
-            });
+    const owner = state();
+    if (owner.maintenanceTimer || owner.closing || !owner.service) return;
+    owner.maintenanceTimer = setInterval(() => {
+        if (owner.sweepInFlight) return;
+        owner.sweepInFlight = true;
+        void sweepProjectSessions().catch(() => undefined).finally(() => {
+            owner.sweepInFlight = false;
+        });
     }, MAINTENANCE_INTERVAL_MS);
-    globalState.maintenanceTimer.unref?.();
+    owner.maintenanceTimer.unref?.();
 }
 
-/** 停止维护定时器；Service close失败时仍保持shutdown gate，不再执行grace sweep。 */
-function stopMaintenanceTimer(): void {
-    if (globalState.maintenanceTimer) {
-        clearInterval(globalState.maintenanceTimer);
-        globalState.maintenanceTimer = null;
-    }
+function stopMaintenanceTimer(owner: ProjectOwner): void {
+    if (owner.maintenanceTimer) clearInterval(owner.maintenanceTimer);
+    owner.maintenanceTimer = null;
 }

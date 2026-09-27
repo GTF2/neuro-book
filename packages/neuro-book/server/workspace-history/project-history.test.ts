@@ -9,7 +9,7 @@ import {
     requireReadyModuleHandle,
     requireReadyProject,
     resetProjectSessionsForTest,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {openProjectForTest, closeProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {writeProjectManifest as writeProjectManifestAtRoot} from "nbook/server/workspace-files/project-workspace";
 import {resolveRuntimeWorkspaceRoot, setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";

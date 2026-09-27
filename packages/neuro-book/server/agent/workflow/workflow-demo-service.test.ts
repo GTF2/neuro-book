@@ -34,7 +34,7 @@ describe("WorkflowDemoService terminal summary", () => {
             leasedCompletion = operation.completion;
             return operation.result;
         });
-        vi.doMock("nbook/server/workspace-files/project-session", () => ({
+        vi.doMock("nbook/server/runtime/product-project", () => ({
             startReadyProjectOperation,
         }));
         harnessProvider = () => ({

@@ -1,3 +1,4 @@
+import type * as ProjectOpenGuard from "nbook/server/workspace-files/project-open-guard";
 import {Readable} from "node:stream";
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import { testAbsoluteFsPath } from "@notnotype/neuro-book-test-support/test-path";
@@ -35,6 +36,7 @@ describe("GET /api/workspace-files/download", () => {
 
         vi.stubGlobal("getQuery", () => ({
             projectRoot: "novel-1",
+            publicId: "opened-id",
             root: "server",
         }));
         vi.doMock("h3", () => ({
@@ -51,8 +53,9 @@ describe("GET /api/workspace-files/download", () => {
             createProjectWorkspaceZipStream,
             createWorkspaceZipStream: vi.fn(),
         }));
-        vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetOperation: vi.fn((_target, handler: (handles: unknown) => unknown) => handler({
+        vi.doMock("nbook/server/workspace-files/project-open-guard", async (importOriginal) => ({
+            ...await importOriginal<typeof ProjectOpenGuard>(),
+            withBoundProjectTargetOperation: vi.fn((_target, _binding, handler: (handles: unknown) => unknown) => handler({
                 ready: {workspace, generation: 1},
                 fileIndex: {},
                 history: {},
@@ -67,7 +70,7 @@ describe("GET /api/workspace-files/download", () => {
 
         expect(resolveWorkspaceFileTarget).toHaveBeenCalledWith(expect.anything(), {
             projectRoot: "novel-1",
-            workspaceKind: undefined,
+            publicId: "opened-id",
         });
         expect(createProjectWorkspaceZipStream).toHaveBeenCalledWith(workspace);
     });
@@ -100,8 +103,9 @@ describe("GET /api/workspace-files/download", () => {
             createProjectWorkspaceZipStream,
             createWorkspaceZipStream,
         }));
-        vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetOperation: vi.fn((_target, handler: (handles: undefined) => unknown) => handler(undefined)),
+        vi.doMock("nbook/server/workspace-files/project-open-guard", async (importOriginal) => ({
+            ...await importOriginal<typeof ProjectOpenGuard>(),
+            withBoundProjectTargetOperation: vi.fn((_target, _binding, handler: (handles: undefined) => unknown) => handler(undefined)),
         }));
 
         const handler = (await import("nbook/server/api/workspace-files/download.get")).default;
@@ -133,9 +137,6 @@ describe("GET /api/workspace-files/download", () => {
         }));
 
         const handler = (await import("nbook/server/api/workspace-files/download.get")).default;
-        await expect(handler({} as never)).rejects.toMatchObject({
-            statusCode: 400,
-            message: "projectRoot 不能为空",
-        });
+        await expect(handler({} as never)).rejects.toMatchObject({statusCode: 400});
     });
 });

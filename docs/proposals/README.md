@@ -8,7 +8,10 @@
 - [`Agent Skills 项目化适配`](../../packages/neuro-book/docs/proposals/agent-skills-adaptation.md)：状态为 `accepted`；旧适配流程作为历史保留，当前专项技能与验证分工由 P-005 最新决策取代。
 - [`../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md`](../../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md)：Harness Agent、completion 与 headless 三套调用面、Catalog、授权和 Workflow 重放边界，状态为 `accepted`。
 - [`p-005-development-workflow-governance.md`](./p-005-development-workflow-governance.md)：`P-005`，Work 本地登记、无正式角色的 Task 当前快照、主 Agent 直接执行与按需协调、专项技能和最小充分验证，状态为 `accepted`。
-- [`应用运行时与内置插件架构`](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)：状态为 `accepted`，接受基础架构及“环境/小内核 → 最小服务插件 → Lab → Files → Settings → World/Plot”分段方向；前两片七项 `planned` Spec 已登记。本轮交付规范与实施规划，未实施产品；任意热卸载/升级仍仅为后续评估。
+- [应用运行时与内置插件架构](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)：基础方向 `accepted`；只维护架构、生命周期和能力地图，第一、二片已实现，Lab 状态见关联 Work。
+- [应用运行时产品装配](../../packages/neuro-book/docs/proposals/application-runtime-product-integration.md)：从启动到 Project/工作台及领域接入的细化方案，`reviewing`；从总提案迁出，不新增实现授权。
+- [Files 与资源管理器第一版](../../packages/neuro-book/docs/proposals/files-explorer.md)：范围及 F1–F9 `accepted`，行为已原位沉淀为 `workspace.files` / `workbench.files-explorer`（`planned`）；保留设计理由、内部接缝与待验证性能依据，尚未实施。
+- [Files 与资源管理器第二版](../../packages/neuro-book/docs/proposals/files-explorer-v2.md)：`draft`；快速打开与删除恢复为核心方向，全文搜索/内容整理/导入导出为候选，不扩大第一版验收。
 - [`model-roles-contract.md`](./model-roles-contract.md)：模型角色的后端契约（全局配置 `roles` 段、按 role 解析模型的优先级、本地模型已由 Provider 机制覆盖的结论），状态为 `draft`，等待「未决取舍」拍板。
 - [`nb-ui-surface-model.md`](./nb-ui-surface-model.md)：nb-ui 表面模型，把材质（玻璃 / 实心，整页只有一层且只有它开模糊）与层级（不透明色阶，可嵌套、按位置自动推导）拆成两条轴，材质层有可读性不透明度下限，状态为 `accepted`。
 - [`../packages/neuro-book/docs/proposals/workbench-view-host.md`](../../packages/neuro-book/docs/proposals/workbench-view-host.md)：Workbench 与 View Host（descriptor 注册表、可序列化拆分树原语、布局状态四类分层、视图跨容器与容器跨栏移动），状态为 `accepted`。
@@ -40,6 +43,13 @@
 6. `数据、接口、安全、迁移、发布与回滚影响`；
 7. `对 Spec 的预期改动`：目标 capability、输入、输出、状态、副作用、失败与验收；
 8. `决策记录`：日期、决策者和结论。
+
+## 专题拆分与阅读入口
+
+当总提案混合多个可独立决策的专题或不同批准状态时，按问题与决策边界拆分，不按任意行数切文件。总提案只保留跨专题架构、简短状态与阅读导航；专题保留其证据、取舍、影响和决策来源，批准行为仍只在对应 Spec 维护。
+
+版本草案可以独立表达新增目标，但不创建版本化 Spec 副本，不重述上一版全部合同。移动正文时同步迁移所有活跃链接与章节锚点，索引和 Work/Task 只留摘要指针；历史证据、指纹与当时状态不倒改。实现和决策尚未闭合的设计不因拆分而提前归档，完成沉淀后按下述生命周期退出活跃入口。
+
 
 ## 生效规则
 

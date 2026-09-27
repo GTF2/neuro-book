@@ -18,6 +18,7 @@ export type PlatformFilesErrorCode =
     | "invalid-path"
     | "permission-denied"
     | "not-found"
+    | "already-exists"
     | "identity-changed"
     | "grant-revoked"
     | "closed"
@@ -164,6 +165,9 @@ export interface PlatformFiles {
     appendFile(grant: RootGrant, relativePath: string, data: string | Uint8Array, options?: WriteOptions): Promise<void>;
     stat(grant: RootGrant, relativePath: string, options?: OperationOptions): Promise<FileStat>;
     list(grant: RootGrant, relativePath: string, options?: OperationOptions): Promise<ReadonlyArray<DirectoryEntry>>;
+    /** 仅在父目录已存在时排他创建；目标已存在（包括链接）时不覆盖并报告 already-exists。 */
+    createFile(grant: RootGrant, relativePath: string, data: string | Uint8Array, options?: WriteOptions): Promise<void>;
+    createDirectory(grant: RootGrant, relativePath: string, options?: OperationOptions): Promise<void>;
     mkdir(grant: RootGrant, relativePath: string, options?: OperationOptions): Promise<void>;
     remove(grant: RootGrant, relativePath: string, options?: RemoveOptions): Promise<void>;
     rename(grant: RootGrant, from: string, to: string, options?: OperationOptions): Promise<void>;

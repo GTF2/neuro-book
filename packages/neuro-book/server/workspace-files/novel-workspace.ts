@@ -299,7 +299,7 @@ export async function resolveNovelWorkspaceTarget(
     const root = await assertProjectWorkspaceDirectory(runtimePaths.workspaceRoot, ref);
     return {
         kind: "project-workspace",
-        root,
+        root: absoluteFsPath(await fs.realpath(root)),
         projectRoot: ref.projectRoot,
     };
 }

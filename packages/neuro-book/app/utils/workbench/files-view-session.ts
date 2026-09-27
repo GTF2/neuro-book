@@ -24,7 +24,10 @@ import {
 } from "nbook/app/utils/workbench/user-record-session";
 import {
     defineWorkbenchFileTreeExpandedPathsState,
+    defineWorkbenchFilesViewModeState,
     type WorkbenchFileTreeExpandedPaths,
+    type WorkbenchFilesViewModeRecord,
+    type WorkspaceFilesViewMode,
 } from "nbook/shared/storage/workbench-files";
 
 /** 旧实现直接读写的裸键；迁入记录并回读验证后删除。 */
@@ -139,6 +142,51 @@ export function useWorkbenchFileTreeExpandedPaths(
     });
     return {
         expandedPaths: computed(() => session.display.value.paths),
+        loading: session.loading,
+        notice: session.notice,
+        commit: session.commit,
+        retry: session.retry,
+        abandon: session.abandon,
+        release: session.release,
+    };
+}
+
+/** 只替换模式字段，保留已确认记录里的其它字段。 */
+function composeFilesViewMode(
+    base: WorkbenchFilesViewModeRecord | null,
+    mode: WorkspaceFilesViewMode,
+): LayoutRecordIntent<WorkbenchFilesViewModeRecord> {
+    const value = base === null ? {mode} : {...base, mode};
+    return base?.mode === mode || (base === null && mode === "ordinary")
+        ? {value, changed: false, diagnosis: "模式与已确认值相同，未写盘"}
+        : {value, changed: true, diagnosis: ""};
+}
+
+export type WorkbenchFilesViewModeConsumer = {
+    readonly mode: Readonly<Ref<WorkspaceFilesViewMode>>;
+    readonly loading: Readonly<Ref<boolean>>;
+    readonly notice: Readonly<Ref<UserRecordSessionNotice | null>>;
+    commit(mode: WorkspaceFilesViewMode): Promise<LayoutRecordCommitResult>;
+    retry(): Promise<LayoutRecordCommitResult>;
+    abandon(): void;
+    release(): Promise<void>;
+};
+
+export type WorkbenchFilesViewModeOptions = {
+    readonly adapters?: WorkbenchStorageAdapters;
+};
+
+/** 模式偏好与展开记录共用 Storage owner，但各自只写自己的单条记录。 */
+export function useWorkbenchFilesViewMode(
+    options: WorkbenchFilesViewModeOptions = {},
+): WorkbenchFilesViewModeConsumer {
+    const session = useUserRecordSession<WorkbenchFilesViewModeRecord, WorkspaceFilesViewMode>({
+        definition: defineWorkbenchFilesViewModeState,
+        compose: composeFilesViewMode,
+        ...(options.adapters === undefined ? {} : {adapters: options.adapters}),
+    });
+    return {
+        mode: computed(() => session.display.value.mode),
         loading: session.loading,
         notice: session.notice,
         commit: session.commit,

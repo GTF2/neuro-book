@@ -7,19 +7,23 @@
 import {createWorldEngineTools} from "nbook/server/agent/tools/world-engine-tools";
 import type {ToolExecutionContext} from "nbook/server/agent/tools/types";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
-import {closeProject, openProject} from "nbook/server/workspace-files/project-session";
+import {closeProject, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
+import {productRuntimeReady, stopProductRuntime} from "nbook/server/runtime/product-startup";
+import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 const tools = createWorldEngineTools();
 const executeWorldTool = tools.find((t) => t.key === "execute_world");
 const projectRoot = "ming-ding-zhi-shi-2";
 const projectRef = projectWorkspaceRef(projectRoot);
+if (!process.env.NEURO_BOOK_APPLICATION_ROOT?.trim() || !process.env.NEURO_BOOK_STATE_ROOT?.trim()) {
+    throw new Error("Seed脚本要求显式NEURO_BOOK_APPLICATION_ROOT与NEURO_BOOK_STATE_ROOT");
+}
 const workspaceRoot = resolveRuntimeWorkspaceRoot();
-const currentProject = await openProject(
-    projectRef,
-    {kind: "job", source: "chapter-01-slices"},
-    workspaceRoot,
-);
+await productRuntimeReady();
+let currentProject: ReadyProjectSessionRef;
+try {
+    currentProject = await openProject(projectRef, {kind: "job", source: "chapter-01-slices"}, workspaceRoot);
 
 const context: ToolExecutionContext = {
     harness: {} as ToolExecutionContext["harness"],
@@ -160,11 +164,14 @@ async function main() {
     console.log("\n✅ 第一章切片写入完成！");
 }
 
-try {
     await main();
 } catch (error) {
     console.error("❌ 脚本执行失败：", error);
     process.exitCode = 1;
 } finally {
-    await closeProject(projectRef, "shutdown").catch(() => undefined);
+    try {
+        await closeProject(projectRef, "shutdown");
+    } finally {
+        await stopProductRuntime();
+    }
 }

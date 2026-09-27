@@ -14,7 +14,7 @@ import {
     closeProject,
     openProject,
     ProjectNotOpenError,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 describe("Authorized File Operation", () => {

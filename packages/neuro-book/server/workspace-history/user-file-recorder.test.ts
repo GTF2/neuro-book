@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
     recordProjectDelete: vi.fn(async () => undefined),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     requireReadyModuleHandle: mocks.requireReadyModuleHandle,
 }));
 

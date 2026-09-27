@@ -1,9 +1,9 @@
 import {randomUUID} from "node:crypto";
-import {mkdir, rm, stat, writeFile} from "node:fs/promises";
+import {mkdir, rename, rm, stat, writeFile} from "node:fs/promises";
 import {join} from "node:path";
 import { testHostPath } from "@notnotype/neuro-book-test-support/test-path"
 import {consola} from "consola";
-import {afterEach, beforeEach, describe, expect, it} from "vitest";
+import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {absoluteFsPath, type AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {PROJECT_DATABASE_MODULE_TOKEN} from "nbook/server/workspace-files/project-database-module";
 import {projectWorkspaceRef, type ProjectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
@@ -34,12 +34,13 @@ import {
     resetProjectSessionsForTest,
     sweepProjectSessions,
     updateProjectMetadata,
-} from "nbook/server/workspace-files/project-session";
+    runReadyProjectOperation,
+} from "nbook/server/runtime/product-project";
 import {writeProjectManifest} from "nbook/server/workspace-files/project-workspace";
 import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
 
-describe("project-session production facade", () => {
+describe("Application-owned project generations", () => {
     let tempRoot: string;
     let workspaceRoot: AbsoluteFsPath;
 
@@ -135,6 +136,46 @@ describe("project-session production facade", () => {
         await expect(listProjects()).resolves.toEqual(expect.objectContaining({projects: []}));
     }, 60_000);
 
+    it("外部替换根时封住旧代open，收口Scope后才允许新代ready", async () => {
+        const ref = await createTempProject("replacement-book");
+        let releaseClose!: () => void;
+        const closeGate = new Promise<void>((resolve) => { releaseClose = resolve; });
+        let closingStarted = false;
+        let closeCount = 0;
+        const restoreModules = replaceProjectModulesForTest(
+            (["database", "history", "file-index"] as const).map((name) => ({
+                token: projectModuleToken(name, "required"),
+                start: () => ({
+                    ready: Promise.resolve(),
+                    close: async () => {
+                        if (name === "file-index" && closeCount++ === 0) {
+                            closingStarted = true;
+                            await closeGate;
+                        }
+                    },
+                }),
+            })),
+        );
+        try {
+            const old = await openProject(ref, {kind: "user"}, workspaceRoot);
+            await rename(join(workspaceRoot, ref.projectRoot), join(workspaceRoot, "replacement-book-original"));
+            await createTempProject(ref.projectRoot);
+            await vi.waitFor(() => expect(closingStarted).toBe(true), {timeout: 5_000});
+
+            await expect(openProject(ref, {kind: "user"}, workspaceRoot)).rejects.toMatchObject({name: "ProjectSessionRuntimeClosedError"});
+            releaseClose();
+            await vi.waitFor(async () => {
+                const current = await openProject(ref, {kind: "user"}, workspaceRoot);
+                expect(current).not.toBe(old);
+                expect(current.generation).not.toBe(old.generation);
+                expect(() => requireReadyModuleHandle(old, PROJECT_DATABASE_MODULE_TOKEN)).toThrow();
+            }, {timeout: 5_000});
+        } finally {
+            releaseClose();
+            restoreModules();
+        }
+    }, 20_000);
+
     it("连续100次列表读取只消费浅层snapshot且不启动Project数据面", async () => {
         const starts = new Map<ProjectModuleName, number>();
         const restoreModules = replaceProjectModulesForTest(
@@ -218,6 +259,51 @@ describe("project-session production facade", () => {
         expect(projectOccupancy(ref)?.userConnections).toBe(1);
         releaseSecond();
         expect(projectOccupancy(ref)?.state).toBe("grace");
+    });
+
+    it("closing中拒绝同路径reopen，已接纳操作完成后只关闭旧generation", async () => {
+        const ref = await createTempProject("closing-generation-book");
+        const first = await openProject(ref, {kind: "user"}, workspaceRoot);
+        const finish = Promise.withResolvers<void>();
+        const operation = runReadyProjectOperation(first, async () => { await finish.promise; });
+        const closing = closeProject(ref, "shutdown");
+        await expect(openProject(ref, {kind: "user"}, workspaceRoot)).rejects.toMatchObject({code: "PROJECT_SESSION_RUNTIME_CLOSED"});
+        finish.resolve();
+        await operation;
+        await closing;
+        const second = await openProject(ref, {kind: "user"}, workspaceRoot);
+        expect(second.publicId).not.toBe(first.publicId);
+        expect(() => acquireUserPresence(ref, first.publicId)).toThrow(ProjectNotOpenError);
+        expect(projectOccupancy(ref)).toMatchObject({state: "open"});
+    });
+
+    it("opening期间close等待原代次并拒绝同时reopen", async () => {
+        const ref = await createTempProject("opening-generation-book");
+        const started = Promise.withResolvers<void>();
+        const release = Promise.withResolvers<void>();
+        const restore = replaceProjectModulesForTest(
+            (["database", "history", "file-index"] as const).map((name) => ({
+                token: projectModuleToken(name, "required"),
+                start: () => {
+                    if (name === "database") started.resolve();
+                    return {ready: name === "database" ? release.promise : Promise.resolve(), close: async () => undefined};
+                },
+            })),
+        );
+        try {
+            const opening = openProject(ref, {kind: "user"}, workspaceRoot);
+            await started.promise;
+            const closing = closeProject(ref, "shutdown");
+            await expect(openProject(ref, {kind: "user"}, workspaceRoot)).rejects.toMatchObject({code: "PROJECT_SESSION_RUNTIME_CLOSED"});
+            release.resolve();
+            await opening.catch(() => undefined);
+            await closing;
+            const reopened = await openProject(ref, {kind: "user"}, workspaceRoot);
+            expect(reopened.publicId).toEqual(expect.any(String));
+        } finally {
+            release.resolve();
+            restore();
+        }
     });
 
     it("Agent在场阻止grace，离场后到期关闭当前generation", async () => {

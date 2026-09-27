@@ -14,6 +14,7 @@ import NovelIdeActivityBar from "nbook/app/components/novel-ide/NovelIdeActivity
 import NovelIdeProfileDialog from "nbook/app/components/novel-ide/NovelIdeProfileDialog.vue";
 import NovelIdeSettingsDialog from "nbook/app/components/novel-ide/NovelIdeSettingsDialog.vue";
 import WorldEngineWorkbenchDialog from "nbook/app/components/novel-ide/world-engine/WorldEngineWorkbenchDialog.vue";
+import UserProfileWorkbenchDialog from "nbook/app/components/profile-template-editor/UserProfileWorkbenchDialog.vue";
 import NovelPromptBar from "nbook/app/components/novel-ide/NovelPromptBar.vue";
 import type {AgentSessionModelDraft} from "nbook/app/components/novel-ide/agent/agent-session-model-controls";
 import ProjectPickerScreen from "nbook/app/components/novel-ide/ProjectPickerScreen.vue";
@@ -28,7 +29,6 @@ import WorkbenchStatusBar from "nbook/app/components/workbench/WorkbenchStatusBa
 import WorkbenchStatusBarItem from "nbook/app/components/workbench/WorkbenchStatusBarItem.vue";
 import {useWorkbenchDrop} from "nbook/app/composables/useWorkbenchDrop";
 import {
-    productWorkbenchRegistry,
     resolveViewPresentation,
     SHELL_FILES_VIEW,
     type ContainerViewPresentation,
@@ -67,19 +67,14 @@ import {
 } from "nbook/app/utils/workbench/view-placements";
 import {provideWorkbenchCommands} from "nbook/app/composables/useWorkbenchCommands";
 import {useWorkbenchViewActions} from "nbook/app/composables/useWorkbenchViewActions";
-import type {CommandResult, Release} from "nbook/app/utils/workbench/commands";
 import {
     executePanelActionItem,
-    registerViewTitleCommands,
-    registerWorkbenchShellCommands,
     resolvePanelTitleActions,
     SHELL_CONTAINER_COMMAND_IDS,
-    SHELL_FILES_REFRESH_COMMAND,
     type WorkbenchShellCommandPort,
 } from "nbook/app/utils/workbench/workbench-shell-commands";
 import type {WorkbenchTitleActionEvent, WorkbenchTitleActionItems} from "nbook/app/utils/workbench/view-title-actions";
-import {resolveWorkbenchViewFactory} from "nbook/app/utils/workbench/view-factories";
-import UserProfileWorkbenchDialog from "nbook/app/components/profile-template-editor/UserProfileWorkbenchDialog.vue";
+import {createProductBrowserRuntime, type ProductBrowserRuntime} from "nbook/app/runtime/product-browser-runtime";
 import WorkspaceCharacterDetailPanel from "nbook/app/components/novel-ide/workspace/WorkspaceCharacterDetailPanel.vue";
 import WorkspaceFileConflictDialog from "nbook/app/components/novel-ide/workspace/WorkspaceFileConflictDialog.vue";
 import WorkspaceLocationProfileDialog from "nbook/app/components/novel-ide/workspace/WorkspaceLocationProfileDialog.vue";
@@ -88,9 +83,8 @@ import type {WorkspaceReferencePreviewMeta} from "nbook/app/components/markdown-
 import {ensureThemeHost} from "nbook/app/utils/theme/host";
 import {useProductTheme} from "nbook/app/utils/theme/theme-session";
 import {useAuthSessionState} from "nbook/app/composables/useAuthSessionState";
-import {useWorkspaceFileEvents} from "nbook/app/composables/useWorkspaceFileEvents";
-import {isProjectSessionSupersededError, useProjectSession} from "nbook/app/composables/useProjectSession";
 import {useResizablePanel} from "nbook/app/composables/useResizablePanel";
+import {isProjectSessionSupersededError, useProjectSession} from "nbook/app/composables/useProjectSession";
 import {useDialog} from "nbook/app/composables/useDialog";
 import {getWorkspaceLorebookTypeMeta} from "nbook/app/components/novel-ide/workspace/workspace-entry-meta";
 import {useNotification} from "nbook/app/composables/useNotification";
@@ -212,6 +206,7 @@ const {
     loadWorkspaceTree,
     saveCurrentFile,
     saveDirtyWorkspaceFiles,
+    settleWorkspaceSaves,
     closeWorkspaceTab,
     keepWorkspaceTab,
     moveWorkspaceTab,
@@ -221,13 +216,13 @@ const {
     setWorkspaceTabPinned,
     resolveWorkspaceWriteConflict,
     syncWorkspaceFromDisk,
+    suspendProjectFiles,
     switchToNovelWorkspace,
     closeProjectWorkspace,
     switchToUserAssetsWorkspace,
     loadProjects,
 } = novelIdeStore;
 const theme = useProductTheme();
-const workspaceFileEvents = useWorkspaceFileEvents();
 // Current Project 只有在 open + presence_ready 后才提交；URL 在此之前只是打开意图。
 const projectSession = useProjectSession();
 const projectSwitching = ref(false);
@@ -410,13 +405,13 @@ const workbenchViewContext = computed<WorkbenchContext>(() => {
  * 三个容器的切片都从这一份统一求值里取，不各自解释位置。
  */
 const viewPlacements = useWorkbenchViewPlacements({context: () => workbenchViewContext.value});
+const browserRuntime = shallowRef<ProductBrowserRuntime | null>(null);
 /**
  * 编辑会话的存储会话（`workbench.editor/session` 与 `user-assets-session`）：分组拓扑 + 逐组标签
  * 一条记录原子落盘，恢复顺序与冲突出口都在这一层。工作面标识变化时自动重读并重订阅。
  */
 const editorSessionStorage = useEditorSessionStorage({surface: workbenchLayoutSurface});
-const workbenchRegistryResult = computed(() => productWorkbenchRegistry());
-
+const workbenchRegistryResult = computed(() => browserRuntime.value?.registry ?? {ok: false as const, reason: "浏览器工作台尚未就绪"});
 /** Part 标题：容器移动菜单里的落点文案（i18n 归页面，`resolveViewPresentation` 不发明 key）。 */
 const PART_TITLE_KEYS: Record<ToolPartId, string> = {
     left: "ide.workbench.part.left",
@@ -834,21 +829,18 @@ const containerActions = computed<WorkbenchTitleActionItems>(() => ({
     }],
 }));
 
-const commandReleases: Release[] = [];
-function registerCommands(label: string, result: CommandResult<Release>): void {
-    if (!result.ok) {
-        notification.error(`${label}：${result.reason}`);
-        return;
-    }
-    commandReleases.push(result.value);
+/** Product runtime owns this window's shell commands, Files View and refresh contribution. */
+if (import.meta.client) {
+    browserRuntime.value = createProductBrowserRuntime({
+        instanceId: crypto.randomUUID(),
+        commands: workbenchCommands.registry,
+        shell: shellCommandPort,
+        viewCommands: {runAction: viewActions.runAction},
+        onFailure: (reason) => notification.error(`浏览器工作台启动失败：${reason}`),
+    });
 }
-registerCommands("外壳命令注册失败", registerWorkbenchShellCommands(workbenchCommands.registry, shellCommandPort));
-// View 标题命令按宿主的白名单注册：View 贡献只声明 commandId，元数据由这里给定。
-registerCommands("View 标题命令注册失败", registerViewTitleCommands(workbenchCommands.registry, [SHELL_FILES_REFRESH_COMMAND], {runAction: viewActions.runAction}));
 onBeforeUnmount(() => {
-    for (const release of commandReleases.splice(0)) {
-        release();
-    }
+    if (browserRuntime.value) void browserRuntime.value.destroy();
 });
 
 /**
@@ -1865,13 +1857,18 @@ async function overwriteSavedEditorLayout(): Promise<void> {
 }
 
 const resolveUnsavedWorkspaceChanges = async (): Promise<WorkspaceSwitchDecision> => {
-    // 未解决输入必须先裁决：不把"防抖已清"当已入 Store，也不在有候选待裁决时切工作面。
+    // 所有保存确认先归属旧代次；未确认写入或异常不能伴随工作面释放。
+    if (!await settleWorkspaceSaves()) {
+        notification.warning("文件保存尚未确认，请处理后再切换。", {title: "文件尚未保存"});
+        return "cancel";
+    }
     if (editorWorkbench.flush() === "conflict" || novelIdeStore.hasUnresolvedEditorChanges) {
         notification.warning("有编辑内容与最新正文冲突，请先在编辑区顶部选择「采用当前正文」或「保留此视图内容」再切换。", {title: "有待裁决的编辑内容"});
         return "cancel";
     }
     if (!hasUnsavedWorkspaceChanges.value) {
-        return await flushEditorSessionBeforeSwitch() ? "save" : "cancel";
+        if (!await flushEditorSessionBeforeSwitch()) return "cancel";
+        return hasUnsavedWorkspaceChanges.value || novelIdeStore.hasUnresolvedEditorChanges ? "cancel" : "save";
     }
 
     const action = await choose(t("ide.shell.unsavedWorkspaceMessage"), [
@@ -1880,21 +1877,22 @@ const resolveUnsavedWorkspaceChanges = async (): Promise<WorkspaceSwitchDecision
         {label: t("common.cancel"), value: "cancel"},
     ], t("ide.shell.unsavedWorkspaceTitle"));
 
-    if (action === "cancel") {
-        return "cancel";
-    }
+    if (action === "cancel") return "cancel";
     if (action === "save") {
-        await saveDirtyWorkspaceFiles();
-        if (!await flushEditorSessionBeforeSwitch()) {
+        try {
+            if (!await saveDirtyWorkspaceFiles()) {
+                notification.warning("仍有文件未保存或待处理冲突，请先处理后再切换。", {title: "文件尚未保存"});
+                return "cancel";
+            }
+        } catch (error) {
+            notification.error(resolveApiErrorMessage(error, "文件保存失败，请处理后再切换"), {title: "文件尚未保存"});
             return "cancel";
         }
-        return "save";
     }
-    if (!await flushEditorSessionBeforeSwitch()) {
-        return "cancel";
-    }
-
-    return "discard";
+    if (!await flushEditorSessionBeforeSwitch()) return "cancel";
+    if (editorWorkbench.flush() === "conflict" || novelIdeStore.hasUnresolvedEditorChanges) return "cancel";
+    if (action === "save" && hasUnsavedWorkspaceChanges.value) return "cancel";
+    return action === "save" ? "save" : action === "discard" ? "discard" : "cancel";
 };
 
 /**
@@ -2337,7 +2335,7 @@ const subscribeWorkspaceEvents = (): void => {
         : currentProjectRoot.value
             && projectSession.state.value.status === "ready"
             && projectSession.state.value.ready.projectRoot === currentProjectRoot.value
-            ? {projectRoot: currentProjectRoot.value} as const
+            ? {projectRoot: projectSession.state.value.ready.projectRoot, publicId: projectSession.state.value.ready.publicId}
             : null;
     if (!target) {
         return;
@@ -2348,7 +2346,7 @@ const subscribeWorkspaceEvents = (): void => {
         : null;
     const abortController = new AbortController();
     workspaceEventAbortController.value = abortController;
-    void workspaceFileEvents.subscribe(target, (event) => {
+    void browserRuntime.value!.subscribeFiles(target, (event) => {
         if (revision !== workspaceEventRevision) return;
         if (projectReadyRevision !== null && (
             projectSession.state.value.status !== "ready"
@@ -2517,7 +2515,7 @@ const initializeWorkspaceFromRoute = async (target: ProjectRouteTarget, revision
         await releaseProjectSurface();
         if (!ownsProjectRouteIntent(revision)) return;
         setProjectRouteProgress(revision, "opening-project");
-        await projectSession.open(target.projectRoot);
+        const ready = await projectSession.open(target.projectRoot);
         if (!ownsProjectRouteIntent(revision)) {
             await projectSession.release();
             return;
@@ -2526,7 +2524,7 @@ const initializeWorkspaceFromRoute = async (target: ProjectRouteTarget, revision
         // ProjectSession 是存在性真相源；Catalog 仅补充展示 metadata，不能阻塞 direct-open。
         void loadProjects().catch(() => undefined);
         setProjectRouteProgress(revision, "loading-tree");
-        await switchToNovelWorkspace(target.projectRoot);
+        await switchToNovelWorkspace({projectRoot: ready.projectRoot, publicId: ready.publicId});
         if (!ownsProjectRouteIntent(revision)) {
             await releaseProjectSurface();
             return;
@@ -3098,12 +3096,19 @@ watch(projectSession.state, (next, previous) => {
         return;
     }
     if (next.status !== "ready") {
-        if (previous.status === "ready") stopWorkspaceEvents();
+        if (previous.status === "ready") {
+            stopWorkspaceEvents();
+            suspendProjectFiles();
+        }
         return;
     }
     if (next.ready.projectRoot !== currentProjectRoot.value) return;
-    if (previous.status !== "ready" || previous.ready.revision !== next.ready.revision) {
-        subscribeWorkspaceEvents();
+    if (previous.status !== "ready" || previous.ready.publicId !== next.ready.publicId) {
+        if (previous.status === "ready" || !projectSwitching.value) {
+            void switchToNovelWorkspace({projectRoot: next.ready.projectRoot, publicId: next.ready.publicId}).then(() => subscribeWorkspaceEvents()).catch((error: unknown) => {
+                notification.error(resolveApiErrorMessage(error, "恢复 Project 文件失败"));
+            });
+        }
     }
 });
 
@@ -3172,13 +3177,12 @@ onBeforeUnmount(() => {
             @drag-move="workbenchDrop.handlers.onDragMove"
             @drag-over="workbenchDrop.handlers.onDragOver"
             @drag-end="workbenchDrop.handlers.onDragEnd">
-        <WorkbenchViewInstances :views="viewPresentation?.entries ?? []" :view-factory-resolver="resolveWorkbenchViewFactory"
+        <WorkbenchViewInstances :views="viewPresentation?.entries ?? []" :view-factory-resolver="(factoryKey) => browserRuntime?.resolveViewFactory(factoryKey) ?? {ok: false, reason: '浏览器工作台尚未就绪'}"
             @view-actions="(target, states) => viewActions.setStates(target, states)"
             @view-handle-ready="(target, handle) => viewActions.bindHandle(target, handle)">
         <!-- 容器实例层：每个容器一个 ViewHost，按 Part 宿主登记的挂载目标搬进去；活动容器一换只搬 DOM。 -->
         <WorkbenchContainerInstances :containers="containerSlices"
             :view-sizes="viewPlacements.record.value.viewSizes ?? {}"
-            :context-key="viewPlacements.contextKey()"
             :allow-container-move="true"
             :actions-context-key="titleActionsContextKey"
             :actions-by-view="viewActions.actionsByView.value"
@@ -3306,8 +3310,12 @@ onBeforeUnmount(() => {
                     @empty-focus="editorWorkbench.selectGroup" @focus-group="editorWorkbench.selectGroup">
                 <!-- 每片叶挂自己的真实视图宿主：实例 token 与文档身份一起校验，后台组就绪不抢焦点。 -->
                 <template #content="{ groupId }">
-                    <EditorViewHost v-if="groupPresentation(groupId)?.document"
-                        :document="groupPresentation(groupId)!.document!"
+                    <EditorViewHost v-if="(groupPresentation(groupId)?.tabs.length ?? 0) > 0 || (groupPresentation(groupId)?.retainedDocuments.length ?? 0) > 0"
+                        v-show="!!groupPresentation(groupId)?.document"
+                        :document="groupPresentation(groupId)?.document ?? null"
+                        :retained-documents="groupPresentation(groupId)?.retainedDocuments ?? []"
+                        :protected-tokens="editorWorkbench.protectedTokens.value"
+                        :saving="editorWorkbench.saving.value"
                         :editor-id="groupPresentation(groupId)?.editorId ?? null"
                         :registry="editorWorkbench.registry"
                         :commit-change="(request) => editorWorkbench.commitChange(groupId, request)"
@@ -3318,7 +3326,7 @@ onBeforeUnmount(() => {
                         @view-actions="(target, token, actions) => editorWorkbench.setActions(groupId, target, token, actions)"
                         @view-error="(target, token, message) => editorWorkbench.viewError(groupId, target, token, message)"
                         @conflict-resolved="editorWorkbench.acknowledgeConflict" />
-                    <EditorWelcome v-else :node="groupId === editorWorkbench.activeGroupId.value ? displaySelectedFileNode : null"
+                    <EditorWelcome v-if="!groupPresentation(groupId)?.document" :node="groupId === editorWorkbench.activeGroupId.value ? displaySelectedFileNode : null"
                         :tabs="editorGroups.find((item) => item.id === groupId)?.tabs ?? []" :workspace-mode="workspaceKind"
                         @select-tab="(path) => editorWorkbench.selectTab(groupId, path)" @open-path="(path) => openWelcomeWorkspacePath(path, groupId)"
                         @open-files="openWelcomeFiles" @create-chapter="createWelcomeChapter" @create-markdown-file="createWelcomeMarkdownFile"

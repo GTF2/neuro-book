@@ -13,7 +13,7 @@ taskId: t14-lab-host-boundary
 
 ## 当前状态
 
-本地实现、专项验证与文档/治理门禁已完成；实现提交 `12c4c4e3`。执行位置 `.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，开始基线 `25550660`。w00016 当时交付的命令底座与验收保留；新边界由本 Task 接手，并在 [w00016 Work](../../../w00016-workbench-commands/README.md#2026-09-25-lab-宿主边界交接) 留交接指针。
+本地实现、专项验证与文档/治理门禁已完成；实现提交 `12c4c4e3`。2026-09-26 开发者报告已在 w00017 的 `http://localhost:3000/lab` 完成人工验证，目前未发现问题；这是开发者自报体验结论，不追加未提供的逐项检查或性能数据，也不消除下列已记录的自动化基线失败。执行位置 `.worktree/w00017-application-runtime-architecture`，分支 `refactor/w00017-runtime-foundation`，开始基线 `25550660`。w00016 当时交付的命令底座与验收保留；新边界由本 Task 接手，并在 [w00016 Work](../../../w00016-workbench-commands/README.md#2026-09-25-lab-宿主边界交接) 留交接指针。
 
 ## 实现边界
 
@@ -40,9 +40,9 @@ taskId: t14-lab-host-boundary
 
 - 完整 `--suite all` smoke 未通过。`--suite workbench-shell` 在本切片与 stash 后的 `25550660` 基线各出现 **143 条归一化后完全相同**的断言；其首个失败是容器级 `data-title-actions="container"` 菜单找不到，后续面板/拖动断言级联。组合流程在 1600×1000 下还有 Panel 裁剪/拖回问题；未改工作台骨架实现。
 - 单独 `--suite agent-profile` 和 `--suite project-picker` 未通过：脚本等待场景 `[role="radio"]`，现有 LabShell 在场景数大于 4 时呈现 FormSelect 下拉（阈值源自基线 `565f792d`），属于现有脚本与控件合同漂移；本片未修改相关选择器或场景目录。
-- 完整包级 `bun run test`、全仓 `governance:check`、Product 构建排除核验、nb-ui 全量 E2E、人工浏览器验收和真实 Provider/Model 均未运行。场景内仍存在 pre-existing 的 `ProjectCreateDialog` → layout-session / host-context-client 与 `AgentWorkflowBubble` → novel-ide store 耦合；不发生在 `/lab` 默认启动窗口，后续按场景边界单独处理。
+- 本切片未运行完整包级 `bun run test`、全仓 `governance:check`、Product 构建排除核验、nb-ui 全量 E2E 和真实 Provider/Model。开发者人工体验结论见「当前状态」，Agent 未执行额外人工评测。场景内仍存在 pre-existing 的 `ProjectCreateDialog` → layout-session / host-context-client 与 `AgentWorkflowBubble` → novel-ide store 耦合；不发生在 `/lab` 默认启动窗口，后续按场景边界单独处理。
 - 从产品文档 SPA 进入 Lab 仍可运行既有产品启动接线（已运行过，不能回退）；无默认产品请求只针对直接加载的 `/lab` 文档。临时根中的迁移不代表产品迁移授权。
 
 ## 授权与下一步
 
-开发者批准方案 B 继续 Lab 切片；本地可逆开发与提交已完成。push、PR、合并、发布、真实产品数据迁移与人工浏览器验收须各自授权。Files 纵向链另立实际实施单元，产品启动链在该链迁移旧 owner。完整包级测试与远端交付的取舍仍待开发者决定。
+开发者批准方案 B 继续 Lab 切片；本地可逆开发与提交已完成，2026-09-26 开发者报告人工验证未发现问题并要求进入 Files 设计。新范围包含文件切换性能重构、Files 与文件资源管理器的职责划分，以及主页面左侧资源管理器迁入 Lab 并接入 Files；当前先设计，不把体验反馈解释为产品重构实现或远端操作授权。push、PR、合并、发布、真实产品数据迁移与额外人工浏览器验收仍按各自授权执行。

@@ -60,7 +60,7 @@ async function executeSql(context: ToolExecutionContext, sql: string): Promise<E
     if (!ready) {
         throw new Error("execute_sql 需要当前 session 位于具体 Project Workspace；目标固定为该项目的 .nbook/project.sqlite。");
     }
-    const {activateReadyProjectModule} = await import("nbook/server/workspace-files/project-session");
+    const {activateReadyProjectModule} = await import("nbook/server/runtime/product-project");
     const handle = await activateReadyProjectModule(ready, PROJECT_AGENT_SQL_MODULE_TOKEN);
     return handle.execute(sql);
 }

@@ -2,8 +2,11 @@ import path from "node:path";
 import fs from "node:fs/promises";
 import {consola} from "consola";
 import type {OperationActor} from "@notnotype/nb-history";
+import type {WorkspaceFileSourceIdentity} from "nbook/shared/dto/workspace-file-operation.dto";
 import {
     convertWorkspaceFileToDirectory,
+    WorkspacePathCopyError,
+    copyWorkspacePath,
     createWorkspaceDirectory,
     createWorkspaceFile,
     deleteWorkspacePath,
@@ -18,7 +21,7 @@ import {
 import type {AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import type {WorkspaceFileTarget} from "nbook/server/workspace-files/workspace-file-target";
 import type {WorkspaceUploadedFileResult} from "nbook/server/workspace-files/workspace-upload";
-import {assertWorkspaceStorageBoundary} from "nbook/server/workspace-files/workspace-storage-boundary";
+import {assertWorkspaceStorageBoundary, WorkspaceStorageBoundaryError} from "nbook/server/workspace-files/workspace-storage-boundary";
 import {
     LOCAL_USER_ID,
     collectTrackedDiskFiles,
@@ -152,6 +155,9 @@ export async function renameWorkspacePathTracked(input: {
     await assertWorkspaceStorageBoundary(input.target, input.toPath, "mutation");
     const fromPath = normalizeSlashes(input.fromPath);
     const toPath = normalizeSlashes(input.toPath);
+    if (fromPath === toPath) {
+        return await renameWorkspacePath(input.target.root, input.fromPath, input.toPath);
+    }
     // rename 前判定形态并枚举目录内容（rename 后源路径已不存在）。
     const childFiles = target === null ? [] : await listDirectoryFilesForRecord(target.projectRoot, fromPath);
     const node = await renameWorkspacePath(input.target.root, input.fromPath, input.toPath);
@@ -204,6 +210,142 @@ export async function deleteWorkspacePathTracked(input: {
         });
     }
 }
+export type BatchWorkspacePathItem = {
+    source: string;
+    target: string;
+    status: "success" | "failed" | "skipped" | "not-executed" | "cancelled" | "unknown";
+    stopReason?: "binding" | "authorization";
+    reason?: string;
+    residualPaths?: readonly string[];
+};
+
+export async function batchWorkspacePathsTracked(input: {
+    target: WorkspaceFileTarget;
+    history?: ProjectHistoryHandle;
+    kind: "copy" | "move";
+    sources: string[];
+    destination: string;
+    actor: OperationActor;
+    targetNames?: Record<string, string>;
+    expectedSources?: Record<string, WorkspaceFileSourceIdentity>;
+    revalidateTarget?: () => Promise<void>;
+}): Promise<BatchWorkspacePathItem[]> {
+    const results: BatchWorkspacePathItem[] = [];
+    let stopReason: "binding" | "authorization" | undefined;
+    const valid = (value: string): boolean => value.length > 0
+        && !value.startsWith("/") && !path.win32.isAbsolute(value)
+        && !value.split("/").some((segment) => segment === ".." || segment === "." || segment === "");
+    const unique = [...new Set(input.sources.map((source) => source.replace(/\\/g, "/").replace(/\/+$/u, "")))];
+    const sources = unique.filter((source) => !unique.some((other) => other !== source && valid(other) && source.startsWith(`${other}/`)));
+    const seenSourceIdentities = new Set<string>();
+    const destinationValid = input.destination === "" || valid(input.destination.replace(/\\/g, "/").replace(/\/+$/u, ""));
+    const destination = normalizeSlashes(input.destination);
+    for (const rawSource of sources) {
+        const name = input.targetNames && Object.hasOwn(input.targetNames, rawSource) ? input.targetNames[rawSource]! : path.posix.basename(rawSource);
+        const source = normalizeSlashes(rawSource);
+        const targetPath = destination ? `${destination}/${name}` : name;
+        if (!stopReason && input.revalidateTarget) {
+            try {
+                await input.revalidateTarget();
+            } catch {
+                stopReason = "binding";
+            }
+        }
+        if (stopReason) {
+            results.push({source, target: targetPath, status: "not-executed", stopReason, reason: stopReason === "binding" ? "Project 绑定已失效" : "工作区授权已失效"});
+            continue;
+        }
+        if (!valid(rawSource) || !destinationValid || !valid(name) || name !== name.trim() || /[\\/]/u.test(name)) {
+            results.push({source: rawSource, target: targetPath, status: destinationValid ? "failed" : "not-executed", reason: "文件路径无效"});
+            continue;
+        }
+        if (input.target.kind === "project-workspace" && !input.history) {
+            stopReason = "binding";
+            results.push({source, target: targetPath, status: "not-executed", stopReason, reason: "Project 绑定已失效"});
+            continue;
+        }
+        try {
+            await assertWorkspaceStorageBoundary(input.target, source, "mutation");
+            await assertWorkspaceStorageBoundary(input.target, targetPath, "mutation");
+            const absoluteSource = resolveWorkspacePath(input.target.root, source);
+            const sourceEntry = await fs.lstat(absoluteSource);
+            if (sourceEntry.isSymbolicLink()) {
+                results.push({source, target: targetPath, status: "failed", reason: "不支持操作符号链接来源"});
+                continue;
+            }
+            const sourceStat = await fs.stat(absoluteSource);
+            const physicalSource = await fs.realpath(absoluteSource);
+            const sourceIdentityKey = process.platform === "win32" ? physicalSource.toLowerCase() : physicalSource;
+            if (seenSourceIdentities.has(sourceIdentityKey)) {
+                results.push({source, target: targetPath, status: "skipped", reason: "来源与本批次另一项指向同一文件"});
+                continue;
+            }
+            seenSourceIdentities.add(sourceIdentityKey);
+            if (targetPath === source || targetPath.startsWith(`${source}/`)) {
+                results.push({source, target: targetPath, status: "skipped", reason: "不能移动到自身或自身后代"});
+                continue;
+            }
+            if (input.expectedSources) {
+                const expected = Object.hasOwn(input.expectedSources, rawSource) ? input.expectedSources[rawSource] : undefined;
+                if (!expected) {
+                    results.push({source, target: targetPath, status: "failed", reason: "缺少来源身份，请重新选择文件"});
+                    continue;
+                }
+                const actual = sourceStat;
+                if (!Number.isFinite(actual.dev) || !Number.isFinite(actual.ino) || actual.ino === 0 || !Number.isFinite(actual.birthtimeMs)
+                    || !Number.isFinite(expected.dev) || !Number.isFinite(expected.ino) || expected.ino === 0 || !Number.isFinite(expected.birthtimeMs)
+                    || actual.dev !== expected.dev || actual.ino !== expected.ino || actual.birthtimeMs !== expected.birthtimeMs) {
+                    results.push({source, target: targetPath, status: "failed", reason: "来源文件已被替换，请重新选择文件"});
+                    continue;
+                }
+            }
+            if (input.kind === "copy") {
+                await copyWorkspacePath(input.target.root, source, targetPath);
+                const history = historyTarget(input.target);
+                if (history) {
+                    try {
+                        const children = await listDirectoryFilesForRecord(history.projectRoot, targetPath);
+                        for (const file of children === null ? [targetPath] : children.map(child => `${targetPath}/${child}`)) {
+                            const after = await readBytesForRecord(history.projectRoot, file);
+                            if (after) await recordProjectWrite(requireHistory(input.history), {relativePath: file, actor: input.actor, before: null, after});
+                        }
+                    } catch (error) {
+                        consola.warn({targetPath, error}, "批量复制已完成但History记账失败");
+                    }
+                }
+            } else {
+                await renameWorkspacePathTracked({target: input.target, history: input.history, fromPath: source, toPath: targetPath, actor: input.actor});
+            }
+            results.push({source, target: targetPath, status: "success"});
+        } catch (error) {
+            if (error instanceof WorkspacePathCopyError) {
+                const history = historyTarget(input.target);
+                if (history) {
+                    for (const residual of error.mappings) {
+                        try {
+                            const after = await readBytesForRecord(history.projectRoot, residual);
+                            if (after) await recordProjectWrite(requireHistory(input.history), {relativePath: residual, actor: input.actor, before: null, after});
+                        } catch (recordError) {
+                            consola.warn({residual, error: recordError}, "批量复制残留History记账失败");
+                        }
+                    }
+                }
+            }
+            if (error instanceof WorkspaceStorageBoundaryError || isAuthorizationFailure(error instanceof WorkspacePathCopyError ? error.cause : error)) stopReason = "authorization";
+            results.push({source, target: targetPath, status: "failed", reason: error instanceof Error ? error.message : "文件操作失败",
+                ...(stopReason ? {stopReason} : {}),
+                ...(error instanceof WorkspacePathCopyError ? {residualPaths: error.mappings} : {})});
+        }
+    }
+    return results;
+}
+
+function isAuthorizationFailure(error: unknown): boolean {
+    if (typeof error !== "object" || error === null) return false;
+    return ("statusCode" in error && (error.statusCode === 401 || error.statusCode === 403))
+        || ("code" in error && (error.code === "EACCES" || error.code === "EPERM"));
+}
+
 
 /** 上传结果记账：对 action === "written" 的文件补 create 账（upload 对已存在文件恒 skip，before 必为 null）。 */
 export async function recordUploadedFiles(input: {

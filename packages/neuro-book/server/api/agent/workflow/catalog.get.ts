@@ -7,7 +7,7 @@ import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {
     requireActiveReadyProject,
     runReadyProjectOperation,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 

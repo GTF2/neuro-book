@@ -7,8 +7,9 @@ import {
     type SubjectPaths,
 } from "nbook/server/agent/tools/subject-rag-index";
 import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
-import {closeAllProjects, openProject} from "nbook/server/workspace-files/project-session";
+import {closeAllProjects, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
+import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 
 /**
  * Bun runtime 下验证 subject RAG 能加载 sqlite-vec、调用 embedding、建索引并检索。
@@ -18,12 +19,12 @@ async function main(): Promise<void> {
     await mkdir(agentTempRoot, {recursive: true});
     const root = await mkdtemp(join(agentTempRoot, "subject-rag-smoke-"));
     const workspaceRoot = absoluteFsPath(join(root, "workspace"));
+    setWorkspaceRuntimeRootContextForTest({workspaceRoot});
     const projectRef = projectWorkspaceRef("demo");
     const projectDirectory = join(workspaceRoot, projectRef.projectRoot);
     const subjectRoot = join(projectDirectory, "simulation", "subjects", "heroine");
     const otherSubjectRoot = join(projectDirectory, "simulation", "subjects", "other");
     const originalFetch = globalThis.fetch;
-    let opened = false;
     try {
         await mkdir(subjectRoot, {recursive: true});
         await mkdir(otherSubjectRoot, {recursive: true});
@@ -88,7 +89,6 @@ async function main(): Promise<void> {
             {kind: "job", source: "subject-rag-smoke"},
             workspaceRoot,
         );
-        opened = true;
         const configTarget = {scope: "project" as const, workspaceRoot, project: currentProject};
 
         const subject: SubjectPaths = {
@@ -152,8 +152,12 @@ async function main(): Promise<void> {
         console.log("subject-rag smoke ok");
     } finally {
         globalThis.fetch = originalFetch;
-        if (opened) await closeAllProjects().catch(() => undefined);
-        await rm(root, {recursive: true, force: true});
+        try {
+            await closeAllProjects();
+            await rm(root, {recursive: true, force: true});
+        } finally {
+            setWorkspaceRuntimeRootContextForTest(null);
+        }
     }
 }
 

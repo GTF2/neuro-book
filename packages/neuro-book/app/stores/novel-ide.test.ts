@@ -279,15 +279,15 @@ describe("useNovelIdeStore Project Catalog", () => {
             throw new Error(`Unexpected fetch: ${url}`);
         }));
         const store = await createStore();
-        store.currentProjectRoot = "direct-open";
         expect(store.currentNovel).toBeNull();
-        expect(store.currentWorkspaceRoot).toBe("workspace/direct-open");
-
-        await store.initializeWorkspace();
+        await store.switchToNovelWorkspace({projectRoot: "direct-open", publicId: "direct-open-generation-1"});
 
         expect(fetch).not.toHaveBeenCalledWith("/api/projects");
         expect(store.currentProjectRoot).toBe("direct-open");
         expect(store.currentWorkspaceRoot).toBe("workspace/direct-open");
+        expect(fetch).toHaveBeenCalledWith("/api/workspace-files/tree", {
+            query: {projectRoot: "direct-open", publicId: "direct-open-generation-1"}, signal: undefined,
+        });
     });
 });
 

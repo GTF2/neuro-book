@@ -1,3 +1,4 @@
+import type * as ProjectOpenGuard from "nbook/server/workspace-files/project-open-guard";
 import fs from "node:fs/promises";
 import path from "node:path";
 import {randomUUID} from "node:crypto";
@@ -7,6 +8,7 @@ import {WorkspaceWriteConflictDtoSchema} from "nbook/shared/dto/workspace-file-c
 import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {testAbsoluteFsPath, testHostPath} from "@notnotype/neuro-book-test-support/test-path";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
+import type {WorkspaceFilesBinding, createWorkspaceFilesService} from "nbook/server/features/workspace-files/service";
 
 const createdRoots: string[] = [];
 const originalReadBody = (globalThis as typeof globalThis & {readBody?: unknown}).readBody;
@@ -26,6 +28,12 @@ describe("PUT /api/workspace-files/write", () => {
         globals.defineEventHandler = (handler) => handler;
         globals.defineRouteMeta = () => undefined;
         globals.readBody = readBodyMock;
+        vi.doMock("nbook/server/runtime/product-startup", () => ({
+            withProductWorkspaceFiles: async (binding: WorkspaceFilesBinding, operation: (files: ReturnType<typeof createWorkspaceFilesService>) => Promise<unknown>) => {
+                const {createWorkspaceFilesService} = await import("nbook/server/features/workspace-files/service");
+                return operation(createWorkspaceFilesService(binding));
+            },
+        }));
         vi.doMock("nbook/server/utils/prisma", () => ({
             prisma: {},
         }));
@@ -33,8 +41,9 @@ describe("PUT /api/workspace-files/write", () => {
             USER_LOCAL_ACTOR: {kind: "user", userId: "local"},
             writeWorkspaceTextFileTracked: vi.fn(),
         }));
-        vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetMutation: vi.fn((target: {kind: string; projectRoot?: string}, handler: (handles: undefined) => unknown) => {
+        vi.doMock("nbook/server/workspace-files/project-open-guard", async (importOriginal) => ({
+            ...await importOriginal<typeof ProjectOpenGuard>(),
+            withBoundProjectTargetMutation: vi.fn((target: {kind: string; projectRoot?: string}, _binding: unknown, handler: (handles: undefined) => unknown) => {
                 if (target.kind === "project-workspace") {
                     throw Object.assign(new Error("Project未打开"), {
                         statusCode: 409,
@@ -56,6 +65,7 @@ describe("PUT /api/workspace-files/write", () => {
         globals.defineRouteMeta = originalDefineRouteMeta;
         globals.readBody = originalReadBody;
         vi.doUnmock("nbook/server/utils/prisma");
+        vi.doUnmock("nbook/server/runtime/product-startup");
         await Promise.all(createdRoots.splice(0).map((root) => fs.rm(root, {recursive: true, force: true})));
     });
 
@@ -67,13 +77,13 @@ describe("PUT /api/workspace-files/write", () => {
         await fs.writeFile(path.join(root, filePath), "共同基线\n", "utf-8");
         const baseNode = await statWorkspacePath(root, filePath);
         vi.doMock("nbook/server/workspace-files/novel-workspace", () => ({
-            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "workspace-root", root})),
+            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "user-assets", root})),
         }));
 
         await fs.writeFile(path.join(root, filePath), "真实文件\n", "utf-8");
         await fs.utimes(path.join(root, filePath), new Date(), new Date(baseNode.mtimeMs + 5000));
         readBodyMock.mockResolvedValue({
-            projectRoot: "test-project",
+            workspaceKind: "user-assets",
             path: filePath,
             content: "网页编辑\n",
             baseContent: "共同基线\n",
@@ -109,6 +119,7 @@ describe("PUT /api/workspace-files/write", () => {
         }));
         readBodyMock.mockResolvedValue({
             projectRoot: "not-open",
+            publicId: "opened-id",
             path: "note.md",
             content: "不会写入\n",
         });

@@ -25,7 +25,7 @@ describe("Project 控制面不要求 open", () => {
         vi.doMock("nbook/server/workspace-files/novel-workspace", () => ({
             buildWorkspaceSlugBase: vi.fn(() => "new-book"),
         }));
-        vi.doMock("nbook/server/workspace-files/project-session", () => ({
+        vi.doMock("nbook/server/runtime/product-project", () => ({
             createProject,
             listProjects: vi.fn(async () => ({revision: 3, projects: []})),
         }));
@@ -50,7 +50,7 @@ describe("Project 控制面不要求 open", () => {
         vi.doMock("nbook/server/api/projects/project-control-plane", () => ({
             requireProjectRefQuery: vi.fn(() => ({projectRoot: "delete-me"})),
         }));
-        vi.doMock("nbook/server/workspace-files/project-session", () => ({
+        vi.doMock("nbook/server/runtime/product-project", () => ({
             closeProject,
             deleteProject,
             projectOccupancy: vi.fn(() => null),

@@ -29,7 +29,7 @@ import {resolveRuntimeProfileSettings} from "nbook/server/agent/profiles/profile
 import {createLayeredProfileHomeFacade, ensureGlobalProfileHome, ensureProfileHome} from "nbook/server/agent/profiles/profile-home";
 import type {ProfileTemplateNodeDto} from "nbook/shared/dto/profile-template.dto";
 import {buildProfilePromptRoot} from "nbook/server/agent/profiles/profile-dsl-source-parser";
-import {requireActiveReadyProject, runReadyProjectOperation} from "nbook/server/workspace-files/project-session";
+import {requireActiveReadyProject, runReadyProjectOperation} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {projectSqlSchemaSummary} from "nbook/server/agent/tools/project-sql-schema-summary";

@@ -1,5 +1,5 @@
 import {createError} from "h3";
-import {closeProject, projectOccupancy} from "nbook/server/workspace-files/project-session";
+import {closeProject, projectOccupancy} from "nbook/server/runtime/product-project";
 import {throwProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {requireProjectRefBody} from "nbook/server/api/projects/project-control-plane";
 import type {ProjectCloseResponseDto} from "nbook/shared/dto/project.dto";

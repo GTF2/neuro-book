@@ -29,7 +29,7 @@ describe("GET /api/projects/presence", () => {
             }},
         });
 
-        const {acquireUserPresence} = await import("nbook/server/workspace-files/project-session");
+        const {acquireUserPresence} = await import("nbook/server/runtime/product-project");
         const handler = (await import("nbook/server/api/projects/presence.get")).default;
         const handling = handler({} as never);
 
@@ -152,7 +152,7 @@ function mockHandlerDependencies(input: {
     vi.doMock("nbook/server/api/projects/project-http-error", () => ({
         withProjectHttpError: vi.fn(async (operation: () => unknown) => operation()),
     }));
-    vi.doMock("nbook/server/workspace-files/project-session", () => ({
+    vi.doMock("nbook/server/runtime/product-project", () => ({
         acquireUserPresence: vi.fn(async () => input.presence),
     }));
     vi.doMock("nbook/server/utils/event-stream", () => ({

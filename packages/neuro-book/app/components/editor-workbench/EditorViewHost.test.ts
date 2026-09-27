@@ -181,6 +181,82 @@ describe("EditorViewHost", () => {
         wrapper.unmount();
     });
 
+    it("reuses an open tab view and releases it when the tab closes or generation changes", async () => {
+        const built = harness();
+        const second = {...document, target: {...target, documentId: "2", path: "b.md"}, content: "second", contentRevision: 1};
+        const wrapper = mount(EditorViewHost, {
+            props: {document, retainedDocuments: [document, second], editorId: "code", registry: built.registry,
+                commitChange: () => ({status: "stale"})},
+        });
+        await flushPromises();
+        const firstToken = wrapper.emitted("handle-ready")!.at(-1)![1];
+        await wrapper.setProps({document: second});
+        await flushPromises();
+        expect(built.state.mounts).toEqual(["code", "code"]);
+        await wrapper.setProps({document, retainedDocuments: [document, second]});
+        await flushPromises();
+        expect(wrapper.emitted("handle-ready")!.at(-1)![1]).toBe(firstToken);
+        expect(built.state.mounts).toEqual(["code", "code"]);
+
+        await wrapper.setProps({document: second, retainedDocuments: [second]});
+        await flushPromises();
+        await wrapper.setProps({document, retainedDocuments: [document, second]});
+        await flushPromises();
+        expect(built.state.mounts).toHaveLength(3);
+        expect(wrapper.emitted("handle-ready")!.at(-1)![1]).not.toBe(firstToken);
+        const generation = {...document, target: {...target, generation: 2}};
+        await wrapper.setProps({document: generation, retainedDocuments: [generation]});
+        await flushPromises();
+        expect(built.state.mounts).toHaveLength(4);
+        wrapper.unmount();
+    });
+
+    it("retains open tab instances while the active document is temporarily unavailable", async () => {
+        const built = harness();
+        const wrapper = mount(EditorViewHost, {
+            props: {document, retainedDocuments: [document], editorId: "code", registry: built.registry,
+                commitChange: () => ({status: "stale"})},
+        });
+        await flushPromises();
+        const firstToken = wrapper.emitted("handle-ready")!.at(-1)![1];
+        await wrapper.setProps({document: null});
+        await flushPromises();
+        expect(wrapper.findAll("textarea")).toHaveLength(1);
+        await wrapper.setProps({document});
+        await flushPromises();
+        expect(wrapper.emitted("handle-ready")!.at(-1)![1]).toBe(firstToken);
+        expect(built.state.mounts).toEqual(["code"]);
+        await wrapper.setProps({document: null, retainedDocuments: []});
+        await flushPromises();
+        expect(wrapper.findAll("textarea")).toHaveLength(0);
+        wrapper.unmount();
+    });
+
+    it("evicts only the oldest clean inactive view while retaining dirty open tabs", async () => {
+        const built = harness();
+        const docs = Array.from({length: 6}, (_, index): EditorDocumentSnapshot => ({
+            ...document,
+            target: {...target, documentId: String(index), path: `${index}.md`},
+            content: String(index), dirty: index === 0,
+        }));
+        const wrapper = mount(EditorViewHost, {
+            props: {document: docs[0]!, retainedDocuments: docs, editorId: "code", registry: built.registry,
+                commitChange: () => ({status: "stale"})},
+        });
+        await flushPromises();
+        const dirtyToken = wrapper.emitted("handle-ready")!.at(-1)![1];
+        for (const snapshot of docs.slice(1)) {
+            await wrapper.setProps({document: snapshot});
+            await flushPromises();
+        }
+        expect(wrapper.findAll("textarea")).toHaveLength(5); // dirty + current + three clean inactive
+        await wrapper.setProps({document: docs[0]});
+        await flushPromises();
+        expect(wrapper.emitted("handle-ready")!.at(-1)![1]).toBe(dirtyToken);
+        expect(built.state.mounts).toHaveLength(6);
+        wrapper.unmount();
+    });
+
     it("隐藏实例仍能结算自己的输入，隐藏前先 flush 再交给新目标同步", async () => {
         const commits: EditorChangeRequest[] = [];
         let complete!: (handle: EditorViewHandle | null) => void;

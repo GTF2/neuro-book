@@ -13,7 +13,7 @@ const originalDefineEventHandler = (globalThis as typeof globalThis & {defineEve
 vi.mock("nbook/server/api/projects/project-control-plane", () => ({
     requireProjectRefQuery: () => projectWorkspaceRef("book"),
 }));
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     listProjects: mocks.listProjects,
 }));
 vi.mock("nbook/server/workspace-files/project-cover", async (importOriginal) => ({

@@ -6,7 +6,7 @@ import {
     openProjectForTest,
     removeProjectWorkspaceForTest,
 } from "nbook/server/workspace-files/project-session-test-utils";
-import {requireReadyModuleHandle, requireActiveReadyProject} from "nbook/server/workspace-files/project-session";
+import {requireReadyModuleHandle, requireActiveReadyProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {
     createIsolatedWorkspaceAssets,

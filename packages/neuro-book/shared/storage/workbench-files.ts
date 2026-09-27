@@ -1,13 +1,13 @@
 /**
  * `files` 视图的状态定义（Nitro 与 app 共用）。
  *
- * 归属判定见 [storage.persistence](../../../../docs/specs/storage/persistence.md):98
- * 「视图排序、位置、显式隐藏偏好」= **user/local**：文件树展开项是视图偏好，既不属于 Project，
- * 也不是编辑器恢复态（`persistence.md:101` 把打开的标签 / 活动文件留给领域 Store）。
+ * 归属判定见 [storage.persistence](../../../../docs/specs/storage/persistence.md):98：文件树展开项与
+ * 展示模式都是 **user/local** 视图偏好，不属于 Project，也不是编辑器恢复态（打开的标签 / 活动文件
+ * 留给领域 Store）。
  * 旧实现在裸 `localStorage`（`nbook.workspaceFilePanel.expandedPaths`），违反
  * [storage.boundaries](../../../../docs/specs/storage/boundaries.md):103，迁移后由本记录承担。
  *
- * 本文件只放**定义**：不读存储、不认识 Vue，也不做迁移——迁移在 `app/utils/workbench/files-view-session.ts`。
+ * 本文件只放**定义**：不读存储、不认识 Vue；旧展开键迁移在 `app/utils/workbench/files-view-session.ts`。
  */
 
 import type {StorageLimits} from "nbook/shared/storage/contract";
@@ -25,6 +25,22 @@ export const WORKBENCH_FILES_OWNER = "workbench.files";
 export const WORKBENCH_FILE_TREE_EXPANDED_PATHS_KEY = "expanded-paths";
 
 export const WORKBENCH_FILE_TREE_EXPANDED_PATHS_SCHEMA_VERSION = 1;
+
+/** 同一文件树的两种呈现方式；不改变文件数据或目录关系。 */
+export type WorkspaceFilesViewMode = "ordinary" | "content";
+
+export const WORKBENCH_FILES_VIEW_MODE_KEY = "view-mode";
+export const WORKBENCH_FILES_VIEW_MODE_SCHEMA_VERSION = 1;
+
+export type WorkbenchFilesViewModeRecord = {
+    readonly mode: WorkspaceFilesViewMode;
+};
+export function isWorkbenchFilesViewModeRecord(value: unknown): value is WorkbenchFilesViewModeRecord {
+    if (typeof value !== "object" || value === null || Array.isArray(value) || !("mode" in value)) {
+        return false;
+    }
+    return value.mode === "ordinary" || value.mode === "content";
+}
 
 /** 单条路径的长度上限：只为拒绝明显无意义的输入，不作为产品策略。 */
 const EXPANDED_PATH_MAX_LENGTH = 4096;
@@ -74,6 +90,23 @@ export function defineWorkbenchFileTreeExpandedPathsState(
         schemaVersion: WORKBENCH_FILE_TREE_EXPANDED_PATHS_SCHEMA_VERSION,
         defaultValue: {paths: []},
         validate: isWorkbenchFileTreeExpandedPaths,
+        ...(options.limits === undefined ? {} : {limits: options.limits}),
+    });
+}
+
+/** 缺失记录只显示普通模式，不因此初始化偏好记录。 */
+export function defineWorkbenchFilesViewModeState(
+    options: WorkbenchFilesDefinitionOptions = {},
+): DefinedStorageState<WorkbenchFilesViewModeRecord> {
+    return defineStorageState<WorkbenchFilesViewModeRecord>({
+        owner: WORKBENCH_FILES_OWNER,
+        key: WORKBENCH_FILES_VIEW_MODE_KEY,
+        scope: "user",
+        locality: "local",
+        records: "single",
+        schemaVersion: WORKBENCH_FILES_VIEW_MODE_SCHEMA_VERSION,
+        defaultValue: {mode: "ordinary"},
+        validate: isWorkbenchFilesViewModeRecord,
         ...(options.limits === undefined ? {} : {limits: options.limits}),
     });
 }

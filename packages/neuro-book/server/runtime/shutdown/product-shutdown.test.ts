@@ -6,10 +6,9 @@ const mocks = vi.hoisted(() => {
         order,
         databasePath: "",
         disposeAgentHarness: vi.fn(async () => { order.push("agent"); }),
-        closeAllProjects: vi.fn(async () => { order.push("projects"); }),
         closeAllWorkspaceTreeIndexes: vi.fn(async () => { order.push("indexes"); }),
         disposeStorageHost: vi.fn(async () => { order.push("storage"); }),
-        stopAgentSessionStoreRuntime: vi.fn(async () => { order.push("sessions"); }),
+        stopProductRuntime: vi.fn(async () => { order.push("runtime"); }),
         disconnectPrismaClient: vi.fn(async () => { order.push("prisma"); }),
         checkpointAppSqliteDatabase: vi.fn(async () => { order.push("checkpoint"); }),
         flush: vi.fn(async () => { order.push("logger"); }),
@@ -21,9 +20,6 @@ vi.mock("nbook/server/app-logs/logger", () => ({
 }));
 vi.mock("nbook/server/agent/http", () => ({disposeAgentHarness: mocks.disposeAgentHarness}));
 vi.mock("nbook/server/storage/host", () => ({disposeStorageHost: mocks.disposeStorageHost}));
-vi.mock("nbook/server/agent/session/agent-session-store-runtime", () => ({
-    stopAgentSessionStoreRuntime: mocks.stopAgentSessionStoreRuntime,
-}));
 vi.mock("nbook/server/database/config", () => ({
     resolveDatabaseConfig: () => ({sqliteFilePath: mocks.databasePath}),
 }));
@@ -31,7 +27,7 @@ vi.mock("nbook/server/database/prisma", () => ({disconnectPrismaClient: mocks.di
 vi.mock("nbook/server/runtime/paths/runtime-paths", () => ({
     runtimePathsFromEnv: () => ({workspaceRoot: "C:/state/workspace"}),
 }));
-vi.mock("nbook/server/workspace-files/project-session", () => ({closeAllProjects: mocks.closeAllProjects}));
+vi.mock("nbook/server/runtime/product-startup", () => ({stopProductRuntime: mocks.stopProductRuntime}));
 vi.mock("nbook/server/workspace-files/project-workspace-index", () => ({
     closeAllWorkspaceTreeIndexes: mocks.closeAllWorkspaceTreeIndexes,
 }));
@@ -51,14 +47,13 @@ describe("Product shutdown wiring", () => {
     it("按 Agent 到日志的所有权顺序关闭全部进程级资源", async () => {
         await productShutdownController.shutdown();
 
-        expect(mocks.stopAgentSessionStoreRuntime).toHaveBeenCalledWith("C:/state/workspace");
+        expect(mocks.stopProductRuntime).toHaveBeenCalledOnce();
         expect(mocks.checkpointAppSqliteDatabase).toHaveBeenCalledWith(process.execPath);
         expect(mocks.order).toEqual([
             "agent",
-            "projects",
+            "runtime",
             "indexes",
             "storage",
-            "sessions",
             "checkpoint",
             "prisma",
             "logger",

@@ -34,7 +34,7 @@ import {
     defineWorkbenchSurfacePanelSizeState,
 } from "nbook/shared/storage/workbench-panel-size";
 import {defineWorkbenchMigrationStates} from "nbook/shared/storage/workbench-migration";
-import {defineWorkbenchFileTreeExpandedPathsState} from "nbook/shared/storage/workbench-files";
+import {defineWorkbenchFileTreeExpandedPathsState, defineWorkbenchFilesViewModeState} from "nbook/shared/storage/workbench-files";
 import {defineWorkbenchWorldEnginePanelSizesState} from "nbook/shared/storage/workbench-world-engine";
 import {
     defineWorkbenchCreateProjectWindowSizeState,
@@ -71,6 +71,7 @@ function buildProductStorageStates(): readonly DefinedStorageState<unknown>[] {
         defineWorkbenchViewCustomizationsState() as unknown as DefinedStorageState<unknown>,
         // `files` 视图的展开项（user/local）：旧裸键 `nbook.workspaceFilePanel.expandedPaths` 的正式归属。
         defineWorkbenchFileTreeExpandedPathsState() as unknown as DefinedStorageState<unknown>,
+        defineWorkbenchFilesViewModeState() as unknown as DefinedStorageState<unknown>,
         // World Engine 内部尺寸（project/local，`persistence.md:95`）：组件自持 ref 的正式归属。
         defineWorkbenchWorldEnginePanelSizesState() as unknown as DefinedStorageState<unknown>,
         // 两个普通窗口尺寸（user/local，`persistence.md:97`）：旧裸键 `nbook.settingsDialog.size` 与

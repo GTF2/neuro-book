@@ -15,7 +15,7 @@ import {storedMessageText} from "nbook/server/agent/messages/stored-message-pres
 import type {SessionSnapshot} from "nbook/server/agent/session/types";
 import {assertVisibleModel} from "nbook/server/agent/harness/agent-visible-models";
 import type {EffectiveConfig} from "nbook/server/config/types";
-import {startReadyProjectOperation} from "nbook/server/workspace-files/project-session";
+import {startReadyProjectOperation} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 /** 带绝对游标的事件缓冲（条目附服务端接收时刻，时间线视图用；超限丢最旧，seq 不回退） */

@@ -35,6 +35,7 @@ describe("GET /api/workspace-files/events", () => {
         vi.clearAllMocks();
         globalThis.getQuery = () => ({
             projectRoot: "novel-1",
+            publicId: "opened-id",
         });
     });
 
@@ -56,7 +57,7 @@ describe("GET /api/workspace-files/events", () => {
             runtimePaths: vi.fn(() => ({} as never)),
             resolveWorkspaceFileTarget: vi.fn(async () => target),
             subscribeWorkspaceTreeIndex: vi.fn(() => subscribePromise) as never,
-            startProjectTargetOperation: vi.fn((_target, start) => {
+            startProjectTargetOperation: vi.fn((_target, _binding, start) => {
                 const started = start({fileIndex: {}} as never, new AbortController().signal);
                 operationCompletion = started.completion;
                 return started.result;
@@ -111,7 +112,7 @@ describe("GET /api/workspace-files/events", () => {
             runtimePaths: vi.fn(() => ({} as never)),
             resolveWorkspaceFileTarget: vi.fn(async () => target),
             subscribeWorkspaceTreeIndex: subscribeWorkspaceTreeIndex as never,
-            startProjectTargetOperation: vi.fn((_target, start) => {
+            startProjectTargetOperation: vi.fn((_target, _binding, start) => {
                 const started = start({fileIndex: {}} as never, controller.signal);
                 completion = started.completion;
                 return started.result;
@@ -198,6 +199,25 @@ describe("GET /api/workspace-files/events", () => {
                 events: [{kind: "add", path: "reference/silly-tavern/card.md"}],
             }),
         });
+    });
+    it("插件提供者拒绝订阅时归还 Project 操作", async () => {
+        const eventStream = createEventStreamMock();
+        let completion: Promise<void> | undefined;
+        const handler = createWorkspaceFileEventsHandler({
+            createEventStream: (() => eventStream) as never,
+            runtimePaths: () => ({} as never),
+            resolveWorkspaceFileTarget: async () => target,
+            subscribeWorkspaceTreeIndex: vi.fn() as never,
+            startProjectTargetOperation: ((_target, _binding, start) => {
+                const started = start(undefined, new AbortController().signal);
+                completion = started.completion;
+                return started.result;
+            }) as never,
+            withFiles: async () => { throw new Error("provider unavailable"); },
+        });
+        await expect(handler({} as never)).rejects.toThrow("provider unavailable");
+        await expect(completion).resolves.toBeUndefined();
+        expect(eventStream.close).toHaveBeenCalledOnce();
     });
 });
 

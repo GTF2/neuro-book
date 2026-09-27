@@ -39,6 +39,46 @@ describe("ProjectSessionService", () => {
         }
     });
 
+    it("root replacement在owner收口失败后保留Facade gate，不能提前发布下一代", async () => {
+        restores.push(replaceProjectModulesForTest([
+            immediateModule("database"),
+            immediateModule("history"),
+            immediateModule("file-index"),
+        ]));
+        const workspaceRoot = testAbsoluteFsPath("project-session-service", "replacement-owner");
+        const prepared = preparedProject(workspaceRoot, "replacement-owner");
+        let replaced!: () => void;
+        const lifecycle = controlLifecycle(prepared, {
+            observeWorkspace: vi.fn((_workspace, onReplaced) => {
+                replaced = onReplaced;
+                return () => undefined;
+            }),
+        });
+        const ownerEntered = deferred<void>();
+        const ownerFailed = deferred<void>();
+        const ownerRelease = deferred<void>();
+        const ownerFailure = new Error("owner Scope incomplete");
+        const service = new ProjectSessionService(workspaceRoot, {
+            lifecycle,
+            onRootReplaced: async () => {
+                ownerEntered.resolve(undefined);
+                await ownerRelease.promise;
+                ownerFailed.resolve(undefined);
+                throw ownerFailure;
+            },
+        });
+        const ref = prepared.workspace.ref;
+        await service.openProject(ref, {kind: "user"});
+
+        replaced();
+        await expect(service.openProject(ref, {kind: "user"})).rejects.toBeInstanceOf(ProjectNotOpenError);
+        await ownerEntered.promise;
+        ownerRelease.resolve(undefined);
+        await ownerFailed.promise;
+        await expect(service.openProject(ref, {kind: "user"})).rejects.toBeInstanceOf(ProjectNotOpenError);
+        await service.closeAll();
+    });
+
     it("并发open共享一次Lifecycle handoff，后续幂等open复用ready generation", async () => {
         restores.push(replaceProjectModulesForTest([
             immediateModule("database"),
@@ -1013,7 +1053,7 @@ describe("ProjectSessionService", () => {
         expect(service.projectOccupancy(ref)).toMatchObject({state: "grace", agentActive: false});
 
         now = 3_111;
-        await expect(service.sweepProjectSessions(now)).resolves.toEqual([ref]);
+        await expect(service.sweepProjectSessions(now)).resolves.toEqual([ready]);
         expect(service.projectOccupancy(ref)).toBeNull();
         expect(service.listOpenProjects()).toEqual([]);
     });

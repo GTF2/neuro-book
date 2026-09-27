@@ -16,6 +16,8 @@ export type EditorDocumentSnapshot = Readonly<{
     contentRevision: number;
     languageId: string;
     readonly: boolean;
+    /** 本组已打开标签的缓冲与磁盘基线不同；缓存只淘汰确定 clean 的非活动实例。 */
+    dirty?: boolean;
 }>;
 /** 输入提交请求：token 标识产生输入的实例，baseRevision 是它确认过的那一版正文。 */
 export type EditorChangeRequest = Readonly<{

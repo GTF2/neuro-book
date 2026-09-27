@@ -1,12 +1,13 @@
 import fs from "node:fs/promises";
-import path from "node:path";
+import {productRuntimeReady, stopProductRuntime} from "nbook/server/runtime/product-startup";
+import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {PROJECT_PLOT_WORLD_MODULE_TOKEN} from "nbook/server/plot";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {
     activateReadyProjectModule,
     closeProject,
     openProject,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 
 /**
  * 承载树 Bootstrap CLI。
@@ -23,47 +24,54 @@ import {
  *   bun scripts/cli/bootstrap-carrier-tree.ts --all            # 扫描 workspace/ 下全部项目
  */
 async function main(): Promise<number> {
+    if (!process.env.NEURO_BOOK_APPLICATION_ROOT?.trim() || !process.env.NEURO_BOOK_STATE_ROOT?.trim()) {
+        throw new Error("Bootstrap CLI要求显式NEURO_BOOK_APPLICATION_ROOT与NEURO_BOOK_STATE_ROOT");
+    }
+    const workspaceRoot = runtimePathsFromEnv().workspaceRoot;
     const args = process.argv.slice(2);
     const projectRoots = args.includes("--all")
-        ? await collectWorkspaceProjects()
+        ? await collectWorkspaceProjects(workspaceRoot)
         : args.filter((arg) => !arg.startsWith("--"));
-
     if (projectRoots.length === 0) {
         console.log("用法: bun scripts/cli/bootstrap-carrier-tree.ts <project-root ...> | --all");
-        process.exit(1);
+        return 1;
     }
-
-    let hadError = false;
-    for (const projectRoot of projectRoots) {
-        console.log(`\n▸ ${projectRoot}`);
-        const ref = projectWorkspaceRef(projectRoot);
-        try {
-            const ready = await openProject(ref, {kind: "job", source: "bootstrap-carrier-tree"});
-            const handle = await activateReadyProjectModule(ready, PROJECT_PLOT_WORLD_MODULE_TOKEN);
-            const result = await handle.plot.bootstrapCarrierTree();
-            console.log(`  Act 新建 ${result.actsCreated}、Chapter 新建 ${result.chaptersCreated}、补卷归属 ${result.chaptersLinkedToAct}`);
-            console.log(`  Prose frontmatter 写回 ${result.proseFrontmatterWritten.length} 处`);
-            for (const written of result.proseFrontmatterWritten) {
-                console.log(`    + ${written}`);
+    await productRuntimeReady();
+    try {
+        let hadError = false;
+        for (const projectRoot of projectRoots) {
+            console.log(`\n▸ ${projectRoot}`);
+            const ref = projectWorkspaceRef(projectRoot);
+            try {
+                const ready = await openProject(ref, {kind: "job", source: "bootstrap-carrier-tree"});
+                const handle = await activateReadyProjectModule(ready, PROJECT_PLOT_WORLD_MODULE_TOKEN);
+                const result = await handle.plot.bootstrapCarrierTree();
+                console.log(`  Act 新建 ${result.actsCreated}、Chapter 新建 ${result.chaptersCreated}、补卷归属 ${result.chaptersLinkedToAct}`);
+                console.log(`  Prose frontmatter 写回 ${result.proseFrontmatterWritten.length} 处`);
+                for (const written of result.proseFrontmatterWritten) console.log(`    + ${written}`);
+                for (const warning of result.warnings) console.warn(`  ! ${warning}`);
+            } catch (error) {
+                hadError = true;
+                console.error(`  ✗ 失败: ${error instanceof Error ? error.message : String(error)}`);
+            } finally {
+                try {
+                    await closeProject(ref, "shutdown");
+                } catch (error) {
+                    hadError = true;
+                    console.error(`  ✗ Project关闭失败: ${error instanceof Error ? error.message : String(error)}`);
+                }
             }
-            for (const warning of result.warnings) {
-                console.warn(`  ! ${warning}`);
-            }
-        } catch (error) {
-            hadError = true;
-            console.error(`  ✗ 失败: ${error instanceof Error ? error.message : String(error)}`);
-        } finally {
-            await closeProject(ref, "shutdown").catch(() => undefined);
         }
+        return hadError ? 1 : 0;
+    } finally {
+        await stopProductRuntime();
     }
-    return hadError ? 1 : 0;
 }
 
 /**
  * 扫描 workspace/ 下的一级项目目录(跳过隐藏目录)。
  */
-async function collectWorkspaceProjects(): Promise<string[]> {
-    const workspaceRoot = path.resolve(process.cwd(), "workspace");
+async function collectWorkspaceProjects(workspaceRoot: string): Promise<string[]> {
     const entries = await fs.readdir(workspaceRoot, {withFileTypes: true}).catch(() => []);
     return entries
         .filter((entry) => entry.isDirectory() && !entry.name.startsWith("."))
@@ -71,6 +79,10 @@ async function collectWorkspaceProjects(): Promise<string[]> {
         .sort();
 }
 
-// libsql native 在 bun/Windows 上 close() 后仍挂着 event-loop 句柄,进程不会自然退出,
-// 残留的 SQLite 文件锁会让下次运行报 SQLITE_BUSY。一次性 CLI 必须显式退出以强制释放句柄。
-process.exit(await main());
+// 关闭Product后保留完整退出状态。
+try {
+    process.exitCode = await main();
+} catch (error) {
+    console.error(error);
+    process.exitCode = 1;
+}

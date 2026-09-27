@@ -10,18 +10,22 @@ import {createWorldEngineTools} from "nbook/server/agent/tools/world-engine-tool
 import type {NeuroAgentTool, ToolExecutionContext} from "nbook/server/agent/tools/types";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {resolveProjectDatabasePath} from "nbook/server/workspace-files/project-workspace";
-import {closeProject, openProject} from "nbook/server/workspace-files/project-session";
+import {closeProject, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
+import {productRuntimeReady, stopProductRuntime} from "nbook/server/runtime/product-startup";
+import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 const argv = process.argv.slice(2);
 const projectRoot = argv.find((a) => !a.startsWith("--")) ?? "ming-ding-zhi-shi-2";
 const projectRef = projectWorkspaceRef(projectRoot);
+if (!process.env.NEURO_BOOK_APPLICATION_ROOT?.trim() || !process.env.NEURO_BOOK_STATE_ROOT?.trim()) {
+    throw new Error("Seed脚本要求显式NEURO_BOOK_APPLICATION_ROOT与NEURO_BOOK_STATE_ROOT");
+}
 const workspaceRoot = resolveRuntimeWorkspaceRoot();
-const currentProject = await openProject(
-    projectRef,
-    {kind: "job", source: "seed-heroes-story"},
-    workspaceRoot,
-);
+await productRuntimeReady();
+let currentProject: ReadyProjectSessionRef;
+try {
+    currentProject = await openProject(projectRef, {kind: "job", source: "seed-heroes-story"}, workspaceRoot);
 
 const tools = createWorldEngineTools();
 const executeWorldTool = mustTool("execute_world");
@@ -248,7 +252,7 @@ async function seed() {
     if (eIssues > 0) {
         console.error("\n❌ 存在 E 类 issues，必须修复：");
         totalIssues.filter((issue) => ERROR_ISSUE_CODES.has(issue.code)).forEach((issue) => console.error(JSON.stringify(issue, null, 2)));
-        process.exit(1);
+        throw new Error("种子写入出现必须修复的E类issues");
     }
 }
 
@@ -310,11 +314,14 @@ async function main() {
     await verify();
 }
 
-try {
     await main();
 } catch (error) {
     console.error("❌ 脚本执行失败：", error);
     process.exitCode = 1;
 } finally {
-    await closeProject(projectRef, "shutdown").catch(() => undefined);
+    try {
+        await closeProject(projectRef, "shutdown");
+    } finally {
+        await stopProductRuntime();
+    }
 }

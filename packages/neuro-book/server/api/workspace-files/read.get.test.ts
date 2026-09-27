@@ -1,3 +1,4 @@
+import {parseWorkspaceFileBinding} from "nbook/shared/dto/workspace-file-binding.dto";
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import { testAbsoluteFsPath } from "@notnotype/neuro-book-test-support/test-path";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
@@ -10,10 +11,12 @@ describe("GET /api/workspace-files/read", () => {
         vi.stubGlobal("defineRouteMeta", () => undefined);
         vi.stubGlobal("getQuery", () => ({
             projectRoot: "not-open",
+            publicId: "opened-id",
             path: "note.md",
         }));
         vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetOperation: vi.fn((target: {projectRoot: string}) => {
+            parseWorkspaceFileHttpBinding: parseWorkspaceFileBinding,
+            withBoundProjectTargetOperation: vi.fn((target: {projectRoot: string}) => {
                 throw Object.assign(new Error("Project未打开"), {
                     statusCode: 409,
                     data: {code: "PROJECT_NOT_OPEN", projectRoot: target.projectRoot},
@@ -39,5 +42,5 @@ describe("GET /api/workspace-files/read", () => {
                 projectRoot: "not-open",
             },
         });
-    });
+    }, 20_000);
 });

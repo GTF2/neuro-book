@@ -7,18 +7,22 @@ import {
     workspaceTreeIndexOptionsForTarget,
 } from "nbook/server/workspace-files/project-workspace-index";
 import {
-    startProjectTargetOperation,
+    parseWorkspaceFileHttpBinding,
+    startBoundProjectTargetOperation,
 } from "nbook/server/workspace-files/project-open-guard";
 import {isClosingEventStreamError} from "nbook/server/utils/event-stream";
 import {runtimePathsFromEnv, type RuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
+import {withProductWorkspaceFiles} from "nbook/server/runtime/product-startup";
+import type {createWorkspaceFilesService} from "nbook/server/features/workspace-files/service";
 
 type WorkspaceFileEventsDependencies = {
     createEventStream: typeof createEventStream;
     runtimePaths: () => RuntimePaths;
     resolveWorkspaceFileTarget: typeof resolveWorkspaceFileTarget;
     subscribeWorkspaceTreeIndex: typeof subscribeWorkspaceTreeIndex;
-    startProjectTargetOperation?: typeof startProjectTargetOperation;
+    startProjectTargetOperation?: typeof startBoundProjectTargetOperation;
     workspaceTreeIndexOptionsForTarget?: typeof workspaceTreeIndexOptionsForTarget;
+    withFiles?: typeof withProductWorkspaceFiles;
 };
 
 /**
@@ -29,21 +33,21 @@ export function createWorkspaceFileEventsHandler(dependencies: WorkspaceFileEven
     runtimePaths: runtimePathsFromEnv,
     resolveWorkspaceFileTarget,
     subscribeWorkspaceTreeIndex,
-    startProjectTargetOperation,
+    startProjectTargetOperation: startBoundProjectTargetOperation,
     workspaceTreeIndexOptionsForTarget,
+    withFiles: withProductWorkspaceFiles,
 }) {
     return async (event: H3Event) => {
         const query = getQuery(event);
-        const projectRoot = typeof query.projectRoot === "string" ? query.projectRoot : undefined;
-        const workspaceKind = query.workspaceKind === "user-assets" ? query.workspaceKind : undefined;
+        const binding = parseWorkspaceFileHttpBinding(query);
         const target = await dependencies.resolveWorkspaceFileTarget(
             dependencies.runtimePaths(),
-            {projectRoot, workspaceKind},
+            binding,
         );
-        const startOperation = dependencies.startProjectTargetOperation ?? ((_, start) => (
+        const startOperation: typeof startBoundProjectTargetOperation = dependencies.startProjectTargetOperation ?? ((_, _binding, start) => (
             start(undefined, new AbortController().signal).result
         ));
-        return startOperation(target, (projectHandles, signal) => {
+        return startOperation(target, binding, (projectHandles, signal) => {
             const eventStream = dependencies.createEventStream(event);
             let streamClosed = false;
             let setupSettled = false;
@@ -98,28 +102,42 @@ export function createWorkspaceFileEventsHandler(dependencies: WorkspaceFileEven
                 signal.addEventListener("abort", finish, {once: true});
             }
 
-            const result = (async () => {
+            const run = async (files?: ReturnType<typeof createWorkspaceFilesService>, runtimeSignal?: AbortSignal) => {
+                if (runtimeSignal?.aborted) finish();
+                else runtimeSignal?.addEventListener("abort", finish, {once: true});
                 try {
                     if (!streamClosed) {
-                        const indexOptions = dependencies.workspaceTreeIndexOptionsForTarget
-                            ? dependencies.workspaceTreeIndexOptionsForTarget(target, projectHandles?.fileIndex)
-                            : workspaceTreeIndexOptionsForTarget(target, projectHandles?.fileIndex);
-                        unsubscribe = await dependencies.subscribeWorkspaceTreeIndex(indexOptions, async (payload) => {
-                            await pushWorkspaceEvent(payload);
-                        });
-                        if (streamClosed) {
-                            unsubscribe();
+                        const onEvent = async (payload: WorkspaceFileStreamEventDto) => { await pushWorkspaceEvent(payload); };
+                        if (files) {
+                            unsubscribe = await files.subscribe(onEvent);
+                        } else {
+                            const indexOptions = (dependencies.workspaceTreeIndexOptionsForTarget ?? workspaceTreeIndexOptionsForTarget)(target, projectHandles?.fileIndex);
+                            unsubscribe = await dependencies.subscribeWorkspaceTreeIndex(indexOptions, onEvent);
                         }
+                        if (streamClosed) unsubscribe();
                     }
-                    return await eventStream.send();
+                    const sent = await eventStream.send();
+                    setupSettled = true;
+                    settleIfClosed();
+                    if (files) await completion;
+                    return sent;
                 } catch (error) {
                     finish();
                     throw error;
                 } finally {
+                    runtimeSignal?.removeEventListener("abort", finish);
                     setupSettled = true;
                     settleIfClosed();
                 }
-            })();
+            };
+            const result = (dependencies.withFiles
+                ? dependencies.withFiles({target, handles: projectHandles}, run)
+                : run()).catch((error) => {
+                setupSettled = true;
+                finish();
+                settleIfClosed();
+                throw error;
+            });
             return {result, completion};
         });
     };

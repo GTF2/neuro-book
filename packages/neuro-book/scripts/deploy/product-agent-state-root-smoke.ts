@@ -21,7 +21,8 @@ import {readDotPath, VariableFileStorage} from "nbook/server/agent/variables/sto
 import {loadGlobalEffectiveConfigAtWorkspaceRoot, saveGlobalConfig} from "nbook/server/config/config-service";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
-import {closeAllProjects, openProject} from "nbook/server/workspace-files/project-session";
+import {openProject} from "nbook/server/runtime/product-project";
+import {productRuntimeReady, stopProductRuntime} from "nbook/server/runtime/product-startup";
 
 if (!process.env.NEURO_BOOK_APPLICATION_ROOT?.trim() || !process.env.NEURO_BOOK_STATE_ROOT?.trim()) {
     throw new Error("Product Agent smoke必须显式设置NEURO_BOOK_APPLICATION_ROOT与NEURO_BOOK_STATE_ROOT。");
@@ -51,25 +52,30 @@ if (process.argv[2] === "resume-moved-state") {
     if (!Number.isInteger(movedSessionId) || movedSessionId <= 0 || !movedProjectSlug) {
         throw new Error("Product Agent moved-state smoke缺少合法sessionId或projectSlug。");
     }
-    await runMovedStateRootPhase(runtimePaths, movedProjectSlug, movedSessionId);
+    await productRuntimeReady();
+    try {
+        await runMovedStateRootPhase(runtimePaths, movedProjectSlug, movedSessionId);
+    } finally {
+        await stopProductRuntime();
+    }
     process.exit(0);
 }
 
+await productRuntimeReady();
+let sessionId: number | null = null;
 const projectSlug = `task109-product-smoke-${process.pid}`;
 const projectWorkspaceRoot = path.join(runtimePaths.workspaceRoot, projectSlug);
-await mkdir(path.join(projectWorkspaceRoot, ".nbook"), {recursive: true});
-await writeFile(path.join(projectWorkspaceRoot, "project.yaml"), [
-    "kind: novel",
-    "title: Task 109 Product Smoke",
-    "summary: Product runtime path verification",
-    "",
-].join("\n"), "utf8");
-
-const faux = createSmokeModels();
-const harness = createSmokeHarness(runtimePaths, faux);
-let sessionId: number | null = null;
-
+let harness: NeuroAgentHarness | null = null;
 try {
+    await mkdir(path.join(projectWorkspaceRoot, ".nbook"), {recursive: true});
+    await writeFile(path.join(projectWorkspaceRoot, "project.yaml"), [
+        "kind: novel",
+        "title: Task 109 Product Smoke",
+        "summary: Product runtime path verification",
+        "",
+    ].join("\n"), "utf8");
+    const faux = createSmokeModels();
+    harness = createSmokeHarness(runtimePaths, faux);
     registerSmokeProfile(harness);
     await writeProductState(harness, runtimePaths, projectSlug, "initial-state-root");
     await assertProductState(runtimePaths, projectSlug, "initial-state-root");
@@ -125,8 +131,11 @@ try {
         throw new Error(`Product Agent smoke在Installation Root产生了错误Workspace Root：${path.join(runtimePaths.applicationRoot, "workspace")}`);
     }
 } finally {
-    await harness.dispose();
-    await closeAllProjects();
+    try {
+        await harness?.dispose();
+    } finally {
+        await stopProductRuntime();
+    }
 }
 
 if (sessionId === null) {
@@ -225,7 +234,7 @@ async function runMovedStateRootPhase(
         }
     } finally {
         await movedHarness.dispose();
-        await closeAllProjects();
+        // 此 phase 的 Product Application 由上层入口的 finally 统一关闭。
     }
 }
 
@@ -318,6 +327,8 @@ async function writeProductState(
         ui: {
             themeId: "nbook",
             appearance: "light",
+            colorwayId: "",
+            userColorways: [],
             costCurrency: configCurrency(marker),
         },
     }, {workspaceKind: "user-assets"}, smokeHarness.profiles);

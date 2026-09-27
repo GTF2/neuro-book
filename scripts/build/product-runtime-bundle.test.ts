@@ -10,10 +10,10 @@ import {testHostPath} from "@notnotype/neuro-book-test-support/test-path";
 
 import {currentProductPlatform} from "#scripts/utils/product-platform";
 import {normalizePackageManagerMetadata, assertBundledRuntimeSourcePaths} from "#scripts/build/product-runtime-bundle";
-import {testHostPath} from "@notnotype/neuro-book-test-support/test-path";
 import {
     PRODUCT_COMMAND_CHUNK_BASENAME,
     productOpaqueImportDefinitions,
+    productRuntimeIslandDefinitions,
 } from "#scripts/build/product-runtime-islands";
 
 const temporaryRoots: string[] = [];
@@ -166,6 +166,35 @@ describe("Product Runtime bundle", () => {
         }));
         const islandPackages = islands.islands.flatMap((island) => island.packages);
         expect(islandPackages).toEqual(expect.arrayContaining(["jsdom", "typescript", "undici"]));
+        expect(islandPackages).toEqual(expect.arrayContaining(["koffi", ...productRuntimeIslandDefinitions().find((island) => island.packages.includes("koffi"))!.packages]));
+        await expect(access(join(serverRoot, "node_modules", "koffi", "package.json"))).resolves.toBeUndefined();
+        const nativeSmoke = await execFileAsync("bun", ["--no-install", "-e", [
+            'const koffi = require("./server/node_modules/koffi");',
+            'const fs = require("node:fs");',
+            'const path = require("node:path");',
+            'const source = path.resolve("rename-source");',
+            'const target = path.resolve("rename-target");',
+            'fs.writeFileSync(source, "source");',
+            'fs.writeFileSync(target, "external");',
+            'let result;',
+            'if (process.platform === "win32") {',
+            '  const move = koffi.load("kernel32.dll").func("__stdcall", "MoveFileExW", "int", ["str16", "str16", "uint32"]);',
+            '  result = move(source, target, 0);',
+            '} else if (process.platform === "linux") {',
+            '  const move = koffi.load("libc.so.6").func("int renameat2(int, const char *, int, const char *, unsigned int)");',
+            '  result = move(-100, source, -100, target, 1);',
+            '} else {',
+            '  const move = koffi.load("libSystem.B.dylib").func("int renamex_np(const char *, const char *, unsigned int)");',
+            '  result = move(source, target, 4);',
+            '}',
+            'if (result !== (process.platform === "win32" ? 0 : -1)) throw new Error("target overwritten");',
+            'if (fs.readFileSync(source, "utf8") !== "source" || fs.readFileSync(target, "utf8") !== "external") throw new Error("contents changed");',
+        ].join("\n")], {
+            cwd: outputRoot,
+            env: {...process.env, NODE_PATH: ""},
+            windowsHide: true,
+        });
+        expect(nativeSmoke.stderr).toBe("");
         if (msvcRuntimeDir) {
             expect(islands.msvcRuntime).toBeDefined();
             expect(islands.msvcRuntime.dlls).toHaveLength(3);

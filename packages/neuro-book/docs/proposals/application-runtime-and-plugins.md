@@ -2,12 +2,23 @@
 
 ## 状态
 
-- 状态：`accepted`（基础架构与分段推进方向）；本次修订：2026-09-20。后续任意热卸载/升级机制仍仅为评估，不在接受范围。
-- 本轮产物：总体架构提案、能力地图、生命周期划分、模块代码布局、B/S Tracer Bullet（贯通真实使用链路的设计）及内置插件划分。集中维护，不另设重复正文。
+- 状态：`accepted`（基础架构与分段方向）；基础决定日期 2026-09-20，最近整理 2026-09-26。任意热卸载/升级仍仅评估，不能由本文推断已批准或已实现。
+- 本文负责总体架构、能力地图、生命周期与内置插件分层；产品装配、Files 第一版和第二版分别下沉到独立专题，见下方阅读导航。各专题不复制行为 Spec。
 - **已确认方向**：Lab 只承担组件展示；生命周期按运行位置与资源作用域设计；允许重构现有前后端。这些方向继续有效，不等于批准全部具体机制。
 - **三项已批准取舍**：A1，必需服务也以插件提供，首批随产品发布且不做任意热卸载；A2，显式关闭先处理 dirty/在途操作，强制退出不保证保存，窗口离开不自动关闭后台共享资源；A3，先收回 Lab 产品宿主，再验证 Files、Settings 两条真实链路。
-- **本轮接受与授权**：开发者明确第一实现切片止于环境适配入口和小内核，第二以内置服务插件验证，再按外部插件作者视角推进 Lab → Files → Settings → World/Plot；授权先落前两片 Spec、整体实施路径、Work 与 Task。代码布局是实施规划，不是对外包承诺；本轮不执行产品实现、worktree 创建、提交或远端操作。
+- **范围与授权**：历史实现授权及提交见 [w00017](../../../../.agents/works/w00017-application-runtime-architecture/README.md)。2026-09-26 最新要求是收口 Files 第一版、起草第二版并拆分治理相关文档；本次不含产品实现、实施 Task 拆分、浏览器评测或远端操作。
 - 本文不是当前行为 Spec。前两片目标已分别沉淀为七项合同，见[规范注册表](../../../../docs/specs/README.md)：第一切片四项（lifecycle、services、plugins、application）和第二切片三项（diagnostics、files、sqlite）均由 w00017 实现并晋升 `implemented`；第三片 Lab 已按现行 `ui.component-lab`、`workbench.commands` 与 `workbench.quick-open` 合同原位调整，证据见 w00017 t14。已有 `implemented` 合同在各条真实链完成切换前继续有效。产品启动链尚未迁入新入口；未做的 Desktop/Worker 适配、领域迁移细节与热卸载扩展不冒称已实现或已完整批准。
+
+## 阅读导航
+
+| 要回答的问题 | 唯一正文与状态 |
+|---|---|
+| 内核、生命周期、模块 owner 与能力归属 | 本文；基础方向 `accepted`，未做机制仍明确标注 |
+| 后端启动到 Project、工作台、Files 与领域如何贯通 | [产品装配设计](application-runtime-product-integration.md)，细化方案 `reviewing` |
+| 第一版 Files 为什么这样拆、怎样验证切换性能 | [Files 第一版设计](files-explorer.md)，F1–F9 `accepted` |
+| 第一版必须达到什么行为 | [workspace.files](../../../../docs/specs/workspace/files.md)、[workbench.files-explorer](../../../../docs/specs/workbench/files-explorer.md)，均 `planned` |
+| 第二版考虑哪些新增能力 | [Files 第二版草案](files-explorer-v2.md)，`draft`；不是第一版验收条件 |
+| 当前授权、进度与运行证据 | [w00017](../../../../.agents/works/w00017-application-runtime-architecture/README.md) 与具体 Task |
 
 ## 问题
 
@@ -38,7 +49,7 @@
 
 ### 证据分层
 
-本文依据源码阅读，不声称本轮运行过应用或故障实验。文档写入主工作区 `master`；其调查基线 HEAD 为 `45906272915ff43e83318653af62afa9ce668206`。另参考 w00003 共享实现树：`refactor/w00003-nb-ui-adoption`，HEAD 为 `26479d48604d3882b8d42b9f4447c6e3f4ac69c4` **加未提交改动**，不是一个可独立复现的提交版本。
+以下是 2026-09-20 原始源码调查快照，不是当前产品状态或本轮运行报告。当时文档写入主工作区 `master`，调查基线 HEAD 为 `45906272915ff43e83318653af62afa9ce668206`；另参考 w00003 共享实现树 `refactor/w00003-nb-ui-adoption`，HEAD 为 `26479d48604d3882b8d42b9f4447c6e3f4ac69c4` **加未提交改动**。之后的基础实现和 Lab 迁移以状态节链接的 Spec/Task 为准；Files 当前设计证据在独立专题维护。
 
 | 证据范围 | 已从源码确认的事实 | 对设计的意义 |
 |---|---|---|
@@ -178,6 +189,8 @@ w00003 表中的路径均相对该树的 `packages/neuro-book/`，不是主树�
 | `runtime-diagnostics` | 生命周期诊断服务；owner：runtime-diagnostics | 内核事件与宿主紧急输出 | [runtime.diagnostics](../../../../docs/specs/runtime/diagnostics.md)，`implemented`；早期失败可见、脱敏、输出异常不阻断收口 |
 | `platform-files` | 有 owner 的受限根文件能力；owner：platform-files | 宿主文件系统与资源作用域 | [platform.files](../../../../docs/specs/platform/files.md)，`implemented`；真实文件读写、拒绝越界、监听/锁释放 |
 | `sqlite` | 具名数据库借用、事务与连接机制；owner：sqlite | 宿主驱动与精确数据库资源 owner | [platform.sqlite](../../../../docs/specs/platform/sqlite.md)，`implemented`；真实事务、关闭重开与失败保留 |
+| `workspace-files` | 工作区文件读写、目录操作与变更；owner：workspace-files | 受控宿主、Project 绑定、platform-files 及现有索引/History | [workspace.files](../../../../docs/specs/workspace/files.md)，`planned`；批准的 Files 首版服务边界，不包含 UI 模式 |
+| `files-view` | 同一面板两种投影与基础操作入口；owner：files-view | workspace-files 客户端、文档打开、Workbench/命令/Storage | [workbench.files-explorer](../../../../docs/specs/workbench/files-explorer.md)，`planned`；主页面真实链与 Lab 局部验证，不复制内容格式/文档域规范 |
 
 机制构建依赖为 `runtime-lifecycle → service-composition → plugin-runtime`；产品装配与能力适配据此连接。插件运行时不反向 import Files、Storage 或 Config 实现；相应插件向机制提交描述并消费声明的合同。
 
@@ -323,7 +336,7 @@ shared/features/<plugin-id>/     # 可跨位置共享的纯描述/DTO/schema，�
 | `command-system` / 服务 | 命令目录、执行策略、上下文与键位接入 | runtime-lifecycle、identity-access 的必要本地接口/代理；前端工作台，服务端能力另经协议 | 工作台必需；不持有具体编辑器实现，不形成全进程跨窗口命令单例 |
 | `workbench-host` / 服务 | View/Editor 宿主、布局与实例管理 | command-system、storage、configuration 的前端入口/代理；前端工作台 | 工作台必需；工厂来自受信贡献，不读取任意模块路径 |
 | `document-session` / 服务 | 文档模型、dirty/save/recovery | workspace-files、project-runtime、storage 的前端入口/代理；绑定：文档/工作面 | 编辑功能必需；不是每个 Editor 组件都各自拥有一份保存真相 |
-| `files-view` / 功能 | 文件树、刷新命令、展开状态定义 | workspace-files、workbench-host、command-system、storage 的前端入口/代理 | 打开 View 时激活；首条迁移链 |
+| `files-view` / 功能 | 同一资源管理器内的普通/内容节点展示、基础文件操作入口、刷新命令与视图状态；首版不含角色/世界书适配 | workspace-files、workbench-host、command-system、storage 的前端入口/代理 | 打开 View 时激活；首条迁移链；主页面真实文件操作验收，Lab 仅补充 |
 | `editor-support` / 功能组 | Markdown、代码、只读编辑工厂与编辑命令 | document-session、workbench-host、configuration；前端插件与具体编辑器实例 | 按文档类型激活；是否拆分三个插件由依赖图决定，不能为表格整齐拆包 |
 | `settings-ui` / 功能 | 设置页面与打开命令 | configuration、command-system、workbench-host；前端工作台 | 首次打开；跨 Project 的第二条验证链 |
 | `theme-presentation` / 服务与声明贡献 | 主题应用、内置主题/配色数据 | configuration 的前端快照；宿主：UI 挂载能力；前端应用 | 首帧所需部分早期可用；主题数据可以纯声明，不要求执行激活代码 |
@@ -376,107 +389,6 @@ shared/features/<plugin-id>/     # 可跨位置共享的纯描述/DTO/schema，�
 重新启用产生新的激活代次；旧 handle 一律失效，不能复活。World 有运行中任务或 Plot 消费者时，不能只撤 World 的菜单。基础必需插件的停用请求首批直接要求重启，不尝试把运行系统降成半成品。由此未来主要新增的是**启停政策、依赖闭包协调和多客户端协议**，不用重写每个插件的资源所有权；若现在保留隐式 singleton/裸连接/无人管理 timer，未来成本会显著增加。
 
 ESM 限制依据：[MDN 动态 import 的模块缓存说明](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import#module_namespace_object)：不能手动清除模块 namespace 缓存，反复加查询参数导入可能泄漏；本方案不使用该做法模拟热卸载。
-
-## B/S Tracer Bullet：从进程启动到领域工具
-
-Tracer Bullet 指**用一条真实、最薄的端到端路径检验架构**，不是把全部框架写完才接页面。本节是该路径的设计，还没有运行新装配。基线为浏览器访问已启动的长期后端，前端维持现有客户端渲染；首次裸 `/` 进入项目选择，带明确 Project 意图的深链跳过选择，但经过同一身份/打开/绑定门禁。本文 `plotbench` 是现有 `server/plot` 与 Plot 工作面的候选插件 id，不宣称仓库已有同名目录。
-
-### 现状锚点与目标差异
-
-| 范围 | 源码证据 | 目标切口 |
-|---|---|---|
-| 主树后端 | [product-startup.ts](../../server/runtime/product-startup.ts) 先作 State Root 只读完整性检查/告警，再检查迁移并取得 Store 租约；[项目列表](../../server/api/projects/index.get.ts) 只读轻量目录快照 | 分出进程启动与目录服务，列表不激活 Project；检查与必需门禁均保留，不在 HTTP 首次调用中另起第二 owner |
-| w00003 前端 | `app/plugins/storage-migration.client.ts` 先保护旧桶；`pages/index.vue:2228` 打开 Project 后恢复编辑记录；`:2777` 在 mounted 发起引导 | 页面拥有的启动、命令、会话、订阅编排移入浏览器 composition root；UI 只表达路由意图与呈现状态 |
-| w00003 Grid/View | `WorkbenchShellLayout.vue` 测量 → projectShell → createShellGrid → GridRenderer；`WorkbenchViewInstances.vue` 在容器外持有实例并 Teleport | 保留布局算法与实例/落点分离，替换贡献来源，不把布局引擎改成插件加载器 |
-| 主树领域 | [server/plot/index.ts](../../server/plot/index.ts) 的 lazy `plot-world` 同时创建 World/Plot，Plot 构造注入 World，关闭先 Plot 后 World | 分离为两个领域入口与单向依赖，替换所有 HTTP/tool/UI 调用方，不保留旧复合模块和新入口双 owner |
-| 主树数据库与工具 | [Project 数据布局](../../server/workspace-files/project-workspace.ts) 同库；[World 工具](../../server/agent/tools/world-engine-tools.ts) 与 [Plot 工具](../../server/agent/tools/plot-tools.ts) 通过同一模块取服务 | 数据库文件不拆；工具改为贡献与调用时激活，既有 Profile 策略不被 DI 绕过 |
-
-Nuxt 框架阶段依[官方客户端生命周期](https://nuxt.com/docs/4.x/guide/concepts/nuxt-lifecycle#client-lifecycle)：app plugins → 路由校验/middleware → Vue mount（根/页面 setup）→ mounted。框架 hook 不是新的产品生命周期真相源；注册表已存在，但尚未形成本文的统一产品装配。
-
-### 一条链的阶段、组件与就绪条件
-
-| 阶段 | 谁负责初始化什么 | 本阶段输出 / 允许行为 | 尚未启动什么 |
-|---|---|---|---|
-| S0 启动后端 | 启动适配器解析 image/State/Cache 根与安全启动配置，创建后端 scope；校验静态清单；platform-files / sqlite 提供只读检查能力，保留 State Root 完整性检查/告警，再完成迁移门禁，初始化身份、configuration 核心、project-directory、session-persistence 等必需服务 | Store 租约有效、必需服务就绪才开放业务接纳；HTTP adapter 共享同一 ready 结果，诊断从最早阶段可用 | 无任何 Project 代次、World/Plot 实例或 View；不自动迁移用户数据、不调用模型 |
-| S1 输入 URL | 浏览器取 HTML/JS；Nuxt client plugin 建浏览器 scope 和客户端清单，初始化本地主题/语言/错误呈现与协议客户端；沿既有合同先保护旧本地数据 | 可呈现启动/错误壳；app middleware 通过身份代理完成登录判定，根组件挂载 | 不访问真实 Project 数据；只装配本窗口能力，不创建服务器对象 |
-| S2 项目选择 | 身份确定后，bootstrap 并行请求用户级 config 与项目目录；分别由 configuration / project-directory 处理；页面订阅结果 | 项目列表可选；主题/语言应用有效值；一项失败不隐藏另一项成功，未成功列表不显示“没有项目” | 不开 Project DB、不扫描作品全文、不激活 World/Plot、不启动 Agent Job |
-| S3 用户打开项目 | 工作台控制器建立一次带意图代次的打开操作；后端 project-runtime 校验访问、根与占用、建立 Project scope，启动该清单必需的 Project 资源；前端接匹配的 ready/presence | 获取精确 Project 代次的本地代理与访问绑定，才开放数据操作；旧意图迟到只释放自己的绑定 | 不因 Project ready 就激活全部领域插件或打开所有 View |
-| S4 恢复工作面 | workbench-host 取得适用的 View/Editor/命令目录、Project 配置及布局/编辑状态；解析存储的 id，构造 Grid 拓扑并挂载容器 | Grid 尺寸和落点可用；恢复计划中的可见 View/编辑器可请求工厂；未知/失败贡献单独呈现 | 未显示且无其它消费者的 World/Plot 不激活；不把持久布局数据当可执行模块路径 |
-| S5 Files 首条链 | files-view 激活浏览器入口，取得 workspace-files 代理、刷新命令与 Storage 句柄；后端文件入口绑定同一 Project，提供列表和事件 | 真实文件树显示、刷新走同一命令、展开状态可恢复；释放窗口绑定不关其它窗口的文件服务 | 不需 World/Plot；Files View 销毁只释放自己的订阅和贡献 |
-| S6 World/Plot 按需 | 用户打开对应工作面，或 Agent 调用其领域工具；各自入口按下面贡献表激活，取得 Project 资源 | 工厂/处理器在成功提交后可用；同一 Project 内并发首次消费共享激活；各窗口 View 独立 | Agent 消费不启动 Vue；View 打开不启动 Agent Job；基础读取不要求 Provider |
-| S7 切换/退出 | 切换先协商 dirty/在途工作，释放窗口工作面、订阅和 presence；显式关闭 Project 由后端 owner 处理所有借用者；停机撤接纳并 drain | 旧代次不可使用；无关窗口与后台任务继续按其 owner 生命周期运行；终止失败可诊断 | 浏览器断开不等于关闭共享后端；强制退出不伪报保存成功 |
-
-S0 的 sqlite ready 表示“资源提供者可申请”，不等于所有连接已打开；身份若需要应用库，只开应用库。迁移门禁为检查，不把初始化插件当未经批准的数据迁移入口。框架可以先监听端口，但业务请求必须经过接纳门禁；启动失败与静态页面是否可返回是两件事。
-
-State Root 完整性检查不是本文新发明的拒绝门禁：当前 `product-startup.ts:40-52` 对影子 Workspace/检查错误只 `appLogger.warn`，随后继续迁移检查；没有在该分支 throw/return。目标保留只读检查与可见告警，不自动合并/删除数据，也不借架构重构把现有告警擅自升级为禁止启动。若要改变这一数据安全策略，需要单独取舍。
-
-S1 的内置主题/语言能在网络配置前显示，S2 的服务端快照才是用户设置权威。新 bootstrap 不再由多个主题/编辑器组件各自重复发全量请求：同一身份/配置目标共享一次读取，身份变更撤销旧结果；不是永久缓存所有 Project 配置。当前 w00003 的主题 Nuxt plugin 在路由鉴权前请求 config 是待调整接线，本文目标要求受保护快照在身份确定后读取，不能依赖“插件先执行”绕过服务端授权。
-
-### 项目选择页究竟依赖什么
-
-| 请求 / 能力 | 当前入口与目标服务 | 最小资源依赖 | 明确不依赖 |
-|---|---|---|---|
-| 身份 | `/api/auth/me` → identity-access | 固定启动安全策略、身份持久数据；请求身份 | 可扩展用户设置、打开 Project、View |
-| 用户启动配置 | `/api/config/bootstrap?workspaceKind=user-assets` → configuration | 已登记设置定义、用户资产配置文件、身份授权；返回裁剪后的安全快照 | Project ready、世界日历、领域插件激活、真实模型调用 |
-| 项目列表 | `/api/projects` → project-directory | Workspace 目录及 manifest 轻量索引、访问过滤 | Project DB、完整文件树、Agent Session、World/Plot |
-| 打开 / presence | `/api/projects/open`、`/api/projects/presence` → project-runtime | 目录定位、授权、占用、该代必需资源；presence 只建立使用关系 | 已恢复的布局、已渲染的 Grid、领域 View |
-| 项目设置 | configuration 的 Project 入口 | 用户设置 + 已授权的精确 Project 绑定及其配置文件 | 先启动所有声明设置的领域服务 |
-
-`config/bootstrap` 在主树和共享树均已存在，响应细节以各树的 Config 合同为准；不新建聚合 `/api/bootstrap` 或平行 Config API。Config 定义随插件纯描述登记，即使设置页是第一次消费，也不必启动 World 数据库。设置的 scope、默认值、schema、是否秘密、何时生效/是否需重启由该定义声明；本轮不发明尚无需求的新设置键。
-
-#### S3 的必需资源与防循环约束
-
-当前主树 required 顺序是 `database → history → file-index`，lazy 为 `plot-world` / `agent-sql`；共享树另有 lazy Storage。目标首条链保留这三个必需资源的结果门禁，但不要求保留现有 `globalThis` 注册表或硬编码名称数组。
-
-Project owner 先取得占用与已校验根，建立 **opening 上下文**（精确代次、受限根、取消信号、资源登记入口），再创建数据库/历史/索引资源。工厂在接触 I/O 前交出可收口资源，必需资源 ready 后才发布 Project ready 与外部 workspace-files/Storage 数据面。历史和索引的内部资源准备不调用对外的“必须 ready”接口；它们也不能从 opening 上下文伪造可交给普通调用者的 ready 句柄。
-
-Config 需切开真实的源码环：目前 `config-service → project-session → project-history → config-service`。目标将配置合并/受限文件读取留在 configuration 核心（不依赖 Project），Project owner 授予的 opening 上下文可读取本次根的配置快照供 history 初始化；Config HTTP 的 Project 目标解析另放适配层，仍要求已授权的 ready 代次。这样 `Project → 历史资源 → 配置核心` 不再返回 Project，也不复制第二套合并规则或移除外部授权门禁。
-
-还需切开 Agent 方向：现有 `config-service` 静态导入 `agent/http`，若干 Profile 设置入口用 `useAgentHarness().profiles` 作默认参数；反向的 model-resolver/Harness 又读配置，部分用动态 import 回避静态环。当前 `readConfigBootstrap` 并不调用这些 Profile 默认参数，不能把所有 bootstrap 读取都说成已启动 Harness；但目标也不能保留这条隐式依赖。配置核心只保留纯定义、合并与受限文件读取；Profile 设置适配显式接收独立 Catalog 入口，Catalog 可以消费配置核心/编译能力，但不能反向消费该设置适配或构造 Harness。模型配置纯数据由 Agent 消费，`agent-runtime → configuration 核心` 明列依赖；S0/S2 基础配置不解析完整 Profile 目录。沿用既有 Config API，迁移现有默认参数调用点，不复制第二套 Profile 设置规则。
-
-这里的“必需资源”包括现有 Project DB 的初始化检查与历史/文件索引，不包含 World/Plot 的领域激活。同一数据库中存在 World 表不代表 World 插件已激活；第一批不改现有建表与兼容策略。变更持久格式、自动迁移策略或现有 grace 数值都不由这次装配重构默许。
-
-内部工厂的服务边也进入依赖图：数据库资源工厂消费 sqlite；历史资源工厂消费 sqlite、platform-files、configuration 核心；文件索引工厂消费 platform-files 与历史记录能力；三者在 opening scope 构造。`workspace-files` 的对外访问入口则消费已发布的 Project 绑定和该索引，不反向参与 ready 等待。工厂可由相应插件描述登记，但登记不实例化、不等待 Project，避免用“工厂”名字隐藏真实依赖。
-
-### Grid 与 View 的实际构造顺序
-
-1. 浏览器清单登记受信 View/Editor 描述（id、标题、容器偏好、when/authority、工厂引用）；描述可登记但实现未激活。服务端能力可用性与客户端声明取交集，不把前端包里存在代码当后端已安装；发布按同一产品清单构建，客户端旧清单产生的调用由服务端再次拒绝。
-2. workbench-host 在绑定后读取布局/编辑记录，按描述目录验证 id、位置与可用性；缺失贡献保留可诊断引用，不能执行存储里的任意 import。项目选择期可以先显示空壳，不等 Project 才允许渲染所有 Chrome。
-3. 既有 `projectShell/createShellGrid` 计算拓扑与尺寸，`GridRenderer` 建标题栏、活动栏、侧栏、编辑区、面板、状态栏容器。Grid 负责几何；插件贡献 View，不直接改 Grid 节点或接管整个页面。
-4. View Host 按恢复/用户意图激活需要的浏览器入口，再调用其工厂创建 View 实例；实例由 Host 持有，在容器外管理并 Teleport 到可用落点。移动容器不重建领域服务，也不把 factory 的 import 成功当组件 ready。
-5. Editor Host 取得文档模型并等待句柄 ready；布局完成、View ready、文档恢复是独立结果。World 专用对话工作面仍可走有 owner 的工作面工厂，不强行塞入侧栏；Plot 的面板按实际 UI 合同贡献。
-
-### WorldEngine 与 Plotbench 如何成为真正的插件
-
-下表固定提供/消费的**设计边界**，不是已经存在的 manifest API。插件有同一个分发 id，但浏览器入口、后端 Project 入口、操作级适配分别激活。每个入口只能获得声明的服务与目标 scope；不能用插件 id 随意取得任意根或数据库。
-
-| 贡献 / 资源 | WorldEngine | Plotbench | 接收者与时机 |
-|---|---|---|---|
-| 设置定义 | 声明自身有实际需求的设置；已有 embedding 使用共用定义，不复制一套凭据；项目 `schema/index.ts` 与 `calendar.ts` 是领域文件而非通用设置 | 目前主要读取 Project manifest；可贡献未来有明确需求的设置，不为“插件必须有配置”造空配置 | configuration 在描述登记期接收 schema/default/scope/秘密标记/生效条件；激活时取有效值 |
-| UI | World 工作面工厂、打开命令、必要的面板贡献 | Plot 面板/工作面、命令与 World 跳转 | workbench-host / command-system 收描述；打开才激活浏览器入口，UI 通过 HTTP 代理取数据 |
-| 领域工具 | 既有 `execute_world` 描述、schema 与上下文处理器 | 既有 Plot 读写工具组及对应领域处理器 | agent-tool-catalog 收纯描述与 owner/激活入口；Agent 执行时按 Profile 权限、目标代次与写入政策过滤，再激活后端入口 |
-| SQLite | WorldSubject / WorldSlice / WorldPatch 的领域 repository 与迁移定义 | Story 等 Plot 表的 repository 与迁移定义 | 仍映射 `.nbook/project.sqlite`；Project 代次内唯一 database 资源 owner 经 sqlite 申请并登记全部连接、协调迁移；领域只归还自己的借用 |
-| 文件与编译 | `world-engine/schema/index.ts`、`world-engine/calendar.ts` 及编译缓存；声明所需路径范围和读写权限 | 作品文件索引、正文关联及历史写入 | workspace-files 提供领域文件能力；artifact-compiler 使用显式 Source/Product 身份；不把任意项目脚本直接 import 到客户端 |
-| 其它服务 | 语义搜索操作按需取 embedding，未启用时该操作不可用；基础查询不被拖死 | 明确消费 World 的身份/时间/状态查询，以及 history-trace 的记录入口 | 跨插件取服务合同，不 import 另一个插件的入口；若必要依赖缺失，只阻断相关闭包 |
-
-**一次真实领域工具调用的目标路径：**Agent 选 `execute_world` → 既有工具执行政策验证 Profile/参数/读写模式 → 固定精确 Project 与操作身份 → 工具目录激活 World 后端入口 → 取得受管数据库、领域文件、配置/编译能力 → 执行同一领域服务 → 结果回到原工具通道 → 结束此次操作借用。UI 的 HTTP 调用经过请求鉴权后汇入同一领域服务；不绕道前端命令注册表，更不依赖打开 World View。写入已发生但连接断开时仍按原领域结果未知/恢复规则处理。
-
-**无插件时工具不能只是隐藏按钮（目标要求）：**安装清单不提供 World/Plot，就不向可选工具集合公布它们；Profile 显式要求缺失工具时，给出能力诊断并拒绝该 Profile 的执行，不能偷偷缩减合同。当前 `neuro-agent-harness.ts` 的 `toolOverrides()` 对解析不到的工具直接跳过，尚无本文要求的调用前拒绝机制；接入 agent-tool-catalog 时必须一并迁移，而非只改菜单。已运行任务的工具快照与借用持续有效到正常终止；首批不在运行中改变清单。能力发现与最终执行都检查后端权威状态，浏览器提供的插件 id 不构成授权。
-
-当前 World schema 缺失可返回空 schema，calendar 缺失对需要它的操作报错；Plot 的部分时间展示已有降级。拆入口时保留这些具体领域语义，不统一改成“整个插件成功/失败”。当前 World/Plot 共用 lazy 模块、分别持有 libsql/Prisma 连接是现状，不是单一连接池；目标是先明确物理资源 owner，不以插件化名义拆库或重建表。
-
-World 工作面的 subject RAG 是另一个真实依赖：现有 subject-memory/RAG 工具链拥有 `.nbook/subject-rag.sqlite` 与 subjects 文件，不归 plot-world 的表。目标由 `subject-memory-rag` 入口适配既有 owner，World 的 RAG 面板声明可选消费：缺失时仅该面板明确不可用，World 核心仍能运行；不静默转用另一个库，也不把整个 Agent Runtime 变成 World 基础查询前置。
-
-### 最小贯通验证与反例
-
-在已接受的 Lab → Files → Settings 顺序内，先交付 S0–S5：启动 → 选择项目 → 打开 → 真实 Files/View/刷新/Storage → 关闭绑定；再在同一运行时打开用户级 Settings、切换 Project 后确认设置服务与值未重建丢失。World/Plot 的 S6 是第三条领域验证，不越过前两条抢先搭通用插件市场。
-
-- 无 World/Plot 清单仍可完成 S0–S5；只给 Plot 不给 World 能定位缺依赖，不导致基础 Files 消失。
-- 两浏览器打开同一 Project，共享后端领域激活而各有 View；一方退出不关闭另一方或 Job 所借用的服务。
-- 并发 World HTTP/tool 首次消费只激活一次；编译/数据库失败撤回本次资源，不制造半个可调用 handler；Files 仍可用。
-- 恢复记录中有缺失插件 View，Grid 可用且明确说明该 View 不可用；不删正文/领域表，不因错误 import 执行未登记代码。
-- dirty 否决切换保持原工作面；打开新 Project 的迟到回调不能发布到旧/新错误代次；服务器在写入完成后断线，不由通用代理重放。
-- S0 任一必需门禁失败不接纳业务；S2 config/list 单独失败可见且可重试；S3 必需 Project 资源失败撤回本次打开、释放可释放的占用，失败资源保持诊断；S4/S6 的可选贡献失败不倒逼其它 Project/功能退出。
 
 ## 数据、接口、安全、迁移、发布与回滚影响
 
@@ -545,5 +457,7 @@ World 工作面的 subject RAG 是另一个真实依赖：现有 subject-memory/
 | 2026-09-20 | 开发者要求继续设计 | 补生命周期划分、代码模块规划、B/S 启动示踪链、WorldEngine/Plotbench 的配置/View/Agent 工具/资源接入；评估 File/SQLite 基础插件与可选领域插件分层 |
 | 2026-09-20 | 开发者接受并要求规范规划 | 第一实现切片止于环境适配入口与小内核，要求可验证、规范、灵活；第二以内置服务插件验证；之后从外部插件作者角度推进功能。先落前两片 Spec、Work、整体实施方案与 Task，不立即实施 |
 | 2026-09-20 | 开发者决定实施基线 | 等 w00003 完成并合并到 master，再考虑从 master 创建 w00017 worktree；不在 w00003 继续开发，不从其中途检查点分叉。当前继续规范与治理文档，不提前实施 |
+| 2026-09-26 | 开发者要求 Files 设计 | Lab 体验反馈、文件切换延迟需求及双模式基础管理的访谈范围，见 [Files 设计决策记录](files-explorer.md#决策记录)；不在总提案重复维护产品交互。 |
+| 2026-09-26 | 开发者要求收口与文档治理 | 接受 F1–F9 默认策略，第一版合同原位补齐；第二版独立起草。总提案迁出 Files 专题及 B/S 装配细化，未扩大产品实施或受限动作授权。 |
 
-前两片行为真相源为注册表的七项 `implemented` Spec，第一片与第二片分别由 w00017 t09、t13 完成复核。第三片把 Lab 常驻产品命令宿主收回场景局部，产品启动链仍未迁入新入口。实施路线和具体任务由 w00017 拥有；下一条真实功能链是 Files。后续功能按真实结果细化原有 Spec；第三方 SDK、热卸载扩展、数据迁移或公开协议变化仍需独立取舍。本地验证或规划批准不代表远端授权。
+前两片真相源为七项 `implemented` Spec，Lab 的实现与反馈见 t14；产品启动链仍未迁入。t15 已收口第一版 `planned` 合同，第二版保持 `draft`。后续实施及真实验收需另行进入对应工作范围；第三方 SDK、热卸载、数据迁移或公开协议扩展仍需独立取舍。

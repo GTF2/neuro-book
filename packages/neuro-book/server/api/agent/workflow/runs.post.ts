@@ -16,7 +16,7 @@ import {
     isProjectNotOpenError,
     requireActiveReadyProject,
     runReadyProjectOperation,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 
 const WorkflowRunBodySchema = z.object({
     projectRoot: ProjectRootDtoSchema,

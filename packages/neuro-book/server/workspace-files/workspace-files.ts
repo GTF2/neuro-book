@@ -1,4 +1,4 @@
-import {existsSync, type Stats} from "node:fs";
+import {createReadStream, existsSync, type Stats} from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import {
@@ -16,6 +16,7 @@ import {
     WORKSPACE_CONTENT_STATUSES,
 } from "nbook/server/workspace-files/content-node-schema";
 import {isRuntimeGeneratedWorkspacePath} from "nbook/server/workspace-files/runtime-generated-path";
+import {renameNoReplace} from "nbook/server/workspace-files/rename-no-replace";
 import type {WorkspaceIssueSummaryDto} from "nbook/shared/dto/workspace-tree.dto";
 
 export {WORKSPACE_CONTENT_STATUSES, WORKSPACE_STATUS_DESCRIPTIONS} from "nbook/server/workspace-files/content-node-schema";
@@ -120,6 +121,84 @@ export type WorkspaceNewDirectoryInput = {
     indexContent?: string | null;
     stateContent?: string | null;
 };
+export class WorkspacePathCopyError extends Error {
+    readonly mappings: readonly string[];
+    constructor(message: string, mappings: readonly string[] = [], cause?: unknown) {
+        super(message, {cause});
+        this.name = "WorkspacePathCopyError";
+        this.mappings = mappings;
+    }
+}
+
+/** 复制已保存的工作区文件或目录；目标必须不存在，目录不跟随符号链接。 */
+export async function copyWorkspacePath(rootInput: AbsoluteFsPath, sourcePath: string, targetPath: string): Promise<void> {
+    const root = await resolveWorkspaceOperationRoot(rootInput, false);
+    const source = await resolveWorkspaceEntryPath(root, sourcePath);
+    const target = await resolveWorkspaceEntryPath(root, targetPath);
+    const relativeTarget = path.relative(source, target);
+    if (relativeTarget === "" || !relativeTarget.startsWith(`..${path.sep}`) && relativeTarget !== ".." && !path.isAbsolute(relativeTarget)) {
+        throw new Error(`不能将路径复制到自身或自身后代: ${sourcePath} -> ${targetPath}`);
+    }
+    if (await pathExists(target)) throw new Error(`目标路径已存在: ${targetPath}`);
+    const stat = await fs.lstat(source);
+    if (stat.isSymbolicLink()) throw new Error(`不支持复制符号链接: ${sourcePath}`);
+    await assertRealPathContained(root, source);
+    const mappings: string[] = [];
+    try {
+        await fs.mkdir(path.dirname(target), {recursive: true});
+        if (stat.isDirectory()) {
+            await copyDirectoryWithoutSymlinks(root, source, target, mappings);
+        } else if (stat.isFile()) {
+            await copyFileExclusive(source, target, mappings, targetPath);
+        } else {
+            throw new Error(`不支持复制该路径类型: ${sourcePath}`);
+        }
+    } catch (error) {
+        throw new WorkspacePathCopyError(error instanceof Error ? error.message : "复制失败", mappings, error);
+    }
+}
+
+async function copyDirectoryWithoutSymlinks(root: AbsoluteFsPath, source: AbsoluteFsPath, target: AbsoluteFsPath, mappings: string[]): Promise<void> {
+    await assertRealPathContained(root, source);
+    await assertRealParentContained(root, target);
+    const entries = await fs.readdir(source, {withFileTypes: true});
+    await fs.mkdir(target);
+    mappings.push(toWorkspaceDisplayPath(root, target, true));
+    for (const entry of entries) {
+        const sourceChild = absoluteFsPath(path.join(source, entry.name));
+        const targetChild = absoluteFsPath(path.join(target, entry.name));
+        if (entry.isSymbolicLink()) throw new Error(`不支持复制符号链接: ${toWorkspaceDisplayPath(root, sourceChild)}`);
+        if (entry.isDirectory()) {
+            await copyDirectoryWithoutSymlinks(root, sourceChild, targetChild, mappings);
+        } else if (entry.isFile()) {
+            await assertRealPathContained(root, sourceChild);
+            await assertRealParentContained(root, targetChild);
+            await copyFileExclusive(sourceChild, targetChild, mappings, toWorkspaceDisplayPath(root, targetChild));
+        } else {
+            throw new Error(`不支持复制该路径类型: ${toWorkspaceDisplayPath(root, sourceChild)}`);
+        }
+    }
+}
+
+/** 排他创建成功即归本次操作所有，后续读写失败也须报告可能保留的部分文件。 */
+async function copyFileExclusive(source: string, target: string, mappings: string[], relativeTarget: string): Promise<void> {
+    const output = await fs.open(target, "wx");
+    mappings.push(relativeTarget);
+    try {
+        for await (const chunk of createReadStream(source)) {
+            const bytes = chunk as Buffer;
+            let offset = 0;
+            while (offset < bytes.length) {
+                const {bytesWritten} = await output.write(bytes, offset, bytes.length - offset);
+                if (bytesWritten === 0) throw new Error("复制目标未接受写入");
+                offset += bytesWritten;
+            }
+        }
+    } finally {
+        await output.close();
+    }
+}
+
 
 export type WorkspaceContentStateCreateInput = {
     root: AbsoluteFsPath;
@@ -485,12 +564,27 @@ export async function renameWorkspacePath(rootInput: AbsoluteFsPath, fromPath: s
     if (!await pathExists(fromAbsolutePath)) {
         throw new Error(`源路径不存在: ${fromPath}`);
     }
+
+    const relativeTarget = path.relative(fromAbsolutePath, toAbsolutePath);
+    if (relativeTarget === "") {
+        return buildWorkspaceNode(root, fromAbsolutePath, {
+            lorebookRoot: DEFAULT_LOREBOOK_ROOT,
+            chapterRoot: DEFAULT_CHAPTER_ROOT,
+            iconConfig: await readWorkspaceIconConfig(root),
+        });
+    }
+    const isDescendant = !path.isAbsolute(relativeTarget)
+        && relativeTarget !== ".."
+        && !relativeTarget.startsWith(`..${path.sep}`);
+    if (isDescendant) {
+        throw new Error(`不能将路径移动到自身后代: ${fromPath} -> ${toPath}`);
+    }
     if (await pathExists(toAbsolutePath)) {
         throw new Error(`目标路径已存在: ${toPath}`);
     }
 
     await fs.mkdir(path.dirname(toAbsolutePath), {recursive: true});
-    await fs.rename(fromAbsolutePath, toAbsolutePath);
+    await renameNoReplace(absoluteFsPath(fromAbsolutePath), absoluteFsPath(toAbsolutePath));
     return buildWorkspaceNode(root, toAbsolutePath, {
         lorebookRoot: DEFAULT_LOREBOOK_ROOT,
         chapterRoot: DEFAULT_CHAPTER_ROOT,

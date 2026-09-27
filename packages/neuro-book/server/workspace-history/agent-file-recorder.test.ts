@@ -9,7 +9,7 @@ import {
     openProject,
     requireReadyModuleHandle,
     resetProjectSessionsForTest,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {authorizeFileOperation} from "nbook/server/workspace-files/authorized-file-operation";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";

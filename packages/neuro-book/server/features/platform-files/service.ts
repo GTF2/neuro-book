@@ -73,6 +73,7 @@ const DEFINITIVE_REJECTIONS: Readonly<Partial<Record<PlatformFilesErrorCode, tru
     "invalid-path": true,
     "permission-denied": true,
     "not-found": true,
+    "already-exists": true,
     "grant-revoked": true,
     "lock-held": true,
 };
@@ -290,6 +291,48 @@ export class PlatformFilesService implements PlatformFiles {
                 relativePath: `${prefix}${entry.name}`,
                 kind: direntKind(entry),
             }));
+        });
+    }
+
+    async createFile(
+        grant: RootGrant,
+        relativePath: string,
+        data: string | Uint8Array,
+        options: WriteOptions = {},
+    ): Promise<void> {
+        return this.#perform(grant, ["write"], options.signal, async (authorized) => {
+            const target = await this.#entryTarget(authorized, relativePath);
+            await assertParentContained(this.#container(authorized, target));
+            let handle: FileHandle;
+            try {
+                handle = await open(target.absolute, "wx");
+            } catch (error) {
+                if (nodeErrorCode(error) === "EEXIST") {
+                    throw new PlatformFilesError("already-exists", `目标已存在：${target.relativePath}`, {cause: error});
+                }
+                throw this.#fsFailure("排他创建文件", error);
+            }
+            try {
+                await handle.writeFile(data);
+                if (options.flush === true) await handle.sync();
+            } finally {
+                await this.#closeHandle(handle);
+            }
+        });
+    }
+
+    async createDirectory(grant: RootGrant, relativePath: string, options: OperationOptions = {}): Promise<void> {
+        return this.#perform(grant, ["write"], options.signal, async (authorized) => {
+            const target = await this.#entryTarget(authorized, relativePath);
+            await assertParentContained(this.#container(authorized, target));
+            try {
+                await mkdir(target.absolute);
+            } catch (error) {
+                if (nodeErrorCode(error) === "EEXIST") {
+                    throw new PlatformFilesError("already-exists", `目标已存在：${target.relativePath}`, {cause: error});
+                }
+                throw this.#fsFailure("排他创建目录", error);
+            }
         });
     }
 

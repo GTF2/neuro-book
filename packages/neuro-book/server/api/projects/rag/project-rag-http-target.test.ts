@@ -18,7 +18,7 @@ vi.mock("nbook/server/api/projects/project-control-plane", () => ({
     requireProjectRefQuery: mocks.requireProjectRefQuery,
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     requireActiveReadyProject: mocks.requireActiveReadyProject,
     runReadyProjectOperation: mocks.runReadyProjectOperation,
 }));

@@ -19,7 +19,7 @@ vi.mock("nbook/server/api/projects/project-control-plane", () => ({
     requireProjectRefQuery: () => projectWorkspaceRef("book"),
     toProjectMetadataDto: (project: unknown) => project,
 }));
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     listProjects: mocks.listProjects,
     updateProjectCover: mocks.updateProjectCover,
 }));

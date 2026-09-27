@@ -14,7 +14,7 @@ vi.mock("nbook/server/api/projects/project-control-plane", async (importOriginal
     ...await importOriginal<typeof import("nbook/server/api/projects/project-control-plane")>(),
     requireProjectRefQuery: () => projectWorkspaceRef("book"),
 }));
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     listProjects: mocks.listProjects,
     updateProjectCover: mocks.updateProjectCover,
 }));

@@ -1,12 +1,16 @@
+import {createError} from "h3";
+import {ZodError} from "zod";
 import {
     requireReadyModuleHandle,
     requireActiveReadyProject,
+    requireReadyProjectByPublicId,
     runReadyProjectOperation,
     startReadyProjectOperation,
     type ProjectOperationStart,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {throwProjectHttpError, withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {
+    ProjectLifecycleError,
     projectWorkspaceRef,
     type ProjectWorkspaceRef,
 } from "nbook/server/workspace-files/project-identity";
@@ -21,6 +25,8 @@ import {
 } from "nbook/server/workspace-history/project-history";
 import type {WorkspaceFileTarget} from "nbook/server/workspace-files/workspace-file-target";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
+import {parseWorkspaceFileBinding} from "nbook/shared/dto/workspace-file-binding.dto";
+import type {WorkspaceFileBindingDto} from "nbook/shared/dto/workspace-file-binding.dto";
 
 /** HTTP Project数据面一次捕获的required handles，全部属于同一 ready generation。 */
 export type ProjectDataPlaneHandles = Readonly<{
@@ -28,6 +34,18 @@ export type ProjectDataPlaneHandles = Readonly<{
     fileIndex: ProjectFileIndexHandle;
     history: ProjectHistoryHandle;
 }>;
+
+/** 文件 HTTP 边界将缺失、混用或无效的根/代次标识归类为输入错误。 */
+export function parseWorkspaceFileHttpBinding(input: Record<string, unknown>): WorkspaceFileBindingDto {
+    try {
+        return parseWorkspaceFileBinding(input);
+    } catch (error) {
+        if (error instanceof ZodError) {
+            throw createError({statusCode: 400, message: "工作区文件绑定无效：Project 需要 projectRoot 和 publicId，用户资产需要 workspaceKind"});
+        }
+        throw error;
+    }
+}
 
 /**
  * 路由层Project open守卫：只有明确的Project Workspace目标需要显式open。
@@ -56,6 +74,85 @@ export function projectHandlesForTarget(target: WorkspaceFileTarget): ProjectDat
         fileIndex: requireReadyModuleHandle(ready, PROJECT_FILE_INDEX_MODULE_TOKEN),
         history: requireReadyModuleHandle(ready, PROJECT_HISTORY_MODULE_TOKEN),
     });
+}
+
+/** 文件 HTTP 请求只允许其自身携带的 exact Project generation；禁止按路径选中后来重开的实例。 */
+function boundProjectHandles(target: WorkspaceFileTarget, binding: WorkspaceFileBindingDto): ProjectDataPlaneHandles | undefined {
+    if (target.kind !== "project-workspace") {
+        if (!("workspaceKind" in binding) || target.kind !== "user-assets") {
+            throw new Error("文件目标与请求绑定不一致");
+        }
+        return undefined;
+    }
+    if (!("projectRoot" in binding) || binding.projectRoot !== target.projectRoot) {
+        throw new Error("文件目标与请求绑定不一致");
+    }
+    const ready = requireReadyProjectByPublicId(projectWorkspaceRef(binding.projectRoot), binding.publicId);
+    if (ready.workspace.root !== target.root) {
+        throw new ProjectLifecycleError("PROJECT_ROOT_REPLACED", "Project 文件目标与精确 ready 物理根不一致");
+    }
+    return Object.freeze({
+        ready,
+        fileIndex: requireReadyModuleHandle(ready, PROJECT_FILE_INDEX_MODULE_TOKEN),
+        history: requireReadyModuleHandle(ready, PROJECT_HISTORY_MODULE_TOKEN),
+    });
+}
+
+export function withBoundProjectTargetOperation<TResult>(
+    target: WorkspaceFileTarget,
+    binding: WorkspaceFileBindingDto,
+    handler: (handles: ProjectDataPlaneHandles | undefined) => Promise<TResult> | TResult,
+): Promise<TResult> {
+    return withProjectHttpError(async () => {
+        const handles = boundProjectHandles(target, binding);
+        return handles
+            ? runReadyProjectOperation(handles.ready, async (_signal, _assertTarget, revalidateTarget) => {
+                await revalidateTarget();
+                return handler(handles);
+            })
+            : handler(undefined);
+    });
+}
+
+export function withBoundProjectTargetMutation<TResult>(
+    target: WorkspaceFileTarget,
+    binding: WorkspaceFileBindingDto,
+    handler: (handles: ProjectDataPlaneHandles | undefined, revalidateTarget?: () => Promise<void>) => Promise<TResult> | TResult,
+): Promise<TResult> {
+    return withProjectHttpError(async () => {
+        if (target.kind !== "project-workspace") {
+            boundProjectHandles(target, binding);
+            return projectFileIndexAdapter.mutatePlain(target, () => handler(undefined));
+        }
+        const handles = boundProjectHandles(target, binding);
+        if (!handles) throw new Error("Project mutation 缺少 ready handles");
+        return runReadyProjectOperation(handles.ready, async (_signal, _assertTarget, revalidateTarget) => {
+            await revalidateTarget();
+            return handles.fileIndex.mutate(() => handler(handles, revalidateTarget));
+        });
+    });
+}
+
+/** SSE 直到连接完成才归还精确 Project operation。 */
+export function startBoundProjectTargetOperation<TResult>(
+    target: WorkspaceFileTarget,
+    binding: WorkspaceFileBindingDto,
+    start: (handles: ProjectDataPlaneHandles | undefined, signal: AbortSignal) => ProjectOperationStart<TResult>,
+): TResult {
+    try {
+        const handles = boundProjectHandles(target, binding);
+        if (handles) {
+            return startReadyProjectOperation(handles.ready, (signal, assertTarget, _revalidateTarget) => {
+                assertTarget();
+                return start(handles, signal);
+            });
+        }
+        const started = start(undefined, new AbortController().signal);
+        void started.completion.catch(() => undefined);
+        return started.result;
+    } catch (error) {
+        throwProjectHttpError(error);
+    }
 }
 
 /**

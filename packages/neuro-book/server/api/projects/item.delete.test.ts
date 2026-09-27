@@ -26,7 +26,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("nbook/server/api/projects/project-control-plane", () => ({
     requireProjectRefQuery: vi.fn(() => ({projectRoot: "book"})),
 }));
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     closeProject: mocks.closeProject,
     deleteProject: mocks.deleteProject,
     projectOccupancy: mocks.projectOccupancy,

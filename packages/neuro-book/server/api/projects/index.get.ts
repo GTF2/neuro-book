@@ -1,6 +1,6 @@
 import {appLogger} from "nbook/server/app-logs/logger";
 import {createServerTiming} from "nbook/server/utils/server-timing";
-import {listProjects} from "nbook/server/workspace-files/project-session";
+import {listProjects} from "nbook/server/runtime/product-project";
 import {throwProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {toProjectMetadataDto} from "nbook/server/api/projects/project-control-plane";
 import type {ProjectListResponseDto} from "nbook/shared/dto/project.dto";

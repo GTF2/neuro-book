@@ -1,16 +1,11 @@
-import {createError, sendStream, setResponseHeader} from "h3";
+import {sendStream, setResponseHeader} from "h3";
 import {
     createProjectWorkspaceZipStream,
     createWorkspaceZipStream,
     type WorkspaceArchive,
 } from "nbook/server/workspace-files/workspace-archive";
-import {
-    resolveWorkspaceFileTarget,
-    USER_ASSETS_WORKSPACE_KIND,
-} from "nbook/server/workspace-files/novel-workspace";
-import {
-    withProjectTargetOperation,
-} from "nbook/server/workspace-files/project-open-guard";
+import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
+import {withBoundProjectTargetOperation, parseWorkspaceFileHttpBinding} from "nbook/server/workspace-files/project-open-guard";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 import {encodeRfc5987Filename} from "nbook/server/utils/rfc5987";
 
@@ -19,14 +14,9 @@ import {encodeRfc5987Filename} from "nbook/server/utils/rfc5987";
  */
 export default defineEventHandler(async (event) => {
     const query = getQuery(event);
-    const projectRoot = typeof query.projectRoot === "string" ? query.projectRoot : undefined;
-    const workspaceKind = query.workspaceKind === USER_ASSETS_WORKSPACE_KIND ? query.workspaceKind : undefined;
-    if (workspaceKind !== USER_ASSETS_WORKSPACE_KIND && !projectRoot?.trim()) {
-        throw createError({statusCode: 400, message: "projectRoot 不能为空"});
-    }
-
-    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), {projectRoot, workspaceKind});
-    return withProjectTargetOperation(target, async (projectHandles) => {
+    const binding = parseWorkspaceFileHttpBinding(query);
+    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), binding);
+    return withBoundProjectTargetOperation(target, binding, async (projectHandles) => {
         let archive: WorkspaceArchive;
         if (target.kind === "project-workspace") {
             if (!projectHandles) {

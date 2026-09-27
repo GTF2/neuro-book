@@ -1,3 +1,4 @@
+import type * as ProjectOpenGuard from "nbook/server/workspace-files/project-open-guard";
 import {describe, expect, it, vi, beforeEach} from "vitest";
 import { testAbsoluteFsPath } from "@notnotype/neuro-book-test-support/test-path";
 
@@ -8,8 +9,9 @@ describe("POST /api/workspace-files/upload-project", () => {
         vi.resetModules();
         vi.clearAllMocks();
         vi.stubGlobal("defineEventHandler", (handler: unknown) => handler);
-        vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetMutation: vi.fn((_target, handler: (handles: undefined) => unknown) => handler(undefined)),
+        vi.doMock("nbook/server/workspace-files/project-open-guard", async (importOriginal) => ({
+            ...await importOriginal<typeof ProjectOpenGuard>(),
+            withBoundProjectTargetMutation: vi.fn((_target, _binding, handler: (handles: undefined) => unknown) => handler(undefined)),
         }));
         vi.doMock("nbook/server/workspace-history/tracked-workspace-files", () => ({
             USER_LOCAL_ACTOR: {kind: "user", userId: "local"},
@@ -26,6 +28,7 @@ describe("POST /api/workspace-files/upload-project", () => {
             getRequestHeader: vi.fn(() => undefined),
             readMultipartFormData: vi.fn(async () => [
                 {name: "projectRoot", data: Buffer.from("novel-7")},
+                {name: "publicId", data: Buffer.from("opened-id")},
                 {name: "mode", data: Buffer.from("files")},
                 {name: "files", filename: "index.md", data: Buffer.from("one")},
                 {name: "relativePath", data: Buffer.from("project/index.md")},
@@ -34,7 +37,7 @@ describe("POST /api/workspace-files/upload-project", () => {
             ]),
         }));
         vi.doMock("nbook/server/workspace-files/novel-workspace", () => ({
-            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "workspace-root", root})),
+            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "project-workspace", root, projectRoot: "novel-7"})),
         }));
         vi.doMock("nbook/server/workspace-files/workspace-upload", () => ({
             uploadWorkspaceProjectFiles,
@@ -48,7 +51,7 @@ describe("POST /api/workspace-files/upload-project", () => {
         const handler = (await import("nbook/server/api/workspace-files/upload-project.post")).default;
         await handler({} as never);
 
-        expect(uploadWorkspaceProjectFiles).toHaveBeenCalledWith({kind: "workspace-root", root}, [
+        expect(uploadWorkspaceProjectFiles).toHaveBeenCalledWith({kind: "project-workspace", root, projectRoot: "novel-7"}, [
             {fileName: "index.md", relativePath: "project/index.md", data: Buffer.from("one")},
             {fileName: "index.md", relativePath: "project/nested/index.md", data: Buffer.from("two")},
         ]);
@@ -62,12 +65,13 @@ describe("POST /api/workspace-files/upload-project", () => {
             getRequestHeader: vi.fn(() => undefined),
             readMultipartFormData: vi.fn(async () => [
                 {name: "projectRoot", data: Buffer.from("novel-7")},
+                {name: "publicId", data: Buffer.from("opened-id")},
                 {name: "mode", data: Buffer.from("zip")},
                 {name: "zip", filename: "project.zip", data: Buffer.from([1, 2, 3])},
             ]),
         }));
         vi.doMock("nbook/server/workspace-files/novel-workspace", () => ({
-            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "workspace-root", root})),
+            resolveWorkspaceFileTarget: vi.fn(async () => ({kind: "project-workspace", root, projectRoot: "novel-7"})),
         }));
         vi.doMock("nbook/server/workspace-files/workspace-upload", () => ({
             uploadWorkspaceProjectFiles: vi.fn(),
@@ -81,7 +85,7 @@ describe("POST /api/workspace-files/upload-project", () => {
         const handler = (await import("nbook/server/api/workspace-files/upload-project.post")).default;
         await handler({} as never);
 
-        expect(uploadWorkspaceProjectZip).toHaveBeenCalledWith({kind: "workspace-root", root}, {
+        expect(uploadWorkspaceProjectZip).toHaveBeenCalledWith({kind: "project-workspace", root, projectRoot: "novel-7"}, {
             fileName: "project.zip",
             data: Buffer.from([1, 2, 3]),
         });

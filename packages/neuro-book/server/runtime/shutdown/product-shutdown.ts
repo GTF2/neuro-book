@@ -2,11 +2,10 @@ import {existsSync} from "node:fs";
 import {appLogger} from "nbook/server/app-logs/logger";
 import {disposeAgentHarness} from "nbook/server/agent/http";
 import {disposeStorageHost} from "nbook/server/storage/host";
-import {stopAgentSessionStoreRuntime} from "nbook/server/agent/session/agent-session-store-runtime";
 import {resolveDatabaseConfig} from "nbook/server/database/config";
 import {disconnectPrismaClient} from "nbook/server/database/prisma";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
-import {closeAllProjects} from "nbook/server/workspace-files/project-session";
+import {stopProductRuntime} from "nbook/server/runtime/product-startup";
 import {closeAllWorkspaceTreeIndexes} from "nbook/server/workspace-files/project-workspace-index";
 import {checkpointAppSqliteDatabase} from "nbook/server/database/app-sqlite-migrations";
 import {ProductShutdownController} from "nbook/server/runtime/shutdown/product-shutdown-controller";
@@ -27,14 +26,9 @@ async function checkpointAppSqlite(): Promise<void> {
 export const productShutdownController = new ProductShutdownController(
     [
         {name: "agent-harness", close: disposeAgentHarness},
-        {name: "project-sessions", close: closeAllProjects},
+        {name: "product-runtime", close: () => stopProductRuntime()},
         {name: "workspace-file-indexes", close: closeAllWorkspaceTreeIndexes},
-        // user Storage 上下文在领域写入与日志关闭前收口；Project Storage 将在其 occupancy 释放前接入。
         {name: "storage-host", close: disposeStorageHost},
-        {
-            name: "agent-session-store",
-            close: async () => stopAgentSessionStoreRuntime(runtimePathsFromEnv().workspaceRoot),
-        },
         {name: "app-sqlite-checkpoint", close: checkpointAppSqlite},
         {name: "app-prisma", close: disconnectPrismaClient},
         {name: "app-logger", close: async () => appLogger.flush()},

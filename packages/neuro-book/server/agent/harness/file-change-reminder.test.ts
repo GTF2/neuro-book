@@ -20,7 +20,7 @@ import type {UnseenGroup} from "@notnotype/nb-history";
 import {closeAllProjects,
     requireReadyModuleHandle,
     requireActiveReadyProject,
-    resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
+    resetProjectSessionsForTest} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {writeProjectManifest} from "nbook/server/workspace-files/project-workspace";

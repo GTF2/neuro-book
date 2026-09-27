@@ -26,7 +26,7 @@ import {
     closeProject,
     openProject,
     resetProjectSessionsForTest,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {collectReleasedSqliteHandles} from "nbook/server/workspace-files/sqlite-handle-release";
 import {writeProjectManifest} from "nbook/server/workspace-files/project-workspace";
 import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";

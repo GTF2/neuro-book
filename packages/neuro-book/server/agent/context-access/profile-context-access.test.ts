@@ -23,7 +23,7 @@ const mocks = vi.hoisted(() => ({
     runReadyProjectOperation: vi.fn(),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     requireReadyModuleHandle: mocks.requireReadyModuleHandle,
     runReadyProjectOperation: mocks.runReadyProjectOperation,
 }));

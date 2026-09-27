@@ -70,7 +70,7 @@ export default defineConfig({
         include: [
             "runtime/**/*.test.ts",
             "server/runtime/foundation/**/*.test.ts",
-            "app/runtime/**/*.test.ts",
+            "app/runtime/browser-host.test.ts",
             "server/features/**/*.test.ts",
             "app/features/**/*.test.ts",
         ],

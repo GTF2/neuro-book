@@ -1,6 +1,6 @@
 import {createError, getRequestHeader, readMultipartFormData, type MultiPartData} from "h3";
+import {withBoundProjectTargetMutation, parseWorkspaceFileHttpBinding} from "nbook/server/workspace-files/project-open-guard";
 import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
-import {withProjectTargetMutation} from "nbook/server/workspace-files/project-open-guard";
 import {
     uploadWorkspaceProjectFiles,
     uploadWorkspaceProjectZip,
@@ -16,13 +16,14 @@ import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
 export default defineEventHandler(async (event) => {
     assertContentLengthLimit(event, 500 * 1024 * 1024, 8 * 1024 * 1024);
     const parts = await readRequiredMultipart(event);
-    const workspaceKind = readTextPart(parts, "workspaceKind") === "user-assets" ? "user-assets" : undefined;
-    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), {
+    const binding = parseWorkspaceFileHttpBinding({
         projectRoot: readTextPart(parts, "projectRoot"),
-        workspaceKind,
+        publicId: readTextPart(parts, "publicId"),
+        workspaceKind: readTextPart(parts, "workspaceKind"),
     });
+    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), binding);
     const mode = readTextPart(parts, "mode");
-    return withProjectTargetMutation(target, async (projectHandles) => {
+    return withBoundProjectTargetMutation(target, binding, async (projectHandles) => {
         if (mode === "zip") {
             const zipFile = firstFilePart(parts, "zip");
             assertZipFile(zipFile.filename ?? "");

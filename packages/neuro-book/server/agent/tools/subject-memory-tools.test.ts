@@ -17,7 +17,7 @@ import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
 import {closeAllProjects,
     closeProject,
     openProject,
-    requireReadyModuleHandle} from "nbook/server/workspace-files/project-session";
+    requireReadyModuleHandle} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 import {PROJECT_FILE_INDEX_MODULE_TOKEN} from "nbook/server/workspace-files/project-file-index";

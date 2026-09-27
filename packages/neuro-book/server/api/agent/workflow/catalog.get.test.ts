@@ -64,7 +64,7 @@ describe("GET /api/agent/workflow/catalog", () => {
         vi.doMock("nbook/server/config/config-service", () => ({
             loadEffectiveConfigFromTarget,
         }));
-        vi.doMock("nbook/server/workspace-files/project-session", () => ({
+        vi.doMock("nbook/server/runtime/product-project", () => ({
             requireActiveReadyProject,
             runReadyProjectOperation,
         }));

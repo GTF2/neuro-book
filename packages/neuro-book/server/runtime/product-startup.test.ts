@@ -1,6 +1,9 @@
 import {beforeEach, describe, expect, it, vi} from "vitest";
 import {PRODUCT_RUNTIME_EXIT_CODE_AGENT_SESSION_STORE_LEASE_COMPROMISED} from "@notnotype/neuro-book-contracts/product-runtime";
 import {AgentSessionStoreLeaseCompromisedError} from "nbook/server/agent/session/agent-session-store-lease";
+import type {productRuntimeReady, stopProductRuntime, productProjectOwner, withProductWorkspaceFiles} from "nbook/server/runtime/product-startup";
+import type {Scope} from "nbook/runtime/lifecycle/lifecycle";
+import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 
 const mocks = vi.hoisted(() => ({
     mkdir: vi.fn(async () => undefined),
@@ -8,6 +11,7 @@ const mocks = vi.hoisted(() => ({
     stateRootIntegrityFailed: vi.fn(() => false),
     assertProductMigrationsReady: vi.fn(async () => undefined),
     startAgentSessionStoreRuntime: vi.fn(async () => ({rootWorkspace: "C:/state/workspace"})),
+    stopAgentSessionStoreRuntime: vi.fn(async () => undefined),
     observeAgentSessionStoreRuntimeCompromised: vi.fn<() => Promise<{
         leasePath: string;
         kind: "runtime";
@@ -34,16 +38,27 @@ vi.mock("nbook/server/runtime/product-migration-gate", () => ({
 vi.mock("nbook/server/agent/session/agent-session-store-runtime", () => ({
     startAgentSessionStoreRuntime: mocks.startAgentSessionStoreRuntime,
     observeAgentSessionStoreRuntimeCompromised: mocks.observeAgentSessionStoreRuntimeCompromised,
+    stopAgentSessionStoreRuntime: mocks.stopAgentSessionStoreRuntime,
 }));
 vi.mock("nbook/server/app-logs/logger", () => ({appLogger: {warn: mocks.warn, fatalSync: mocks.fatalSync}}));
 vi.mock("nbook/server/runtime/shutdown/product-shutdown", () => ({
     productShutdownController: {requestProcessExit: mocks.requestProcessExit},
 }));
 
-import {prepareProductRuntime} from "nbook/server/runtime/product-startup";
+let runtime: {
+    productRuntimeReady: typeof productRuntimeReady;
+    stopProductRuntime: typeof stopProductRuntime;
+    productProjectOwner: typeof productProjectOwner;
+    withProductWorkspaceFiles: typeof withProductWorkspaceFiles;
+};
+const productGlobals = globalThis as typeof globalThis & {__nbookProductApplicationV1?: unknown};
 
 describe("Product startup", () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+        delete productGlobals.__nbookProductApplicationV1;
+        vi.resetModules();
+        // 每个用例需要全新进程实例，重新加载模块级 singleton。
+        runtime = await import("nbook/server/runtime/product-startup");
         vi.clearAllMocks();
         mocks.inspectStateRootIntegrity.mockResolvedValue({kind: "clean"});
         mocks.stateRootIntegrityFailed.mockReturnValue(false);
@@ -51,8 +66,19 @@ describe("Product startup", () => {
         mocks.startAgentSessionStoreRuntime.mockResolvedValue({rootWorkspace: "C:/state/workspace"});
         mocks.observeAgentSessionStoreRuntimeCompromised.mockReturnValue(new Promise(() => undefined));
     });
+    it("migration 未完成时不获取 lease，也不发布 HTTP ready", async () => {
+        const migration = Promise.withResolvers<void>();
+        mocks.assertProductMigrationsReady.mockReturnValue(migration.promise);
+        const ready = runtime.productRuntimeReady();
+        await vi.waitFor(() => expect(mocks.assertProductMigrationsReady).toHaveBeenCalledOnce());
+        expect(mocks.startAgentSessionStoreRuntime).not.toHaveBeenCalled();
+        migration.resolve();
+        await ready;
+        expect(mocks.startAgentSessionStoreRuntime).toHaveBeenCalledOnce();
+    });
+
     it("按 Workspace、migration、Session Store 顺序完成完整 ready 门禁", async () => {
-        await prepareProductRuntime();
+        await runtime.productRuntimeReady();
 
         expect(mocks.mkdir).toHaveBeenCalledWith("C:/state/workspace", {recursive: true});
         expect(mocks.inspectStateRootIntegrity).toHaveBeenCalledWith({
@@ -68,6 +94,106 @@ describe("Product startup", () => {
             mocks.startAgentSessionStoreRuntime.mock.invocationCallOrder[0]!,
         );
     });
+    it("并发启动共享同一门禁，停止后 lease 只释放一次", async () => {
+        const first = runtime.productRuntimeReady();
+        expect(runtime.productRuntimeReady()).toBe(first);
+        await first;
+        await runtime.stopProductRuntime();
+        await runtime.stopProductRuntime();
+
+        expect(mocks.startAgentSessionStoreRuntime).toHaveBeenCalledTimes(1);
+        expect(mocks.stopAgentSessionStoreRuntime).toHaveBeenCalledTimes(1);
+    });
+
+    it("Project child释放失败时根停止不释放Session lease，显式recover完成后才释放", async () => {
+        await runtime.productRuntimeReady();
+        let projectScope!: Scope;
+        let ownerScope!: Scope;
+        let failRelease = true;
+        const releaseProject = vi.fn(() => {
+            if (failRelease) throw new Error("project close failed");
+        });
+        runtime.productProjectOwner((root) => {
+            const owner = root.createChild("project-owner-test");
+            ownerScope = owner;
+            projectScope = owner.createChild("project-generation-test");
+            projectScope.register({
+                kind: "project-generation",
+                label: "test",
+                value: null,
+                release: releaseProject,
+            });
+            projectScope.open();
+            owner.open();
+            return {root: owner};
+        });
+        await expect(runtime.stopProductRuntime()).rejects.toThrow("关闭不完整");
+        expect(mocks.stopAgentSessionStoreRuntime).not.toHaveBeenCalled();
+        expect(projectScope.phase).toBe("stopping");
+        expect(ownerScope.phase).toBe("stopping");
+        expect(releaseProject).toHaveBeenCalledOnce();
+
+        failRelease = false;
+        const state = productGlobals.__nbookProductApplicationV1 as {application: {recover(): Promise<{status: string}>}};
+        await expect(state.application.recover()).resolves.toMatchObject({status: "closed"});
+        expect(mocks.stopAgentSessionStoreRuntime).toHaveBeenCalledOnce();
+        expect(ownerScope.phase).toBe("closed");
+        expect(projectScope.phase).toBe("closed");
+        expect(releaseProject).toHaveBeenCalledTimes(2);
+        expect(releaseProject.mock.invocationCallOrder[1]).toBeLessThan(
+            mocks.stopAgentSessionStoreRuntime.mock.invocationCallOrder[0]!,
+        );
+    });
+
+    it("同一 realm 模块重载复用仍活门禁（不模拟 Nitro Dev 跨 worker）", async () => {
+        const ready = runtime.productRuntimeReady();
+        await ready;
+        vi.resetModules();
+        const hotReloaded = await import("nbook/server/runtime/product-startup");
+
+        expect(hotReloaded.productRuntimeReady()).toBe(ready);
+        expect(mocks.startAgentSessionStoreRuntime).toHaveBeenCalledTimes(1);
+        await expect(hotReloaded.withProductWorkspaceFiles({target: {kind: "user-assets", root: absoluteFsPath("C:/state/workspace/.nbook")}, handles: undefined}, async () => "reloaded")).resolves.toBe("reloaded");
+        await hotReloaded.stopProductRuntime();
+        expect(mocks.stopAgentSessionStoreRuntime).toHaveBeenCalledTimes(1);
+    });
+
+    it("Files 请求释放不关闭共享服务，应用停止后拒绝新请求", async () => {
+        const binding = {target: {kind: "user-assets" as const, root: absoluteFsPath("C:/state/workspace/.nbook")}, handles: undefined};
+        await expect(runtime.withProductWorkspaceFiles(binding, async () => "first")).resolves.toBe("first");
+        await expect(runtime.withProductWorkspaceFiles(binding, async () => "second")).resolves.toBe("second");
+        await runtime.stopProductRuntime();
+        await expect(runtime.withProductWorkspaceFiles(binding, async () => "late")).rejects.toThrow();
+    });
+
+    it("Files 在途操作未结束时不释放 Session lease", async () => {
+        const binding = {target: {kind: "user-assets" as const, root: absoluteFsPath("C:/state/workspace/.nbook")}, handles: undefined};
+        const started = Promise.withResolvers<void>();
+        const finish = Promise.withResolvers<void>();
+        const aborted = Promise.withResolvers<void>();
+        const request = runtime.withProductWorkspaceFiles(binding, async (_files, signal) => {
+            signal.addEventListener("abort", () => aborted.resolve(), {once: true});
+            started.resolve();
+            await finish.promise;
+        });
+        const interrupted = expect(request).rejects.toThrow();
+        await started.promise;
+        const stopping = runtime.stopProductRuntime();
+        await aborted.promise;
+        expect(mocks.stopAgentSessionStoreRuntime).not.toHaveBeenCalled();
+        finish.resolve();
+        await interrupted;
+        await stopping;
+        expect(mocks.stopAgentSessionStoreRuntime).toHaveBeenCalledOnce();
+    });
+
+    it("关闭后不重新取得 lease", async () => {
+        await runtime.productRuntimeReady();
+        await runtime.stopProductRuntime();
+
+        await expect(runtime.productRuntimeReady()).rejects.toThrow("已停止");
+        expect(mocks.startAgentSessionStoreRuntime).toHaveBeenCalledTimes(1);
+    });
 
     it("runtime lease compromised时记录fatal诊断并请求专用退出", async () => {
         let resolveCompromised!: (error: {leasePath: string; kind: "runtime"}) => void;
@@ -75,7 +201,7 @@ describe("Product startup", () => {
             resolveCompromised = resolvePromise;
         }));
 
-        await prepareProductRuntime();
+        await runtime.productRuntimeReady();
         const error = Object.assign(new Error("heartbeat lost"), {
             leasePath: "C:/state/workspace/.nbook/agent/migrations/runtime.lease",
             kind: "runtime" as const,
@@ -107,8 +233,7 @@ describe("Product startup", () => {
         );
         mocks.startAgentSessionStoreRuntime.mockRejectedValue(error);
 
-        await expect(prepareProductRuntime()).resolves.toBeUndefined();
-        expect(mocks.observeAgentSessionStoreRuntimeCompromised).not.toHaveBeenCalled();
+        await expect(runtime.productRuntimeReady()).rejects.toBe(error);
         expect(mocks.requestProcessExit).toHaveBeenCalledWith(
             PRODUCT_RUNTIME_EXIT_CODE_AGENT_SESSION_STORE_LEASE_COMPROMISED,
         );
@@ -126,7 +251,7 @@ describe("Product startup", () => {
             throw observerFailure;
         });
 
-        await prepareProductRuntime();
+        await runtime.productRuntimeReady();
         await vi.waitFor(() => expect(mocks.requestProcessExit).toHaveBeenCalledWith(
             PRODUCT_RUNTIME_EXIT_CODE_AGENT_SESSION_STORE_LEASE_COMPROMISED,
         ));
@@ -143,7 +268,7 @@ describe("Product startup", () => {
         mocks.inspectStateRootIntegrity.mockResolvedValue(stateIntegrity);
         mocks.stateRootIntegrityFailed.mockReturnValue(true);
 
-        await prepareProductRuntime();
+        await runtime.productRuntimeReady();
 
         expect(mocks.warn).toHaveBeenCalledWith(
             "runtime.stateRoot.integrityFailed",
@@ -155,7 +280,7 @@ describe("Product startup", () => {
     it("migration 未 ready 时绝不取得 Session Store lease", async () => {
         mocks.assertProductMigrationsReady.mockRejectedValue(new Error("migration pending"));
 
-        await expect(prepareProductRuntime()).rejects.toThrow("migration pending");
+        await expect(runtime.productRuntimeReady()).rejects.toThrow("migration pending");
 
         expect(mocks.startAgentSessionStoreRuntime).not.toHaveBeenCalled();
     });

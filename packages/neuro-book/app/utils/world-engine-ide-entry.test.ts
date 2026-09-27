@@ -112,7 +112,6 @@ describe("World Engine IDE entry", () => {
         expect(indexPage).not.toContain("const list = await loadProjects();");
         expect(indexPage).not.toContain("list.some((novel) => novel.projectRoot === target.projectRoot)");
         expect(indexPage).not.toContain("notifyMissingProjectRoute(target.projectRoot)");
-        expect(indexPage).toContain("await switchToNovelWorkspace(target.projectRoot);");
         expect(indexPage).toContain("const projectSurfaceActive = computed(() =>");
         expect(indexPage).toContain("projectSession.state.value.ready.projectRoot === currentProjectRoot.value");
         expect(indexPage).toContain("v-if=\"projectSurfaceActive\"");

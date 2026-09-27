@@ -318,7 +318,7 @@ describe("POST /api/agent/workflow/runs", () => {
         vi.doMock("nbook/server/api/projects/project-http-error", () => ({
             withProjectHttpError: (operation: () => Promise<unknown>) => operation(),
         }));
-        vi.doMock("nbook/server/workspace-files/project-session", () => ({
+        vi.doMock("nbook/server/runtime/product-project", () => ({
             isProjectNotOpenError: (error: unknown) => error === input.projectReadyError,
             requireActiveReadyProject,
             runReadyProjectOperation,

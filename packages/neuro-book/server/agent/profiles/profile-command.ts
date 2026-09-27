@@ -19,7 +19,7 @@ import type {JsonValue} from "nbook/server/agent/messages/types";
 import {generateBuiltinVariableTypes} from "nbook/server/agent/variables/generated-types";
 import {builtinVariableDefinitions} from "nbook/server/agent/variables/registry";
 import {readVariableDefinitionManifest, resolveVariableDefinitionArtifactPathContext, VARIABLE_DEFINITION_COMPILED_DIR, type VariableDefinitionArtifactPathContext} from "nbook/server/agent/variables/definition-artifact";
-import {closeProject, openProject} from "nbook/server/workspace-files/project-session";
+import {closeProject, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {resolveAgentInstallRoot, resolveApplicationRoot, resolveProjectAgentRoot} from "nbook/server/workspace-files/system-workspace-assets";
 import {resolveRuntimeArtifactCompilerContext} from "nbook/server/utils/runtime-artifact-compiler-context";

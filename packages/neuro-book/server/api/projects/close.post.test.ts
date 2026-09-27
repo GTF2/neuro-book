@@ -11,7 +11,7 @@ async function loadHandler(occupancy: Occupancy): Promise<{
     vi.doMock("nbook/server/api/projects/project-control-plane", () => ({
         requireProjectRefBody: vi.fn(async () => ({projectRoot: "novel-a"})),
     }));
-    vi.doMock("nbook/server/workspace-files/project-session", () => ({
+    vi.doMock("nbook/server/runtime/product-project", () => ({
         closeProject,
         projectOccupancy: vi.fn(() => occupancy),
     }));

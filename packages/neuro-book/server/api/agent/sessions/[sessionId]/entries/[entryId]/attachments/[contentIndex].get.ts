@@ -4,7 +4,7 @@ import {isAgentSessionLifecycleHttpError, mapAgentHttpError, requireAgentSession
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {ImageVariantError, type ImageVariantSpec} from "nbook/server/media/image-variant-contract";
 import {imageVariantHttpError, imageVariantSpecFromEvent} from "nbook/server/media/image-variant-http";
-import {isProjectNotOpenError} from "nbook/server/workspace-files/project-session";
+import {isProjectNotOpenError} from "nbook/server/runtime/product-project";
 import {encodeRfc5987Filename} from "nbook/server/utils/rfc5987";
 
 /** 按公开 Chat Flow locator 返回完整 Attachment；hash 本身不构成授权。 */

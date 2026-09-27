@@ -54,7 +54,7 @@ vi.mock("nbook/server/media/image-variant-runtime", () => ({
     useImageVariantModule: () => ({render: mocks.render}),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     isProjectNotOpenError: (error: unknown) => error === mocks.projectNotOpenError,
 }));
 

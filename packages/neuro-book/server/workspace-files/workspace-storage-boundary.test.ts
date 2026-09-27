@@ -12,7 +12,7 @@ import {
     isWorkspaceStoragePath,
     WorkspaceStorageBoundaryError,
 } from "nbook/server/workspace-files/workspace-storage-boundary";
-import {USER_LOCAL_ACTOR, deleteWorkspacePathTracked, renameWorkspacePathTracked, writeWorkspaceTextFileTracked} from "nbook/server/workspace-history/tracked-workspace-files";
+import {USER_LOCAL_ACTOR, batchWorkspacePathsTracked, deleteWorkspacePathTracked, renameWorkspacePathTracked, writeWorkspaceTextFileTracked} from "nbook/server/workspace-history/tracked-workspace-files";
 
 const createdRoots: AbsoluteFsPath[] = [];
 
@@ -236,6 +236,65 @@ describe("WorkspaceStorageBoundary", () => {
         });
 
         await expect(fs.readFile(path.join(root, "notes", "storage", "note.md"), "utf-8")).resolves.toBe("普通目录\n");
+    });
+
+    it("批量复制父子资源只操作外层一次，独立目标冲突后继续", async () => {
+        const root = await createWorkspaceRoot("batch-copy");
+        const target: WorkspaceFileTarget = {kind: "workspace-root", root};
+        await fs.mkdir(path.join(root, "chapter"));
+        await fs.writeFile(path.join(root, "chapter", "index.md"), "正文", "utf-8");
+        await fs.writeFile(path.join(root, "other.md"), "其它", "utf-8");
+        await fs.mkdir(path.join(root, "destination"));
+        await fs.writeFile(path.join(root, "destination", "other.md"), "占用", "utf-8");
+
+        const items = await batchWorkspacePathsTracked({target, kind: "copy", sources: ["chapter/index.md", "other.md", "chapter/", "chapter/"], destination: "destination", actor: USER_LOCAL_ACTOR});
+        expect(items.map(item => [item.source, item.status])).toEqual([["other.md", "failed"], ["chapter", "success"]]);
+        await expect(fs.readFile(path.join(root, "destination", "chapter", "index.md"), "utf-8")).resolves.toBe("正文");
+        await expect(fs.readFile(path.join(root, "destination", "other.md"), "utf-8")).resolves.toBe("占用");
+        await expect(fs.readFile(path.join(root, "chapter", "index.md"), "utf-8")).resolves.toBe("正文");
+    });
+
+    it("尾斜线与反斜线规范化后仍按父目录去重，目标改名不覆盖已占用项", async () => {
+        const root = await createWorkspaceRoot("batch-normalized-parents");
+        const target: WorkspaceFileTarget = {kind: "workspace-root", root};
+        await fs.mkdir(path.join(root, "chapter"));
+        await fs.writeFile(path.join(root, "chapter", "index.md"), "正文", "utf-8");
+        await fs.writeFile(path.join(root, "other.md"), "其它", "utf-8");
+        await fs.mkdir(path.join(root, "destination"));
+        await fs.writeFile(path.join(root, "destination", "taken.md"), "占用", "utf-8");
+
+        const items = await batchWorkspacePathsTracked({target, kind: "copy",
+            sources: ["chapter/", "chapter\\index.md", "chapter////", "other.md"], destination: "destination",
+            targetNames: {"chapter": "renamed", "other.md": "taken.md"}, actor: USER_LOCAL_ACTOR});
+        expect(items.map(item => [item.source, item.target, item.status])).toEqual([
+            ["chapter", "destination/renamed", "success"],
+            ["other.md", "destination/taken.md", "failed"],
+        ]);
+        await expect(fs.readFile(path.join(root, "destination", "renamed", "index.md"), "utf-8")).resolves.toBe("正文");
+        await expect(fs.readFile(path.join(root, "destination", "taken.md"), "utf-8")).resolves.toBe("占用");
+    });
+
+    it.runIf(process.platform === "win32")("Windows 大小写别名不重复复制同一来源", async () => {
+        const root = await createWorkspaceRoot("batch-case-alias");
+        const target: WorkspaceFileTarget = {kind: "workspace-root", root};
+        await fs.writeFile(path.join(root, "Chapter.md"), "source");
+        const items = await batchWorkspacePathsTracked({target, kind: "copy", sources: ["Chapter.md", "chapter.md"],
+            destination: "copies", actor: USER_LOCAL_ACTOR});
+        expect(items.map(item => item.status)).toEqual(["success", "skipped"]);
+        await expect(fs.readFile(path.join(root, "copies", "Chapter.md"), "utf8")).resolves.toBe("source");
+    });
+
+    it("批量操作拒绝绝对源路径和非法目标，保留全部磁盘内容", async () => {
+        const root = await createWorkspaceRoot("batch-invalid-path");
+        const target: WorkspaceFileTarget = {kind: "workspace-root", root};
+        await fs.writeFile(path.join(root, "safe.md"), "安全", "utf-8");
+        const invalidSource = await batchWorkspacePathsTracked({target, kind: "copy", sources: ["/safe.md", "safe.md"], destination: "copies", actor: USER_LOCAL_ACTOR});
+        expect(invalidSource.map(item => item.status)).toEqual(["failed", "success"]);
+        const invalidDestination = await batchWorkspacePathsTracked({target, kind: "move", sources: ["safe.md"], destination: "/outside", actor: USER_LOCAL_ACTOR});
+        expect(invalidDestination.map(item => item.status)).toEqual(["not-executed"]);
+        await expect(fs.readFile(path.join(root, "safe.md"), "utf-8")).resolves.toBe("安全");
+        await expect(fs.readFile(path.join(root, "copies", "safe.md"), "utf-8")).resolves.toBe("安全");
+        await expect(fs.access(path.join(root, "outside"))).rejects.toMatchObject({code: "ENOENT"});
     });
 
     it("user-assets 文件树不出现 Storage 内部记录", async () => {

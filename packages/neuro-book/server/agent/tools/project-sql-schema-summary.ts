@@ -1,5 +1,5 @@
 import {PROJECT_AGENT_SQL_MODULE_TOKEN} from "nbook/server/agent/tools/agent-sql-project-module";
-import {activateReadyProjectModule, type ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session";
+import {activateReadyProjectModule, type ReadyProjectSessionRef} from "nbook/server/runtime/product-project";
 
 /**
  * 取当前 Project Workspace 的 SQL schema 摘要。

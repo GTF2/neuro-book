@@ -4,7 +4,7 @@ import type {SessionWriteEntryBatch} from "nbook/server/agent/session/write-plan
 import type {SessionEntry, SessionMetadata} from "nbook/server/agent/session/types";
 import {AttachmentError} from "nbook/server/agent/attachments/types";
 import {projectPublicAttachment} from "nbook/server/agent/events/public-tool-projection";
-import {requireActiveReadyProject} from "nbook/server/workspace-files/project-session";
+import {requireActiveReadyProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {attachmentMarkdownTarget} from "nbook/shared/agent/agent-image-markdown";
 import type {AttachmentId, AttachmentRef} from "nbook/shared/dto/agent-attachment.dto";

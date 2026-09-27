@@ -11,7 +11,7 @@ import {
     activateReadyProjectModule,
     requireActiveReadyProject,
     runReadyProjectOperation,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 

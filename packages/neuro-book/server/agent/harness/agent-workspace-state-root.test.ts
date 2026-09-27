@@ -15,7 +15,7 @@ import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {createFauxModels, writeFauxProviderConfig} from "nbook/server/agent/test-utils/faux-models";
 import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 import {closeProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
-import {openProject} from "nbook/server/workspace-files/project-session";
+import {openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";

@@ -11,7 +11,7 @@ import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity
 import {
     ProjectNotOpenError,
     requireActiveReadyProject,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 /** Agent 文件操作的能力种类；所有数据面操作都使用同一授权边界。 */

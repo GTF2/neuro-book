@@ -1,7 +1,7 @@
 import {createError} from "h3";
 import {consola} from "consola";
 import {useAgentHarness} from "nbook/server/agent/http";
-import {closeProject, deleteProject, projectOccupancy} from "nbook/server/workspace-files/project-session";
+import {closeProject, deleteProject, projectOccupancy} from "nbook/server/runtime/product-project";
 import {
     isProjectLifecycleLockReleaseFailedError,
     isProjectLifecycleTransactionError,

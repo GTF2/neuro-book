@@ -7,7 +7,7 @@ import {
 } from "nbook/server/media/single-file-multipart";
 import type {ProjectMutationResponseDto} from "nbook/shared/dto/project.dto";
 import {ProjectLifecycleError} from "nbook/server/workspace-files/project-lifecycle";
-import {listProjects, updateProjectCover} from "nbook/server/workspace-files/project-session";
+import {listProjects, updateProjectCover} from "nbook/server/runtime/product-project";
 import {
     ProjectCoverUploadError,
     validateProjectCoverUpload,

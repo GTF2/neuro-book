@@ -10,7 +10,7 @@
  *   冲突进入 Store 的未解决登记，由 `conflictRequest` 这条一次性通道驱动实例执行
  *   "采用当前正文"或"保留此视图内容"。
  */
-import {computed, nextTick, onMounted, onScopeDispose, reactive, ref, shallowRef, watch} from "vue";
+import {computed, markRaw, nextTick, onMounted, onScopeDispose, reactive, ref, shallowRef, watch} from "vue";
 import {useNovelIdeStore} from "nbook/app/stores/novel-ide";
 import {useEditorConfiguration} from "nbook/app/composables/useEditorConfiguration";
 import {createBuiltinEditorContributions, type BuiltinEditorBindings} from "nbook/app/utils/editor-workbench/builtin-editors";
@@ -51,6 +51,7 @@ export type EditorGroupPresentation = Readonly<{
     activePath: string;
     document: EditorDocumentSnapshot | null;
     editorId: string | null;
+    retainedDocuments: readonly EditorDocumentSnapshot[];
     menus: MenubarMenuData[];
     actions: readonly EditorAction[];
     busy: boolean;
@@ -120,9 +121,7 @@ export function useEditorWorkbench(options: {
         const buffer = store.workspaceBuffers[path];
         return path && buffer ? store.editorDocumentTarget(path) : null;
     };
-
-    function documentOf(groupId: string): EditorDocumentSnapshot | null {
-        const path = activePathOf(groupId);
+    function snapshotOf(groupId: string, path: string): EditorDocumentSnapshot | null {
         const buffer = store.workspaceBuffers[path];
         const resolution = resolutionOf(groupId, path);
         if (!path || !buffer || !resolution || !buffer.node.editable) return null;
@@ -132,6 +131,7 @@ export function useEditorWorkbench(options: {
             contentRevision: buffer.contentRevision,
             languageId: resolution.languageId,
             readonly: groupIsLoading(groupId),
+            dirty: buffer.content !== buffer.lastSyncedContent,
         };
     }
 
@@ -172,7 +172,7 @@ export function useEditorWorkbench(options: {
         ?? null;
 
     const presentationOf = (groupId: string): EditorGroupPresentation => {
-        const document = documentOf(groupId);
+        const document = snapshotOf(groupId, activePathOf(groupId));
         const runtime = runtimeOf(groupId);
         const busy = !document || groupIsLoading(groupId)
             || Boolean(document && !diagnoseOf(groupId) && !runtime.handle);
@@ -180,6 +180,8 @@ export function useEditorWorkbench(options: {
             id: groupId,
             tabs: tabsOf(groupId),
             activePath: activePathOf(groupId),
+            retainedDocuments: store.editorGroups.find((group) => group.id === groupId)?.tabs
+                .map((tab) => snapshotOf(groupId, tab.path)).filter((item): item is EditorDocumentSnapshot => item !== null) ?? [],
             document,
             editorId: resolutionOf(groupId, activePathOf(groupId))?.id ?? null,
             menus: menusOf(groupId),
@@ -205,6 +207,7 @@ export function useEditorWorkbench(options: {
         const outcome = store.commitEditorChange(request);
         if (outcome.status === "stale") return {status: "stale"};
         const resolution = resolutionOf(groupId, request.target.path);
+        const buffer = store.workspaceBuffers[request.target.path];
         return {
             status: outcome.status,
             snapshot: {
@@ -213,6 +216,7 @@ export function useEditorWorkbench(options: {
                 contentRevision: outcome.snapshot.contentRevision,
                 languageId: resolution?.languageId ?? "plaintext",
                 readonly: groupIsLoading(groupId),
+                dirty: Boolean(buffer && buffer.content !== buffer.lastSyncedContent),
             },
         };
     }
@@ -231,7 +235,8 @@ export function useEditorWorkbench(options: {
         }
         if (runtime.token === token && runtime.handle === handle) return;
         runtime.releaseFlush?.();
-        runtime.handle = handle;
+        // 句柄是实例能力而非响应式数据；代理会破坏相同就绪回执的身份判定并反复清空动作。
+        runtime.handle = markRaw(handle);
         runtime.token = token;
         runtime.actions = [];
         runtime.error = null;
@@ -501,6 +506,8 @@ export function useEditorWorkbench(options: {
         setContainer: (extent: {width: number; height: number}) => store.setEditorExtent(extent),
         gestureContextKey,
         gestureRevision,
+        protectedTokens: computed(() => store.unresolvedEditorChanges.map((change) => change.token)),
+        saving: computed(() => store.savingFile),
         acceptGesture: store.commitEditorGesture,
         activeBinding,
         conflictRequest,

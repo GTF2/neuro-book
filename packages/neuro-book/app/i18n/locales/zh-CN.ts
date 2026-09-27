@@ -941,6 +941,7 @@ const zhCN = {
                 movePending: "工具位置待保存",
                 unavailable: "工具位置不可用",
                 actions: "视图操作",
+                refreshFiles: "刷新文件",
                 sizeRejected: "视图高度未保存",
                 revealRejected: "没能打开这个视图",
                 revealUnmounted: "视图 {viewId} 揭示后没有可呈现的容器（注册表或落位可能已经变了）",

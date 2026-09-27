@@ -22,8 +22,10 @@ import {createWorldEngineTools} from "nbook/server/agent/tools/world-engine-tool
 import type {NeuroAgentTool, ToolExecutionContext} from "nbook/server/agent/tools/types";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {initProjectDatabase, resolveProjectDatabasePath} from "nbook/server/workspace-files/project-workspace";
-import {closeProject, openProject} from "nbook/server/workspace-files/project-session";
+import {closeProject, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
+import {productRuntimeReady, stopProductRuntime} from "nbook/server/runtime/product-startup";
+import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 
 // ========== 参数解析 ==========
 
@@ -33,12 +35,14 @@ const projectRoot = argv.find((a) => !a.startsWith("--")) ?? "ming-ding-zhi-shi-
 const projectRef = projectWorkspaceRef(projectRoot);
 const verifyOnly = flags.has("--verify-only");
 const keepExisting = flags.has("--keep");
+if (!process.env.NEURO_BOOK_APPLICATION_ROOT?.trim() || !process.env.NEURO_BOOK_STATE_ROOT?.trim()) {
+    throw new Error("Seed脚本要求显式NEURO_BOOK_APPLICATION_ROOT与NEURO_BOOK_STATE_ROOT");
+}
 const workspaceRoot = resolveRuntimeWorkspaceRoot();
-const currentProject = await openProject(
-    projectRef,
-    {kind: "job", source: "seed-world-engine-demo"},
-    workspaceRoot,
-);
+await productRuntimeReady();
+let currentProject: ReadyProjectSessionRef;
+try {
+    currentProject = await openProject(projectRef, {kind: "job", source: "seed-world-engine-demo"}, workspaceRoot);
 
 // ========== Agent 工具装配（忠实复现 world-engine-tools.test.ts 的最小上下文）==========
 
@@ -503,12 +507,15 @@ async function main(): Promise<void> {
     console.log("\n🎉 World Engine 示范数据就绪，execute_world 读写合一工具工作正常。");
 }
 
-try {
     await main();
 } catch (error) {
     console.error("\n❌ 失败：", error instanceof Error ? error.message : error);
     if (error instanceof Error && error.stack) console.error(error.stack);
     process.exitCode = 1;
 } finally {
-    await closeProject(projectRef, "shutdown").catch(() => undefined);
+    try {
+        await closeProject(projectRef, "shutdown");
+    } finally {
+        await stopProductRuntime();
+    }
 }

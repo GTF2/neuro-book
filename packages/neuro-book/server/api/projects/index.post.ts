@@ -1,6 +1,6 @@
 import {validateBody} from "nbook/server/utils/novel-chapter";
 import {buildWorkspaceSlugBase} from "nbook/server/workspace-files/novel-workspace";
-import {createProject, listProjects} from "nbook/server/workspace-files/project-session";
+import {createProject, listProjects} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {throwProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {toProjectMetadataDto} from "nbook/server/api/projects/project-control-plane";

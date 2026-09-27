@@ -5,7 +5,7 @@ import {requireProjectRefQuery} from "nbook/server/api/projects/project-control-
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {ImageVariantError} from "nbook/server/media/image-variant-contract";
 import {imageVariantHttpError, imageVariantSpecFromEvent} from "nbook/server/media/image-variant-http";
-import {listProjects} from "nbook/server/workspace-files/project-session";
+import {listProjects} from "nbook/server/runtime/product-project";
 import {authorizeProjectCover, ProjectCoverError} from "nbook/server/workspace-files/project-cover";
 import {resolveRuntimeWorkspaceRoot} from "nbook/server/workspace-files/workspace-runtime-root";
 import {encodeRfc5987Filename} from "nbook/server/utils/rfc5987";

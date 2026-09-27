@@ -1,6 +1,6 @@
 import type {StoredAgentMessage} from "nbook/server/agent/messages/stored-types";
 import {createStoredUserMessage} from "nbook/server/agent/messages/message-utils";
-import {requireReadyModuleHandle} from "nbook/server/workspace-files/project-session";
+import {requireReadyModuleHandle} from "nbook/server/runtime/product-project";
 import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session-types";
 import {
     advanceAgentCursor,

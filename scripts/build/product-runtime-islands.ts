@@ -63,6 +63,11 @@ function createRuntimeIslandDefinitions(dynamicPackages: string[]): ProductRunti
             smoke: "Profile compiler compile/import and Product HTTP startup",
         },
         {
+            packages: ["koffi"],
+            reason: "Files 的排他移动调用当前平台原生 no-replace，缺少 binding 时拒绝移动。",
+            smoke: "exclusive file and directory rename against an occupied target",
+        },
+        {
             packages: ["esbuild"],
             reason: "Profile compiler 在运行时调用 esbuild，并由 package 解析平台 binary。",
             smoke: "import esbuild and transform TypeScript",
@@ -84,38 +89,43 @@ function createRuntimeIslandDefinitions(dynamicPackages: string[]): ProductRunti
         },
     ];
     if (process.platform === "win32" && process.arch === "x64") {
-        definitions[1]!.packages.push("@esbuild/win32-x64");
-        definitions[2]!.packages.push("@libsql/win32-x64-msvc");
-        definitions[3]!.packages.push("sqlite-vec-windows-x64");
-        definitions[4]!.packages.push("@img/sharp-win32-x64");
+        definitions[1]!.packages.push("@koromix/koffi-win32-x64");
+        definitions[2]!.packages.push("@esbuild/win32-x64");
+        definitions[3]!.packages.push("@libsql/win32-x64-msvc");
+        definitions[4]!.packages.push("sqlite-vec-windows-x64");
+        definitions[5]!.packages.push("@img/sharp-win32-x64");
         return definitions;
     }
     if (process.platform === "linux" && process.arch === "x64") {
-        definitions[1]!.packages.push("@esbuild/linux-x64");
-        definitions[2]!.packages.push("@libsql/linux-x64-gnu");
-        definitions[3]!.packages.push("sqlite-vec-linux-x64");
-        definitions[4]!.packages.push("@img/sharp-linux-x64", "@img/sharp-libvips-linux-x64");
+        definitions[1]!.packages.push("@koromix/koffi-linux-x64");
+        definitions[2]!.packages.push("@esbuild/linux-x64");
+        definitions[3]!.packages.push("@libsql/linux-x64-gnu");
+        definitions[4]!.packages.push("sqlite-vec-linux-x64");
+        definitions[5]!.packages.push("@img/sharp-linux-x64", "@img/sharp-libvips-linux-x64");
         return definitions;
     }
     if (process.platform === "linux" && process.arch === "arm64") {
-        definitions[1]!.packages.push("@esbuild/linux-arm64");
-        definitions[2]!.packages.push("@libsql/linux-arm64-gnu");
-        definitions[3]!.packages.push("sqlite-vec-linux-arm64");
-        definitions[4]!.packages.push("@img/sharp-linux-arm64", "@img/sharp-libvips-linux-arm64");
+        definitions[1]!.packages.push("@koromix/koffi-linux-arm64");
+        definitions[2]!.packages.push("@esbuild/linux-arm64");
+        definitions[3]!.packages.push("@libsql/linux-arm64-gnu");
+        definitions[4]!.packages.push("sqlite-vec-linux-arm64");
+        definitions[5]!.packages.push("@img/sharp-linux-arm64", "@img/sharp-libvips-linux-arm64");
         return definitions;
     }
     if (process.platform === "darwin" && process.arch === "x64") {
-        definitions[1]!.packages.push("@esbuild/darwin-x64");
-        definitions[2]!.packages.push("@libsql/darwin-x64");
-        definitions[3]!.packages.push("sqlite-vec-darwin-x64");
-        definitions[4]!.packages.push("@img/sharp-darwin-x64", "@img/sharp-libvips-darwin-x64");
+        definitions[1]!.packages.push("@koromix/koffi-darwin-x64");
+        definitions[2]!.packages.push("@esbuild/darwin-x64");
+        definitions[3]!.packages.push("@libsql/darwin-x64");
+        definitions[4]!.packages.push("sqlite-vec-darwin-x64");
+        definitions[5]!.packages.push("@img/sharp-darwin-x64", "@img/sharp-libvips-darwin-x64");
         return definitions;
     }
     if (process.platform === "darwin" && process.arch === "arm64") {
-        definitions[1]!.packages.push("@esbuild/darwin-arm64");
-        definitions[2]!.packages.push("@libsql/darwin-arm64");
-        definitions[3]!.packages.push("sqlite-vec-darwin-arm64");
-        definitions[4]!.packages.push("@img/sharp-darwin-arm64", "@img/sharp-libvips-darwin-arm64");
+        definitions[1]!.packages.push("@koromix/koffi-darwin-arm64");
+        definitions[2]!.packages.push("@esbuild/darwin-arm64");
+        definitions[3]!.packages.push("@libsql/darwin-arm64");
+        definitions[4]!.packages.push("sqlite-vec-darwin-arm64");
+        definitions[5]!.packages.push("@img/sharp-darwin-arm64", "@img/sharp-libvips-darwin-arm64");
         return definitions;
     }
     throw new Error(`Product Runtime 尚未登记 package islands：${process.platform}-${process.arch}`);
@@ -161,9 +171,9 @@ export function productOpaqueImportDefinitions(): ProductOpaqueImportDefinition[
         },
         {
             pathPattern: "authoring/profile-compile-worker.mjs",
-            count: 2,
-            reason: "Profile Authoring Worker 按批准依赖和已编译 artifact 地址执行动态加载。",
-            smoke: "Profile compiler compile/import with typebox",
+            count: 3,
+            reason: "Profile Authoring Worker 加载批准依赖与已编译 artifact；preview 进入 Harness 后，App SQLite 只在 bun:sqlite/node:sqlite 内建模块间选择。",
+            smoke: "Profile compiler compile/import with typebox and preview through the Harness/SQLite path",
         },
         {
             pathPattern: `commands/chunks/${PRODUCT_COMMAND_CHUNK_BASENAME}-*.mjs`,

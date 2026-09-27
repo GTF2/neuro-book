@@ -219,6 +219,55 @@ describe("根内真实 I/O（验收 1）", () => {
         expect(await second.files.readText(grantOf(second, "read").grant, "notes/nested/deep/b.txt")).toBe("内容");
         expect((await second.close()).status).toBe("closed");
     });
+    it("排他创建拒绝预检后被占用的文件与目录，不覆盖已有字节", async () => {
+        const rootPath = await createTempRoot();
+        const harness = await startHarness(rootPath);
+        try {
+            const grant = grantOf(harness, "write").grant;
+            await fsWriteFile(path.join(rootPath, "occupied.md"), "other writer");
+            await expectCode(() => harness.files.createFile(grant, "occupied.md", "mine"), "already-exists");
+            expect(await readFile(path.join(rootPath, "occupied.md"), "utf8")).toBe("other writer");
+
+            await harness.files.createFile(grant, "new.md", "new bytes");
+            expect(await readFile(path.join(rootPath, "new.md"), "utf8")).toBe("new bytes");
+            await mkdir(path.join(rootPath, "occupied"));
+            await expectCode(() => harness.files.createDirectory(grant, "occupied"), "already-exists");
+            await harness.files.createDirectory(grant, "empty");
+            expect((await fsStat(path.join(rootPath, "empty"))).isDirectory()).toBe(true);
+            await expectCode(() => harness.files.createFile(grantOf(harness, "read").grant, "not-allowed.md", "x"), "permission-denied");
+            await expectCode(() => harness.files.createDirectory(grantOf(harness, "read").grant, "not-allowed"), "permission-denied");
+            await expectCode(() => harness.files.createFile(grant, "../outside.md", "x"), "invalid-path");
+            await expectCode(() => harness.files.createDirectory(grant, "../outside"), "invalid-path");
+            await expectCode(() => harness.files.createFile(grant, "missing/child.md", "x"), "io-failed");
+            expect(await exists(path.join(rootPath, "missing"))).toBe(false);
+        } finally {
+            expect((await harness.close()).status).toBe("closed");
+        }
+    });
+    it("两个写者竞争同一目标仅一个成功，后续目标冲突不触及已有文件", async () => {
+        const rootPath = await createTempRoot();
+        const first = await startHarness(rootPath);
+        const second = await startHarness(rootPath);
+        try {
+            const a = first.files.createFile(grantOf(first, "write").grant, "race.md", "A");
+            const b = second.files.createFile(grantOf(second, "write").grant, "race.md", "B");
+            const outcomes = await Promise.allSettled([a, b]);
+            expect(outcomes.filter((outcome) => outcome.status === "fulfilled")).toHaveLength(1);
+            const rejected = outcomes.find((outcome) => outcome.status === "rejected");
+            expect(rejected?.status === "rejected" && rejected.reason instanceof PlatformFilesError && rejected.reason.code).toBe("already-exists");
+            expect(["A", "B"]).toContain(await readFile(path.join(rootPath, "race.md"), "utf8"));
+
+            await first.files.createDirectory(grantOf(first, "write").grant, "partial");
+            await fsWriteFile(path.join(rootPath, "partial", "b.md"), "external");
+            await first.files.createFile(grantOf(first, "write").grant, "partial/a.md", "copied");
+            await expectCode(() => first.files.createFile(grantOf(first, "write").grant, "partial/b.md", "mine"), "already-exists");
+            expect(await readFile(path.join(rootPath, "partial", "a.md"), "utf8")).toBe("copied");
+            expect(await readFile(path.join(rootPath, "partial", "b.md"), "utf8")).toBe("external");
+        } finally {
+            expect((await first.close()).status).toBe("closed");
+            expect((await second.close()).status).toBe("closed");
+        }
+    });
 
     it("目录项操作只作用于目录项自身：移动、非递归删除与列表", async () => {
         const rootPath = await createTempRoot();

@@ -24,6 +24,7 @@ type ViewInstance = {
     handle: EditorViewHandle | null;
     actions: readonly EditorAction[];
     failed: boolean;
+    lastUsed: number;
     events: EditorViewEvents;
     bind: (handle: EditorViewHandle | null) => void;
 };
@@ -34,6 +35,9 @@ const createInstanceToken = (): string => globalThis.crypto.randomUUID();
 export default defineComponent({
     props: {
         document: {type: Object as PropType<EditorDocumentSnapshot | null>, default: null},
+        retainedDocuments: {type: Array as PropType<readonly EditorDocumentSnapshot[]>, default: () => []},
+        protectedTokens: {type: Array as PropType<readonly string[]>, default: () => []},
+        saving: {type: Boolean, default: false},
         registry: {type: Object as PropType<EditorRegistry>, required: true},
         editorId: {type: String as PropType<string | null>, default: null},
         commitChange: {type: Function as PropType<(request: EditorChangeRequest) => EditorChangeResult>, required: true},
@@ -50,35 +54,48 @@ export default defineComponent({
     setup(props, {emit, expose}) {
         const state = shallowReactive({instances: [] as ViewInstance[], active: null as ViewInstance | null});
         let disposed = false;
+        let usage = 0;
+        const current = (entry: ViewInstance) => matchesEditorDocument(entry.document.target, props.document?.target ?? null);
+        const retained = (entry: ViewInstance) => props.retainedDocuments.some((document) => matchesEditorDocument(document.target, entry.document.target));
         const live = (entry: ViewInstance) => !disposed && !entry.failed && state.instances.includes(entry)
-            && matchesEditorDocument(entry.document.target, props.document?.target ?? null);
+            && (entry === state.active || current(entry) || retained(entry));
         const releaseActive = () => {
             if (state.active && live(state.active)) state.active.handle?.flushPendingChange();
             if (state.active) emit("handle-ready", state.active.document.target, state.active.token, null);
             state.active = null;
         };
+        const trimClean = () => {
+            const clean = state.instances.filter((item) => item !== state.active && !(current(item) && item.id === props.editorId)
+                && item.document.dirty !== true && !props.protectedTokens.includes(item.token) && !props.saving);
+            if (clean.length <= 3) return;
+            const evict = new Set(clean.sort((a, b) => a.lastUsed - b.lastUsed).slice(0, clean.length - 3));
+            state.instances = state.instances.filter((item) => !evict.has(item));
+        };
         const publish = (entry: ViewInstance) => {
-            if (!live(entry) || props.editorId !== entry.id || !entry.handle) return;
-            if (state.active !== entry) releaseActive();
+            if (!live(entry) || !current(entry) || props.editorId !== entry.id || !entry.handle) return;
+            if (state.active === entry) return;
+            releaseActive();
+            entry.lastUsed = ++usage;
             state.active = entry;
             emit("handle-ready", entry.document.target, entry.token, entry.handle);
             emit("view-actions", entry.document.target, entry.token, entry.actions);
+            trimClean();
         };
         function create(contribution: EditorContribution, document: EditorDocumentSnapshot): ViewInstance {
             const entry: ViewInstance = shallowReactive({
                 id: contribution.id, token: createInstanceToken(), contribution, document,
-                handle: null, actions: [], failed: false,
+                handle: null, actions: [], failed: false, lastUsed: ++usage,
                 events: {
                     change: (target, baseRevision, content) => {
-                        // 身份失效的迟到回调回 stale；存活实例（含被隐藏那个）仍要能结算自己的输入。
+                        // Cached hidden instances can still settle pending input against their own target.
                         if (!live(entry) || !matchesEditorDocument(target, entry.document.target)) return {status: "stale"};
                         const result = props.commitChange({target, token: entry.token, baseRevision, content});
                         // 只有 accepted 才推进确认快照；conflict 的候选留在实例里等裁决。
                         if (result.status === "accepted") entry.document = result.snapshot;
                         return result;
                     },
-                    save: (target) => {if (live(entry)) emit("save-request", target, entry.token);},
-                    focus: (target, focused) => {if (live(entry)) emit("focus-change", target, entry.token, focused);},
+                    save: (target) => {if (live(entry) && state.active === entry) emit("save-request", target, entry.token);},
+                    focus: (target, focused) => {if (live(entry) && state.active === entry) emit("focus-change", target, entry.token, focused);},
                     actions: (target, actions) => {
                         if (!live(entry)) return;
                         entry.actions = actions;
@@ -94,29 +111,43 @@ export default defineComponent({
             });
             return entry;
         }
-        watch(() => [props.document, props.editorId] as const, ([document, id]) => {
-            if (!document || (state.instances[0] && !matchesEditorDocument(state.instances[0].document.target, document.target))) {
+        watch(() => [props.document, props.editorId, props.retainedDocuments, props.protectedTokens, props.saving] as const, ([document, id, retainedDocuments]) => {
+            const nextTarget = document?.target ?? retainedDocuments[0]?.target;
+            const bindingChanged = state.instances.some((entry) => nextTarget && (
+                entry.document.target.workspaceKey !== nextTarget.workspaceKey
+                || entry.document.target.generation !== nextTarget.generation
+            ));
+            if (!nextTarget || bindingChanged) {
                 releaseActive();
                 state.instances = [];
             }
-            if (!document) return;
-            // 兄弟回灌与外部更新先落到存活实例的确认快照：解析未就绪、编辑视图缺失都不能让实例停在旧正文上。
-            for (const entry of state.instances) {
-                if (matchesEditorDocument(entry.document.target, document.target)) entry.document = document;
+            if (!document) {
+                releaseActive();
+                state.instances = state.instances.filter(retained);
+                return;
             }
-            if (!id) return;
+            if (state.active && (!live(state.active) || (!current(state.active) && !retained(state.active)))) releaseActive();
+            for (const entry of state.instances) {
+                const snapshot = current(entry) ? document : retainedDocuments.find((item) => matchesEditorDocument(item.target, entry.document.target));
+                if (snapshot && snapshot.contentRevision >= entry.document.contentRevision) entry.document = snapshot;
+            }
+            state.instances = state.instances.filter((entry) => entry === state.active || current(entry) || retained(entry));
+            if (!id) {
+                trimClean();
+                return;
+            }
             const contribution = props.registry.get(id);
             if (!contribution) return;
-            let entry = state.instances.find((item) => item.id === id && !item.failed);
+            let entry = state.instances.find((item) => item.id === id && current(item) && !item.failed);
             if (!entry) {
                 entry = create(contribution, document);
-                state.instances = [...state.instances.filter((item) => item.id !== id), entry];
+                state.instances = [...state.instances, entry];
             }
-            // 旧可见实例仅在目标就绪后隐藏；未访问视图不创建，隐藏视图不接收全文更新。
             publish(entry);
+            trimClean();
         }, {immediate: true});
         onErrorCaptured((error) => {
-            const entry = state.instances.find((item) => item.id === props.editorId);
+            const entry = state.instances.find((item) => item.id === props.editorId && current(item));
             if (entry) {
                 entry.failed = true;
                 if (state.active === entry) releaseActive();
@@ -127,7 +158,7 @@ export default defineComponent({
         watch(() => props.conflictResolution, (request) => {
             if (!request) return;
             const entry = state.instances.find((item) => item.token === request.token);
-            // 采用当前正文与兄弟回灌是不同的形状，只能由这条显式请求驱动，不能等文档变更自己发生。
+            // Conflict resolution is explicit; a sibling's snapshot alone never adopts the candidate.
             if (!entry || !live(entry) || !entry.handle?.resolveConflict) return;
             emit("conflict-resolved", entry.token, entry.handle.resolveConflict(request.choice));
         });

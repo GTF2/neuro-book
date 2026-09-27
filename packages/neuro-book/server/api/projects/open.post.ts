@@ -1,4 +1,4 @@
-import {openProjectControl} from "nbook/server/workspace-files/project-session";
+import {openProjectControl} from "nbook/server/runtime/product-project";
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 import {requireProjectRefBody} from "nbook/server/api/projects/project-control-plane";
 

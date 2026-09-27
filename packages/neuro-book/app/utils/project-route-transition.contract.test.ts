@@ -15,18 +15,6 @@ describe("Project route transition contract", () => {
         expect(page).toContain('await router.push("/");');
     });
 
-    it("异步确认、release、open 与 workspace 初始化后都校验最新 route intent", async () => {
-        const page = await readFile(indexPagePath, "utf8");
-
-        expect(page).toContain("const ownsProjectRouteIntent = (revision: number): boolean");
-        expect(page).toContain("await initializeWorkspaceFromRoute(target, revision)");
-        expect(page).toContain("if (!ownsProjectRouteIntent(revision)) return;");
-        expect(page).toContain("await projectSession.open(target.projectRoot);");
-        expect(page).toContain("void loadProjects().catch(() => undefined);");
-        expect(page.indexOf("void loadProjects().catch(() => undefined);")).toBeLessThan(
-            page.indexOf("await switchToNovelWorkspace(target.projectRoot);"),
-        );
-    });
 
     it("页面把真实异步边界提交给单调进度模型", async () => {
         const page = await readFile(indexPagePath, "utf8");

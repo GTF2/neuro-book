@@ -1,5 +1,6 @@
 import type {ComputedRef, InjectionKey, Ref} from "vue";
 import type {WorkspaceFileNode} from "nbook/app/stores/novel-ide";
+import type {WorkspaceFilesViewMode} from "nbook/shared/storage/workbench-files";
 
 export type WorkspaceTreeNode = WorkspaceFileNode & {
     children: WorkspaceTreeNode[];
@@ -14,6 +15,17 @@ export type WorkspaceFileDropVisualKind =
     | "inside-node"
     | "root-line";
 
+export type WorkspaceFileClipboardIntent =
+    | {kind: "copy" | "cut"; sources: string[]}
+    | {kind: "paste"; destination: string}
+    | {kind: "clear"};
+
+export interface WorkspaceFileSelectionEvent {
+    ctrlKey?: boolean;
+    metaKey?: boolean;
+    shiftKey?: boolean;
+}
+
 export interface WorkspaceFileDropState {
     targetPath: string | null;
     position: WorkspaceFileDropPosition | null;
@@ -22,6 +34,7 @@ export interface WorkspaceFileDropState {
 
 export interface WorkspaceFileMovePayload {
     sourcePath: string;
+    sourcePaths?: string[];
     targetPath: string | null;
     position: WorkspaceFileDropPosition;
     visualKind: WorkspaceFileDropVisualKind;
@@ -33,12 +46,16 @@ export interface WorkspaceFileTreeIndexMaps {
 }
 
 export interface WorkspaceFileTreeContextValue {
+    selectedPaths: ComputedRef<string[]>;
     selectedPath: ComputedRef<string>;
+    mode: ComputedRef<WorkspaceFilesViewMode>;
     expandedPathSet: ComputedRef<Set<string>>;
     forcedExpandedPathSet: ComputedRef<Set<string>>;
     dropState: Ref<WorkspaceFileDropState>;
     draggedPath: Ref<string | null>;
-    selectNode: (node: WorkspaceFileNode) => void;
+    selectNode: (node: WorkspaceFileNode, event?: WorkspaceFileSelectionEvent, preview?: boolean) => void;
+    previewNode: (node: WorkspaceFileNode) => void;
+    toggleSelection: (node: WorkspaceFileNode) => void;
     openNode: (node: WorkspaceFileNode) => void;
     toggleExpanded: (node: WorkspaceFileNode) => void;
     startDrag: (node: WorkspaceFileNode, event: DragEvent) => void;
@@ -47,6 +64,7 @@ export interface WorkspaceFileTreeContextValue {
     commitDrop: (event: DragEvent) => void;
     clearDragState: () => void;
     emitNodeContextMenu: (node: WorkspaceFileNode, event: MouseEvent) => void;
+    emitClipboardIntent: (intent: WorkspaceFileClipboardIntent) => void;
 }
 
 interface WorkspaceNodeDropContext {
@@ -62,16 +80,50 @@ export const LOREBOOK_ENTRY_TYPES = new Set(["location", "character", "item", "r
 export const CONTENT_NODE_ROOTS = new Set(["manuscript", "lorebook"]);
 
 /**
- * 将后端扁平文件列表转成可递归渲染的树。
+ * 同一真实树的呈现投影；目录仍以自身路径作为资源身份，正文由真实 index.md 承载。
+ * 内容模式的根 index.md 由独立根入口使用原始 nodes 提供打开目标。
+ */
+export function projectWorkspaceFileNodes(nodes: readonly WorkspaceFileNode[], mode: WorkspaceFilesViewMode): WorkspaceFileNode[] {
+    if (mode === "ordinary") {
+        return nodes.map(node => ({...node, title: basename(node.path)}));
+    }
+
+    const indexByPath = new Map<string, WorkspaceFileNode>();
+    for (const node of nodes) {
+        if (!node.isDirectory && isWorkspaceContentIndexPath(node.path)) {
+            indexByPath.set(node.path, node);
+        }
+    }
+
+    const projected: WorkspaceFileNode[] = [];
+    for (const node of nodes) {
+        if (!node.isDirectory && isWorkspaceContentIndexPath(node.path)) {
+            continue;
+        }
+
+        const name = basename(node.path);
+        const index = node.isDirectory ? indexByPath.get(`${normalizeWorkspacePath(node.path)}/index.md`) : undefined;
+        const source = index ?? node;
+        const title = (index || (!node.isDirectory && /\.md$/i.test(name))) && !source.frontmatterError
+            ? source.title.trim()
+            : "";
+        projected.push({
+            ...node,
+            ...(node.isDirectory ? {contentNode: Boolean(index), hasIndex: Boolean(index)} : {}),
+            title: title || name,
+        });
+    }
+    return projected;
+}
+
+/**
+ * 将投影后的扁平文件列表转成可递归渲染的树。
  */
 export function buildWorkspaceFileTree(nodes: WorkspaceFileNode[]): WorkspaceTreeNode[] {
     const nodeMap = new Map<string, WorkspaceTreeNode>();
     const roots: WorkspaceTreeNode[] = [];
 
     for (const node of nodes) {
-        if (isWorkspaceContentIndexPath(node.path)) {
-            continue;
-        }
         nodeMap.set(normalizeWorkspacePath(node.path), {...node, children: []});
     }
 
@@ -134,17 +186,14 @@ export function isWorkspaceContentScopePath(filePath: string): boolean {
 }
 
 /**
- * 判断节点是否是内容节点的 index.md 文件。
+ * 判断节点是否是 index.md 文件。
  */
 export function isWorkspaceContentIndexNode(node: WorkspaceFileNode): boolean {
     return Boolean(!node.isDirectory && isWorkspaceContentIndexPath(node.path));
 }
 
-/**
- * 判断路径是否是内容根目录内的 index.md。
- */
 function isWorkspaceContentIndexPath(filePath: string): boolean {
-    return basename(filePath).toLowerCase() === "index.md" && isWorkspaceContentScopePath(filePath);
+    return basename(filePath).toLowerCase() === "index.md";
 }
 
 /**
@@ -162,6 +211,18 @@ export function resolveWorkspaceNodeRepresentedPath(node: WorkspaceFileNode): st
         return `${normalizeWorkspacePath(node.path)}/index.md`;
     }
     return node.path;
+}
+
+export function flattenVisibleWorkspaceNodes(nodes: WorkspaceTreeNode[], expandedPaths: ReadonlySet<string>): WorkspaceTreeNode[] {
+    const visible: WorkspaceTreeNode[] = [];
+    const visit = (items: WorkspaceTreeNode[]): void => {
+        for (const item of items) {
+            visible.push(item);
+            if (item.isDirectory && item.children.length > 0 && expandedPaths.has(item.path)) visit(item.children);
+        }
+    };
+    visit(nodes);
+    return visible;
 }
 
 /**
@@ -210,6 +271,22 @@ export function collectAncestorPaths(nodes: WorkspaceFileNode[]): string[] {
         }
     }
     return [...pathSet];
+}
+
+/** Keep only outermost paths so a selected directory never operates twice on its children. */
+export function outermostWorkspacePaths(paths: readonly string[]): string[] {
+    const chosen = new Set(paths.map(normalizeWorkspacePath));
+    const seen = new Set<string>();
+    const outermost: string[] = [];
+    for (const path of paths) {
+        const normalized = normalizeWorkspacePath(path);
+        if (seen.has(normalized)) continue;
+        seen.add(normalized);
+        let parent = resolveParentPath(normalized);
+        while (parent && !chosen.has(parent)) parent = resolveParentPath(parent);
+        if (!parent) outermost.push(path);
+    }
+    return outermost;
 }
 
 /**

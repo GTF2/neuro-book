@@ -6,7 +6,7 @@ const originalDefineEventHandler = (globalThis as typeof globalThis & {defineEve
 const listProjectsMock = vi.fn();
 const warnMock = vi.fn();
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     listProjects: listProjectsMock,
 }));
 

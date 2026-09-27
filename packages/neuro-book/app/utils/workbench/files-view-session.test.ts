@@ -15,6 +15,7 @@ import {
     LEGACY_FILE_TREE_EXPANDED_PATHS_KEY,
     parseLegacyExpandedPaths,
     useWorkbenchFileTreeExpandedPaths,
+    useWorkbenchFilesViewMode,
     type WorkbenchFileTreeExpandedPathsConsumer,
 } from "nbook/app/utils/workbench/files-view-session";
 import type {
@@ -22,7 +23,9 @@ import type {
     LegacyValueStore,
 } from "nbook/app/utils/workbench/legacy-record-migration";
 import {
+    defineWorkbenchFilesViewModeState,
     WORKBENCH_FILES_OWNER,
+    WORKBENCH_FILES_VIEW_MODE_KEY,
     WORKBENCH_FILE_TREE_EXPANDED_PATHS_KEY,
 } from "nbook/shared/storage/workbench-files";
 
@@ -61,7 +64,7 @@ type Harness = {
     storeKey(): string;
 };
 
-function storageHarness(): Harness {
+function storageHarness(recordKey = RECORD_KEY): Harness {
     const records = new Map<string, StoredRecord>();
     const fixedReads = new Map<string, StorageReadResult<unknown>>();
     const saves: string[] = [];
@@ -70,7 +73,7 @@ function storageHarness(): Harness {
     const gate: {current: ReadGate} = {current: {reads: Promise.resolve(), release: () => undefined}};
     let sequence = 0;
     const credential = (revision: string | null): StorageCredential => ({revision, partitionGeneration: 1});
-    const storeKey = (): string => RECORD_KEY;
+    const storeKey = (): string => recordKey;
 
     const transport: StorageValueTransport = {
         async send(action: StorageActionRequest): Promise<StorageActionResponse> {
@@ -484,5 +487,130 @@ describe("useWorkbenchFileTreeExpandedPaths", () => {
 
     it("旧键名保持未改名：迁移读的是原键，不是新记录键", () => {
         expect(LEGACY_FILE_TREE_EXPANDED_PATHS_KEY).toBe("nbook.workspaceFilePanel.expandedPaths");
+    });
+});
+
+describe("useWorkbenchFilesViewMode", () => {
+    const modeKey = `${WORKBENCH_FILES_OWNER}/${WORKBENCH_FILES_VIEW_MODE_KEY}/`;
+
+    it("模式记录拒绝非法枚举并接受附加字段", () => {
+        const definition = defineWorkbenchFilesViewModeState();
+        expect(definition.scope).toBe("user");
+        expect(definition.locality).toBe("local");
+        expect(definition.records).toBe("single");
+        expect(definition.validate({mode: "content", future: {flag: true}})).toBe(true);
+        for (const invalid of ["invalid", "CONTENT", null, 0, undefined]) {
+            expect(definition.validate({mode: invalid})).toBe(false);
+        }
+    });
+
+    it("缺失偏好显示普通模式，未选择新模式不创建记录", async () => {
+        const harness = storageHarness(modeKey);
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+        await flushUntil(() => !session.loading.value);
+
+        expect(session.mode.value).toBe("ordinary");
+        expect((await session.commit("ordinary")).status).toBe("unchanged");
+        expect(harness.records.size).toBe(0);
+        expect((await session.commit("content")).status).toBe("saved");
+        expect(harness.records.get(modeKey)?.value).toEqual({mode: "content"});
+        scope.stop();
+    });
+
+    it("首读未完成时拒绝提交，不覆盖已保存的内容模式", async () => {
+        const harness = storageHarness(modeKey);
+        harness.write({mode: "content"});
+        const release = harness.holdReads();
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+
+        expect((await session.commit("ordinary")).status).toBe("rejected");
+        expect(session.notice.value?.diagnosis).toContain("没完成首次读取");
+        expect(harness.saves).toEqual([]);
+        release();
+        await flushUntil(() => !session.loading.value);
+        expect(session.mode.value).toBe("content");
+        expect(harness.records.get(modeKey)?.value).toEqual({mode: "content"});
+        scope.stop();
+    });
+
+    it("非法持久模式只回退显示且阻止覆盖原记录", async () => {
+        const harness = storageHarness(modeKey);
+        harness.write({mode: "unsupported", future: "retain"});
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+        await flushUntil(() => !session.loading.value);
+
+        expect(session.mode.value).toBe("ordinary");
+        expect(session.notice.value).not.toBeNull();
+        expect((await session.commit("content")).status).toBe("unsaved");
+        expect(harness.saves).toEqual([]);
+        expect(harness.records.get(modeKey)?.value).toEqual({mode: "unsupported", future: "retain"});
+        scope.stop();
+    });
+
+    it("已保存偏好可在独立会话恢复，不影响既有展开记录键", async () => {
+        const harness = storageHarness(modeKey);
+        harness.write({mode: "content"});
+        harness.records.set(RECORD_KEY, {
+            value: {paths: ["chapter/"]}, revision: "expanded-1", schemaVersion: 1,
+        });
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+        await flushUntil(() => !session.loading.value);
+
+        expect(session.mode.value).toBe("content");
+        expect((await session.commit("ordinary")).status).toBe("saved");
+        expect(harness.records.get(RECORD_KEY)?.value).toEqual({paths: ["chapter/"]});
+        scope.stop();
+    });
+
+    it("只改 mode 保留未知字段，冲突回执与未确认意图可见并可重试", async () => {
+        const harness = storageHarness(modeKey);
+        harness.write({mode: "ordinary", future: {flag: true}});
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+        await flushUntil(() => !session.loading.value);
+
+        let conflict = 0;
+        harness.hooks.beforeSave = (key) => {
+            harness.records.set(key, {
+                value: {mode: "ordinary", future: {flag: true}},
+                revision: `revision-conflict-${++conflict}`,
+                schemaVersion: 1,
+            });
+        };
+        expect((await session.commit("content")).status).toBe("unsaved");
+        expect(session.mode.value).toBe("content");
+        expect(session.notice.value?.diagnosis).toContain("记录已被其它窗口改写");
+        expect(session.notice.value?.retryable).toBe(true);
+        expect(session.notice.value?.abandonable).toBe(true);
+
+        harness.hooks.beforeSave = null;
+        expect((await session.retry()).status).toBe("saved");
+        expect(harness.records.get(modeKey)?.value).toEqual({mode: "content", future: {flag: true}});
+        expect(session.notice.value).toBeNull();
+        scope.stop();
+    });
+
+    it("未确认的模式选择可放弃并恢复最近确认模式", async () => {
+        const harness = storageHarness(modeKey);
+        harness.write({mode: "ordinary"});
+        const scope = effectScope();
+        const session = scope.run(() => useWorkbenchFilesViewMode({adapters: harness.adapters}))!;
+        await flushUntil(() => !session.loading.value);
+
+        harness.hooks.beforeSave = () => {
+            throw new StorageAdapterError({
+                code: "STORAGE_IO", status: 500, message: "写入结果未确认", committed: null,
+            });
+        };
+        expect((await session.commit("content")).status).toBe("unsaved");
+        expect(session.mode.value).toBe("content");
+        session.abandon();
+        expect(session.mode.value).toBe("ordinary");
+        expect(session.notice.value).toBeNull();
+        scope.stop();
     });
 });

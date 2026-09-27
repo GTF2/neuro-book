@@ -6,7 +6,7 @@ const mocks = vi.hoisted(() => ({
     readUnseenForAgent: vi.fn(async () => []),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     requireReadyModuleHandle: mocks.requireReadyModuleHandle,
 }));
 

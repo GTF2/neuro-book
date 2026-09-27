@@ -15,13 +15,17 @@ issueId: null
 3. 后续按**外部插件开发者视角**推进 Lab → Files → Settings → World/Plot，不把第三方市场/SDK/沙箱引入当前范围。
 4. 开发者要求先等 w00003 合并 master 再创建 w00017 worktree；该条件已于 `bb688931`（Merge branch `refactor/w00003-nb-ui-adoption` into master）满足，实现 worktree 已创建，t05–t09 已按批准的实施计划执行。
 
-规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。当前实现分支完成第一片（t05–t09）与第二片（t10–t13）：七项 Spec 均已晋升 `implemented`；第三片 [t14 Lab 宿主边界](tasks/t14-lab-host-boundary/README.md) 将 LabShell 常驻产品命令宿主收回命令场景，直接打开 `/lab` 跳过产品配色与旧桶迁移，保持 Lab 自有检视和偏好。产品启动链、产品日志器与既有数据库仍走旧入口；未执行产品接线、push、PR、合并、人工浏览器／真实模型验收。开发者 2026-09-23 决定首两片一起合；第三片按方案 B 继续本地实施，本地原子提交自主进行，push、PR、合并仍需授权。
+规范、Work、整体路径、Task 与审查证据在主线提交 `bc144b2d`。第一片（t05–t09）与第二片（t10–t13）的七项 Spec 已晋升 `implemented`；[t14 Lab 宿主边界](tasks/t14-lab-host-boundary/README.md) 将 LabShell 常驻产品命令宿主收回命令场景，直接打开 `/lab` 跳过产品配色与旧桶迁移，保持 Lab 自有检视和偏好。2026-09-26 开发者报告在 `http://localhost:3000/lab` 完成人工验证，目前未发现问题；后续 [t15 Files 设计](tasks/t15-files-explorer-design/README.md) 纳入文件切换性能重构与主页面左侧资源管理器迁入 Lab。Files 切片期间已将进程级 Session Store gate 和 Project generation owner 接入 runtime.application；产品日志器与既有数据库仍走旧入口。未执行 push、PR、合并或真实模型验收。开发者 2026-09-23 决定首两片一起合，第三片按方案 B 继续本地实施；远端操作仍需授权。
+
+2026-09-26 开发者接受 Files 首版 F1–F9 默认策略、第二版草案及文档拆分后，明确批准首版实施计划并要求逐步执行、逐步验证；2026-09-27 又批准两项合同逐条复核。仅允许计划内本地开发、自建 Temp 初始化迁移、独立服务及主页面/Lab 浏览器验收；不触碰作品、现有服务或真实模型，不包含提交或远端操作。t16–t24 完成精确绑定、双模式、操作结算、四组热切换测量、最后标签释放、双窗口与 Lab 390 px 画布验收；[t25 逐条复核](tasks/t25-files-contract-closure/README.md)补 Files 插件注册及请求租约、多选删除/原生鼠标拖动、同目录改名复制、源实体核对、未知结果处理和 SSE EOF 中断提示，并在隔离主页面复验。Project generation owner 已迁入 Application 子 Scope；追加 Windows 本机原子 no-replace move 竞争与完整产品镜像构建验证。两项 Files 合同仍为 `planned`：Linux/macOS 与其它文件系统未实测，跨机器基础操作缺第二隔离宿主。第二版快速打开/删除恢复仍为 `draft`，不纳入。
 
 ## 规范与实施入口
 
 - [总体提案](../../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md)：`accepted` 为基础架构与分段方向；任意热卸载/代码升级仍仅评估，未纳入当前实施。
-- 第一片 `implemented`：[runtime.lifecycle](../../../docs/specs/runtime/lifecycle.md)、[runtime.services](../../../docs/specs/runtime/services.md)、[runtime.plugins](../../../docs/specs/runtime/plugins.md)、[runtime.application](../../../docs/specs/runtime/application.md)（受控装配入口；产品启动链尚未迁入）。
+- 第一片 `implemented`：[runtime.lifecycle](../../../docs/specs/runtime/lifecycle.md)、[runtime.services](../../../docs/specs/runtime/services.md)、[runtime.plugins](../../../docs/specs/runtime/plugins.md)、[runtime.application](../../../docs/specs/runtime/application.md)（受控装配入口；进程级产品门禁/Session Store lease 及 Project generation owner 已接入）。
 - 第二片 `implemented`：[runtime.diagnostics](../../../docs/specs/runtime/diagnostics.md)、[platform.files](../../../docs/specs/platform/files.md)、[platform.sqlite](../../../docs/specs/platform/sqlite.md)（真实服务插件；产品日志器与既有数据库尚未迁入）。
+- Files 首版 `planned`：[workspace.files](../../../docs/specs/workspace/files.md)、[workbench.files-explorer](../../../docs/specs/workbench/files-explorer.md)；F1–F9 产品交互、Project owner、单机浏览器主链与 t25 合同复核已落地；Windows 原子 no-replace 移动本机验证及完整产品镜像构建通过，Linux/macOS、其它文件系统及跨机器基础操作未验收，不等于整体 `implemented`。
+- [Files 第一版设计](../../../packages/neuro-book/docs/proposals/files-explorer.md)：`accepted`，设计理由与性能依据；[第二版草案](../../../packages/neuro-book/docs/proposals/files-explorer-v2.md)：`draft`，新增目标与待审风险；[产品装配设计](../../../packages/neuro-book/docs/proposals/application-runtime-product-integration.md)：跨功能接入细化，`reviewing`。
 - [整体实施路径](implementation-plan.md)：各切片模块、文件边界、依赖、实际smoke、旧入口退出与worktree前提；是工程计划，不复制行为合同。
 - 既有命令、Storage、Lab、Workbench等能力沿同一Spec修订，不建“插件版”副本。
 
@@ -33,9 +37,9 @@ issueId: null
 | [t02](tasks/t02-runtime-contract-review/README.md) | 独立运行时／资源合同复核；各轮报告分开 |
 | [t03](tasks/t03-document-governance-review/README.md) | 独立读者／治理与计划可执行性复核 |
 | [t04](tasks/t04-foundation-spec-plan/README.md) | 当前规范、整体实施方案与治理集成 |
-| [t05](tasks/t05-runtime-lifecycle/README.md) | 首个实现单元：资源生命周期机制与独立验证入口；已提交 `a03c7169`、`3defd3dc`，`runtime.lifecycle` 保持 `planned` |
-| [t06](tasks/t06-runtime-services/README.md) | 第二实现单元：服务装配与依赖解析；已提交 `c8d7000e`、`b7e7b41c`，`runtime.services` 保持 `planned` |
-| [t07](tasks/t07-runtime-plugins/README.md) | 第三实现单元：插件描述、激活与贡献事务；机制、合同测试、smoke 已通过并提交，`runtime.plugins` 保持 `planned` |
+| [t05](tasks/t05-runtime-lifecycle/README.md) | 生命周期机制与独立验证入口；提交 `a03c7169`、`3defd3dc`，后由 t09 复核将 `runtime.lifecycle` 晋升 `implemented` |
+| [t06](tasks/t06-runtime-services/README.md) | 服务装配、依赖解析；提交 `c8d7000e`、`b7e7b41c`，后由 t09 复核将 `runtime.services` 晋升 `implemented` |
+| [t07](tasks/t07-runtime-plugins/README.md) | 插件描述、激活与贡献事务；机制、测试与 smoke 已交付，后由 t09 复核将 `runtime.plugins` 晋升 `implemented` |
 | [t08](tasks/t08-runtime-application/README.md) | 第一片收口单元：`runtime.application` 内核、后端／浏览器适配器与 `smoke:runtime-foundation`；测试、typecheck、真实子进程与真实 Chromium smoke 已通过并提交 |
 | [t09](tasks/t09-foundation-integration-review/README.md) | 首片集成复核：逐条对照四项 Spec，修复有界停止、实例身份退役等缺口（`4d0b3c84`、`728acd40`、`b53753b9`），经独立 Reviewer 复核后四项 Spec 晋升 `implemented` |
 | [t10](tasks/t10-runtime-diagnostics/README.md) | 第二片：诊断记录能力与插件、JSONL/console 出口；产品日志器共用 JSONL 写入与脱敏 |
@@ -43,8 +47,18 @@ issueId: null
 | [t12](tasks/t12-platform-sqlite/README.md) | 第二片：受管 SQLite 机制插件（具名资源 owner、借用、事务、代次） |
 | [t13](tasks/t13-services-integration-review/README.md) | 第二片集成复核：`--services` 组合 smoke、逐条对照三项 Spec、修复插件释放重试等缺口后晋升 `implemented` |
 | [t14](tasks/t14-lab-host-boundary/README.md) | 第三片：Lab 文档启动边界、命令场景局部宿主、四个检视 tab、core 浏览器 smoke 与 w00016 交接 |
-
-后续单元在整体路径中规划，不预建依赖未知实现结果的 Task 链。第一片与第二片已闭合；Lab 第三片的专项证据与完整组合 smoke 既有失败见 t14。产品装配接线随首条真实链（Files）迁移旧入口，诊断出口接管产品日志位置、workspace-files 消费 platform.files。Task completed 不等于整个产品完成。
+| [t15](tasks/t15-files-explorer-design/README.md) | Files 首版 F1–F9 已收口到两项 planned 合同；独立首版设计、第二版 draft 与总提案拆分治理；尚未实施或测量提速 |
+| [t16](tasks/t16-files-baseline/README.md) | 首版批准计划的隔离基线与冻结预算：真实主页面冷开、源码/富文本单/双组热切换 |
+| [t17](tasks/t17-files-primitives-editor-state/README.md) | 排他文件原语、并发实测与编辑状态挂接实验；公开 Tiptap/Monaco 路径可行，产品适配未实施 |
+| [t18](tasks/t18-files-binding-read-write/README.md) | 精确 Project 绑定的服务、API、浏览器客户端与真实条件读写；隔离主页面树/正文及 HTTP 写入、旧代次/冲突已验证 |
+| [t19](tasks/t19-open-switch-settlement/README.md) | 打开/切换输入结算、失败/冲突/在途保存不释放旧正文；定向测试和隔离浏览器 A→B→A 输入保留通过 |
+| [t20](tasks/t20-controlled-files-explorer/README.md) | 已完成：受控文件树、普通/内容节点双模式、模式记录与主页面适配；定向测试、typecheck、隔离主页面往返及 390px 重开恢复通过 |
+| [t21](tasks/t21-safe-base-file-operations/README.md) | 已完成：基础创建、重命名/移动、删除复用精确绑定与 Storage 边界；显式拒绝自身后代、同路径 no-op、同名排他；原语测试与 typecheck 通过 |
+| [t22](tasks/t22-multi-select-clipboard-batch/README.md) | 已完成：真实多选、窗口内剪贴板、批量复制/移动、父子去重、逐项反馈、部分失败残留、绑定失效停止、History 与产品磁盘验收通过 |
+| [t23](tasks/t23-file-operation-settlement/README.md) | 已完成：复制 dirty 三选一、移动输入结算与成功重绑定、删除影响确认及 dirty/conflict 取消；定向测试/typecheck 与隔离浏览器磁盘验收通过 |
+| [t24](tasks/t24-files-switch-performance/README.md) | 四组永久标签 3×30 热切换与输入撤销通过，富文本单/双组 p95=38.0/42.1 ms，源码单/双组 p95=53.8/53.4 ms；Lab 五态无产品请求，390 px 手机画布可见；双窗口、错误重试、最后标签 Tiptap/Monaco 释放已实测 |
+| [t25](tasks/t25-files-contract-closure/README.md) | 全合同复核与本机修复验收：同名协商、多选删除/原生拖动、源身份、取消/未知结果、EOF 失同步与内置 Files 服务装配；追加原子 no-replace 路径移动、Windows 同名竞争和完整产品镜像构建验证；跨平台与跨机器仍未闭合 |
+Project generation 真所有权与此前单机浏览器验收已有证据；t25 针对复核发现的操作与插件装配缺口完成修复和隔离主页面验证。Windows 本机路径竞争以原子 no-replace 拒绝，未知平台和模拟原语不支持时失败关闭。Authoring Kit 意外引用应用认证闭包已切断，受控 SQLite 内建动态导入已登记，完整产品镜像构建通过；Linux/macOS 及其它文件系统未实测，跨机器基础操作仍缺第二隔离宿主；不晋升 Files Spec。
 
 ## 执行位置与版本
 
@@ -59,7 +73,7 @@ Work／Task 进度只在实现分支维护；主工作区保持 `master`，其 W
 - 服务实例寿命不等于持久记录寿命；不改变现有用户格式、数据库布局或迁移策略。
 - 小内核不依赖具体领域、框架、文件/数据库驱动；代理/服务发现不代替服务端授权。
 - Lab只做组件展示与局部显式依赖，不形成第二产品宿主或通用插件Lab。
-- 不修改产品/fixture/依赖/CI/发布，不执行远端Issue/Project/PR写入；`issueId: null`，未取得远端编号。
+- 当前 Files 首版实施按批准范围进行，保留已有未提交文档；远端 Issue/Project/PR 写入、push、合并、发布仍未授权；`issueId: null`。历史交付与其授权见各 Task。
 
 ## 质量与证据
 

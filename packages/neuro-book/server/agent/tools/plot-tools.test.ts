@@ -54,7 +54,7 @@ vi.mock("nbook/server/plot", () => {
     };
 });
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     requireActiveReadyProject: requireActiveReadyProjectMock,
     activateReadyProjectModule: activateReadyProjectModuleMock,
     runReadyProjectOperation: runReadyProjectOperationMock,

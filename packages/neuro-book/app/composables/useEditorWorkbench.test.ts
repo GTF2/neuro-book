@@ -34,7 +34,7 @@ async function setup(choice: string, failWrite = false) {
     // Nuxt store auto-import globals必须先安装，再加载模块求值。
     const {useNovelIdeStore} = await import("nbook/app/stores/novel-ide");
     const store = useNovelIdeStore();
-    store.currentProjectRoot = "A";
+    await store.switchToNovelWorkspace({projectRoot: "A", publicId: "A-generation-1"});
     await store.openWorkspaceNode(file, "permanent");
     const {useEditorWorkbench} = await import("./useEditorWorkbench");
     const wrapper = mount(defineComponent({setup() {
@@ -134,6 +134,24 @@ describe("编辑器编排", () => {
         expect(workbench.commitChange("main", {target, token: "new", baseRevision: store.workspaceBuffers["a.md"]!.contentRevision, content: "from new instance"}).status).toBe("accepted");
         expect(store.workspaceBuffers["a.md"]?.content).toBe("from new instance");
         expect(workbench.flush("main")).toBe("settled");
+    });
+    it("相同视图重复就绪不撤销工具动作或重新抢焦点", async () => {
+        const {store, workbench} = await setup("cancel");
+        const target = store.activeWorkspaceDocumentTarget!;
+        const focus = vi.fn();
+        const runAction = vi.fn();
+        const handle = {focus, runAction, flushPendingChange: () => "settled" as const};
+        workbench.bindViewHandle("main", target, "view", handle);
+        workbench.setActions("main", target, "view", [{id: "format", label: "Format", disabled: false}]);
+        await nextTick();
+        focus.mockClear();
+
+        workbench.bindViewHandle("main", target, "view", handle);
+        await nextTick();
+        expect(workbench.presentationOf("main").actions).toEqual([{id: "format", label: "Format", disabled: false}]);
+        workbench.runViewAction("main", "format");
+        expect(runAction).toHaveBeenCalledWith("format");
+        expect(focus).not.toHaveBeenCalled();
     });
     it("同文档双组各自绑定，回执按实例基线判定", async () => {
         const {store, workbench} = await setup("cancel");

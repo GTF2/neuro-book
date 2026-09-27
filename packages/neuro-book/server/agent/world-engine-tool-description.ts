@@ -1,8 +1,7 @@
 import {profileText} from "nbook/server/agent/profiles/profile-text";
-import type {ExecuteWorldMode} from "nbook/server/world-engine/world-engine.facade";
 
 /** 构造 execute_world 在不同 profile 权限下暴露给模型的工具说明。 */
-export function buildExecuteWorldDescription(mode: ExecuteWorldMode): string {
+export function buildExecuteWorldDescription(mode: "readonly" | "readwrite"): string {
     const writeApi = mode === "readwrite"
         ? profileText`
             Write API is also available:

@@ -193,8 +193,8 @@ const applyModelOptions = (): void => {
 /**
  * 创建当前实例专有的 Monaco model。
  *
- * modelPath 已包含实例 token，因此同 URI 的模型只可能来自未释放的旧实例：
- * 模型归实例所有、可独立 dispose，绝不按 URI 取用别人的模型后互相释放。
+ * modelPath 包含实例 token；若 URI 仍被其它实例占用，绝不能释放对方的 model
+ * （Monaco 正在进行的异步工作会因此被取消）。
  */
 const createEditorModel = (): Monaco.editor.ITextModel | null => {
     if (!monacoApi) {
@@ -206,7 +206,8 @@ const createEditorModel = (): Monaco.editor.ITextModel | null => {
         return monacoApi.editor.createModel(props.initialValue, props.language);
     }
 
-    monacoApi.editor.getModel(modelUri)?.dispose();
+    const existing = monacoApi.editor.getModel(modelUri);
+    if (existing) throw new Error(`Monaco model URI is already owned: ${modelUri.toString()}`);
     return monacoApi.editor.createModel(props.initialValue, props.language, modelUri);
 };
 

@@ -5,7 +5,7 @@ import {requireProjectRefQuery} from "nbook/server/api/projects/project-control-
 import {
     requireActiveReadyProject,
     runReadyProjectOperation,
-} from "nbook/server/workspace-files/project-session";
+} from "nbook/server/runtime/product-project";
 import {withProjectHttpError} from "nbook/server/api/projects/project-http-error";
 
 /**

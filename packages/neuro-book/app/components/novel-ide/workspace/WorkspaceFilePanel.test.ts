@@ -1,386 +1,213 @@
 // @vitest-environment jsdom
-import {afterEach, beforeEach, describe, expect, it, vi, type MockInstance} from "vitest";
-import {flushPromises, mount, type VueWrapper} from "@vue/test-utils";
-import {defineComponent, nextTick, type Ref} from "vue";
+import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
+import {mount, type VueWrapper} from "@vue/test-utils";
+import {defineComponent, nextTick, ref} from "vue";
 import type {WorkspaceFileNode} from "nbook/app/stores/novel-ide";
 import WorkspaceFilePanel from "nbook/app/components/novel-ide/workspace/WorkspaceFilePanel.vue";
 
-/**
- * 文件面板的组件边界：展开项只走记录（不再有任何裸 `localStorage` 写路径）、
- * 选中 / 打开转发到 store、三种明细面板按选中节点分派、记录诊断可见。
- *
- * 记录会话本身（首读门禁、条件初始化、旧键迁移与回读）在
- * `app/utils/workbench/files-view-session.test.ts` 用真实记录验证；这里只验证接线。
- */
-
-const fake = vi.hoisted(() => ({
-    refs: null as unknown,
-    commits: [] as string[][],
-    retries: 0,
-    abandons: 0,
-    store: null as unknown,
-}));
-
+const fake = vi.hoisted(() => ({identity: {dev: 1, ino: 11, birthtimeMs: 10, mtimeMs: 10, size: 1}, store: null as unknown, expanded: null as unknown, mode: null as unknown, confirm: null as unknown, choose: null as unknown}));
 vi.mock("nbook/app/utils/workbench/files-view-session", async () => {
     const {ref} = await import("vue");
-    const expandedPaths = ref<string[]>([]);
-    const notice = ref<{diagnosis: string; retryable: boolean; abandonable: boolean} | null>(null);
-    const loading = ref(false);
-    fake.refs = {expandedPaths, notice, loading};
-    return {
-        useWorkbenchFileTreeExpandedPaths: () => ({
-            expandedPaths,
-            loading,
-            notice,
-            async commit(paths: string[]) {
-                fake.commits.push([...paths]);
-                expandedPaths.value = [...paths];
-            },
-            async retry() {
-                fake.retries += 1;
-            },
-            abandon() {
-                fake.abandons += 1;
-            },
-            async release() {},
-        }),
-    };
+    const expanded = {expandedPaths: ref<string[]>([]), loading: ref(false), notice: ref(null), commit: vi.fn(async (paths: string[]) => {expanded.expandedPaths.value = paths;}), retry: vi.fn(), abandon: vi.fn(), release: vi.fn()};
+    const mode = {mode: ref<"ordinary" | "content">("ordinary"), loading: ref(false), notice: ref(null), commit: vi.fn(async (value: "ordinary" | "content") => {mode.mode.value = value;}), retry: vi.fn(), abandon: vi.fn(), release: vi.fn()};
+    fake.expanded = expanded;
+    fake.mode = mode;
+    return {useWorkbenchFileTreeExpandedPaths: () => expanded, useWorkbenchFilesViewMode: () => mode};
 });
-
 vi.mock("nbook/app/stores/novel-ide", async () => {
     const {ref} = await import("vue");
-    const store = {
-        canAccessWorkspace: ref(true),
-        loadingWorkspaceTree: ref(false),
-        selectedFileNode: ref<WorkspaceFileNode | null>(null),
-        selectedFilePath: ref(""),
-        workspaceIssues: ref([]),
-        workspaceTree: ref<WorkspaceFileNode[]>([]),
-        openWorkspaceNode: vi.fn(async (node: WorkspaceFileNode) => node),
-        loadWorkspaceTree: vi.fn(async () => []),
-        clearActiveFile: vi.fn(),
-    };
+    const generation = ref(1);
+    const store = {canAccessWorkspace: ref(true), get workspaceGeneration() {return generation.value;}, set workspaceGeneration(value: number) {generation.value = value;}, loadingWorkspaceTree: ref(false), selectedFilePath: ref(""), workspaceTree: ref<WorkspaceFileNode[]>([]), workspaceBuffers: {} as Record<string, {content: string; lastSyncedContent: string}>, hasUnresolvedEditorChanges: false, flushEditorPending: vi.fn(() => "settled"), saveDirtyWorkspaceFiles: vi.fn(async () => true), openWorkspaceNode: vi.fn(async (node: WorkspaceFileNode) => node), loadWorkspaceTree: vi.fn(async () => []), statWorkspacePath: vi.fn(async (path: string) => ({path, sourceIdentity: fake.identity})), deleteWorkspacePath: vi.fn(async () => undefined), batchWorkspacePaths: vi.fn()};
     fake.store = store;
     return {useNovelIdeStore: () => store};
 });
-
-vi.mock("nbook/app/composables/useDialog", () => ({
-    useDialog: () => ({confirm: vi.fn(async () => false), prompt: vi.fn(async () => null), alert: vi.fn(), choose: vi.fn(), chooseCards: vi.fn()}),
-}));
-
-vi.mock("nbook/app/composables/useNotification", () => ({
-    useNotification: () => ({
-        error: vi.fn(),
-        success: vi.fn(),
-        info: vi.fn(),
-        warning: vi.fn(),
-        notify: vi.fn(),
-        remove: vi.fn(),
-        clear: vi.fn(),
-        notifications: [],
-    }),
-}));
-
-vi.mock("vue-i18n", () => ({
-    useI18n: () => ({
-        t: (key: string, params?: Record<string, unknown>) =>
-            params === undefined ? key : `${key}(${Object.values(params).join(",")})`,
-        locale: {value: "zh-CN"},
-    }),
-}));
-
-const TreeStub = defineComponent({
-    name: "WorkspaceFileTree",
-    props: ["nodes", "selectedPath", "expandedPaths", "forcedExpandedPaths"],
-    emits: ["update:expandedPaths", "select", "open", "move", "node-contextmenu", "root-contextmenu"],
-    template: "<div data-stub=\"tree\" :data-expanded=\"JSON.stringify(expandedPaths)\" :data-selected=\"selectedPath\"></div>",
-});
-
-const detailStub = (name: string, marker: string) => defineComponent({
-    name,
-    props: ["node", "issues", "height", "dialogOnly"],
-    emits: ["close", "refresh", "update:height", "create-index", "convert-file-to-directory"],
-    template: `<div data-detail="${marker}"></div>`,
-});
-
-const DialogStub = defineComponent({
-    name: "WorkspaceCreateFileDialog",
-    props: ["modelValue", "kind", "defaultPath", "busy", "restrictLorebookScope"],
-    emits: ["update:modelValue", "submit"],
-    template: "<div data-stub=\"create-dialog\"></div>",
-});
-
-const ContextMenuStub = defineComponent({
-    name: "ContextMenu",
-    props: ["visible", "x", "y", "items", "contextValue"],
-    emits: ["close", "select"],
-    template: "<div data-stub=\"context-menu\"></div>",
-});
-
+vi.mock("nbook/app/composables/useDialog", () => {const confirm = vi.fn(async () => false), choose = vi.fn(async () => "cancel"); fake.confirm = confirm; fake.choose = choose; return {useDialog: () => ({confirm, choose, prompt: vi.fn(async () => null)})};});
+vi.mock("nbook/app/composables/useNotification", () => ({useNotification: () => ({error: vi.fn(), success: vi.fn()})}));
+vi.mock("vue-i18n", () => ({useI18n: () => ({t: (key: string) => key})}));
+const ViewStub = defineComponent({name: "FilesExplorerView", props: ["nodes", "mode", "expandedPaths", "selectedPath", "selectedPaths", "loading", "error"], emits: ["update:mode", "update:expandedPaths", "update:selectedPaths", "clipboard-intent", "select", "open", "retry"], template: '<div data-view :data-mode="mode" :data-expanded="JSON.stringify(expandedPaths)" :data-selected="JSON.stringify(selectedPaths)" :data-error="error"></div>'});
 const mounted: VueWrapper[] = [];
-
-function nodeOf(overrides: Partial<WorkspaceFileNode>): WorkspaceFileNode {
-    return {
-        path: "manuscript/chapter-1.md",
-        title: "chapter-1",
-        summary: "",
-        isDirectory: false,
-        editable: true,
-        hasIndex: false,
-        ...overrides,
-    } as WorkspaceFileNode;
-}
-
-const lorebookCharacter = nodeOf({
-    path: "lorebook/hero/index.md",
-    title: "hero",
-    entryType: "character",
-    contentNode: true,
-});
-
-const lorebookLocation = nodeOf({
-    path: "lorebook/town/index.md",
-    title: "town",
-    entryType: "location",
-    contentNode: true,
-});
-
-const manuscriptFile = nodeOf({path: "manuscript/chapter-1.md", title: "chapter-1"});
-
-function recordRefs() {
-    return fake.refs as {
-        expandedPaths: Ref<string[]>;
-        notice: Ref<{diagnosis: string; retryable: boolean; abandonable: boolean} | null>;
-        loading: Ref<boolean>;
-    };
-}
-
-function storeMock() {
-    return fake.store as {
-        selectedFileNode: Ref<WorkspaceFileNode | null>;
-        workspaceTree: Ref<WorkspaceFileNode[]>;
-        loadingWorkspaceTree: Ref<boolean>;
-        openWorkspaceNode: ReturnType<typeof vi.fn>;
-        loadWorkspaceTree: ReturnType<typeof vi.fn>;
-    };
-}
-
-/** 标题动作的句柄从 `action-handle-ready` 事件里取（宿主就是这么拿的）。 */
-function handleOf(wrapper: VueWrapper) {
-    const events = wrapper.emitted("action-handle-ready") ?? [];
-    const last = events.at(-1)?.[0] as {runAction: (actionId: string) => Promise<unknown>} | null | undefined;
-    return last ?? null;
-}
-
-/** 最后一次上报的动作状态。 */
-function statesOf(wrapper: VueWrapper) {
-    const events = wrapper.emitted("actions-change") ?? [];
-    return events.at(-1)?.[0] as readonly {id: string; enabled: boolean; reason?: string; busy?: boolean}[] | undefined;
-}
-
-function mountPanel() {
-    const wrapper = mount(WorkspaceFilePanel, {
-        global: {
-            stubs: {
-                WorkspaceFileTree: TreeStub,
-                WorkspaceFileDetailPanel: detailStub("WorkspaceFileDetailPanel", "file"),
-                WorkspaceCharacterDetailPanel: detailStub("WorkspaceCharacterDetailPanel", "character"),
-                WorkspaceLorebookDetailPanel: detailStub("WorkspaceLorebookDetailPanel", "lorebook"),
-                WorkspaceCreateFileDialog: DialogStub,
-                ContextMenu: ContextMenuStub,
-            },
-        },
-    });
+const store = () => fake.store as {canAccessWorkspace: {value: boolean}; workspaceGeneration: number; loadingWorkspaceTree: {value: boolean}; workspaceTree: {value: WorkspaceFileNode[]}; workspaceBuffers: Record<string, {content: string; lastSyncedContent: string}>; hasUnresolvedEditorChanges: boolean; saveDirtyWorkspaceFiles: ReturnType<typeof vi.fn>; statWorkspacePath: ReturnType<typeof vi.fn>; deleteWorkspacePath: ReturnType<typeof vi.fn>; openWorkspaceNode: ReturnType<typeof vi.fn>; loadWorkspaceTree: ReturnType<typeof vi.fn>; batchWorkspacePaths: ReturnType<typeof vi.fn>};
+const expanded = () => fake.expanded as {expandedPaths: {value: string[]}; loading: {value: boolean}; notice: {value: unknown}; commit: ReturnType<typeof vi.fn>};
+const mode = () => fake.mode as {mode: {value: "ordinary" | "content"}; loading: {value: boolean}; notice: {value: unknown}; commit: ReturnType<typeof vi.fn>};
+const confirmDialog = () => fake.confirm as ReturnType<typeof vi.fn>;
+const chooseDialog = () => fake.choose as ReturnType<typeof vi.fn>;
+function panel() {
+    const wrapper = mount(WorkspaceFilePanel, {global: {stubs: {FilesExplorerView: ViewStub, ContextMenu: defineComponent({name: "ContextMenu", props: ["items"], template: "<div data-menu />"}), WorkspaceCreateFileDialog: true}}});
     mounted.push(wrapper);
     return wrapper;
 }
-
-let setItemSpy: MockInstance;
-let getItemSpy: MockInstance;
-
+const node = {path: "baseline.md", isDirectory: false, editable: true, title: "Baseline"} as WorkspaceFileNode;
 beforeEach(() => {
-    fake.commits = [];
-    fake.retries = 0;
-    fake.abandons = 0;
-    recordRefs().expandedPaths.value = [];
-    recordRefs().notice.value = null;
-    recordRefs().loading.value = false;
-    storeMock().selectedFileNode.value = null;
-    storeMock().workspaceTree.value = [manuscriptFile, lorebookCharacter, lorebookLocation];
-    storeMock().openWorkspaceNode.mockClear();
-    storeMock().loadingWorkspaceTree.value = false;
-    storeMock().loadWorkspaceTree.mockClear();
-    storeMock().loadWorkspaceTree.mockImplementation(async () => []);
-    setItemSpy = vi.spyOn(Storage.prototype, "setItem");
-    getItemSpy = vi.spyOn(Storage.prototype, "getItem");
+    expanded().expandedPaths.value = [];
+    expanded().loading.value = false;
+    expanded().notice.value = null;
+    expanded().commit.mockClear();
+    mode().mode.value = "ordinary";
+    mode().loading.value = false;
+    mode().notice.value = null;
+    mode().commit.mockClear();
+    store().canAccessWorkspace.value = true;
+    store().workspaceGeneration = 1;
+    store().workspaceTree.value = [node];
+    store().loadingWorkspaceTree.value = false;
+    store().openWorkspaceNode.mockClear();
+    store().batchWorkspacePaths.mockReset();
+    store().statWorkspacePath.mockReset().mockImplementation(async (path: string) => ({path, sourceIdentity: fake.identity}));
+    store().deleteWorkspacePath.mockReset().mockResolvedValue({});
+    store().workspaceBuffers = {};
+    store().hasUnresolvedEditorChanges = false;
+    store().saveDirtyWorkspaceFiles.mockReset().mockResolvedValue(true);
+    chooseDialog().mockReset().mockResolvedValue("cancel");
+    confirmDialog().mockReset().mockResolvedValue(false);
+    store().loadWorkspaceTree.mockClear();
 });
-
-afterEach(() => {
-    for (const wrapper of mounted.splice(0)) {
-        wrapper.unmount();
-    }
-    vi.restoreAllMocks();
-});
+afterEach(() => mounted.splice(0).forEach(wrapper => wrapper.unmount()));
 
 describe("WorkspaceFilePanel", () => {
-    it("展开项来自记录，且挂载不产生任何浏览器存储读写", () => {
-        recordRefs().expandedPaths.value = ["lorebook/"];
-        const wrapper = mountPanel();
-
-        expect(wrapper.find("[data-stub=\"tree\"]").attributes("data-expanded")).toBe(JSON.stringify(["lorebook/"]));
-        expect(setItemSpy).not.toHaveBeenCalled();
-        expect(getItemSpy).not.toHaveBeenCalled();
-    });
-
-    it("记录读取中就绪前不渲染树（调整控件不可用），就绪后按记录的展开项渲染", async () => {
-        recordRefs().expandedPaths.value = ["manuscript/"];
-        recordRefs().loading.value = true;
-        const wrapper = mountPanel();
-
-        // 读取窗口：树不挂载（因此没有任何手势能 emit 整份默认数组），诊断条也不在。
-        expect(wrapper.find("[data-stub=\"tree\"]").exists()).toBe(false);
-        expect(wrapper.text()).toContain("ide.workspace.filePanel.loadingTree");
-        expect(fake.commits).toEqual([]);
-
-        recordRefs().loading.value = false;
+    it("记录首读前拒绝挂树，完成后保留展开项与模式", async () => {
+        expanded().expandedPaths.value = ["chapter/"];
+        expanded().loading.value = true;
+        const wrapper = panel();
+        expect(wrapper.find("[data-view]").exists()).toBe(false);
+        expanded().loading.value = false;
         await nextTick();
-
-        const tree = wrapper.findComponent(TreeStub);
-        expect(tree.exists()).toBe(true);
-        expect(tree.attributes("data-expanded")).toBe(JSON.stringify(["manuscript/"]));
-        expect(fake.commits).toEqual([]);
+        expect(wrapper.find("[data-view]").attributes("data-expanded")).toBe('["chapter/"]');
+        expect(expanded().commit).not.toHaveBeenCalled();
     });
-
-    it("树的展开变化只提交给记录（唯一写路径），不落裸键", async () => {
-        const wrapper = mountPanel();
-        const tree = wrapper.findComponent(TreeStub);
-
-        tree.vm.$emit("update:expandedPaths", ["manuscript/", "lorebook/"]);
+    it("模式切换只改受控偏好，打开仍使用真实节点身份", async () => {
+        const wrapper = panel();
+        wrapper.findComponent(ViewStub).vm.$emit("update:mode", "content");
         await nextTick();
-
-        expect(fake.commits).toEqual([["manuscript/", "lorebook/"]]);
-        expect(tree.attributes("data-expanded")).toBe(JSON.stringify(["manuscript/", "lorebook/"]));
-        expect(setItemSpy).not.toHaveBeenCalled();
-    });
-
-    it("选中走 preview、双击打开走 permanent", async () => {
-        const wrapper = mountPanel();
-        const tree = wrapper.findComponent(TreeStub);
-
-        tree.vm.$emit("select", manuscriptFile);
+        expect(mode().commit).toHaveBeenCalledWith("content");
+        expect(wrapper.find("[data-view]").attributes("data-mode")).toBe("content");
+        wrapper.findComponent(ViewStub).vm.$emit("select", node);
+        wrapper.findComponent(ViewStub).vm.$emit("open", node);
         await nextTick();
-        expect(storeMock().openWorkspaceNode).toHaveBeenCalledWith(manuscriptFile, "preview");
-
-        tree.vm.$emit("open", manuscriptFile);
-        await flushPromises();
+        expect(store().openWorkspaceNode).toHaveBeenCalledWith(node, "preview");
+        expect(store().openWorkspaceNode).toHaveBeenCalledWith(node, "permanent");
+    });
+    it("展开意图只提交既有记录，关闭项目不挂载旧树", async () => {
+        const wrapper = panel();
+        wrapper.findComponent(ViewStub).vm.$emit("update:expandedPaths", ["chapter/"]);
         await nextTick();
-        expect(storeMock().openWorkspaceNode).toHaveBeenCalledWith(manuscriptFile, "permanent");
-    });
-
-    it("明细面板按选中节点分派：角色 / Lorebook 条目 / 普通文件", async () => {
-        const wrapper = mountPanel();
-
-        expect(wrapper.find("[data-detail=\"file\"]").exists()).toBe(true);
-
-        storeMock().selectedFileNode.value = lorebookCharacter;
+        expect(expanded().commit).toHaveBeenCalledWith(["chapter/"]);
+        store().canAccessWorkspace.value = false;
         await nextTick();
-        expect(wrapper.find("[data-detail=\"character\"]").exists()).toBe(true);
-        expect(wrapper.find("[data-detail=\"file\"]").exists()).toBe(false);
+        expect(wrapper.find("[data-view]").exists()).toBe(false);
+    });
+    it("目录剪切仅清除成功项，独立失败展示逐项结果", async () => {
+        const directory = {...node, path: "chapter/", isDirectory: true};
+        store().workspaceTree.value = [directory, node];
+        confirmDialog().mockResolvedValue(true);
+        store().batchWorkspacePaths.mockResolvedValueOnce({items: [{source: "chapter/", target: "destination/chapter", status: "success"}]})
+            .mockResolvedValueOnce({items: [{source: "baseline.md", target: "destination/baseline.md", status: "failed", reason: "目标路径已存在"}]})
+            .mockResolvedValueOnce({items: [{source: "baseline.md", target: "next/baseline.md", status: "success"}]});
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("update:selectedPaths", ["chapter/", "baseline.md"]);
+        view.vm.$emit("clipboard-intent", {kind: "cut", sources: ["chapter/", "baseline.md"]});
+        await vi.waitFor(() => expect(store().statWorkspacePath).toHaveBeenCalledTimes(2));
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "destination/"});
+        await vi.waitFor(() => expect(store().batchWorkspacePaths).toHaveBeenCalledTimes(2));
+        expect(store().batchWorkspacePaths).toHaveBeenCalledWith("move", ["chapter/"], "destination/", expect.objectContaining({expectedSources: {chapter: fake.identity}}));
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("目标路径已存在"));
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "next/"});
+        await vi.waitFor(() => expect(store().batchWorkspacePaths).toHaveBeenCalledWith("move", ["baseline.md"], "next/", expect.any(Object)));
+    });
+    it("复制dirty文件由用户选择磁盘版本、保存或取消", async () => {
+        store().workspaceBuffers = {"baseline.md": {content: "dirty", lastSyncedContent: "disk"}};
+        store().batchWorkspacePaths.mockResolvedValue({items: [{source: "baseline.md", target: "copies/baseline.md", status: "success"}]});
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("clipboard-intent", {kind: "copy", sources: ["baseline.md"]});
+        await vi.waitFor(() => expect(store().statWorkspacePath).toHaveBeenCalledOnce());
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "copies/"});
+        await vi.waitFor(() => expect(chooseDialog()).toHaveBeenCalledOnce());
+        expect(store().batchWorkspacePaths).not.toHaveBeenCalled();
+        chooseDialog().mockResolvedValueOnce("disk");
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "copies/"});
+        await vi.waitFor(() => expect(store().batchWorkspacePaths).toHaveBeenCalledOnce());
+        expect(store().saveDirtyWorkspaceFiles).not.toHaveBeenCalled();
+        chooseDialog().mockResolvedValueOnce("save");
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "copies/"});
+        await vi.waitFor(() => expect(store().saveDirtyWorkspaceFiles).toHaveBeenCalledOnce());
+        await vi.waitFor(() => expect(store().batchWorkspacePaths).toHaveBeenCalledTimes(2));
+    });
 
-        storeMock().selectedFileNode.value = lorebookLocation;
+
+    it("确认弹窗期间工作区换代不会提交旧剪贴板", async () => {
+        let accept!: (value: boolean) => void;
+        confirmDialog().mockImplementationOnce(() => new Promise<boolean>(resolve => {accept = resolve;}));
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("clipboard-intent", {kind: "copy", sources: ["baseline.md"]});
+        await vi.waitFor(() => expect(store().statWorkspacePath).toHaveBeenCalledOnce());
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "next/"});
+        await vi.waitFor(() => expect(confirmDialog()).toHaveBeenCalledOnce());
+        store().workspaceGeneration++;
         await nextTick();
-        expect(wrapper.find("[data-detail=\"lorebook\"]").exists()).toBe(true);
-        expect(wrapper.find("[data-detail=\"character\"]").exists()).toBe(false);
-
-        storeMock().selectedFileNode.value = manuscriptFile;
+        accept(true);
         await nextTick();
-        expect(wrapper.find("[data-detail=\"file\"]").exists()).toBe(true);
+        expect(store().batchWorkspacePaths).not.toHaveBeenCalled();
     });
-
-    it("记录诊断可见，并且带重试 / 放弃出口", async () => {
-        recordRefs().notice.value = {diagnosis: "Storage 记录当前不可写，旧展开记录保留原位", retryable: true, abandonable: true};
-        const wrapper = mountPanel();
-
-        const notice = wrapper.find("[data-file-panel-record-notice]");
-        expect(notice.exists()).toBe(true);
-        expect(notice.text()).toContain("Storage 记录当前不可写，旧展开记录保留原位");
-
-        await notice.findAll("button")[0]!.trigger("click");
-        expect(fake.retries).toBe(1);
-        await notice.findAll("button")[1]!.trigger("click");
-        expect(fake.abandons).toBe(1);
-    });
-
-    it("没有可放弃的意图时不给出「放弃」按钮（宿主不可达仍可重试）", async () => {
-        recordRefs().notice.value = {diagnosis: "Storage 宿主暂不可达（cold start）", retryable: true, abandonable: false};
-        const wrapper = mountPanel();
-
-        const notice = wrapper.find("[data-file-panel-record-notice]");
-        expect(notice.exists()).toBe(true);
-        expect(notice.text()).toContain("Storage 宿主暂不可达");
-
-        const buttons = notice.findAll("button");
-        expect(buttons).toHaveLength(1);
-        await buttons[0]!.trigger("click");
-        expect(fake.retries).toBe(1);
-        expect(fake.abandons).toBe(0);
-    });
-
-    it("没有诊断时不显示记录提示条", () => {
-        const wrapper = mountPanel();
-        expect(wrapper.find("[data-file-panel-record-notice]").exists()).toBe(false);
-    });
-
-    it("标题动作：句柄走的是原加载入口，成功后返回结构化结果", async () => {
-        const wrapper = mountPanel();
-        const handle = handleOf(wrapper);
-        expect(handle).not.toBeNull();
-
-        const result = await handle!.runAction("refresh");
-
-        expect(storeMock().loadWorkspaceTree).toHaveBeenCalledTimes(1);
-        expect(result).toEqual({ok: true, value: null});
-    });
-
-    it("标题动作状态：加载中就是 busy 且禁用，说明原因", async () => {
-        const wrapper = mountPanel();
-        storeMock().loadingWorkspaceTree.value = true;
+    it("源路径被替换时不写盘，网络未知停止后续并锁定旧意图", async () => {
+        store().workspaceTree.value = [node, {...node, path: "second.md"}];
+        confirmDialog().mockResolvedValue(true);
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("clipboard-intent", {kind: "copy", sources: ["baseline.md", "second.md"]});
+        await vi.waitFor(() => expect(store().statWorkspacePath).toHaveBeenCalledTimes(2));
+        store().statWorkspacePath.mockImplementation(async (path: string) => ({path, sourceIdentity: path === "baseline.md" ? {...fake.identity, ino: 12} : fake.identity}));
+        store().batchWorkspacePaths.mockRejectedValueOnce(new Error("network unavailable"));
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "copies/"});
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("来源已被替换"));
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("结果未知"));
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "again/"});
         await nextTick();
-
-        expect(statesOf(wrapper)).toEqual([{id: "refresh", enabled: false, reason: "文件树正在加载", busy: true}]);
-
-        const result = await handleOf(wrapper)!.runAction("refresh");
-        expect(result).toEqual({ok: false, code: "unavailable", reason: "文件树正在加载"});
-        expect(storeMock().loadWorkspaceTree).not.toHaveBeenCalled();
+        expect(store().batchWorkspacePaths).toHaveBeenCalledTimes(1);
+        expect(wrapper.text()).toContain("核对源和目标");
+        const check = wrapper.findAll("button").find(button => button.text() === "核对源和目标");
+        await check?.trigger("click");
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-unknown-check']").text()).toContain("源 second.md：存在"));
+        expect(wrapper.find("[data-role='files-unknown-check']").text()).toContain("目标 copies/second.md：存在");
+        confirmDialog().mockResolvedValue(true);
+        const clear = wrapper.findAll("button").find(button => button.text() === "放弃旧意图");
+        await clear?.trigger("click");
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: "again/"});
+        await nextTick();
+        expect(store().batchWorkspacePaths).toHaveBeenCalledTimes(1);
     });
 
-    it("标题动作：未登记的 actionId 与加载失败都返回结构化失败", async () => {
-        const wrapper = mountPanel();
-        const handle = handleOf(wrapper)!;
-
-        expect(await handle.runAction("nope")).toMatchObject({ok: false, code: "unknown-command"});
-
-        storeMock().loadWorkspaceTree.mockImplementation(async () => {
-            throw new Error("工作区暂时不可达");
-        });
-        const failed = await handle.runAction("refresh");
-        expect(failed).toEqual({ok: false, code: "execution-error", reason: "工作区暂时不可达"});
+    it("同目录复制遇同名可跳过，且不发起写请求", async () => {
+        confirmDialog().mockResolvedValue(true);
+        chooseDialog().mockResolvedValue("skip");
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("clipboard-intent", {kind: "copy", sources: ["baseline.md"]});
+        await vi.waitFor(() => expect(store().statWorkspacePath).toHaveBeenCalledOnce());
+        view.vm.$emit("clipboard-intent", {kind: "paste", destination: ""});
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("跳过"));
+        expect(store().batchWorkspacePaths).not.toHaveBeenCalled();
     });
 
-    it("内容头不再有第二个刷新入口（刷新只剩标题动作这一条路径）", () => {
-        const wrapper = mountPanel();
-
-        expect(wrapper.find(".i-lucide-refresh-cw").exists()).toBe(false);
-        expect(wrapper.find("input[type=\"text\"]").exists()).toBe(true);
-    });
-
-    it("实例卸载时交回句柄（null），宿主不会继续拿着旧句柄", () => {
-        const wrapper = mountPanel();
-        expect(handleOf(wrapper)).not.toBeNull();
-
-        wrapper.unmount();
-
-        const events = wrapper.emitted("action-handle-ready") ?? [];
-        expect(events.at(-1)?.[0]).toBeNull();
+    it("多选删除仅确认一次，父目录覆盖子项且独立项失败后继续", async () => {
+        const folder = {...node, path: "folder/", isDirectory: true};
+        store().workspaceTree.value = [folder, {...node, path: "folder/child.md"}, {...node, path: "other.md"}];
+        confirmDialog().mockResolvedValue(true);
+        store().deleteWorkspacePath.mockRejectedValueOnce({statusCode: 400, message: "占用"}).mockResolvedValueOnce({});
+        const wrapper = panel();
+        const view = wrapper.findComponent(ViewStub);
+        view.vm.$emit("update:selectedPaths", ["folder/child.md", "folder/", "other.md"]);
+        await nextTick();
+        view.vm.$emit("node-contextmenu", folder, new MouseEvent("contextmenu"));
+        await nextTick();
+        const menu = wrapper.findComponent({name: "ContextMenu"});
+        const actions = menu.props("items") as Array<{label?: string; action?: () => void}>;
+        actions.find(item => item.label === "ide.workspace.common.delete")?.action?.();
+        await vi.waitFor(() => expect(store().deleteWorkspacePath).toHaveBeenCalledTimes(2));
+        expect(confirmDialog()).toHaveBeenCalledOnce();
+        await vi.waitFor(() => expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("占用"));
+        expect(wrapper.find("[data-role='files-batch-results']").text()).toContain("完成");
+        expect(wrapper.find("[data-role='files-batch-results']").text()).not.toContain("child.md");
     });
 });

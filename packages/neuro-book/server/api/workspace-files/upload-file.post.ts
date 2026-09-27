@@ -1,6 +1,6 @@
 import {createError, getRequestHeader, readMultipartFormData, type MultiPartData} from "h3";
+import {withBoundProjectTargetMutation, parseWorkspaceFileHttpBinding} from "nbook/server/workspace-files/project-open-guard";
 import {resolveWorkspaceFileTarget} from "nbook/server/workspace-files/novel-workspace";
-import {withProjectTargetMutation} from "nbook/server/workspace-files/project-open-guard";
 import {uploadWorkspaceFile, WorkspaceUploadError} from "nbook/server/workspace-files/workspace-upload";
 import {recordUploadedFiles, USER_LOCAL_ACTOR} from "nbook/server/workspace-history/tracked-workspace-files";
 import {runtimePathsFromEnv} from "nbook/server/runtime/paths/runtime-paths";
@@ -12,12 +12,13 @@ export default defineEventHandler(async (event) => {
     assertContentLengthLimit(event, 50 * 1024 * 1024, 1024 * 1024);
     const parts = await readRequiredMultipart(event);
     const file = firstFilePart(parts);
-    const workspaceKind = readTextPart(parts, "workspaceKind") === "user-assets" ? "user-assets" : undefined;
-    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), {
+    const binding = parseWorkspaceFileHttpBinding({
         projectRoot: readTextPart(parts, "projectRoot"),
-        workspaceKind,
+        publicId: readTextPart(parts, "publicId"),
+        workspaceKind: readTextPart(parts, "workspaceKind"),
     });
-    return withProjectTargetMutation(target, async (projectHandles) => {
+    const target = await resolveWorkspaceFileTarget(runtimePathsFromEnv(), binding);
+    return withBoundProjectTargetMutation(target, binding, async (projectHandles) => {
         try {
             const result = await uploadWorkspaceFile(target, {
                 fileName: file.filename ?? "upload.bin",

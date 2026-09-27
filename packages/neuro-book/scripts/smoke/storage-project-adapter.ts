@@ -28,7 +28,8 @@ import {defineStorageState, type DefinedStorageState} from "nbook/shared/storage
 import type {absoluteFsPath, AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import type {ProjectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import type {writeProjectManifest} from "nbook/server/workspace-files/project-workspace";
-import type {ReadyProjectSessionRef} from "nbook/server/workspace-files/project-session";
+import type {ReadyProjectSessionRef} from "nbook/server/runtime/product-project";
+import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 import type {
     disposeStorageHost,
     issueStorageProjectContext,
@@ -522,6 +523,7 @@ export async function runStorageProjectAdapterSmoke(
         modules = await loadStorageModules();
         const workspaceRoot = modules.absoluteFsPath(paths.workspaceRoot);
         projectSession = await importProjectSession();
+        setWorkspaceRuntimeRootContextForTest({workspaceRoot});
         const projects = await openProjectsUnderTest(projectSession, modules, workspaceRoot);
         for (const project of [projects.projectA, projects.projectB]) {
             isolated.projectStorageRoots.push({projectRoot: project.root, storageRoot: project.storageRoot});
@@ -567,7 +569,10 @@ export async function runStorageProjectAdapterSmoke(
         await dispose(`http:${isolated.httpOrigin ?? "未启动"}`, async () => await host?.close());
         await dispose("project-session", async () => await projectSession?.closeAllProjects());
         await dispose("storage-host", async () => await modules?.disposeHost());
-        await dispose("environment", async () => environment?.restore());
+        await dispose("environment", async () => {
+            setWorkspaceRuntimeRootContextForTest(null);
+            environment?.restore();
+        });
     }
     return {findings, cleanup, isolated, records};
 }
@@ -628,14 +633,9 @@ async function loadStorageModules(): Promise<StorageModules> {
     };
 }
 
-/**
- * Project session 与其 manifest 入口。
- *
- * 它们同样只能在隔离根写进进程环境之后加载：`project-session` 的导入会注册 Storage lazy Module，
- * 静态导入会让模块级接线早于本次隔离根。
- */
+/** 隔离环境确定后加载 Project 模块登记，并用测试 Workspace Root context 管理它的 scope。 */
 async function importProjectSession(): Promise<ProjectSessionModule> {
-    const session = await import("nbook/server/workspace-files/project-session");
+    const session = await import("nbook/server/runtime/product-project");
     const workspace = await import("nbook/server/workspace-files/project-workspace");
     const identity = await import("nbook/server/workspace-files/project-identity");
     return {
@@ -1309,7 +1309,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
     const options = parseOptions(process.argv.slice(2));
     console.error(`Project Storage smoke 隔离根：${options.root}`);
     const result = await runStorageProjectAdapterSmoke(options);
-    const cleanup = [...result.cleanup, await removeIsolationRoot(options.root)];
+    const projectCleanupFailed = result.cleanup.some((outcome) => outcome.resource === "project-session" && !outcome.ok);
+    const cleanup = projectCleanupFailed
+        ? [...result.cleanup, {resource: `isolation-root:${options.root}`, ok: false, message: "Project关闭未完成，保留隔离根及锁证据"}]
+        : [...result.cleanup, await removeIsolationRoot(options.root)];
     const findings = result.findings;
     const failed = findings.length > 0 || cleanup.some((outcome) => !outcome.ok);
     console.log(JSON.stringify({

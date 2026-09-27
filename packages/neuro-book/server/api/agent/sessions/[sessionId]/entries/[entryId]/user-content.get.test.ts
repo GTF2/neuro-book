@@ -26,7 +26,7 @@ vi.mock("nbook/server/api/projects/project-http-error", () => ({
     withProjectHttpError: async <T>(operation: () => Promise<T>): Promise<T> => operation(),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     isProjectNotOpenError: () => false,
 }));
 

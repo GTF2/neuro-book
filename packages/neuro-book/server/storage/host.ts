@@ -292,7 +292,7 @@ export function issueStorageProjectContext(
     request: StorageProjectContextRequest,
 ): Promise<StorageProjectContextDto> {
     return operate(async (owner, assertActive, bindSession) => {
-        const facade = await import("nbook/server/workspace-files/project-session");
+        const facade = await import("nbook/server/runtime/product-project");
         assertActive();
         const ready = facade.requireReadyProjectByPublicId(
             projectWorkspaceRef(request.projectRoot),
@@ -347,7 +347,7 @@ export function performStorageProjectAction(event: H3Event, action: StorageActio
         const definition = action.kind === "bind"
             ? owner.registry.resolveOwner(action.owner)
             : requireStorageActionState(owner.registry, action);
-        const facade = await import("nbook/server/workspace-files/project-session");
+        const facade = await import("nbook/server/runtime/product-project");
         assertActive();
         const identity = await resolveDataIdentity(event, owner, false, assertActive, bindSession);
         const ready = facade.requireReadyProjectByPublicId(

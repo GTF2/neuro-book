@@ -1,5 +1,5 @@
 import {rm} from "node:fs/promises";
-import {closeProject, openProject} from "nbook/server/workspace-files/project-session";
+import {closeProject, openProject} from "nbook/server/runtime/product-project";
 import {
     projectWorkspaceRef,
     resolveProjectWorkspaceRoot,

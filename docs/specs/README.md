@@ -127,6 +127,8 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 | Storage 架构边界 | [`storage/boundaries.md`](storage/boundaries.md) | Config / Storage / 内存 / 领域数据职责、user/project 归属、插件与 grid 消费边界 |
 | Storage 本地持久化 | [`storage/persistence.md`](storage/persistence.md) | 身份与客户端分区、条件读写、生命周期、恢复、备份与首批迁移；运行时与验收尚未实现 |
 | 工作台与插件嵌套 grid | [`ui/nested-grid.md`](ui/nested-grid.md) | 二维原语、原子手势、共享测量/宿主、scope仲裁与绝对指针跟随；新矩阵未闭合前保持planned |
+| 工作区文件访问与操作 | [`workspace/files.md`](workspace/files.md) | `workspace.files`；首版文件读写、目录/批量操作、无覆盖冲突、逐项失败与取消语义已批准；尚未实施或运行验证 |
+| 文件资源管理器 | [`workbench/files-explorer.md`](workbench/files-explorer.md) | `workbench.files-explorer`；双模式、F1–F9 交互/剪贴板/dirty 策略与验收已收口；主页面真实链尚未实施，第二版草案未进入本规范 |
 
 ## 冻结过渡规范
 
@@ -145,10 +147,10 @@ Code-first 只调整已授权 Task 内的修改顺序，不绕过人类授权、
 
 | 优先级 | 功能域 | 现有证据 | 缺口 |
 |---|---|---|---|
-| P0 | 应用运行时与功能插件接入 | [总体架构提案与能力地图](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md#能力地图与规范归属)（基础方向 `accepted`） | 第一切片四项（lifecycle、services、plugins、application）已晋升 `implemented`；第二切片三项（diagnostics、platform.files、platform.sqlite）已晋升 `implemented`。产品启动链、产品日志器与既有数据库尚未迁入新入口。后续按 Lab → Files → Settings → World/Plot 在既有能力正文接入；各领域门禁/贡献/权限/恢复细节在首次消费前补齐。Desktop/安装域仍拥有安装、UAC、升级、卸载与发布；热卸载只评估 |
+| P0 | 应用运行时与功能插件接入 | [总体架构提案与能力地图](../../packages/neuro-book/docs/proposals/application-runtime-and-plugins.md#能力地图与规范归属)（基础方向 `accepted`）、[产品装配设计](../../packages/neuro-book/docs/proposals/application-runtime-product-integration.md) | 前两片七项 Spec 已 `implemented`，产品进程启动与 Project generation owner 已迁入 Application；日志器/既有数据库仍走旧入口。Files 第一版两项 `planned` 合同已实施单机链，跨机器基础操作与逐条验收未完成；第二版为独立草案。命令/Storage/Lab/Workbench 沿原能力接入；Project、配置与文档会话完整合同仍有缺口 |
 | P0 | Desktop、安装与 Product Runtime | `packages/neuro-book/docs/adr/0010-*`、`0013-*`、`0014-*`、`0016-*`，`desktop/`、`scripts/install/`、`scripts/deploy/` | 安装状态机、UAC、启动/关闭、升级、卸载和失败恢复未汇成当前规范 |
 | P0 | 应用状态、备份与数据迁移 | `packages/neuro-book/docs/adr/0005-*`、`0008-*`、`0012-*`，`packages/neuro-book/server/backup/`、`packages/neuro-book/server/database/` | 数据所有权、备份恢复、catalog 演进和 release activation 未形成端到端规范 |
-| P0 | Project 生命周期与身份 | [ADR 0007](../../packages/neuro-book/docs/adr/0007-project-close-then-open.md)、[Project Session 入口](../../packages/neuro-book/server/workspace-files/project-session.ts)、[Root Identity](../../packages/neuro-book/server/workspace-files/project-root-identity.ts) | Project / Workspace 模块负责；完整领域生命周期仍缺 implemented Spec。首期 Storage 所需的目录携带、代次与关闭/删除边界已在 [storage.persistence](storage/persistence.md) 固定；不因此宣称全域规范完成 |
+| P0 | Project 生命周期与身份 | [ADR 0007](../../packages/neuro-book/docs/adr/0007-project-close-then-open.md)、[Project Session 产品 owner](../../packages/neuro-book/server/runtime/product-project.ts)、[Root Identity](../../packages/neuro-book/server/workspace-files/project-root-identity.ts) | Product Application 持有 Project generation；完整领域生命周期仍缺 implemented Spec。首期 Storage 所需的目录携带、代次与关闭/删除边界已在 [storage.persistence](storage/persistence.md) 固定；不因此宣称全域规范完成 |
 | P0 | Agent Session 持久化与历史 | `packages/neuro-book/docs/adr/0003-*`、`0014-agent-job-*`，`packages/neuro-book/server/agent/session/`、`packages/neuro-book/server/workspace-history/` | durable event、Job 历史、附件、租约和文件历史缺少统一状态与恢复规范 |
 | P1 | 配置、模型与凭据 | `packages/neuro-book/server/config/`、`packages/neuro-book/server/models/`、`packages/neuro-book/shared/dto/app-settings.dto.ts` | 配置优先级、敏感字段、provider identity、错误和 UI 行为没有单一规范 |
 | P1 | Markdown Studio 与编辑工作台 | [`../../vitepress/locales/zh-Hans/core/markdown-studio.md`](../../vitepress/locales/zh-Hans/core/markdown-studio.md)、[历史 editor plan](../../packages/neuro-book/docs/archived/plan/06-editor-workbench.md)、`packages/neuro-book/shared/editor-workbench.ts` | 用户文档与历史 plan 存在，但需要按当前代码和测试核对后转成内部当前规范 |

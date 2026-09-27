@@ -1,3 +1,4 @@
+import type * as ProjectOpenGuard from "nbook/server/workspace-files/project-open-guard";
 import {describe, expect, it, vi, beforeEach} from "vitest";
 import { testAbsoluteFsPath } from "@notnotype/neuro-book-test-support/test-path";
 
@@ -6,8 +7,9 @@ describe("POST /api/workspace-files/upload-file", () => {
         vi.resetModules();
         vi.clearAllMocks();
         vi.stubGlobal("defineEventHandler", (handler: unknown) => handler);
-        vi.doMock("nbook/server/workspace-files/project-open-guard", () => ({
-            withProjectTargetMutation: vi.fn((_target, handler: (handles: undefined) => unknown) => handler(undefined)),
+        vi.doMock("nbook/server/workspace-files/project-open-guard", async (importOriginal) => ({
+            ...await importOriginal<typeof ProjectOpenGuard>(),
+            withBoundProjectTargetMutation: vi.fn((_target, _binding, handler: (handles: undefined) => unknown) => handler(undefined)),
         }));
         vi.doMock("nbook/server/workspace-history/tracked-workspace-files", () => ({
             USER_LOCAL_ACTOR: {kind: "user", userId: "local"},
@@ -44,7 +46,6 @@ describe("POST /api/workspace-files/upload-file", () => {
         await handler({} as never);
 
         expect(resolveWorkspaceFileTarget).toHaveBeenCalledWith(expect.anything(), {
-            projectRoot: undefined,
             workspaceKind: "user-assets",
         });
         expect(uploadWorkspaceFile).toHaveBeenCalledWith({kind: "user-assets", root}, {

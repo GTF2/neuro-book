@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
     mutatePlain: vi.fn(),
 }));
 
-vi.mock("nbook/server/workspace-files/project-session", () => ({
+vi.mock("nbook/server/runtime/product-project", () => ({
     assertProjectOpen: vi.fn(),
     markProjectActivity: vi.fn(),
     requireActiveReadyProject: mocks.requireActiveReadyProject,

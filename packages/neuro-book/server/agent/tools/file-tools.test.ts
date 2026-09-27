@@ -16,7 +16,7 @@ import {createProfileArtifactPathContextResolver} from "nbook/server/agent/profi
 import type {ToolExecutionContext} from "nbook/server/agent/tools/types";
 import {resolveBashPathForPlatform} from "nbook/server/agent/tools/file-tools";
 import {authorizeFileOperation} from "nbook/server/workspace-files/authorized-file-operation";
-import {closeAllProjects, openProject} from "nbook/server/workspace-files/project-session";
+import {closeAllProjects, openProject} from "nbook/server/runtime/product-project";
 import {projectWorkspaceRef} from "nbook/server/workspace-files/project-identity";
 import {absoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";

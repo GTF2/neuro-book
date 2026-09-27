@@ -70,7 +70,7 @@ describe("project RAG visualization service", () => {
 
     afterEach(async () => {
         await sessionUtils?.closeProjectForTest(projectPath).catch(() => undefined);
-        const {closeAllProjects, resetProjectSessionsForTest} = await import("nbook/server/workspace-files/project-session");
+        const {closeAllProjects, resetProjectSessionsForTest} = await import("nbook/server/runtime/product-project");
         await closeAllProjects().catch(() => undefined);
         resetProjectSessionsForTest();
         collectReleasedSqliteHandles({force: true});

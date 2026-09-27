@@ -14,7 +14,7 @@ import {createRuntimePaths} from "nbook/server/runtime/paths/runtime-paths";
 import {resolveProfileArtifactPathContext} from "nbook/server/agent/profiles/profile-artifact-compiler";
 import {createVariableDefinitionArtifactPathContextResolver} from "nbook/server/agent/variables/definition-artifact";
 import {WorkflowCatalog} from "nbook/server/agent/workflow/workflow-catalog";
-import {resetProjectSessionsForTest} from "nbook/server/workspace-files/project-session";
+import {resetProjectSessionsForTest} from "nbook/server/runtime/product-project";
 import {closeProjectForTest, openProjectForTest} from "nbook/server/workspace-files/project-session-test-utils";
 import {setWorkspaceRuntimeRootContextForTest} from "nbook/server/workspace-files/workspace-runtime-root";
 
