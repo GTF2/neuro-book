@@ -282,12 +282,44 @@ describe("订阅", () => {
         expect(sent.filter((action) => action.kind === "read")).toHaveLength(readsBeforeRelease);
     });
 
+    it("空闲订阅有界退避，外部变化仍可发现且本地保存立即刷新", async () => {
+        vi.useFakeTimers();
+        let revision = 1;
+        const reads: number[] = [];
+        const {transport} = fakeTransport((action) => {
+            if (action.kind === "save") revision += 1;
+            if (action.kind !== "read") return defaultAnswer(action);
+            reads.push(Date.now());
+            return {kind: "read", result: {
+                kind: "value", value: {width: revision}, schemaVersion: 1,
+                credential: {revision: `rev-${revision}`, partitionGeneration: 1},
+            }};
+        });
+        const handle = await openStorageOwnerHandle({session, owner: OWNER, transport, subscribe: {intervalMs: 10, maxBackoffMs: 80}});
+        const updates: StorageReadResult<LayoutState>[] = [];
+        const subscription = await handle.subscribe(layout, {onUpdate: value => updates.push(value)});
+        await vi.advanceTimersByTimeAsync(150);
+        expect(reads.slice(1).map((time, index) => time - reads[index]!)).toEqual([10, 20, 40, 80]);
+        revision = 2;
+        await vi.advanceTimersByTimeAsync(80);
+        expect(updates).toEqual([expect.objectContaining({value: {width: 2}})]);
+        await vi.advanceTimersByTimeAsync(10);
+        expect(reads.at(-1)! - reads.at(-2)!).toBe(10);
+        await handle.save(layout, {expected: credential, value: {width: 3}});
+        await vi.advanceTimersByTimeAsync(0);
+        expect(updates.at(-1)).toMatchObject({value: {width: 3}});
+        await subscription.close();
+        const count = reads.length;
+        await vi.advanceTimersByTimeAsync(160);
+        expect(reads).toHaveLength(count);
+        await handle.release();
+    });
     it("本进程提交立即触发重读，且始终只有一条串行读取链", async () => {
         vi.useFakeTimers();
         let revision = 1;
         let inFlight = 0;
         let maxInFlight = 0;
-        const {transport, sent} = fakeTransport(async (action) => {
+        const {transport} = fakeTransport(async (action) => {
             if (action.kind !== "read") {
                 if (action.kind === "save") revision += 1;
                 return defaultAnswer(action);
@@ -318,7 +350,6 @@ describe("订阅", () => {
         expect(maxInFlight).toBe(1);
         await vi.advanceTimersByTimeAsync(2_000);
         expect(maxInFlight).toBe(1);
-        expect(sent.filter((action) => action.kind === "read")).toHaveLength(6);
     });
 
     it("读取网络故障退避且可见，恢复后重置间隔", async () => {

@@ -21,7 +21,7 @@ import {
     type StorageValueTransport,
 } from "nbook/app/utils/storage/value-transport";
 
-/** 订阅的默认串行观察间隔与退避上限；外部提交靠定期观察发现。 */
+/** 订阅从快速观察开始；无变化或故障时有界退避，变化后恢复基准间隔。 */
 export const STORAGE_SUBSCRIBE_INTERVAL_MS = 500;
 export const STORAGE_SUBSCRIBE_MAX_BACKOFF_MS = 8_000;
 
@@ -336,6 +336,9 @@ export async function openStorageOwnerHandle(input: StorageOwnerHandleOptions): 
             const snapshot = await sendRead(entry.definition, entry.resource, entry.abort.signal);
             if (entry.closed) throw closedError("Storage 订阅已关闭");
             const key = snapshotKey(snapshot);
+            entry.backoffMs = entry.lastKey === key
+                ? Math.min(entry.backoffMs * 2, maxBackoffMs)
+                : intervalMs;
             if (!entry.closed && entry.lastKey !== key) {
                 entry.lastKey = key;
                 if (publish) emit(entry, snapshot);
@@ -350,8 +353,7 @@ export async function openStorageOwnerHandle(input: StorageOwnerHandleOptions): 
         if (entry.closed || entry.timer !== null) return;
         entry.timer = setTimeout(() => {
             entry.timer = null;
-            void enqueueRead(entry, true).then(
-                () => { entry.backoffMs = intervalMs; },
+            void enqueueRead(entry, true).catch(
                 (error: unknown) => {
                     report(entry, error);
                     // 访问或代次失效终止该订阅；网络故障退避后继续观察。
