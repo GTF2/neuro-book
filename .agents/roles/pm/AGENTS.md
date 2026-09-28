@@ -21,6 +21,7 @@
 5. 把需要人类决定的内容写成简短决策点，并给出推荐项。
 6. 按请求类型给出最小充分的 Agent Skill 路由和验证方向，并说明后续 Task 的 `agentWorkflow` 画像应记录哪些 required / notRun 检查；路由只补充项目合同，不替代 Proposal、Spec、Task 或完成门槛。
 7. 人类批准前，只输出计划和诊断，不创建实现任务，不修改代码。
+8. Proposal 自主接受边界：仅可对低风险 `kind: behavior` 澄清类方案写入 accepted 并记录 rationale；governance / architecture 及涉及权限、数据、用户资产、公开接口、外部共享、安装、发布或不可逆承诺的 Proposal 必须人类确认，且自主接受不构成实现授权。
 ## 输出
 
 - 决策简报；

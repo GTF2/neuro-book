@@ -11,7 +11,7 @@ import {parse as parseYaml} from "yaml";
 export const CANONICAL_ROLES = ["pm", "leader", "tasker", "reviewer"] as const;
 export type CanonicalRole = typeof CANONICAL_ROLES[number];
 
-const AGENT_SKILLS_ADAPTATION_PROPOSAL = "packages/neuro-book/docs/proposals/agent-skills-adaptation.md";
+const AGENT_SKILLS_ADAPTATION_PROPOSAL = "packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md";
 const AGENT_WORKFLOW_ROUTER = ".agents/skills/agent-workflow-router/SKILL.md";
 const AGENT_WORKFLOW_PROFILE = "nbook.agent-skills/v1";
 const AGENT_WORKFLOW_KINDS = new Set([
@@ -249,6 +249,7 @@ export function expectedGovernanceFiles(): readonly string[] {
         ".agents/tasks/ownership.json",
         ...CANONICAL_ROLES.map((role) => `.agents/roles/${role}/AGENTS.md`),
         ".agents/skills/README.md",
+        ".agents/skills/agent-role/SKILL.md",
         "packages/neuro-book/AGENTS.md",
         "scripts/AGENTS.md",
         "scripts/release/AGENTS.md",
@@ -730,7 +731,18 @@ export function verifyAgentSkillsAdaptation(repoRoot: string): string[] {
         return failures;
     }
     const proposal = readRepoText(repoRoot, AGENT_SKILLS_ADAPTATION_PROPOSAL);
-    const status = /^状态：\s*(\S.*?)\s*$/mu.exec(proposal)?.[1]?.trim();
+    // P-005 迁移后状态在 frontmatter；正文 `状态：` 仅作为历史 v1 的兼容读取。
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/u.exec(proposal)?.[1];
+    let status: string | undefined;
+    if (frontmatter !== undefined) {
+        try {
+            const parsed = parseYaml(frontmatter) as unknown;
+            if (isRecord(parsed) && typeof parsed.status === "string") status = parsed.status;
+        } catch {
+            status = undefined;
+        }
+    }
+    status ??= /^状态：\s*(\S.*?)\s*$/mu.exec(proposal)?.[1]?.trim();
     if (!status) {
         failures.push(`Agent Skills 适配 Proposal 缺少状态：${AGENT_SKILLS_ADAPTATION_PROPOSAL}`);
         return failures;
@@ -790,6 +802,13 @@ export function verifyTaskAgentWorkflowProfiles(repoRoot: string): string[] {
     }
     return failures;
 }
+
+
+/** 读取 Git index 中指定路径的原始 blob 字节；用于行尾无关的内容哈希。 */
+function gitBlob(repoRoot: string, relativePath: string): Buffer {
+    return execFileSync("git", ["show", `:${relativePath}`], {cwd: repoRoot, encoding: "buffer", stdio: ["ignore", "pipe", "pipe"]});
+}
+
 
 export function verifyTaskMigration(repoRoot: string): string[] {
     const failures: string[] = [];
@@ -942,8 +961,21 @@ export function verifyTaskMigration(repoRoot: string): string[] {
             continue;
         }
         if (hasFile(repoRoot, otherRelPath)) failures.push(`Task 同时存在双 root：${actualRelPath} 与 ${otherRelPath}`);
-        const actual = `sha256:${createHash("sha256").update(readFileSync(destinationPath)).digest("hex")}`;
-        if (actual !== mapping.destinationSha256) failures.push(`迁移目标 hash 不一致：${actualRelPath}`);
+        // manifest 按文件记录两种 index 行尾形态之一（LF 原样，或迁移时的 CRLF 形态）。
+        // tracked 只以 index blob 为准，同时比较 raw 与安全 CRLF 变体（已有 CRLF 不重复展开）；
+        // local-only 读工作树原始字节。绝不引入工作树候选。
+        if (stagedOrTracked[actualRelPath]) {
+            const blobBytes = gitBlob(repoRoot, actualRelPath);
+            const rawSha = `sha256:${createHash("sha256").update(blobBytes).digest("hex")}`;
+            const crlfVariant = blobBytes.toString("latin1").replace(/\r?\n/gu, "\r\n");
+            const crlfSha = `sha256:${createHash("sha256").update(crlfVariant, "latin1").digest("hex")}`;
+            if (rawSha !== mapping.destinationSha256 && crlfSha !== mapping.destinationSha256) {
+                failures.push(`迁移目标 hash 不一致：${actualRelPath}`);
+            }
+        } else {
+            const actual = `sha256:${createHash("sha256").update(readFileSync(destinationPath)).digest("hex")}`;
+            if (actual !== mapping.destinationSha256) failures.push(`迁移目标 hash 不一致：${actualRelPath}`);
+        }
         if (sourceTracked && sourceLocalOnly) failures.push(`tracked Task 被错误标记 localOnly：${mapping.source}`);
         if (sourceLocalOnly && sourceTracked) failures.push(`localOnly Task 与 baseline tracked 冲突：${mapping.source}`);
         if (!sourceLocalOnly && !stagedOrTracked[actualRelPath]) failures.push(`canonical Task 尚未进入 Git index：${actualRelPath}`);

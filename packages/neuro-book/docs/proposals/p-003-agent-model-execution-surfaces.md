@@ -1,6 +1,15 @@
-# Agent 模型执行面提案
+---
+schema: nbook.proposal/v1
+id: P-003
+kind: architecture
+status: accepted
+createdAt: 2026-08-22T10:27:47Z
+updatedAt: 2026-08-22T10:27:47Z
+decision:
+    by: human
+---
 
-状态：accepted
+# Agent 模型执行面提案
 
 ## 问题
 

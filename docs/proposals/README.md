@@ -4,10 +4,10 @@
 
 当前活跃提案：
 
-- [`../packages/neuro-book/docs/proposals/character-workbench.md`](../../packages/neuro-book/docs/proposals/character-workbench.md)：Character 导航、搜索、编辑与 Low-code Form 合同，状态为 `reviewing`。
-- [`../packages/neuro-book/docs/proposals/agent-skills-adaptation.md`](../../packages/neuro-book/docs/proposals/agent-skills-adaptation.md)：Agent Skills 项目化适配，状态为 `accepted`。
-- [`../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md`](../../packages/neuro-book/docs/proposals/agent-model-execution-surfaces.md)：Harness Agent、completion 与 headless 三套调用面、Catalog、授权和 Workflow 重放边界，状态为 `accepted`。
-- [`../packages/neuro-book/docs/proposals/development-workflow-governance.md`](../../packages/neuro-book/docs/proposals/development-workflow-governance.md)：全能 Agent、严格角色模式、Intake、Initiative、Task v2 与角色交接门禁，状态为 `draft`。
+- [`../packages/neuro-book/docs/proposals/p-002-character-workbench.md`](../../packages/neuro-book/docs/proposals/p-002-character-workbench.md)：`P-002`，Character 导航、搜索、编辑与 Low-code Form 合同，状态为 `reviewing`。
+- [`../packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md`](../../packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md)：`P-004`，Agent Skills 项目化适配，状态为 `accepted`。
+- [`../packages/neuro-book/docs/proposals/p-003-agent-model-execution-surfaces.md`](../../packages/neuro-book/docs/proposals/p-003-agent-model-execution-surfaces.md)：`P-003`，Harness Agent、completion 与 headless 三套调用面、Catalog、授权和 Workflow 重放边界，状态为 `accepted`。
+- [`p-005-development-workflow-governance.md`](./p-005-development-workflow-governance.md)：`P-005`，monorepo 级开发流程治理：全能 Agent、严格角色模式、Intake、Initiative、Task v2 与角色交接门禁，状态为 `accepted`。
 
 已完成沉淀的信息架构提案见 [`../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md`](../../packages/neuro-book/docs/archived/proposals/documentation-information-architecture.md)。
 
@@ -26,7 +26,7 @@
 
 每个 Proposal 使用英文 kebab-case 文件名，并包含：
 
-1. `状态`：draft、reviewing、accepted、rejected 或 superseded；
+1. frontmatter（`nbook.proposal/v1`）：稳定 ID（`P-NNN`）、`kind`（behavior / architecture / governance）、`status`（draft / reviewing / accepted / rejected / superseded）、时间与决策记录；frontmatter 是唯一机器状态真相源，正文不双写状态行；
 2. `问题`：用户或系统面对的可观察问题；
 3. `目标与非目标`；
 4. `当前行为与证据`；
@@ -42,3 +42,8 @@
 实施前把被批准行为写入 [`../specs/README.md`](../specs/README.md) 注册的当前规范，并在 Proposal 中链接具体规范位置。
 .agents/tasks/ 记录一次实现的范围、步骤、交接和证据；Task 引用 Proposal 与规范，不复制两者全文。
 `rejected`、`superseded` 和已经完成沉淀的 Proposal 移入 [`../packages/neuro-book/docs/archived/`](../../packages/neuro-book/docs/archived/) 下的 proposals 分类；当前规范不依赖归档内容才能被理解。
+- PM 自主接受仅限低风险 `kind: behavior` 澄清类方案且必须记录 rationale；它不构成实现授权。`kind: governance` / `architecture` 以及涉及权限、数据、用户资产、公开接口、外部共享、安装、发布或不可逆承诺的 Proposal 必须由人类确认（`decision.by: human`），`governance:check` 强制校验。
+
+## 编号与命名
+
+Proposal ID 按创建顺序分配：P-002 character-workbench、P-003 agent-model-execution-surfaces、P-004 agent-skills-adaptation、P-005 development-workflow-governance；文件名为小写 ID 前缀加 kebab 标题。已归档提案（documentation-information-architecture，预留 P-001）的补号迁移需单独显式授权，当前保持冻结。

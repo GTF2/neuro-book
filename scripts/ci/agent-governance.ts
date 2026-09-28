@@ -16,6 +16,12 @@ import {
     verifyTaskMigration,
     verifyWorkspacePackageGovernance,
 } from "#scripts/ci/agent-governance-contract";
+import {
+    verifyIntakesAndSelectionSets,
+    verifyInitiatives,
+    verifyProposalFrontmatters,
+    verifyTaskLineage,
+} from "#scripts/ci/governance-workflow-contract";
 
 const args = process.argv.slice(2);
 const repoArgument = args.indexOf("--repo-root");
@@ -25,7 +31,10 @@ const warnings: string[] = [];
 
 failures.push(...verifyAgentSkillsAdaptation(repoRoot));
 failures.push(...verifyTaskAgentWorkflowProfiles(repoRoot));
-
+failures.push(...verifyProposalFrontmatters(repoRoot));
+failures.push(...verifyIntakesAndSelectionSets(repoRoot));
+failures.push(...verifyInitiatives(repoRoot));
+failures.push(...verifyTaskLineage(repoRoot));
 function requireFile(relativePath: string): void {
     if (!hasFile(repoRoot, relativePath)) failures.push(`缺少治理文件：${relativePath}`);
 }
@@ -79,6 +88,7 @@ for (const [name, expected] of [
     ["governance:worktree", "scripts/cli/create-agent-worktree.ts"],
     ["governance:migrate-tasks", "scripts/maintenance/migrate-agent-tasks.ts"],
     ["governance:migrate-task-ownership", "scripts/maintenance/migrate-task-ownership.ts"],
+    ["governance:handoff", "scripts/cli/governance-handoff.ts"],
 ] as const) {
     if (!scripts[name]?.includes(expected)) failures.push(`package.json 缺少命令入口：${name} -> ${expected}`);
 }

@@ -1,0 +1,25 @@
+{
+  "reviewer": "SecReview151R3 (reviewer agent)",
+  "reReview": "SecReview151R4 (reviewer agent)",
+  "conclusion": "需修复（无 Critical/阻塞）；4 Required + 5 遗漏 → 全部代码修复完成，第 5 项回归测试已补齐（4 例新增）",
+  "firstRoundRequired": [
+    "CLI id 参数路径穿越 → requireId/SAFE_ID 白名单",
+    "loadLedger 损坏 fail-open → schema/结构校验失败即退出",
+    "expiresAt 未在 claim 执行 → claim 入口过期检查 exit 2",
+    "--reuse-task 跳过校验 → 存在性+lineage 归属检查"
+  ],
+  "reReviewFindings": [
+    "--initiative/--phase 绕过 SAFE_ID → claim 入口统一校验 [fixed]",
+    "--task/--reuse-task 未走 SAFE_ID → SAFE_ID 校验 [fixed]",
+    "reuse-task frontmatter 损坏静默跳过 → 硬失败 [fixed]",
+    "pm-leader 缺 expiresAt 检查 → 补上 exit 2 [fixed]",
+    "四项修复缺回归测试 → 已补齐 4 例新增回归测试 [closed]"
+  ],
+  "postFixGates": {
+    "vitest": "53 total (16 governance-workflow + 37 agent-governance), exit 0",
+    "tsc": 0,
+    "governance:check": "exit 0 (failures: [])",
+    "docs:check": "exit 0 (5223 files)",
+    "diff --check": "clean"
+  }
+}

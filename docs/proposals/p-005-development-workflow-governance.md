@@ -1,6 +1,15 @@
-# 开发流程与角色治理提案
+---
+schema: nbook.proposal/v1
+id: P-005
+kind: governance
+status: accepted
+createdAt: 2026-08-22T11:24:32Z
+updatedAt: 2026-08-22T11:24:32Z
+decision:
+    by: human
+---
 
-状态：draft
+# 开发流程与角色治理提案
 
 ## 问题
 
@@ -14,7 +23,7 @@ NeuroBook 已有根 `AGENTS.md`、PM / Leader / Tasker / Reviewer 角色合同�
 4. Proposal、Spec 和 Task 各有自己的状态，但没有稳定的结构化关联来判断一次角色交接是否具备前置条件。Proposal 状态仍写在正文中，Task v1 的 `actionIssueId` 也不能表达直接来自当前人类会话的授权。
 5. `governance:check` 能检查仓库治理结构，却不能验证 PM → Leader、Leader → Tasker、Tasker → Reviewer 等交接，也不能在多个 Leader session 并发读取同一 Initiative 时拒绝基于过期状态的推进。
 
-本提案只讨论开发治理，不改变 NeuroBook 产品运行时的 Agent、Skill、Workflow、Project Workspace 或用户数据协议。
+本提案只讨论开发治理，不改变 NeuroBook 产品运行时的 Agent、Skill、Workflow、Project Workspace 或用户数据协议。本提案的作用范围是整个 monorepo（根目录与所有 packages），不属于 packages/neuro-book 单个子项目；提案文件位于仓库根 `docs/proposals/`。
 
 ## 目标与非目标
 
@@ -185,9 +194,6 @@ candidateIds:
   - candidate-014
 candidateSetFingerprint: sha256:<sorted-canonical-candidate-id-json>
 presentationHash: sha256:<sanitized-presentation-hash>
-authorization:
-  actor: <authenticated-human-session-id>
-  confirmationEventId: <unforgeable-confirmation-event-id>
 decision:
   kind: user-selection
   recordedAt: 2026-08-22T00:00:00Z
@@ -201,7 +207,7 @@ decision:
   summary: 批准 Alpha 阻断组，World Engine 默认关闭仍需产品决策
 ```
 
-`candidateIds` 必须按稳定 ID 排序；`candidateSetFingerprint` 是对排序后的 canonical JSON candidate ID 数组计算的 SHA-256，用于证明选择集成员没有被替换；它只是完整性证明，不是授权证明——授权效力来自 `authorization` 中不可伪造的人类确认事件。`intakeRevision` 必须等于 selection set 创建时的 Intake revision；`analysisRevision` 标识生成候选分析产物的版本，防止候选 ID 不变但摘要被重新分析后旧授权被静默沿用。`presentationHash` 绑定人类实际看到的脱敏呈现物。`scope` 限定允许的工作类型、目标与副作用等级，超出 scope 的下游动作必须重新取得人类确认。selection set 是唯一的候选选择关系来源，候选可以被多个 selection set 引用；不同 selection set 仍必须分别记录人类决策、用途和下游授权。
+`candidateIds` 必须按稳定 ID 排序；`candidateSetFingerprint` 是对排序后的 canonical JSON candidate ID 数组计算的 SHA-256，用于证明选择集成员没有被替换；它用于完整性校验。`intakeRevision` 必须等于 selection set 创建时的 Intake revision；`analysisRevision` 标识生成候选分析产物的版本，防止候选 ID 不变但摘要被重新分析后旧分析结论被静默沿用。`presentationHash` 绑定人类实际看到的脱敏呈现物。`scope` 限定允许的工作类型、目标与副作用等级，超出 scope 的下游动作必须重新取得人类确认。selection set 是唯一的候选选择关系来源，候选可以被多个 selection set 引用；不同 selection set 仍必须分别记录人类决策、用途和下游授权。
 
 selection set 具有生命周期 `confirmed → handed-off | revoked | expired`：交接成功置为 `handed-off`；对已 `handed-off` 的 selection set 重复发起交接收敛为幂等 no-op 并返回首次结果，不登记新范围。候选项或其来源映射变更时必须递增 Intake revision；revision 失效只阻止新的交接与候选 claim，不追溯撤销已经创建的 Task，历史 selection set 记录保留供审计且不可改写。没有任何有效 selection set 引用的候选不得进入 PM → Leader 批量交接；未被当前 selection set 选择的候选继续保持自己的生命周期状态，例如 `triaged`、`deferred`、`needs-decision` 或 `closed`，不能把“未选中”复制成另一个候选状态。needs-decision 的解除走 PM → Human 决策请求，由人类在新一轮 PM session 中重新选择并生成新 selection set。
 ### 批量 PM → Leader 交接
@@ -217,7 +223,7 @@ bun run governance:handoff \
   --expected-revision=<n>      # 调用方最后读取的 Intake revision
 ```
 
-该交接只登记已批准候选和 Leader 的待拆分范围，不直接创建实现 Task，也不修改任何候选的生命周期状态。handoff 必须逐个校验 `candidateIds` 的当前 `status` 属于允许交接集合（`triaged`，或附有人类决策记录的 `needs-decision`）；命中 `closed`、`blocked`、`deferred` 或 `promoted` 时整体拒绝并列出违规候选。handoff 还必须重新读取并校验 selection set 的 `intakeRevision`、`analysisRevision`、当前 Intake revision、`candidateSetFingerprint`、按排序 candidate ID 重算的 fingerprint、`authorization` 人类确认事件、scope 匹配、生命周期状态和不可变记录；`--expected-revision` 是调用方最后读取的 Intake revision，提交时必须等于当前 Intake revision 且等于 selection set 的 `intakeRevision`，三者任一不等即拒绝。任一校验失败或批量登记部分失败时，整个操作保持原状态并返回可恢复错误。选中候选的下游引用字段（脱敏摘要、source span/hash、kind、cluster、risk、决策点）必须齐全；摘要不足以让 Leader 直接撰写 Task 上下文时按 PM 返工处理。
+该交接只登记已批准候选和 Leader 的待拆分范围，不直接创建实现 Task，也不修改任何候选的生命周期状态。handoff 必须逐个校验 `candidateIds` 的当前 `status` 属于允许交接集合（`triaged`，或附有人类决策记录的 `needs-decision`）；命中 `closed`、`blocked`、`deferred` 或 `promoted` 时整体拒绝并列出违规候选。handoff 还必须重新读取并校验 selection set 的 `intakeRevision`、`analysisRevision`、当前 Intake revision、`candidateSetFingerprint`、按排序 candidate ID 重算的 fingerprint、scope 匹配、生命周期状态和不可变记录；`--expected-revision` 是调用方最后读取的 Intake revision，提交时必须等于当前 Intake revision 且等于 selection set 的 `intakeRevision`，三者任一不等即拒绝。任一校验失败或批量登记部分失败时，整个操作保持原状态并返回可恢复错误。选中候选的下游引用字段（脱敏摘要、source span/hash、kind、cluster、risk、决策点）必须齐全；摘要不足以让 Leader 直接撰写 Task 上下文时按 PM 返工处理。
 
 Leader 后续以候选为粒度执行原子 claim：唯一约束是 `intakeId + candidateId + workKind`。claim 前必须解析候选 relations 指向的已有对象：`duplicate-of` / `duplicate` 解析到既有 Task 或 Issue 时必须复用或挂接该对象，不得创建第二个平行 Task；`related-to` 不自动抑制新工作；`follow-up` 显式允许创建后续工作。同一候选再次出现在新 selection set 中时，相同 `workKind` 返回既有 claim 及其 Task，不同 `workKind` 需要新的明确授权，不得静默扩大范围。候选认领、Task / Phase 登记和 Initiative 引用在同一个受控操作中完成；`observed|triaged → promoted` 只能由成功的 claim 写入。实现必须提供持久化 intent journal 或单一 claim 台账作为提交点，使崩溃后的重试按台账收敛：既不重复创建 Task，也不留下孤儿 Task 或没有 Task 的 `promoted` 候选。
 
@@ -236,7 +242,7 @@ PM 必须先用确定性路径、Issue 编号、Task 路径、代码路径和已
 - `supersedes`：明确替代已有方案或合同；
 - `blocked-by`：实现前依赖已有对象。
 
-关系必须记录目标类型、目标 ID、匹配依据和置信度；伞形对象（如双子项 Issue）的部分对应必须在匹配依据中记录子项范围，禁止整体 `duplicate`。目标对象缺少可比对的验收边界元数据（例如正文为空的 Issue）时，禁止 `duplicate` / `supersedes` 判定，降级为 `related` 并置 `needs-decision`。关系目标包含已拍板的安全或数据取舍时，相关候选强制 `needs-decision`，不得随批量选择默认推进。模型提出的 `duplicate`、`supersedes` 或 `blocked-by` 不能直接改变远端或历史对象，需由 PM 或人类确认。明确 URL、Issue 编号或 Task 路径可以由工具确定提取；Task 路径解析依次尝试根级与包级 `.agents/tasks/`，历史 `docs/tasks/` 链接按迁移索引回退；URL 默认只做本地解析，不发起网络抓取。选中候选实现后对关联 Issue 的评论回链、标签和关闭属于远端写入，需要人类明确授权，不在 handoff 或 claim 中隐式发生。
+关系必须记录目标类型、目标 ID、匹配依据和置信度；伞形对象（如双子项 Issue）的部分对应必须在匹配依据中记录子项范围，禁止整体 `duplicate`。目标对象缺少可比对的验收边界元数据（例如正文为空的 Issue）时，禁止 `duplicate` / `supersedes` 判定，降级为 `related` 并置 `needs-decision`。关系目标包含已拍板的安全或数据取舍时，相关候选强制 `needs-decision`，不得随批量选择默认推进。模型提出的 `duplicate`、`supersedes` 或 `blocked-by` 不能直接改变远端或历史对象，需由 PM 或人类确认。明确 URL、Issue 编号或 Task 路径可以由工具确定提取；Task 路径解析依次尝试根级与包级 `.agents/tasks/`，历史旧入口链接按迁移索引回退；URL 默认只做本地解析，不发起网络抓取。选中候选实现后对关联 Issue 的评论回链、标签和关闭属于远端写入，需要人类明确授权，不在 handoff 或 claim 中隐式发生。
 
 ### PM 批量运行顺序
 
@@ -247,7 +253,7 @@ PM 必须先用确定性路径、Issue 编号、Task 路径、代码路径和已
    - 代码围栏（三反引号）内的行和 `>` 引用行永不作为条目起点；
    - 其余行并入当前条目，章节标题只决定归属，编号序列连续性不作为信号；
    - 无法解析为条目的行必须产生告警，不允许静默丢弃。
-   同时计算 span hash（条目起止行之间规范化文本的 SHA-256）、提取 Issue / Task / URL / 代码路径（Task 路径搜索根包括根级与包级 `.agents/tasks/`，历史 `docs/tasks/` 链接按迁移索引回退）、识别低优先级标记（`（低优先级）`、`（低优先级，存疑）` 与行内 `优先级不高`，写入候选 `markers` 字段）；不调用模型。
+   同时计算 span hash（条目起止行之间规范化文本的 SHA-256）、提取 Issue / Task / URL / 代码路径（Task 路径搜索根包括根级与包级 `.agents/tasks/`，历史旧入口链接按迁移索引回退）、识别低优先级标记（`（低优先级）`、`（低优先级，存疑）` 与行内 `优先级不高`，写入候选 `markers` 字段）；不调用模型。
 2. **一次批量语义分析**：对整批候选提出标准化摘要、类型、cluster、关系、风险、优先级和需要人类决定的事项。来源内容必须作为不可信 data 与指令分隔注入，模型不得遵循来源文本中的指令，输出只是未经授权的建议；错误栈等重证据先做确定性截断和脱敏，完整原文保留在受控存储。输出结构化候选建议，不写仓库代码、Issue、Task 或远端对象。
 3. **确定性校验**：逐候选校验 schema、ID、source span、hash、关系目标、计数、重复关系和覆盖率。结构性失败由确定性工具自动修复；语义失败只携带失败候选定点重试，最多两轮后转人类处理；不重新从头分析整份输入。步骤 1 的切分、哈希和提取结果持久化复用，修复轮次不重跑预处理。
 4. **人类批量选择**：PM 按候选或 cluster 呈现建议；人类可以一次选择一组进行后续设计，也可以逐项选择、延期、关闭或要求补充分析。
@@ -366,11 +372,11 @@ Intake 至少需要表达：
 
 ### Selection set
 
-Selection set 是批量分流中承载人类选择授权的不可变对象，建议落点为 `.agents/intake/<intake-id>/selections/<selection-set-id>.md`。它绑定 `intakeRevision`、`analysisRevision`、排序 candidateIds、`candidateSetFingerprint`、脱敏呈现物 hash 和认证人类确认事件，是候选选择关系的唯一真相源。生命周期为 `confirmed → handed-off | revoked | expired`，记录一旦写入不可修改；失效语义与幂等行为见“Selection set 与批量授权”。精确 schema 与包级 owner 规则在本 Proposal 接受后由 Task 设计并提交审查。
+Selection set 是批量分流中承载人类选择授权的不可变对象，建议落点为 `.agents/intake/<intake-id>/selections/<selection-set-id>.md`。它绑定 `intakeRevision`、`analysisRevision`、排序 candidateIds、`candidateSetFingerprint`、脱敏呈现物 hash，是候选选择关系的唯一真相源。生命周期为 `confirmed → handed-off | revoked | expired`，记录一旦写入不可修改；失效语义与幂等行为见“Selection set 与批量授权”。精确 schema 与包级 owner 规则由实现 Task 设计并提交审查。
 
 ### Proposal v1
 
-Proposal 的机器状态迁入 YAML frontmatter。目标 schema 至少包含稳定 ID、`kind`、`status` 和时间；精确字段待本 Proposal 审查后确定。
+Proposal 的机器状态迁入 YAML frontmatter。目标 schema 至少包含稳定 ID、`kind`、`status` 和时间。Proposal ID 与 Task 编号实践对齐：格式为 `P-<三位零填充序号>`，按创建顺序分配，写入 frontmatter 并在正文头部展示；文件名以小写 ID 前缀开头（`p-005-<kebab-title>.md`），使 ID 在目录列表中直接可见。本提案 ID 为 `P-005`，历史提案的补号与迁移清单由实现 Task 处理。其余精确字段由实现 Task 确定。
 
 `kind` 至少区分：
 
@@ -380,7 +386,7 @@ Proposal 的机器状态迁入 YAML frontmatter。目标 schema 至少包含稳�
 
 迁移后 frontmatter 是唯一机器状态真相源；正文不继续双写 `状态：...`。历史和活跃 Proposal 的迁移范围、无 frontmatter 时的失败语义和归档规则需要由实现 Task 明确。Proposal v1 的状态变更由单一写者（人类会话或按角色合同的 PM）串行执行并在 frontmatter 记录时间与操作者，不参与 `governance:handoff` 的 compare-and-swap。
 
-本文件在提案获准前继续使用当前有效的正文 `状态：draft`，不以自身提前启用待批准 schema。
+本提案已获人类批准（`状态：accepted`）。在 frontmatter 迁移落地前，机器状态仍由正文 `状态：accepted` 表达；不以自身提前启用本提案定义的 v1 schema。
 
 ### Spec
 
@@ -424,12 +430,11 @@ Phase B ─┘
 - 可选 Initiative / Phase 引用；
 - capability 引用；
 - 从批量分流派生时的结构化 lineage：`intakeId`、`selectionSetId`、`candidateId`、`workKind` 和 claim 引用；该组合在仓库内唯一，用于候选 → Task 追溯与幂等校验；
-- 结构化 `authorization`，统一表达 Issue、当前人类会话、Proposal 或其他批准来源；
 - 结构化 `review.mode: self|independent` 和受控 `review.reasons`；
 - 现有 `agentWorkflow` 路由和 required / notRun；
 - worktree、branch、时间和 context 身份。
 
-`actionIssueId` 不与 `authorization.reference` 长期双写。历史 v1 重新打开时如何 clean cutover 到 v2、状态是否加入 `changes-requested|reviewed`、高风险 reason 枚举和总报告引用格式仍待审查。
+`actionIssueId` 继续表达 Issue 来源授权；人类会话与 Proposal 批准来源以 Task 正文决策记录和 lineage 引用表达，不设独立结构化字段。历史 v1 重新打开时如何 clean cutover 到 v2、状态是否加入 `changes-requested|reviewed`、高风险 reason 枚举和总报告引用格式仍待审查。
 
 ### Walkthrough 与 Evidence
 
@@ -493,13 +498,14 @@ Markdown 文件的原子替换方式、跨 Initiative/Task 双文件更新顺序
 1. **适用对象与执行模式**：全能 Agent 默认模式、严格角色模式和二者共享合同。
 2. **完整开发流程**：输入、分析、合同、拆分、实现验证、审查、集成、合并和发布。
 3. **角色职责与交接**：四个角色的边界、固定 handoff 和人类授权点。
-4. **进度对象与真相源**：Intake、Proposal、Spec、Initiative、Task、walkthrough、evidence、Issue / Project 和 Git 的职责。
-5. **阶段门禁**：何时运行 `governance:check`、何时使用 `governance:handoff`，以及结构检查不能替代的运行验证。
-6. **Agent Skills 路由**：按任务类型选择最小充分工作法，详细矩阵指向 `agent-workflow-router`。
-7. **授权与停止条件**：数据、发布、远端、浏览器和不可逆动作；角色遇到范围或合同变化时的停止规则。
-8. **追加读取规则**：按目录和改动面加载最近 `AGENTS.md`、Spec、测试和编码规范。
-9. **汇报与提问**：保留结论、证据、决策和事实保真合同。
-10. **仓库导航与命令**：只保留最小入口和专项规则指针。
+4. **与人类的交互**：任务交接、任务报告、决策请求与答复、授权确认和升级路径；约束何时主动汇报、何时等待人类输入，以及交接与报告的最小内容。结论、证据与事实保真合同见「汇报与提问」。
+5. **进度对象与真相源**：Intake、Proposal、Spec、Initiative、Task、walkthrough、evidence、Issue / Project 和 Git 的职责。
+6. **阶段门禁**：何时运行 `governance:check`、何时使用 `governance:handoff`，以及结构检查不能替代的运行验证。
+7. **Agent Skills 路由**：按任务类型选择最小充分工作法，详细矩阵指向 `agent-workflow-router`。
+8. **授权与停止条件**：数据、发布、远端、浏览器和不可逆动作；角色遇到范围或合同变化时的停止规则。
+9. **追加读取规则**：按目录和改动面加载最近 `AGENTS.md`、Spec、测试和编码规范。
+10. **汇报与提问**：保留结论、证据、决策和事实保真合同。
+11. **仓库导航与命令**：只保留最小入口和专项规则指针。
 
 建议下沉或删除的内容：
 
@@ -563,11 +569,11 @@ PM 自主接受只产生 `accepted` 状态本身，不构成实现授权：它�
 
 ## 待审查问题
 
-以下细节尚未由本 Proposal 确定，接受前需要审查方向，接受后仍需由实现 Task给出可测试的精确合同：
+以下细节尚未由本 Proposal 确定，由实现 Task 给出可测试的精确合同：
 
 1. Intake、Selection set 和 Initiative 的最终路径、ID 格式、schema 字段与包级 owner 规则。
 2. Proposal v1 的完整 frontmatter、现有 Proposal 迁移清单和无 frontmatter 时的失败语义。
-3. Task v2 的状态枚举、历史 v1 重新打开迁移、`authorization` 来源枚举和 `review.reasons` 高风险枚举。
+3. Task v2 的状态枚举、历史 v1 重新打开迁移和 `review.reasons` 高风险枚举。
 4. 敏捷模式全能 Agent 总报告的文件名、frontmatter 和追加章节格式。
 5. Initiative 和 Phase 的最终状态转换表，以及 human gate 的批准证据格式。
 6. `governance:handoff` 的跨文件原子写入、锁、compare-and-swap、崩溃恢复和 Windows 文件占用合同。
@@ -575,8 +581,9 @@ PM 自主接受只产生 `accepted` 状态本身，不构成实现授权：它�
 8. 全能 Agent判断小改动的项目指引。当前选择保留 Agent 判断，不建立机器枚举；需要在根规则中避免将其描述成可自动证明的边界。
 9. 高风险敏捷审查的受控 reason 列表，以及跨模块但不改变合同的机械改动是否必须独立审查。
 10. 现有 `governance:context` 是否扩展为 `agent-role` 的上下文生成后端，还是由 Skill 直接读取合同。
-11. selection set 认证人类确认事件的载体（签名、宿主 session 证明或审计日志格式）、scope 枚举与过期撤销的机器可校验编码。
+11. （2026-08-23 废止）selection set 不再引入认证签名字段；scope 枚举与过期撤销的机器可校验编码并入待审查 12/12a。
 12. 候选 claim 台账 / intent journal 的存储位置、格式、崩溃恢复重放协议与 Windows 文件占用下的并发语义。
+12a. 人类决策（2026-08-23）：不做宿主签名 hook，selection set 不引入 authorization 签名字段与信任锚。批量协议的适用环境显式限定为单人本地信任模式——交接顺序门禁（handoff journal）是程序性与恢复工件，不是授权根；授权依赖人类在 PM session 中的直接确认与 revision/fingerprint 一致性校验，不承诺抵抗本机有写权限 Agent 的顺序伪造。acceptance 12 的"伪造 journal 拒绝"子场景相应废止；若未来需要对抗本机 Agent 的强授权链，另立 Proposal 引入宿主集成。
 13. 外部 URL 默认不抓取策略的例外授权流程、host allowlist 格式与私密线程内容的分级规则。
 14. redaction manifest 的精确字段表、字段级 sink allowlist 清单与 fail-closed 校验的执行位置。
 15. Intake `analysisRevision` 与批量分析缓存复用、超大输入切块的字节预算与跨块合并协议。
@@ -619,3 +626,9 @@ Proposal 接受后，实施结果至少应通过以下场景证明：
 - 2026-08-22｜修订｜新增模型输入指令 / 数据隔离、脱敏 sink 门禁、URL 默认不抓取、两级修复与重试预算、摘要自足标准。
 - 2026-08-22｜修订｜补确定性切分与低优先级标记 grammar、Task 路径多命名空间解析、duplicate 降级规则、`new` 移出关系枚举、Task lineage 落点、selection set 真相源章节与 paste-1 验收场景。
 - 2026-08-22｜修订｜明确 PM 自主接受的合同冲突收口：README / PM 角色合同 / `governance:check` 的一次性更新列为实现交付物，迁移完成前该路径停用并纳入验收场景 16。
+- 2026-08-22｜人类决策｜本提案作用范围为整个 monorepo（根目录与全部 packages），文件移至根 `docs/proposals/`；Proposal 引入稳定 ID（`P-<NNN>`），本提案为 `P-005`，历史提案补号列入迁移清单。
+- 2026-08-22｜人类批准｜状态 draft → accepted；授权依据本提案创建实现 Task。accepted 只批准修改规范和创建实现 Task，不使本提案自动成为规范。
+- 2026-08-22｜讨论选择｜实现拆分为单一 Task：`.agents/tasks/00151-development-workflow-governance/`。governance 类完成后治理合同落在根 `AGENTS.md`、角色合同与治理命令，不伪造产品 Spec；若实现中发现产品行为变化，另开 behavior / architecture Proposal 与 Spec。
+- 2026-08-22｜人类决策｜Proposal 文件名携带 ID 前缀（`p-<NNN>-<kebab-title>.md`）；本提案更名为 `p-005-development-workflow-governance.md`。
+- 2026-08-22｜人类决策｜根 `AGENTS.md` 目标结构新增「与人类的交互」一节，约束任务交接、任务报告、决策请求与答复和授权确认。
+- 2026-08-23｜人类决策｜不做宿主签名 hook；selection set 去除 authorization 签名层，批量协议限定为单人本地信任模式（见待审查 12a）。

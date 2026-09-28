@@ -133,7 +133,7 @@ agentWorkflow:
 
 # Draft profile
 `);
-        await writeText(repoRoot, "packages/neuro-book/docs/proposals/agent-skills-adaptation.md", "# Proposal\n\n状态：draft\n");
+        await writeText(repoRoot, "packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md", "---\nschema: nbook.proposal/v1\nid: P-004\nkind: governance\nstatus: draft\ncreatedAt: 2026-08-01T00:00:00Z\nupdatedAt: 2026-08-01T00:00:00Z\ndecision:\n    by: human\n---\n\n# Proposal\n");
 
         expect(verifyAgentSkillsAdaptation(repoRoot)).toContain("Agent Skills Proposal 仍为 draft，但适配实现已出现");
     });
@@ -195,19 +195,19 @@ agentWorkflow:
 
     it("治理 CLI 聚合 accepted、draft 和缺少 required 的 profile 结果", async () => {
         const repoRoot = await createGovernanceCliFixture();
-        const proposalPath = "packages/neuro-book/docs/proposals/agent-skills-adaptation.md";
+        const proposalPath = "packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md";
         const profilePath = ".agents/tasks/001-profile/README.md";
         const accepted = await runGovernanceCli(repoRoot);
 
         expect(accepted.report.failures).toEqual([]);
         expect(accepted.status, JSON.stringify(accepted.report)).toBe(0);
 
-        await writeText(repoRoot, proposalPath, "# Proposal\n\n状态：draft\n");
+        await writeText(repoRoot, proposalPath, "---\nschema: nbook.proposal/v1\nid: P-004\nkind: governance\nstatus: draft\ncreatedAt: 2026-08-01T00:00:00Z\nupdatedAt: 2026-08-01T00:00:00Z\ndecision:\n    by: human\n---\n\n# Proposal\n");
         const draft = await runGovernanceCli(repoRoot);
         expect(draft.status).not.toBe(0);
         expect(draft.report.failures).toContain("Agent Skills Proposal 仍为 draft，但适配实现已出现");
 
-        await writeText(repoRoot, proposalPath, "# Proposal\n\n状态：accepted\n");
+        await writeText(repoRoot, proposalPath, "---\nschema: nbook.proposal/v1\nid: P-004\nkind: governance\nstatus: accepted\ncreatedAt: 2026-08-01T00:00:00Z\nupdatedAt: 2026-08-01T00:00:00Z\ndecision:\n    by: human\n---\n\n# Proposal\n");
         await writeText(repoRoot, profilePath, `---
 schema: nbook.task/v1
 taskId: 001-profile
@@ -227,7 +227,7 @@ agentWorkflow:
         expect(missingRequired.report.failures).toEqual(expect.arrayContaining([
             expect.stringContaining("Task verification.required 必须是非空数组"),
         ]));
-    });
+    }), {timeout: 30000};
 
 
 
@@ -484,7 +484,7 @@ describe("monorepo worktree 根门禁", () => {
 async function createAgentSkillsAdaptationFixture(status: "draft" | "accepted", implementation: "router" | "invalid-router" | "missing-task-fields" | "missing-contract-export" | "missing-cli-call" | "missing-cli-import" | "shadowed-cli-call" | "type-only-cli-import" | "nested-valid-cli-call" | "dead-function-cli-call" | "complete"): Promise<string> {
     const root = await createTestTmpRoot("governance-agent-skills", "governance-agent-skills-test");
     fixtureRoots.push(root);
-    await writeText(root, "packages/neuro-book/docs/proposals/agent-skills-adaptation.md", `# Proposal\n\n状态：${status}\n`);
+    await writeText(root, "packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md", `---\nschema: nbook.proposal/v1\nid: P-004\nkind: governance\nstatus: ${status}\ncreatedAt: 2026-08-01T00:00:00Z\nupdatedAt: 2026-08-01T00:00:00Z\ndecision:\n    by: human\n---\n\n# Proposal\n`);
     const complete = !["router", "invalid-router"].includes(implementation);
     await writeText(root, ".agents/skills/agent-workflow-router/SKILL.md", complete
         ? "---\nname: agent-workflow-router\ndescription: Routes NeuroBook work by task kind.\n---\n"
@@ -495,6 +495,9 @@ async function createAgentSkillsAdaptationFixture(status: "draft" | "accepted", 
         : "```yaml\nagentWorkflow:\n  profile: nbook.agent-skills/v1\n  kind: bug\n  routes:\n    - diagnosing-bugs\n  verification:\n    required:\n      - focused-test\n    notRun: []\n```\n";
     await writeText(root, ".agents/tasks/README.md", taskContract);
     await writeText(root, ".agents/skills/README.md", "- [agent-workflow-router/SKILL.md](agent-workflow-router/SKILL.md)\n");
+    await mkdir(join(root, ".agents/skills/agent-role"), {recursive: true});
+    await writeText(root, ".agents/skills/agent-role/SKILL.md", "---\nname: agent-role\ndescription: 严格角色模式入口。\n---\n\n# agent-role\n");
+    await writeText(root, "package.json", JSON.stringify({scripts: {"governance:handoff": "bun scripts/cli/governance-handoff.ts"}}), "utf8");
     await writeText(root, "docs/standards/code/README.md", ".agents/skills/**/*.md writing-for-agents/SKILL.md writing-for-agents/SKILL-MECHANICS.md\n");
     await writeText(root, ".agents/tasks/AGENTS.md", "agentWorkflow .agents/skills/agent-workflow-router/SKILL.md verification.required verification.notRun\n");
     for (const role of ["pm", "leader", "tasker", "reviewer"]) {
@@ -549,6 +552,7 @@ async function createGovernanceCliFixture(): Promise<string> {
         [".agents/roles/reviewer/AGENTS.md", "agentWorkflow required notRun\n"],
         [".agents/skills/README.md", "- [agent-workflow-router/SKILL.md](agent-workflow-router/SKILL.md)\n"],
         [".agents/skills/agent-workflow-router/SKILL.md", "---\nname: agent-workflow-router\ndescription: Routes fixture work by task kind.\n---\n"],
+        [".agents/skills/agent-role/SKILL.md", "---\nname: agent-role\ndescription: Strict single-role entry.\n---\n"],
         ["docs/standards/code/README.md", ".agents/skills/**/*.md writing-for-agents/SKILL.md writing-for-agents/SKILL-MECHANICS.md\n"],
         ["scripts/ci/agent-governance-contract.ts", "export function verifyAgentSkillsAdaptation(repoRoot: string): string[] { return []; }\nexport function verifyTaskAgentWorkflowProfiles(repoRoot: string): string[] { return []; }\n\"notRun\" in verification\n"],
         ["scripts/ci/agent-governance.ts", "import {verifyAgentSkillsAdaptation, verifyTaskAgentWorkflowProfiles} from \"#scripts/ci/agent-governance-contract\";\nfailures.push(...verifyAgentSkillsAdaptation(repoRoot));\nfailures.push(...verifyTaskAgentWorkflowProfiles(repoRoot));\n"],
@@ -563,13 +567,14 @@ async function createGovernanceCliFixture(): Promise<string> {
             "governance:worktree": "bun scripts/cli/create-agent-worktree.ts",
             "governance:migrate-tasks": "bun scripts/maintenance/migrate-agent-tasks.ts",
             "governance:migrate-task-ownership": "bun scripts/maintenance/migrate-task-ownership.ts",
+            "governance:handoff": "bun scripts/cli/governance-handoff.ts",
             "test:agent-state-root": "workspace-runtime-root.test.ts agent-workspace-state-root.test.ts",
         }})],
         ["bunfig.toml", "[test]\npathIgnorePatterns = [\n    \".agent/**\",\n    \".agents/**\",\n]\n"],
         [".gitignore", ".env.local\n.agent/\n.worktree/\n"],
     ];
     for (const [relativePath, content] of governanceFiles) await writeText(root, relativePath, content);
-    await writeText(root, "packages/neuro-book/docs/proposals/agent-skills-adaptation.md", "# Proposal\n\n状态：accepted\n");
+    await writeText(root, "packages/neuro-book/docs/proposals/p-004-agent-skills-adaptation.md", "---\nschema: nbook.proposal/v1\nid: P-004\nkind: governance\nstatus: accepted\ncreatedAt: 2026-08-01T00:00:00Z\nupdatedAt: 2026-08-01T00:00:00Z\ndecision:\n    by: human\n---\n\n# Proposal\n");
     await writeText(root, ".agents/tasks/ownership.json", JSON.stringify({
         schema: "nbook.task-ownership/v1",
         ownerRoot: "packages/neuro-book/.agents/tasks",

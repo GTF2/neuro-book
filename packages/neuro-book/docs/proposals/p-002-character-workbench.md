@@ -1,6 +1,13 @@
-# Character Workbench 提案
+---
+schema: nbook.proposal/v1
+id: P-002
+kind: behavior
+status: reviewing
+createdAt: 2026-08-19T01:57:57Z
+updatedAt: 2026-08-19T01:57:57Z
+---
 
-状态：reviewing
+# Character Workbench 提案
 
 ## 问题
 

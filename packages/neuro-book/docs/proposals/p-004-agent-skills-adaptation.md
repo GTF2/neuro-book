@@ -1,6 +1,16 @@
+---
+schema: nbook.proposal/v1
+id: P-004
+kind: governance
+status: accepted
+createdAt: 2026-08-22T10:27:47Z
+updatedAt: 2026-08-22T10:27:47Z
+decision:
+    by: human
+---
+
 # Agent Skills 项目化适配提案
 
-状态：accepted
 
 ## 问题
 
