@@ -159,6 +159,7 @@ export async function appendCompaction(input: {
     const visibleEntries = path.filter(isModelVisibleEntry);
     assertNoPendingToolCall(visibleEntries.map(entryMessage));
     const plan = selectCompactionPlan(path, options);
+    const outputBudgetTokens = resolveSummaryOutputBudget(input.model, options.reserveTokens);
     let generatedSummary: CompactionSummaryResult;
     try {
         generatedSummary = await generateCompactionSummary({
@@ -180,7 +181,6 @@ export async function appendCompaction(input: {
         if (!input.allowFallback) {
             throw error;
         }
-        const outputBudgetTokens = resolveSummaryOutputBudget(input.model, options.reserveTokens);
         generatedSummary = {
             text: deterministicCompactionFallback({
                 previousSummary: plan.previousSummary,
@@ -196,7 +196,10 @@ export async function appendCompaction(input: {
     if (generatedSummary.strategy === "deterministic-fallback" && !input.allowFallback) {
         throw new Error(generatedSummary.summaryError ?? "压缩摘要生成失败，未写入 compaction entry");
     }
-    const summary = `${options.summaryPrefix}\n\n${generatedSummary.text || deterministicCompactionFallback({conversation: "No prior history.", outputBudgetTokens: resolveSummaryOutputBudget(input.model, options.reserveTokens)})}`;
+    const generatedText = generatedSummary.text || deterministicCompactionFallback({conversation: "No prior history.", outputBudgetTokens});
+    // 最终 checkpoint 的 summary 是自定义 prefix 与生成正文的拼接；两者合计必须落在
+    // 同一个确定性输出预算内，否则超长自定义 prefix 会让下一轮恢复上下文立即超窗。
+    const summary = truncateTextToTokens(`${options.summaryPrefix}\n\n${generatedText}`, outputBudgetTokens);
     const tokensBefore = input.tokensBefore ?? estimateStoredContextTokens(input.messages).tokens;
     const entry = {
         type: "compaction",

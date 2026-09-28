@@ -14,6 +14,8 @@ import {Type} from "typebox";
 import type {TSchema} from "typebox";
 import {Value} from "typebox/value";
 import {NeuroAgentHarness} from "nbook/server/agent/harness/neuro-agent-harness";
+import {createRunFrame} from "nbook/server/agent/harness/run-frame-state";
+import type {RunFrame} from "nbook/server/agent/harness/run-kernel-types";
 import type {ResolvedPiModel} from "nbook/server/agent/harness/pi-model-metadata";
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import {defineAgentProfile as defineRuntimeAgentProfile, normalizeAgentProfile} from "nbook/server/agent/profiles/define-agent-profile";
@@ -3049,6 +3051,87 @@ describe("NeuroAgentHarness", () => {
         expect(snapshot.entries.filter((entry) => entry.type === "custom_message" && messageText(entry.message as RuntimeMessage).includes("HISTORY AFTER COMPACT"))).toHaveLength(0);
         expect(faux.getPendingResponseCount()).toBe(0);
     }, 10_000);
+
+    it("自动压缩在已有 checkpoint 且无新 durable entry 时稳定失败，追加 durable message 后恢复", async () => {
+        harness.profiles.register(defineAgentProfile({
+            manifest: {
+                key: "test.compaction-no-progress",
+                name: "Compaction No Progress",
+            },
+            initialSchema: Type.Object({}),
+            allowedToolKeys: [],
+            runtimeDefaults: {
+                compaction: {
+                    trigger: {kind: "tokens", value: 1},
+                    keepRecent: {kind: "tokens", value: 1},
+                },
+            },
+            prepare() {
+                return {};
+            },
+        }), false);
+        const created = await harness.createAgent({
+            profileKey: "test.compaction-no-progress",
+            initial: {},
+        });
+        await harness.repo.appendMessage(created.sessionId, createUserMessage({text: "OLD CONTEXT"}));
+        // 建立 checkpoint：manual compact 走真实 appendCompaction 写入 compaction entry，且不产生新的模型可见 durable message。
+        faux.setResponses([fauxAssistantMessage(fauxText("CHECKPOINT SUMMARY"))]);
+        await harness.runCommand(created.sessionId, {command: "compact"});
+        await harness.drainBackgroundTasks();
+        let snapshot = await harness.repo.readSession(created.sessionId);
+        const compactionCountBefore = snapshot.entries.filter((entry) => entry.type === "compaction").length;
+        expect(compactionCountBefore).toBe(1);
+
+        const streamSimple = vi.spyOn(faux.runtime, "streamSimple");
+        const privateHarness = harness as unknown as {
+            compactBeforeNextTurn(frame: RunFrame): Promise<unknown>;
+        };
+        const context = harness.repo.reduce(snapshot);
+        const profile = await harness.profiles.get("test.compaction-no-progress");
+        const frame = createRunFrame({
+            sessionId: created.sessionId,
+            workspaceRoot: harness.workspaceRoot,
+            currentProject: null,
+            systemPrompt: "",
+            messages: context.messages,
+            models: faux.runtime,
+            model: faux.getModel(),
+            apiKey: "",
+            compaction: {
+                enabled: true,
+                trigger: {kind: "tokens", value: 1},
+                reserveTokens: 1,
+                keepRecent: {kind: "tokens", value: 1},
+                prompt: "Summarize.",
+                summaryPrefix: "Summary:",
+            },
+            sessionContextEnabled: false,
+            toolKeys: [],
+            profileKey: "test.compaction-no-progress",
+            profile,
+            agentMode: "normal",
+            thinkingLevel: "off",
+            runtimeState: new Map(),
+            reportResultReminderEnabled: false,
+            caller: {kind: "user"},
+        });
+
+        // checkpoint 之后没有新的 durable entry：摘要 Provider 与 checkpoint writer 都不允许执行。
+        await expect(privateHarness.compactBeforeNextTurn(frame)).rejects.toThrow("自动压缩无进展");
+        expect(streamSimple).not.toHaveBeenCalled();
+        snapshot = await harness.repo.readSession(created.sessionId);
+        expect(snapshot.entries.filter((entry) => entry.type === "compaction")).toHaveLength(compactionCountBefore);
+
+        // 追加新的 durable user message：下一次自动压缩允许执行并写入新 checkpoint。
+        await harness.repo.appendMessage(created.sessionId, createUserMessage({text: "NEW DURABLE INPUT"}));
+        faux.setResponses([fauxAssistantMessage(fauxText("REPEAT SUMMARY"))]);
+        const materialization = await privateHarness.compactBeforeNextTurn(frame);
+        expect(materialization).not.toBeNull();
+        snapshot = await harness.repo.readSession(created.sessionId);
+        expect(snapshot.entries.filter((entry) => entry.type === "compaction")).toHaveLength(compactionCountBefore + 1);
+        streamSimple.mockRestore();
+    }, 30_000);
 
     it("显式关闭 compaction 且上下文超出模型窗口时 run 失败", async () => {
         const smallWindowHarness = new NeuroAgentHarness({

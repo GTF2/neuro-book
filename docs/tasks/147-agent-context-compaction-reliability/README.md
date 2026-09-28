@@ -33,8 +33,8 @@
 3. planner 以模型可见 session entry 选择 `firstKeptEntryId`，保留 recent tail；cut 落在 toolResult 时前移到对应 assistant tool call，未完成 tool call 仍拒绝压缩。
 4. 被裁历史先构造成有界摘要输入。单条 toolResult 文本先裁到 2,000 chars；整体输入预算取模型窗口的 45%、32,000 tokens 和“窗口减去摘要输出预算”三者最小值，再确定性保留头尾。
 5. 摘要输出预算独立计算，受 `model.maxTokens`、`reserveTokens * 0.8` 和 `contextWindow * 0.2` 共同限制。
-6. 摘要 provider error、aborted 返回或最终请求门禁失败时，自动压缩写入有界 deterministic checkpoint，并在 `compaction.details` 记录 `summaryStrategy`、输入预算和脱敏错误；手动 `/compact` 仍保持失败可见。
-7. checkpoint 写入后恢复 profile HistorySet；如果已有旧 checkpoint，恢复后的上下文仍达到同一触发线，则报“自动压缩无进展”并停止重复压缩。
+6. 摘要 provider error、aborted 返回或最终请求门禁失败时，自动压缩写入有界 deterministic checkpoint，并在 `compaction.details` 记录 `summaryStrategy`、输入预算和脱敏错误；手动 `/compact` 仍保持失败可见。最终 checkpoint 的 `summaryPrefix` 与生成正文共享同一输出预算。
+7. checkpoint 写入前，自动压缩先确认最新 checkpoint 后存在新的模型可见 durable entry；没有新进展时在摘要 Provider 和 checkpoint writer 前报“自动压缩无进展”，有新 durable entry 后仍允许压缩。压缩后恢复 profile HistorySet；如果恢复后的上下文仍达到同一触发线，则保留原有进度保护错误。
 
 ### Provider 请求最终门禁
 
@@ -73,23 +73,24 @@
 
 ### 已通过
 
-- `bunx vitest run server/agent/harness/compaction.test.ts server/agent/harness/recovery-materials.test.ts server/agent/harness/prepare-next-turn.test.ts server/agent/harness/run-frame-state.test.ts server/agent/harness/turn-transaction.test.ts server/agent/harness/turn-failure.test.ts server/utils/model-settings.test.ts --reporter=dot`
-  - `7 files / 53 tests passed`。
-- `bunx vitest run server/agent/harness/neuro-agent-harness.test.ts --reporter=dot`
-  - `1 file / 188 tests passed`。
-- `bunx vitest run server/agent/tools/file-tools.test.ts --reporter=dot`
+- `bun x vitest run server/agent/harness/compaction.test.ts server/agent/harness/recovery-materials.test.ts server/agent/harness/prepare-next-turn.test.ts server/agent/harness/run-frame-state.test.ts server/agent/harness/turn-transaction.test.ts server/agent/harness/turn-failure.test.ts server/utils/model-settings.test.ts --reporter=dot`
+  - `7 files / 57 tests passed`。
+- `bun x vitest run server/agent/harness/neuro-agent-harness.test.ts --reporter=dot`
+  - `1 file / 189 tests passed`。
+- `bun x vitest run server/agent/tools/file-tools.test.ts --reporter=dot`
   - `1 file / 49 tests passed`。
-- `bun run generate`
-  - Prisma Client `7.8.0` 与 Project Prisma Client `7.8.0` 生成成功。
-- `bunx tsc --noEmit --pretty false`
+- `bun x tsc --noEmit --pretty false`
   - 退出码 0。
 - `git diff --check`
   - 退出码 0。
-
-### 已验证行为
+- `bun run generate`
+  - Prisma Client `7.8.0` 与 Project Prisma Client `7.8.0` 生成成功。
 
 - 2,000-token Faux model 的摘要输入在 provider 前被裁到窗口内；不再复现 `This model's maximum context length is 2000 tokens. However, you requested 2029 tokens.` 导致零 checkpoint 的旧故障。
-- 摘要最终上下文超窗时 provider 调用次数为 0，自动路径写 deterministic checkpoint。
+- 摘要最终上下文超窗时 provider 调用次数为 0，自动路径写 deterministic checkpoint；超长 `summaryPrefix` 与生成正文合计仍受摘要输出预算限制。
+- 已有 checkpoint 且没有新的模型可见 durable entry 时，自动压缩在 Provider 和 checkpoint writer 前稳定失败；追加新的 durable message 后可再次压缩，重复 checkpoint 不增加。
+- recovery candidates 先完成 Project、授权、版本、哈希、大小和 token 校验，再按最终 accepted 数量限制 16 个；前 16 个失效时第 17 个有效候选仍可恢复。
+- 不同 Project 的同名相对路径在 tracker 中分别保留，不会互相覆盖。
 - 自动 compaction 开启时，首次超窗主请求在 Faux Provider 前失败并返回明确的 model-phase overflow；关闭 compaction 时保留原有明确错误。
 - tool call / toolResult cut point、未完成 tool call 拒绝、HistorySet reinjection 和 waiting/resume 行为通过完整 Harness 套件。
 - 真实 `read` 工具产生的恢复材料在自动压缩后进入下一轮 provider，并同步写入已验证 checkpoint metadata；临时恢复正文不进入普通 session history。
@@ -110,13 +111,17 @@
 - 并行核对 Pi、OpenCode、Codex、Anthropic/Claude Code 和 Cursor 的压缩、裁剪、thrashing 与文件恢复行为。
 - 产品政策收敛为文本 summary + 受验证 recovery materials。
 
-### 2026-08-13：实现与收口
-
 - 新增独立摘要输入/输出预算、toolResult 裁剪、deterministic fallback 和无进展保护。
 - 新增统一 provider context admission，并覆盖主对话、compaction 和 model health-check。
 - 新增 invocation-scoped recovery tracker、授权/版本/token 校验、checkpoint metadata 和临时正文注入。
 - 修复 waiting/resume tracker 重置与跨帧去重，统一 metadata 和临时注入使用同一验证结果。
 - 完成完整 Harness、文件工具、聚焦套件和 TypeScript 验证。
+
+### 2026-08-14：审查 findings 修复
+
+- 将自动压缩无进展检查前置到 `compactIfNeeded` 之前：已有 checkpoint 且没有新模型可见 durable entry 时不发摘要请求、不写重复 checkpoint；追加新 durable message 后恢复压缩。
+- 将自定义 `summaryPrefix` 纳入最终 checkpoint 总输出预算；恢复材料改为先验证后计数，并让 tracker key 包含 Project root、generation 和 canonical relative path。
+- 新增上述四项边界的回归测试；本轮聚焦套件为 7 files / 57 tests、Harness 为 1 file / 189 tests、文件工具为 1 file / 49 tests，根 TypeScript 检查通过。
 
 ## TODO / Follow-ups
 

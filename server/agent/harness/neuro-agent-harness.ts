@@ -5005,10 +5005,12 @@ export class NeuroAgentHarness {
             this.assertContextWithinWindow(frame);
             return null;
         }
+        const snapshot = await this.repo.readSession(frame.sessionId);
+        this.assertAutomaticCompactionProgress(snapshot);
         let recoveryMaterialization: RecoveryMaterializationResult | undefined;
         const compacted = await compactIfNeeded({
             repo: this.repo,
-            snapshot: await this.repo.readSession(frame.sessionId),
+            snapshot,
             messages: frame.messages,
             models: frame.models,
             model: frame.model,
@@ -5038,6 +5040,28 @@ export class NeuroAgentHarness {
         });
         frame.automaticCompactionDoneForTurn = compacted;
         return compacted ? recoveryMaterialization ?? {accepted: [], skipped: []} : null;
+    }
+
+    /**
+     * 自动压缩前确认已有 checkpoint 之后存在新的模型可见 durable entry。
+     *
+     * 在摘要 Provider 与 checkpoint writer 之前执行：最新 compaction entry 之后没有任何新的
+     * message / visible custom_message 时，再次压缩只会重新摘要同一批内容（无进展），
+     * 直接抛出稳定错误，而不是重复调用摘要 Provider 或追加无意义的 compaction entry。
+     * 历史上存在 compaction 本身不构成禁止条件——checkpoint 后有新 durable entry 时仍允许压缩。
+     */
+    private assertAutomaticCompactionProgress(snapshot: SessionSnapshot): void {
+        const path = this.repo.activePath(snapshot);
+        const latestCompactionIndex = path.findLastIndex((entry) => entry.type === "compaction");
+        if (latestCompactionIndex < 0) {
+            return;
+        }
+        const hasNewModelVisibleDurableEntry = path.slice(latestCompactionIndex + 1).some(
+            (entry) => entry.type === "message" || (entry.type === "custom_message" && entry.visibleToModel),
+        );
+        if (!hasNewModelVisibleDurableEntry) {
+            throw new Error("自动压缩无进展：已有 checkpoint 后没有新的模型可见 durable entry，禁止重复压缩。");
+        }
     }
 
     /**

@@ -74,11 +74,12 @@ export function createRecoveryMaterialTracker(): RecoveryMaterialTracker {
                 sha256: createHash("sha256").update(input.content, "utf8").digest("hex"),
             };
             const capturedText = truncateUtf8(input.content, RECOVERY_MATERIAL_MAX_CAPTURE_BYTES);
-            const previous = candidates.get(relativePath);
+            const trackerKey = trackerCandidateKey(project.workspace.ref.projectRoot, project.generation, relativePath);
+            const previous = candidates.get(trackerKey);
             const sources = previous
                 ? [...new Set([...previous.sources, input.source])]
                 : [input.source];
-            candidates.set(relativePath, {
+            candidates.set(trackerKey, {
                 path: relativePath,
                 projectRoot: project.workspace.ref.projectRoot,
                 projectGeneration: project.generation,
@@ -121,7 +122,10 @@ export async function materializeRecoveryMaterials(input: {
     const bodies: string[] = [];
     let bodyTokens = 0;
 
-    for (const candidate of input.candidates.slice(0, RECOVERY_MATERIAL_MAX_REFERENCES)) {
+    for (const candidate of input.candidates) {
+        if (accepted.length >= RECOVERY_MATERIAL_MAX_REFERENCES) {
+            break;
+        }
         const key = candidateKey(candidate);
         if (input.injectedKeys.has(key)) {
             continue;
@@ -222,6 +226,10 @@ export async function materializeRecoveryMaterials(input: {
 
 export function recoveryMaterialKey(candidate: Pick<RecoveryMaterialCandidateMetadata, "projectRoot" | "projectGeneration" | "path" | "version">): string {
     return candidateKey(candidate);
+}
+
+function trackerCandidateKey(projectRoot: string, projectGeneration: number, relativePath: string): string {
+    return `${projectRoot}\0${projectGeneration}\0${relativePath}`;
 }
 
 function candidateKey(candidate: Pick<RecoveryMaterialCandidateMetadata, "projectRoot" | "projectGeneration" | "path" | "version">): string {

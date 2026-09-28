@@ -3,7 +3,7 @@ import {join} from "node:path";
 import {tmpdir} from "node:os";
 import {afterEach, beforeEach, describe, expect, it} from "vitest";
 import {messageText} from "nbook/server/agent/messages/message-utils";
-import {RECOVERY_MATERIAL_MAX_TOTAL_TOKENS, createRecoveryMaterialTracker, materializeRecoveryMaterials, recoveryMaterialKey} from "nbook/server/agent/harness/recovery-materials";
+import {RECOVERY_MATERIAL_MAX_REFERENCES, RECOVERY_MATERIAL_MAX_TOTAL_TOKENS, createRecoveryMaterialTracker, materializeRecoveryMaterials, recoveryMaterialKey} from "nbook/server/agent/harness/recovery-materials";
 import {estimateStoredMessageTokens} from "nbook/server/agent/messages/stored-message-tokens";
 import {absoluteFsPath, type AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 import {authorizeFileOperation} from "nbook/server/workspace-files/authorized-file-operation";
@@ -75,6 +75,34 @@ describe("recovery materials", () => {
         })]);
     });
 
+    it("保留不同 Project 中同名相对路径的恢复候选", async () => {
+        const path = "notes.md";
+        const otherProjectRef = projectWorkspaceRef("other-book");
+        await writeProjectManifest(workspaceRoot, otherProjectRef, {
+            kind: "novel",
+            title: "Other Recovery Materials Test",
+            summary: "",
+        });
+        const otherProject = await openProject(otherProjectRef, {kind: "job", source: "recovery-materials-test-other"}, workspaceRoot);
+        const bookPath = join(workspaceRoot, "book", path);
+        const otherPath = join(workspaceRoot, "other-book", path);
+        await writeFile(bookPath, "book notes\n", "utf8");
+        await writeFile(otherPath, "other notes\n", "utf8");
+        const tracker = createRecoveryMaterialTracker();
+        const bookTarget = (await authorizeFileOperation({workspaceRoot, currentProject: project}, path, "read")).target;
+        const otherTarget = (await authorizeFileOperation({workspaceRoot, currentProject: otherProject}, path, "read")).target;
+        const bookVersion = await stat(bookPath);
+        const otherVersion = await stat(otherPath);
+
+        tracker.recordSuccess({target: bookTarget, source: "read", content: "book notes\n", mtimeMs: bookVersion.mtimeMs});
+        tracker.recordSuccess({target: otherTarget, source: "read", content: "other notes\n", mtimeMs: otherVersion.mtimeMs});
+
+        expect(tracker.snapshot()).toEqual([
+            expect.objectContaining({projectRoot: "book", path}),
+            expect.objectContaining({projectRoot: "other-book", path}),
+        ]);
+    });
+
     it("只注入授权且版本未变化的引用和有界正文，并去重已注入版本", async () => {
         const path = "manuscript/scene.md";
         const absolutePath = join(workspaceRoot, "book", path);
@@ -110,6 +138,56 @@ describe("recovery materials", () => {
         });
         expect(duplicate.accepted).toEqual([]);
         expect(duplicate.message).toBeUndefined();
+    });
+    it("前 16 个候选版本失效时仍接受第 17 个有效候选", async () => {
+        const tracker = createRecoveryMaterialTracker();
+        const paths = Array.from({length: RECOVERY_MATERIAL_MAX_REFERENCES + 1}, (_, index) => `candidate-${index}.md`);
+        for (const path of paths) {
+            const absolutePath = join(workspaceRoot, "book", path);
+            await writeFile(absolutePath, `original ${path}\n`, "utf8");
+            const target = (await authorizeFileOperation({workspaceRoot, currentProject: project}, path, "read")).target;
+            const version = await stat(absolutePath);
+            tracker.recordSuccess({target, source: "read", content: `original ${path}\n`, mtimeMs: version.mtimeMs});
+        }
+        for (const path of paths.slice(0, RECOVERY_MATERIAL_MAX_REFERENCES)) {
+            await writeFile(join(workspaceRoot, "book", path), `changed ${path}\n`, "utf8");
+        }
+
+        const materialized = await materializeRecoveryMaterials({
+            candidates: tracker.snapshot(),
+            workspaceRoot,
+            currentProject: project,
+            injectedKeys: new Set(),
+        });
+
+        expect(materialized.accepted).toHaveLength(1);
+        expect(materialized.accepted[0]).toMatchObject({path: paths[RECOVERY_MATERIAL_MAX_REFERENCES]});
+        expect(materialized.skipped).toHaveLength(RECOVERY_MATERIAL_MAX_REFERENCES);
+        expect(materialized.skipped.every(({reason}) => reason === "version_changed")).toBe(true);
+    });
+
+    it("accepted 引用达到上限后不再接受第 17 个有效候选", async () => {
+        const tracker = createRecoveryMaterialTracker();
+        const paths = Array.from({length: RECOVERY_MATERIAL_MAX_REFERENCES + 1}, (_, index) => `accepted-${index}.md`);
+        for (const path of paths) {
+            const absolutePath = join(workspaceRoot, "book", path);
+            const content = `accepted ${path}\n`;
+            await writeFile(absolutePath, content, "utf8");
+            const target = (await authorizeFileOperation({workspaceRoot, currentProject: project}, path, "read")).target;
+            const version = await stat(absolutePath);
+            tracker.recordSuccess({target, source: "read", content, mtimeMs: version.mtimeMs});
+        }
+
+        const materialized = await materializeRecoveryMaterials({
+            candidates: tracker.snapshot(),
+            workspaceRoot,
+            currentProject: project,
+            injectedKeys: new Set(),
+        });
+
+        expect(materialized.accepted).toHaveLength(RECOVERY_MATERIAL_MAX_REFERENCES);
+        expect(materialized.accepted.map(({path}) => path)).toEqual(paths.slice(0, RECOVERY_MATERIAL_MAX_REFERENCES));
+        expect(materialized.accepted).not.toEqual(expect.arrayContaining([expect.objectContaining({path: paths[RECOVERY_MATERIAL_MAX_REFERENCES]})]));
     });
 
     it("中型文本只恢复引用，最终临时消息不超过总 token 预算", async () => {

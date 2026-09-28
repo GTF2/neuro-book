@@ -11,6 +11,7 @@ import {createAssistantTextMessage, createTextToolResult, createUserMessage, mes
 import {JsonlSessionRepository} from "nbook/server/agent/session/session-repo";
 import type {StoredAgentMessage, StoredAttachmentContent} from "nbook/server/agent/messages/stored-types";
 import {attachmentMarker} from "nbook/server/agent/messages/stored-message-presentation";
+import {estimateStoredMessageTokens} from "nbook/server/agent/messages/stored-message-tokens";
 import {absoluteFsPath, type AbsoluteFsPath} from "nbook/server/runtime/paths/file-path";
 
 describe("compaction", () => {
@@ -321,6 +322,40 @@ describe("compaction", () => {
         const latest = (await repo.readSession(session.metadata.sessionId)).entries.filter((entry) => entry.type === "compaction").at(-1);
         expect(latest?.type === "compaction" ? latest.details?.summaryStrategy : undefined).toBe("deterministic-fallback");
         expect(latest?.type === "compaction" ? latest.details?.summaryInputTokens : undefined).toBeLessThanOrEqual(model.contextWindow);
+    });
+
+    it("超长自定义 summaryPrefix 与生成正文共享输出预算，checkpoint 不超窗", async () => {
+        faux.setResponses([fauxAssistantMessage(fauxText("GENERATED SUMMARY " + "g".repeat(2_000)))]);
+        const model = {...faux.getModel(), contextWindow: 1_000, maxTokens: 100};
+        const session = await repo.createSession({
+            profileKey: "leader.default",
+            initial: {},
+        });
+        await repo.appendMessage(session.metadata.sessionId, createUserMessage({text: "old context"}));
+        const snapshot = await repo.readSession(session.metadata.sessionId);
+
+        await appendCompaction({
+            repo,
+            snapshot,
+            messages: repo.reduce(snapshot).messages,
+            models: faux.runtime,
+            model,
+            compaction: {
+                reserveTokens: 500,
+                keepRecent: {kind: "tokens", value: 1},
+                summaryPrefix: "CUSTOM PREFIX " + "p".repeat(10_000),
+            },
+            writeCompactionEntry: createCompactionEntryWriter(repo, session.metadata.sessionId),
+        });
+
+        const reduced = repo.reduce(await repo.readSession(session.metadata.sessionId));
+        const summaryMessage = reduced.messages[0] as never;
+        const summaryTokens = estimateStoredMessageTokens(summaryMessage);
+        const outputBudgetTokens = Math.min(model.maxTokens, Math.floor(500 * 0.8), Math.floor(model.contextWindow * 0.2));
+        expect(summaryTokens).toBeLessThanOrEqual(model.contextWindow);
+        expect(summaryTokens).toBeLessThanOrEqual(outputBudgetTokens);
+        expect(messageText(summaryMessage)).toContain("CUSTOM PREFIX");
+        expect(messageText(summaryMessage)).not.toContain("p".repeat(10_000));
     });
 
     it("provider 门禁只裁剪 toolResult 正文并保留消息配对", () => {
