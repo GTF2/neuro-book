@@ -16,7 +16,7 @@ taskId: t01-startup-exit-api-auth
 
 ## 当前状态
 
-已实现并通过聚焦测试，已在 `fix/w00020-startup-exit-api-auth` 本地提交；未 push，未开 PR。
+已实现并通过聚焦测试。2026-09-30 经开发者授权 push 并开 [PR #245](https://github.com/notnotype/neuro-book/pull/245)；按开发者要求，等 master 上正在进行的工作完成后再合并。
 
 改动：
 
@@ -35,7 +35,7 @@ taskId: t01-startup-exit-api-auth
 
 ## 下一步
 
-开发者授权后 push 并开 PR 合入 master。
+等 master 上正在进行的工作完成后合并 PR #245。本修复不阻塞 w00017：认证修复与 w00017 无冲突；启动失败修复只在 `server/runtime/product-startup.ts` 及其测试上与 w00017 冲突，w00017 阶段 1 的自有入口会以同样语义取代这段代码，同步时保留“启动失败即有序退出”的行为。
 
 ## 依据
 
