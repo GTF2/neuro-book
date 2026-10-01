@@ -7,6 +7,7 @@
 里能查到出处的取值），`editorial` / `aurora` 是主题格式的示范。四套并存，随时可切换对照。
 
 - 怎么写一套新主题：[`authoring-themes.md`](./authoring-themes.md)
+- 外部审美参照（只读 vendor）：[`design-references/notion/DESIGN.md`](./design-references/notion/DESIGN.md)——UI 优化的方向参照；本文的判据仍是唯一真相源，冲突时以本文为准
 - 对照页：`bun run dev` → <http://localhost:3003>，主题 × 配色两轴都能切
 
 ---

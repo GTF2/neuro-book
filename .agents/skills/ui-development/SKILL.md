@@ -12,6 +12,7 @@ description: 指导 NeuroBook 与 nb-ui 的前端与 UI 开发、组件设计与
 | 关注事项 | 唯一真相源 | 说明 |
 |---|---|---|
 | **视觉判据与设计哲学** | [`packages/nb-ui/docs/design-language.md`](../../../packages/nb-ui/docs/design-language.md) | 材质轴 vs 层级轴、冷暖分家、同心圆角、实测避坑总结。 |
+| **UI 优化审美参照（外部，只读）** | [`packages/nb-ui/docs/design-references/notion/DESIGN.md`](../../../packages/nb-ui/docs/design-references/notion/DESIGN.md) | vendor 自 awesome-design-md 的 Notion 设计系统分析（MIT）。UI 优化的审美方向与内容页节律参照它；取值与结构判据冲突时以 design-language.md 为准，营销页专属模式不进产品。 |
 | **控件参数与工程标准** | [`packages/nb-ui/docs/ui-development-spec.md`](../../../packages/nb-ui/docs/ui-development-spec.md) | Surface Tier 1~4 分级、核心控件参数、零布局位移、滚动条与遮罩规范、自检清单。 |
 | **组件连接与契约约束** | [`docs/standards/code/components.md`](../../../docs/standards/code/components.md) | 明面/隐藏通道划分、frontmatter 标签、同名 `.md` 规范、5 配方与 4 禁止规则。 |
 | **前端工程与存储边界** | [`docs/standards/code/frontend.md`](../../../docs/standards/code/frontend.md) | 客户端存储分层（严禁裸写 localStorage）、Tailwind/CSS 变量、390px 窄屏适配。 |
