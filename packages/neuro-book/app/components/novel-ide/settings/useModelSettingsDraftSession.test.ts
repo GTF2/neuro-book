@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {useModelSettingsDraftSession} from "nbook/app/components/novel-ide/settings/useModelSettingsDraftSession";
 import type {ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
+import {buildModelsSection} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
 import type {ConfiguredModelDto} from "nbook/shared/dto/app-settings.dto";
 import type {ConfigEditorSnapshotDto} from "nbook/shared/dto/config.dto";
 
@@ -150,6 +151,20 @@ describe("Provider Config draft frontend session", () => {
 
         expect(session.draft.value.providers[0]).toMatchObject({id: "openrouter", sourceIndex: 0});
         expect(session.draft.value.providers[0]?.connectionIdentityDraft).toBeUndefined();
+    });
+
+    it("保存体只为会话新建的 Provider 携带身份未定稿声明", () => {
+        const session = createSession();
+        const provider = createProvider();
+        provider.sourceIndex = 0;
+        session.draft.value.providers.push(provider);
+        session.activeProviderKey.value = provider.localKey;
+
+        session.cloneActiveProviderConnection();
+        const payload = buildModelsSection(session.draft.value);
+
+        expect(payload.providers.find((item) => item.id === "provider-copy")).toMatchObject({connectionIdentityDraft: true});
+        expect(payload.providers.find((item) => item.id === "provider")).not.toHaveProperty("connectionIdentityDraft");
     });
 });
 

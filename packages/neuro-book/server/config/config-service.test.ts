@@ -327,6 +327,46 @@ describe("config service", {timeout: 30_000}, () => {
         await expect(fs.readFile(configPath, "utf8")).resolves.toBe(before);
     });
 
+    it("声明身份未定稿的会话新建 Provider 可以改端点且声明不落盘", async () => {
+        await saveGlobalConfig({models: validModelsInput()}, {workspaceKind: "user-assets"});
+        const snapshot = await readConfigEditorSnapshot({workspaceKind: "user-assets"});
+        const provider = snapshot.modelSettings.providers[0]!;
+
+        await saveGlobalConfig({
+            models: {
+                default: snapshot.modelSettings.defaultModelKey,
+                providers: [{
+                    ...provider,
+                    options: {...provider.options, baseURL: "https://relay.example/v1"},
+                    connectionIdentityDraft: true,
+                }],
+            },
+        }, {workspaceKind: "user-assets"});
+
+        const raw = JSON.parse(await fs.readFile(path.join(workspaceRoot(), ".nbook", "config.json"), "utf8")) as {
+            models?: {providers?: Array<{options?: {baseURL?: string}; connectionIdentityDraft?: unknown}>};
+        };
+        expect(raw.models?.providers?.[0]?.options?.baseURL).toBe("https://relay.example/v1");
+        expect(raw.models?.providers?.[0]?.connectionIdentityDraft).toBeUndefined();
+    });
+
+    it("声明身份未定稿的会话新建 Provider 可以改名", async () => {
+        await saveGlobalConfig({models: validModelsInput()}, {workspaceKind: "user-assets"});
+        const snapshot = await readConfigEditorSnapshot({workspaceKind: "user-assets"});
+        const provider = snapshot.modelSettings.providers[0]!;
+        const previousId = provider.id;
+        const renamedDefault = snapshot.modelSettings.defaultModelKey?.replace(`${previousId}/`, "relay/") ?? null;
+
+        await saveGlobalConfig({
+            models: {default: renamedDefault, providers: [{...provider, id: "relay", connectionIdentityDraft: true}]},
+        }, {workspaceKind: "user-assets"});
+
+        const raw = JSON.parse(await fs.readFile(path.join(workspaceRoot(), ".nbook", "config.json"), "utf8")) as {
+            models?: {providers?: Array<{id?: string}>};
+        };
+        expect(raw.models?.providers?.[0]?.id).toBe("relay");
+    });
+
     it("已保存 Provider 可修改默认接口并保留原 Secret", async () => {
         const initial = validModelsInput();
         initial.providers[0]!.options.apiKey = {configured: false, maskedValue: null, value: "sk-keep-model-api"};

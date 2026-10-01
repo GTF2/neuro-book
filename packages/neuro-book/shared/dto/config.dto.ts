@@ -129,6 +129,12 @@ export const ConfiguredProviderConfigDtoSchema = z.object({
      * 新建 Provider 可缺省；服务端写盘前必须移除。
      */
     sourceIndex: z.number().int().nonnegative().optional(),
+    /**
+     * 本次编辑会话新建、连接身份尚未定稿的 Provider。客户端在会话内保持它的
+     * id / Base URL / 代理 可编辑，保存时用本字段声明；服务端据此跳过连接身份
+     * 稳定性校验（见 assertProviderConnectionsStable），写盘前必须移除。
+     */
+    connectionIdentityDraft: z.boolean().optional(),
     id: ProviderIdSchema,
     name: z.string().trim().min(1),
     enabled: z.boolean().default(true),

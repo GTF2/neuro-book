@@ -500,6 +500,7 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
         const localKey = createProviderKey(nextId);
         const clone: ModelSettingsProviderDraft = {
             localKey,
+            connectionIdentityDraft: true,
             id: nextId,
             name: `${provider.name} Copy`,
             enabled: provider.enabled,

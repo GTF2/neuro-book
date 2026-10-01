@@ -22,8 +22,11 @@ issueId: null
 - 不改配置合同、服务端写入、Secret 处理，也不放弃「已保存 Provider 的连接身份默认不可变」这一长期语义。
 - 不引入显式保存按钮，不改变自动保存策略，不调整 Provider id 在其他模块的引用规则。
 
-## 收尾
+## 当前 Task
 
-[t01](tasks/t01-connection-identity-edit-window/README.md) 已实现并验证。
+| Task | 当前范围 |
+|---|---|
+| [t01](tasks/t01-connection-identity-edit-window/README.md) | 已实现并验证，随 `3b5d566a` 合入 master |
+| [t02](tasks/t02-connection-identity-save-contract/README.md) | 当前：把「身份未定稿」声明接到保存契约，让编辑真正落盘 |
 
-已收尾：3b5d566a；待清理：.worktree/w00021-provider-connection-identity-edit、fix/w00021-provider-connection-identity-edit
+2026-10-02 开发者使用中转站 Provider 时发现 t01 只解锁了界面，保存仍被服务端身份守卫拒绝（`连接身份不可修改（Base URL 或代理已变化）`），要求继续修通，并选定「保留身份不可变语义、只对会话新建 Provider 豁免」的方向。Work 因此重新进入进行中，撤销此前记下的收尾行。
