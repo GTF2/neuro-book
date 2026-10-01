@@ -22,6 +22,8 @@ issueId: null
 - 不改配置合同、服务端写入、Secret 处理，也不放弃「已保存 Provider 的连接身份默认不可变」这一长期语义。
 - 不引入显式保存按钮，不改变自动保存策略，不调整 Provider id 在其他模块的引用规则。
 
-## 下一步
+## 收尾
 
-[t01](tasks/t01-connection-identity-edit-window/README.md) 实现并验证。
+[t01](tasks/t01-connection-identity-edit-window/README.md) 已实现并验证。
+
+已收尾：3b5d566a；待清理：.worktree/w00021-provider-connection-identity-edit、fix/w00021-provider-connection-identity-edit
