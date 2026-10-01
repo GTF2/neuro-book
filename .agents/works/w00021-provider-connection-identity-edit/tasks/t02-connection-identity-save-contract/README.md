@@ -13,7 +13,7 @@ t01 只解锁了界面字段。服务端 `assertProviderConnectionsStable` 仍�
 
 界面解锁不等于能改：`renameActiveProviderId` 在会话层同样按 `sourceIndex` 拒绝改名并弹 `providerIdentityImmutable`，开发者第二次反馈「复制的这一份里改东西还是保存不了」，因此改名守卫按同一标记一并放行。
 
-本 Work 不涉及已登记 Spec 覆盖的行为：`docs/specs/` 目前没有 provider 配置保存的 capability，合同以 `ConfiguredProviderConfigDtoSchema`、`config-service.ts` 的守卫与两端测试为准。
+行为合同未变：`docs/specs/` 目前没有 provider 配置保存的 capability，本 Work 不涉及已登记 Spec 覆盖的行为，合同以 `ConfiguredProviderConfigDtoSchema`、`config-service.ts` 的守卫与两端测试为准。
 
 ## 非目标
 

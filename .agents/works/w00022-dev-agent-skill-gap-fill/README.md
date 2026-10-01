@@ -30,5 +30,6 @@ issueId: null
 
 [t01](tasks/t01-create-high-priority-skills/README.md) 已实现并验证。
 [t02](tasks/t02-routing-table-entries/README.md) 已实现并验证。
+[t03](tasks/t03-fix-w00021-t02-gate-wording/README.md) 已实现并验证。
 
 已收尾：793f73cb；待清理：无
