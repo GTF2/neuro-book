@@ -5,6 +5,7 @@ import {useNotification} from "nbook/app/composables/useNotification";
 import {resolveApiErrorMessage} from "nbook/app/utils/api-error";
 import type {ModelSettingsDraft, ModelSettingsModelDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
 import type {ConfiguredModelDto, ModelLibraryDto, ModelLibraryEntryDto, ProviderTemplateDto, ProviderTemplateLibraryDto} from "nbook/shared/dto/app-settings.dto";
+import {selectModelLibraryReference} from "nbook/shared/models/model-library-reference";
 
 type ProviderTemplateSessionOptions = {
     draft: Ref<ModelSettingsDraft>;
@@ -56,6 +57,15 @@ export function useProviderTemplateSession(options: ProviderTemplateSessionOptio
     /** 按精确 model ID 查询 Model Library。 */
     function findModel(modelId: string): ModelLibraryEntryDto | null {
         return modelLibrary.value?.models.find((model) => model.id === modelId.trim()) ?? null;
+    }
+
+    /** 精确未命中时按模型族查询相近参考条目；命中精确资料时不再返回参考。 */
+    function findReferenceModel(modelId: string): ModelLibraryEntryDto | null {
+        const library = modelLibrary.value;
+        if (!library || findModel(modelId)) {
+            return null;
+        }
+        return selectModelLibraryReference(modelId, library.models)?.entry ?? null;
     }
 
     /** 生成不与当前草稿冲突的 Provider Config ID。 */
@@ -121,6 +131,7 @@ export function useProviderTemplateSession(options: ProviderTemplateSessionOptio
         templateOptions,
         load,
         findModel,
+        findReferenceModel,
         addProvider,
     };
 }

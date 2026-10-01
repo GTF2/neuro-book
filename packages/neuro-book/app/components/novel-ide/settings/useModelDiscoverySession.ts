@@ -1,7 +1,7 @@
 import {computed, ref, watch, type ComputedRef, type Ref} from "vue";
 import {useNotification} from "nbook/app/composables/useNotification";
 import {resolveApiErrorMessage} from "nbook/app/utils/api-error";
-import {candidateFromLibrary, completeModelCandidate} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
+import {candidateFromLibrary, completeModelCandidate, type ModelReferenceInfo} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
 import {parseDraftInteger, type ModelSettingsModelDraft, type ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
 import type {DiscoveryListModel, ManualModelDraft, ModelLibraryGroup} from "nbook/app/components/novel-ide/settings/sections/providers/provider-view-types";
 import type {ConfiguredModelDto, DiscoveryDiagnosticsDto, DiscoverProviderModelsResponseDto, DiscoveredProviderModelDto, ModelLibraryDto, ModelLibraryEntryDto, ModelProviderDraftDto, ProviderCredentialSource} from "nbook/shared/dto/app-settings.dto";
@@ -12,11 +12,13 @@ type ModelDiscoverySessionOptions = {
     modelLibrary: Ref<ModelLibraryDto | null>;
     loadLibraries(): Promise<ModelLibraryDto>;
     findLibraryModel(modelId: string): ModelLibraryEntryDto | null;
+    /** 精确未命中时的同族参考条目；见 selectModelLibraryReference。 */
+    findReferenceModel(modelId: string): ModelLibraryEntryDto | null;
     buildProviderRequest(provider: ModelSettingsProviderDraft): ModelProviderDraftDto;
     credentialSource(provider: ModelSettingsProviderDraft): ProviderCredentialSource;
     enableModel(model: ConfiguredModelDto): void;
     disableModel(model: ModelSettingsModelDraft): void;
-    openTransientCandidate(candidate: Omit<ConfiguredModelDto, "enabled">): Promise<void>;
+    openTransientCandidate(candidate: Omit<ConfiguredModelDto, "enabled">, reference: ModelReferenceInfo | null): Promise<void>;
     ensureDefaultModel(): void;
 };
 
@@ -138,13 +140,13 @@ export function useModelDiscoverySession(options: ModelDiscoverySessionOptions) 
             headers: null,
             thinkingLevelMap: null,
         };
-        const completed = completeModelCandidate(discovered, options.findLibraryModel(draft.id), provider.modelApi.trim() || null);
+        const completed = completeCandidate(discovered, provider);
         manualDrafts.value = {...manualDrafts.value, [provider.id]: emptyManualDraft()};
         if (completed.status === "complete") {
             options.enableModel(completed.model);
             notification.success(t("settings.panels.models.manualAdded"));
         } else {
-            void options.openTransientCandidate(completed.candidate);
+            void options.openTransientCandidate(completed.candidate, completed.reference ?? null);
         }
     }
 
@@ -168,14 +170,21 @@ export function useModelDiscoverySession(options: ModelDiscoverySessionOptions) 
             requestOptionsRevisions.value[provider.localKey] ?? 0,
         ) ? cache.models : [];
         for (const remote of remoteModels) {
-            const completed = completeModelCandidate(remote, options.findLibraryModel(remote.id), provider.modelApi.trim() || null);
+            const completed = completeCandidate(remote, provider);
             const state = savedState(remote.id);
+            const completedState = completed.status === "complete"
+                ? "remote-complete"
+                : completed.status === "reference"
+                    ? "remote-reference"
+                    : "remote-incomplete";
             models.set(remote.id, {
                 name: remote.name,
                 id: remote.id,
                 group: remote.group || deriveModelGroup(remote.id),
-                state: state === "enabled" ? "enabled" : state === "disabled" ? "disabled" : completed.status === "complete" ? "remote-complete" : "remote-incomplete",
-                ...(completed.status === "complete" ? {completeModel: completed.model} : {incompleteCandidate: completed.candidate}),
+                state: state === "enabled" ? "enabled" : state === "disabled" ? "disabled" : completedState,
+                ...(completed.status === "complete"
+                    ? {completeModel: completed.model}
+                    : {candidate: completed.candidate, ...(completed.reference ? {reference: completed.reference} : {})}),
             });
         }
         return groupDiscoveryModels([...models.values()], discoverySearchQuery.value);
@@ -212,8 +221,8 @@ export function useModelDiscoverySession(options: ModelDiscoverySessionOptions) 
         }
         if (model.completeModel) {
             options.enableModel(model.completeModel);
-        } else if (model.incompleteCandidate) {
-            void options.openTransientCandidate(model.incompleteCandidate);
+        } else if (model.candidate) {
+            void options.openTransientCandidate(model.candidate, model.reference ?? null);
         }
     }
 
@@ -252,8 +261,18 @@ export function useModelDiscoverySession(options: ModelDiscoverySessionOptions) 
         if (candidate.status === "complete") {
             options.enableModel(candidate.model);
         } else {
-            void options.openTransientCandidate(candidate.candidate);
+            void options.openTransientCandidate(candidate.candidate, candidate.reference ?? null);
         }
+    }
+
+    /** 统一补全入口：精确资料优先，未命中时带上同族参考条目。 */
+    function completeCandidate(discovered: DiscoveredProviderModelDto, provider: ModelSettingsProviderDraft) {
+        return completeModelCandidate(
+            discovered,
+            options.findLibraryModel(discovered.id),
+            provider.modelApi.trim() || null,
+            options.findReferenceModel(discovered.id),
+        );
     }
 
     /** 打开独立 Model Library Dialog。 */

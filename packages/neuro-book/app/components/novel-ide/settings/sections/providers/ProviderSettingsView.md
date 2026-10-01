@@ -41,6 +41,7 @@ type Props = {
     modelLibraryDialogOpen: boolean;
     editingModel: ModelSettingsModelDraft | null;
     editingLibraryModel: ModelLibraryEntryDto | null;
+    editingReference: ModelReferenceView | null;
     editingModelMissingFields: string[];
     editingTransientCandidate: boolean;
     discoveryGroups: DiscoveryModelGroup[];
@@ -90,6 +91,7 @@ type Emits = {
     (event: "reset-model-cost", model: ModelSettingsModelDraft): void;
     (event: "enable-model-cost", model: ModelSettingsModelDraft): void;
     (event: "reapply-library", model: ModelSettingsModelDraft): void;
+    (event: "apply-reference"): void;
     (event: "update:discoverySearchQuery", value: string): void;
     (event: "update:modelLibrarySearchQuery", value: string): void;
     (event: "update:discoveryManualField", field: keyof ManualModelDraft, value: string): void;

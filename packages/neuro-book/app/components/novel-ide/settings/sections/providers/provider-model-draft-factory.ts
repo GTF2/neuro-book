@@ -5,12 +5,26 @@ import type {
 } from "nbook/shared/dto/app-settings.dto";
 import {inspectModelCapability, selectModelApi} from "@notnotype/neuro-book-contracts/provider-config";
 
-export type ModelCandidateSource = "remote" | "model-library" | "provider-config" | "provider-template" | "user";
+export type ModelCandidateSource = "remote" | "model-library" | "model-library-reference" | "provider-config" | "provider-template" | "user";
 
 export type ModelCandidateProvenance = Partial<Record<
     "name" | "api" | "reasoning" | "input" | "contextWindowTokens" | "maxTokens" | "thinkingLevelMap" | "cost" | "compat" | "headers",
     ModelCandidateSource
 >>;
+
+/** 相近模型可参考的能力字段；`api` 不属于参考资料，由 Provider 配置决定。 */
+export type ModelReferenceField = "reasoning" | "input" | "contextWindowTokens" | "maxTokens" | "thinkingLevelMap";
+
+/**
+ * 参考来源描述。`fields` 是当前值确实来自该相近模型的字段，
+ * 界面必须逐字段标注，用户确认前不能当作已核实的资料。
+ */
+export type ModelReferenceInfo = {
+    modelId: string;
+    name: string;
+    source: string;
+    fields: ModelReferenceField[];
+};
 
 export type CompleteModelCandidate = {
     status: "complete";
@@ -23,19 +37,33 @@ export type IncompleteModelCandidate = {
     candidate: Omit<ConfiguredModelDto, "enabled">;
     provenance: ModelCandidateProvenance;
     missingFields: string[];
+    /** 已按相近模型预填、但仍缺字段时的参考来源；没有参考时缺省。 */
+    reference?: ModelReferenceInfo;
 };
 
-export type CompletedModelCandidate = CompleteModelCandidate | IncompleteModelCandidate;
+export type ReferenceModelCandidate = {
+    status: "reference";
+    candidate: Omit<ConfiguredModelDto, "enabled">;
+    provenance: ModelCandidateProvenance;
+    /** 必填字段已由相近模型参考值补齐，必须经用户确认才能保存。 */
+    reference: ModelReferenceInfo;
+};
+
+export type CompletedModelCandidate = CompleteModelCandidate | IncompleteModelCandidate | ReferenceModelCandidate;
 
 /**
  * 将远程候选按字段补全为可保存模型。
- * 远端明确字段优先，Model Library 只补缺；不完整候选不会得到可持久化 model。
+ * 远端明确字段优先，精确命中的 Model Library 资料其次，同族参考条目只补仍然缺失的字段；
+ * 只靠参考值补齐的候选得到 `reference` 状态，不会自动启用。
  */
 export function completeModelCandidate(
     discovered: DiscoveredProviderModelDto,
     knowledge: ModelLibraryEntryDto | null,
     providerModelApi: ConfiguredModelDto["api"] = null,
+    reference: ModelLibraryEntryDto | null = null,
 ): CompletedModelCandidate {
+    // 精确资料与同族参考互斥：命中精确资料时参考不再参与，避免两个来源互相覆盖。
+    const effectiveReference = knowledge ? null : reference;
     const api = selectModelApi(discovered.api, providerModelApi);
     const provenance: ModelCandidateProvenance = {
         name: "remote",
@@ -55,11 +83,12 @@ export function completeModelCandidate(
         name: discovered.name,
         group: discovered.group,
         api,
-        reasoning: discovered.reasoning ?? knowledge?.reasoning ?? null,
-        input: discovered.input ?? (knowledge ? [...knowledge.input] : null),
-        contextWindowTokens: discovered.contextWindowTokens ?? knowledge?.contextWindowTokens ?? null,
-        maxTokens: discovered.maxTokens ?? knowledge?.maxTokens ?? null,
-        thinkingLevelMap: discovered.thinkingLevelMap ?? (knowledge?.thinkingLevelMap ? {...knowledge.thinkingLevelMap} : null),
+        reasoning: discovered.reasoning ?? knowledge?.reasoning ?? effectiveReference?.reasoning ?? null,
+        input: discovered.input ?? (knowledge ? [...knowledge.input] : effectiveReference ? [...effectiveReference.input] : null),
+        contextWindowTokens: discovered.contextWindowTokens ?? knowledge?.contextWindowTokens ?? effectiveReference?.contextWindowTokens ?? null,
+        maxTokens: discovered.maxTokens ?? knowledge?.maxTokens ?? effectiveReference?.maxTokens ?? null,
+        thinkingLevelMap: discovered.thinkingLevelMap
+            ?? (knowledge?.thinkingLevelMap ? {...knowledge.thinkingLevelMap} : effectiveReference?.thinkingLevelMap ? {...effectiveReference.thinkingLevelMap} : null),
         cost: discovered.cost,
         compat: discovered.compat,
         headers: discovered.headers,
@@ -73,9 +102,39 @@ export function completeModelCandidate(
         if (!discovered.thinkingLevelMap && knowledge.thinkingLevelMap) provenance.thinkingLevelMap = "model-library";
     }
 
+    const referenceFields: ModelReferenceField[] = [];
+    if (effectiveReference) {
+        if (discovered.reasoning === null && candidate.reasoning !== null) {
+            provenance.reasoning = "model-library-reference";
+            referenceFields.push("reasoning");
+        }
+        if (!discovered.input?.length && candidate.input?.length) {
+            provenance.input = "model-library-reference";
+            referenceFields.push("input");
+        }
+        if (!discovered.contextWindowTokens && candidate.contextWindowTokens !== null) {
+            provenance.contextWindowTokens = "model-library-reference";
+            referenceFields.push("contextWindowTokens");
+        }
+        if (!discovered.maxTokens && candidate.maxTokens !== null) {
+            provenance.maxTokens = "model-library-reference";
+            referenceFields.push("maxTokens");
+        }
+        if (!discovered.thinkingLevelMap && candidate.thinkingLevelMap) {
+            provenance.thinkingLevelMap = "model-library-reference";
+            referenceFields.push("thinkingLevelMap");
+        }
+    }
+    const referenceInfo: ModelReferenceInfo | null = effectiveReference && referenceFields.length > 0
+        ? {modelId: effectiveReference.id, name: effectiveReference.name, source: effectiveReference.source, fields: referenceFields}
+        : null;
+
     const missingFields = requiredModelFields(candidate);
     if (missingFields.length > 0) {
-        return {status: "incomplete", candidate, provenance, missingFields};
+        return {status: "incomplete", candidate, provenance, missingFields, ...(referenceInfo ? {reference: referenceInfo} : {})};
+    }
+    if (referenceInfo) {
+        return {status: "reference", candidate, provenance, reference: referenceInfo};
     }
     return {status: "complete", model: {...candidate, enabled: true}, provenance};
 }

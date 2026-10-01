@@ -3,9 +3,9 @@ import {useI18n} from "vue-i18n";
 import {useNotification} from "nbook/app/composables/useNotification";
 import {resolveApiErrorMessage} from "nbook/app/utils/api-error";
 import {clearModelCostDraft, createModelCostDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-cost-draft";
-import {candidateFromLibrary, requiredModelFields} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
-import {parseDraftInteger, parseModelInput, parseModelReasoning, type ModelSettingsModelDraft, type ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
-import type {ManualModelDraft, ModelApiOption, SavedModelGroupView} from "nbook/app/components/novel-ide/settings/sections/providers/provider-view-types";
+import {candidateFromLibrary, requiredModelFields, type ModelReferenceField} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
+import {parseDraftInteger, parseModelInput, parseModelReasoning, referenceFieldsStillMatching, type ModelSettingsModelDraft, type ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
+import type {ManualModelDraft, ModelApiOption, ModelReferenceView, SavedModelGroupView} from "nbook/app/components/novel-ide/settings/sections/providers/provider-view-types";
 import {useModelCheckSession} from "nbook/app/components/novel-ide/settings/useModelCheckSession";
 import {useModelDiscoverySession} from "nbook/app/components/novel-ide/settings/useModelDiscoverySession";
 import {useModelSettingsDraftSession, type ModelSettingsPanelProps, type ModelSettingsScope} from "nbook/app/components/novel-ide/settings/useModelSettingsDraftSession";
@@ -126,6 +126,7 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         templateOptions: providerTemplateOptions,
         load: loadModelLibraries,
         findModel: findLibraryModel,
+        findReferenceModel,
         addProvider,
     } = templateSession;
     loadLibraries = loadModelLibraries;
@@ -133,10 +134,13 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
     const editingModel = ref<ModelSettingsModelDraft | null>(null);
     const editingTransientCandidate = ref(false);
     const modelEditDialogOpen = ref(false);
+    /** 当前编辑对象已填入的参考值来源；按被编辑模型的 ID 记录，编辑窗口换对象或换 ID 后失效。 */
+    const editingAppliedReference = ref<{targetModelId: string; fields: ModelReferenceField[]} | null>(null);
 
     /** 打开已保存模型编辑器。 */
     async function openModelEdit(model: ModelSettingsModelDraft): Promise<void> {
         editingTransientCandidate.value = false;
+        editingAppliedReference.value = null;
         editingModel.value = model;
         try {
             await loadModelLibraries();
@@ -191,6 +195,63 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         });
     }
 
+    /** 参考条目当前能补的字段：只补缺，不覆盖已有来源的值。 */
+    function referenceFillableFields(model: ModelSettingsModelDraft): ModelReferenceField[] {
+        const fields: ModelReferenceField[] = [];
+        if (parseModelReasoning(model.reasoning) === null) {
+            fields.push("reasoning");
+        }
+        if (!parseModelInput(model.input)?.length) {
+            fields.push("input");
+        }
+        if (parseDraftInteger(model.contextWindowTokens) === null) {
+            fields.push("contextWindowTokens");
+        }
+        if (parseDraftInteger(model.maxTokens) === null) {
+            fields.push("maxTokens");
+        }
+        if (!model.thinkingLevelMap.trim()) {
+            fields.push("thinkingLevelMap");
+        }
+        return fields;
+    }
+
+    /** 用同族参考条目填入仍缺失的字段，并记录来源供逐字段标注。 */
+    function applyReferenceToEditingModel(): void {
+        const model = editingModel.value;
+        if (!model) {
+            return;
+        }
+        const entry = findReferenceModel(model.id);
+        if (!entry) {
+            return;
+        }
+        const fields: ModelReferenceField[] = [];
+        if (parseModelReasoning(model.reasoning) === null) {
+            model.reasoning = entry.reasoning ? "true" : "false";
+            fields.push("reasoning");
+        }
+        if (!parseModelInput(model.input)?.length) {
+            model.input = entry.input.join(",");
+            fields.push("input");
+        }
+        if (parseDraftInteger(model.contextWindowTokens) === null) {
+            model.contextWindowTokens = String(entry.contextWindowTokens);
+            fields.push("contextWindowTokens");
+        }
+        if (parseDraftInteger(model.maxTokens) === null) {
+            model.maxTokens = String(entry.maxTokens);
+            fields.push("maxTokens");
+        }
+        if (!model.thinkingLevelMap.trim() && entry.thinkingLevelMap) {
+            model.thinkingLevelMap = JSON.stringify(entry.thinkingLevelMap, null, 2);
+            fields.push("thinkingLevelMap");
+        }
+        if (fields.length > 0) {
+            editingAppliedReference.value = {targetModelId: model.id, fields};
+        }
+    }
+
     /** 切换模型输入能力。 */
     function toggleModelInput(model: ModelSettingsModelDraft, inputKind: ModelInputKind): void {
         const values = parseModelInput(model.input) ?? [];
@@ -238,12 +299,15 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         modelLibrary: modelLibraryData,
         loadLibraries: loadModelLibraries,
         findLibraryModel,
+        findReferenceModel,
         buildProviderRequest,
         credentialSource,
         enableModel,
         disableModel,
-        openTransientCandidate: async (candidate) => {
+        openTransientCandidate: async (candidate, reference) => {
             editingTransientCandidate.value = true;
+            // 参考来源记在被编辑模型上：reference.modelId 只是展示用的参考条目 ID。
+            editingAppliedReference.value = reference ? {targetModelId: candidate.id, fields: reference.fields} : null;
             editingModel.value = cloneModel({...candidate, enabled: true});
             try {
                 await loadModelLibraries();
@@ -286,6 +350,25 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
     removeDiscovery = removeDiscoveryProvider;
 
     const editingLibraryModel = computed(() => editingModel.value ? findLibraryModel(editingModel.value.id) : null);
+    /** 编辑窗口的参考视图：精确未命中时给出可补字段与已应用字段，供逐字段标注。 */
+    const editingReference = computed<ModelReferenceView | null>(() => {
+        const model = editingModel.value;
+        if (!model) {
+            return null;
+        }
+        const entry = findReferenceModel(model.id);
+        if (!entry) {
+            return null;
+        }
+        const appliedFields = editingAppliedReference.value?.targetModelId === model.id
+            ? referenceFieldsStillMatching(model, entry, editingAppliedReference.value.fields)
+            : [];
+        const fillableFields = referenceFillableFields(model);
+        if (fillableFields.length === 0 && appliedFields.length === 0) {
+            return null;
+        }
+        return {modelId: entry.id, name: entry.name, source: entry.source, fillableFields, appliedFields};
+    });
     const editingModelMissingFields = computed(() => {
         const model = editingModel.value;
         if (!model) {
@@ -389,6 +472,7 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         if (!open && editingTransientCandidate.value) {
             editingTransientCandidate.value = false;
             editingModel.value = null;
+            editingAppliedReference.value = null;
         }
     });
 
@@ -446,6 +530,7 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         modelLibraryDialogOpen: modelLibraryDialogOpen.value,
         editingModel: editingModel.value,
         editingLibraryModel: editingLibraryModel.value,
+        editingReference: editingReference.value,
         editingModelMissingFields: editingModelMissingFields.value,
         editingTransientCandidate: editingTransientCandidate.value,
         discoveryGroups: discoveryGroups.value,
@@ -547,7 +632,19 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         },
         "onReset-model-cost": (model: ModelSettingsModelDraft) => resetModelCost(model),
         "onEnable-model-cost": (model: ModelSettingsModelDraft) => enableModelCostOverride(model),
-        "onReapply-library": (model: ModelSettingsModelDraft) => reapplyLibraryModel(model),
+        "onReapply-library": (model: ModelSettingsModelDraft) => {
+            reapplyLibraryModel(model);
+            // 临时候选还没进草稿；已保存模型改了资料就必须安排写回，否则改动随窗口关闭丢失。
+            if (!editingTransientCandidate.value) {
+                scheduleSave();
+            }
+        },
+        "onApply-reference": () => {
+            applyReferenceToEditingModel();
+            if (!editingTransientCandidate.value) {
+                scheduleSave();
+            }
+        },
         "onUpdate:discoverySearchQuery": (value: string) => {
             discoverySearchQuery.value = value;
         },

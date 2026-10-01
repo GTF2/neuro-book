@@ -2,7 +2,7 @@ import {computed, nextTick, reactive, ref} from "vue";
 import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {useModelDiscoverySession} from "nbook/app/components/novel-ide/settings/useModelDiscoverySession";
 import type {ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
-import type {DiscoveredProviderModelDto, ModelLibraryDto} from "nbook/shared/dto/app-settings.dto";
+import type {DiscoveredProviderModelDto, ModelLibraryDto, ModelLibraryEntryDto} from "nbook/shared/dto/app-settings.dto";
 
 const notificationSpies = vi.hoisted(() => ({
     success: vi.fn(),
@@ -63,6 +63,34 @@ describe("Automatic Model Discovery frontend session", () => {
             state: "remote-complete",
             completeModel: {api: "openai-responses"},
         });
+    });
+
+    it("同族参考补齐的模型进入待确认状态并带上参考来源", async () => {
+        const provider = createProvider({models: []});
+        vi.stubGlobal("$fetch", vi.fn(async () => ({
+            models: [remoteModel({id: "glm-5.3", name: "GLM 5.3", api: null, reasoning: null, input: null, contextWindowTokens: null, maxTokens: null})],
+            message: "ok",
+            diagnostics: completeDiagnostics(),
+        })));
+        const openTransientCandidate = vi.fn(async () => undefined);
+        const session = createSession(provider, "cleared", {
+            findReferenceModel: () => referenceEntry(),
+            openTransientCandidate,
+        });
+
+        await session.discover();
+
+        const model = session.discoveryGroups.value[0]!.models[0]!;
+        expect(model).toMatchObject({
+            state: "remote-reference",
+            candidate: {contextWindowTokens: 1_000_000, maxTokens: 131_072},
+            reference: {modelId: "glm-5.2", fields: ["reasoning", "input", "contextWindowTokens", "maxTokens"]},
+        });
+        session.toggleDiscoveredModel(model);
+        expect(openTransientCandidate).toHaveBeenCalledWith(
+            expect.objectContaining({id: "glm-5.3"}),
+            expect.objectContaining({modelId: "glm-5.2"}),
+        );
     });
 
     it("发现请求显式声明凭据来源", async () => {
@@ -175,7 +203,11 @@ describe("Automatic Model Discovery frontend session", () => {
 });
 
 /** 创建被测发现会话。 */
-function createSession(provider: ModelSettingsProviderDraft, credentialSource: "provided" | "saved" | "cleared" = "cleared") {
+function createSession(
+    provider: ModelSettingsProviderDraft,
+    credentialSource: "provided" | "saved" | "cleared" = "cleared",
+    overrides: Partial<Parameters<typeof useModelDiscoverySession>[0]> = {},
+) {
     const activeProvider = computed(() => provider);
     const modelLibrary = ref<ModelLibraryDto>({models: []});
     return useModelDiscoverySession({
@@ -183,6 +215,7 @@ function createSession(provider: ModelSettingsProviderDraft, credentialSource: "
         modelLibrary,
         loadLibraries: async () => modelLibrary.value,
         findLibraryModel: () => null,
+        findReferenceModel: () => null,
         buildProviderRequest: (value) => ({
             id: value.id,
             name: value.name,
@@ -200,6 +233,7 @@ function createSession(provider: ModelSettingsProviderDraft, credentialSource: "
         disableModel: () => undefined,
         openTransientCandidate: async () => undefined,
         ensureDefaultModel: () => undefined,
+        ...overrides,
     });
 }
 
@@ -263,6 +297,20 @@ function remoteModel(overrides: Partial<DiscoveredProviderModelDto> = {}): Disco
         headers: null,
         thinkingLevelMap: null,
         ...overrides,
+    };
+}
+
+/** 同族参考条目：与目标 ID 不同，只提供能力资料。 */
+function referenceEntry(): ModelLibraryEntryDto {
+    return {
+        id: "glm-5.2",
+        name: "GLM 5.2",
+        source: "zai",
+        reasoning: true,
+        thinkingLevelMap: null,
+        input: ["text"],
+        contextWindowTokens: 1_000_000,
+        maxTokens: 131_072,
     };
 }
 
