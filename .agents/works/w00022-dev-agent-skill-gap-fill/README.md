@@ -24,3 +24,9 @@ issueId: null
 ## 执行位置
 
 主工作区直接修改（治理文档，不建 worktree），分支 `master`。
+
+## 收尾
+
+[t01](tasks/t01-create-high-priority-skills/README.md) 已实现并验证。
+
+已收尾：8ba96499；待清理：无

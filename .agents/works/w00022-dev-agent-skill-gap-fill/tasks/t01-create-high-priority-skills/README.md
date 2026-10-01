@@ -15,7 +15,7 @@ taskId: t01-create-high-priority-skills
 
 ## 当前状态
 
-已完成：4 个 Skill 落盘并登记进索引，门禁验证通过，等待收尾登记。
+已收尾：实现与验证完成，随 8ba96499 进入 master，Work README 已记收尾行。
 
 ## 证据
 
