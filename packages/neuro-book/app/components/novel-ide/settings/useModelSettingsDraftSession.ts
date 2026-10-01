@@ -449,7 +449,9 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
         if (!provider) {
             return;
         }
-        if (provider.sourceIndex !== undefined) {
+        // 本次会话新建、连接身份尚未定稿的 Provider 允许改名；已保存的仍按连接身份不可变拒绝。
+        // 本次会话新建、连接身份尚未定稿的 Provider 允许改名；已保存的仍按连接身份不可变拒绝。
+        if (provider.sourceIndex !== undefined && provider.connectionIdentityDraft !== true) {
             notification.error(t("settings.panels.models.providerIdentityImmutable"));
             return;
         }
