@@ -510,7 +510,11 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
             deleteModel(model);
             scheduleSave();
         },
-        "onOpen-discovery": () => void discoverModels(),
+        // 「发现/添加模型」是打开挑选窗口的入口：先开窗再发现，结果与诊断才有落点。
+        "onOpen-discovery": () => {
+            discoveryDialogOpen.value = true;
+            void discoverModels();
+        },
         "onOpen-library": () => openModelLibrary(),
         "onRepair": () => {
             void repairModelSettings();
