@@ -46,6 +46,11 @@ const {t} = useI18n();
 
 /** 已保存 Provider 的身份字段（id / baseURL / proxy）在本页只读，改动只能来自配置文件。 */
 const isSavedProvider = computed(() => props.provider?.sourceIndex !== undefined);
+/**
+ * 身份字段是否锁死。本次会话新建的 Provider 例外：它已被自动保存，但 id / baseURL / 代理
+ * 仍可继续修改，否则克隆连接与模板新增都没有可编辑的入口。
+ */
+const isIdentityLocked = computed(() => isSavedProvider.value && props.provider?.connectionIdentityDraft !== true);
 const enabledModelCount = computed(() => props.provider?.models.filter((model) => model.enabled).length ?? 0);
 const apiKeyPlaceholder = computed(() => {
     const options = props.provider?.options;
@@ -130,7 +135,7 @@ function patchOptions(patch: Partial<ModelSettingsProviderDraft["options"]>): vo
         <!-- 连接：身份与连接参数。已保存 Provider 的这三个字段只读，改动只能来自配置文件。 -->
         <section class="mt-[var(--space-6)] border-t border-[var(--divider)] pt-[var(--space-4)]">
             <h3 class="text-[var(--text-sm)] [font-weight:var(--weight-strong)] leading-[var(--leading-ui)] text-[var(--text-main)]">{{ t("settings.panels.models.connectionGroup") }}</h3>
-            <p v-if="isSavedProvider" class="mt-[var(--space-1)] text-[var(--text-2xs)] leading-[var(--leading-ui)] text-[var(--text-muted)]">{{ t("settings.panels.models.providerIdentityHint") }}</p>
+            <p v-if="isIdentityLocked" class="mt-[var(--space-1)] text-[var(--text-2xs)] leading-[var(--leading-ui)] text-[var(--text-muted)]">{{ t("settings.panels.models.providerIdentityHint") }}</p>
 
             <div class="provider-form-grid mt-[var(--space-4)] grid gap-x-[var(--space-3)] gap-y-[var(--space-4)]">
                 <label class="block min-w-0">
@@ -139,7 +144,7 @@ function patchOptions(patch: Partial<ModelSettingsProviderDraft["options"]>): vo
                         class="mt-[var(--space-2)]"
                         size="sm"
                         :model-value="props.provider.id"
-                        :readonly="isSavedProvider"
+                        :readonly="isIdentityLocked"
                         :placeholder="t('settings.panels.models.providerIdPlaceholder')"
                         :disabled="props.saving"
                         @update:model-value="emit('rename-provider-id', $event)"
@@ -164,7 +169,7 @@ function patchOptions(patch: Partial<ModelSettingsProviderDraft["options"]>): vo
                         class="mt-[var(--space-2)]"
                         size="sm"
                         :model-value="props.provider.options.baseURL"
-                        :readonly="isSavedProvider"
+                        :readonly="isIdentityLocked"
                         :placeholder="t('settings.panels.models.apiBasePlaceholder')"
                         :disabled="props.saving"
                         @update:model-value="patchOptions({baseURL: $event})"
@@ -177,7 +182,7 @@ function patchOptions(patch: Partial<ModelSettingsProviderDraft["options"]>): vo
                         class="mt-[var(--space-2)]"
                         size="sm"
                         :model-value="props.provider.options.proxy"
-                        :readonly="isSavedProvider"
+                        :readonly="isIdentityLocked"
                         placeholder="http://127.0.0.1:7890"
                         :disabled="props.saving"
                         @update:model-value="patchOptions({proxy: $event})"

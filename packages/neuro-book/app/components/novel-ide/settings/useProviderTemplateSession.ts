@@ -12,6 +12,8 @@ type ProviderTemplateSessionOptions = {
     createProviderKey(providerId: string): string;
     cloneModel(model: ConfiguredModelDto): ModelSettingsModelDraft;
     ensureDefaultModel(): void;
+    /** 新 Provider 的连接身份在本次会话内保持可编辑，见 markConnectionIdentityDraft。 */
+    markConnectionIdentityDraft(localKey: string): void;
 };
 
 const FALLBACK_TEMPLATE: ProviderTemplateDto = {
@@ -84,6 +86,7 @@ export function useProviderTemplateSession(options: ProviderTemplateSessionOptio
         }
         const providerId = uniqueProviderId(template.id);
         const localKey = options.createProviderKey(providerId);
+        options.markConnectionIdentityDraft(localKey);
         options.activeProviderKey.value = localKey;
         options.draft.value.providers.push({
             localKey,

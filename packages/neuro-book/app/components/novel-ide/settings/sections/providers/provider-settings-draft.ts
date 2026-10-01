@@ -59,6 +59,12 @@ export type ModelSettingsProviderDraft = ContractProviderDraft<ModelSettingsMode
     localKey: string;
     /** 已保存原始 Provider 数组位置；新建 Provider 为空。 */
     sourceIndex?: number;
+    /**
+     * 本次设置会话新建、连接身份尚未定稿的 Provider。
+     * 它已被自动保存并因此拿到 sourceIndex，但 id / baseURL / 代理 在会话结束前仍可编辑；
+     * 否则克隆连接或新增 Provider 后会立刻写回并锁死，用户没有输入的机会。
+     */
+    connectionIdentityDraft?: boolean;
     name: string;
     options: {
         apiKey: string;

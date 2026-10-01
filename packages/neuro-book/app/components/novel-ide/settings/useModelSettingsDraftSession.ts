@@ -73,6 +73,8 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
     const repairingModels = ref(false);
     let providerLocalKeySeed = 0;
     let modelLocalKeySeed = 0;
+    /** 本次会话新建 Provider 的 localKey；见 ModelSettingsProviderDraft.connectionIdentityDraft。 */
+    const connectionIdentityDraftKeys = new Set<string>();
 
     const isProjectScope = computed(() => options.props.scope === "project");
     const activeProvider = computed(() => draft.value.providers.find((provider) => provider.localKey === activeProviderKey.value) ?? null);
@@ -81,6 +83,11 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
     function createProviderKey(providerId: string): string {
         providerLocalKeySeed += 1;
         return `provider-${providerLocalKeySeed}-${providerId.trim() || "draft"}`;
+    }
+
+    /** 登记本次会话新建的 Provider：它的连接身份在会话结束前保持可编辑。 */
+    function markConnectionIdentityDraft(localKey: string): void {
+        connectionIdentityDraftKeys.add(localKey);
     }
 
     /** 创建只用于前端渲染与检测的稳定模型 key。 */
@@ -123,9 +130,13 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
     /** 将 Config Provider DTO 复制成可编辑草稿。 */
     function cloneProvider(provider: ConfigModelSettingsDto["providers"][number], localKeys: Map<string, string[]>): ModelSettingsProviderDraft {
         const requestOptionsDraft = splitProviderRequestOptions(provider.options.requestOptions);
+        const localKey = localKeys.get(provider.id)?.shift() ?? createProviderKey(provider.id);
         return {
-            localKey: localKeys.get(provider.id)?.shift() ?? createProviderKey(provider.id),
+            localKey,
             sourceIndex: provider.sourceIndex,
+            // 自动保存会让快照回填 sourceIndex，身份未定稿标记必须按 localKey 复原，
+            // 否则本次会话新建的 Provider 在第一次写回后就失去编辑窗口。
+            ...(connectionIdentityDraftKeys.has(localKey) ? {connectionIdentityDraft: true} : {}),
             id: provider.id,
             name: provider.name,
             enabled: provider.enabled,
@@ -469,8 +480,9 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
     }
 
     /**
-     * 显式复制当前连接。新 Provider 不继承 Secret 或既有引用，用户确认后再单独保存。
+     * 显式复制当前连接。新 Provider 不继承 Secret 或既有引用。
      * 这是修改 ID、Base URL 或代理的唯一设置页入口；Provider Model API 可在原连接上直接修改。
+     * 克隆结果按新建 Provider 登记：本页会自动保存它，但身份在本次会话内保持可编辑。
      */
     function cloneActiveProviderConnection(): void {
         const provider = activeProvider.value;
@@ -485,8 +497,9 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
             nextId = `${baseId}-${String(suffix)}`;
             suffix += 1;
         }
+        const localKey = createProviderKey(nextId);
         const clone: ModelSettingsProviderDraft = {
-            localKey: createProviderKey(nextId),
+            localKey,
             id: nextId,
             name: `${provider.name} Copy`,
             enabled: provider.enabled,
@@ -505,7 +518,8 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
             models: provider.models.map((model) => cloneModel({...buildModelDraft(model), enabled: model.enabled})),
         };
         draft.value.providers.push(clone);
-        activeProviderKey.value = clone.localKey;
+        markConnectionIdentityDraft(localKey);
+        activeProviderKey.value = localKey;
         notification.info(t("settings.panels.models.providerCloned", {id: nextId}));
     }
 
@@ -663,7 +677,7 @@ export function useModelSettingsDraftSession(options: DraftSessionOptions) {
     return {
         loading, saving, activeProviderKey, draft, activeProvider, editorSnapshot, deleteProviderDialogOpen, validationDialogOpen, repairingModels,
         isProjectScope, dirty, validationState, validationIssues, validationIssueDetails, defaultModelOptions, enabledModelGroups, disabledModels,
-        activeProviderEnabledModelCount, createProviderKey, cloneModel, buildProviderRequest, buildModelDraft, credentialSource, ensureDefaultModel,
+        activeProviderEnabledModelCount, createProviderKey, cloneModel, markConnectionIdentityDraft, buildProviderRequest, buildModelDraft, credentialSource, ensureDefaultModel,
         clearActiveProviderApiKey, toggleActiveProviderEnabled, renameActiveProviderId, cloneActiveProviderConnection, requestDeleteActiveProvider, confirmDeleteActiveProvider,
         enableModel, disableModel, deleteModel, savedModelIssues, displayedContextWindow, repair, load, save, saveResult, restore,
     };
