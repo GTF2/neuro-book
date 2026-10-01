@@ -81,9 +81,9 @@ neuro-book/
 
 | 任务范围 | 追加读取 |
 |---|---|
-| 创建、推进或恢复 current 工作 | [`.agents/works/AGENTS.md`](.agents/works/AGENTS.md)、具体 Work 与 Task；修复历史 provenance 时追加读 [`.agents/tasks/AGENTS.md`](.agents/tasks/AGENTS.md)；只读问答不新建 Work |
-| 测试、fixture、验收、缓存、临时数据 | [`docs/testing/README.md`](docs/testing/README.md) |
-| 新功能、bug 期望不明确或长期行为变化 | [`docs/proposals/README.md`](docs/proposals/README.md)、[`docs/specs/AGENTS.md`](docs/specs/AGENTS.md)、相关 Spec 与 ADR |
+| 创建、推进或恢复 current 工作 | [`.agents/works/AGENTS.md`](.agents/works/AGENTS.md)、[`.agents/skills/work-registry/SKILL.md`](.agents/skills/work-registry/SKILL.md)、[`.agents/skills/task-snapshot/SKILL.md`](.agents/skills/task-snapshot/SKILL.md)、具体 Work 与 Task；修复历史 provenance 时追加读 [`.agents/tasks/AGENTS.md`](.agents/tasks/AGENTS.md)；只读问答不新建 Work |
+| 测试、fixture、验收、缓存、临时数据 | [`.agents/skills/verification-evidence/SKILL.md`](.agents/skills/verification-evidence/SKILL.md)、[`docs/testing/README.md`](docs/testing/README.md) |
+| 新功能、bug 期望不明确或长期行为变化 | [`.agents/skills/spec-registration/SKILL.md`](.agents/skills/spec-registration/SKILL.md)、[`docs/proposals/README.md`](docs/proposals/README.md)、[`docs/specs/AGENTS.md`](docs/specs/AGENTS.md)、相关 Spec 与 ADR |
 | 源码、脚本、schema 或 migration | [`docs/standards/code/README.md`](docs/standards/code/README.md)；按改动路径只读取表中列出的领域与语言规范 |
 | Git 分支、worktree、提交、PR、合并或发布操作 | [`.agents/skills/repository-workflow/SKILL.md`](.agents/skills/repository-workflow/SKILL.md)；Issue 元数据维护读 [`docs/standards/repository-workflow.md`](docs/standards/repository-workflow.md)，公开贡献再读 [`CONTRIBUTING.md`](CONTRIBUTING.md) |
 | 前端、UI 界面、组件、样式或主题修改 | [`.agents/skills/ui-development/SKILL.md`](.agents/skills/ui-development/SKILL.md)、[`docs/standards/code/components.md`](docs/standards/code/components.md)、[`packages/nb-ui/docs/ui-development-spec.md`](packages/nb-ui/docs/ui-development-spec.md)；查改组件必读并列同名 `.md` |
