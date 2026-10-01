@@ -1367,7 +1367,8 @@ function normalizeGlobalModelsForWrite(
 /**
  * Provider Config ID 是连接身份，不允许通过普通保存偷偷改名或换端点。
  * Provider Model API 只影响发现和候选补全，可以在同一连接上显式修改。
- * 显式 clone/migrate 尚未进入此保存接口；调用方必须新建 Provider 并重新提供凭据。
+ * 客户端显式声明的会话新建 Provider（connectionIdentityDraft）例外：它的身份尚未定稿，
+ * 按来源索引就地替换；定稿由客户端在会话结束时收回声明。
  */
 function assertProviderConnectionsStable(
     providers: NonNullable<GlobalConfigUpdateDto["models"]>["providers"],
@@ -1392,6 +1393,9 @@ function assertProviderConnectionsStable(
         const stored = storedProviders[provider.sourceIndex];
         if (!stored) {
             throw createError({statusCode: 400, message: `Provider ${provider.id} 的来源索引无效。`});
+        }
+        if (provider.connectionIdentityDraft === true) {
+            continue;
         }
         if (stored.id !== provider.id) {
             throw createError({

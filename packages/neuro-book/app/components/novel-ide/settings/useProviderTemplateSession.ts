@@ -90,6 +90,7 @@ export function useProviderTemplateSession(options: ProviderTemplateSessionOptio
         options.activeProviderKey.value = localKey;
         options.draft.value.providers.push({
             localKey,
+            connectionIdentityDraft: true,
             id: providerId,
             name: template.name,
             enabled: true,

@@ -191,6 +191,7 @@ export function buildModelsSection(draft: ModelSettingsDraft): NonNullable<Globa
         default: cleanModelKey(draft.defaultModelKey, runnableModelKeys),
         providers: draft.providers.map((provider) => ({
             ...(provider.sourceIndex !== undefined ? {sourceIndex: provider.sourceIndex} : {}),
+            ...(provider.connectionIdentityDraft ? {connectionIdentityDraft: true} : {}),
             id: provider.id.trim(),
             name: provider.name.trim(),
             enabled: provider.enabled,
