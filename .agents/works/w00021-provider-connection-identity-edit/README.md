@@ -27,6 +27,7 @@ issueId: null
 | Task | 当前范围 |
 |---|---|
 | [t01](tasks/t01-connection-identity-edit-window/README.md) | 已实现并验证，随 `3b5d566a` 合入 master |
-| [t02](tasks/t02-connection-identity-save-contract/README.md) | 当前：把「身份未定稿」声明接到保存契约，让编辑真正落盘 |
+| [t02](tasks/t02-connection-identity-save-contract/README.md) | 已实现并验证：把「身份未定稿」声明接到保存契约，并放行会话新建 Provider 的改名守卫 |
+| [t03](tasks/t03-model-discovery-dialog-entry/README.md) | 当前：修复「发现/添加模型」只发现、不打开挑选窗口 |
 
 2026-10-02 开发者使用中转站 Provider 时发现 t01 只解锁了界面，保存仍被服务端身份守卫拒绝（`连接身份不可修改（Base URL 或代理已变化）`），要求继续修通，并选定「保留身份不可变语义、只对会话新建 Provider 豁免」的方向。Work 因此重新进入进行中，撤销此前记下的收尾行。
