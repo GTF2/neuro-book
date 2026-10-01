@@ -7,6 +7,8 @@ import FormInput from "nbook/app/components/common/form/FormInput.vue";
 import FormSelect from "nbook/app/components/common/form/FormSelect.vue";
 import JsonViewer from "nbook/app/components/common/JsonViewer.vue";
 import {hasModelCostOverride, parseModelCostDraft, type ModelCostDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-cost-draft";
+import type {ModelReferenceField} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
+import type {ModelReferenceView} from "nbook/app/components/novel-ide/settings/sections/providers/provider-view-types";
 import {parseDraftInteger, parseModelCompat, parseModelInput, parseModelReasoning, parseStringMap} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
 import type {ModelInputKind, ModelLibraryEntryDto} from "nbook/shared/dto/app-settings.dto";
 import {deriveModelGroup} from "nbook/shared/models/model-group";
@@ -43,12 +45,15 @@ const props = withDefaults(defineProps<{
     activeProvider: ProviderDraft | null;
     /** 当前模型在 NeuroBook Model Library 中的标准资料；未命中时为空。 */
     libraryModel: ModelLibraryEntryDto | null;
+    /** 精确未命中时的同族参考；appliedFields 必须逐字段标注，不能当作已核实资料。 */
+    reference?: ModelReferenceView | null;
     confirmMode?: boolean;
     missingFields: string[];
     modelApiOptions: SelectOption[];
     /** 浮层宿主；Lab 里没有 .novel-ide-theme，fixture 传 false 就地渲染。 */
     teleportTarget?: string | boolean;
 }>(), {
+    reference: null,
     teleportTarget: ".novel-ide-theme",
 });
 
@@ -60,6 +65,7 @@ const emit = defineEmits<{
     (e: "reset-model-cost", model: ModelDraft): void;
     (e: "enable-model-cost", model: ModelDraft): void;
     (e: "reapply-library", model: ModelDraft): void;
+    (e: "apply-reference"): void;
     (e: "confirm"): void;
 }>();
 
@@ -103,6 +109,29 @@ function modelInputEnabled(model: ModelDraft, inputKind: ModelInputKind): boolea
 function modelReasoningDisplayLabel(model: ModelDraft): string {
     const reasoning = parseModelReasoning(model.reasoning);
     return reasoning === null ? t("settings.panels.models.unknown") : reasoning ? t("settings.panels.models.supported") : t("settings.panels.models.unsupported");
+}
+
+/** 参考字段的可读名；与页签内的字段标题保持一致。 */
+const referenceFieldLabels = computed<Record<ModelReferenceField, string>>(() => ({
+    reasoning: t("settings.panels.modelEdit.reasoningCapability"),
+    input: t("settings.panels.modelEdit.inputCapability"),
+    contextWindowTokens: t("settings.panels.modelEdit.contextWindow"),
+    maxTokens: "Max Tokens",
+    thinkingLevelMap: t("settings.panels.modelEdit.jsonFields.thinking"),
+}));
+
+const appliedReferenceFieldsLabel = computed(() => (props.reference?.appliedFields ?? [])
+    .map((field) => referenceFieldLabels.value[field])
+    .join(t("settings.panels.modelEdit.referenceFieldSeparator")));
+
+/**
+ * 该字段的参考标注文本；没有参考来源时返回空串。
+ * 只有确实来自参考的值才标注，用户改掉后标记随之消失。
+ */
+function referenceBadgeText(field: ModelReferenceField): string {
+    return props.reference?.appliedFields.includes(field)
+        ? t("settings.panels.modelEdit.referenceBadge", {modelId: props.reference.modelId})
+        : "";
 }
 
 const tabs = computed<Array<{key: ModelEditTab; label: string; iconClass: string}>>(() => [
@@ -236,6 +265,10 @@ function updateOpen(value: boolean): void {
                 </div>
                 <div class="flex max-w-full flex-wrap items-center gap-2 text-[10px]">
                     <span v-if="props.activeProvider" class="inline-flex max-w-[220px] items-center gap-1.5 rounded-md border border-[var(--border-color)] px-2 py-1 text-[var(--text-secondary)]"><span class="i-lucide-plug h-3 w-3"></span><span class="truncate">{{ props.activeProvider.name }}</span></span>
+                    <span v-if="props.reference?.appliedFields.length" class="inline-flex items-center gap-1.5 rounded-md border border-[var(--status-warning-border)] px-2 py-1 text-[var(--status-warning)]" :title="t('settings.panels.modelEdit.referencePendingTitle', {fields: appliedReferenceFieldsLabel})">
+                        <span class="i-lucide-info h-3 w-3"></span>
+                        {{ t("settings.panels.modelEdit.referencePending", {count: props.reference.appliedFields.length}) }}
+                    </span>
                     <span class="inline-flex items-center gap-1.5 rounded-md border px-2 py-1" :class="props.missingFields.length ? 'border-[var(--status-warning-border)] text-[var(--status-warning)]' : 'border-[var(--status-success-border)] text-[var(--status-success)]'">
                         <span class="h-1.5 w-1.5 rounded-full" :class="props.missingFields.length ? 'bg-[var(--status-warning)]' : 'bg-[var(--status-success)]'"></span>
                         {{ props.missingFields.length ? t("settings.panels.modelEdit.incomplete") : t("settings.panels.modelEdit.ready") }}
@@ -292,6 +325,12 @@ function updateOpen(value: boolean): void {
                                 <p class="mt-1 text-[11px] leading-5 text-[var(--text-muted)]">{{ props.libraryModel.source }}</p>
                                 <button type="button" class="mt-2 inline-flex h-8 items-center gap-1.5 rounded-md border border-[var(--accent-main)] px-2.5 text-[11px] font-medium text-[var(--accent-text)] transition-colors hover:bg-[var(--accent-bg)]" @click="emit('reapply-library', props.editingModel)"><span class="i-lucide-refresh-cw h-3.5 w-3.5"></span>{{ t("settings.panels.modelEdit.reapplyLibrary") }}</button>
                             </div>
+                            <div v-else-if="props.reference">
+                                <div class="flex items-center gap-2 text-xs font-medium text-[var(--text-main)]"><span class="i-lucide-database h-3.5 w-3.5 text-[var(--status-warning)]"></span>{{ t("settings.panels.modelEdit.referenceMatched", {modelId: props.reference.modelId}) }}</div>
+                                <p class="mt-1 text-[11px] leading-5 text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.referenceDescription", {source: props.reference.source}) }}</p>
+                                <p v-if="props.reference.appliedFields.length" class="mt-1 text-[11px] leading-5 text-[var(--status-warning)]">{{ t("settings.panels.modelEdit.referenceApplied", {fields: appliedReferenceFieldsLabel}) }}</p>
+                                <button v-if="props.reference.fillableFields.length" type="button" class="mt-2 inline-flex h-8 items-center gap-1.5 rounded-md border border-[var(--accent-main)] px-2.5 text-[11px] font-medium text-[var(--accent-text)] transition-colors hover:bg-[var(--accent-bg)]" @click="emit('apply-reference')"><span class="i-lucide-sparkles h-3.5 w-3.5"></span>{{ t("settings.panels.modelEdit.applyReference", {count: props.reference.fillableFields.length}) }}</button>
+                            </div>
                             <div v-else class="text-xs leading-5 text-[var(--status-warning)]"><span class="i-lucide-circle-alert mr-1.5 inline-block h-3.5 w-3.5 align-text-bottom"></span>{{ t("settings.panels.modelEdit.libraryMissing") }}</div>
                             <p v-if="props.missingFields.length" class="text-[11px] leading-5 text-[var(--status-danger)]">{{ t("settings.panels.modelEdit.missingFields", {fields: props.missingFields.join(", ")}) }}</p>
                         </div>
@@ -308,12 +347,12 @@ function updateOpen(value: boolean): void {
                         <div class="space-y-5">
                             <div class="border-b border-[var(--border-color)] pb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.limits") }}</div>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.contextWindow") }}</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: modelContextWindowDefaultLabel(props.editingModel)}) }}</span></div>
+                                <div class="flex items-center justify-between gap-3"><div class="flex min-w-0 items-center gap-2"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.contextWindow") }}</label><span v-if="referenceBadgeText('contextWindowTokens')" class="shrink-0 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[9px] text-[var(--status-warning)]">{{ referenceBadgeText("contextWindowTokens") }}</span></div><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: modelContextWindowDefaultLabel(props.editingModel)}) }}</span></div>
                                 <FormInput v-model="props.editingModel.contextWindowTokens" type="number" :placeholder="modelContextWindowDefaultLabel(props.editingModel)" />
                                 <p class="text-[11px] leading-5 text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.contextWindowDescription") }}</p>
                             </div>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">Max Tokens</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: modelMaxTokensDefaultLabel(props.editingModel)}) }}</span></div>
+                                <div class="flex items-center justify-between gap-3"><div class="flex min-w-0 items-center gap-2"><label class="text-xs font-semibold text-[var(--text-secondary)]">Max Tokens</label><span v-if="referenceBadgeText('maxTokens')" class="shrink-0 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[9px] text-[var(--status-warning)]">{{ referenceBadgeText("maxTokens") }}</span></div><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.emptyLabel", {value: modelMaxTokensDefaultLabel(props.editingModel)}) }}</span></div>
                                 <FormInput v-model="props.editingModel.maxTokens" type="number" :placeholder="modelMaxTokensDefaultLabel(props.editingModel)" />
                                 <p class="text-[11px] leading-5 text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.maxTokensDescription") }}</p>
                             </div>
@@ -322,13 +361,13 @@ function updateOpen(value: boolean): void {
                         <div class="space-y-5 border-t border-[var(--border-color)] pt-6 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
                             <div class="border-b border-[var(--border-color)] pb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.capabilities") }}</div>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.inputCapability") }}</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.currentLabel", {value: modelInputDisplayLabel(props.editingModel)}) }}</span></div>
+                                <div class="flex items-center justify-between gap-3"><div class="flex min-w-0 items-center gap-2"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.inputCapability") }}</label><span v-if="referenceBadgeText('input')" class="shrink-0 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[9px] text-[var(--status-warning)]">{{ referenceBadgeText("input") }}</span></div><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.currentLabel", {value: modelInputDisplayLabel(props.editingModel)}) }}</span></div>
                                 <div class="grid grid-cols-2 gap-1 rounded-lg border border-[var(--border-color)] p-1">
                                     <button v-for="option in modelInputOptions" :key="option.value" type="button" class="inline-flex h-9 items-center justify-center gap-1.5 rounded-md text-xs font-medium transition-colors" :class="modelInputEnabled(props.editingModel, option.value) ? 'bg-[var(--accent-bg)] text-[var(--accent-text)]' : 'text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'" :title="t('settings.panels.modelEdit.inputTitle', {label: option.label})" @click="emit('toggle-model-input', props.editingModel, option.value)"><span class="h-3.5 w-3.5" :class="option.iconClass"></span>{{ option.label }}</button>
                                 </div>
                             </div>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between gap-3"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.reasoningCapability") }}</label><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.currentLabel", {value: modelReasoningDisplayLabel(props.editingModel)}) }}</span></div>
+                                <div class="flex items-center justify-between gap-3"><div class="flex min-w-0 items-center gap-2"><label class="text-xs font-semibold text-[var(--text-secondary)]">{{ t("settings.panels.modelEdit.reasoningCapability") }}</label><span v-if="referenceBadgeText('reasoning')" class="shrink-0 rounded border border-[var(--status-warning-border)] bg-[var(--status-warning-bg)] px-1.5 py-0.5 text-[9px] text-[var(--status-warning)]">{{ referenceBadgeText("reasoning") }}</span></div><span class="text-[10px] text-[var(--text-muted)]">{{ t("settings.panels.modelEdit.currentLabel", {value: modelReasoningDisplayLabel(props.editingModel)}) }}</span></div>
                                 <FormSelect v-model="props.editingModel.reasoning" :options="reasoningOptions" />
                                 <p class="text-[11px] leading-5 text-[var(--text-muted)]"><span class="i-lucide-info mr-1 inline-block h-3.5 w-3.5 align-text-bottom"></span>{{ t("settings.panels.modelEdit.reasoningDescription") }}</p>
                             </div>

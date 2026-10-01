@@ -15,6 +15,7 @@ import type SecuritySettingsView from "../../components/novel-ide/settings/secti
 import type ProviderSettingsView from "../../components/novel-ide/settings/sections/providers/ProviderSettingsView.vue";
 import type RolesSettingsView from "../../components/novel-ide/settings/sections/roles/RolesSettingsView.vue";
 import type NovelIdeModelEditDialog from "../../components/novel-ide/settings/sections/providers/components/NovelIdeModelEditDialog.vue";
+import type {ModelReferenceView} from "../../components/novel-ide/settings/sections/providers/provider-view-types";
 import type ModelDiscoveryDialog from "../../components/novel-ide/settings/sections/providers/components/ModelDiscoveryDialog.vue";
 import type ModelLibraryDialog from "../../components/novel-ide/settings/sections/providers/components/ModelLibraryDialog.vue";
 import type ProjectPickerView from "../../components/novel-ide/project-picker/ProjectPickerView.vue";
@@ -347,10 +348,14 @@ export const agentProfileSettingsViewScenes = [
 
 const editingProviderDraft = buildModelSettingsDraft();
 const modelEditProps = {editingModel: editingProviderDraft.providers[0]!.models[0]!, activeProvider: {id: editingProviderDraft.providers[0]!.id, name: editingProviderDraft.providers[0]!.name}, libraryModel: null, missingFields: [], modelApiOptions: MODEL_API_OPTIONS, teleportTarget: false};
+const referenceEditModel = {...editingProviderDraft.providers[0]!.models[0]!, id: "gpt-5.2", name: "GPT-5.2", reasoning: "true" as const, input: "text"};
+const modelReferenceView: ModelReferenceView = {modelId: "gpt-5.1", name: "GPT-5.1", source: "openai", fillableFields: ["contextWindowTokens", "maxTokens"], appliedFields: ["reasoning", "input"]};
 export const novelIdeModelEditDialogScenes = [
     {id: "default", label: "编辑模型", input: {props: modelEditProps, model: {modelValue: true}}},
     {id: "missing-fields", label: "缺字段", input: {props: {...modelEditProps, editingModel: {...editingProviderDraft.providers[0]!.models[1]!, api: "", contextWindowTokens: "", maxTokens: "", reasoning: "inherit" as const}, missingFields: ["api", "contextWindowTokens"]}, model: {modelValue: true}}},
     {id: "confirm-mode", label: "候选择确认", input: {props: {...modelEditProps, confirmMode: true}, model: {modelValue: true}}},
+    {id: "reference-pending", label: "参考待确认", input: {props: {...modelEditProps, editingModel: referenceEditModel, reference: modelReferenceView, confirmMode: true}, model: {modelValue: true}}},
+    {id: "reference-applied", label: "参考已补齐", input: {props: {...modelEditProps, editingModel: referenceEditModel, reference: {...modelReferenceView, fillableFields: []}, confirmMode: true}, model: {modelValue: true}}},
 ] satisfies LabFixtureDefinition<typeof NovelIdeModelEditDialog>["scenes"];
 
 function discoveryProps(scene: string) {
@@ -580,7 +585,7 @@ function providerProps(scene: string) {
         activeProviderKey: draft.providers[0]?.localKey ?? "", activeProviderCheckingModelCount: 0, checkingAllModels: false, discoveringProviderId: "",
         modelApiOptions: MODEL_API_OPTIONS, providerTemplates: MODEL_PROVIDER_TEMPLATES, maxRetriesPlaceholder: DEFAULT_PI_MAX_RETRIES,
         validationDialogOpen: false, deleteProviderDialogOpen: false, modelEditDialogOpen: false, discoveryDialogOpen: false, modelLibraryDialogOpen: false,
-        editingModel: null, editingLibraryModel: null, editingModelMissingFields: [], editingTransientCandidate: false,
+        editingModel: null, editingLibraryModel: null, editingReference: null, editingModelMissingFields: [], editingTransientCandidate: false,
         discoveryGroups: [], discoverySearchQuery: "", discoveryExpandedGroups: {}, discoveryDiagnostics: null,
         discoveryManualDraft: {name: "", id: "", api: "", group: "", contextWindowTokens: "", maxTokens: ""},
         modelLibraryGroups: [], modelLibrarySearchQuery: "", modelLibraryExpandedGroups: {}, teleportTarget: false,

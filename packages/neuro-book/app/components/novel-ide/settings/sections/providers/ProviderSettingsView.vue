@@ -182,6 +182,7 @@ function toggleGroup(group: string): void {
             :editing-model="props.editingModel"
             :active-provider="activeProvider"
             :library-model="props.editingLibraryModel"
+            :reference="props.editingReference"
             :confirm-mode="props.editingTransientCandidate"
             :missing-fields="props.editingModelMissingFields"
             :model-api-options="props.modelApiOptions"
@@ -193,6 +194,7 @@ function toggleGroup(group: string): void {
             @reset-model-cost="emit('reset-model-cost', $event)"
             @enable-model-cost="emit('enable-model-cost', $event)"
             @reapply-library="emit('reapply-library', $event)"
+            @apply-reference="emit('apply-reference')"
             @confirm="emit('confirm-model-edit')"
         />
     </div>

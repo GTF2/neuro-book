@@ -44,6 +44,59 @@ describe("Model Candidate Completion", () => {
             expect(result.missingFields).toEqual(expect.arrayContaining(["api", "reasoning", "input", "contextWindowTokens", "maxTokens"]));
         }
     });
+
+    it("同族参考值补齐缺失字段并声明来源", () => {
+        const result = completeModelCandidate(discovered({api: null}), null, "openai-completions", reference());
+        if (result.status !== "reference") {
+            throw new Error("期望参考候选");
+        }
+        expect(result.candidate).toMatchObject({
+            api: "openai-completions",
+            contextWindowTokens: 1_000_000,
+            maxTokens: 384_000,
+            reasoning: true,
+            input: ["text"],
+            thinkingLevelMap: {high: "high"},
+        });
+        expect(result.reference).toEqual({
+            modelId: "deepseek-v4-flash",
+            name: "DeepSeek V4 Flash",
+            source: "deepseek",
+            fields: ["reasoning", "input", "contextWindowTokens", "maxTokens", "thinkingLevelMap"],
+        });
+        expect(result.provenance).toMatchObject({
+            reasoning: "model-library-reference",
+            input: "model-library-reference",
+            contextWindowTokens: "model-library-reference",
+            maxTokens: "model-library-reference",
+            thinkingLevelMap: "model-library-reference",
+        });
+    });
+
+    it("参考值不覆盖远端字段，且不参与 api 判定", () => {
+        const result = completeModelCandidate(discovered({api: null, reasoning: false}), null, null, reference());
+        if (result.status !== "incomplete") {
+            throw new Error("期望不完整候选");
+        }
+        expect(result.missingFields).toEqual(["api"]);
+        expect(result.candidate.contextWindowTokens).toBe(1_000_000);
+        expect(result.provenance.reasoning).toBe("remote");
+        expect(result.reference?.fields).toEqual(["input", "contextWindowTokens", "maxTokens", "thinkingLevelMap"]);
+    });
+
+    it("精确资料优先于同族参考", () => {
+        const result = completeModelCandidate(discovered({api: null}), knowledge(), "openai-completions", reference());
+        expect(result).toMatchObject({status: "complete", provenance: {maxTokens: "model-library"}});
+    });
+
+    it("参考条目没有的字段不声明来源", () => {
+        const result = completeModelCandidate(discovered({api: null}), null, null, {...reference(), thinkingLevelMap: null, input: []});
+        if (result.status !== "incomplete") {
+            throw new Error("期望不完整候选");
+        }
+        expect(result.reference?.fields).toEqual(["reasoning", "contextWindowTokens", "maxTokens"]);
+        expect(result.missingFields).toContain("input");
+    });
 });
 
 function discovered(overrides: Partial<DiscoveredProviderModelDto> = {}): DiscoveredProviderModelDto {
@@ -74,5 +127,19 @@ function knowledge(): ModelLibraryEntryDto {
         input: ["text"],
         contextWindowTokens: 128_000,
         maxTokens: 8_000,
+    };
+}
+
+/** 同族参考条目：ID 与目标不同，能力资料比精确资料更宽松。 */
+function reference(): ModelLibraryEntryDto {
+    return {
+        id: "deepseek-v4-flash",
+        name: "DeepSeek V4 Flash",
+        source: "deepseek",
+        reasoning: true,
+        thinkingLevelMap: {high: "high"},
+        input: ["text"],
+        contextWindowTokens: 1_000_000,
+        maxTokens: 384_000,
     };
 }

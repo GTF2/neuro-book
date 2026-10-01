@@ -8,6 +8,7 @@ import type {
     ManualModelDraft,
     ModelApiOption,
     ModelLibraryGroup,
+    ModelReferenceView,
     SavedModelGroupView,
 } from "./provider-view-types";
 
@@ -51,6 +52,8 @@ export type ProviderSettingsViewProps = {
     /** 正在编辑的模型与它的 Model Library 资料（未命中时为空） */
     editingModel: ModelSettingsModelDraft | null;
     editingLibraryModel: ModelLibraryEntryDto | null;
+    /** 精确未命中时的同族参考；窗口据此标注参考字段与来源 */
+    editingReference: ModelReferenceView | null;
     editingModelMissingFields: string[];
     /** true 表示正在编辑尚未进入配置的临时候选（发现结果里手工补全的那条） */
     editingTransientCandidate: boolean;
@@ -105,6 +108,7 @@ export type ProviderSettingsViewEmits = {
     (event: "reset-model-cost", model: ModelSettingsModelDraft): void;
     (event: "enable-model-cost", model: ModelSettingsModelDraft): void;
     (event: "reapply-library", model: ModelSettingsModelDraft): void;
+    (event: "apply-reference"): void;
     (event: "update:discoverySearchQuery", value: string): void;
     (event: "update:modelLibrarySearchQuery", value: string): void;
     (event: "update:discoveryManualField", field: keyof ManualModelDraft, value: string): void;

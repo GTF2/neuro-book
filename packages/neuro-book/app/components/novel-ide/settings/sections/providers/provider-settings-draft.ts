@@ -6,6 +6,7 @@ import type {
 import type {GlobalConfigUpdateDto, SecretConfigValueDto} from "nbook/shared/dto/config.dto";
 import {parsePiMaxRetries, PiSimpleRequestOptionsSchema, type PiSimpleRequestOptionsDto} from "nbook/shared/dto/pi-request-options.dto";
 import {parseModelCostDraft, type ModelCostDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-cost-draft";
+import type {ModelReferenceField} from "nbook/app/components/novel-ide/settings/sections/providers/provider-model-draft-factory";
 import {
     inspectModelCapability,
     inspectModelSettings,
@@ -366,6 +367,32 @@ export function ensureRunnableDefault(draft: ContractSettingsDraft): Set<string>
         draft.defaultModelKey = runnableModelKeys.values().next().value ?? null;
     }
     return runnableModelKeys;
+}
+
+/**
+ * 参考字段中当前值仍等于参考条目的部分；用户改掉某个字段后，该字段不再计入待确认。
+ * 参考值只是预填，标注必须随值失效，否则界面会继续声称一个用户已经改过的值来自参考。
+ */
+export function referenceFieldsStillMatching(
+    model: Pick<ModelSettingsModelDraft, "reasoning" | "input" | "contextWindowTokens" | "maxTokens" | "thinkingLevelMap">,
+    entry: ModelLibraryEntryDto,
+    fields: readonly ModelReferenceField[],
+): ModelReferenceField[] {
+    return fields.filter((field) => {
+        if (field === "reasoning") {
+            return parseModelReasoning(model.reasoning) === entry.reasoning;
+        }
+        if (field === "input") {
+            return (parseModelInput(model.input) ?? []).slice().sort().join(",") === [...entry.input].sort().join(",");
+        }
+        if (field === "contextWindowTokens") {
+            return parseDraftInteger(model.contextWindowTokens) === entry.contextWindowTokens;
+        }
+        if (field === "maxTokens") {
+            return parseDraftInteger(model.maxTokens) === entry.maxTokens;
+        }
+        return model.thinkingLevelMap.trim() === (entry.thinkingLevelMap ? JSON.stringify(entry.thinkingLevelMap, null, 2) : "");
+    });
 }
 
 /**

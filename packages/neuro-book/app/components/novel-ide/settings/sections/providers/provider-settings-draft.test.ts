@@ -8,6 +8,7 @@ import {
     inspectSettingsDraft,
     previewModelLibraryRepairs,
     previewProviderModelApiRepairs,
+    referenceFieldsStillMatching,
     renameAgentProvider,
     removeIncompleteDisabledModels,
     modelContractInput,
@@ -175,6 +176,76 @@ describe("model settings draft contract", () => {
         ]);
     });
 });
+
+describe("相近参考值的失效判定", () => {
+    it("值仍等于参考条目时保留标注", () => {
+        expect(referenceFieldsStillMatching({
+            reasoning: "true",
+            input: "text",
+            contextWindowTokens: "1048576",
+            maxTokens: "131072",
+            thinkingLevelMap: "",
+        }, referenceEntry(), ["reasoning", "input", "contextWindowTokens", "maxTokens"])).toEqual(["reasoning", "input", "contextWindowTokens", "maxTokens"]);
+    });
+
+    it("用户改过的字段不再计入待确认", () => {
+        expect(referenceFieldsStillMatching({
+            reasoning: "false",
+            input: "text,image",
+            contextWindowTokens: "200000",
+            maxTokens: "131072",
+            thinkingLevelMap: "",
+        }, referenceEntry(), ["reasoning", "input", "contextWindowTokens", "maxTokens"])).toEqual(["maxTokens"]);
+    });
+
+    it("输入能力按集合比较，顺序不同不算改动", () => {
+        expect(referenceFieldsStillMatching({
+            reasoning: "true",
+            input: "image,text",
+            contextWindowTokens: "1048576",
+            maxTokens: "131072",
+            thinkingLevelMap: "",
+        }, {...referenceEntry(), input: ["text", "image"]}, ["input"])).toEqual(["input"]);
+        expect(referenceFieldsStillMatching({
+            reasoning: "true",
+            input: "text",
+            contextWindowTokens: "1048576",
+            maxTokens: "131072",
+            thinkingLevelMap: "",
+        }, {...referenceEntry(), input: ["text", "image"]}, ["input"])).toEqual([]);
+    });
+
+    it("思考强度按序列化文本比较，格式化差异不算改动", () => {
+        const entry = {...referenceEntry(), thinkingLevelMap: {high: "high"}};
+        expect(referenceFieldsStillMatching({
+            reasoning: "true",
+            input: "text",
+            contextWindowTokens: "1048576",
+            maxTokens: "131072",
+            thinkingLevelMap: JSON.stringify({high: "high"}, null, 2),
+        }, entry, ["thinkingLevelMap"])).toEqual(["thinkingLevelMap"]);
+        expect(referenceFieldsStillMatching({
+            reasoning: "true",
+            input: "text",
+            contextWindowTokens: "1048576",
+            maxTokens: "131072",
+            thinkingLevelMap: JSON.stringify({high: "low"}, null, 2),
+        }, entry, ["thinkingLevelMap"])).toEqual([]);
+    });
+});
+
+function referenceEntry(): ModelLibraryEntryDto {
+    return {
+        id: "mimo-v2.6-pro",
+        name: "MiMo V2.6 Pro",
+        source: "xiaomi",
+        reasoning: true,
+        thinkingLevelMap: null,
+        input: ["text"],
+        contextWindowTokens: 1_048_576,
+        maxTokens: 131_072,
+    };
+}
 
 function createDraft(): ContractSettingsDraft {
     return {
