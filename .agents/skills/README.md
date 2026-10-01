@@ -12,6 +12,10 @@ current Work/Task 以 [工作入口](../works/AGENTS.md) 为准，legacy provena
 - [writing-for-agents](writing-for-agents/SKILL.md)：规则与 Skill 写作；Skill 调用说明见 [SKILL-MECHANICS.md](writing-for-agents/SKILL-MECHANICS.md)。
 - [ui-development](ui-development/SKILL.md)：UI 界面与组件开发的真相源路由、组件复用决策、UI 专属检查与回写位置。
 - [task-reflection](task-reflection/SKILL.md)：把意外、用户纠正或新规范整理成回写建议，经开发者批准后写入对应真相源；目标位置由领域 Skill 指定。
+- [verification-evidence](verification-evidence/SKILL.md)：判断验证充分性、失败归因与既有基线失败分诊。
+- [work-registry](work-registry/SKILL.md)：Work 开号占号与收尾清理的核对清单。
+- [task-snapshot](task-snapshot/SKILL.md)：Task README 快照维护、Spec 链接与相对链接纪律。
+- [spec-registration](spec-registration/SKILL.md)：Spec/Proposal 登记纪律与规范路由表维护。
 
 通用 Skill 在宿主允许范围内服务当前请求，服从根规则、当前合同和授权，不另立审批或完成门禁。项目不依赖特定 Code Agent 宿主。
 
