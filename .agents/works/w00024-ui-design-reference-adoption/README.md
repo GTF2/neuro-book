@@ -28,6 +28,8 @@ issueId: null
 - DESIGN.md 从营销页提取：hero band、定价表、装饰插画等营销专属模式不进产品界面；
 - 判据冲突时以 `design-language.md` 为唯一真相源：可证伪判据优先于审美参照；CJK 排版按其 §四修正（负字距与紧行高不适用于汉字）。
 
-## 执行位置
+## 收尾
 
-主工作区（master），治理文档与第三方素材登记，不建 worktree。
+[t01](tasks/t01-vendor-notion-design-md/README.md) 已实现并验证。
+
+已收尾：451071f8；待清理：无
