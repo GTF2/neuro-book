@@ -52,6 +52,7 @@ describe("Provider Template frontend session", () => {
             ensureDefaultModel: () => {
                 draft.value.defaultModelKey = "responses-provider/model";
             },
+            markConnectionIdentityDraft: () => undefined,
         });
 
         session.selectedTemplate.value = "responses-provider";
@@ -71,12 +72,14 @@ describe("Provider Template frontend session", () => {
     it("模板缺少默认 Pi API 时（Custom Provider）新增结果仍合法", async () => {
         const draft = ref<ModelSettingsDraft>({defaultModelKey: null, agentVisibleModels: [], providers: []});
         const activeProviderKey = ref("");
+        const markConnectionIdentityDraft = vi.fn();
         const session = useProviderTemplateSession({
             draft,
             activeProviderKey,
             createProviderKey: (providerId) => `provider-${providerId}`,
             cloneModel,
             ensureDefaultModel: () => {},
+            markConnectionIdentityDraft,
         });
 
         // Custom Provider 是回落模板，defaultModelApi 为 null
@@ -86,6 +89,8 @@ describe("Provider Template frontend session", () => {
         const added = draft.value.providers[0];
         expect(added?.modelApi).toBe("openai-completions");
         expect(SUPPORTED_PI_APIS).toContain(added?.modelApi);
+        // 空 baseURL 的 Custom Provider 只有在会话内保持身份可编辑时才填得进去。
+        expect(markConnectionIdentityDraft).toHaveBeenCalledWith("provider-custom");
     });
 });
 

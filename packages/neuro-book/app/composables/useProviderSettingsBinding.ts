@@ -91,6 +91,7 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         disabledModels,
         createProviderKey,
         cloneModel,
+        markConnectionIdentityDraft,
         buildProviderRequest,
         buildModelDraft: buildModelCheckDraft,
         credentialSource,
@@ -117,6 +118,7 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
         createProviderKey,
         cloneModel,
         ensureDefaultModel: ensureDefaultModelKey,
+        markConnectionIdentityDraft,
     });
     const {
         modelLibrary: modelLibraryData,

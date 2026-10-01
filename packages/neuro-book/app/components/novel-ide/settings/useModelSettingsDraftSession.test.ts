@@ -2,13 +2,20 @@ import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import {useModelSettingsDraftSession} from "nbook/app/components/novel-ide/settings/useModelSettingsDraftSession";
 import type {ModelSettingsProviderDraft} from "nbook/app/components/novel-ide/settings/sections/providers/provider-settings-draft";
 import type {ConfiguredModelDto} from "nbook/shared/dto/app-settings.dto";
+import type {ConfigEditorSnapshotDto} from "nbook/shared/dto/config.dto";
 
 vi.mock("nbook/app/composables/useNotification", () => ({
     useNotification: () => ({success: vi.fn(), error: vi.fn(), warning: vi.fn(), info: vi.fn()}),
 }));
 
+const configApiMock = vi.hoisted(() => ({
+    editorSnapshot: vi.fn(),
+    saveGlobal: vi.fn(),
+    saveProject: vi.fn(),
+}));
+
 vi.mock("nbook/app/composables/useConfigApi", () => ({
-    useConfigApi: () => ({editorSnapshot: vi.fn(), saveGlobal: vi.fn(), saveProject: vi.fn()}),
+    useConfigApi: () => configApiMock,
 }));
 
 vi.mock("nbook/app/stores/novel-ide", () => ({
@@ -18,6 +25,9 @@ vi.mock("nbook/app/stores/novel-ide", () => ({
 describe("Provider Config draft frontend session", () => {
     beforeEach(() => {
         vi.stubGlobal("useI18n", () => ({t: (key: string) => key}));
+        configApiMock.editorSnapshot.mockReset();
+        configApiMock.saveGlobal.mockReset();
+        configApiMock.saveProject.mockReset();
     });
 
     afterEach(() => {
@@ -110,6 +120,37 @@ describe("Provider Config draft frontend session", () => {
 
         expect(provider.modelApi).toBe("openai-responses");
     });
+
+    it("克隆出的 Provider 在自动保存回填 sourceIndex 后仍保持连接身份可编辑", async () => {
+        const session = createSession();
+        const provider = createProvider();
+        provider.sourceIndex = 0;
+        session.draft.value.providers.push(provider);
+        session.activeProviderKey.value = provider.localKey;
+
+        session.cloneActiveProviderConnection();
+        const cloneKey = session.activeProvider.value?.localKey;
+
+        // 自动保存写回后，服务端快照会为每个 Provider 回填 sourceIndex。
+        configApiMock.saveGlobal.mockResolvedValue(snapshotWithProviders([
+            {id: "provider", sourceIndex: 0},
+            {id: "provider-copy", sourceIndex: 1},
+        ]));
+        expect(await session.saveResult(null)).toBe(true);
+
+        const rebuilt = session.draft.value.providers.find((item) => item.localKey === cloneKey);
+        expect(rebuilt).toMatchObject({id: "provider-copy", sourceIndex: 1, connectionIdentityDraft: true});
+    });
+
+    it("从配置直接读取的已保存 Provider 不带连接身份未定稿标记", async () => {
+        const session = createSession();
+        configApiMock.editorSnapshot.mockResolvedValue(snapshotWithProviders([{id: "openrouter", sourceIndex: 0}]));
+
+        await session.load();
+
+        expect(session.draft.value.providers[0]).toMatchObject({id: "openrouter", sourceIndex: 0});
+        expect(session.draft.value.providers[0]?.connectionIdentityDraft).toBeUndefined();
+    });
 });
 
 /** 创建被测 Config 草稿会话。 */
@@ -167,4 +208,32 @@ function configuredModel(): ConfiguredModelDto {
         thinkingLevelMap: null,
         contextWindowTokens: 8192,
     };
+}
+
+/** 构造只覆盖被测代码读取字段的 Config 快照；服务端快照会为每个 Provider 回填 sourceIndex。 */
+function snapshotWithProviders(providers: Array<{id: string; sourceIndex: number}>): ConfigEditorSnapshotDto {
+    return {
+        modelSettings: {
+            defaultModelKey: null,
+            defaultModelLabel: "",
+            agentVisibleModels: [],
+            enabledModels: [],
+            providers: providers.map((provider) => ({
+                sourceIndex: provider.sourceIndex,
+                id: provider.id,
+                name: provider.id,
+                enabled: true,
+                modelApi: "openai-responses",
+                options: {
+                    apiKey: {configured: false, maskedValue: null},
+                    baseURL: "https://example.com/v1",
+                    proxy: "",
+                    timeoutMs: null,
+                    requestOptions: {},
+                },
+                models: [],
+            })),
+        },
+        global: {agent: null},
+    } as unknown as ConfigEditorSnapshotDto;
 }
