@@ -153,6 +153,24 @@ describe("Provider Config draft frontend session", () => {
         expect(session.draft.value.providers[0]?.connectionIdentityDraft).toBeUndefined();
     });
 
+    it("会话新建的 Provider 即使已被自动保存也允许改名并迁移引用", () => {
+        const renameDiscovery = vi.fn();
+        const session = createSession({renameDiscovery});
+        const provider = createProvider();
+        provider.sourceIndex = 3;
+        provider.connectionIdentityDraft = true;
+        provider.models.push(session.cloneModel(configuredModel()));
+        session.draft.value.providers.push(provider);
+        session.activeProviderKey.value = provider.localKey;
+        session.draft.value.defaultModelKey = "provider/model";
+
+        session.renameActiveProviderId("relay");
+
+        expect(provider.id).toBe("relay");
+        expect(session.draft.value.defaultModelKey).toBe("relay/model");
+        expect(renameDiscovery).toHaveBeenCalledWith("provider", "relay");
+    });
+
     it("保存体只为会话新建的 Provider 携带身份未定稿声明", () => {
         const session = createSession();
         const provider = createProvider();
