@@ -19,11 +19,15 @@ taskId: t01-rp-mode-rename
 
 ## 证据
 
-（待填）
+- 已提交（worktree 分支）：`cfb0dc4b` —— 目录改名 `RP模式` → `rp-mode`（git 识别为 rename，99% 相似）、frontmatter `name: rp-mode` + `metadata.displayName: RP 模式`、vitepress 中英「历史」段引用同步、`legacy-agent-asset-tombstones.ts` 的 `LEGACY_TOMBSTONED_ASSET_PREFIXES` 补 `agent/skills/RP模式/`（带 2026-10-02 改名说明）。
+- 结构校验：`skill-creator/scripts/quick_validate.py rp-mode` → `Skill is valid.`（exit 0）；canonical 源里旧目录已不存在。
+- 聚焦测试（worktree，`bun run --cwd packages/neuro-book test server/agent/skills server/agent/profiles/{leader-assets-profile,profile-dsl,rp-profiles,writer-profile-contract}.test.ts server/workspace-files/system-asset-installation.test.ts`）：9 文件 / 175 测试，173 通过；`rp-profiles.test.ts` 2 条失败（`NEURO_BOOK_REPOSITORY_ROOT` 缺失）在未改动 master 上同样失败，属既有基线。
 
 ## 未验证
 
-（待填）
+- 存量迁移未执行：`scripts/cli/migrate-legacy-agent-assets.ts` 的 `--preflight` / `--apply` 尚未跑；State Root 里旧的 `agent/skills/RP模式/` 目录是否被清理（取决于 `.system-assets-sync-state.json` 的同步证明；证明不了会进 preservedOrphans 保留并报 dirty）待确认。
+- 装机验证未做：需要从 worktree 起 dev server 触发 `seedSystemAssets`（安装 `rp-mode`、账本标记旧条目 removed），再确认 SkillCatalog 只剩新 id。
+- 未合并 master、未推送。
 
 ## 执行位置
 
