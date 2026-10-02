@@ -35,6 +35,8 @@ export const LEGACY_TOMBSTONED_ASSET_PATHS: readonly string[] = [
 
 export const LEGACY_TOMBSTONED_ASSET_PREFIXES: readonly string[] = [
     "agent/skills/anti-ai-slop/",
+    // 2026-10-02 改名：旧 id 违反 skill-package 合同，新目录 rp-mode/ 是唯一 canonical 源。
+    "agent/skills/RP模式/",
     "agent/skills/llmlint/.git/",
     "agent/skills/llmlint/evals/",
     "agent/skills/llmlint/presets/",

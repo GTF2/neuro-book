@@ -1,6 +1,8 @@
 ---
-name: RP模式
+name: rp-mode
 description: 用于用户想进入 NeuroBook RP 模式、启动 rp.leader、理解 rp.leader / simulator.leader / simulator.actor / rp.writer Tick 流程，或让当前 session 临时按 RP 协议工作。
+metadata:
+  displayName: RP 模式
 when_to_use:
   - 用户说进入 RP、开始 roleplay、跑角色扮演、用引导者带剧情、和角色互动
   - 用户询问 rp.leader、simulator.leader、simulator.actor、rp.writer、simulation、subject memory 或 RP 模式怎么用

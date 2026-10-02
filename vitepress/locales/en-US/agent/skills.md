@@ -43,7 +43,7 @@ It is not a tool and not a script. An agent sees which Skills are available in t
 
 ### Legacy
 
-`RP模式` serves the retired RP entry points. It is preserved but currently unusable.
+`rp-mode` (display name "RP 模式") serves the retired RP entry points. It is preserved but currently unusable.
 
 ## Where Skills Live
 
