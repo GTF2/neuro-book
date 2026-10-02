@@ -227,9 +227,19 @@ function restoreFocus(memory: {element: HTMLElement; scroller: HTMLElement | nul
 
 function syncAnchors(): void {
     const root = rootEl.value;
+    const current = targets.value;
     const next: Record<string, Element | null> = {};
+    let changed = false;
     for (const part of SHELL_PART_IDS) {
-        next[part] = root?.querySelector(`[data-leaf="${part}"]`) ?? null;
+        const found = root?.querySelector(`[data-leaf="${part}"]`) ?? null;
+        next[part] = found;
+        if (found !== current[part]) {
+            changed = true;
+        }
+    }
+    // 落点没有变化时不重发 targets：它同时是本组件渲染的依赖，换新对象会让整棵槽内容白白重渲染一次。
+    if (!changed) {
+        return;
     }
     targets.value = next;
 }
