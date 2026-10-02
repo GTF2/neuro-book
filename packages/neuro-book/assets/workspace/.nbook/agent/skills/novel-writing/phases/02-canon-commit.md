@@ -91,10 +91,13 @@ await world.slice.write({
 
 ## 更新 Plot Workbench
 
-状态落库后，把剧情结构同步进 Plot：
+状态落库后，把剧情结构同步进 Plot（Promise 账本的完整纪律与四类伏笔分类见 `reference/plot/agent-spec.md`）：
 
 - 本段剧情属于哪条 Thread、哪个 Scene、哪一章，用 plot 写工具更新或创建。
-- 新立的读者承诺（伏笔、期待）记入 Promise；已兑现的标记 fulfilled。
+- 规划本段推进哪些线之前，先用 `get_story_promise` 查账本（open 优先），同一读者期待不重复建线。
+- 本段推进的承诺线（伏笔、期待）用 `save_promise_beat` 登记 beat；只写进 Scene summary / purpose、不进账本的推进，brief 看不见、也无法跨会话追踪。
+- 新立的读者承诺记入 Promise；打 payoff beat 默认自动置 fulfilled，里程碑式兑现后线仍延续（如感情线「在一起」之后还有后续）时传 `autoFulfill: false`。
+- 线因剧情改道不再兑现时显式 `action=abandon`（abandoned 线的 beats 不再进 brief），不要留假 open。
 - 重大剧情取舍（选了 A 弃了 B）记 Decision，写明 chosenOption 与 risk。
 - 准备写章节时，Chapter 的剧情点、信息控制先补齐，供 `get_chapter_writer_brief` 编译。
 

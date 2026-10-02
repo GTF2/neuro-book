@@ -51,6 +51,8 @@ NeuroBook 的写作 skill 分三层。本文件是唯一的全局路线图；各
 | `parallel-brainstorm` | 多角度并发脑暴后收敛 | `novel-writing` 剧情设计阶段、`novel-idea-exploration` 方向发散 |
 | `write-review-loop` | 临时写手+评审的固定轮数写-评-修（不写文件） | 简介、文案、短文本打磨；正式章节用 `chapter-write-review-revise` |
 | `chapter-write-review-revise` | 真实 writer 写章节到目标文件 + 三维评审（一致性/节奏/文风）+ 按 major 问题修订循环 | `novel-writing` 正文循环；前提=剧情事实已拍板、World Engine 已推进 |
+| `llmlint-review` | llmlint 检测 + 报告：静态分级、密度指纹、AIGC 热力图四象限（只查不改稿） | `novel-writing` 修订步骤；整章成稿后想先看问题清单时 |
+| `llmlint-full-review` | llmlint 检测 → 修复计划 → 人工审批 → 修复 → 复测闭环（含删减幅度守门） | `novel-writing` 修订步骤；确认要系统去 AI 味时 |
 | `consistency-audit` | 按章并发对照 lorebook 摘录与世界状态事实找矛盾（位置/伤势/物品/认知/时间线/设定），跨章汇总 | 写完若干章后的体检；调用前 leader 先列章节路径、预查 World Engine 事实传入 |
 | `book-deconstruct` | 整本外部书稿的商业拆书：章节采样后逐章分析钩子/承诺/爽点/节奏，汇总拆书报告 | `novel-genre-research` 竞品分析；输入=番茄导入目录或单 .md 书稿 |
 | `character-qa-fanout` | 角色理解题批量生成候选答案（分组扇出），供用户逐题挑选 | `novel-technique-character-card-workshop` 的可选批量模式；默认逐题交互不用它 |
