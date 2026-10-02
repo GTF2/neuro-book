@@ -131,6 +131,30 @@ name: project anti-ai-slop
         await expect(catalog.get("anti-ai-slop", projectRoot)).resolves.toBeNull();
     });
 
+    it("改名后的旧 skill key 不再进入 catalog，新 key 正常可见", async () => {
+        const userRoot = join(projectRoot, ".nbook", "agent", "skills");
+        await writeSkill(installRoot, "RP模式", `---
+name: RP模式
+---
+`);
+        await writeSkill(userRoot, "RP模式", `---
+name: project RP模式
+---
+`);
+        await writeSkill(installRoot, "rp-mode", `---
+name: rp-mode
+---
+`);
+        const catalog = new SkillCatalog(installRoot);
+
+        await expect(catalog.get("RP模式", projectRoot)).resolves.toBeNull();
+        await expect(catalog.get("rp-mode", projectRoot)).resolves.toEqual(expect.objectContaining({
+            key: "rp-mode",
+            name: "rp-mode",
+            source: "install",
+        }));
+    });
+
     it("Install catalog 读取 runnable package 版本", async () => {
         await writeSkill(installRoot, "novel-data", `---
 name: novel-data
