@@ -23,4 +23,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-storage-context-unload-release/README.md) | pagehide keepalive 释放实现 + 单测 + spec 一行 |
+| [t01](tasks/t01-storage-context-unload-release/README.md) | 已交付并验证：pagehide keepalive 释放 + 单测 + spec 一行 + 无头探针实测 |
+
+已收尾：663ee9d6；待清理：`.worktree/w00032-storage-context-unload-release`、`fix/w00032-storage-context-unload-release`。
