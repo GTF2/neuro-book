@@ -22,4 +22,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-workbench-small-fixes/README.md) | 角色详情关闭修复 + refreshFiles 文案 + 回归测试 |
+| [t01](tasks/t01-workbench-small-fixes/README.md) | 已交付并验证：角色详情关闭不再清空活动文件 + `refreshFiles` 文案 |
+
+已收尾：6e70dcb8；待清理：`.worktree/w00030-workbench-small-fixes`、`fix/w00030-workbench-small-fixes`。
