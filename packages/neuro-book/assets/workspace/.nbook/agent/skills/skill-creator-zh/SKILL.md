@@ -7,12 +7,14 @@ description: 用于在 Neuro Book 仓库中创建、改造或维护 skill。适�
 
 这个 skill 用来为 **当前项目** 编写和维护 skill，不是 Codex 通用版模板。
 
-当前项目里，skill 的真实发现与加载方式很简单：
+当前项目里，skill 的发现与加载方式：
 
-1. 服务端扫描 `assets/workspace/.nbook/agent/skills/*/SKILL.md` 和 `workspace/.nbook/agent/skills/*/SKILL.md`，兼容旧文件名 `skill.md`
-2. catalog 只读取 frontmatter 里的 `name` 和 `description`
-3. 模型先看到 catalog 元数据
+1. 服务端扫描 Install Root `workspace/.nbook/agent/skills/*/SKILL.md` 与当前项目根下的同名目录；固定入口是 `SKILL.md`（catalog 仍兼容旧文件名 `skill.md`，新包一律用 `SKILL.md`）
+2. 目录名就是 skill id，必须等于 frontmatter 里的 `name`
+3. catalog 读取 frontmatter 的 `name` / `description` / `when_to_use`
 4. 真正需要使用 skill 时，再通过 `read` 读取 catalog 中的 `location`
+
+规则以 `reference/agent/skill-package.md` 合同为准，本 skill 的校验器与规则段落与它保持一致。
 
 因此，编写 skill 时要把注意力放在两件事上：
 
@@ -74,20 +76,25 @@ assets/workspace/.nbook/agent/skills/<folder>/
 
 ## frontmatter 规范
 
-当前项目只认两个字段：
+必填两个字段，另有若干可选字段（完整约束以 `reference/agent/skill-package.md` 为准）：
 
 ```yaml
 ---
-name: 技能名
+name: your-skill-name
 description: 一句话说明这个 skill 做什么，以及什么情况下应该使用它。
+when_to_use:
+  - 用户要求进入 RP
+metadata:
+    displayName: 展示名
+    version: "1.2.0"
 ---
 ```
 
 要求：
 
-- 只写 `name` 和 `description`
-- `description` 必须直接描述触发场景，不要只写抽象宣传语
-- “什么时候使用”信息要写进 `description`，不要藏在正文里
+- `name` 是稳定 id：≤64 字符，仅小写字母、数字和连字符，不以连字符开头/结尾、不含连续连字符，**必须等于父目录名**；中文或其它非 ASCII 展示名写进 `metadata.displayName`
+- `description` 必填，≤1024 字符，直接描述触发场景，不要只写抽象宣传语；“什么时候使用”优先写进 `description`
+- 可选字段：`when_to_use`（补充触发场景，标量或 YAML 列表）、`license`、`compatibility`（≤500 字符）、`metadata.version` / `metadata.minAppVersion`（canonical SemVer）、`metadata.author`、`allowed-tools`
 
 好的描述示例：
 
@@ -138,9 +145,9 @@ description: 一句话说明这个 skill 做什么，以及什么情况下应该
 如果当前 agent 有 `bash` 能力，可以使用本目录下的脚本加速：
 
 - `scripts/init_skill.py`
-  用于初始化 Neuro Book 风格的 skill 目录
+  用于初始化 Neuro Book 风格的 skill 目录；id 必须是小写字母数字连字符，中文展示名走 `--display-name`（写成 `metadata.displayName`）
 - `scripts/quick_validate.py`
-  用于做快速结构校验
+  用于按 `reference/agent/skill-package.md` 做结构校验
 
 如果当前 agent 没有 shell 能力，就直接使用文件工具手动创建或修改文件，不要因为无法跑脚本而停住。
 
