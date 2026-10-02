@@ -32,3 +32,5 @@ issueId: null
 
 [t01](tasks/t01-vendor-notion-design-md/README.md) 已实现并验证。
 [t02](tasks/t02-notion-theme-pilot/README.md) 已实现并验证：Notion 参照主题落地为可切换的第五套主题，主应用接入铺开另行 Task。
+
+已收尾：13c0741a；待清理：无
