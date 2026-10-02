@@ -162,6 +162,7 @@ function storeMock() {
         loadingWorkspaceTree: Ref<boolean>;
         openWorkspaceNode: ReturnType<typeof vi.fn>;
         loadWorkspaceTree: ReturnType<typeof vi.fn>;
+        clearActiveFile: ReturnType<typeof vi.fn>;
     };
 }
 
@@ -275,6 +276,25 @@ describe("WorkspaceFilePanel", () => {
         await flushPromises();
         await nextTick();
         expect(storeMock().openWorkspaceNode).toHaveBeenCalledWith(manuscriptFile, "permanent");
+    });
+
+    it("关闭详情只收起明细面板，不清空编辑器活动文件；重新选择节点后面板回来", async () => {
+        const wrapper = mountPanel();
+        storeMock().selectedFileNode.value = manuscriptFile;
+        storeMock().clearActiveFile.mockClear();
+        await nextTick();
+        expect(wrapper.find("[data-detail=\"file\"]").exists()).toBe(true);
+
+        wrapper.findComponent({name: "WorkspaceFileDetailPanel"}).vm.$emit("close");
+        await nextTick();
+        // 清空活动文件会把编辑区留在「有标签、无正文」的加载态：关闭详情不得走这条路。
+        expect(storeMock().clearActiveFile).not.toHaveBeenCalled();
+        expect(wrapper.find("[data-detail=\"file\"]").exists()).toBe(false);
+
+        wrapper.findComponent(TreeStub).vm.$emit("select", lorebookCharacter);
+        storeMock().selectedFileNode.value = lorebookCharacter;
+        await nextTick();
+        expect(wrapper.find("[data-detail=\"character\"]").exists()).toBe(true);
     });
 
     it("明细面板按选中节点分派：角色 / Lorebook 条目 / 普通文件", async () => {

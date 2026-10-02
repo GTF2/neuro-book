@@ -97,6 +97,14 @@ const forcedExpandedPaths = computed(() => searchQuery.value.trim() ? collectAnc
 const existingPathSet = computed(() => new Set(workspaceTree.value.map((node) => normalizeWorkspacePath(node.path))));
 const showCharacterDetail = computed(() => isWorkspaceLorebookEntry(selectedFileNode.value) && selectedFileNode.value?.entryType === "character");
 const showLorebookDetail = computed(() => isWorkspaceLorebookEntry(selectedFileNode.value) && selectedFileNode.value?.entryType !== "character");
+/**
+ * 明细面板被用户关闭：只收起面板，不清空编辑器活动文件。
+ * `clearActiveFile` 会把活动组的 activePath 清空，编辑区随即停在「有标签、无正文」的加载态。
+ */
+const detailDismissed = ref(false);
+watch(selectedFilePath, () => {
+    detailDismissed.value = false;
+});
 
 /**
  * 打开右键菜单。
@@ -112,11 +120,13 @@ function openContextMenu(event: MouseEvent, items: ContextMenuItem[]): void {
  * 选择文件树节点。
  */
 async function selectNode(node: WorkspaceFileNode): Promise<void> {
+    detailDismissed.value = false;
     await store.openWorkspaceNode(node, "preview");
 }
 
 /** 双击打开节点并保留标签；正文与失败反馈由编辑器宿主呈现。 */
 async function openNode(node: WorkspaceFileNode): Promise<void> {
+    detailDismissed.value = false;
     await store.openWorkspaceNode(node, "permanent");
 }
 
@@ -737,30 +747,30 @@ watch(canAccessWorkspace, (canAccess) => {
         </div>
 
         <WorkspaceCharacterDetailPanel
-            v-if="showCharacterDetail"
+            v-if="showCharacterDetail && !detailDismissed"
             :node="selectedFileNode"
             :issues="workspaceIssues"
             :height="detailHeight"
             @update:height="detailHeight = $event"
-            @close="store.clearActiveFile()"
+            @close="detailDismissed = true"
             @refresh="void refreshTree()"
         />
         <WorkspaceLorebookDetailPanel
-            v-else-if="showLorebookDetail"
+            v-else-if="showLorebookDetail && !detailDismissed"
             :node="selectedFileNode"
             :issues="workspaceIssues"
             :height="detailHeight"
             @update:height="detailHeight = $event"
-            @close="store.clearActiveFile()"
+            @close="detailDismissed = true"
             @refresh="void refreshTree()"
         />
         <WorkspaceFileDetailPanel
-            v-else
+            v-else-if="!detailDismissed"
             :node="selectedFileNode"
             :issues="workspaceIssues"
             :height="detailHeight"
             @update:height="detailHeight = $event"
-            @close="store.clearActiveFile()"
+            @close="detailDismissed = true"
             @create-index="void createDirectoryIndex()"
             @convert-file-to-directory="void convertFileToDirectory()"
         />
