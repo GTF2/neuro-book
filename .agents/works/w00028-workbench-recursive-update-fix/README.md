@@ -23,7 +23,8 @@ issueId: null
 | Task | 当前范围 |
 |---|---|
 | [t01](tasks/t01-recursive-update-fix/README.md) | 已交付并验证：关闭详情不再清空编辑器活动文件 |
+| [t02](tasks/t02-load-storm-investigation/README.md) | 已定位并处置：落点无变化时不再重发 targets；旧 203 条警告在健康渲染器不可复现 |
 
 ## 剩余范围
 
-页面加载期的 `Maximum recursive updates exceeded in component <WorkbenchShellLayout>` 风暴（每次加载约 203 条）仍未修复。它与「关闭详情卡住」是两个独立缺陷：改视口不触发、几何稳定、暂无用户可见损害；触发点在工作面 bootstrap 附近，根因未定位，继续需要带日志的插桩（见 t01 的未验证段）。
+无（t02 已收口：旧记录的风暴只在降级渲染环境——IAB 面板不可见、rAF/ResizeObserver 冻结——下观测到，健康渲染器三次探针均 0 条；插桩发现的 `syncAnchors` 自激已最小修复）。
