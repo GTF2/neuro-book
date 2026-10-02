@@ -28,3 +28,5 @@ issueId: null
 | Task | 当前范围 |
 |---|---|
 | [t01](tasks/t01-novel-skill-wiring/README.md) | 承诺账本纪律补全 + llmlint 路由 + 一致性体检节律 |
+
+已收尾：b1e96fbe；待清理：`.worktree/w00026-novel-skill-wiring`、`feat/w00026-novel-skill-wiring`。
