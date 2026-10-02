@@ -26,4 +26,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-reference-fill-and-label/README.md) | 已实现并验证：同族参考匹配、参考补全、逐字段标注与确认 |
 
-已收尾：36bfa967；待清理：`.worktree/w00023-model-library-reference-fill`、`feat/w00023-model-library-reference-fill`。
+已收尾：36bfa967；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）。

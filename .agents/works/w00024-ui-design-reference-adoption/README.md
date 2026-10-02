@@ -36,4 +36,4 @@ issueId: null
 
 typecheck 基线比对：worktree 与主工作区（干净 master）逐文件一致（各 30 条错误，规范化 diff 为空），全部位于四个既有基线文件：`app/component-lab/fixtures/AgentExtraPanels.scenes.ts`、`app/component-lab/fixtures/index.ts`、`server/api/workspace-files/batch.post.ts`、`server/workspace-history/tracked-workspace-files.ts`，与本改动无关。
 
-已收尾：096f12bc；待清理：.worktree/w00024-ui-design-reference-adoption、feat/w00024-ui-design-reference-adoption
+已收尾：096f12bc；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）
