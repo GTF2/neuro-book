@@ -17,7 +17,8 @@ export type SkillCatalogItem = {
     skillPath: string;
 };
 
-const DISABLED_LEGACY_SKILL_KEYS = new Set(["anti-ai-slop"]);
+// RP模式：2026-10-02 改名为 rp-mode，旧目录可能残留在 Install/Project Root。
+const DISABLED_LEGACY_SKILL_KEYS = new Set(["anti-ai-slop", "RP模式"]);
 const SEMVER_PATTERN = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/u;
 
 type LoadedSkillRoot = {
