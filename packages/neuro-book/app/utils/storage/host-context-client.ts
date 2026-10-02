@@ -9,6 +9,9 @@
  * adapter 不缓存状态值，也不把 clientId、身份域或磁盘路径当作前端字段；身份不可持久恢复
  * （reason 为 identity-unrecoverable）时调用方不得开始旧键导入或改落共享分区。
  * 旧 session 不会被重新签发：上下文失效后只能由宿主显式重新初始化，不能用路径再取一次 ready。
+ *
+ * 已签发且未释放的 session 在本模块登记；页面卸载（pagehide、非 bfcache 暂存）时由
+ * `releaseStorageContextsOnPageHide` 兜底释放——刷新与关闭标签页不经过调用方的释放路径。
  */
 
 import {resolveApiErrorCode, resolveApiErrorMessage, resolveApiErrorStatus} from "nbook/app/utils/api-error";
@@ -30,6 +33,10 @@ const STORAGE_CONTEXT_PATHS: Record<StorageContextScope, string> = {
     user: "/api/storage/user/context",
     project: "/api/storage/project/context",
 };
+
+/** 本页面已签发且尚未释放的访问上下文；页面卸载兜底释放用，key 为 contextId。 */
+const liveSessions = new Map<string, StorageAccessSession>();
+let pageHideReleaseInstalled = false;
 
 /** 一次访问上下文的归属；值动作入口同样按它选择，不能在一次访问内混用。 */
 export type StorageContextScope = "user" | "project";
@@ -95,6 +102,14 @@ export type StorageProjectContextTarget = {
     readonly publicId: string;
 };
 
+/** 签发成功即登记；浏览器里首次登记时安装 pagehide 兜底释放，SSR / Node 测试没有 window 不装。 */
+function trackSession(session: StorageAccessSession): void {
+    liveSessions.set(session.contextId, session);
+    if (pageHideReleaseInstalled || typeof window === "undefined") return;
+    pageHideReleaseInstalled = true;
+    window.addEventListener("pagehide", releaseStorageContextsOnPageHide);
+}
+
 /** 签发一次独立 user 访问；失败交给调用方展示或重试，不在这里制造 fallback 身份。 */
 export async function openStorageUserContext(
     options: StorageContextOpenOptions = {},
@@ -104,7 +119,9 @@ export async function openStorageUserContext(
     const credential = identity.credential;
     const issued = await requestStorageContext("user", credential, undefined, options.request ?? apiFetch);
     if (issued.status === "unavailable") return issued;
-    return {status: "ready", session: Object.freeze({scope: "user", contextId: issued.contextId, clientCredential: credential})};
+    const session: StorageUserContextSession = Object.freeze({scope: "user", contextId: issued.contextId, clientCredential: credential});
+    trackSession(session);
+    return {status: "ready", session};
 }
 
 /**
@@ -139,10 +156,9 @@ export async function openStorageProjectContext(
         options.request ?? apiFetch,
     );
     if (issued.status === "unavailable") return issued;
-    return {
-        status: "ready",
-        session: Object.freeze({scope: "project", contextId: issued.contextId, clientCredential: credential, projectRoot, publicId}),
-    };
+    const session: StorageProjectContextSession = Object.freeze({scope: "project", contextId: issued.contextId, clientCredential: credential, projectRoot, publicId});
+    trackSession(session);
+    return {status: "ready", session};
 }
 
 /**
@@ -150,6 +166,7 @@ export async function openStorageProjectContext(
  *
  * 释放只撤销这一份访问：不关闭 Project、不释放 presence，也不清除浏览器定位凭证。
  * 后端不可达或超时在这里抛出，由调用方决定重试；上下文本来也会随后端运行期结束而失效。
+ * 成功才移出 pagehide 登记；失败时上下文可能仍存活，留着由兜底释放再试一次。
  */
 export async function closeStorageContext(
     session: StorageAccessSession,
@@ -169,8 +186,33 @@ export async function closeStorageContext(
             notify: false,
             signal: cancellation.signal,
         });
+        liveSessions.delete(session.contextId);
     } finally {
         cancellation.dispose();
+    }
+}
+
+/**
+ * pagehide 兜底释放：把本页面仍持有的访问上下文用 keepalive DELETE 撤掉。
+ *
+ * 刷新与关闭标签页不经过工作台的释放路径，而服务端单客户端上限 32、空闲回收要等 30 分钟——
+ * 反复加载会把应用锁成「无法建立新的存储连接」。keepalive 让 DELETE 在文档销毁后继续送达；
+ * 卸载期没有重试与错误展示的时机，失败留给服务端空闲回收兜底。bfcache 暂存（persisted）时
+ * 页面还会带着内存状态回来，此时撤销会让恢复的页面失去存储访问，因此跳过。
+ */
+export function releaseStorageContextsOnPageHide(event: {readonly persisted?: boolean}): void {
+    if (event.persisted === true) return;
+    const sessions = [...liveSessions.values()];
+    liveSessions.clear();
+    for (const session of sessions) {
+        void fetch(STORAGE_CONTEXT_PATHS[session.scope], {
+            method: "DELETE",
+            headers: {
+                [STORAGE_ACCESS_CONTEXT_HEADER]: session.contextId,
+                [STORAGE_CLIENT_CREDENTIAL_HEADER]: session.clientCredential,
+            },
+            keepalive: true,
+        }).catch(() => undefined);
     }
 }
 
