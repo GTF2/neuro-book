@@ -87,7 +87,7 @@ writer 完成后，leader 对正文做评审。基础检查（每章必做）：
 
 > 本环节的写-评-修可以整体交给 `run_workflow` 的 `chapter-write-review-revise` 编排：它调用真实 writer 写入目标章节文件，三个评审维度（一致性/节奏/文风）并发挑问题，writer 按 major 问题修订循环。args 传 `chapterPath`（必填）+ `brief` 或 `chapterId`（至少一个）+ 可选 `lorebookEntries` / `reviewRounds`(1-3) / `revise`。前置与手动流程相同：剧情事实已拍板、World Engine 已推进、章节节点已存在。需要逐步人工把关或用户要参与每轮决策时，仍按本文手动循环。轻量非章节文本（简介、文案）用 `write-review-loop`（不写文件）。
 >
-> 写完若干章后想做全书体检，用 `consistency-audit` workflow：leader 先列章节路径、用 execute_world 预查相关角色状态整理成 worldFacts 文本，一并传入。
+> 体检节律：卷末、每 10 章左右、或大改设定 / 新增重要角色后，用 `consistency-audit` workflow 做全书体检——leader 先列章节路径、用 execute_world 预查相关角色状态整理成 worldFacts 文本，一并传入。文风层面的系统性体检与修复用 `llmlint-full-review`（见第五步）；两者可同轮组合：先修事实矛盾，再跑去 AI 味修复。
 
 ## 第五步：修订
 
@@ -96,7 +96,7 @@ writer 完成后，leader 对正文做评审。基础检查（每章必做）：
 1. 确认目标文件和修改范围。
 2. 读取目标正文、相关 World Engine 状态、已确认剧情事实和必要 lorebook。
 3. 判断修改类型：
-   - 文风/语句：直接 edit。
+   - 文风/语句：直接 edit。整章成稿后要做系统性去 AI 味时走 `run_workflow`：`llmlint-review` 只检测 + 出报告；`llmlint-full-review` 检测 → 修复计划 → 人工审批 → 修复 → 复测（含删减幅度守门），修复稿落轮目录 `output/`，按用户确认再落回正文。args 传 `files`（章节 `index.md` 路径）与 `skillRoot`（SkillCatalog 里 llmlint 的 root）；正文不希望离机时传 `skipDetect=true`。
    - 节奏/结构：先给修改方案，再按用户确认执行。
    - 事件结果变化（改变结果、物品状态、角色位置、伤势或信息披露）：先回环节二确认剧情事实，落库后再改正文。
 4. 修改正文。
