@@ -27,7 +27,7 @@ taskId: t01-novel-skill-wiring
 
 ## 未验证
 
-- 未跑真实模型 Agent 会话验证行为（Provider 未配置模型）：`get_story_promise` 前置查询与 llmlint 路由的实际触发未实测；开发者配置模型后可补测。
+- 未跑真实模型 Agent 会话验证行为：Provider 已配置（`custom-copy/deepseek-v4.1-flash` 为默认），但浏览器实测发现**打开 Agent 面板后右区为空白**——面板组件已挂载却停在 `[data-shell-parking]` 停放区（0×0，内含「推荐创作指令」空态），右区叶留 444px 空列；页面加载后首次打开时右区叶甚至完全不占宽。该现象与本次 markdown 改动无关（w00025 验收时正常），属工作台叶显隐 / 停放的既有问题族，会话行为验证因此被阻塞；`get_story_promise` 前置查询与 llmlint 路由的实际触发未实测。
 - 未跑全量测试套件：改动为 markdown 资产，按验证门禁只跑直接受影响测试。
 
 ## 执行位置
