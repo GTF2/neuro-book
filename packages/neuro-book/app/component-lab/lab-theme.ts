@@ -5,6 +5,7 @@ import auroraTheme from "@notnotype/nb-ui/themes/aurora";
 import editorialTheme from "@notnotype/nb-ui/themes/editorial";
 import macosTheme from "@notnotype/nb-ui/themes/macos";
 import nbookTheme from "@notnotype/nb-ui/themes/nbook";
+import notionTheme from "@notnotype/nb-ui/themes/notion";
 import {installThemePacks} from "nbook/app/utils/theme/install-theme-packs";
 
 /**
@@ -19,8 +20,8 @@ import {installThemePacks} from "nbook/app/utils/theme/install-theme-packs";
 
 // 装主题必须先于读配色表：配色表要合并各主题自带的配色，而模块副作用只在 import 时跑一次。
 // 装载顺序 = 主题切换器里的显示顺序（getInstalledThemes 按装载顺序返回）。
-// 产品侧（app/utils/theme/theme-packs.ts）也装 nbook / macos，缺则装、已装则复用由这个入口统一承担。
-installThemePacks([nbookTheme, macosTheme, editorialTheme, auroraTheme]);
+// 产品侧（app/utils/theme/theme-packs.ts）也装 nbook / macos / notion，缺则装、已装则复用由这个入口统一承担。
+installThemePacks([nbookTheme, macosTheme, notionTheme, editorialTheme, auroraTheme]);
 
 const fromThemes = collectThemeColorways();
 
@@ -28,14 +29,16 @@ const allColorways: Record<string, NbColorwayVars> = {...nbColorways, ...fromThe
 const allColorwayMeta: Record<string, ColorwayMeta> = {...nbColorwayMeta, ...fromThemes.colorwayMeta};
 
 /**
- * Lab 的配色只留 NeuroBook 主题自带的这两套（开发者拍板，2026-09-01）。
+ * Lab 的配色留 NeuroBook 主题自带的两套（开发者拍板，2026-09-01），
+ * 2026-10-02 追加 notion 自带的两套——不配上它自己的配色，Notion 主题在 Lab 里
+ * 就是「别人的配色下的 Notion」，没有评判价值（同下述 macos 的处境）。
  *
  * 代价记在这里：aurora / editorial / macos 各自带的配色不再出现在切换器里，其中 macos
  * 那两套是为它自己的玻璃调的——按 nb-ui `themes/macos/colorways.ts` 的说法，那套玻璃在别人的
  * 配色下会发灰。所以 Lab 里看到的 macOS 主题不是它设计时的样子；真要按设计观感评判它，
  * 得先把 `macos-light` / `macos-dark` 放回这个数组。
  */
-const LAB_COLORWAY_IDS = ["nbook-light", "nbook-dark"];
+const LAB_COLORWAY_IDS = ["nbook-light", "nbook-dark", "notion-light", "notion-dark"];
 
 export const labThemes = getInstalledThemes();
 export const labColorways: Record<string, NbColorwayVars> = pick(allColorways);

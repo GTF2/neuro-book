@@ -9,7 +9,7 @@
  *
  * 具体配色 id 不在这里写死：每套主题包自己在 `manifest.defaultColorway` 里按明暗给出。
  */
-export const productThemeIds = ["nbook", "macos"] as const;
+export const productThemeIds = ["nbook", "macos", "notion"] as const;
 export type ProductThemeId = typeof productThemeIds[number];
 
 /** 配色明暗轴。颜色由配色层给，主题层按它分档。 */
