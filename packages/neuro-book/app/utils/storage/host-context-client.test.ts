@@ -1,10 +1,11 @@
-import {afterEach, describe, expect, it, vi} from "vitest";
+import {afterEach, beforeEach, describe, expect, it, vi} from "vitest";
 import type {ApiFetchOptions} from "nbook/app/utils/api-fetch";
 import type {StorageClientIdentityTarget} from "nbook/app/utils/storage/client-identity";
 import {
     closeStorageContext,
     openStorageProjectContext,
     openStorageUserContext,
+    releaseStorageContextsOnPageHide,
 } from "nbook/app/utils/storage/host-context-client";
 import {openStorageOwnerHandle} from "nbook/app/utils/storage/owner-handle";
 import {createStorageHttpTransport} from "nbook/app/utils/storage/value-transport";
@@ -408,5 +409,97 @@ describe("真实 adapter 的 project 链路", () => {
         expect(afterSave).toMatchObject({kind: "missing"});
         // 整条链路都不落到 user 分区。
         expect(calls.some((call) => call.request.includes("/user/"))).toBe(false);
+    });
+});
+
+describe("pagehide 兜底释放", () => {
+    let fetchMock: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+        fetchMock = vi.fn(() => Promise.resolve({}));
+        vi.stubGlobal("fetch", fetchMock);
+        // liveSessions 是模块级登记：先排空前面用例留下的 session，断言只覆盖本用例。
+        releaseStorageContextsOnPageHide({persisted: false});
+        fetchMock.mockClear();
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    it("首次签发安装一次 pagehide 监听，重复签发不重复安装", async () => {
+        const addEventListener = vi.fn();
+        vi.stubGlobal("window", {addEventListener});
+
+        await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+        await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+
+        expect(addEventListener).toHaveBeenCalledTimes(1);
+        expect(addEventListener).toHaveBeenCalledWith("pagehide", releaseStorageContextsOnPageHide);
+    });
+
+    it("未释放的 session 在 pagehide 时用 keepalive DELETE 撤销并清空登记", async () => {
+        await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+        await openStorageProjectContext(
+            {projectRoot: "/workspace/A", publicId: "public-a"},
+            {identity: identityTarget(), request: recordingRequest({contextId: PROJECT_CONTEXT_ID}, [])},
+        );
+
+        releaseStorageContextsOnPageHide({persisted: false});
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        expect(fetchMock).toHaveBeenNthCalledWith(1, "/api/storage/user/context", {
+            method: "DELETE",
+            headers: {
+                [STORAGE_ACCESS_CONTEXT_HEADER]: CONTEXT_ID,
+                [STORAGE_CLIENT_CREDENTIAL_HEADER]: CREDENTIAL,
+            },
+            keepalive: true,
+        });
+        expect(fetchMock).toHaveBeenNthCalledWith(2, "/api/storage/project/context", {
+            method: "DELETE",
+            headers: {
+                [STORAGE_ACCESS_CONTEXT_HEADER]: PROJECT_CONTEXT_ID,
+                [STORAGE_CLIENT_CREDENTIAL_HEADER]: CREDENTIAL,
+            },
+            keepalive: true,
+        });
+
+        // 登记已清空，重复触发不重发。
+        fetchMock.mockClear();
+        releaseStorageContextsOnPageHide({persisted: false});
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("bfcache 暂存（persisted）时跳过，session 留给恢复后的页面", async () => {
+        await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+
+        releaseStorageContextsOnPageHide({persisted: true});
+        expect(fetchMock).not.toHaveBeenCalled();
+
+        releaseStorageContextsOnPageHide({persisted: false});
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("closeStorageContext 成功后不再进入兜底释放", async () => {
+        const opened = await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+        if (opened.status !== "ready") throw new Error("上下文未签发");
+        await closeStorageContext(opened.session, {request: recordingRequest({released: true}, [])});
+
+        releaseStorageContextsOnPageHide({persisted: false});
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it("closeStorageContext 失败时仍登记，由 pagehide 兜底再试", async () => {
+        const opened = await openStorageUserContext({identity: identityTarget(), request: recordingRequest({contextId: CONTEXT_ID}, [])});
+        if (opened.status !== "ready") throw new Error("上下文未签发");
+        await expect(closeStorageContext(
+            opened.session,
+            {request: () => Promise.reject(new Error("connect ECONNREFUSED"))},
+        )).rejects.toThrow("connect ECONNREFUSED");
+
+        releaseStorageContextsOnPageHide({persisted: false});
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock).toHaveBeenCalledWith("/api/storage/user/context", expect.objectContaining({keepalive: true}));
     });
 });
