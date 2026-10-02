@@ -528,7 +528,7 @@ export {SAMPLE_PROJECTS, sampleProjectTags};
 
 const frontendProps = {
     reasoningOptions: ["off", "low", "medium", "high"],
-    themeOptions: [{id: "nbook" as const, name: "NeuroBook", tagline: "Liquid Glass · 中文写作版"}, {id: "macos" as const, name: "macOS", tagline: "Liquid Glass"}],
+    themeOptions: [{id: "nbook" as const, name: "NeuroBook", tagline: "Liquid Glass · 中文写作版"}, {id: "macos" as const, name: "macOS", tagline: "Liquid Glass"}, {id: "notion" as const, name: "Notion", tagline: "纸面极简"}],
     themeId: "nbook" as const, appearance: "light" as const, colorwayId: "nbook-light", colorwayLabel: "NeuroBook · 昼",
     colorwayVars: {"--bg-main": "#e3e4e6", "--bg-panel": "#fffcf5", "--text-main": "#23252b"}, colorwayIsUser: false,
     userColorways: [{id: "custom-lab", label: "Lab 夜色", appearance: "dark" as const, swatch: "#223044", vars: {"--bg-main": "#223044", "--bg-panel": "#2b3a52"}}],

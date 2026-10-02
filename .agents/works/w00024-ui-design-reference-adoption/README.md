@@ -32,5 +32,6 @@ issueId: null
 
 [t01](tasks/t01-vendor-notion-design-md/README.md) 已实现并验证。
 [t02](tasks/t02-notion-theme-pilot/README.md) 已实现并验证：Notion 参照主题落地为可切换的第五套主题，主应用接入铺开另行 Task。
+[t03](tasks/t03-app-adoption-of-notion-theme/README.md) 已实现并验证：主题接入产品设置白名单与 Lab。
 
-已收尾：13c0741a；待清理：无
+typecheck 基线比对：worktree 与主工作区（干净 master）逐文件一致，既有失败与本改动无关（明细见主仓 master 收尾提交）。
