@@ -28,3 +28,5 @@ issueId: null
 ## 剩余范围
 
 无（t02 已收口：旧记录的风暴只在降级渲染环境——IAB 面板不可见、rAF/ResizeObserver 冻结——下观测到，健康渲染器三次探针均 0 条；插桩发现的 `syncAnchors` 自激已最小修复）。
+
+已收尾：469abf88；待清理：`.worktree/w00028-workbench-recursive-update-fix`、`fix/w00028-workbench-recursive-update-fix`。
