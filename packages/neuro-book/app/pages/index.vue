@@ -31,6 +31,7 @@ import {
     productWorkbenchRegistry,
     resolveViewPresentation,
     SHELL_FILES_VIEW,
+    visibleViewCountOfPart,
     type ContainerViewPresentation,
     type PartContainerPresentation,
     type WorkbenchViewPresentation,
@@ -761,12 +762,12 @@ const workbenchShellRef = ref<InstanceType<typeof WorkbenchShell> | null>(null);
 /**
  * 叶的显隐都由页面事实驱动，走外壳暴露的 `setLeafVisible`：
  * - `titlebar` **两种宿主都显示**：浏览器没有 bridge 也要有可用标题栏（菜单按真实能力裁剪）；
- * - `left` / `right` 在书架（picker）态收起，主区整个让给书架视图——与接入前「图标条 + 书架」等价。
+ * - `left` 在书架（picker）态收起，主区整个让给书架视图——与接入前「图标条 + 书架」等价；
+ * - `right` 的规则见 displayAgentPanelOpen 之后的 `watchRightPartVisibility`。
  */
 watch([workbenchShellRef, projectPickerActive], ([shell, pickerActive]) => {
     if (!shell) return;
     shell.setLeafVisible("left", !pickerActive);
-    shell.setLeafVisible("right", !pickerActive);
 });
 
 /**
@@ -1056,6 +1057,19 @@ const buildProjectRoute = (projectTarget: string): string => {
 
 const consumingRouteOpenPath = ref(false);
 const displayAgentPanelOpen = computed(() => workspaceBootstrapped.value && agentPanelOpen.value);
+/**
+ * 右区是否有 Agent 面以外的可见视图：有的话叶必须留着，不能让面板开关把它一起藏掉。
+ * 数可见视图而不是容器——只有隐藏成员的容器仍在 Part 切片里。
+ */
+const rightPartHasVisibleViews = computed(() => visibleViewCountOfPart(partPresentation("right")) > 0);
+/**
+ * 右区叶只在 Agent 面板打开、或右区仍有可见视图时占宽度：
+ * 关掉面板就该把宽度还给编辑区，而不是留一条空容器占位（书架态由 left/right 的 picker 规则先收起）。
+ */
+watch([workbenchShellRef, projectPickerActive, displayAgentPanelOpen, rightPartHasVisibleViews], ([shell, pickerActive]) => {
+    if (!shell) return;
+    shell.setLeafVisible("right", !pickerActive && (displayAgentPanelOpen.value || rightPartHasVisibleViews.value));
+});
 const isAgentMode = computed(() => layoutMode.value === "agent");
 const agentSurfaceActive = computed(() => projectSurfaceActive.value && (displayAgentPanelOpen.value || isAgentMode.value));
 const agentModeSessions = computed(() => agentSurfaceRef.value?.sessions ?? []);
@@ -3336,25 +3350,47 @@ onBeforeUnmount(() => {
                 </div>
             </template>
             <template #right>
-                <!-- 右 Part 宿主：与左栏、底部共用同一份容器切片；容器可以被用户搬到这里。 -->
-                <WorkbenchPartHost
-                    :presentation="partPresentation('right')"
-                    :context-key="viewPlacements.contextKey()"
-            :actions-context-key="titleActionsContextKey"
-                    :actions-by-view="viewActions.actionsByView.value"
-                    :view-actions-label="t('ide.workbench.view.actions')"
-                    :move-view-label="t('ide.workbench.view.moveTo')"
-                    :container-actions="containerActions"
-                    :container-actions-label="t('ide.workbench.container.actions')"
-                    :move-container-label="t('ide.workbench.container.command.moveTo')"
-                    :empty-text="t('ide.workbench.container.emptyPart')"
-                    :allow-container-move="true"
-                    :allow-view-move="true"
-                    @select-container="(containerId: string) => void handleSelectContainer(containerPart(containerId) ?? 'right', containerId)"
-                    @move-container="(request) => void handleMoveContainer(request)"
-                    @move-view="(request) => void handleMoveView(request)"
-                    @title-action="(payload) => void handleTitleAction(payload)"
-                />
+                <div class="flex h-full min-h-0 w-full flex-col">
+                    <!-- Agent 抽屉：面板打开时占右区。props 沿用接入工作台之前那份挂载，
+                         脚本侧接线一直在仓库里，这里只把它接回模板。 -->
+                    <AgentChatSurface
+                        v-if="displayAgentPanelOpen"
+                        ref="agentSurfaceRef"
+                        class="contain-layout-paint min-h-0 flex-1"
+                        :active="agentSurfaceActive"
+                        :layout="isAgentMode ? 'workbench' : 'drawer'"
+                        :novel-id="displayNovelIdForAgent"
+                        :project-ready-revision="agentProjectReadyRevision"
+                        :history-inbox-refresh-key="historyInboxRefreshKey"
+                        :selected-file-path="selectedFilePath"
+                        :open-reference="openWorkspaceReference"
+                        @close="closeAgentSurface"
+                        @open-reference="void openWorkspaceReference($event)"
+                        @open-history-inbox="historyInboxOpen = true"
+                    />
+                    <!-- 右 Part 宿主：与左栏、底部共用同一份容器切片；容器可以被用户搬到这里。
+                         只在右区确实有可见视图时渲染，避免和 Agent 面争同一列。 -->
+                    <WorkbenchPartHost
+                        v-if="rightPartHasVisibleViews"
+                        class="min-h-0 flex-1"
+                        :presentation="partPresentation('right')"
+                        :context-key="viewPlacements.contextKey()"
+                        :actions-context-key="titleActionsContextKey"
+                        :actions-by-view="viewActions.actionsByView.value"
+                        :view-actions-label="t('ide.workbench.view.actions')"
+                        :move-view-label="t('ide.workbench.view.moveTo')"
+                        :container-actions="containerActions"
+                        :container-actions-label="t('ide.workbench.container.actions')"
+                        :move-container-label="t('ide.workbench.container.command.moveTo')"
+                        :empty-text="t('ide.workbench.container.emptyPart')"
+                        :allow-container-move="true"
+                        :allow-view-move="true"
+                        @select-container="(containerId: string) => void handleSelectContainer(containerPart(containerId) ?? 'right', containerId)"
+                        @move-container="(request) => void handleMoveContainer(request)"
+                        @move-view="(request) => void handleMoveView(request)"
+                        @title-action="(payload) => void handleTitleAction(payload)"
+                    />
+                </div>
             </template>
             <template #panel="{ collapsed }">
                 <!-- 底部 Part 宿主：收起时只留 32px 标题头（叶仍在树里，容器里的实例不重挂）。 -->
