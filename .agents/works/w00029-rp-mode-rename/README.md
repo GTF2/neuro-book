@@ -24,4 +24,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-rp-mode-rename/README.md) | 改名 + 引用同步 + 墓碑迁移 + 验证 |
 
-已收尾：28144b1f；待清理：`.worktree/w00029-rp-mode-rename`、`feat/w00029-rp-mode-rename`。
+已收尾：28144b1f；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）。

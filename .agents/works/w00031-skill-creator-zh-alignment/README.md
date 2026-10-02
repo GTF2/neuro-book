@@ -24,4 +24,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-skill-creator-zh-alignment/README.md) | 已交付并验证：校验器/生成器/SKILL.md 规则对齐（双校验器 16/16 判定一致） |
 
-已收尾：8d2b64d6；待清理：`.worktree/w00031-skill-creator-zh-alignment`、`fix/w00031-skill-creator-zh-alignment`。
+已收尾：8d2b64d6；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）。

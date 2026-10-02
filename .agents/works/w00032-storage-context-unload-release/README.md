@@ -25,4 +25,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-storage-context-unload-release/README.md) | 已交付并验证：pagehide keepalive 释放 + 单测 + spec 一行 + 无头探针实测 |
 
-已收尾：b68c986f；待清理：`.worktree/w00032-storage-context-unload-release`、`fix/w00032-storage-context-unload-release`。
+已收尾：b68c986f；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）。
