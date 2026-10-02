@@ -34,4 +34,6 @@ issueId: null
 [t02](tasks/t02-notion-theme-pilot/README.md) 已实现并验证：Notion 参照主题落地为可切换的第五套主题，主应用接入铺开另行 Task。
 [t03](tasks/t03-app-adoption-of-notion-theme/README.md) 已实现并验证：主题接入产品设置白名单与 Lab。
 
-typecheck 基线比对：worktree 与主工作区（干净 master）逐文件一致，既有失败与本改动无关（明细见主仓 master 收尾提交）。
+typecheck 基线比对：worktree 与主工作区（干净 master）逐文件一致（各 30 条错误，规范化 diff 为空），全部位于四个既有基线文件：`app/component-lab/fixtures/AgentExtraPanels.scenes.ts`、`app/component-lab/fixtures/index.ts`、`server/api/workspace-files/batch.post.ts`、`server/workspace-history/tracked-workspace-files.ts`，与本改动无关。
+
+已收尾：096f12bc；待清理：.worktree/w00024-ui-design-reference-adoption、feat/w00024-ui-design-reference-adoption
