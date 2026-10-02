@@ -4,7 +4,8 @@
 大部分是被实测推翻过一次才写成现在这样的。
 
 产品默认主题叫 `nbook`，从 `macos` 衍生。`macos` 留在仓库里当参照实现（它复用 Apple HIG
-里能查到出处的取值），`editorial` / `aurora` 是主题格式的示范。四套并存，随时可切换对照。
+里能查到出处的取值），`editorial` / `aurora` 是主题格式的示范，`notion` 是外部审美参照
+（[design-references/notion](./design-references/notion/DESIGN.md)）的落地主题。五套并存，随时可切换对照。
 
 - 怎么写一套新主题：[`authoring-themes.md`](./authoring-themes.md)
 - 外部审美参照（只读 vendor）：[`design-references/notion/DESIGN.md`](./design-references/notion/DESIGN.md)——UI 优化的方向参照；本文的判据仍是唯一真相源，冲突时以本文为准

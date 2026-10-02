@@ -5,12 +5,13 @@ import auroraTheme from "../../themes/aurora";
 import editorialTheme from "../../themes/editorial";
 import macosTheme from "../../themes/macos";
 import nbookTheme from "../../themes/nbook";
+import notionTheme from "../../themes/notion";
 import type {NbThemeModule} from "./theme-manifest";
 import {collectSvgDefsIds} from "./svg-defs";
 import {installTheme, resetInstalledThemes} from "./theme-loader";
 
 /**
- * 随库发布的四套主题必须真的装得上（Task 146 批 3）。
+ * 随库发布的五套主题必须真的装得上（Task 146 批 3）。
  *
  * 这一份是**格式的自证**：一方主题（含默认的 nbook）和第三方主题走同一条装载路径，
  * 所以只要一方主题装不上，就说明格式或库的哪一条变了而没人跟着改。
@@ -22,6 +23,7 @@ const THEMES: {dir: string; module: NbThemeModule}[] = [
     {dir: "macos", module: macosTheme},
     {dir: "aurora", module: auroraTheme},
     {dir: "nbook", module: nbookTheme},
+    {dir: "notion", module: notionTheme},
 ];
 
 function readVarsCss(dir: string): string {
@@ -50,13 +52,19 @@ describe("shipped theme packages", () => {
         expect(() => installTheme(module)).not.toThrow();
     });
 
-    it("installs all four side by side", () => {
+    it("installs all shipped themes side by side", () => {
         // 市场形态下「装了 N 套、激活 1 套」是常态，所以并存本身要能过
         for (const {module} of THEMES) {
             installTheme(module);
         }
 
-        expect(THEMES.map(({module}) => module.manifest.id)).toEqual(["editorial", "macos", "aurora", "nbook"]);
+        expect(THEMES.map(({module}) => module.manifest.id)).toEqual([
+            "editorial",
+            "macos",
+            "aurora",
+            "nbook",
+            "notion",
+        ]);
     });
 
     it.each(THEMES)("uses its directory name as the theme id: $dir", ({dir, module}) => {

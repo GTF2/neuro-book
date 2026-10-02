@@ -3,6 +3,7 @@ import auroraTheme from "../../themes/aurora";
 import editorialTheme from "../../themes/editorial";
 import macosTheme from "../../themes/macos";
 import nbookTheme from "../../themes/nbook";
+import notionTheme from "../../themes/notion";
 
 /**
  * playground 装了哪些主题。
@@ -13,10 +14,10 @@ import nbookTheme from "../../themes/nbook";
  *
  * 装载顺序 = 主题切换器里的显示顺序（getInstalledThemes 按装载顺序返回）。
  *
- * 四套主题走的是**同一条装载路径**：默认主题不享受任何特殊待遇。这是刻意的——
+ * 五套主题走的是**同一条装载路径**：默认主题不享受任何特殊待遇。这是刻意的——
  * 主题包格式先在自己身上被验证一遍，只有一条代码路径。
  */
-for (const module of [nbookTheme, macosTheme, editorialTheme, auroraTheme]) {
+for (const module of [nbookTheme, macosTheme, editorialTheme, auroraTheme, notionTheme]) {
     installTheme(module);
 }
 
