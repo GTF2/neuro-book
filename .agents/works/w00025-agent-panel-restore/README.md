@@ -28,4 +28,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-agent-panel-restore/README.md) | 已实现并验证：右区挂回 Agent 面 + 开关驱动叶显隐 |
 
-已收尾：98828ac9；待清理：`.worktree/w00025-agent-panel-restore`、`fix/w00025-agent-panel-restore`。
+已收尾：98828ac9；待清理：无（2026-10-02 清理完成：worktree 与分支均已删除）。
