@@ -26,4 +26,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-agent-panel-restore/README.md) | 当前：右区挂回 Agent 面 + 开关驱动叶显隐 |
+| [t01](tasks/t01-agent-panel-restore/README.md) | 已实现并验证：右区挂回 Agent 面 + 开关驱动叶显隐 |
+
+已收尾：98828ac9；待清理：`.worktree/w00025-agent-panel-restore`、`fix/w00025-agent-panel-restore`。
