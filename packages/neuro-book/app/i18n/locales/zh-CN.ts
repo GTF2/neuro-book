@@ -954,6 +954,7 @@ const zhCN = {
                 sizeRejected: "视图高度未保存",
                 revealRejected: "没能打开这个视图",
                 revealUnmounted: "视图 {viewId} 揭示后没有可呈现的容器（注册表或落位可能已经变了）",
+                refreshFiles: "刷新文件",
             },
             statusBar: "状态栏",
             userAssets: "用户资产",

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {computed, onMounted, ref, watch} from "vue";
+import {useI18n} from "vue-i18n";
 import {storeToRefs} from "pinia";
 import ContextMenu, {type ContextMenuItem} from "nbook/app/components/common/ContextMenu.vue";
 import WorkspaceCharacterDetailPanel from "nbook/app/components/novel-ide/workspace/WorkspaceCharacterDetailPanel.vue";
@@ -53,6 +55,15 @@ const filteredNodes = computed(() => {
 const selectedIsCharacter = computed(() => isWorkspaceLorebookEntry(selectedFileNode.value) && selectedFileNode.value?.entryType === "character");
 
 /**
+ * 明细面板被用户关闭：只收起面板，不清空编辑器活动文件。
+ * `clearActiveFile` 会把活动组的 activePath 清空，编辑区随即停在「有标签、无正文」的加载态。
+ */
+const detailDismissed = ref(false);
+watch(selectedFilePath, () => {
+    detailDismissed.value = false;
+});
+
+/**
  * 打开右键菜单。
  */
 function openContextMenu(event: MouseEvent, items: ContextMenuItem[]): void {
@@ -73,6 +84,7 @@ async function refreshTree(): Promise<void> {
  * 打开角色节点对应的 index.md。
  */
 async function selectCharacter(node: WorkspaceFileNode): Promise<void> {
+    detailDismissed.value = false;
     await store.selectWorkspacePath(node.path);
 }
 
@@ -286,12 +298,12 @@ onMounted(() => {
         </div>
 
         <WorkspaceCharacterDetailPanel
-            v-if="selectedIsCharacter"
+            v-if="selectedIsCharacter && !detailDismissed"
             :node="selectedFileNode"
             :issues="workspaceIssues"
             :height="detailHeight"
             @update:height="detailHeight = $event"
-            @close="store.clearActiveFile()"
+            @close="detailDismissed = true"
             @refresh="void refreshTree()"
         />
 
