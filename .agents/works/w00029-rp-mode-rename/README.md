@@ -23,3 +23,5 @@ issueId: null
 | Task | 当前范围 |
 |---|---|
 | [t01](tasks/t01-rp-mode-rename/README.md) | 改名 + 引用同步 + 墓碑迁移 + 验证 |
+
+已收尾：28144b1f；待清理：`.worktree/w00029-rp-mode-rename`、`feat/w00029-rp-mode-rename`。
