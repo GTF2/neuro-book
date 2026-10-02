@@ -137,7 +137,8 @@ defineRouteMeta({
                                         "type": "string",
                                         "enum": [
                                             "nbook",
-                                            "macos"
+                                            "macos",
+                                            "notion"
                                         ]
                                     },
                                     "appearance": {
@@ -256,6 +257,8 @@ defineRouteMeta({
     }
 } as never,
 });
+
+
 
 
 

@@ -65,6 +65,9 @@ defineRouteMeta({
                                                 "minimum": 0,
                                                 "maximum": 9007199254740991
                                             },
+                                            "connectionIdentityDraft": {
+                                                "type": "boolean"
+                                            },
                                             "id": {
                                                 "type": "string",
                                                 "minLength": 1,
@@ -1201,7 +1204,8 @@ defineRouteMeta({
                                     "type": "string",
                                     "enum": [
                                         "nbook",
-                                        "macos"
+                                        "macos",
+                                        "notion"
                                     ]
                                 },
                                 "appearance": {
@@ -1874,6 +1878,9 @@ defineRouteMeta({
                                                             "type": "integer",
                                                             "minimum": 0,
                                                             "maximum": 9007199254740991
+                                                        },
+                                                        "connectionIdentityDraft": {
+                                                            "type": "boolean"
                                                         },
                                                         "id": {
                                                             "type": "string",
@@ -3011,7 +3018,8 @@ defineRouteMeta({
                                                 "type": "string",
                                                 "enum": [
                                                     "nbook",
-                                                    "macos"
+                                                    "macos",
+                                                    "notion"
                                                 ]
                                             },
                                             "appearance": {
@@ -4460,6 +4468,9 @@ defineRouteMeta({
                                                     "minimum": 0,
                                                     "maximum": 9007199254740991
                                                 },
+                                                "connectionIdentityDraft": {
+                                                    "type": "boolean"
+                                                },
                                                 "id": {
                                                     "type": "string",
                                                     "minLength": 1,
@@ -5285,6 +5296,8 @@ defineRouteMeta({
     }
 } as never,
 });
+
+
 
 
 
