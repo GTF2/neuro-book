@@ -208,6 +208,16 @@ export type PartContainerPresentation = {
     readonly problems: readonly string[];
 };
 
+/**
+ * 一个 Part 里**可见**视图的数量。
+ *
+ * 宿主用叶的显隐判断「这个 Part 还有没有内容」，所以不能数容器：只有隐藏成员的容器
+ * 仍留在 `containers` 里（它的 `views` 为空），数容器会把空 Part 判成有内容。
+ */
+export function visibleViewCountOfPart(part: PartContainerPresentation): number {
+    return part.containers.reduce((total, container) => total + container.views.length, 0);
+}
+
 export type ViewPresentationOptions = {
     readonly registry: WorkbenchRegistry;
     /** 环境事实：`when` 与 `requiredAuthority` 的唯一输入。 */

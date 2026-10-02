@@ -6,6 +6,7 @@ import {
     productWorkbenchRegistry,
     resolveViewPresentation,
     SHELL_FILES_VIEW,
+    visibleViewCountOfPart,
 } from "nbook/app/utils/workbench/product-catalog";
 import {resolveWorkbenchViewFactory} from "nbook/app/utils/workbench/view-factories";
 import {SHELL_LEFT_CONTAINER, SHELL_PANEL_CONTAINER, SHELL_RIGHT_CONTAINER} from "nbook/app/utils/workbench/containers";
@@ -245,6 +246,18 @@ describe("resolveViewPresentation：容器落位与 Part 切片", () => {
 
         expect(presentation.container(SHELL_FILES_VIEW.container)?.containerId).toBe(SHELL_LEFT_CONTAINER.id);
         expect(presentation.container("nbook.ghost")).toBeNull();
+    });
+
+    it("叶的显隐事实按可见视图数：只有隐藏成员的容器不算内容", () => {
+        // Project 未打开：文件视图不可见，容器仍留在切片里（成员数不为零），但没有可见视图。
+        const hiddenOnly = productPresentation(contextOf({project: false}));
+        expect(hiddenOnly.part("left").containers.length).toBeGreaterThan(0);
+        expect(visibleViewCountOfPart(hiddenOnly.part("left"))).toBe(0);
+
+        const visible = productPresentation(contextOf());
+        expect(visibleViewCountOfPart(visible.part("left"))).toBe(1);
+        // 右区默认没有成员：Agent 面不是注册视图，宿主用零可见视图把这条空区关掉。
+        expect(visibleViewCountOfPart(visible.part("right"))).toBe(0);
     });
 });
 
