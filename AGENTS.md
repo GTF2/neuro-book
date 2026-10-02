@@ -71,7 +71,7 @@ neuro-book/
 ├── .omp/RULES.md                   # 宿主加载的项目核心规则摘要
 ├── .worktree/                      # 分支实现 checkout，不放业务临时数据
 ├── server/                         # 以仓库根运行产品时的本机生成态，非 canonical 源码
-├── assets/workspace/               # 本机 State Root 资产，非内置资产源
+├── assets/workspace/               # 历史运行残留路径（已 gitignore）；State Root 默认在平台用户数据目录
 ├── workspace/                      # 用户作品数据，不入库
 ├── logs/                           # 本机运行日志
 └── .local/                         # 用户管理的本地草稿、数据集与下载缓存
