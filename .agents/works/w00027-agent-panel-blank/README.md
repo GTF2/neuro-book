@@ -23,3 +23,5 @@ issueId: null
 | Task | 当前范围 |
 |---|---|
 | [t01](tasks/t01-panel-blank-diagnosis/README.md) | 已定性：干净环境面板正常（打开即见、关闭即收）；此前空白是冻结内嵌浏览器的降级态，无需代码改动 |
+
+已收尾：8454b9c0；待清理：无（本 Work 无代码改动，未建 worktree/分支）。
