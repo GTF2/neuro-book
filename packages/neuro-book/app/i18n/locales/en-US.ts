@@ -946,6 +946,12 @@ const enUS = {
                 right: "Secondary sidebar",
                 panel: "Panel",
             },
+            readerPanel: {
+                hint: "Read-only preview",
+                noDocument: "Open a chapter to preview its typeset page here.",
+                notMarkdown: "This file is not Markdown — there is no prose page to read.",
+                emptyBody: "This document has no body text yet.",
+            },
             view: {
                 moveTo: "Move to",
                 drag: "Drag to move",
@@ -1642,6 +1648,7 @@ const enUS = {
         },
         toolPanel: {
             files: "Files",
+            reader: "Reading",
             characters: "Characters",
             plot: "Plot",
             outline: "Outline",

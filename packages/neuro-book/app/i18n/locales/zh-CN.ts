@@ -944,6 +944,12 @@ const zhCN = {
                 right: "辅助侧边栏",
                 panel: "面板",
             },
+            readerPanel: {
+                hint: "只读排版预览",
+                noDocument: "打开一个章节即可在这里看排版。",
+                notMarkdown: "这个文件不是 Markdown，没有稿面可读。",
+                emptyBody: "这篇文档还没有正文。",
+            },
             view: {
                 moveTo: "移动到",
                 drag: "拖动以移动",
@@ -1640,6 +1646,7 @@ const zhCN = {
         },
         toolPanel: {
             files: "文件",
+            reader: "阅读",
             characters: "角色",
             plot: "剧情",
             outline: "剧情大纲",

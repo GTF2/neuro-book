@@ -427,6 +427,12 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
         };
     })));
 
+    /**
+     * 当前活动文档的完整缓冲（节点 + 正文 + 修订号）；没有活动文档时为 null。
+     *
+     * 对外导出给只读消费者（阅读面板）：它要的是"编辑器正在编辑的那份内容"，含未保存改动。
+     * 写正文请走 `selectedFileContent` / `commitEditorChange`，不要直接改这里拿到的对象。
+     */
     const activeWorkspaceFile = computed<WorkspaceActiveFile | null>(() => {
         const path = activeWorkspaceTabPath.value;
         return path ? workspaceBuffers.value[path] ?? null : null;
@@ -2029,6 +2035,7 @@ export const useNovelIdeStore = defineStore("novelIde", () => {
     return {
         activeEditorGroupId,
         activeWorkspaceDocumentTarget,
+        activeWorkspaceFile,
         activeWorkspaceTabPath,
         workspaceGeneration,
         loadingWorkspaceDocument,

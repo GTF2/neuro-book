@@ -2,7 +2,16 @@ import {Marked} from "marked";
 import {renderReferenceChipHtml} from "nbook/app/components/common/reference-chip";
 import {parseSelectionRefChip} from "nbook/app/utils/inline-editor-selection";
 import {renderInlineCommentHtml} from "nbook/app/utils/structured-text";
+import {splitMarkdownFrontmatter} from "nbook/shared/editor-workbench";
 import {parseWorkspaceReferenceLink} from "nbook/shared/workspace-reference";
+
+/**
+ * 稿面正文：剥离 frontmatter 后的 body——`ProsePage` 渲染的就是它。
+ *
+ * 稿面消费者的空态判据必须用它：按原文判"有正文"会把只有 frontmatter 的文档判成有内容，
+ * 渲染出来却是空白（`renderMarkdown` 对空白 body 返回空串）。
+ */
+export const proseBody = (content: string): string => splitMarkdownFrontmatter(content).body;
 
 /**
  * 转义 HTML。
