@@ -26,4 +26,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-reader-view/README.md) | 已交付并验证：阅读贡献 + 只读渲染 + 稿面排版（聚焦测试 143 通过、双主题探针实测） |
 
-已收尾：615abb27；待清理：`.worktree/w00035-focus-reader-view`、`feat/w00035-focus-reader-view`。
+已收尾：615abb27；待清理：无（2026-10-04 清理完成：worktree 与分支均已删除）。
