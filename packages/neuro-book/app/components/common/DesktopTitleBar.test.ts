@@ -103,8 +103,14 @@ function menuItem(label: string): HTMLElement {
     return item;
 }
 
+/**
+ * 菜单项禁用判据：`MenuNodes` 用**原生 `<button :disabled>`**（不是 radix 的 `data-disabled`），
+ * 因此认原生属性，并兼容 `aria-disabled` 表达。
+ */
 function isItemDisabled(item: HTMLElement): boolean {
-    return item.hasAttribute("data-disabled") || item.getAttribute("aria-disabled") === "true";
+    return (item as HTMLButtonElement).disabled === true
+        || item.hasAttribute("disabled")
+        || item.getAttribute("aria-disabled") === "true";
 }
 
 async function openMenu(wrapper: VueWrapper, label: string): Promise<void> {
