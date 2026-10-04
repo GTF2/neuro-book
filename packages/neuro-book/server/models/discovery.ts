@@ -56,6 +56,8 @@ type ParsedDiscoveryPage = {
 type DiscoveryAdapter = {
     id: "openai-models" | "openrouter-models" | "anthropic-models" | "google-models";
     url(provider: ModelProviderDraftDto, baseURL: URL, pageToken?: string): URL;
+    /** 首屏 404 时的备选路径；null 表示该适配器没有可猜的第二种形态。 */
+    fallbackUrl?(provider: ModelProviderDraftDto, baseURL: URL): URL | null;
     systemHeaders(provider: ModelProviderDraftDto): Record<string, string>;
     protectedHeaders: readonly string[];
     parse(payload: unknown): ParsedDiscoveryPage;
@@ -88,6 +90,7 @@ const GoogleModelItemSchema = z.object({
 const openAiAdapter: DiscoveryAdapter = {
     id: "openai-models",
     url: (_provider, baseURL) => modelsUrl(baseURL),
+    fallbackUrl: (_provider, baseURL) => modelsUrlWithV1Prefix(baseURL),
     systemHeaders: bearerHeaders,
     protectedHeaders: ["accept", "authorization"],
     parse: (payload) => parseOpenAIModels(payload, false, null),
@@ -104,6 +107,7 @@ const openRouterAdapter: DiscoveryAdapter = {
 const anthropicAdapter: DiscoveryAdapter = {
     id: "anthropic-models",
     url: (_provider, baseURL) => modelsUrl(baseURL),
+    fallbackUrl: (_provider, baseURL) => modelsUrlWithV1Prefix(baseURL),
     systemHeaders: anthropicHeaders,
     protectedHeaders: ["accept", "authorization", "x-api-key", "anthropic-version"],
     parse: (payload) => parseOpenAIModels(payload, false, "anthropic-messages"),
@@ -179,6 +183,8 @@ async function runAdapter(provider: ModelProviderDraftDto, baseURL: URL, adapter
     const timeout = globalThis.setTimeout(() => controller.abort(), timeoutMs);
     const proxyUrl = provider.options.proxy.trim();
     let url = adapter.url(provider, baseURL);
+    /** 首屏 404 时改走备选路径；只允许一次，避免 404 循环。 */
+    let fallbackUsed = false;
     let nextPageToken: string | undefined;
     let fetchedCount = 0;
     let skippedCount = 0;
@@ -195,7 +201,6 @@ async function runAdapter(provider: ModelProviderDraftDto, baseURL: URL, adapter
             if (url.origin !== baseURL.origin) {
                 throw new ProviderDiscoveryError("invalid-base-url", "发现请求目标与 API Base 不一致。");
             }
-            pageCount += 1;
             const init: ProviderFetchInit = {
                 method: "GET",
                 headers: mergeDiscoveryHeaders(provider, adapter.systemHeaders(provider), adapter.protectedHeaders),
@@ -205,8 +210,18 @@ async function runAdapter(provider: ModelProviderDraftDto, baseURL: URL, adapter
             };
             const response = await fetch(url, init);
             if (!response.ok) {
+                // 404 说明路径猜错了：Base 是协议根时真实端点在 /v1/models。只对首屏重试一次。
+                if (response.status === 404 && !fallbackUsed && pageCount === 0 && adapter.fallbackUrl) {
+                    const fallback = adapter.fallbackUrl(provider, baseURL);
+                    if (fallback) {
+                        fallbackUsed = true;
+                        url = fallback;
+                        continue;
+                    }
+                }
                 throw errorForUpstreamStatus(response.status);
             }
+            pageCount += 1;
 
             const page = adapter.parse(await readJson(response));
             fetchedCount += page.entries.length;
@@ -310,6 +325,23 @@ function isHostnameOrSubdomain(hostname: string, domain: string): boolean {
 function modelsUrl(baseURL: URL): URL {
     const url = new URL(baseURL.toString());
     url.pathname = `${url.pathname.replace(/\/+$/u, "")}/models`;
+    url.search = "";
+    return url;
+}
+
+/**
+ * 首屏 404 的备选路径：在 Base 路径前补 `/v1`。
+ * 官方 Anthropic 与多数 OpenAI-compatible 部署的真实端点是 `/v1/models`，而聊天客户端
+ * 会在 Base 后自动补 `/v1/messages`——所以 Base 约定是协议根，发现必须自己带 `/v1`。
+ * Base 路径已含 `/v1`（或更深）时返回 null：没有第二种形态可猜。
+ */
+function modelsUrlWithV1Prefix(baseURL: URL): URL | null {
+    const trimmed = baseURL.pathname.replace(/\/+$/u, "");
+    if (/(?:^|\/)v1$/u.test(trimmed)) {
+        return null;
+    }
+    const url = new URL(baseURL.toString());
+    url.pathname = `${trimmed}/v1/models`;
     url.search = "";
     return url;
 }

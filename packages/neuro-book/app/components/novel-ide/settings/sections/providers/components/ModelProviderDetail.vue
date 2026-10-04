@@ -174,6 +174,7 @@ function patchOptions(patch: Partial<ModelSettingsProviderDraft["options"]>): vo
                         :disabled="props.saving"
                         @update:model-value="patchOptions({baseURL: $event})"
                     />
+                    <span class="mt-[var(--space-1)] block text-[var(--text-2xs)] leading-[var(--leading-ui)] text-[var(--text-muted)]">{{ t("settings.panels.models.apiBaseHint") }}</span>
                 </label>
 
                 <label class="provider-field-span block min-w-0">

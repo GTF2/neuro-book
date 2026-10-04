@@ -351,6 +351,59 @@ describe("Automatic Model Discovery", () => {
         await expect(discoverProviderModelMetadata(createProvider("https://example.com", "secret", "bedrock-converse-stream"))).rejects.toMatchObject({code: "unsupported-discovery"});
         expect(fetchMock).not.toHaveBeenCalled();
     });
+
+    it("Anthropic 协议在 {Base}/models 404 时补 /v1/models 重试一次", async () => {
+        const fetchMock = vi.fn(async (input: URL) => input.pathname === "/models"
+            ? new Response("not found", {status: 404})
+            : new Response(JSON.stringify({data: [{id: "claude-opus-4-6", display_name: "Claude Opus 4.6"}]})));
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+        const result = await discoverProviderModelMetadata(createProvider("https://api.anthropic.com", "secret", "anthropic-messages"));
+        expect(result.models[0]).toMatchObject({id: "claude-opus-4-6", api: "anthropic-messages"});
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        expect((fetchMock.mock.calls[0]?.[0] as URL).pathname).toBe("/models");
+        expect((fetchMock.mock.calls[1]?.[0] as URL).pathname).toBe("/v1/models");
+    });
+
+    it("Base 已含 /v1 时不重复补前缀，404 直接失败", async () => {
+        const fetchMock = vi.fn().mockResolvedValue(new Response("not found", {status: 404}));
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+        await expect(discoverProviderModelMetadata(createProvider("https://example.com/v1", "secret", "anthropic-messages"))).rejects.toMatchObject({code: "upstream-error"});
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect((fetchMock.mock.calls[0]?.[0] as URL).pathname).toBe("/v1/models");
+    });
+
+    it("兜底只对 404 生效：401 不重试", async () => {
+        const fetchMock = vi.fn().mockResolvedValue(new Response("unauthorized", {status: 401}));
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+        await expect(discoverProviderModelMetadata(createProvider("https://api.anthropic.com", "secret", "anthropic-messages"))).rejects.toMatchObject({code: "unauthorized"});
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("兜底重试命中后仍按协议注入 Anthropic 头", async () => {
+        const fetchMock = vi.fn(async (input: URL) => input.pathname === "/models"
+            ? new Response("not found", {status: 404})
+            : new Response(JSON.stringify({data: [{id: "claude-sonnet-4-6"}]})));
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+        await discoverProviderModelMetadata(createProvider("https://relay.example", "secret", "anthropic-messages"));
+        const headers = new Headers(fetchMock.mock.calls[1]?.[1]?.headers);
+        expect(headers.get("x-api-key")).toBe("secret");
+        expect(headers.get("anthropic-version")).toBe("2023-06-01");
+    });
+
+    it("普通 OpenAI-compatible 也享受 404 兜底（同路径约定）", async () => {
+        const fetchMock = vi.fn(async (input: URL) => input.pathname === "/models"
+            ? new Response("not found", {status: 404})
+            : new Response(JSON.stringify({data: [{id: "vendor-model"}]})));
+        globalThis.fetch = fetchMock as unknown as typeof fetch;
+
+        const result = await discoverProviderModelMetadata(createProvider("https://example.com", "secret"));
+        expect(result.models[0]).toMatchObject({id: "vendor-model"});
+        expect((fetchMock.mock.calls[1]?.[0] as URL).pathname).toBe("/v1/models");
+    });
 });
 
 function createProvider(

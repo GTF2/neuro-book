@@ -861,6 +861,7 @@ const enUS = {
                 providerModelApiRequired: "Provider default API format is required.",
                 apiFormat: "API Format",
                 apiBasePlaceholder: "Leave empty to use Pi Model default baseUrl",
+                apiBaseHint: "Use the protocol root (e.g. http://localhost:8787), not a full endpoint like /v1/messages: the chat client appends /v1/messages itself, so a full endpoint produces a duplicated path.",
                 clearApiKey: "Clear key",
                 configuredApiKeyPlaceholder: "Configured {value}; leave empty to keep it",
                 proxy: "Proxy",
