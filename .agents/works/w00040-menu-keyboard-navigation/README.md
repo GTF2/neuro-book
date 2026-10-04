@@ -34,4 +34,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-menu-keyboard-navigation/README.md) | 当前：定性 + 最小修复（title 绑定、断言口径） |
+| [t01](tasks/t01-menu-keyboard-navigation/README.md) | 已交付并合入：定性 + 完整修复（roving-focus、title 绑定、断言口径） |
+
+已收尾：cdba5323；待清理：.worktree/w00040-menu-keyboard-navigation、fix/w00040-menu-keyboard-navigation
