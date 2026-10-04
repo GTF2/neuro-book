@@ -8,6 +8,7 @@ import type {InlineEditReference} from "nbook/app/utils/inline-editor-selection"
 // 注册表惰性装载视图，未打开的编辑器不加载其昂贵内核。
 const CodeEditorView = defineAsyncComponent(() => import("nbook/app/components/editor-workbench/CodeEditorView.vue"));
 const MarkdownEditorView = defineAsyncComponent(() => import("nbook/app/components/editor-workbench/MarkdownEditorView.vue"));
+const ReaderView = defineAsyncComponent(() => import("nbook/app/components/editor-workbench/ReaderView.vue"));
 
 export type BuiltinEditorBindings = {
     code: {
@@ -51,6 +52,14 @@ export function createBuiltinEditorContributions(bindings: BuiltinEditorBindings
             onSave: events.save, onFocus: events.focus, onActions: events.actions, onReady: bind,
             "onOpen-frontmatter-profile": bindings.markdown.openFrontmatterProfile,
             "onInline-ai-reference": bindings.markdown.addInlineAiReference,
+        }),
+    }, {
+        // 只读阅读形态：切到它即退出编辑上下文，正文按稿面排版通读。
+        id: "read", titleKey: "editorWorkbench.read", iconClass: "i-lucide-book-open",
+        supports: (resource) => resource.editable && resource.languageId === "markdown",
+        render: (props, events, bind) => h(ReaderView, {
+            document: props.document, visible: props.visible, viewInstanceId: props.viewInstanceId,
+            onSave: events.save, onFocus: events.focus, onActions: events.actions, onReady: bind,
         }),
     }];
 }

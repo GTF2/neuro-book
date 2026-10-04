@@ -2486,6 +2486,8 @@ const zhCN = {
         viewActions: "当前视图操作",
         code: "源码",
         markdown: "富文本",
+        read: "阅读",
+        readerEmpty: "这篇文档还没有正文。",
         save: "保存",
         close: "关闭",
         pin: "固定",
