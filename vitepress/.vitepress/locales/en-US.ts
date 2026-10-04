@@ -58,6 +58,7 @@ export const enSidebar: DefaultTheme.SidebarItem[] = [
     text: 'Guides',
     items: [
       { text: 'Settings', link: '/en/guide/settings' },
+      { text: 'Connecting a Self-Hosted Relay', link: '/en/guide/relay' },
       { text: 'Themes and Colors', link: '/en/guide/theme' },
       { text: 'Changes and File History', link: '/en/guide/file-history' },
       { text: 'Account and Cloud Backup', link: '/en/guide/account' }
