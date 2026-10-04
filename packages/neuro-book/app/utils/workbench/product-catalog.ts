@@ -100,11 +100,38 @@ export const SHELL_FILES_VIEW: ViewDescriptor = {
     stateScope: "user",
 };
 
+/**
+ * `reader` 视图：把**当前活动文档**的正文排成稿面，供与编辑器并排通读（w00039）。
+ *
+ * - 默认停右栏（`SHELL_RIGHT_CONTAINER`）：右栏本就是"Agent 会话与对话面迁入"的容器，
+ *   本视图是它的第一个迁入者；`canMoveView: true` 让用户能把它挪去左栏或底部；
+ * - `when.requires: ["project"]`：稿面语义来自工作区文件，书架 / 用户资产面没有活动文档可读；
+ * - `layout: "fill"`：面板自己占满内容区并管内部滚动（稿面版心归 `ProsePage`）；
+ * - 不声明 `requiredAuthority`：数据是 store 里的活动缓冲，能不能打开文件已由打开动作求值，
+ *   这里再要一份 authority 会把"只读预览"变成第二个权限口径；
+ * - `canToggleVisibility` 仍按**当前真实能力**声明：视图可见性开关还没有落账通道
+ *   （与 `SHELL_FILES_VIEW` 同口径），用户可经移动入口把它挪走。
+ */
+export const SHELL_READER_VIEW: ViewDescriptor = {
+    id: "nbook.reader",
+    titleKey: "ide.toolPanel.reader",
+    icon: "i-lucide-book-open",
+    container: SHELL_RIGHT_CONTAINER.id,
+    layout: "fill",
+    when: {requires: ["project"]},
+    order: 20,
+    weight: 1,
+    canToggleVisibility: false,
+    canMoveView: true,
+    factoryKey: "nbook.view.reader",
+    stateScope: "user",
+};
+
 const PRODUCT_CATALOG: WorkbenchCatalog = {
     /** 叶仍是外壳的固定骨架（`WorkbenchShell.vue`）：没有消费者前不声明 Part descriptor。 */
     parts: [],
     containers: [SHELL_LEFT_CONTAINER, SHELL_PANEL_CONTAINER, SHELL_RIGHT_CONTAINER],
-    views: [SHELL_FILES_VIEW],
+    views: [SHELL_FILES_VIEW, SHELL_READER_VIEW],
 };
 
 let productRegistry: DescriptorResult<WorkbenchRegistry> | null = null;

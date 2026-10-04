@@ -13,11 +13,13 @@
 
 import type {Component} from "vue";
 import WorkspaceFilePanel from "nbook/app/components/novel-ide/workspace/WorkspaceFilePanel.vue";
+import ReaderPanelView from "nbook/app/components/workbench/ReaderPanelView.vue";
 import type {DescriptorResult} from "nbook/app/utils/workbench/descriptors";
 
 /** 内置视图的 factory 表；键只在 descriptor 的 `factoryKey` 里出现。 */
 const FIRST_PARTY_FACTORIES: Record<string, Component> = {
     "nbook.view.files": WorkspaceFilePanel,
+    "nbook.view.reader": ReaderPanelView,
 };
 
 export function resolveWorkbenchViewFactory(factoryKey: string): DescriptorResult<Component> {

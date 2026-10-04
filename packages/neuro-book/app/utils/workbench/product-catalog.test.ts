@@ -6,6 +6,7 @@ import {
     productWorkbenchRegistry,
     resolveViewPresentation,
     SHELL_FILES_VIEW,
+    SHELL_READER_VIEW,
     visibleViewCountOfPart,
 } from "nbook/app/utils/workbench/product-catalog";
 import {resolveWorkbenchViewFactory} from "nbook/app/utils/workbench/view-factories";
@@ -142,6 +143,34 @@ describe("productWorkbenchRegistry", () => {
         expect(resolved.ok).toBe(false);
         expect(resolved.ok ? "" : resolved.reason).toContain("未登记的内置 factoryKey");
     });
+
+    it("阅读视图默认停右栏、可移动；Project 打开时可见，factoryKey 可求值", () => {
+        const registry = productWorkbenchRegistry();
+        if (!registry.ok) {
+            throw new Error(registry.reason);
+        }
+
+        expect(SHELL_READER_VIEW).toMatchObject({
+            id: "nbook.reader",
+            titleKey: "ide.toolPanel.reader",
+            container: SHELL_RIGHT_CONTAINER.id,
+            layout: "fill",
+            canMoveView: true,
+            stateScope: "user",
+        });
+        expect(registry.value.resolveView(SHELL_READER_VIEW.id).ok).toBe(true);
+        expect(resolveWorkbenchViewFactory(SHELL_READER_VIEW.factoryKey).ok).toBe(true);
+
+        const right = productPresentation().part("right").containers[0]!;
+        expect(right.views.map((entry) => entry.view.id)).toEqual([SHELL_READER_VIEW.id]);
+        expect(right.moveTargets.map((target) => target.containerId)).toEqual([
+            SHELL_LEFT_CONTAINER.id,
+            SHELL_PANEL_CONTAINER.id,
+        ]);
+        expect(productPresentation(contextOf({project: false})).part("right").containers[0]!.hidden).toEqual([
+            expect.objectContaining({view: SHELL_READER_VIEW, visible: false}),
+        ]);
+    });
 });
 
 describe("resolveViewPresentation：容器落位与 Part 切片", () => {
@@ -153,9 +182,9 @@ describe("resolveViewPresentation：容器落位与 Part 切片", () => {
         expect(left.problems).toEqual([]);
         expect(left.containers.map((container) => container.containerId)).toEqual([SHELL_LEFT_CONTAINER.id]);
         expect(left.activeContainerId).toBe(SHELL_LEFT_CONTAINER.id);
-        // 右栏与面板在产品清单里还没有视图：实际成员数为 0，因此没有入口（该区域是空 Switcher）。
-        expect(presentation.part("right").containers).toEqual([]);
-        expect(presentation.part("right").activeContainerId).toBeNull();
+        // 右栏有阅读视图（w00039 的第一个右栏成员），面板容器还没有视图：后者的入口为空。
+        expect(presentation.part("right").containers.map((container) => container.containerId)).toEqual([SHELL_RIGHT_CONTAINER.id]);
+        expect(presentation.part("right").activeContainerId).toBe(SHELL_RIGHT_CONTAINER.id);
         expect(presentation.part("panel").containers).toEqual([]);
         // 定义与记录原件都还在：查得到，只是没有入口。
         expect(presentation.container(SHELL_PANEL_CONTAINER.id)?.memberViewIds).toEqual([]);
@@ -256,8 +285,10 @@ describe("resolveViewPresentation：容器落位与 Part 切片", () => {
 
         const visible = productPresentation(contextOf());
         expect(visibleViewCountOfPart(visible.part("left"))).toBe(1);
-        // 右区默认没有成员：Agent 面不是注册视图，宿主用零可见视图把这条空区关掉。
-        expect(visibleViewCountOfPart(visible.part("right"))).toBe(0);
+        // 右区有阅读视图：它随 Project 打开而可见，因此这条区不再是零可见视图。
+        expect(visibleViewCountOfPart(visible.part("right"))).toBe(1);
+        // 未打开 Project：阅读视图与文件视图一样不可见，右区回到零可见视图。
+        expect(visibleViewCountOfPart(hiddenOnly.part("right"))).toBe(0);
     });
 });
 
