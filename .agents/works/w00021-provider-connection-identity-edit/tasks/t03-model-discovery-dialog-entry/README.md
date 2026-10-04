@@ -21,10 +21,14 @@ taskId: t03-model-discovery-dialog-entry
 
 - 现有设置区与服务端 config-service 套件保持通过（改动未触及它们的断言）。
 - 该接线没有单元测试覆盖：`useProviderSettingsBinding` 无测试文件，本次未新建。
+- 2026-10-04 无头探针实测（`.local/w00021-t03-probe.mjs`、`.local/w00021-t03-toggle-probe4.mjs`、`.local/w00021-t03-toggle-probe5.mjs`）：
+  - 点「发现/添加模型」→ 窗口打开（标题「/ 模型发现」、搜索框、分组与诊断徽章齐全），点击前不存在该窗口。
+  - 「远端完整」模型点「+」→ 直接加入，`PUT /api/config/global` 写入体含该模型（`enabled: true`）。
+  - 已启用模型「−」停用再恢复：两次 `PUT`，净变化为零；测试后按备份逐字节还原 `config.json`。
 
 ## 未验证
 
-- 未在浏览器实跑「点发现/添加模型 → 窗口打开 → 勾选模型加入」；判定依据是 `discoveryDialogOpen` 的写入路径检索与组件 props/emits 合同。需界面确认。
+- 「参考待确认」候选的补全窗口路径不在此 Task 范围内：其「确定」后未安排写回，由 [t04](../t04-candidate-confirm-writeback/README.md) 续修（探针现场：成功提示出现、无 `PUT`）。
 
 ## 执行位置
 
