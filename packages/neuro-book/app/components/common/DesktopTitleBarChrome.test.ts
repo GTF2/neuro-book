@@ -149,9 +149,10 @@ describe("DesktopTitleBarChrome", () => {
         const paste = items.find((item) => item.textContent?.trim() === "粘贴");
         const undo = items.find((item) => item.textContent?.trim() === "撤销");
 
-        expect(paste?.hasAttribute("data-disabled") || paste?.getAttribute("aria-disabled") === "true").toBe(true);
+        // 菜单项是原生 `<button :disabled>`（不是 radix 的 data-disabled）。
+        expect((paste as HTMLButtonElement | undefined)?.disabled).toBe(true);
         expect(paste?.title).toContain("Ctrl+V");
-        expect(undo?.hasAttribute("data-disabled")).toBe(false);
+        expect((undo as HTMLButtonElement | undefined)?.disabled).toBe(false);
     });
 
     it("下拉层传送出标题栏（不被祖先裁剪），点外部收起", async () => {

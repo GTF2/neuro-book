@@ -18,7 +18,8 @@ import type {DropdownItem} from "./dropdown.types";
  * 支持 4px 悬浮 macOS 胶囊滚动条与自适应双向渐隐。
  *
  * 结构覆盖平面项、分隔线、任意层级子菜单与受控 radio / checkbox；
- * 键盘漫游、子菜单展开与关闭后焦点归还全部由 Reka 菜单原语承担，组件不自己排焦点。
+ * 键盘漫游由 `MenuNodes` 承担（菜单项是原生 button，reka 的 roving-focus 管不到它们），
+ * 关闭后焦点归还由 Reka 的触发器承担。
  */
 
 const props = withDefaults(defineProps<{
@@ -59,6 +60,21 @@ const emit = defineEmits<{
 function handleOpenChange(value: boolean): void {
     if (!value) cascade.reset();
     emit("update:open", value);
+}
+
+/**
+ * 打开时把焦点交给首项。
+ *
+ * reka 的 `DropdownMenuContent` 聚焦的是内容容器自身；菜单项是原生 `<button>`，
+ * 不在 reka 的 roving-focus 里，所以这一步得自己补——否则方向键没有任何项可走。
+ * 只接管「焦点落在容器本身」的情形，已经落在具体项上（子菜单、Escape 归还）不动它。
+ */
+function handleContentFocus(event: FocusEvent): void {
+    const container = event.currentTarget as HTMLElement | null;
+    if (container === null || event.target !== container) return;
+    const first = [...container.querySelectorAll<HTMLElement>('[role^="menuitem"]')]
+        .find((element) => !(element as HTMLButtonElement).disabled);
+    first?.focus();
 }
 
 /** 子菜单父项不走这里：它只展开子菜单，不执行自己的动作。 */
@@ -166,6 +182,7 @@ function scheduleSubmenu(item: DropdownItem | null, trigger: HTMLElement, depth 
                 :collision-padding="8"
                 :class="[popoverClasses, resolvedMenuClass]"
                 v-bind="props.contentProps"
+                @focus="handleContentFocus"
             >
                 <!-- 滚动视口（自适应双向渐隐 + 隐藏原生滚动条） -->
                 <div
