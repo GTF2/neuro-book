@@ -859,6 +859,7 @@ const zhCN = {
                 providerModelApiRequired: "Provider 默认接口格式为必填项。",
                 apiFormat: "接口格式",
                 apiBasePlaceholder: "可留空，使用 Pi Model 默认 baseUrl",
+                apiBaseHint: "填协议根（如 http://localhost:8787），不要填到 /v1/messages 这类完整端点：聊天会在其后自动补 /v1/messages，填到端点会拼出重复路径。",
                 clearApiKey: "清空密钥",
                 configuredApiKeyPlaceholder: "已配置 {value}；留空则保留",
                 proxy: "代理",
