@@ -58,6 +58,7 @@ export const zhSidebar: DefaultTheme.SidebarItem[] = [
     text: '使用指南',
     items: [
       { text: '设置中心', link: '/guide/settings' },
+      { text: '自建中转站接入', link: '/guide/relay' },
       { text: '主题与配色', link: '/guide/theme' },
       { text: '变更与文件历史', link: '/guide/file-history' },
       { text: '账号与云备份', link: '/guide/account' }
