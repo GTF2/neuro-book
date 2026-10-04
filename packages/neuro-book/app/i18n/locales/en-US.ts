@@ -2488,6 +2488,8 @@ const enUS = {
         viewActions: "View Actions",
         code: "Source Code",
         markdown: "Rich Text",
+        read: "Reading",
+        readerEmpty: "This document has no body text yet.",
         save: "Save",
         close: "Close",
         pin: "Pin",
