@@ -16,6 +16,7 @@ current Work/Task 以 [工作入口](../works/AGENTS.md) 为准，legacy provena
 - [work-registry](work-registry/SKILL.md)：Work 开号占号与收尾清理的核对清单。
 - [task-snapshot](task-snapshot/SKILL.md)：Task README 快照维护、Spec 链接与相对链接纪律。
 - [spec-registration](spec-registration/SKILL.md)：Spec/Proposal 登记纪律与规范路由表维护。
+- [capability-gap-audit](capability-gap-audit/SKILL.md)：审计「已实现能力 ↔ 消费点接线」缺口（无人调用的工具、未接线的 workflow、悬空承诺）；发版前或大改动后跑。
 
 通用 Skill 在宿主允许范围内服务当前请求，服从根规则、当前合同和授权，不另立审批或完成门禁。项目不依赖特定 Code Agent 宿主。
 
