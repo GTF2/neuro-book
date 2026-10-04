@@ -24,4 +24,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-relay-setup-guide/README.md) | 已交付并验证：中英对等指南 + 侧栏登记（docs:check 0 failures、docs:build 通过、两页面已构建） |
 
-已收尾：483d55b9；待清理：`.worktree/w00034-relay-setup-guide`、`docs/w00034-relay-setup-guide`。
+已收尾：483d55b9；待清理：无（2026-10-04 清理完成：worktree 与分支均已删除）。
