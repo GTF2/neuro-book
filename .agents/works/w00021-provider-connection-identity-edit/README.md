@@ -35,4 +35,4 @@ issueId: null
 
 2026-10-04 t03 的浏览器验收发现同族缺陷：候选（「参考待确认」）模型在补全窗口点「确定」有成功提示但不落盘。以 t04 续修并复测通过。
 
-已收尾：50fe38b6；待清理：`.worktree/w00021-provider-connection-identity-edit`、`fix/w00021-provider-connection-identity-edit`。
+已收尾：50fe38b6；待清理：无（2026-10-04 清理完成：worktree 与分支均已删除）。
