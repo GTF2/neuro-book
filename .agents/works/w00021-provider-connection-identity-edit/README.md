@@ -29,8 +29,10 @@ issueId: null
 | [t01](tasks/t01-connection-identity-edit-window/README.md) | 已实现并验证，随 `3b5d566a` 合入 master |
 | [t02](tasks/t02-connection-identity-save-contract/README.md) | 已实现并验证：把「身份未定稿」声明接到保存契约，并放行会话新建 Provider 的改名守卫 |
 | [t03](tasks/t03-model-discovery-dialog-entry/README.md) | 已实现并验证：窗口打开与勾选加入经无头探针实测（详见 t04 的验收记录） |
-| [t04](tasks/t04-candidate-confirm-writeback/README.md) | 当前：修复候选模型「确定」后成功提示与落盘不一致 |
+| [t04](tasks/t04-candidate-confirm-writeback/README.md) | 已实现并验证：候选「确定」后写回（探针实测 PUT 与写入体），聚焦测试 124 通过且与基线一致 |
 
 2026-10-02 开发者使用中转站 Provider 时发现 t01 只解锁了界面，保存仍被服务端身份守卫拒绝（`连接身份不可修改（Base URL 或代理已变化）`），要求继续修通，并选定「保留身份不可变语义、只对会话新建 Provider 豁免」的方向。Work 因此重新进入进行中，撤销此前记下的收尾行。
 
-2026-10-04 t03 的浏览器验收发现同族缺陷：候选（「参考待确认」）模型在补全窗口点「确定」有成功提示但不落盘。以 t04 续修。
+2026-10-04 t03 的浏览器验收发现同族缺陷：候选（「参考待确认」）模型在补全窗口点「确定」有成功提示但不落盘。以 t04 续修并复测通过。
+
+已收尾：50fe38b6；待清理：`.worktree/w00021-provider-connection-identity-edit`、`fix/w00021-provider-connection-identity-edit`。
