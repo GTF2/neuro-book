@@ -165,6 +165,8 @@ export function useProviderSettingsBinding(options: ProviderSettingsBindingOptio
                 return;
             }
             enableModel({...candidate, enabled: true});
+            // 候选只写进草稿，不安排写回就会停在内存里：成功提示与落盘必须同生。
+            scheduleSave();
         } catch (error) {
             notification.error(error instanceof Error ? error.message : String(error));
             return;
