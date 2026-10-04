@@ -23,4 +23,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-sync-tool/README.md) | 当前：冲突面试算 + 分级报告 + 聚焦测试 |
+| [t01](tasks/t01-sync-tool/README.md) | 已交付并验证：冲突面试算 + 分级报告（6/6 测试通过、真实仓库实测） |
+
+已收尾：f09912f7；待清理：`.worktree/w00036-upstream-sync-tool`、`feat/w00036-upstream-sync-tool`。
