@@ -23,4 +23,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-capability-gap-audit-skill/README.md) | 当前：Skill 正文 + 索引登记 + 路由表 |
+| [t01](tasks/t01-capability-gap-audit-skill/README.md) | 已交付并验证：Skill 正文 + 索引 + 路由表（三条命令实测可跑、governance/docs 门禁 0 failures） |
+
+已收尾：e9d2f8e3；待清理：无（纯治理文档，主工作区直接提交，未建 worktree）。
