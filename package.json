@@ -33,6 +33,7 @@
     "governance:check": "bun scripts/ci/agent-governance.ts",
     "governance:context": "bun scripts/cli/agent-context.ts",
     "governance:worktree": "bun scripts/cli/create-agent-worktree.ts",
+    "sync:upstream": "bun scripts/git/upstream-sync-report.ts",
     "governance:migrate-tasks": "bun scripts/maintenance/migrate-agent-tasks.ts",
     "governance:migrate-task-ownership": "bun scripts/maintenance/migrate-task-ownership.ts",
     "product:measure": "bun scripts/build/measure-product-runtime-image.ts",
