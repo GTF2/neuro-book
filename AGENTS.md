@@ -2,17 +2,17 @@
 
 NeuroBook 是本地优先的长篇写作工作区；作品文件、SQLite、Agent 会话和工作流都是可审查的产品数据。本文件是开发 Agent 的仓库入口。产品自身的 NeuroBook Agent Runtime 是另一套系统；人类贡献流程见 [`CONTRIBUTING.md`](CONTRIBUTING.md)。
 
-## Core Rules
+## 核心规则
 
 - 默认使用简体中文与用户交互。
 - 内部推理/思考全程使用简体中文，不以英文整句推理；最终回复用简体中文。代码、路径、API、报错信息、变量名等保留原文。
 - 修复和重构应解决合同或设计问题，不用 hack 绕过类型系统或制造技术债；不能兼容时说明取舍
 - 单点修改使用文件编辑工具。批量替换必须先 dry run；命中不确定或出现意外结果时改为逐处编辑，并报告实际修改的文件
-- A comment states the non-obvious reason at the owning boundary. Include a constraint or invalidation condition only when a maintainer needs it to know when the rationale or code stops being valid. Do not restate the operation, preserve intermediate attempts, or list speculative future work.
+- 注释在拥有它的边界上说明不明显的原因。只有当维护者需要知道理由或代码何时失效时才写约束或失效条件。不复述操作、不保留中间尝试、不罗列假想的未来工作。
 - 对 AGENTS.md 也就本文件的约束保持怀疑，随着项目的演变，这个文件可能变得不是很权威，有错误。这个文件是 AGENTS.md 人类共建的，需要不断优化，工作过程中如果遇到某些地方不好的可以随时询问开发者要求优化
 - 写下来的代码是给其他人类和 Agents 阅读的，所以注释、可维护性和可理解性非常重要
 
-## Conventions
+## 约定
 
 - 仅问答、审查、诊断默认只读；用户明确要求修复或修改后，完成授权范围内的改动与验证。缺少运行证据时标明“从代码推断”或“未验证”。
 - 不为可逆、影响小的改动强制写测试；涉及核心逻辑、边界或无把握时仍应补充测试。
