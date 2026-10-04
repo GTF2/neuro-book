@@ -23,4 +23,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-reader-panel/README.md) | 已交付待合入：可停靠阅读面板（测试与门禁通过，浏览器实测面板停右栏、随活动文档渲染稿面） |
+| [t01](tasks/t01-reader-panel/README.md) | 已交付并合入：可停靠阅读面板（测试与门禁通过，浏览器实测面板停右栏、随活动文档渲染稿面） |
+
+已收尾：5fe7da69；待清理：.worktree/w00039-reader-panel-view、feat/w00039-reader-panel-view
