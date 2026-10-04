@@ -5,6 +5,7 @@ NeuroBook 是本地优先的长篇写作工作区；作品文件、SQLite、Agen
 ## Core Rules
 
 - 默认使用简体中文与用户交互。
+- 内部推理/思考全程使用简体中文，不以英文整句推理；最终回复用简体中文。代码、路径、API、报错信息、变量名等保留原文。
 - 修复和重构应解决合同或设计问题，不用 hack 绕过类型系统或制造技术债；不能兼容时说明取舍
 - 单点修改使用文件编辑工具。批量替换必须先 dry run；命中不确定或出现意外结果时改为逐处编辑，并报告实际修改的文件
 - A comment states the non-obvious reason at the owning boundary. Include a constraint or invalidation condition only when a maintainer needs it to know when the rationale or code stops being valid. Do not restate the operation, preserve intermediate attempts, or list speculative future work.
