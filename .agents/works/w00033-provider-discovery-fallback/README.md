@@ -25,4 +25,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-discovery-fallback-and-base-hint/README.md) | 已实现并验证：404 兜底 + Base 提示 + Spec（合同测试 47 通过、真实端点与 UI 探针实测） |
 
-已收尾：be6849ba；待清理：`.worktree/w00033-provider-discovery-fallback`、`feat/w00033-provider-discovery-fallback`。
+已收尾：be6849ba；待清理：无（2026-10-04 清理完成：worktree 与分支均已删除）。
