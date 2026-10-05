@@ -166,19 +166,23 @@ function onLayout(next: ShellLayoutFacts): void {
 /**
  * 叶的显隐：只接受 titlebar / activity / left / right。
  * editor 与状态栏不可隐藏（它们一旦消失，编辑实例与刚性边界就没有了落点）。
+ *
+ * 只在**实际变化**时写 `hidden`：它与宿主事实构成闭环（宿主 watch 可见视图数 → 调本方法 →
+ * 本方法写 hidden → 外壳重渲染 → 可见视图数重算）。无变化也写新数组的话，这个环会一直转，
+ * Vue 判成组件自激更新并抛 `Maximum recursive updates exceeded`。
  */
 function setLeafVisible(id: string, visible: boolean): void {
     if (!HIDDEN_PART_IDS[id]) {
         leafIssues.value = [...leafIssues.value, `未登记的叶：${id}`];
         return;
     }
-    const next = visible
-        ? hidden.value.filter((item) => item !== id)
-        : (hidden.value.includes(id) ? hidden.value : [...hidden.value, id]);
-    if (next === hidden.value) {
+    const hiddenNow = hidden.value.includes(id);
+    if (visible === !hiddenNow) {
         return;
     }
-    hidden.value = next;
+    hidden.value = visible
+        ? hidden.value.filter((item) => item !== id)
+        : [...hidden.value, id];
 }
 
 onBeforeUnmount(() => {
