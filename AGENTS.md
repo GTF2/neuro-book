@@ -93,6 +93,12 @@ neuro-book/
 | 前端、服务端、桌面、数据库、脚本、发布、包 | [`packages/neuro-book/AGENTS.md`](packages/neuro-book/AGENTS.md)、[`packages/neuro-book/server/AGENTS.md`](packages/neuro-book/server/AGENTS.md)、[`packages/neuro-book/prisma/AGENTS.md`](packages/neuro-book/prisma/AGENTS.md)、[`desktop/AGENTS.md`](desktop/AGENTS.md)、[`scripts/AGENTS.md`](scripts/AGENTS.md)、[`scripts/release/AGENTS.md`](scripts/release/AGENTS.md)、[`packages/AGENTS.md`](packages/AGENTS.md) 中匹配的最近入口 |
 | Agent 消费的规则、Skill、AGENTS.md 或 CLAUDE.md | [`.agents/skills/writing-for-agents/SKILL.md`](.agents/skills/writing-for-agents/SKILL.md)；修改 Skill 时再读同目录 `SKILL-MECHANICS.md` |
 
+## 进程与端口
+
+- **任何进程终止必须按 PID 精确指定**。禁止 `taskkill /F /IM <name>`、`taskkill /F /FI "IMAGENAME eq <name>"`、`pkill -f <name>`、`killall <name>` 这类按名字批量匹配的写法：开发 Agent 的宿主控制器本身就是 `node.exe`，按名字杀会连带杀掉宿主，导致编辑器崩溃与会话中断（2026-10-05 实际发生两次）。
+- 正确顺序：`netstat -ano | grep ":<port>"` 找到真正占用端口的 PID，再 `taskkill /F /PID <pid>`。确需批量时先校验命令行特征（排除宿主），不要只看进程名。
+- 只终止自己启动的实例；dev server 会自行释放端口，不必为"清干净"扩大范围。同一规则适用于 `bun` / `deno` / `python` / `java` 等通用运行时。
+
 ## Git 注意事项
 
 - Git 完整流程见 [`docs/standards/repository-workflow.md`](docs/standards/repository-workflow.md)。主工作区保持 `master`，保护用户已有改动和未跟踪文件。
