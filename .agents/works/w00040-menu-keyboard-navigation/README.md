@@ -36,4 +36,4 @@ issueId: null
 |---|---|
 | [t01](tasks/t01-menu-keyboard-navigation/README.md) | 已交付并合入：定性 + 完整修复（roving-focus、title 绑定、断言口径） |
 
-已收尾：cdba5323；待清理：.worktree/w00040-menu-keyboard-navigation、fix/w00040-menu-keyboard-navigation
+已收尾：cdba5323；待清理：无（2026-10-06 核实清理完成：worktree 与分支均已删除）。

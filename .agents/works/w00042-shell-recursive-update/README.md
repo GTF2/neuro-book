@@ -44,7 +44,7 @@ issueId: null
 
 ## 收尾
 
-已收尾：df147204；待清理：.worktree/w00042-shell-recursive-update、fix/w00042-shell-recursive-update
+已收尾：df147204；待清理：无（2026-10-06 清理完成：worktree 与分支均已删除）。
 
 ## 已知既有缺陷（非本 Work 范围）
 
