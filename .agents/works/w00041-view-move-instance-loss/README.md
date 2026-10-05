@@ -33,4 +33,6 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-view-move-instance-loss/README.md) | 当前：定位根因并修复 |
+| [t01](tasks/t01-view-move-instance-loss/README.md) | 已交付并合入：根因定位（`nextTick` 发布链被上游异常中断）+ 三处修复 + 回归测试 |
+
+已收尾：f3d9df6f；待清理：.worktree/w00041-view-move-instance-loss、fix/w00041-view-move-instance-loss
