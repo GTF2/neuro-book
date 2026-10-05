@@ -274,6 +274,32 @@ describe("WorkbenchShell：会话接线", () => {
         expect(wrapper.find('[data-leaf="titlebar"]').exists()).toBe(false);
     });
 
+    it("重复设置同一显隐状态不写 hidden：宿主事实与外壳呈现的闭环靠它断开", async () => {
+        /**
+         * 宿主 watch 可见视图数 → 调 `setLeafVisible` → 本方法写 `hidden` → 外壳重渲染 →
+         * 可见视图数重算。无变化也写新数组的话这个环会一直转，Vue 判成自激更新
+         * （`Maximum recursive updates exceeded`）。因此重复调用必须**不产生写入**——
+         * `expose` 解包后读到的数组引用不变，就是"没有写"的判据。
+         */
+        const wrapper = mountShell();
+        await flush();
+        const initial = shellVm(wrapper).hidden;
+
+        shellVm(wrapper).setLeafVisible("right", true);
+        await flush();
+        expect(shellVm(wrapper).hidden).toBe(initial);
+
+        shellVm(wrapper).setLeafVisible("right", false);
+        await flush();
+        const hiddenAfter = shellVm(wrapper).hidden;
+        expect(hiddenAfter).toEqual(["right"]);
+
+        // 再次设为同一个值：引用必须原样保留（不新建数组）。
+        shellVm(wrapper).setLeafVisible("right", false);
+        await flush();
+        expect(shellVm(wrapper).hidden).toBe(hiddenAfter);
+    });
+
     it("失效的瞬时最大化回传给宿主清除，不写存储", async () => {
         const wrapper = mountShell({maximized: true, panel: {hidden: true}});
         await flush();

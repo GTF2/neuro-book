@@ -1,0 +1,63 @@
+---
+schema: nbook.task/v2
+taskId: t01-shell-recursive-update
+---
+
+# 定位并修复外壳递归更新风暴
+
+行为合同见 [`docs/specs/ui/workbench-shell.md`](../../../../../docs/specs/ui/workbench-shell.md)：本 Task 只修实现缺陷（渲染期自激），不改变该 Spec 描述的布局、显隐与拖放行为。
+
+## 目标
+
+打开文件时不再抛出 304 条 `Maximum recursive updates exceeded in component <WorkbenchShellLayout>`，且布局行为与基线一致（`layout=split`、7 个叶完整、阅读面板正常渲染、显隐可用）。
+
+## 验收标准（实测口径）
+
+同一探针（`diag` 项目、1440×900、无头 Chromium）三段计数：
+
+1. 加载后 / 展开文件树：0 条警告（基线已满足）。
+2. 打开 Markdown 文件：**0 条**（基线 304 条）。
+3. 行为三项与基线一致：`data-shell-layout=split`、`[data-leaf]` 含 7 项（含 `right`）、`.reader-panel .prose-page` 文本非空（基线 417 字符）。
+
+## 已排除
+
+- `syncAnchors()` 的写入（打开文件期间调用 0 次）
+- `rebuild()` / `measure()`（调用 0 次）
+- `ReaderPanelView` 的响应式逻辑（剥离后仍 304 条）
+- 停放区 `display:none`（改 `visibility:hidden` 仍 304 条）
+
+## 已定位
+
+自激与停放区（`data-shell-parking`）里那组 `<Teleport :to="targets[part] ?? undefined" :disabled="!targets[part]">` 直接相关：清空其 `v-for` 源 → 0 条；`:disabled` 固定 `false` → 0 条。
+
+## 待办
+
+1. 取得决定性证据：为什么 `targets` 未变、`disabled` 未切换，该表达式求值仍参与自激。建议手段：Vue 开发构建（`__DEV__`）下读 `onRenderTriggered` 的 key/type，或在 `TeleportImpl` 的 `queuePendingMount`/`mountToTarget` 路径上打点。
+2. 设计既消除警告、又保持基线的修法（前两个尝试都造成 compact 退化）。
+3. 补回归测试（能捕获该警告；参考 `WorkbenchShell.test.ts` 的既有写法）。
+4. 全量测试 + 门禁 + 浏览器实测三段计数。
+
+## 状态
+
+**进行中（未完成）。** 自激根因未收敛，本轮不交付自激修复。
+
+### 本轮实际交付
+
+`WorkbenchShell.vue` 的 `setLeafVisible` 去重修复：原实现用 `next === hidden.value` 比较数组**引用**，
+而两个分支都创建新数组，比较恒为假——去重完全失效，每次都写 `hidden`。改为只在实际变化时写。
+这是一处**独立成立的真实缺陷**（宿主 watch 可见视图数 → 调本方法 → 写 `hidden` → 外壳重渲染，
+无变化也写会让这个环一直转），但**它不是 304 条警告的来源**（实测：修完仍 304 条）。
+
+配套回归测试 1 条（`WorkbenchShell.test.ts`），已验证能捕获该缺陷（回退修复即失败）。
+
+### 未交付
+
+自激修复。两个试过的方案（`parkingReady` 守卫、占位元素 + 稳定 `to`）都能消除警告，但都造成
+**行为退化**（`layout` 从 split 退化为 compact、插槽内容不渲染），已回退。根因未收敛到可解释的
+机制前不交付——`targets` 在打开文件时没有变化、`disabled` 也没有切换，该表达式却参与自激。
+
+### 下一步建议
+
+用 **Vue 开发构建**（而非当前的生产构建）复现，`onRenderTriggered` 的 `key`/`type` 在 dev 下可读，
+能直接指出是哪个依赖触发了 213 次渲染。或在 `TeleportImpl` 的 `queuePendingMount` / `mountToTarget`
+路径打点，验证两段式挂载假设。
