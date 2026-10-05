@@ -28,18 +28,44 @@ taskId: t01-shell-recursive-update
 
 ## 已定位
 
-自激与停放区（`data-shell-parking`）里那组 `<Teleport :to="targets[part] ?? undefined" :disabled="!targets[part]">` 直接相关：清空其 `v-for` 源 → 0 条；`:disabled` 固定 `false` → 0 条。
+自激与停放区（`data-shell-parking`）里那组 `<Teleport :to="targets[part] ?? undefined" :disabled="!targets[part]">` 直接相关：
+
+| 改动 | 警告 | 行为 |
+|---|---|---|
+| 清空该 `v-for` 的源 | 0 条 | 正常 |
+| `:disabled` 固定 `false` | 0 条 | 正常 |
+| 移除 `:disabled`（`to` 可为 undefined） | 0 条 | **退化**（compact、内容不渲染） |
+| 加 `defer` | 0 条 | **退化**（同上） |
+| `parkingReady` 守卫 + 占位元素 | 0 条 | **退化**（同上） |
+
+**关键认识**：插槽内容**必须首渲染就挂载**——否则宿主事实（`rightPartHasVisibleViews` 等）永远为 false，布局塌缩成 compact。因此原实现的「先挂停放区、再搬进叶」不是缺陷，而是**功能前提**；自激是这个必需机制的副作用。
+
+## 已排除（本轮新增）
+
+- 渲染函数反复执行：`onRenderTriggered` 钩子**从未被调用**；DOM 变动仅 83 次，**少于** 304 条警告
+- 两段式挂载假设：在 `onMounted` 里提前同步 `syncAnchors` 让 `disabled` 尽早收敛 → 行为不变、仍 304 条
+- 微任务链异常：打开文件期间 `Promise.then` 1329 次，属正常量级
+- 停放区尺寸：改 `visibility:hidden`、改保留真实尺寸，均仍 304 条
 
 ## 待办
 
-1. 取得决定性证据：为什么 `targets` 未变、`disabled` 未切换，该表达式求值仍参与自激。建议手段：Vue 开发构建（`__DEV__`）下读 `onRenderTriggered` 的 key/type，或在 `TeleportImpl` 的 `queuePendingMount`/`mountToTarget` 路径上打点。
-2. 设计既消除警告、又保持基线的修法（前两个尝试都造成 compact 退化）。
+1. **换模型**：现有关于自激机制的假设已被逐条推翻（渲染 effect、watcher、两段式挂载、微任务链都不是）。下一步应直接在 Vue 的 `flushJobs` 递归检测点（`RECURSION_LIMIT` 判定处，`node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js`）打点，拿到被反复入队的 job 的真实身份（`queue[j].i` 指向的实例与其 effect 类型），而不是从外部行为反推。
+2. 设计既消除警告、又保持基线的修法（四个尝试都造成 compact 退化或无效）。
 3. 补回归测试（能捕获该警告；参考 `WorkbenchShell.test.ts` 的既有写法）。
 4. 全量测试 + 门禁 + 浏览器实测三段计数。
+
+## 验证脚本（可复用）
+
+`.local/w42-verify.mjs`（临时草稿，不入库）：三段计数 + 行为四项（`layout` / 叶数 / 右栏 / 稿面字符数）。
+
+**必须硬重启 dev server 验证**——HMR 对模板结构改动不可靠，本轮多次被 HMR 的脏状态误导（"0 条"的假象出现过两次）。基线（硬重启后）：`afterOpen=304`、`layout=split`、`leafCount=10`、`readerText=417`、`diag=""`。
+
+**进程清理必须按 PID**：先 `netstat -ano | grep ":<port>"` 取 PID，再用 `powershell Get-CimInstance Win32_Process -Filter 'ProcessId=<pid>'` 核实命令行属于本项目，最后 `taskkill /F /PID <pid>`。禁止 `taskkill /F /FI "IMAGENAME eq node.exe"`（2026-10-05 曾两次误杀宿主编辑器）。
 
 ## 状态
 
 **进行中（未完成）。** 自激根因未收敛，本轮不交付自激修复。
+
 
 ### 本轮实际交付
 
