@@ -265,6 +265,35 @@ describe("WorkbenchViewInstances", () => {
         expect(probeInstances).toBe(2);
     });
 
+    it("落点脱离文档后重新登记：同步发布兜住被吞掉的合并回调，实例不留在旧元素里", async () => {
+        /**
+         * 移动视图的真实顺序：新落点先登记（`published` 里仍是旧元素），旧落点后反登记。
+         * 若这次登记的发布只挂在 `nextTick` 上、而那条 flush 链被上游渲染异常 reject，合并回调
+         * 就一次都不执行——实例会永久留在脱离文档的旧元素里（w00041 的现象：section 只剩标题）。
+         * 同步发布是这条路径的兜底，因此这里只等两个 tick，不靠四次 settle 把发布"等出来"。
+         */
+        const anchors = ref<AnchorSpec[]>([{key: "files", viewId: "nbook.files", show: true}]);
+        const wrapper = mountInstances({
+            views: () => [entryOf("nbook.files")],
+            anchors: () => anchors.value,
+        });
+        await settle();
+        expect(wrapper.find("[data-anchor=\"nbook.files\"] [data-probe=\"nbook.files\"]").exists()).toBe(true);
+
+        // 旧落点离开文档（`published` 里那个元素因此脱离），新落点随即登记。
+        anchors.value = [];
+        await nextTick();
+        await nextTick();
+        anchors.value = [{key: "files-moved", viewId: "nbook.files", show: true}];
+        await nextTick();
+        await nextTick();
+
+        const moved = wrapper.find("[data-anchor=\"nbook.files\"] [data-probe=\"nbook.files\"]");
+        expect(moved.exists()).toBe(true);
+        expect(wrapper.findAll("[data-probe=\"nbook.files\"]")).toHaveLength(1);
+        expect(probeInstances).toBe(1);
+    });
+
     it("上下文不可见才释放实例：重新可见时是新实例（没有复活旧状态）", async () => {
         const views = ref([entryOf("nbook.files")]);
         const wrapper = mountInstances({

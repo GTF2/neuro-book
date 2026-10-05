@@ -30,6 +30,44 @@ taskId: t01-view-move-instance-loss
 - 对照既有测试：`app/components/workbench/*` 全绿（不得引入新失败）。
 - 若根因在实例层，补一条能捕获该缺陷的回归测试（移动后实例仍挂载）。
 
+## 根因（2026-10-05 定位）
+
+`WorkbenchViewInstances` 的落点发布**只挂在 `nextTick` 上**，而 `nextTick` 挂在 Vue 的 flush promise
+链上。移动视图会触发外壳的递归更新风暴（`Maximum recursive updates exceeded in component
+<WorkbenchShellLayout>`），那条链被 reject——合并回调因此**一次都不执行**，`publishScheduled` 停在
+`true`，此后所有登记都被第一行的去重挡掉，目标再不发布。
+
+实测证据（浏览器，`__vueParentComponent` 链读实例内部状态）：
+
+```
+published["nbook.files"]: connected: false, htmlLen: 23427   ← 实例在脱离文档的旧元素里
+targets["nbook.files"]:   connected: true,  htmlLen: 0       ← 新目标已登记、已连通、空
+publishScheduled: true                                        ← 卡死
+```
+
+即：文件树的 23K DOM 完整渲染在一个**已经不在文档里**的元素上，新位置因此只剩标题。
+
+## 修复
+
+`WorkbenchViewInstances.vue` 三处（与容器实例层 `WorkbenchContainerInstances` 同口径）：
+
+1. **同步发布兜底**：`register` 时若当前 `published` 目标已脱离文档，立即换目标（`publishImmediate`），
+   不等那条可能被 reject 的链。只在"旧目标已脱离"这个明确信号下触发——常规登记仍走 `nextTick`
+   合并，否则会干扰手势期间的布局结算（实测：无差别同步发布会打破 ViewHost 的两条手势测试）。
+2. **去重按发布结果**：`register` 的提前返回同时要求 `published` 已指向该元素，避免"登记表里是它、
+   发布里不是"时被误判为重复。
+3. **调度自愈**：`nextTick` 的 rejection 复位 `publishScheduled`，一次被吞掉的发布不再永久卡死调度。
+
+## 验证
+
+- **浏览器实测**（`diag` 项目，1440×900）：
+  - `nbook.files` 移到右栏：section 文本 2 → **196**，目标 `childCount: 1 / htmlLen: 19251`（修复前为 0）。
+  - `nbook.reader` 移到左栏：稿面 417 字符完整保留，`panelLeaf` 跟随到 `left`。
+- **回归测试**：`WorkbenchViewInstances.test.ts` 新增「落点脱离文档后重新登记」一条；**已验证它能捕获
+  缺陷**（临时禁用同步发布后该条失败，恢复后通过）。
+- **既有测试**：`app/components/workbench` + `app/utils/workbench` 748/748 通过。
+- `governance:check`：failures / warnings 均空。
+
 ## 状态
 
-待定位。
+已修复并验证，待提交合入。

@@ -121,6 +121,14 @@ let publishScheduled = false;
 
 const visibleEntries = computed(() => props.views.filter((entry) => entry.visible));
 
+/**
+ * 合并同一 tick 内的多次登记，统一在 `nextTick` 之后发布一次目标。
+ *
+ * `nextTick` 挂在 Vue 的 flush promise 链上，上游的渲染异常（例如外壳的递归更新风暴）会 reject
+ * 那条链，回调因此可能根本不执行。标志位必须能自愈——否则一次被吞掉的发布会让它永久停在 `true`，
+ * 此后所有登记都被第一行的去重挡掉，实例留在脱离文档的旧目标里（移动视图正是这条路径：
+ * `published` 里的元素已 `connected: false`，文件树的 23K 内容就渲染在那个看不见的地方）。
+ */
 function schedulePublish(): void {
     if (publishScheduled) {
         return;
@@ -129,7 +137,25 @@ function schedulePublish(): void {
     void nextTick(() => {
         publishScheduled = false;
         publishTargets();
+    }).catch(() => {
+        // flush 链被上游异常中断：复位标志位，让下一次登记仍能调度发布。
+        publishScheduled = false;
     });
+}
+
+/**
+ * 单个落点的**同步**发布：只在**当前目标已脱离文档**时执行。
+ *
+ * `nextTick` 合并负责常规路径（登记时目标刚拿到、还没插入文档，同步搬只会让实例来回重挂，
+ * 也会干扰手势期间的布局结算）。这条路径专门处理"目标已经不在文档里"的窗口——那时合并回调
+ * 可能被上游异常吞掉，实例会永久留在看不见的旧元素里（移动视图正是这条路径）。
+ */
+function publishImmediate(viewId: string, element: HTMLElement): void {
+    const current = published.value[viewId];
+    if (current === element || (current !== undefined && current.isConnected)) {
+        return;
+    }
+    published.value = {...published.value, [viewId]: element};
 }
 
 /**
@@ -201,12 +227,19 @@ watch(visibleEntries, (current) => {
 }, {immediate: true});
 
 provide(VIEW_TARGET_REGISTRY, {
+    /**
+     * 登记落点。
+     *
+     * 去重按**发布结果**判定：登记表里已是同一个元素、但 `published` 还指着别的元素时不能提前返回——
+     * 那说明上一次发布没落地（被上游渲染异常吞掉），此时返回会让实例永久留在旧目标上。
+     */
     register(viewId: string, element: HTMLElement): void {
-        if (targets.get(viewId) === element) {
+        if (targets.get(viewId) === element && published.value[viewId] === element) {
             return;
         }
         targets.set(viewId, element);
         everTargeted.add(viewId);
+        publishImmediate(viewId, element);
         schedulePublish();
     },
     unregister(viewId: string, element: HTMLElement): void {
