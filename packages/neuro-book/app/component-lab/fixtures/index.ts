@@ -42,6 +42,10 @@ import {editorWelcomeScenes} from "./EditorWelcome.scenes";
 import type CollapsibleSidePanel from "../CollapsibleSidePanel.vue";
 import type ViewportCanvas from "../ViewportCanvas.vue";
 import type MarkdownView from "../MarkdownView.vue";
+import type ProsePage from "../../components/common/ProsePage.vue";
+import type ReaderView from "../../components/editor-workbench/ReaderView.vue";
+import {prosePageScenes} from "./ProsePage.scenes";
+import {readerViewScenes} from "./ReaderView.scenes";
 import type EventLogPanel from "../EventLogPanel.vue";
 import type HighlightBox from "../HighlightBox.vue";
 import type JsonViewer from "../../components/common/JsonViewer.vue";
@@ -247,6 +251,14 @@ export const labFixtures: LabFixture[] = [
             {id: "html", label: "内嵌 HTML（会被净化）", input: {props: {source: "下面这行的脚本会被净化掉，什么都不会发生：\n\n<script>alert(1)<\/script>\n\n<b>这个粗体标签是允许的</b>"}}},
             {id: "empty", label: "空文本", input: {props: {source: ""}}},
         ], load: async () => (await import("./MarkdownViewFixture.vue")).default,
+    }),
+    defineLabFixture<typeof ProsePage>({
+        component: "ProsePage", scenes: prosePageScenes,
+        load: async () => (await import("./ProsePageFixture.vue")).default,
+    }),
+    defineLabFixture<typeof ReaderView>({
+        component: "ReaderView", scenes: readerViewScenes,
+        load: async () => (await import("./ReaderViewFixture.vue")).default,
     }),
     defineLabFixture<typeof EventLogPanel>({
         component: "EventLogPanel", scenes: [

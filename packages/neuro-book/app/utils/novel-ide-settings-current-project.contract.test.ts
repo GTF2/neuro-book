@@ -14,7 +14,8 @@ describe("Novel IDE Settings Current Project contract", () => {
 
         expect(source).not.toContain("loadProjects(");
         expect(source).not.toContain("selectTargetNovel");
-        expect(source).toContain('activeScope.value === "project" && novelIdeStore.currentProjectRoot');
+        // 可用性判据必须落到「当前 Project 根」，不能退化成读目录列表。
+        expect(source).toContain("&& Boolean(novelIdeStore.currentProjectRoot));");
         expect(source).toContain("projectRoot: novelIdeStore.currentProjectRoot");
         expect(source).toContain('novelIdeStore.currentNovel?.title || novelIdeStore.currentProjectRoot || "Project Workspace"');
     });
