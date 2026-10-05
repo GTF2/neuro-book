@@ -47,12 +47,15 @@ taskId: t01-reader-panel
   - 跟随切换：打开「正文」→ 面板标题「正文」；切到「手册」→ 面板标题与内容同步变为「手册」。
   - 空态：无活动文档时显示「打开一个章节即可在这里看排版。」。
   - 递归警告 8 条与 master 基线**同数同源**（`WorkbenchShellLayout`，本次改动零新增）。
+- **移动能力实测**（2026-10-05，独立实例端口 3011）：
+  - 面板标题的「更多 → 移动到」菜单列出「工具 / 面板」两个落点；选中「工具」后 `view:nbook.reader` 叶从右栏移到左栏，`data-container-mode` 从 `single` 变 `multiple`——**移动本身生效**。
+  - 但移动后面板内容空白（section 内只剩标题）。**对照实验证明这不是本组件的问题**：把既有的 `nbook.files` 移到右栏，它以完全相同的方式丢失内容（`textLen` 194 → 2，20 秒内多次采样不恢复），而同容器里本面板正常。已另开 **w00041** 登记该外壳缺陷。
+- **Lab 场景登记**（2026-10-05 补）：组件规范要求「注册进 Component Lab（fixture + 同名 `.md` + 场景）」；本 Task 新增的 `ProsePage`、`ReaderView` 初版漏了这一步，全量门禁因此报错。已补两个 `.scenes.ts` + 两个 `*Fixture.vue` 并在索引登记。
 
 ## 执行位置
 
-`.worktree/w00039-reader-panel-view`，分支 `feat/w00039-reader-panel-view`。
+已合入 master（`5fe7da69`），worktree 与分支已清理。
 
 ## 待办
 
-- 提交到 `feat/w00039-reader-panel-view` 并合入。
-- `WorkbenchShellLayout` 的递归更新警告是既有问题，不属本 Task 范围。
+无。相关的外壳缺陷（视图移动后实例丢失）见 w00041；`WorkbenchShellLayout` 的递归更新警告是既有问题，不属本 Task 范围。
