@@ -10,7 +10,7 @@
  *   冲突进入 Store 的未解决登记，由 `conflictRequest` 这条一次性通道驱动实例执行
  *   "采用当前正文"或"保留此视图内容"。
  */
-import {computed, nextTick, onMounted, onScopeDispose, reactive, ref, shallowRef, watch} from "vue";
+import {computed, nextTick, onMounted, onScopeDispose, reactive, ref, shallowRef, toRaw, watch} from "vue";
 import {useNovelIdeStore} from "nbook/app/stores/novel-ide";
 import {useEditorConfiguration} from "nbook/app/composables/useEditorConfiguration";
 import {createBuiltinEditorContributions, type BuiltinEditorBindings} from "nbook/app/utils/editor-workbench/builtin-editors";
@@ -229,7 +229,9 @@ export function useEditorWorkbench(options: {
             }
             return;
         }
-        if (runtime.token === token && runtime.handle === handle) return;
+        // runtimes 是深响应式容器，这里读出的 handle 是代理：直接比较会让守卫恒假，
+        // 视图每次重复上报都要完整重绑（清空 actions 又是一次响应式写入，与 setActions 交替自激）。
+        if (runtime.token === token && toRaw(runtime.handle) === toRaw(handle)) return;
         runtime.releaseFlush?.();
         runtime.handle = handle;
         runtime.token = token;

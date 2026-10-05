@@ -12,30 +12,24 @@ issueId: null
 
 2026-10-05 开发者按我给出的选项选择了「把那个上游报错彻底根治」（原话「那先按你推荐的去干」）。该警告自 w00028 起存在；w00028 当时结论是「在健康渲染器不可复现」，但本轮在无头 Chromium 上稳定复现——触发条件是**打开文件**（w00028 只测了加载与视口抖动，没测打开文件）。
 
-## 现象
+## 现象与根因
 
 打开任意 Markdown 文件时一次性抛出 304 条 `Maximum recursive updates exceeded in component <WorkbenchShellLayout>`。页面**行为正常**（布局 split、阅读面板渲染、显隐可用），只是控制台刷警告。副作用：w00041 的视图移动缺陷正是被它触发的（异常 reject 了 `nextTick` 链）。
+
+根因（打点 + 最小复现实证）：`useEditorWorkbench` 的 `runtimes` 是深响应式容器，读出的 `runtime.handle` 是代理，`bindViewHandle` 的守卫 `runtime.handle === handle` **恒为假** → 视图每次发布都完整重绑（写 `actions=[]`）并与 `setActions`（写回 actions）交替写同一响应式键 → `<WorkbenchShellLayout>` 的渲染 job 被入队 265 次、突破 Vue 递归上限，每条后续 flush 报一条、累计 304 条。
 
 ## 已确认的事实（实测）
 
 | 实验 | 结果 |
 |---|---|
 | 加载页面 / 展开文件树 | 0 条 |
-| 打开 Markdown 文件 | **304 条** |
-| 禁用停放区（`data-shell-parking`）里那组 `Teleport` | **0 条** |
-| 保留 Teleport、把 `:disabled` 固定为 `false` | **0 条** |
-| 移除 `:disabled` 属性（`to` 可能为 undefined） | 0 条，但**行为退化**（compact + 内容不渲染） |
-| 禁用 `syncAnchors()` 调用 | 仍 305 条 |
-| 打开文件期间 `syncAnchors` / `rebuild` / `measure` 调用次数 | **均为 0** |
-| 剥离 `ReaderPanelView` 响应式逻辑 | 仍 304 条（排除阅读面板） |
-| `onRenderTriggered` 计数 | 213 次触发（触发源 key 在生产构建下不可读） |
+| 打开 Markdown 文件（修复前） | **304 条** |
+| 打点超限 job 身份 | `WorkbenchShellLayout` 渲染 job，入队 265 次 |
+| 60 帧入队栈 | 交替命中 `bindViewHandle`（清空 actions）与 `setActions`（写回 actions） |
+| 最小语义复现（node） | 代理读出 `read === handle` 假、`toRaw(read) === handle` 真 |
+| 修复后打开 Markdown 文件 | **0 条** |
 
-**结论**：自激源是停放区那组 `Teleport` 的 `:disabled="!targets[part]"`，且与 `syncAnchors` 的写入无关（它没跑）。固定 `disabled=false` 能消除警告，但直接移除 `disabled` 会让首渲染的 `to` 为 `undefined`、内容不挂载，行为退化。
-
-## 未解决
-
-- **根因未收敛到可解释的机制**：`targets` 在打开文件时没有变化，`disabled` 的表达式求值却参与自激。Vue 源码里的 `pendingMounts` / 两段式挂载路径（`runtime-core` 的 `TeleportImpl`）是嫌疑，但未取得决定性证据。
-- 试过的两个修法（`parkingReady` 守卫、占位元素 + 稳定 `to`）都能消除警告，但**都造成行为退化**（`layout` 从 split 退化为 compact、内容不渲染），已回退。
+早期排查排除了：停放区 Teleport 的 `:disabled` 表达式（修 `disabled` 只是改了写入时序，不是源）、`syncAnchors`/`rebuild`/`measure`（打开文件期间调用 0 次）、`ReaderPanelView` 响应式、停放区尺寸与两段式挂载假设。另修出一处独立缺陷：`WorkbenchShell.vue` 的 `setLeafVisible` 数组引用比较恒假导致去重失效（真实缺陷，非警告来源）。
 
 ## 范围与非目标
 
@@ -46,4 +40,12 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-shell-recursive-update/README.md) | 进行中：根因未收敛，自激修复待续 |
+| [t01](tasks/t01-shell-recursive-update/README.md) | 已修复并实测通过（0 条）；待提交/合入 |
+
+## 收尾
+
+修复已实测通过但尚未提交；提交与合入后在此记录合入提交号与待清理项。
+
+## 已知既有缺陷（非本 Work 范围）
+
+全量测试退出码 1 由 22 条 `ReferenceError: DOMMatrix is not defined` 未处理错误造成（`packages/nb-ui/src/components/controls/Dropdown.vue:99`，jsdom 无 `DOMMatrix`）。stash 基线对照确认与 w00042 无关、在无改动基线稳定复现。测试全部通过，仅退出码受影响；未登记独立 Work。

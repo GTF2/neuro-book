@@ -72,6 +72,18 @@ describe("编辑器编排", () => {
         expect(store.workspaceTabs[0]?.editorId).toBe("code");
         expect(fetch).not.toHaveBeenCalled();
     });
+    it("同一实例重复上报句柄是免操作，不清空已上报动作", async () => {
+        const {store, workbench} = await setup("cancel");
+        const {handle, target} = viewHandle(store);
+        workbench.bindViewHandle("main", target, "1", handle);
+        workbench.setActions("main", target, "1", [{id: "markdown.comments", label: "注释", disabled: false}]);
+        const before = workbench.presentationOf("main").actions;
+        expect(before).toHaveLength(1);
+        // 视图重渲染会用同一句柄重发上报：守卫若拿响应式代理比原始对象会恒假，
+        // 动作被清空 → 外壳重渲染 → 再次上报，撞出 Maximum recursive updates 风暴。
+        workbench.bindViewHandle("main", target, "1", handle);
+        expect(workbench.presentationOf("main").actions).toBe(before);
+    });
     it("保存失败选择关闭仍保留dirty正文与可见错误", async () => {
         const {store, workbench} = await setup("save", true);
         store.updateWorkspaceDocument(store.activeWorkspaceDocumentTarget!, "unsaved");
