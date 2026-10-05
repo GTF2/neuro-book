@@ -40,11 +40,11 @@ issueId: null
 
 | Task | 当前范围 |
 |---|---|
-| [t01](tasks/t01-shell-recursive-update/README.md) | 已修复并实测通过（0 条）；待提交/合入 |
+| [t01](tasks/t01-shell-recursive-update/README.md) | 已交付并合入：根因定位（深响应式代理上句柄身份守卫恒假）+ 修复 + 回归测试；另修 `setLeafVisible` 去重失效（fcdd8da2） |
 
 ## 收尾
 
-修复已实测通过但尚未提交；提交与合入后在此记录合入提交号与待清理项。
+已收尾：df147204；待清理：.worktree/w00042-shell-recursive-update、fix/w00042-shell-recursive-update
 
 ## 已知既有缺陷（非本 Work 范围）
 
